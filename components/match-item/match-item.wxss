@@ -3,9 +3,9 @@
 .match-container {
 	padding: 15rpx 16rpx;
 	margin: 15rpx 0 40rpx 0; /* 调整左右margin为0 */
-	background: #fefefe;
+	background: var(--card-bg);
 	border-radius: 6rpx;
-	border: 0.5rpx solid var(--theme-color); /* 更醒目的绿色边框 */
+	border: 0.5rpx solid var(--card-border); /* 更醒目的绿色边框 */
 	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
 	display: flex;
 	min-height: 170rpx;

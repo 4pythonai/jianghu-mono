@@ -12,6 +12,10 @@ page {
 	--testColorRedR: #ba275f;
 	--testColor: #ff0000;
 	--hearde-big: #1c1935; /* 浅灰背景 */
+	--card-bg: #fefefe;
+	--card-border: #86cd93;
+	--tb-header-bg: #4caf50;
+	--tb-header-text: #fff;
 
 	height: 100%;
 	background-color: #f9fbfa;

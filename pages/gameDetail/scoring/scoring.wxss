@@ -40,8 +40,8 @@
 /* 表头基础样式 */
 .tb-header {
 	height: 80px;
-	background-color: #4caf50;
-	color: white;
+	background-color: var(--tb-header-bg);
+	color: var(--tb-header-text);
 	font-weight: bold;
 	display: flex;
 	position: sticky;
