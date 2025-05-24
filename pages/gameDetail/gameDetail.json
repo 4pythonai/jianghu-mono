@@ -1,8 +1,6 @@
 {
 	"navigationBarTitleText": "比赛详情",
 	"usingComponents": {
-		"PlayerInfo": "/components/player-info/player-info",
-		"HoleScore": "/components/hole-score/hole-score",
 		"gamble": "./gamble/gamble",
 		"bbs": "./bbs/bbs",
 		"scoring": "./scoring/scoring"
