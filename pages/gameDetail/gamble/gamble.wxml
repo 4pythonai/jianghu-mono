@@ -1,0 +1,9 @@
+<!-- 游戏(Gamble)模块 -->
+<view class="gamble-container">
+    <view class="gamble-header">
+        <text>游戏竞猜</text>
+    </view>
+    <view class="gamble-content">
+        <text>tab---游戏功能开发中...</text>
+    </view>
+</view>

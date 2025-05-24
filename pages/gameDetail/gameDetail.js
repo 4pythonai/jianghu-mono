@@ -1,6 +1,10 @@
 import { getGameDetail } from '../../api/modules/game'
 
 Page({
+    usingComponents: {
+        'bbs': './bbs/bbs',
+        'gamble': './gamble/gamble'
+    },
     data: {
         currentTab: 0, // 当前激活的tab索引
         gameId: '',

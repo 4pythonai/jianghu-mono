@@ -3,6 +3,8 @@
 
 	"usingComponents": {
 		"PlayerInfo": "/components/player-info/player-info",
-		"HoleScore": "/components/hole-score/hole-score"
+		"HoleScore": "/components/hole-score/hole-score",
+		"gamble": "./gamble/gamble",
+		"bbs": "./bbs/bbs"
 	}
 }

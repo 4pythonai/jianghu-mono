@@ -51,12 +51,8 @@
   </view>
 </view>
 <view class="tab-content" wx:if="{{currentTab === 1}}">
-  <view class="empty-tab">
-    <text>互动功能开发中</text>
-  </view>
+  <bbs gameId="{{gameId}}" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 2}}">
-  <view class="empty-tab">
-    <text>游戏功能开发中</text>
-  </view>
+  <gamble gameId="{{gameId}}" players="{{players}}" />
 </view>

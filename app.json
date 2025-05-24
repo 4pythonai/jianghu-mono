@@ -7,11 +7,8 @@
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail"
 	],
-	"settings": {
-		"minifiedVersion": "3.8.4"
-	},
 	"window": {
-		"navigationBarTitleText": "G小程序",
+		"navigationBarTitleText": "golfmimi",
 		"navigationBarTextStyle": "black",
 		"navigationBarBackgroundColor": "#ffffff"
 	},

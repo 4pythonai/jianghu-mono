@@ -1,0 +1,9 @@
+<!-- 互动(BBS)模块 -->
+<view class="bbs-container">
+    <view class="bbs-header">
+        <text>互动专区</text>
+    </view>
+    <view class="bbs-content">
+        <text>互动功能开发中...</text>
+    </view>
+</view>
