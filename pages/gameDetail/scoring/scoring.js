@@ -43,6 +43,13 @@ Component({
                 par: hole.par
             }));
 
+            // 输出球洞列表信息
+            console.log('球洞列表:', holeList.map(hole => ({
+                holeid: hole.holeid,
+                holename: hole.holename,
+                par: hole.par
+            })));
+
             // 3. 预处理分数数据
             const scoreMap = {};
             for (const score of gameData.scores) {
@@ -58,7 +65,22 @@ Component({
             const playerScores = players.map(player => {
                 return holeList.map(hole => {
                     const key = `${player.userid}_${hole.holeid}`;
-                    return scoreMap[key] || { score: '', putt: '', diff: '' };
+                    const scoreData = scoreMap[key] || { score: '', putt: '' };
+
+                    // 重新计算diff值
+                    let diff = '';
+                    if (scoreData.score && hole.par) {
+                        diff = parseInt(scoreData.score) - parseInt(hole.par);
+                    }
+
+                    console.log(`球员 ${player.userid} 球洞 ${hole.holeid}(${hole.holename}) - Par: ${hole.par}, 分数: ${scoreData.score}, Putt: ${scoreData.putt}, Diff: ${diff}`);
+
+                    return {
+                        score: scoreData.score || '',
+                        putt: scoreData.putt || '',
+                        diff: diff,
+                        holeid: hole.holeid
+                    };
                 });
             });
 
@@ -73,13 +95,19 @@ Component({
 
                 const total = scores.reduce((sum, hole) => {
                     const score = parseInt(hole.score) || 0;
-                    console.log(`球洞 ${hole.holeid} 分数:`, score);
+                    // 只有当有实际分数时才输出详细日志
+                    if (hole.score) {
+                        console.log(`球洞 ${hole.holeid} 分数: ${score}, putt: ${hole.putt}, diff: ${hole.diff}`);
+                    }
                     return sum + score;
                 }, 0);
 
                 console.log(`球员 ${player.userid} 总分:`, total);
                 return total;
             });
+
+            console.log("++++++playerScores ++++++++", playerScores);
+            console.log("++++++players ++++++++", players);
 
             this.setData({
                 players,
@@ -105,10 +133,20 @@ Component({
                 return 0;
             }
 
-            return this.data.playerScores[playerIndex].reduce((sum, holeScore) => {
+            const scores = this.data.playerScores[playerIndex];
+            console.log('球员分数数据:', scores);
+
+            const total = scores.reduce((sum, holeScore) => {
                 const score = parseInt(holeScore.score) || 0;
+                // 只有当有实际分数时才输出详细日志
+                if (holeScore.score) {
+                    console.log(`球洞 ${holeScore.holeid} - 分数: ${score}, putt: ${holeScore.putt}, diff: ${holeScore.diff}`);
+                }
                 return sum + score;
             }, 0);
+
+            console.log(`球员 ${userId} 总分计算完成:`, total);
+            return total;
         },
 
         // 滚动到最左侧

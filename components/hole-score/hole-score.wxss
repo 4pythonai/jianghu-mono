@@ -1,55 +1,35 @@
 /* 基础容器样式 */
 .hole-score {
-	width: 400px;
+	width: 80px;
+	height: 80px; /* 添加固定高度以便绝对定位 */
 	flex-shrink: 0;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
 	padding: 10px;
 	position: relative;
 }
 
 /* 分数文本样式 */
 .score-text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	font-size: 16px;
 	font-weight: bold;
-	margin-bottom: 2px;
-}
-
-/* 超标准杆样式 */
-.over-par {
-	color: #f44336;
-}
-
-/* 低于标准杆样式 */
-.under-par {
-	color: #4caf50;
-}
-
-/* 平标准杆样式 */
-.even-par {
-	color: #333;
 }
 
 /* 推杆数样式 */
 .putt-text {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
 	font-size: 12px;
-	color: #666;
+	color: #a61414;
 }
 
 .diff-text {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
 	font-size: 12px;
-	color: #666;
-}
-
-/* 移动端适配 */
-@media (max-width: 768px) {
-	.hole-score {
-		width: 80px;
-		padding: 5px;
-	}
-
-	.score-text {
-		font-size: 14px;
-	}
+	color: #150cc5;
 }

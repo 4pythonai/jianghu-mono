@@ -2,7 +2,6 @@
 	"pages": [
 		"pages/live/live",
 		"pages/team/team",
-		"pages/score/score",
 		"pages/community/community",
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail"
@@ -29,12 +28,6 @@
 				"text": "球队",
 				"iconPath": "images/tab/team.png",
 				"selectedIconPath": "images/tab/team_selected.png"
-			},
-			{
-				"pagePath": "pages/score/score",
-				"text": "",
-				"iconPath": "images/tab/add.png",
-				"selectedIconPath": "images/tab/add_selected.png"
 			},
 			{
 				"pagePath": "pages/community/community",
