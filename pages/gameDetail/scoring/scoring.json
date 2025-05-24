@@ -1,0 +1,7 @@
+{
+	"component": true,
+	"usingComponents": {
+		"PlayerInfo": "/components/player-info/player-info",
+		"HoleScore": "/components/hole-score/hole-score"
+	}
+}

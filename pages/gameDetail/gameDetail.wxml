@@ -10,45 +10,7 @@
   </view>
 </view>
 <view class="tab-content" wx:if="{{currentTab === 0}}">
-  <view class="score-container">
-    <!-- 左侧固定列 -->
-    <view class="fixed-column player-column">
-      <view class="tb-header tb-header-player">球员</view>
-      <view class="cell-player" wx:for="{{players}}" wx:key="user">
-        <PlayerInfo index="{{index}}" nickname="{{item.nickname}}" tee="{{item.tee}}" avatar="{{item.avatar}}" />
-      </view>
-    </view>
-    <!-- 主滚动区域 -->
-    <scroll-view scroll-x class="main-scroll" id="mainScroll">
-      <!-- 中间内容区 -->
-      <view class="scroll-content" style="width: {{holeList.length * 80}}px">
-        <!-- 表头 -->
-        <view class="tb-header tb-header-holes">
-          <view wx:for="{{holeList}}" wx:key="holeid" class="tb-header-hole">
-            <view class="hole-name">{{item.holename}}</view>
-            <view class="hole-par">{{item.par}}</view>
-          </view>
-        </view>
-        <!-- 内容行 -->
-        <view class="table-body">
-          <view class="table-row" wx:for="{{players}}" wx:key="user" wx:for-index="playerIndex">
-            <view wx:for="{{holeList}}" wx:key="holeid" wx:for-index="holeIndex" class="cell-score">
-              <HoleScore par="{{item.par}}" putt="{{playerScores[playerIndex][holeIndex].putt}}" score="{{playerScores[playerIndex][holeIndex].score}}" />
-            </view>
-          </view>
-        </view>
-      </view>
-    </scroll-view>
-    <!-- 右侧固定列 -->
-    <view class="fixed-column total-column">
-      <view class="tb-header tb-header-total">总分</view>
-      <scroll-view scroll-y class="table-body" scroll-top="{{scrollTop}}">
-        <view class="cell-total" wx:for="{{players}}" wx:key="user" wx:for-index="playerIdx">
-          <text style="color:#333;font-size:16px;">{{playerTotals[playerIdx]}}</text>
-        </view>
-      </scroll-view>
-    </view>
-  </view>
+  <scoring gameId="{{gameId}}" players="{{players}}" holeList="{{holeList}}" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 1}}">
   <bbs gameId="{{gameId}}" />
