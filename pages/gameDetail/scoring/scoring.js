@@ -4,13 +4,14 @@ Component({
             type: String,
             value: ''
         },
-        players: {
-            type: Array,
-            value: []
-        },
-        holeList: {
-            type: Array,
-            value: []
+        gameData: {
+            type: Object,
+            value: null,
+            observer: function (newVal) {
+                if (newVal) {
+                    this.processGameData(newVal);
+                }
+            }
         }
     },
 
