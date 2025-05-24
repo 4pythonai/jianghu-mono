@@ -1,0 +1,4 @@
+<view class="hole-score">
+  <text class="score-text">{{score}}</text>
+  <text class="putt-text">{{putt}}</text>
+</view>

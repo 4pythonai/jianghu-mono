@@ -1,0 +1,5 @@
+{
+	"usingComponents": {
+		"match-item": "/components/match-item/match-item"
+	}
+}

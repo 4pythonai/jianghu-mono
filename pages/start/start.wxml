@@ -1,0 +1,3 @@
+<view class="container">
+  <image src="/images/start.jpg" mode="aspectFill" class="splash-image"></image>
+</view>

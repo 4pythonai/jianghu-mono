@@ -1,0 +1,37 @@
+<view class="match-container" hover-class="hover-class" hover-stay-time="100" bindtap="onMatchItemTap">
+  <!-- 左侧头像组 -->
+  <view class="avatar-column">
+    <avatar-group avatars="{{avatarUrls}}" maxShow="4" />
+  </view>
+  <!-- 右侧内容区 -->
+  <view class="content-column">
+    <!-- 第1行：比赛名称 + star -->
+    <view class="row name-row">
+      <text class="game-name">{{gameName}}</text>
+      <view class="star-icon">
+        <view class="iconfont icon-score2" />
+      </view>
+    </view>
+    <!-- 第2行：进度条 -->
+    <view class="row progress-row">
+      <progress-bar completedHoles="{{completedHoles}}" holes="{{holes}}" />
+    </view>
+    <!-- 第3行：地点 -->
+    <view class="row course-row">
+      <view class="iconfont icon-location" style="color: var(--theme-color);"></view>
+      <text class="course">{{course}}</text>
+    </view>
+    <!-- 第4行：时间人数 + gamble -->
+    <view class="row meta-row">
+      <view class="time-watchers">
+        <view class="iconfont icon-clock" style="color: var(--theme-color);"></view>
+        <text class="start-time" style="margin-right: 20rpx;">{{gameStart}}</text>
+        <view class="iconfont icon-location" style="color: var(--theme-color);"></view>
+        <text class="watchers">{{watchersNumber}}人围观</text>
+      </view>
+      <view class="gamble-icon" wx:if="{{have_gamble}}">
+        <view class="iconfont icon-a-shaizitianchong1" style="color: var(--theme-color);" />
+      </view>
+    </view>
+  </view>
+</view>

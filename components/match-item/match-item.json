@@ -1,0 +1,12 @@
+{
+	"component": true,
+	"usingComponents": {
+		"avatar-group": "../avatar-group/avatar-group",
+		"progress-bar": "../progress-bar/progress-bar"
+	},
+	"options": {
+		"addGlobalClass": true,
+		"styleIsolation": "shared"
+	},
+	"externalClasses": ["hover-class"]
+}

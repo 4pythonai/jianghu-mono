@@ -1,0 +1,14 @@
+{
+	"component": true,
+	"usingComponents": {},
+	"properties": {
+		"completedHoles": {
+			"type": "Number",
+			"value": 0
+		},
+		"holes": {
+			"type": "Number",
+			"value": 18
+		}
+	}
+}

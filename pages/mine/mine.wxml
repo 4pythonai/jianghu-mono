@@ -1,0 +1,4 @@
+<view class="container">
+  <view class="page-title">我的</view>
+  <view class="page-desc">这里是个人中心，管理账户和设置</view>
+</view>

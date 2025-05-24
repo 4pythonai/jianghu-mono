@@ -1,0 +1,32 @@
+<view class="container">
+  <!-- Banner区域 -->
+  <view class="banner">
+    <image src="/images/ad-header.jpeg" mode="aspectFill" class="banner-image"></image>
+  </view>
+  <!-- Tab切换区域 -->
+  <view class="tab-container">
+    <view class="tab-header">
+      <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0">
+        我的比赛
+      </view>
+      <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1">
+        广场
+      </view>
+    </view>
+    <!-- Tab内容区域 -->
+    <view class="tab-content">
+      <view class="tab-pane" hidden="{{currentTab !== 0}}">
+        <block wx:for="{{games}}" wx:key="game_id">
+          <match-item gameName="{{item.game_name}}" course="{{item.course}}" players="{{item.players}}" watchersNumber="{{item.watchers_number}}" gameStart="{{item.game_start}}" completedHoles="{{item.completed_holes}}" holes="{{item.holes}}" have_gamble="{{item.have_gamble}}" starType="{{item.star_type}}" gameId="{{item.game_id}}" />
+        </block>
+      </view>
+      <view class="tab-pane" hidden="{{currentTab !== 1}}">
+        <!-- 广场内容 -->
+        icon-location
+        <view class="iconfont icon-location" />
+        bbb
+        <view class="content-placeholder">广场内容区域</view>
+      </view>
+    </view>
+  </view>
+</view>

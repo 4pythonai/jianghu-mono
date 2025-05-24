@@ -1,0 +1,13 @@
+<view class="cell-player-info">
+  <view class="player-info-container">
+    <view class="player-info-column">
+      <image class="player-avatar" src="{{avatar}}" mode="aspectFill"></image>
+      <text class="player-name">{{nickname}}</text>
+    </view>
+    <view class="tee-info-column">
+      <view class="tee-indicator {{isValidTee ? 'tee-' + currentTee : 'tee-default'}}">
+        {{displayText}}
+      </view>
+    </view>
+  </view>
+</view>
