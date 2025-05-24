@@ -92,9 +92,7 @@
 /* 标准杆数 */
 .hole-par {
 	color: white;
-	font-size: 14px;
-	font-weight: normal;
-	line-height: 1.2;
+	font-size: 16px;
 }
 
 /* 内容区域 */
