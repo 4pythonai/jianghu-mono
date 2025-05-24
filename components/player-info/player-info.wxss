@@ -45,6 +45,7 @@
 }
 
 .tee-info-column {
+	padding-right: 4px;
 	width: 28px;
 	height: 76px;
 	float: right;

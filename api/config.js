@@ -5,7 +5,7 @@
 // 环境配置
 const ENV = {
     development: {
-        baseURL: 'http://127.0.0.1:8087',
+        baseURL: 'http://api.golf-brother.com',
     },
     production: {
         baseURL: 'https://api.example.com',
@@ -43,7 +43,7 @@ export const ApiUrls = {
     // 比赛相关
     game: {
         list: '/api/game/list',
-        detail: '/v2/test',
+        detail: '/web/miniapi/',
         create: '/api/game/create'
     },
     // 团队相关

@@ -94,16 +94,40 @@ Component({
     methods: {
         updateScoreClass: function (diff) {
             let scoreClass = '';
-            if (diff < 0) {
-                scoreClass = 'score-under-par';
-            } else if (diff > 0) {
-                scoreClass = 'score-over-par';
-            } else if (diff === 0) {
+
+
+
+
+            if (diff <= -2) {
+                scoreClass = 'under-par-2';
+            }
+
+            if (diff === -1) {
+                scoreClass = 'under-par-1';
+            }
+
+            if (diff === 0) {
                 scoreClass = 'score-par';
             }
+
+
+            if (diff === 1) {
+                scoreClass = 'over-par-1';
+            }
+
+            if (diff === 2) {
+                scoreClass = 'over-par-2';
+            }
+
+            if (diff >= 3) {
+                scoreClass = 'over-par-3';
+            }
+
             this.setData({
                 scoreClass: scoreClass
             });
+
+
         }
     }
 })
