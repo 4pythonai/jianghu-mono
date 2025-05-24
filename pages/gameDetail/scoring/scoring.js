@@ -57,32 +57,18 @@ Component({
                 scoreMap[key] = {
                     score: score.score,
                     putt: score.putt,
-                    diff: score.diff
+                    diff: score.diff,
+                    gambleflag: score.gambleflag
                 };
             }
 
             // 4. 创建球员分数矩阵
-            const playerScores = players.map(player => {
-                return holeList.map(hole => {
-                    const key = `${player.userid}_${hole.holeid}`;
-                    const scoreData = scoreMap[key] || { score: '', putt: '' };
-
-                    // 重新计算diff值
-                    let diff = '';
-                    if (scoreData.score && hole.par) {
-                        diff = parseInt(scoreData.score) - parseInt(hole.par);
-                    }
-
-                    console.log(`球员 ${player.userid} 球洞 ${hole.holeid}(${hole.holename}) - Par: ${hole.par}, 分数: ${scoreData.score}, Putt: ${scoreData.putt}, Diff: ${diff}`);
-
-                    return {
-                        score: scoreData.score || '',
-                        putt: scoreData.putt || '',
-                        diff: diff,
-                        holeid: hole.holeid
-                    };
-                });
-            });
+            const playerScores = players.map(player =>
+                holeList.map(hole => ({
+                    ...(scoreMap[`${player.userid}_${hole.holeid}`] || { score: '', putt: '', diff: '', gambleflag: '' }),
+                    holeid: hole.holeid
+                }))
+            );
 
             // 5. 计算每个球员的总分
             const playerTotals = players.map((player, index) => {

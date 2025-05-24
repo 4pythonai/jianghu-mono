@@ -24,6 +24,10 @@ Component({
         score: {
             type: Number,
             value: 0
+        },
+        gambleflag: {
+            type: String,
+            value: ''
         }
     },
 
@@ -31,17 +35,19 @@ Component({
         formattedPutt: '',
         formattedDiff: '',
         formattedScore: '',
-        scoreClass: ''
+        scoreClass: '',
+        formattedGambleflag: ''
     },
 
     lifetimes: {
         attached() {
             // 初始化数据
-            const { putt = 0, diff = 0, score = 0 } = this.properties;
+            const { putt = 0, diff = 0, score = 0, gambleflag = '' } = this.properties;
             this.setData({
                 formattedPutt: putt !== 0 ? putt.toString() : '0',
                 formattedDiff: diff !== 0 ? (diff > 0 ? '+' : '') + diff.toString() : '0',
-                formattedScore: score !== 0 ? score.toString() : '0'
+                formattedScore: score !== 0 ? score.toString() : '0',
+                formattedGambleflag: gambleflag !== '' ? gambleflag : ''
             });
 
             // 单独调用更新样式类的方法
@@ -85,6 +91,13 @@ Component({
                                 this.updateScoreClass(calculatedDiff);
                             }
                         }
+                    }
+                }.bind(this),
+                'gambleflag': function (gambleflag) {
+                    if (gambleflag !== undefined && gambleflag !== null) {
+                        this.setData({
+                            formattedGambleflag: gambleflag
+                        });
                     }
                 }.bind(this)
             };

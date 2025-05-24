@@ -7,6 +7,38 @@
 	position: relative;
 }
 
+.flag-red {
+	position: relative;
+}
+
+.flag-red::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 12px 12px 0;
+	border-color: transparent #ff0000 transparent transparent;
+}
+
+.flag-blue {
+	position: relative;
+}
+
+.flag-blue::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 12px 12px 0;
+	border-color: transparent #0000ff transparent transparent;
+}
+
 /* 分数文本样式 */
 .score-text {
 	position: absolute;
