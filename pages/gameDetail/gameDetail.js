@@ -2,6 +2,7 @@ import { getGameDetail } from '../../api/modules/game'
 
 Page({
     data: {
+        currentTab: 0, // 当前激活的tab索引
         gameId: '',
         players: [],      // 球员列表
         holeList: [],     // 球洞列表
@@ -40,6 +41,12 @@ Page({
         }
     },
 
+    // 切换tab页方法
+    switchTab: function (e) {
+        this.setData({
+            currentTab: parseInt(e.currentTarget.dataset.tab)
+        });
+    },
 
     processGameData(gameData) {
         console.log('原始游戏数据:', gameData);
