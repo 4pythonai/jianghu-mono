@@ -12,9 +12,9 @@
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%);
-	font-size: 16px;
-	font-weight: bold;
+	transform: translate(-30%, -50%);
+	font-size: 24px;
+	color: #090909;
 }
 
 /* 推杆数样式 */
@@ -23,7 +23,7 @@
 	bottom: 10px;
 	left: 10px;
 	font-size: 12px;
-	color: #a61414;
+	color: #666;
 }
 
 .diff-text {
@@ -31,5 +31,5 @@
 	bottom: 10px;
 	right: 10px;
 	font-size: 12px;
-	color: #150cc5;
+	color: #666;
 }

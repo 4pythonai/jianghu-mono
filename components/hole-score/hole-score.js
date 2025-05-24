@@ -36,21 +36,17 @@ Component({
 
     lifetimes: {
         attached() {
-            console.log('HoleScore attached with properties:', this.properties);
             // 初始化数据
             const { putt = 0, diff = 0, score = 0 } = this.properties;
             this.setData({
                 formattedPutt: putt !== 0 ? putt.toString() : '0',
                 formattedDiff: diff !== 0 ? (diff > 0 ? '+' : '') + diff.toString() : '0',
-                formattedScore: score !== 0 ? score.toString() : '0',
-                scoreClass: this.updateScoreClass(diff)
+                formattedScore: score !== 0 ? score.toString() : '0'
             });
-            console.log('Initialized data:', {
-                formattedPutt: this.data.formattedPutt,
-                formattedDiff: this.data.formattedDiff,
-                formattedScore: this.data.formattedScore,
-                scoreClass: this.data.scoreClass
-            });
+
+            // 单独调用更新样式类的方法
+            this.updateScoreClass(diff);
+
 
             // 预绑定observer方法
             this.observers = {
