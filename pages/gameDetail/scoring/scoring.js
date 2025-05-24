@@ -45,19 +45,20 @@ Component({
 
             // 3. 预处理分数数据
             const scoreMap = {};
-            gameData.scores.forEach(score => {
+            for (const score of gameData.scores) {
                 const key = `${score.userid}_${score.holeid}`;
                 scoreMap[key] = {
                     score: score.score,
-                    putt: score.putt
+                    putt: score.putt,
+                    diff: score.diff
                 };
-            });
+            }
 
             // 4. 创建球员分数矩阵
             const playerScores = players.map(player => {
                 return holeList.map(hole => {
                     const key = `${player.userid}_${hole.holeid}`;
-                    return scoreMap[key] || { score: '', putt: '' };
+                    return scoreMap[key] || { score: '', putt: '', diff: '' };
                 });
             });
 
