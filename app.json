@@ -42,5 +42,13 @@
 				"selectedIconPath": "images/tab/mine_selected.png"
 			}
 		]
-	}
+	},
+	"permission": {
+		"scope.userLocation": {
+			"desc": "您的位置信息将用于显示当前位置"
+		}
+	},
+	"requiredPrivateInfos": ["getLocation"],
+	"style": "v2",
+	"sitemapLocation": "sitemap.json"
 }

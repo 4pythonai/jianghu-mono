@@ -21,7 +21,7 @@ export const login = (data) => {
  * @returns {Promise} 用户信息
  */
 export const getUserInfo = (userId = '') => {
-    return http.get(ApiUrls.user.info, {
+    return http.post(ApiUrls.user.info, {
         data: userId ? { userId } : {}
     })
 }
@@ -32,5 +32,5 @@ export const getUserInfo = (userId = '') => {
  * @returns {Promise} 更新结果
  */
 export const updateUserInfo = (data) => {
-    return http.put(ApiUrls.user.update, data)
+    return http.post(ApiUrls.user.update, data)
 }

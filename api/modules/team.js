@@ -12,7 +12,7 @@ import { ApiUrls } from '../config'
  * @returns {Promise} 团队列表
  */
 export const getTeamList = (params) => {
-    return http.get(ApiUrls.team.list, { data: params })
+    return http.post(ApiUrls.team.list, { data: params })
 }
 
 /**
@@ -21,7 +21,7 @@ export const getTeamList = (params) => {
  * @returns {Promise} 团队详情
  */
 export const getTeamDetail = (teamId) => {
-    return http.get(`${ApiUrls.team.detail}/${teamId}`)
+    return http.post(`${ApiUrls.team.detail}/${teamId}`)
 }
 
 /**
@@ -40,7 +40,7 @@ export const createTeam = (data) => {
  * @returns {Promise} 更新结果
  */
 export const updateTeam = (teamId, data) => {
-    return http.put(`${ApiUrls.team.detail}/${teamId}`, data)
+    return http.post(`${ApiUrls.team.detail}/${teamId}`, data)
 }
 
 /**

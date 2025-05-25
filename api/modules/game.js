@@ -13,7 +13,7 @@ import { ApiUrls } from '../config'
  * @returns {Promise} 比赛列表
  */
 export const getGameList = (params) => {
-    return http.get(ApiUrls.game.list, { data: params })
+    return http.post(ApiUrls.game.list, { data: params })
 }
 
 /**
@@ -41,5 +41,5 @@ export const createGame = (data) => {
  * @returns {Promise} 更新结果
  */
 export const updateGame = (gameId, data) => {
-    return http.put(`${ApiUrls.game.detail}/${gameId}`, data)
+    return http.post(`${ApiUrls.game.detail}/${gameId}`, data)
 }

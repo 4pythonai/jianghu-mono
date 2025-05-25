@@ -5,10 +5,10 @@
 // 环境配置
 const ENV = {
     development: {
-        baseURL: 'http://api.golf-brother.com',
+        baseURL: 'http://140.179.50.120:7000/v2',
     },
     production: {
-        baseURL: 'https://api.example.com',
+        baseURL: 'https:/.example.com',
     }
 }
 
@@ -36,20 +36,25 @@ export const ErrorCode = {
 export const ApiUrls = {
     // 用户相关
     user: {
-        login: '/api/user/login',
-        info: '/api/user/info',
-        update: '/api/user/update'
+        login: '/user/login',
+        info: '/user/info',
+        update: '/user/update'
     },
     // 比赛相关
     game: {
-        list: '/api/game/list',
-        detail: '/web/miniapi/',
-        create: '/api/game/create'
+        list: '/game/list',
+        detail: '/Test/gameDetail',
+        create: '/game/create'
     },
+
     // 团队相关
     team: {
-        list: '/api/team/list',
-        detail: '/api/team/detail',
-        create: '/api/team/create'
+        list: '/team/list',
+        detail: '/team/detail',
+        create: '/team/create'
+    },
+    // 球场相关
+    course: {
+        getNearstCourses: '/course/getNearstCourses',
     }
 }

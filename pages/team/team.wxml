@@ -1,51 +1,27 @@
 <view class="container">
-  <view class="page-title">球队</view>
-  <view class="page-desc">这里是球队功能，管理高尔夫球队</view>
-  
-  <!-- 创建团队按钮 -->
-  <view class="create-team" bindtap="createTeam">
-    <text class="iconfont icon-add"></text>
-    <text>创建球队</text>
-  </view>
-
-  <!-- 团队列表 -->
-  <view class="team-list">
-    <block wx:if="{{teamList.length > 0}}">
-      <view class="team-item" 
-            wx:for="{{teamList}}" 
-            wx:key="id" 
-            bindtap="viewTeamDetail" 
-            data-id="{{item.id}}">
-        <view class="team-info">
-          <view class="team-name">{{item.name}}</view>
-          <view class="team-desc">{{item.description}}</view>
-        </view>
-        <view class="team-meta">
-          <view class="team-members">
-            <text class="iconfont icon-team"></text>
-            <text>{{item.memberCount || 0}}人</text>
-          </view>
-          <view class="team-games">
-            <text class="iconfont icon-golf"></text>
-            <text>{{item.gameCount || 0}}场比赛</text>
-          </view>
-        </view>
-      </view>
-    </block>
-    
-    <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{!loading && teamList.length === 0}}">
-      <text>还没有任何球队，快来创建一个吧！</text>
-    </view>
-    
-    <!-- 加载状态 -->
-    <view class="loading-state" wx:if="{{loading}}">
-      <text>加载中...</text>
-    </view>
-    
-    <!-- 加载完成 -->
-    <view class="loading-state" wx:if="{{!hasMore && teamList.length > 0}}">
-      <text>没有更多了</text>
-    </view>
-  </view>
+	<view class="page-title">球队</view>
+	<view class="page-desc">这里是球队功能，管理高尔夫球队</view>
+	<view class="location-section">
+		<button class="location-btn" bindtap="getLocation" loading="{{ locationLoading }}" disabled="{{ locationLoading }}">{{locationLoading ? '获取位置中...' : '获取当前位置'}}</button>
+		<view class="location-info" wx:if="{{ location }}">
+			<view class="location-item">
+				<text class="label">经度：</text>
+				<text class="value">{{location.longitude}}</text>
+			</view>
+			<view class="location-item">
+				<text class="label">纬度：</text>
+				<text class="value">{{location.latitude}}</text>
+			</view>
+			<view class="update-time" wx:if="{{ location.updateTime }}">
+				<text>更新时间：{{location.updateTime}}</text>
+			</view>
+			<button class="get-courses-btn" bindtap="getNearestCourses" loading="{{ courseLoading }}">获取附近球场</button>
+		</view>
+		<!-- 球场列表 -->
+		<view class="course-list" wx:if="{{ courseList.length > 0 }}">
+			<view class="course-item" wx:for="{{ courseList }}" wx:key="id">
+				<text class="course-name">{{item.name}}</text>
+			</view>
+		</view>
+	</view>
 </view>

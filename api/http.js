@@ -136,10 +136,7 @@ const request = (config) => {
 // 创建便捷方法
 const http = {
     request,
-    get: (url, config = {}) => request({ ...config, url, method: 'GET' }),
     post: (url, data, config = {}) => request({ ...config, url, method: 'POST', data }),
-    put: (url, data, config = {}) => request({ ...config, url, method: 'PUT', data }),
-    delete: (url, config = {}) => request({ ...config, url, method: 'DELETE' }),
     addRequestInterceptor,
     addResponseInterceptor,
     setConfig
