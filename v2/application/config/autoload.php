@@ -146,17 +146,6 @@ $autoload['model'] = [
     'MFieldcfg',
     'MGridDataPipeRunner',
     'MGridDataPipe',
-    'AWSChinaBillLoader',
-    'AWSObjectKeyNameUtil',
-    'CURPipe',
-    'MCloudLevel',
-    'MBilling',
-    'MBillingDebugTool',
-    'MLinkBillingConfig',
-    'MDiscountCalculator',
-    'MBillPdfGlobal',
-    'MBillPdfChina',
     'MFile',
-    'MBillExcelLink'
 
 ];

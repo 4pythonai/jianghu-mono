@@ -11,7 +11,7 @@ $db['default'] = [
   'hostname'     => '140.179.50.120',
   'username' => 'root',
   'password' => 'cnix@123456',
-  'database' => 'nanx_test',
+  'database' => 'gtest',
   'port' => 3306,
 
   'memo' => 'test',
