@@ -36,7 +36,7 @@ class Test extends CI_Controller {
      * 
      * @return void 无返回值，直接输出文件内容
      */
-    public function index() {
+    public function gameDetail() {
         $jsonFile = __DIR__ . '/game.json';
         if (file_exists($jsonFile)) {
             $content = file_get_contents($jsonFile);
