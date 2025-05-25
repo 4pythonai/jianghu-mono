@@ -19,13 +19,10 @@ class Course extends CI_Controller {
     }
 
 
-
-
-
-
-    public function getNearstCourses() {
-        $lat = $this->input->get('latitude');
-        $lng = $this->input->get('longitude');
+    public function getNearestCourses() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $lat = $json_paras['latitude'];
+        $lng = $json_paras['longitude'];
 
         // Validate input parameters
         if (!is_numeric($lat) || !is_numeric($lng)) {
@@ -39,17 +36,17 @@ class Course extends CI_Controller {
         try {
 
             $query = " SELECT 
-                courseid, name, lat, lgt,
+                courseid, name, lat, lng,
                 ROUND(6371 * 2 * ASIN(SQRT(
                     POWER(SIN(( $lat - ABS(lat)) * PI()/180 / 2), 2) +
                     COS( $lat * PI()/180) * 
                     COS(ABS(lat) * PI()/180) *
-                    POWER(SIN(($lng  - lgt) * PI()/180 / 2), 2)
+                    POWER(SIN(($lng  - lng) * PI()/180 / 2), 2)
                 )), 2) AS distance_km
             FROM t_course
             WHERE status <> 1 
             AND lat <> 0 
-            AND lgt <> 0
+            AND lng <> 0
             ORDER BY distance_km ASC
             LIMIT 10
             ";
