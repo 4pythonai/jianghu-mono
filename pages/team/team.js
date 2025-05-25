@@ -1,8 +1,6 @@
 // team.js
-// 导入 API 模块
 const app = getApp()
-const api = app.globalData.api
-const { ApiUrls, config } = require('../../api/config.js')
+const { api } = app.globalData
 
 Page({
     data: {
@@ -12,23 +10,69 @@ Page({
         pageSize: 10,
         hasMore: true,
         location: null,
-        locationLoading: false,  // 添加位置加载状态
-        courseList: [], // 添加球场列表
-        courseLoading: false // 添加球场加载状态
+        locationLoading: false,
+        courseList: [],
+        courseLoading: false
     },
 
     onLoad() {
-        // 页面加载时自动获取位置
-        this.getLocation();
+        // 页面加载时获取位置和加载团队列表
+        this.getLocation()
+        this.loadTeamList()
+    },
+
+    onPullDownRefresh() {
+        // 下拉刷新
+        this.setData({
+            page: 1,
+            hasMore: true,
+            teamList: []
+        }, () => {
+            this.loadTeamList().then(() => {
+                wx.stopPullDownRefresh()
+            })
+        })
+    },
+
+    onReachBottom() {
+        // 上拉加载更多
+        if (this.data.hasMore && !this.data.loading) {
+            this.loadTeamList()
+        }
+    },
+
+    // 加载团队列表
+    async loadTeamList() {
+        if (this.data.loading || !this.data.hasMore) return
+
+        this.setData({ loading: true })
+
+        try {
+            const { page, pageSize } = this.data
+            const res = await api.team.list({ page, pageSize })
+
+            // 处理返回数据
+            const newList = this.data.page === 1 ? res.list : [...this.data.teamList, ...res.list]
+
+            this.setData({
+                teamList: newList,
+                page: page + 1,
+                hasMore: res.list.length === pageSize,
+                loading: false
+            })
+        } catch (error) {
+            console.error('加载团队列表失败：', error)
+            wx.showToast({
+                title: '加载失败',
+                icon: 'none'
+            })
+            this.setData({ loading: false })
+        }
     },
 
     getLocation() {
-        // 如果正在获取位置，直接返回
-        if (this.data.locationLoading) {
-            return;
-        }
-
-        this.setData({ locationLoading: true });
+        if (this.data.locationLoading) return
+        this.setData({ locationLoading: true })
 
         // 先检查位置权限
         wx.getSetting({
@@ -38,7 +82,7 @@ Page({
                     wx.authorize({
                         scope: 'scope.userLocation',
                         success: () => {
-                            this.startLocationRequest();
+                            this.startLocationRequest()
                         },
                         fail: () => {
                             // 用户拒绝授权，显示打开设置页面的对话框
@@ -48,39 +92,39 @@ Page({
                                 confirmText: '去设置',
                                 success: (modalRes) => {
                                     if (modalRes.confirm) {
-                                        wx.openSetting();
+                                        wx.openSetting()
                                     }
                                 },
                                 complete: () => {
-                                    this.setData({ locationLoading: false });
+                                    this.setData({ locationLoading: false })
                                 }
-                            });
+                            })
                         }
-                    });
+                    })
                 } else {
                     // 已有权限，直接获取位置
-                    this.startLocationRequest();
+                    this.startLocationRequest()
                 }
             },
             fail: () => {
                 wx.showToast({
                     title: '获取权限失败',
                     icon: 'none'
-                });
-                this.setData({ locationLoading: false });
+                })
+                this.setData({ locationLoading: false })
             }
-        });
+        })
     },
 
     startLocationRequest() {
         wx.showLoading({
             title: '获取位置中...',
-        });
+        })
 
         wx.getLocation({
             type: 'gcj02',
             success: (res) => {
-                const { latitude, longitude } = res;
+                const { latitude, longitude } = res
 
                 this.setData({
                     location: {
@@ -88,24 +132,26 @@ Page({
                         longitude,
                         updateTime: new Date().toLocaleString('zh-CN')
                     }
-                });
+                })
 
-                // 成功获取位置后的提示
+                // 成功获取位置后自动获取附近球场
+                this.getNearestCourses()
+
                 wx.showToast({
                     title: '位置更新成功',
                     icon: 'success',
                     duration: 1500
-                });
+                })
             },
             fail: (err) => {
-                console.error('获取位置失败：', err);
-                this.handleLocationError('获取位置失败');
+                console.error('获取位置失败：', err)
+                this.handleLocationError('获取位置失败')
             },
             complete: () => {
-                wx.hideLoading();
-                this.setData({ locationLoading: false });
+                wx.hideLoading()
+                this.setData({ locationLoading: false })
             }
-        });
+        })
     },
 
     handleLocationError(errorMsg, coords = null) {
@@ -113,7 +159,7 @@ Page({
             title: errorMsg,
             icon: 'none',
             duration: 2000
-        });
+        })
 
         if (coords) {
             this.setData({
@@ -122,94 +168,57 @@ Page({
                     longitude: coords.longitude,
                     updateTime: new Date().toLocaleString('zh-CN')
                 }
-            });
+            })
         }
 
-        // 显示重试按钮
         wx.showModal({
             title: '位置获取失败',
             content: '是否重试？',
             success: (res) => {
                 if (res.confirm) {
                     setTimeout(() => {
-                        this.getLocation();
-                    }, 1000);
+                        this.getLocation()
+                    }, 1000)
                 }
             }
-        });
+        })
     },
 
     // 获取最近的球场列表
-    getNearestCourses() {
-        // 检查是否有位置信息
+    async getNearestCourses() {
         if (!this.data.location) {
             wx.showToast({
                 title: '请先获取位置',
                 icon: 'none'
-            });
-            return;
+            })
+            return
         }
 
-        // 如果正在加载，直接返回
-        if (this.data.courseLoading) {
-            return;
+        if (this.data.courseLoading) return
+
+        this.setData({ courseLoading: true })
+        wx.showLoading({ title: '获取球场中...' })
+
+        try {
+            const { latitude, longitude } = this.data.location
+            // 假设api.course.getNearestCourses已经在course模块中定义
+            const courseList = await api.course.getNearestCourses({ latitude, longitude })
+            console.log("🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈", courseList)
+            this.setData({ courseList: courseList.data })
+            wx.showToast({
+                title: '获取球场成功',
+                icon: 'success'
+            })
+        } catch (error) {
+            console.error('获取球场失败：', error)
+            wx.showToast({
+                title: '获取球场失败',
+                icon: 'none'
+            })
+        } finally {
+            wx.hideLoading()
+            this.setData({ courseLoading: false })
         }
-
-        this.setData({ courseLoading: true });
-
-        wx.showLoading({
-            title: '获取球场中...',
-        });
-
-        const { latitude, longitude } = this.data.location;
-
-        // 调用API获取最近的球场
-        wx.request({
-            url: config.baseURL + ApiUrls.course.getNearstCourses,
-            method: 'GET',
-            data: {
-                latitude,
-                longitude
-            },
-            header: config.header,
-            success: (res) => {
-                console.log('获取球场响应：', res.data);
-                if (res.statusCode === 200 && res.data) {
-                    // 检查是否有标准的API响应格式
-                    if (res.data.code === 200 && res.data.data) {
-                        this.setData({
-                            courseList: res.data.data
-                        });
-                    } else {
-                        // 如果没有标准格式，直接使用返回的数据
-                        this.setData({
-                            courseList: Array.isArray(res.data) ? res.data : []
-                        });
-                    }
-
-                    wx.showToast({
-                        title: '获取球场成功',
-                        icon: 'success'
-                    });
-                } else {
-                    wx.showToast({
-                        title: '获取球场失败',
-                        icon: 'none'
-                    });
-                }
-            },
-            fail: (err) => {
-                console.error('获取球场失败：', err);
-                wx.showToast({
-                    title: '获取球场失败',
-                    icon: 'none'
-                });
-            },
-            complete: () => {
-                wx.hideLoading();
-                this.setData({ courseLoading: false });
-            }
-        });
     },
 
     // 查看团队详情

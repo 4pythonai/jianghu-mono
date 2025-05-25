@@ -1,0 +1,74 @@
+<!-- teamDetail.wxml -->
+<view class="container">
+	<!-- 加载中状态 -->
+	<view class="loading-container" wx:if="{{ loading }}">
+		<view class="loading"></view>
+	</view>
+	<!-- 团队信息 -->
+	<view class="team-header" wx:if="{{ teamInfo }}">
+		<view class="team-avatar">
+			<image src="{{ teamInfo.avatar || '/assets/images/default-team.png' }}" mode="aspectFill"></image>
+		</view>
+		<view class="team-info">
+			<view class="team-name">{{teamInfo.name}}</view>
+			<view class="team-meta">
+				<text class="team-location">{{teamInfo.location || '未设置地点'}}</text>
+				<text class="team-member-count">{{members.length}}名成员</text>
+			</view>
+			<view class="team-desc">{{teamInfo.description || '暂无描述'}}</view>
+		</view>
+	</view>
+	<!-- 操作按钮 -->
+	<view class="action-buttons">
+		<button class="btn join" wx:if="{{ !isMember }}" bindtap="joinTeam">加入团队</button>
+		<button class="btn leave" wx:if="{{ isMember && !isAdmin }}" bindtap="leaveTeam">退出团队</button>
+		<button class="btn edit" wx:if="{{ isAdmin }}" bindtap="editTeam">编辑团队</button>
+		<button class="btn share" open-type="share">分享</button>
+	</view>
+	<!-- 团队成员 -->
+	<view class="section">
+		<view class="section-header">
+			<text class="section-title">团队成员</text>
+			<text class="section-count">{{members.length}}人</text>
+		</view>
+		<view class="member-list">
+			<view class="member-item" wx:for="{{ members }}" wx:key="id" bindtap="viewMemberDetail" data-id="{{ item.id }}">
+				<image class="member-avatar" src="{{ item.avatar || '/assets/images/default-avatar.png' }}" mode="aspectFill"></image>
+				<view class="member-info">
+					<view class="member-name">
+						{{item.nickname}}
+						<text class="admin-tag" wx:if="{{ item.id === teamInfo.adminId }}">管理员</text>
+					</view>
+					<view class="member-handicap">差点: {{item.handicap || '未设置'}}</view>
+				</view>
+			</view>
+			<view class="no-data" wx:if="{{ members.length === 0 }}">暂无成员</view>
+		</view>
+	</view>
+	<!-- 团队比赛 -->
+	<view class="section">
+		<view class="section-header">
+			<text class="section-title">团队比赛</text>
+			<text class="section-count">{{games.length}}场</text>
+			<view class="add-game" wx:if="{{ isAdmin }}" bindtap="createGame">
+				<text class="add-icon">+</text>
+				<text>创建比赛</text>
+			</view>
+		</view>
+		<view class="game-list">
+			<view class="game-item" wx:for="{{ games }}" wx:key="id" bindtap="viewGameDetail" data-id="{{ item.id }}">
+				<view class="game-date">{{item.date}}</view>
+				<view class="game-info">
+					<view class="game-name">{{item.name}}</view>
+					<view class="game-location">{{item.location}}</view>
+					<view class="game-status {{ item.status === 'upcoming' ? 'upcoming' : item.status === 'ongoing' ? 'ongoing' : 'completed' }}">{{item.status === 'upcoming' ? '即将开始' : item.status === 'ongoing' ? '进行中' : '已结束'}}</view>
+				</view>
+				<view class="game-players">
+					<text>{{item.playerCount}}/{{item.maxPlayers}}人</text>
+					<text class="arrow">></text>
+				</view>
+			</view>
+			<view class="no-data" wx:if="{{ games.length === 0 }}">暂无比赛</view>
+		</view>
+	</view>
+</view>

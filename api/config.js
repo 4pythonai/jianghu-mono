@@ -31,30 +31,3 @@ export const ErrorCode = {
     FORBIDDEN: 403,
     SERVER_ERROR: 500
 }
-
-// API 接口地址配置
-export const ApiUrls = {
-    // 用户相关
-    user: {
-        login: '/user/login',
-        info: '/user/info',
-        update: '/user/update'
-    },
-    // 比赛相关
-    game: {
-        list: '/game/list',
-        detail: '/Test/gameDetail',
-        create: '/game/create'
-    },
-
-    // 团队相关
-    team: {
-        list: '/team/list',
-        detail: '/team/detail',
-        create: '/team/create'
-    },
-    // 球场相关
-    course: {
-        getNearstCourses: '/course/getNearstCourses',
-    }
-}

@@ -4,7 +4,9 @@
 		"pages/team/team",
 		"pages/community/community",
 		"pages/mine/mine",
-		"pages/gameDetail/gameDetail"
+		"pages/gameDetail/gameDetail",
+		"pages/teamDetail/teamDetail",
+		"pages/editTeam/editTeam"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

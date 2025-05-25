@@ -1,8 +1,7 @@
 /**
  * 团队相关 API
  */
-import http from '../http'
-import { ApiUrls } from '../config'
+import { http } from '../http'
 
 /**
  * 获取团队列表
@@ -11,8 +10,8 @@ import { ApiUrls } from '../config'
  * @param {number} params.pageSize - 每页数量
  * @returns {Promise} 团队列表
  */
-export const getTeamList = (params) => {
-    return http.post(ApiUrls.team.list, { data: params })
+export const list = (params) => {
+    return http.post('/api/team/list', params)
 }
 
 /**
@@ -20,8 +19,8 @@ export const getTeamList = (params) => {
  * @param {string} teamId - 团队ID
  * @returns {Promise} 团队详情
  */
-export const getTeamDetail = (teamId) => {
-    return http.post(`${ApiUrls.team.detail}/${teamId}`)
+export const detail = (teamId) => {
+    return http.post(`/api/team/${teamId}`)
 }
 
 /**
@@ -29,8 +28,8 @@ export const getTeamDetail = (teamId) => {
  * @param {Object} data - 团队信息
  * @returns {Promise} 创建结果
  */
-export const createTeam = (data) => {
-    return http.post(ApiUrls.team.create, data)
+export const create = (data) => {
+    return http.post('/api/team/create', data)
 }
 
 /**
@@ -39,8 +38,8 @@ export const createTeam = (data) => {
  * @param {Object} data - 更新的团队信息
  * @returns {Promise} 更新结果
  */
-export const updateTeam = (teamId, data) => {
-    return http.post(`${ApiUrls.team.detail}/${teamId}`, data)
+export const update = (teamId, data) => {
+    return http.put(`/api/team/${teamId}`, data)
 }
 
 /**
@@ -48,8 +47,8 @@ export const updateTeam = (teamId, data) => {
  * @param {string} teamId - 团队ID
  * @returns {Promise} 加入结果
  */
-export const joinTeam = (teamId) => {
-    return http.post(`${ApiUrls.team.detail}/${teamId}/join`)
+export const join = (teamId) => {
+    return http.post(`/api/team/${teamId}/join`)
 }
 
 /**
@@ -57,6 +56,15 @@ export const joinTeam = (teamId) => {
  * @param {string} teamId - 团队ID
  * @returns {Promise} 退出结果
  */
-export const leaveTeam = (teamId) => {
-    return http.post(`${ApiUrls.team.detail}/${teamId}/leave`)
+export const leave = (teamId) => {
+    return http.post(`/api/team/${teamId}/leave`)
+}
+
+/**
+ * 解散团队
+ * @param {string} teamId - 团队ID
+ * @returns {Promise} 解散结果
+ */
+export const disband = (teamId) => {
+    return http.delete(`/api/team/${teamId}`)
 }

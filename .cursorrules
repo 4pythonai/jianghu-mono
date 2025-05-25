@@ -56,3 +56,5 @@
     always using   optional chain
 
     always using  Template literals  over string concatenation
+
+    always using post to call api

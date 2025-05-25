@@ -1,5 +1,5 @@
 // 导入 API 模块
-import api from './api/index'
+import { api, initApi } from './api/index'
 
 App({
     globalData: {
@@ -14,7 +14,7 @@ App({
     onLaunch() {
         // 小程序启动时执行
         // 初始化 API
-        api.init()
+        initApi()
 
         wx.getSystemInfo({
             success: (res) => {

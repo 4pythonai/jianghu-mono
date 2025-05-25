@@ -1,145 +1,131 @@
+import { config, ErrorCode } from './config'
+
+// 请求队列
+let requestQueue = []
+// 是否正在刷新token
+let isRefreshing = false
+
 /**
  * HTTP 请求封装
- * 参考 axios 的设计理念，封装 wx.request
  */
-
-let baseConfig = {
-    baseURL: '', // 这里填写你的接口基础地址
-    timeout: 10000,
-    header: {
-        'content-type': 'application/json'
-    }
-}
-
-// 设置配置
-const setConfig = (config) => {
-    baseConfig = {
-        ...baseConfig,
-        ...config,
-        header: {
-            ...baseConfig.header,
-            ...(config.header || {})
-        }
-    }
-}
-
-// 请求拦截器
-const requestInterceptors = []
-// 响应拦截器
-const responseInterceptors = []
-
-// 添加请求拦截器
-const addRequestInterceptor = (onFulfilled, onRejected) => {
-    requestInterceptors.push({
-        onFulfilled,
-        onRejected
-    })
-}
-
-// 添加响应拦截器
-const addResponseInterceptor = (onFulfilled, onRejected) => {
-    responseInterceptors.push({
-        onFulfilled,
-        onRejected
-    })
-}
-
-// 执行请求拦截器
-const executeRequestInterceptors = async (config) => {
-    let currentConfig = { ...config }
-    for (let interceptor of requestInterceptors) {
-        try {
-            const result = await interceptor.onFulfilled(currentConfig)
-            currentConfig = result || currentConfig
-        } catch (error) {
-            interceptor.onRejected && interceptor.onRejected(error)
-            throw error
-        }
-    }
-    return currentConfig
-}
-
-// 执行响应拦截器
-const executeResponseInterceptors = async (response) => {
-    let currentResponse = { ...response }
-    for (let interceptor of responseInterceptors) {
-        try {
-            const result = await interceptor.onFulfilled(currentResponse)
-            currentResponse = result || currentResponse
-        } catch (error) {
-            interceptor.onRejected && interceptor.onRejected(error)
-            throw error
-        }
-    }
-    return currentResponse
-}
-
-// 创建请求实例
-const request = (config) => {
-    const fullConfig = {
-        ...baseConfig,
-        ...config,
-        header: {
-            ...baseConfig.header,
-            ...config.header
-        }
+class Http {
+    constructor(baseURL = config.baseURL) {
+        this.baseURL = baseURL
+        this.timeout = config.timeout
+        this.header = config.header
     }
 
-    // 处理完整的URL
-    if (fullConfig.baseURL && !config.url.startsWith('http')) {
-        // 确保 baseURL 使用http协议且末尾没有斜杠，而 url 开头有斜杠
-        let baseURL = fullConfig.baseURL.endsWith('/')
-            ? fullConfig.baseURL.slice(0, -1)
-            : fullConfig.baseURL
-
-        // 强制使用http协议（开发环境）
-        if (baseURL.startsWith('https://')) {
-            baseURL = 'http://' + baseURL.slice(8)
-        } else if (!baseURL.startsWith('http://')) {
-            baseURL = 'http://' + baseURL
+    /**
+     * 发送请求
+     * @param {string} url - 请求地址
+     * @param {string} method - 请求方法
+     * @param {object} data - 请求数据
+     * @param {object} options - 其他选项
+     */
+    request(url, method = 'POST', data = {}, options = {}) {
+        const token = wx.getStorageSync('token')
+        const header = {
+            ...this.header,
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+            ...options.header
         }
 
-        const url = config.url.startsWith('/')
-            ? config.url
-            : `/${config.url}`
-
-        fullConfig.url = `${baseURL}${url}`
-    }
-
-    return new Promise((resolve, reject) => {
-        executeRequestInterceptors(fullConfig)
-            .then(interceptedConfig => {
-                console.log('准备发起请求，完整URL:', interceptedConfig.url)
-                console.log('请求配置:', interceptedConfig)
-
-                wx.request({
-                    ...interceptedConfig,
-                    success: async (res) => {
-                        try {
-                            const interceptedResponse = await executeResponseInterceptors(res)
-                            resolve(interceptedResponse)
-                        } catch (error) {
-                            reject(error)
+        return new Promise((resolve, reject) => {
+            wx.request({
+                url: this.baseURL + url,
+                method,
+                data,
+                header,
+                timeout: options.timeout || this.timeout,
+                success: (res) => {
+                    // 处理token失效
+                    if (res.data.code === ErrorCode.TOKEN_INVALID) {
+                        if (!isRefreshing) {
+                            isRefreshing = true
+                            this.refreshToken()
+                                .then(() => {
+                                    isRefreshing = false
+                                    // 重试队列中的请求
+                                    requestQueue.forEach(cb => cb())
+                                    requestQueue = []
+                                })
+                                .catch(error => {
+                                    isRefreshing = false
+                                    requestQueue = []
+                                    wx.navigateTo({ url: '/pages/login/login' })
+                                    reject(error)
+                                })
                         }
-                    },
-                    fail: (error) => {
-                        reject(error)
+                        // 将请求加入重试队列
+                        requestQueue.push(() => {
+                            this.request(url, method, data, options)
+                                .then(resolve)
+                                .catch(reject)
+                        })
+                        return
                     }
-                })
+                    resolve(res.data)
+                },
+                fail: reject
             })
-            .catch(error => {
-                reject(error)
+        })
+    }
+
+    /**
+     * GET 请求
+     */
+    get(url, data = {}, options = {}) {
+        return this.request(url, 'GET', data, options)
+    }
+
+    /**
+     * POST 请求
+     */
+    post(url, data = {}, options = {}) {
+        return this.request(url, 'POST', data, options)
+    }
+
+    /**
+     * PUT 请求
+     */
+    put(url, data = {}, options = {}) {
+        return this.request(url, 'PUT', data, options)
+    }
+
+    /**
+     * DELETE 请求
+     */
+    delete(url, data = {}, options = {}) {
+        return this.request(url, 'DELETE', data, options)
+    }
+
+    /**
+     * 刷新token
+     */
+    async refreshToken() {
+        const refreshToken = wx.getStorageSync('refreshToken')
+        if (!refreshToken) {
+            throw new Error('No refresh token')
+        }
+
+        try {
+            const res = await wx.request({
+                url: this.baseURL + '/auth/refresh',
+                method: 'POST',
+                data: { refreshToken },
+                header: this.header
             })
-    })
+
+            if (res.data.code === ErrorCode.SUCCESS) {
+                wx.setStorageSync('token', res.data.data.token)
+                wx.setStorageSync('refreshToken', res.data.data.refreshToken)
+                return res.data
+            }
+            throw new Error('Refresh token failed')
+        } catch (error) {
+            throw error
+        }
+    }
 }
 
-// 创建便捷方法
-const http = {
-    request,
-    post: (url, data, config = {}) => request({ ...config, url, method: 'POST', data }),
-    addRequestInterceptor,
-    addResponseInterceptor,
-    setConfig
-}
-
-export default http
+export const http = new Http()

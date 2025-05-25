@@ -1,0 +1,56 @@
+<!-- editTeam.wxml -->
+<view class="container">
+	<!-- 加载中状态 -->
+	<view class="loading-container" wx:if="{{ loading }}">
+		<view class="loading"></view>
+	</view>
+	<!-- 编辑表单 -->
+	<view class="form-container" wx:if="{{ !loading }}">
+		<!-- 头像选择 -->
+		<view class="avatar-section">
+			<image
+				class="team-avatar"
+				src="{{ formData.avatar || '/assets/images/default-team.png' }}"
+				mode="aspectFill"
+				bindtap="chooseAvatar"
+			></image>
+			<text class="avatar-tip">点击更换头像</text>
+		</view>
+		<!-- 表单项 -->
+		<view class="form-group">
+			<view class="form-item">
+				<text class="label required">团队名称</text>
+				<input class="input" value="{{ formData.name }}" placeholder="请输入团队名称" maxlength="20" data-field="name" bindinput="onInput" />
+			</view>
+			<view class="form-item">
+				<text class="label">团队简介</text>
+				<textarea
+					class="textarea"
+					value="{{ formData.description }}"
+					placeholder="请输入团队简介"
+					maxlength="200"
+					data-field="description"
+					bindinput="onInput"
+				></textarea>
+				<view class="word-count">{{formData.description.length}}/200</view>
+			</view>
+			<view class="form-item">
+				<text class="label">所在地点</text>
+				<view class="location-picker" bindtap="chooseLocation">
+					<text class="location-text">{{formData.location || '点击选择地点'}}</text>
+					<text class="location-icon">></text>
+				</view>
+			</view>
+		</view>
+		<!-- 提交按钮 -->
+		<view class="button-group">
+			<button class="btn-save {{ submitting ? 'disabled' : '' }}" disabled="{{ submitting }}" bindtap="submitForm">保存修改</button>
+		</view>
+		<!-- 解散团队 -->
+		<view class="danger-zone">
+			<view class="danger-title">危险操作</view>
+			<button class="btn-danger" bindtap="disbandTeam">解散团队</button>
+			<text class="danger-tip">解散后团队数据将无法恢复</text>
+		</view>
+	</view>
+</view>

@@ -1,34 +1,44 @@
 /**
- * API 统一导出文件
+ * API 入口文件
  */
-import http from './http'
+import * as user from './modules/user'
+import * as team from './modules/team'
+import * as game from './modules/game'
+import * as course from './modules/course'
+import { http } from './http'
 import { config } from './config'
-import { requestInterceptor, responseInterceptor, responseErrorInterceptor } from './interceptors'
 
-// 导出所有 API 模块
-import * as userApi from './modules/user'
-import * as gameApi from './modules/game'
-import * as teamApi from './modules/team'
-
-// 初始化 API
-const initApi = () => {
-    // 设置基础配置
-    http.setConfig(config)
-
-    // 添加请求拦截器
-    http.addRequestInterceptor(requestInterceptor)
-
-    // 添加响应拦截器
-    http.addResponseInterceptor(responseInterceptor, responseErrorInterceptor)
-
-    console.log('API 初始化完成')
+// API 模块集合
+export const api = {
+    user,
+    team,
+    game,
+    course
 }
 
-// 导出
-export default {
-    init: initApi,
-    http,
-    user: userApi,
-    game: gameApi,
-    team: teamApi
+/**
+ * 初始化 API
+ * @param {Object} options - 配置选项
+ * @param {string} options.baseURL - API基础URL
+ * @param {number} options.timeout - 超时时间
+ * @param {Object} options.header - 请求头
+ */
+export const initApi = (options = {}) => {
+    // 使用传入的配置或默认配置
+    const {
+        baseURL = config.baseURL,
+        timeout = config.timeout,
+        header = config.header
+    } = options
+
+    // 设置http实例的属性
+    http.baseURL = baseURL
+    http.timeout = timeout
+    http.header = {
+        ...http.header,
+        ...header
+    }
 }
+
+// 导出http实例，允许直接使用
+export { http }
