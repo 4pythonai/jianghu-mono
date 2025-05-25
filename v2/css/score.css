@@ -1,0 +1,43 @@
+.bold {
+    font-weight: bold;
+}
+
+.title {
+    margin-left: 25%;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.health-card {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.score_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.score_table th,
+.score_table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.score_table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.score_table tr {
+    height: 40px;
+}
+
+.score_table thead tr:first-child {
+    height: 50px;
+}
+
+ 
