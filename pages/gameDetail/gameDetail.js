@@ -1,4 +1,4 @@
-import { getGameDetail } from '../../api/modules/game'
+import { api } from '../../api/index'
 
 Page({
     usingComponents: {
@@ -19,7 +19,7 @@ Page({
 
         // 获取比赛详情
         if (options.gameId) {
-            getGameDetail({ gameId: options.gameId })
+            api.game.getGameDetail({ gameId: options.gameId })
                 .then(res => {
                     console.log('比赛详情数据:', res.gameinfo)
                     this.setData({

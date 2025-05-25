@@ -55,9 +55,6 @@ api.game.getGameList({
 })
 
 // 获取比赛详情
-api.game.getGameDetail('game123').then(res => {
-  console.log('比赛详情：', res)
-})
 ```
 
 ### 3. 团队相关 API
