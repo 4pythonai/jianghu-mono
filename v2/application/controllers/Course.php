@@ -37,32 +37,28 @@ class Course extends CI_Controller {
         }
 
         try {
-            // Using simplified distance calculation
-            $query = "SELECT *, 
-                ROUND(
-                    SQRT(
-                        POW(69.1 * (CAST(lat AS DECIMAL(10,8)) - ?), 2) + 
-                        POW(69.1 * (? - CAST(lgt AS DECIMAL(10,8))) * COS(CAST(lat AS DECIMAL(10,8)) / 57.3), 2)
-                    ) * 1.60934, 2
-                ) AS distance 
-                FROM t_course 
-                WHERE lat IS NOT NULL 
-                AND lgt IS NOT NULL 
-                AND lat != '' 
-                AND lgt != ''
-                AND CAST(lat AS DECIMAL(10,8)) BETWEEN ? - 1 AND ? + 1
-                AND CAST(lgt AS DECIMAL(10,8)) BETWEEN ? - 1 AND ? + 1
-                ORDER BY distance
-                LIMIT 10";
 
-            $courses = $this->db->query($query, array($lat, $lng, $lat, $lat, $lng, $lng))->result_array();
+            $query = " SELECT 
+                courseid, name, lat, lgt,
+                ROUND(6371 * 2 * ASIN(SQRT(
+                    POWER(SIN(( $lat - ABS(lat)) * PI()/180 / 2), 2) +
+                    COS( $lat * PI()/180) * 
+                    COS(ABS(lat) * PI()/180) *
+                    POWER(SIN(($lng  - lgt) * PI()/180 / 2), 2)
+                )), 2) AS distance_km
+            FROM t_course
+            WHERE status <> 1 
+            AND lat <> 0 
+            AND lgt <> 0
+            ORDER BY distance_km ASC
+            LIMIT 10
+            ";
 
+
+            $courses = $this->db->query($query)->result_array();
             echo json_encode(['code' => 200, 'data' => $courses], JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
-            echo json_encode(array(
-                'code' => 500,
-                'message' => 'Database error: ' . $e->getMessage()
-            ));
+            echo json_encode(['code' => 500, 'message' => 'Database error: ' . $e->getMessage()]);
         }
     }
 }
