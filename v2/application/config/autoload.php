@@ -147,5 +147,6 @@ $autoload['model'] = [
     'MGridDataPipeRunner',
     'MGridDataPipe',
     'MFile',
+    'MJwtUtil'
 
 ];

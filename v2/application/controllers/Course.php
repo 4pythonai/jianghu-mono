@@ -7,7 +7,7 @@ if (!defined('BASEPATH')) {
 }
 
 
-class Course extends CI_Controller {
+class Course extends MY_Controller {
     public function __construct() {
         parent::__construct();
         header('Access-Control-Allow-Origin: * ');
@@ -48,7 +48,7 @@ class Course extends CI_Controller {
             AND lat <> 0 
             AND lng <> 0
             ORDER BY distance_km ASC
-            LIMIT 10
+            LIMIT 5
             ";
 
 

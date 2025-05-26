@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# /usr/local/bin/sshpass    ssh -l root  103.151.148.2  -p 10020
-# /Users/alex/codebase/golf/mini-api
 
 echo "请关闭VPN"
 

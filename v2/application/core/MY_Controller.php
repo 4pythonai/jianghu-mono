@@ -11,11 +11,6 @@ set_exception_handler('my_exceptionHandler');
 
 function my_errorHandler($errno, $errstr, $errfile, $errline) {
   if (strlen($errstr) > 0) {
-
-    // var_dump($errfile);
-    // var_dump($errline);
-    // var_dump($errstr);
-
     logtext("错误代码:" . $errno . ",错误信息:" . $errstr . " in $errfile line $errline <br/>");
     response500("错误代码:" . $errno . ",错误信息:" . $errfile . ' ' . $errline . ' ' . $errstr);
   }
@@ -36,7 +31,6 @@ class MY_Controller extends CI_Controller {
   private $user;
   private $roles;
   private $args = null;
-  private $custid;
   private $user_mobile;
 
 
@@ -133,9 +127,7 @@ class MY_Controller extends CI_Controller {
 
   public function checkAuthToken($allheaders, $controller, $method) {
     $skip = array(
-      'log/index',
-      'log/clearlog',
-      'log/bpm',
+      'log/*',
       'qrcoder/img',
       'Auth/loginMobile',
       'Auth/loginTier2',
@@ -143,7 +135,7 @@ class MY_Controller extends CI_Controller {
       'tree/systemSummary',
       'tree/index',
       'App/*',
-      'Network/*',
+      'Test/*',
       'dbdocu/gethelp',
     );
 
@@ -161,31 +153,34 @@ class MY_Controller extends CI_Controller {
     }
 
     // 如果 client_token 为空
-    $client_token = $allheaders['Authorization'];
-    if (empty($client_token)) {
+
+    // 如何 allheaders 中没有 Authorization ，则返回false
+    if (!array_key_exists('Authorization', $allheaders)) {
       logtext('client_token empty');
       return false;
     }
 
-    try {
-      $token_decoded = JWT::decode($client_token, 'nanx_xiaoke-20211213');
-    } catch (Exception $e) {
-      logtext('JWT-decode-failure:' . $e->getMessage());
-      return false;
-    }
-
-    $token_array = (array) $token_decoded;
 
 
-    if ($token_array['exp'] < time()) {
-      //超时了,强制退出
-      logtext('session 超时:');
+    $token = $allheaders['Authorization'];
+    if (empty($token)) {
+      logtext('client_token empty');
       return false;
     }
 
 
-    $this->setMobile($token_decoded->mobile);
-    $this->setUser($token_array['user']);
+    $decoded = $this->MJwtUtil->verifyToken($token);
+
+    if (!$decoded) {
+      logtext('MJwtUtil  client_token verify failed');
+      return false;
+    } else {
+      logtext('MJwtUtil  client_token verify Passed');
+    }
+
+
+    $this->setUser($decoded['uid']);
+    $this->setMobile($decoded['openid']);
     return true;
   }
 
