@@ -11,7 +11,7 @@ import { http } from '../http'
  * @returns {Promise} 比赛列表
  */
 export const list = (params) => {
-    return http.post('/api/game/list', params)
+    return http.post('/game/list', params)
 }
 
 /**
@@ -20,7 +20,7 @@ export const list = (params) => {
  * @returns {Promise} 比赛详情
  */
 export const detail = (gameId) => {
-    return http.post(`/api/game/${gameId}`)
+    return http.post(`/game/${gameId}`)
 }
 
 /**
@@ -33,7 +33,7 @@ export const detail = (gameId) => {
  * @returns {Promise} 创建结果
  */
 export const create = (data) => {
-    return http.post('/api/game/create', data)
+    return http.post('/game/create', data)
 }
 
 /**
@@ -43,7 +43,7 @@ export const create = (data) => {
  * @returns {Promise} 更新结果
  */
 export const update = (gameId, data) => {
-    return http.put(`/api/game/${gameId}`, data)
+    return http.put(`/game/${gameId}`, data)
 }
 
 /**
@@ -52,7 +52,7 @@ export const update = (gameId, data) => {
  * @returns {Promise} 加入结果
  */
 export const join = (gameId) => {
-    return http.post(`/api/game/${gameId}/join`)
+    return http.post(`/game/${gameId}/join`)
 }
 
 /**
@@ -70,7 +70,7 @@ export const getGameDetail = (params) => {
  * @returns {Promise} 取消结果
  */
 export const cancel = (gameId) => {
-    return http.post(`/api/game/${gameId}/cancel`)
+    return http.post(`/game/${gameId}/cancel`)
 }
 
 /**
@@ -79,5 +79,5 @@ export const cancel = (gameId) => {
  * @returns {Promise} 参与者列表
  */
 export const getParticipants = (gameId) => {
-    return http.get(`/api/game/${gameId}/participants`)
+    return http.get(`/game/${gameId}/participants`)
 }

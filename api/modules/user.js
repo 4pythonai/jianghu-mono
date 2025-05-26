@@ -11,7 +11,7 @@ import { http } from '../http'
  * @returns {Promise} 登录结果
  */
 export const login = (data) => {
-    return http.post('/api/user/login', data)
+    return http.post('/user/login', data)
 }
 
 /**
@@ -20,7 +20,7 @@ export const login = (data) => {
  * @returns {Promise} 用户信息
  */
 export const getUserInfo = (userId = '') => {
-    return http.post('/api/user/info', userId ? { userId } : {})
+    return http.post('/user/info', userId ? { userId } : {})
 }
 
 /**
@@ -29,7 +29,7 @@ export const getUserInfo = (userId = '') => {
  * @returns {Promise} 更新结果
  */
 export const updateUserInfo = (data) => {
-    return http.post('/api/user/update', data)
+    return http.post('/user/update', data)
 }
 
 /**
@@ -38,7 +38,7 @@ export const updateUserInfo = (data) => {
  * @returns {Promise} 注册结果
  */
 export const register = (data) => {
-    return http.post('/api/user/register', data)
+    return http.post('/user/register', data)
 }
 
 /**
@@ -47,7 +47,7 @@ export const register = (data) => {
  * @returns {Promise} 修改结果
  */
 export const changePassword = (data) => {
-    return http.post('/api/user/change-password', data)
+    return http.post('/user/change-password', data)
 }
 
 /**
@@ -55,5 +55,5 @@ export const changePassword = (data) => {
  * @returns {Promise} 退出结果
  */
 export const logout = () => {
-    return http.post('/api/user/logout')
+    return http.post('/user/logout')
 }

@@ -11,7 +11,7 @@ import { http } from '../http'
  * @returns {Promise} 团队列表
  */
 export const list = (params) => {
-    return http.post('/api/team/list', params)
+    return http.post('/team/list', params)
 }
 
 /**
@@ -20,7 +20,7 @@ export const list = (params) => {
  * @returns {Promise} 团队详情
  */
 export const detail = (teamId) => {
-    return http.post(`/api/team/${teamId}`)
+    return http.post(`/team/${teamId}`)
 }
 
 /**
@@ -29,7 +29,7 @@ export const detail = (teamId) => {
  * @returns {Promise} 创建结果
  */
 export const create = (data) => {
-    return http.post('/api/team/create', data)
+    return http.post('/team/create', data)
 }
 
 /**
@@ -39,7 +39,7 @@ export const create = (data) => {
  * @returns {Promise} 更新结果
  */
 export const update = (teamId, data) => {
-    return http.put(`/api/team/${teamId}`, data)
+    return http.put(`/team/${teamId}`, data)
 }
 
 /**
@@ -48,7 +48,7 @@ export const update = (teamId, data) => {
  * @returns {Promise} 加入结果
  */
 export const join = (teamId) => {
-    return http.post(`/api/team/${teamId}/join`)
+    return http.post(`/team/${teamId}/join`)
 }
 
 /**
@@ -57,7 +57,7 @@ export const join = (teamId) => {
  * @returns {Promise} 退出结果
  */
 export const leave = (teamId) => {
-    return http.post(`/api/team/${teamId}/leave`)
+    return http.post(`/team/${teamId}/leave`)
 }
 
 /**
@@ -66,5 +66,5 @@ export const leave = (teamId) => {
  * @returns {Promise} 解散结果
  */
 export const disband = (teamId) => {
-    return http.delete(`/api/team/${teamId}`)
+    return http.delete(`/team/${teamId}`)
 }

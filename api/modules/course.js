@@ -21,8 +21,8 @@ export const getNearestCourses = (params) => {
  * @param {string} courseId - 球场ID
  * @returns {Promise} 球场详情
  */
-export const detail = (courseId) => {
-    return http.post(`/api/course/${courseId}`)
+export const detail = (params) => {
+    return http.post('/course/detail', params)
 }
 
 /**
@@ -35,7 +35,7 @@ export const detail = (courseId) => {
  * @returns {Promise} 球场列表
  */
 export const list = (params) => {
-    return http.post('/api/course/list', { params })
+    return http.post('/course/list', { params })
 }
 
 /**
@@ -47,21 +47,9 @@ export const list = (params) => {
  * @returns {Promise} 评论列表
  */
 export const getComments = (courseId, params) => {
-    return http.post(`/api/course/${courseId}/comments`, { params })
+    return http.post(`/course/${courseId}/comments`, { params })
 }
 
-/**
- * 添加球场评论
- * @param {string} courseId - 球场ID
- * @param {Object} data - 评论数据
- * @param {string} data.content - 评论内容
- * @param {number} data.rating - 评分（1-5）
- * @param {string[]} [data.images] - 图片列表
- * @returns {Promise} 评论结果
- */
-export const addComment = (courseId, data) => {
-    return http.post(`/api/course/${courseId}/comments`, data)
-}
 
 /**
  * 获取球场设施信息
@@ -69,7 +57,7 @@ export const addComment = (courseId, data) => {
  * @returns {Promise} 设施信息
  */
 export const getFacilities = (courseId) => {
-    return http.post(`/api/course/${courseId}/facilities`)
+    return http.post(`/course/${courseId}/facilities`)
 }
 
 /**
@@ -79,7 +67,7 @@ export const getFacilities = (courseId) => {
  * @returns {Promise} 价格信息
  */
 export const getPricing = (courseId, date) => {
-    return http.post(`/api/course/${courseId}/pricing`, {
+    return http.post(`/course/${courseId}/pricing`, {
         params: { date }
     })
 }
