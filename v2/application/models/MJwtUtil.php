@@ -3,7 +3,7 @@
 
 class MJwtUtil extends CI_Model {
 
-    private static $secretKey = 'your-secret-key-here'; // 替换为你的密钥
+    private static $secretKey = 'golf-api-key-20201245'; // 替换为你的密钥
     private static $algorithm = 'HS256'; // 加密算法
 
     public function __construct() {
