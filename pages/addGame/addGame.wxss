@@ -95,12 +95,12 @@
 
 .menu-open .item2 {
 	left: calc(50% - 150rpx);
-	bottom: 217rpx; /* 恢复最初正确的位置 */
+	bottom: 147rpx; /* 217rpx(圆心) - 70rpx(半径) */
 }
 
 .menu-open .item3 {
 	left: calc(50% + 150rpx);
-	bottom: 217rpx; /* 恢复最初正确的位置 */
+	bottom: 147rpx; /* 217rpx(圆心) - 70rpx(半径) */
 }
 
 .menu-open .item4 {
