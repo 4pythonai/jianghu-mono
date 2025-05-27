@@ -26,7 +26,7 @@ class Http {
         const token = wx.getStorageSync('token')
         const header = {
             ...this.header,
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+            ...(token ? { 'Authorization': `${token}` } : {}),
             ...options.header
         }
 

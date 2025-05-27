@@ -6,7 +6,8 @@
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
 		"pages/teamDetail/teamDetail",
-		"pages/editTeam/editTeam"
+		"pages/editTeam/editTeam",
+		"pages/start/start"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",
@@ -30,6 +31,12 @@
 				"text": "球队",
 				"iconPath": "images/tab/team.png",
 				"selectedIconPath": "images/tab/team_selected.png"
+			},
+			{
+				"pagePath": "pages/start/start",
+				"text": "首页",
+				"iconPath": "images/tab/add.png",
+				"selectedIconPath": "images/tab/add_selected.png"
 			},
 			{
 				"pagePath": "pages/community/community",
