@@ -1,0 +1,26 @@
+<view class="container">
+	<view class="menu-container {{ isMenuOpen ? 'menu-open' : '' }}">
+		<view class="menu-items">
+			<!-- 菜单项1：运动场 -->
+			<view class="menu-item item1" bindtap="handleMenuClick" data-type="playground">
+				<image class="menu-icon" src="/images/vectors/playground.png" mode="aspectFit"></image>
+				<text>运动场</text>
+			</view>
+			<!-- 菜单项2：普通创建 -->
+			<view class="menu-item item2" bindtap="handleMenuClick" data-type="commonCreate">
+				<image class="menu-icon" src="/images/vectors/common.png" mode="aspectFit"></image>
+				<text>普通创建</text>
+			</view>
+			<!-- 菜单项3：快速创建 -->
+			<view class="menu-item item3" bindtap="handleMenuClick" data-type="quickCreate">
+				<image class="menu-icon" src="/images/vectors/quick.png" mode="aspectFit"></image>
+				<text>快速创建</text>
+			</view>
+			<!-- 菜单项4：更多创建 -->
+			<view class="menu-item item4" bindtap="handleMenuClick" data-type="moreCreate">
+				<image class="menu-icon" src="/images/vectors/more.png" mode="aspectFit"></image>
+				<text>更多创建</text>
+			</view>
+		</view>
+	</view>
+</view>
