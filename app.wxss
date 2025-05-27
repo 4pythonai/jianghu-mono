@@ -22,6 +22,8 @@ page {
 	font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica,
 		"PingFang SC", "Microsoft YaHei", Arial, sans-serif;
 	color: #808080;
+	/* --circle-radius: 300rpx; */
+	/* --item-radius: 50rpx; */
 }
 
 .wx-tabbar-item .wx-tabbar-icon {

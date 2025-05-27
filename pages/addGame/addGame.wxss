@@ -1,3 +1,8 @@
+page {
+	--circle-radius: 300rpx;
+	--item-radius: 50rpx;
+}
+
 .container {
 	position: fixed;
 	top: 0;
@@ -25,128 +30,12 @@
 	bottom: 0;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 600rpx;
-	height: 300rpx;
+	width: calc(var(--circle-radius) * 2);
+	height: var(--circle-radius);
 	pointer-events: none;
 	border: 4rpx dashed #ff0000;
 	border-bottom: none;
-	border-top-left-radius: 300rpx;
-	border-top-right-radius: 300rpx;
+	border-top-left-radius: var(--circle-radius);
+	border-top-right-radius: var(--circle-radius);
 	background-color: rgba(255, 0, 0, 0.05);
-}
-
-/* 恢复菜单项基础样式 */
-.menu-item {
-	position: absolute;
-	width: 140rpx;
-	height: 140rpx;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	opacity: 0;
-	transition: all 0.3s ease-out;
-	z-index: 100;
-	pointer-events: auto;
-	transform: translate(-50%, -50%);
-	border-radius: 50%;
-	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.15);
-	background: #ffffff;
-}
-
-/* 恢复菜单项颜色 */
-.item1 {
-	border: 6rpx solid #ff6b6b;
-}
-.item2 {
-	border: 6rpx solid #4ecdc4;
-}
-.item3 {
-	border: 6rpx solid #ffd166;
-}
-.item4 {
-	border: 6rpx solid #6a0572;
-}
-
-.menu-icon {
-	width: 70rpx;
-	height: 70rpx;
-	margin-bottom: 6rpx;
-}
-
-.menu-item text {
-	font-size: 24rpx;
-	color: #333333;
-	text-align: center;
-	font-weight: bold;
-	padding: 0;
-}
-
-/* 菜单打开状态 */
-.menu-open .menu-item {
-	opacity: 1;
-}
-
-/* 添加自然倾斜的菜单项 */
-.menu-open .item1 {
-	left: calc(50% - 300rpx);
-	bottom: 0;
-	transform: translate(-50%, -50%) rotate(-25deg);
-	transform-origin: center 70rpx;
-}
-
-.menu-open .item2 {
-	left: calc(50% - 150rpx);
-	bottom: 147rpx;
-	transform: translate(-50%, -50%) rotate(-10deg);
-	transform-origin: center 70rpx;
-}
-
-.menu-open .item3 {
-	left: calc(50% + 150rpx);
-	bottom: 147rpx;
-	transform: translate(-50%, -50%) rotate(10deg);
-	transform-origin: center 70rpx;
-}
-
-.menu-open .item4 {
-	left: calc(50% + 300rpx);
-	bottom: 0;
-	transform: translate(-50%, -50%) rotate(25deg);
-	transform-origin: center 70rpx;
-}
-
-/* 更新基础样式中的transform */
-.menu-item {
-	transform: translate(-50%, -50%) rotate(0);
-	transition: all 0.3s ease-out, transform 0.3s ease-out;
-}
-
-/* 其他样式保持不变 */
-.menu-item:active {
-	transform: translate(-50%, -50%) scale(0.95);
-	opacity: 0.8;
-}
-
-.menu-container::before {
-	content: "";
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0);
-	pointer-events: none;
-	transition: background 0.3s ease-out;
-	z-index: 5;
-}
-
-.menu-open::before {
-	background: rgba(255, 255, 255, 0);
-	pointer-events: none;
-}
-
-.menu-item:hover {
-	transform: translate(-50%, -50%) scale(1.05);
-	box-shadow: 0 6rpx 25rpx rgba(0, 0, 0, 0.2);
 }
