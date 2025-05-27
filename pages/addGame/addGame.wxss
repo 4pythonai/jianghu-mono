@@ -87,25 +87,39 @@
 	opacity: 1;
 }
 
-/* 恢复原始位置设置 */
+/* 添加自然倾斜的菜单项 */
 .menu-open .item1 {
 	left: calc(50% - 300rpx);
 	bottom: 0;
+	transform: translate(-50%, -50%) rotate(-25deg);
+	transform-origin: center 70rpx;
 }
 
 .menu-open .item2 {
 	left: calc(50% - 150rpx);
-	bottom: 147rpx; /* 217rpx(圆心) - 70rpx(半径) */
+	bottom: 147rpx;
+	transform: translate(-50%, -50%) rotate(-10deg);
+	transform-origin: center 70rpx;
 }
 
 .menu-open .item3 {
 	left: calc(50% + 150rpx);
-	bottom: 147rpx; /* 217rpx(圆心) - 70rpx(半径) */
+	bottom: 147rpx;
+	transform: translate(-50%, -50%) rotate(10deg);
+	transform-origin: center 70rpx;
 }
 
 .menu-open .item4 {
 	left: calc(50% + 300rpx);
 	bottom: 0;
+	transform: translate(-50%, -50%) rotate(25deg);
+	transform-origin: center 70rpx;
+}
+
+/* 更新基础样式中的transform */
+.menu-item {
+	transform: translate(-50%, -50%) rotate(0);
+	transition: all 0.3s ease-out, transform 0.3s ease-out;
 }
 
 /* 其他样式保持不变 */
