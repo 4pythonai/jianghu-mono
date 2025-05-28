@@ -40,7 +40,7 @@ page {
 	width: 120rpx;
 	height: 120rpx;
 	border-radius: 50%;
-	box-shadow: 0 0 8rpx rgba(0, 122, 255, 0.5);
+	box-shadow: 0 0 4rpx rgba(0, 122, 255, 0.5);
 	pointer-events: auto;
 }
 
