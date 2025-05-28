@@ -1,5 +1,5 @@
 page {
-	--circle-radius: 300rpx;
+	--circle-radius: 400rpx;
 	--item-radius: 50rpx;
 }
 
@@ -33,20 +33,44 @@ page {
 	width: calc(var(--circle-radius) * 2);
 	height: var(--circle-radius);
 	pointer-events: none;
-	border: 4rpx dashed #ff0000;
-	border-bottom: none;
-	border-top-left-radius: var(--circle-radius);
-	border-top-right-radius: var(--circle-radius);
-	background-color: rgba(255, 0, 0, 0.05);
 }
 
-/* 参考线上的4个蓝色标记点 */
 .menu-items .marker-point {
 	position: absolute;
-	width: 24rpx;
-	height: 24rpx;
+	width: 120rpx;
+	height: 120rpx;
 	border-radius: 50%;
 	box-shadow: 0 0 8rpx rgba(0, 122, 255, 0.5);
+	pointer-events: auto;
+}
+
+.menu-items .menu-item {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(145deg, #ffffff, #f0f0f0);
+	border-radius: 50%;
+	box-shadow: 8rpx 8rpx 16rpx #d1d1d1, -8rpx -8rpx 16rpx #ffffff;
+	transition: all 0.3s ease;
+}
+
+.menu-items .menu-item:active {
+	box-shadow: inset 8rpx 8rpx 16rpx #d1d1d1, inset -8rpx -8rpx 16rpx #ffffff;
+	transform: scale(0.95);
+}
+
+.menu-items .menu-icon {
+	width: 48rpx;
+	height: 48rpx;
+	margin-bottom: 8rpx;
+}
+
+.menu-items .menu-item text {
+	font-size: 24rpx;
+	color: #333;
 }
 
 .menu-items .point1 {
@@ -54,7 +78,6 @@ page {
 	top: 0;
 	transform-origin: center var(--circle-radius);
 	transform: translate(-50%, 0) rotate(-54deg);
-	background-color: #ff0000; /* 红色 */
 }
 
 .menu-items .point2 {
@@ -62,7 +85,6 @@ page {
 	top: 0;
 	transform-origin: center var(--circle-radius);
 	transform: translate(-50%, 0) rotate(-18deg);
-	background-color: #00ff00; /* 绿色 */
 }
 
 .menu-items .point3 {
@@ -70,7 +92,6 @@ page {
 	top: 0;
 	transform-origin: center var(--circle-radius);
 	transform: translate(-50%, 0) rotate(18deg);
-	background-color: #0000ff; /* 蓝色 */
 }
 
 .menu-items .point4 {
@@ -78,5 +99,4 @@ page {
 	top: 0;
 	transform-origin: center var(--circle-radius);
 	transform: translate(-50%, 0) rotate(54deg);
-	background-color: #ffff00; /* 黄色 */
 }
