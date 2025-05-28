@@ -1,6 +1,11 @@
 <view class="container">
 	<view class="menu-container {{ isMenuOpen ? 'menu-open' : '' }}">
-		<view class="menu-items"></view>
+		<view class="menu-items">
+			<view class="marker-point point1"></view>
+			<view class="marker-point point2"></view>
+			<view class="marker-point point3"></view>
+			<view class="marker-point point4"></view>
+		</view>
 		<!-- 
 		<view class="menu-items">
 			<view class="menu-item item1" bindtap="handleMenuClick" data-type="playground">

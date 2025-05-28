@@ -58,3 +58,19 @@
     always using  Template literals  over string concatenation
 
     always using post to call api
+
+ ## css 语法问题
+
+ 这是一个微信小程序项目,不支持伪元素(::before/::after)
+
+
+## wxss ccalc写法
+
+ 有效写法是：
+    height: ~"calc(100vh - 80rpx)";
+
+注意：
+1、运算符左右两边要有空格；
+2、数字和单位之间不能有空格；
+3、括号与减数，被减数之间不能有空格；
+4、 以上无效记得加上英文~符和双引号。

@@ -39,3 +39,44 @@ page {
 	border-top-right-radius: var(--circle-radius);
 	background-color: rgba(255, 0, 0, 0.05);
 }
+
+/* 参考线上的4个蓝色标记点 */
+.menu-items .marker-point {
+	position: absolute;
+	width: 24rpx;
+	height: 24rpx;
+	border-radius: 50%;
+	box-shadow: 0 0 8rpx rgba(0, 122, 255, 0.5);
+}
+
+.menu-items .point1 {
+	left: 50%;
+	top: 0;
+	transform-origin: center var(--circle-radius);
+	transform: translate(-50%, 0) rotate(-54deg);
+	background-color: #ff0000; /* 红色 */
+}
+
+.menu-items .point2 {
+	left: 50%;
+	top: 0;
+	transform-origin: center var(--circle-radius);
+	transform: translate(-50%, 0) rotate(-18deg);
+	background-color: #00ff00; /* 绿色 */
+}
+
+.menu-items .point3 {
+	left: 50%;
+	top: 0;
+	transform-origin: center var(--circle-radius);
+	transform: translate(-50%, 0) rotate(18deg);
+	background-color: #0000ff; /* 蓝色 */
+}
+
+.menu-items .point4 {
+	left: 50%;
+	top: 0;
+	transform-origin: center var(--circle-radius);
+	transform: translate(-50%, 0) rotate(54deg);
+	background-color: #ffff00; /* 黄色 */
+}
