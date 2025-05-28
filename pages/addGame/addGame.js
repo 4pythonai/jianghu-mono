@@ -1,7 +1,8 @@
 // addGame.js
 Page({
     data: {
-        isMenuOpen: true // 默认打开菜单
+        isMenuOpen: false, // 默认关闭菜单
+        animation: null
     },
 
     onLoad: function () {
@@ -11,7 +12,23 @@ Page({
     // 处理菜单项点击
     handleMenuClick: function (e) {
         const type = e.currentTarget.dataset.type;
-        console.log('点击了菜单项:', type);
+        const animation = wx.createAnimation({
+            duration: 500,
+            timingFunction: 'ease',
+        });
+
+        // 创建果冻效果动画
+        animation.scale(0.85).step();
+        animation.scale(1.1).step();
+        animation.scale(0.9).step();
+        animation.scale(1.05).step();
+        animation.scale(0.95).step();
+        animation.scale(1).step();
+
+        // 更新动画数据
+        this.setData({
+            animation: animation.export()
+        });
 
         // 根据不同的菜单项执行不同的操作
         switch (type) {

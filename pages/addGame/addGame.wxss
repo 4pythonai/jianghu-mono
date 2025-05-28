@@ -54,12 +54,13 @@ page {
 	background: linear-gradient(145deg, #ffffff, #f0f0f0);
 	border-radius: 50%;
 	box-shadow: 8rpx 8rpx 16rpx #d1d1d1, -8rpx -8rpx 16rpx #ffffff;
-	transition: all 0.3s ease;
+	transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	transform-origin: center;
 }
 
 .menu-items .menu-item:active {
 	box-shadow: inset 8rpx 8rpx 16rpx #d1d1d1, inset -8rpx -8rpx 16rpx #ffffff;
-	transform: scale(0.95);
+	transform: scale(0.85);
 }
 
 .menu-items .menu-icon {
