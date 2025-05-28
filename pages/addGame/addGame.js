@@ -2,7 +2,12 @@
 Page({
     data: {
         isMenuOpen: false, // 默认关闭菜单
-        animation: null
+        animations: {
+            point1: null,
+            point2: null,
+            point3: null,
+            point4: null
+        }
     },
 
     onLoad: function () {
@@ -10,14 +15,15 @@ Page({
     },
 
     // 处理菜单项点击
-    handleMenuClick: function (e) {
+    handleMenuClick(e) {
         const type = e.currentTarget.dataset.type;
+        const pointId = e.currentTarget.dataset.point;
         const animation = wx.createAnimation({
-            duration: 500,
+            duration: 100,
             timingFunction: 'ease',
         });
 
-        // 创建果冻效果动画
+        // 创建果冻效果动画，只使用scale
         animation.scale(0.85).step();
         animation.scale(1.1).step();
         animation.scale(0.9).step();
@@ -25,12 +31,12 @@ Page({
         animation.scale(0.95).step();
         animation.scale(1).step();
 
-        // 更新动画数据
+        // 使用路径语法更新特定点的动画数据
         this.setData({
-            animation: animation.export()
+            [`animations.${pointId}`]: animation.export()
         });
 
-        // 根据不同的菜单项执行不同的操作
+        // 根据type处理不同的菜单点击事件
         switch (type) {
             case 'playground':
                 wx.navigateTo({
@@ -61,9 +67,9 @@ Page({
     },
 
     // 切换菜单显示状态
-    toggleMenu: function () {
+    toggleMenu() {
         this.setData({
             isMenuOpen: !this.data.isMenuOpen
         });
     }
-})
+});
