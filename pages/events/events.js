@@ -194,16 +194,23 @@ Page({
             return
         }
 
-        if (this.data.courseLoading) return
+        // 添加api对象检查
+        console.log("API初始化状态:", {
+            api: !!app.globalData.api,
+            course: !!app.globalData.api?.course,
+            getNearestCourses: !!app.globalData.api?.course?.getNearestCourses
+        })
 
         this.setData({ courseLoading: true })
         wx.showLoading({ title: '获取球场中...' })
 
         try {
             const { latitude, longitude } = this.data.location
-            // 假设api.course.getNearestCourses已经在course模块中定义
+            console.log("发送请求参数:", { latitude, longitude })
+
             const courseList = await api.course.getNearestCourses({ latitude, longitude })
-            console.log("🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈", courseList)
+            console.log("API响应:", courseList)
+
             this.setData({ courseList: courseList.data })
             wx.showToast({
                 title: '获取球场成功',
@@ -211,6 +218,11 @@ Page({
             })
         } catch (error) {
             console.error('获取球场失败：', error)
+            console.error('错误详情：', {
+                message: error.message,
+                stack: error.stack,
+                errMsg: error.errMsg
+            })
             wx.showToast({
                 title: '获取球场失败',
                 icon: 'none'

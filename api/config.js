@@ -8,7 +8,7 @@ const ENV = {
         baseURL: 'http://140.179.50.120:7000/v2',
     },
     production: {
-        baseURL: 'https:/.example.com',
+        baseURL: 'http://140.179.50.120:7000/v2',
     }
 }
 

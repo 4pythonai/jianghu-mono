@@ -1,7 +1,7 @@
 {
 	"pages": [
 		"pages/live/live",
-		"pages/team/team",
+		"pages/events/events",
 		"pages/community/community",
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
@@ -23,32 +23,32 @@
 			{
 				"pagePath": "pages/live/live",
 				"text": "直播",
-				"iconPath": "images/tab/live.png",
-				"selectedIconPath": "images/tab/live_selected.png"
+				"iconPath": "images/tabbar/live.png",
+				"selectedIconPath": "images/tabbar/live_selected.png"
 			},
 			{
-				"pagePath": "pages/team/team",
+				"pagePath": "pages/events/events",
 				"text": "赛事",
-				"iconPath": "images/tab/cup.png",
-				"selectedIconPath": "images/tab/cup_selected.png"
+				"iconPath": "images/tabbar/cup.png",
+				"selectedIconPath": "images/tabbar/cup_selected.png"
 			},
 			{
 				"pagePath": "pages/addGame/addGame",
 				"text": "",
-				"iconPath": "images/tab/add.png",
-				"selectedIconPath": "images/tab/add_selected.png"
+				"iconPath": "images/tabbar/add.png",
+				"selectedIconPath": "images/tabbar/add_selected.png"
 			},
 			{
 				"pagePath": "pages/community/community",
 				"text": "江湖",
-				"iconPath": "images/tab/community.png",
-				"selectedIconPath": "images/tab/community_selected.png"
+				"iconPath": "images/tabbar/community.png",
+				"selectedIconPath": "images/tabbar/community_selected.png"
 			},
 			{
 				"pagePath": "pages/mine/mine",
 				"text": "我的",
-				"iconPath": "images/tab/mine.png",
-				"selectedIconPath": "images/tab/mine_selected.png"
+				"iconPath": "images/tabbar/mine.png",
+				"selectedIconPath": "images/tabbar/mine_selected.png"
 			}
 		]
 	},
