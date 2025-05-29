@@ -28,13 +28,13 @@
 			},
 			{
 				"pagePath": "pages/team/team",
-				"text": "球队",
-				"iconPath": "images/tab/team.png",
-				"selectedIconPath": "images/tab/team_selected.png"
+				"text": "赛事",
+				"iconPath": "images/tab/cup.png",
+				"selectedIconPath": "images/tab/cup_selected.png"
 			},
 			{
 				"pagePath": "pages/addGame/addGame",
-				"text": "Add",
+				"text": "",
 				"iconPath": "images/tab/add.png",
 				"selectedIconPath": "images/tab/add_selected.png"
 			},
