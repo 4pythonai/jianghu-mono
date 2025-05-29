@@ -1,5 +1,5 @@
 // 导入 API 模块
-import { api, initApi } from './api/index'
+import api from './api/index'
 
 App({
     globalData: {
@@ -34,9 +34,6 @@ App({
     },
 
     onLaunch() {
-        // 初始化 API
-        initApi()
-
         // 获取系统信息
         this.getSystemInfo()
 
@@ -162,4 +159,3 @@ App({
         // 小程序隐藏时执行
     }
 })
-

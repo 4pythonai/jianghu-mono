@@ -18,11 +18,10 @@ class Http {
     /**
      * 发送请求
      * @param {string} url - 请求地址
-     * @param {string} method - 请求方法
      * @param {object} data - 请求数据
      * @param {object} options - 其他选项
      */
-    request(url, method = 'POST', data = {}, options = {}) {
+    request(url, data = {}, options = {}) {
         const token = wx.getStorageSync('token')
         const header = {
             ...this.header,
@@ -33,7 +32,7 @@ class Http {
         return new Promise((resolve, reject) => {
             wx.request({
                 url: this.baseURL + url,
-                method,
+                method: 'POST',
                 data,
                 header,
                 timeout: options.timeout || this.timeout,
@@ -58,7 +57,7 @@ class Http {
                         }
                         // 将请求加入重试队列
                         requestQueue.push(() => {
-                            this.request(url, method, data, options)
+                            this.request(url, data, options)
                                 .then(resolve)
                                 .catch(reject)
                         })
@@ -69,34 +68,6 @@ class Http {
                 fail: reject
             })
         })
-    }
-
-    /**
-     * GET 请求
-     */
-    get(url, data = {}, options = {}) {
-        return this.request(url, 'GET', data, options)
-    }
-
-    /**
-     * POST 请求
-     */
-    post(url, data = {}, options = {}) {
-        return this.request(url, 'POST', data, options)
-    }
-
-    /**
-     * PUT 请求
-     */
-    put(url, data = {}, options = {}) {
-        return this.request(url, 'PUT', data, options)
-    }
-
-    /**
-     * DELETE 请求
-     */
-    delete(url, data = {}, options = {}) {
-        return this.request(url, 'DELETE', data, options)
     }
 
     /**
@@ -128,4 +99,9 @@ class Http {
     }
 }
 
-export const http = new Http()
+const http = new Http()
+
+// 导出请求方法
+export default (endpoint, data = {}, options = {}) => {
+    return http.request(endpoint, data, options)
+}
