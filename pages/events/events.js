@@ -1,6 +1,6 @@
 // team.js
 const app = getApp()
-const { api } = app.globalData
+
 
 Page({
     data: {
@@ -203,7 +203,9 @@ Page({
             const { latitude, longitude } = this.data.location
             console.log("发送请求参数:", { latitude, longitude })
 
-            const courseList = await api.course.getNearestCourses({ latitude, longitude })
+            // const { api } = app.api
+
+            const courseList = await app.api.course.getNearestCourses({ latitude, longitude })
             console.log("API响应:", courseList)
 
             this.setData({ courseList: courseList.data })
