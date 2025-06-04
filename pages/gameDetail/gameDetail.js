@@ -16,14 +16,7 @@ Page({
     onLoad(options) {
         // 获取app实例
         this.app = getApp()
-        if (!this.app?.globalData?.api) {
-            console.error('❌ API实例未初始化')
-            wx.showToast({
-                title: '系统初始化失败',
-                icon: 'none'
-            })
-            return
-        }
+
 
         this.setData({
             gameId: options?.gameId || '未获取到gameId'
@@ -67,11 +60,11 @@ Page({
 
         try {
             // 验证API实例
-            if (!this.app?.globalData?.api?.game?.getGameDetail) {
+            if (!this.app?.api?.game?.getGameDetail) {
                 throw new Error('API方法未定义: game.getGameDetail')
             }
 
-            const res = await this.app.globalData.api.game.getGameDetail({ gameId })
+            const res = await this.app.api.game.getGameDetail({ gameId })
             console.log(res.gameinfo)
 
             // 验证响应状态码和数据

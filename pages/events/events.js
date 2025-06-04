@@ -194,12 +194,7 @@ Page({
             return
         }
 
-        // 添加api对象检查
-        console.log("API初始化状态:", {
-            api: !!app.globalData.api,
-            course: !!app.globalData.api?.course,
-            getNearestCourses: !!app.globalData.api?.course?.getNearestCourses
-        })
+
 
         this.setData({ courseLoading: true })
         wx.showLoading({ title: '获取球场中...' })

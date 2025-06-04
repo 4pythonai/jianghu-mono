@@ -2,9 +2,9 @@
 import api from './api/index'
 
 App({
+    api: api,
     globalData: {
         userInfo: null,
-        api: api,
         needBindPhone: false,
         systemInfo: null,
         token: null, // 新增token存储
@@ -73,7 +73,7 @@ App({
 
     // 验证token有效性
     verifyToken(token) {
-        this.globalData.api.user.getUserInfo()
+        this.api.user.getUserInfo()
             .then(response => {
                 this.globalData.userInfo = response.data
                 this.checkPhoneBinding(response.data)
@@ -105,7 +105,7 @@ App({
 
     // 处理微信登录
     handleWxLogin(code) {
-        this.globalData.api.user.wxLogin({ code })
+        this.api.user.wxLogin({ code })
             .then(response => {
                 console.log(" wxlogin 🌻🌻🌻 🌻", response)
                 this.handleLoginSuccess(response)

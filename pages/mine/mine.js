@@ -49,7 +49,7 @@ Page({
         success: (res) => {
           if (res.code) {
             // 调用绑定手机号接口
-            app.globalData.api.user.bindPhoneNumber({
+            app.api.user.bindPhoneNumber({
               encryptedData: e.detail.encryptedData,
               iv: e.detail.iv,
               code: res.code
