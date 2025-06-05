@@ -89,7 +89,7 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
  */
-$autoload['helper'] = array('url', 'file', 'my_function', 'my_arrayRender');
+$autoload['helper'] = array('url', 'file', 'my_function', 'my_arrayRender', 'my_imgonthefly');
 
 /*
 | -------------------------------------------------------------------
