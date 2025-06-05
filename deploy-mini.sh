@@ -18,19 +18,11 @@ server_port="22"
 server_username="ubuntu"
 
 
-#!/bin/bash
 
 # 设置本地和远程目录路径
 
 pem="/Users/alex/.ssh/cloud-CRM-aws.pem"
 
-# -av --no-times
-
-# 使用 rsync 清除远程目录并同步本地目录到服务器
-
-# CRM rsync --progress -avz --delete -e "ssh -i $pem -p $server_port" "$local_path" "$server_username@$server_address:$remote_path"
-
-rsync --progress -rlptD --no-times --no-perms --no-owner --no-group   --delete -e "ssh -i $pem -p $server_port" "$local_path" "$server_username@$server_address:$remote_path"
-
+rsync --progress -avz --delete -e  "ssh -i $pem -p $server_port" "$local_path" "$server_username@$server_address:$remote_path"
 cp /Users/alex/codebase/golf/mini-api/v2/application/config/database-local.php /Users/alex/codebase/golf/mini-api/v2/application/config/database.php
 cp /Users/alex/codebase/golf/mini-api/v2/application/config/config-local.php /Users/alex/codebase/golf/mini-api/v2/application/config/config.php

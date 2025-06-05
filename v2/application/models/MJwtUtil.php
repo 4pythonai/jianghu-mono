@@ -56,6 +56,7 @@ class MJwtUtil extends CI_Model {
         $expectedSignature = hash_hmac('sha256', $base64Header . '.' . $base64Payload, self::$secretKey, true);
 
         if (!hash_equals($signature, $expectedSignature)) {
+            logtext('MJwtUtil  验证签名 verify failed');
             return false;
         }
 
@@ -63,6 +64,8 @@ class MJwtUtil extends CI_Model {
 
         // 验证过期时间
         if (isset($payload['exp']) && $payload['exp'] < time()) {
+            logtext('MJwtUtil  验证过期时间 verify failed');
+            logtext($payload['exp'] . ' < ' . time());
             return false;
         }
 

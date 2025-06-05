@@ -1,0 +1,1 @@
+mysqldump -h 123.57.223.35 -u root -pxcen396t db_ugf t_course t_course_court t_court_hole | mysql -h 140.179.50.120 -u root -pcnix@123456 gtest

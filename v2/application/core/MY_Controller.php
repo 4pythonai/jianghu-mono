@@ -1,4 +1,5 @@
 <?php
+// mini-api  verson  MY core should be xxx33 hhh 3333
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(-1);
@@ -38,7 +39,7 @@ class MY_Controller extends CI_Controller {
     header('Access-Control-Allow-Origin:  *');
     header('Access-Control-Allow-Methods: * ');
     header('Access-Control-Max-Age: 1728000');
-    header("Access-Control-Allow-Headers: Origin,Cache-Control,Access-Control-Allow-Origin,X-Requested-With,Content-Type, Accept,authorization");
+    header("Access-Control-Allow-Headers: Origin,Cache-Control,Access-Control-Allow-Origin,X-Requested-With,Content-Type, Accept,Authorization,authorization");
     header('Access-Control-Allow-Credentials', true);
     error_reporting(E_ALL);
     parent::__construct();
@@ -50,6 +51,12 @@ class MY_Controller extends CI_Controller {
     }
 
     $allheaders = getallheaders();
+
+    //  
+    if (array_key_exists('authorization', $allheaders)) {
+      $allheaders['Authorization'] = $allheaders['authorization'];
+    }
+
     $controller = $this->router->fetch_class();
     $method = $this->router->fetch_method();
 
@@ -101,6 +108,11 @@ class MY_Controller extends CI_Controller {
     if (!empty($_request)) {
       logtext('参数:$_REQUEST');
       logtext(json_encode($_request, JSON_UNESCAPED_UNICODE));
+    }
+
+    if (!empty($allheaders)) {
+      logtext('参数:allheaders');
+      logtext(json_encode($allheaders, JSON_UNESCAPED_UNICODE));
     }
 
 
@@ -156,13 +168,16 @@ class MY_Controller extends CI_Controller {
 
     // 如何 allheaders 中没有 Authorization ，则返回false
     if (!array_key_exists('Authorization', $allheaders)) {
-      logtext('client_token empty');
+      logtext('client_token not exists');
       return false;
     }
 
 
 
     $token = $allheaders['Authorization'];
+
+    // Bearer 
+    $token = str_replace('Bearer ', '', $token);
     if (empty($token)) {
       logtext('client_token empty');
       return false;

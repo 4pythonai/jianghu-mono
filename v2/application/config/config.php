@@ -25,7 +25,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 
 
-$config['base_url'] = 'http://127.0.0.1:8001/v2/';
+$config['base_url'] = 'http://127.0.0.1:7000/v2/';
 /*
 
 |--------------------------------------------------------------------------
