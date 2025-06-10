@@ -18,6 +18,60 @@ class Poster extends CI_Controller {
         }
     }
 
+    public function createPoster() {
+        // 获取背景图片路径
+        $bg_path = FCPATH . '../golf-poster/mobile_bg.png';
+        $qrcode_path = FCPATH . '../golf-poster/mini-code-removebg-preview.png';
+        $player_path = FCPATH . '../golf-poster/player-pure.png';
+        $glassmorphism_path = FCPATH . '../golf-poster/glassmorphism-bg.png';
+
+        // 读取图片内容
+        $bg_content = file_get_contents($bg_path);
+        $qrcode_content = file_get_contents($qrcode_path);
+        $player_content = file_get_contents($player_path);
+        $glassmorphism_content = file_get_contents($glassmorphism_path);
+
+        if ($bg_content === false || $qrcode_content === false || $player_content === false || $glassmorphism_content === false) {
+            echo json_encode([
+                'code' => 500,
+                'msg' => '无法读取图片内容'
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 创建图片资源
+        $bg_image = imagecreatefromstring($bg_content);
+        $qrcode_image = imagecreatefromstring($qrcode_content);
+        $player_image = imagecreatefromstring($player_content);
+        $glassmorphism_image = imagecreatefromstring($glassmorphism_content);
+
+        if ($bg_image === false || $qrcode_image === false || $player_image === false || $glassmorphism_image === false) {
+            echo json_encode([
+                'code' => 500,
+                'msg' => '无法创建图片资源'
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 添加用户照片到背景图片
+        $this->addPlayerImg($bg_image, $player_image, 0.6); // 用户照片高度占背景高度的 60%
+
+        // 添加二维码到背景图片右下角，二维码大小为背景宽度的0.6
+        $this->addMiniQrCode($bg_image, $qrcode_image, 0.15, 20);
+
+
+        $img_path = FCPATH . '../golf-poster/tmp/test.png';
+        // save img
+        imagepng($bg_image, $img_path);
+        imagedestroy($bg_image);
+        imagedestroy($qrcode_image);
+        imagedestroy($player_image);
+        imagedestroy($glassmorphism_image);
+
+        // echo json_encode(
+    }
+
+
     /**
      * 添加用户照片到背景图片
      * @param resource $bg_image 背景图片资源
@@ -131,55 +185,56 @@ class Poster extends CI_Controller {
         imagedestroy($final_qr);
     }
 
-    public function createPoster() {
-        // 获取背景图片路径
-        $bg_path = FCPATH . '../golf-poster/mobile_bg.png';
-        $qrcode_path = FCPATH . '../golf-poster/mini-code-removebg-preview.png';
-        $player_path = FCPATH . '../golf-poster/player-pure.png';
+    /**
+     * 添加玻璃态图片作为独立图层
+     * @param resource $bg_image 背景图片资源
+     * @param resource $glassmorphism_image 玻璃态图片资源
+     * @return void
+     */
+    private function addGlassmorphismLayer($bg_image, $glassmorphism_image) {
+        // 获取背景图片尺寸
+        $bg_width = imagesx($bg_image);
+        $bg_height = imagesy($bg_image);
+        $glass_width = imagesx($glassmorphism_image);
+        $glass_height = imagesy($glassmorphism_image);
 
-        // 读取图片内容
-        $bg_content = file_get_contents($bg_path);
-        $qrcode_content = file_get_contents($qrcode_path);
-        $player_content = file_get_contents($player_path);
+        // 计算玻璃态图片的目标尺寸（保持原始比例）
+        $target_width = $glass_width;
+        $target_height = $glass_height;
 
-        if ($bg_content === false || $qrcode_content === false || $player_content === false) {
-            echo json_encode([
-                'code' => 500,
-                'msg' => '无法读取图片内容'
-            ], JSON_UNESCAPED_UNICODE);
-            return;
-        }
+        // 创建调整大小后的玻璃态图片
+        $resized_glass = imagecreatetruecolor($target_width, $target_height);
+        imagealphablending($resized_glass, false);
+        imagesavealpha($resized_glass, true);
+        $transparent = imagecolorallocatealpha($resized_glass, 255, 255, 255, 127);
+        imagefilledrectangle($resized_glass, 0, 0, $target_width, $target_height, $transparent);
 
-        // 创建图片资源
-        $bg_image = imagecreatefromstring($bg_content);
-        $qrcode_image = imagecreatefromstring($qrcode_content);
-        $player_image = imagecreatefromstring($player_content);
+        // 调整玻璃态图片大小
+        imagecopyresampled(
+            $resized_glass,
+            $glassmorphism_image,
+            0,
+            0,
+            0,
+            0,
+            $target_width,
+            $target_height,
+            $glass_width,
+            $glass_height
+        );
 
-        if ($bg_image === false || $qrcode_image === false || $player_image === false) {
-            echo json_encode([
-                'code' => 500,
-                'msg' => '无法创建图片资源'
-            ], JSON_UNESCAPED_UNICODE);
-            return;
-        }
+        // 设置混合模式
+        imagealphablending($bg_image, true);
+        imagesavealpha($bg_image, true);
 
-        // 添加用户照片到背景图片
-        $this->addPlayerImg($bg_image, $player_image, 0.6); // 用户照片高度占背景高度的 60%
+        // 计算玻璃态图片的位置（居中）
+        $x = ($bg_width - $target_width) / 2;
+        $y = ($bg_height - $target_height) / 2;
 
-        // 添加二维码到背景图片右下角，二维码大小为背景宽度的0.6
-        $this->addMiniQrCode($bg_image, $qrcode_image, 0.15, 20);
+        // 合并图片
+        imagecopy($bg_image, $resized_glass, $x, $y, 0, 0, $target_width, $target_height);
 
-        // 保存图片到 golf-poster/tmp/test.png
-        $img_path = FCPATH . '../golf-poster/tmp/test.png';
-        imagepng($bg_image, $img_path);
-        imagedestroy($bg_image);
-        imagedestroy($qrcode_image);
-        imagedestroy($player_image);
-
-        echo json_encode([
-            'code' => 200,
-            'msg' => 'success',
-            'data' => $img_path
-        ], JSON_UNESCAPED_UNICODE);
+        // 释放临时图片资源
+        imagedestroy($resized_glass);
     }
 }

@@ -1,0 +1,16 @@
+# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+phpmd.cfg.xml
+deploy-mini.sh
+logs/
+start.sh
+v2/vendor
+v2/css
+v2/excel
+v2/js
+v2/system
+v2/application/cache
+v2/application/config
+v2/application/core
+v2/application/libraries
+v2/application/third_party
+v2/application/language
