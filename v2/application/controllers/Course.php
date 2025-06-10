@@ -58,4 +58,43 @@ class Course extends MY_Controller {
             echo json_encode(['code' => 500, 'message' => 'Database error: ' . $e->getMessage()]);
         }
     }
+
+
+
+
+
+
+    public function searchCourse() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $keyword = $json_paras['keyword'];
+        $page = isset($json_paras['page']) ? (int)$json_paras['page'] : 1;
+        $per_page = 10; // 每页显示10条记录
+
+        // 计算偏移量
+        $offset = ($page - 1) * $per_page;
+
+        // 获取总记录数
+        $total_query = $this->db->select('COUNT(*) as total')
+            ->from('t_course')
+            ->like('name', $keyword)
+            ->get();
+        $total = $total_query->row()->total;
+
+        // 获取分页数据
+        $courses = $this->db->select('courseid, name')
+            ->from('t_course')
+            ->like('name', $keyword)
+            ->limit($per_page, $offset)
+            ->get()
+            ->result_array();
+
+        echo json_encode([
+            'code' => 200,
+            'courses' => $courses,
+            'current_page' => $page,
+            'per_page' => $per_page,
+            'total' => $total,
+            'total_pages' => ceil($total / $per_page)
+        ], JSON_UNESCAPED_UNICODE);
+    }
 }
