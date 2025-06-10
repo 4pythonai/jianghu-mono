@@ -5,10 +5,10 @@
 // 环境配置
 const ENV = {
     development: {
-        baseURL: 'http://140.179.50.120:7000/v2',
+        baseURL: 'http://140.179.50.120:7800/v2',
     },
     production: {
-        baseURL: 'http://140.179.50.120:7000/v2',
+        baseURL: 'http://140.179.50.120:7800/v2',
     }
 }
 
