@@ -9,7 +9,7 @@ const user = {
     wxLogin: (data) => request('/Weixin/wxLogin', data),
 
     // 绑定手机号
-    bindPhone: (data) => request('/Weixin/bindPhone', data)
+    bindPhoneNumber: (data) => request('/Weixin/bindPhoneNumber', data)
 }
 
 export default user
