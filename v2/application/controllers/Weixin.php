@@ -87,7 +87,7 @@ class Weixin extends CI_Controller {
             ];
 
 
-            $token = $this->MJwtUtil->generateToken($payload, 72000);
+            $token = $this->MJwtUtil->generateToken($payload, 120);
             echo json_encode([
                 'code' => 200,
                 'success' => true,
@@ -106,6 +106,22 @@ class Weixin extends CI_Controller {
 
 
     public function getUserInfo() {
+        logtext('<hr/>');
+        logtext('<div><span class =functionname>' . date('Y-m-d H:i:s') . '  Weixin/getUserInfo</span></div>');
+        logtext(" 参数:" . json_encode(file_get_contents('php://input'), JSON_UNESCAPED_UNICODE));
+
+        $headers = getallheaders();
+        $token = str_replace('Bearer ', '', $headers['Authorization'] ?? '');
+        $payload = $this->MJwtUtil->verifyToken($token);
+
+
+        $user_id = $payload['uid'];
+        $user = $this->MUser->getUserbyId($user_id);
+        echo json_encode([
+            'code' => 200,
+            'success' => true,
+            'user' => $user
+        ], JSON_UNESCAPED_UNICODE);
     }
 
 

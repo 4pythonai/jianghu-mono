@@ -14,25 +14,25 @@
 		{
 			"userid": 22,
 			"nickname": "张三",
-			"avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_376beaa4c05158ba841306e8751adf80.png",
+			"avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png",
 			"tee": "black"
 		},
 		{
 			"userid": 23,
 			"nickname": "李四",
-			"avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png",
+			"avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png",
 			"tee": "red"
 		},
 		{
 			"userid": 24,
 			"nickname": "王五",
-			"avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_380c99c653dca01dffe1d010a7ab280c.png",
+			"avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png",
 			"tee": "blue"
 		},
 		{
 			"userid": 25,
 			"nickname": "川流不息的黄河水",
-			"avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_381962bf1b23a4596d2a6f77fde64f1b.png",
+			"avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png",
 			"tee": "black"
 		}
 	],

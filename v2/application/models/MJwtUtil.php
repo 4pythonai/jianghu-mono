@@ -65,8 +65,11 @@ class MJwtUtil extends CI_Model {
         // 验证过期时间
         if (isset($payload['exp']) && $payload['exp'] < time()) {
             logtext('MJwtUtil  验证过期时间 verify failed');
-            logtext($payload['exp'] . ' < ' . time());
+            logtext('过期时间:' .  $payload['exp'] . ' <当前时间:' . time());
             return false;
+        } else {
+            logtext('MJwtUtil  验证过期时间 verify success');
+            logtext('过期时间:' .  $payload['exp'] . ' >当前时间:' . time());
         }
 
         return $payload;
