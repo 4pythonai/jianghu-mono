@@ -183,11 +183,5 @@ Page({
         }
     },
 
-    // 查看团队详情
-    viewTeamDetail(e) {
-        const teamId = e.currentTarget.dataset.id
-        wx.navigateTo({
-            url: `/pages/teamDetail/teamDetail?id=${teamId}`
-        })
-    }
+
 })

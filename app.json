@@ -5,7 +5,6 @@
 		"pages/community/community",
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
-		"pages/teamDetail/teamDetail",
 		"pages/addGame/addGame"
 	],
 	"window": {
