@@ -6,7 +6,7 @@
 		</view>
 		<view class="user-details">
 			<text class="nickname">{{userInfo.nickName || '微信用户'}}</text>
-			<text class="phone" wx:if="{{ userInfo.phoneNumber }}">{{userInfo.phoneNumber}}</text>
+			<text class="phone" wx:if="{{ userInfo.mobile }}">{{userInfo.mobile}}</text>
 		</view>
 	</view>
 	<!-- 未登录状态 -->
@@ -18,14 +18,6 @@
 	<button class="phone-btn" wx:if="{{ needBindPhone && userInfo }}" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">绑定手机号码</button>
 	<!-- 功能列表 -->
 	<view class="function-list">
-		<view class="function-item">
-			<text>我的比赛</text>
-			<text class="arrow">></text>
-		</view>
-		<view class="function-item">
-			<text>我的订单</text>
-			<text class="arrow">></text>
-		</view>
 		<view class="function-item">
 			<text>设置</text>
 			<text class="arrow">></text>

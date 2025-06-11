@@ -73,11 +73,14 @@ App({
 
     // 验证token有效性
     verifyToken(token) {
+        console.error('验证 Token ')
+
         this.api.user.getUserInfo()
             .then(response => {
-                this.globalData.userInfo = response.data
-                this.checkPhoneBinding(response.data)
-                this.emit('loginSuccess', response.data)
+                console.log(" getUserInfo 获取的用户信息:", response)
+                this.globalData.userInfo = response.user
+                this.checkPhoneBinding(response.user, "TAG1")
+                this.emit('loginSuccess', response.user)
             })
             .catch(err => {
                 console.error('token验证失败:', err)
@@ -130,7 +133,7 @@ App({
 
         // 存储用户信息
         this.globalData.userInfo = data
-        this.checkPhoneBinding(data)
+        this.checkPhoneBinding(data, "TAG2:handleLoginSuccess")
         this.emit('loginSuccess', data)
     },
 
@@ -141,9 +144,10 @@ App({
         }, 2000) // 2秒后重试
     },
 
-    // 检查是否绑定手机号（保持不变）
-    checkPhoneBinding(userInfo) {
-        if (!userInfo.phoneNumber) {
+    // 检查是否绑定手机号
+    checkPhoneBinding(userInfo, tag) {
+        console.log(" 检查是否绑定手机号:", userInfo, tag)
+        if (!userInfo.mobile) {
             this.globalData.needBindPhone = true
             this.emit('needBindPhone')
         } else {
