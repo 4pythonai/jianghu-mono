@@ -85,8 +85,8 @@ Page({
       return
     }
 
-    // 保存头像到本地存储
-    this.saveAvatarToLocal(avatarUrl)
+    // 上传头像到服务器
+    this.uploadAvatarToServer(avatarUrl)
   },
 
   // 备用头像选择方案
@@ -100,7 +100,7 @@ Page({
         if (res.tempFiles && res.tempFiles.length > 0) {
           const tempFilePath = res.tempFiles[0].tempFilePath
           console.log('✅ 备用方案获取头像成功:', tempFilePath)
-          this.saveAvatarToLocal(tempFilePath)
+          this.uploadAvatarToServer(tempFilePath)
         }
       },
       fail: (err) => {
@@ -113,67 +113,92 @@ Page({
     })
   },
 
-  // 保存头像到本地存储（优化版）
-  saveAvatarToLocal(tempAvatarUrl) {
-    // 显示加载提示
+  // 上传头像到服务器（新版本）
+  uploadAvatarToServer(tempFilePath) {
+    console.log('🚀 开始上传头像到服务器:', tempFilePath)
+
+    // 显示上传进度
     wx.showLoading({
-      title: '保存头像中...'
+      title: '上传头像中...'
     })
 
-    // 获取文件管理器
+    // 使用HTTP客户端的uploadFile方法
+    app.http.uploadFile('/User/uploadAvatar', tempFilePath, {
+      name: 'avatar', // 后台接收的字段名
+      formData: {
+        platform: 'miniprogram',
+        timestamp: Date.now()
+      }
+    }).then(response => {
+      console.log('✅ 头像上传成功:', response)
+
+      // 获取头像URL
+      const avatarUrl = response.data?.avatarUrl || response.avatarUrl
+
+      if (avatarUrl) {
+        // 更新用户头像
+        this.updateUserAvatar(avatarUrl, true) // true表示是服务器URL
+
+        wx.hideLoading()
+        wx.showToast({
+          title: '头像上传成功',
+          icon: 'success'
+        })
+      } else {
+        throw new Error('服务器返回的头像地址为空')
+      }
+
+    }).catch(error => {
+      console.error('❌ 头像上传失败:', error)
+
+      // 降级处理：保存到本地
+      console.log('🔄 上传失败，降级到本地保存')
+      this.saveAvatarLocally(tempFilePath)
+    })
+  },
+
+  // 降级方案：保存到本地（当服务器上传失败时）
+  saveAvatarLocally(tempFilePath) {
+    console.log('💾 降级到本地保存头像')
+
     const fs = wx.getFileSystemManager()
     const avatarName = `avatar_${Date.now()}.jpg`
     const avatarPath = `${wx.env.USER_DATA_PATH}/${avatarName}`
 
-    try {
-      // 将临时文件保存到本地存储
-      fs.saveFile({
-        tempFilePath: tempAvatarUrl,
-        filePath: avatarPath,
-        success: (res) => {
-          console.log('✅ 头像保存成功:', res.savedFilePath)
+    fs.saveFile({
+      tempFilePath: tempFilePath,
+      filePath: avatarPath,
+      success: (res) => {
+        console.log('✅ 头像本地保存成功:', res.savedFilePath)
 
-          // 更新用户信息
-          this.updateUserAvatar(res.savedFilePath)
+        // 更新用户头像（本地路径）
+        this.updateUserAvatar(res.savedFilePath, false) // false表示是本地路径
 
-          // 使用Storage层保存头像路径
-          app.storage.setUserAvatar(res.savedFilePath)
+        wx.hideLoading()
+        wx.showToast({
+          title: '头像已保存（本地）',
+          icon: 'success'
+        })
+      },
+      fail: (err) => {
+        console.error('❌ 本地保存也失败:', err)
 
-          wx.hideLoading()
-          wx.showToast({
-            title: '头像保存成功',
-            icon: 'success'
-          })
-        },
-        fail: (err) => {
-          console.error('❌ 头像保存失败:', err)
+        // 最后的降级：直接使用临时路径
+        this.updateUserAvatar(tempFilePath, false)
 
-          // 如果保存失败，仍然使用临时路径
-          this.updateUserAvatar(tempAvatarUrl)
-
-          wx.hideLoading()
-          wx.showToast({
-            title: '头像设置成功',
-            icon: 'success'
-          })
-        }
-      })
-    } catch (error) {
-      console.error('❌ 文件系统操作失败:', error)
-
-      // 降级处理：直接使用临时路径
-      this.updateUserAvatar(tempAvatarUrl)
-
-      wx.hideLoading()
-      wx.showToast({
-        title: '头像设置成功',
-        icon: 'success'
-      })
-    }
+        wx.hideLoading()
+        wx.showToast({
+          title: '头像设置成功',
+          icon: 'success'
+        })
+      }
+    })
   },
 
-  // 更新用户头像
-  updateUserAvatar(avatarUrl) {
+  // 更新用户头像（增强版）
+  updateUserAvatar(avatarUrl, isServerUrl = false) {
+    console.log('🖼️ 更新用户头像:', { avatarUrl, isServerUrl })
+
     // 确保 userInfo 存在
     const currentUserInfo = this.data.userInfo || {
       nickName: '',
@@ -191,9 +216,19 @@ Page({
       userInfo: updatedUserInfo
     })
 
-    // 更新全局数据和Storage
+    // 更新全局数据
     app.globalData.userInfo = updatedUserInfo
     app.storage.setUserInfo(updatedUserInfo)
+
+    // 如果是服务器URL，清除本地头像缓存
+    if (isServerUrl) {
+      app.storage.clearUserAvatar()
+      console.log('🗑️ 清除本地头像缓存，使用服务器头像')
+    } else {
+      // 如果是本地路径，保存到Storage
+      app.storage.setUserAvatar(avatarUrl)
+      console.log('💾 保存本地头像路径')
+    }
   },
 
   // 昵称输入
@@ -210,7 +245,7 @@ Page({
     })
   },
 
-  // 确认用户信息
+  // 确认用户信息（优化版）
   confirmUserInfo() {
     const { tempNickname } = this.data
     // 安全获取当前用户信息，提供默认值
@@ -226,28 +261,83 @@ Page({
       return
     }
 
-    // 更新用户信息
-    const updatedUserInfo = {
-      ...currentUserInfo,
-      nickName: tempNickname.trim(),
-      avatarUrl: avatarUrl || '/images/default-avatar.png'
+    // 检查昵称长度
+    const trimmedNickname = tempNickname.trim()
+    if (trimmedNickname.length > 20) {
+      wx.showToast({
+        title: '昵称不能超过20个字符',
+        icon: 'none'
+      })
+      return
     }
 
-    // 保存到全局数据
-    app.globalData.userInfo = updatedUserInfo
-
-    // 更新页面数据
-    this.setData({
-      userInfo: updatedUserInfo,
-      showAuthButton: false
+    // 显示保存提示
+    wx.showLoading({
+      title: '保存中...'
     })
 
-    // 触发登录成功事件
-    app.emit('loginSuccess', updatedUserInfo)
+    // 调用API更新昵称
+    app.api.user.updateNickName({
+      nickName: trimmedNickname
+    }).then(response => {
+      console.log('✅ 昵称更新成功:', response)
 
-    wx.showToast({
-      title: '信息完善成功',
-      icon: 'success'
+      // 更新用户信息
+      const updatedUserInfo = {
+        ...currentUserInfo,
+        nickName: trimmedNickname,
+        avatarUrl: avatarUrl || '/images/default-avatar.png'
+      }
+
+      // 保存到全局数据和Storage
+      app.globalData.userInfo = updatedUserInfo
+      app.storage.setUserInfo(updatedUserInfo)
+
+      // 更新页面数据
+      this.setData({
+        userInfo: updatedUserInfo,
+        showAuthButton: false
+      })
+
+      // 触发登录成功事件
+      app.emit('loginSuccess', updatedUserInfo)
+
+      wx.hideLoading()
+      wx.showToast({
+        title: '信息保存成功',
+        icon: 'success'
+      })
+
+    }).catch(error => {
+      console.error('❌ 昵称更新失败:', error)
+
+      // 降级处理：只保存到本地
+      console.log('🔄 API失败，降级到本地保存')
+
+      const updatedUserInfo = {
+        ...currentUserInfo,
+        nickName: trimmedNickname,
+        avatarUrl: avatarUrl || '/images/default-avatar.png'
+      }
+
+      // 保存到全局数据和Storage
+      app.globalData.userInfo = updatedUserInfo
+      app.storage.setUserInfo(updatedUserInfo)
+
+      // 更新页面数据
+      this.setData({
+        userInfo: updatedUserInfo,
+        showAuthButton: false
+      })
+
+      // 触发登录成功事件
+      app.emit('loginSuccess', updatedUserInfo)
+
+      wx.hideLoading()
+      wx.showToast({
+        title: '信息已保存（本地）',
+        icon: 'success'
+      })
     })
   },
 

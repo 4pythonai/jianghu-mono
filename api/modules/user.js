@@ -9,7 +9,14 @@ const user = {
     wxLogin: (data) => request('/Weixin/wxLogin', data),
 
     // 绑定手机号
-    bindPhoneNumber: (data) => request('/Weixin/bindPhoneNumber', data)
+    bindPhoneNumber: (data) => request('/Weixin/bindPhoneNumber', data),
+
+    // 上传头像
+    uploadAvatar: (data) => request('/User/uploadAvatar', data),
+
+    // 设置昵称
+    updateNickName: (data) => request('/User/updateNickName', data)
+
 }
 
 export default user

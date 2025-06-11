@@ -209,6 +209,77 @@ class HttpClient {
     }
 
     /**
+     * 文件上传方法
+     * @param {string} url - 上传地址
+     * @param {string} filePath - 文件路径
+     * @param {object} options - 上传选项
+     */
+    uploadFile(url, filePath, options = {}) {
+        return new Promise((resolve, reject) => {
+            // 使用Storage层获取token
+            const token = storage.getToken()
+            const header = {
+                ...(token && { 'Authorization': `Bearer ${token}` }),
+                ...options.header
+            }
+
+            const uploadConfig = {
+                url: `${this.baseURL}${url}`,
+                filePath: filePath,
+                name: options.name || 'file',
+                header: header,
+                formData: options.formData || {},
+                success: (res) => {
+                    console.log('📤 文件上传成功:', {
+                        url,
+                        statusCode: res.statusCode,
+                        timestamp: new Date().toISOString()
+                    })
+
+                    try {
+                        // 尝试解析响应数据
+                        const data = typeof res.data === 'string' ? JSON.parse(res.data) : res.data
+
+                        // 检查业务状态码
+                        if (data.code !== undefined && data.code !== 200 && !data.success) {
+                            throw new Error(data.message || '上传失败')
+                        }
+
+                        resolve(data)
+                    } catch (parseError) {
+                        console.error('❌ 解析上传响应失败:', parseError)
+                        reject(parseError)
+                    }
+                },
+                fail: (error) => {
+                    console.error('❌ 文件上传失败:', {
+                        url,
+                        error: error.errMsg || error,
+                        timestamp: new Date().toISOString()
+                    })
+
+                    // 检查是否是认证错误
+                    if (this.isAuthError(error)) {
+                        this.notifyTokenExpired()
+                    }
+
+                    reject(error)
+                }
+            }
+
+            // 记录上传日志
+            console.log('📤 开始文件上传:', {
+                url: uploadConfig.url,
+                name: uploadConfig.name,
+                hasToken: !!token,
+                timestamp: new Date().toISOString()
+            })
+
+            wx.uploadFile(uploadConfig)
+        })
+    }
+
+    /**
      * 支持不同HTTP方法的便捷方法
      */
     get(url, options = {}) {
