@@ -1,5 +1,5 @@
 // 用户相关API
-import request from '../request'
+import request from '../request-simple'
 
 const user = {
     // 获取用户信息

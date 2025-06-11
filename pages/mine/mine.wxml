@@ -1,18 +1,37 @@
 <view class="container">
 	<!-- 用户信息区域 -->
-	<view class="user-info" wx:if="{{ userInfo }}">
+	<view class="user-info">
 		<view class="avatar-container">
 			<image class="avatar" src="{{ userInfo.avatarUrl || '/images/default-avatar.png' }}"></image>
 		</view>
 		<view class="user-details">
 			<text class="nickname">{{userInfo.nickName || '微信用户'}}</text>
-			<text class="phone" wx:if="{{ userInfo.mobile }}">{{userInfo.mobile}}</text>
+			<text class="phone" wx:if="{{ userInfo && userInfo.mobile }}">{{userInfo.mobile}}</text>
 		</view>
 	</view>
-	<!-- 未登录状态 -->
-	<view class="not-login" wx:else>
-		<view class="page-title">我的</view>
-		<view class="page-desc">请先登录以使用更多功能</view>
+	<!-- 新的获取头像昵称方式 -->
+	<view class="auth-section" wx:if="{{ showAuthButton }}">
+		<view class="auth-title">完善个人信息</view>
+		<view class="auth-form">
+			<!-- 获取头像按钮 -->
+			<button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+				<image class="preview-avatar" src="{{ userInfo.avatarUrl || '/images/default-avatar.png' }}"></image>
+				<text class="avatar-text">点击选择头像</text>
+			</button>
+			<!-- 获取昵称输入框 -->
+			<view class="nickname-input-wrapper">
+				<text class="input-label">昵称：</text>
+				<input
+					class="nickname-input"
+					type="nickname"
+					value="{{ userInfo.nickName || '' }}"
+					placeholder="请输入昵称"
+					bindchange="onNicknameChange"
+					bindinput="onNicknameInput"
+				/>
+			</view>
+			<button class="confirm-btn" bindtap="confirmUserInfo">确认信息</button>
+		</view>
 	</view>
 	<!-- 绑定手机号按钮 -->
 	<button class="phone-btn" wx:if="{{ needBindPhone && userInfo }}" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">绑定手机号码</button>

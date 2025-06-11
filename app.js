@@ -73,8 +73,7 @@ App({
 
     // 验证token有效性
     verifyToken(token) {
-        console.error('验证 Token ')
-
+        console.info('验证 Token ...')
         this.api.user.getUserInfo()
             .then(response => {
                 console.log(" getUserInfo 获取的用户信息:", response)

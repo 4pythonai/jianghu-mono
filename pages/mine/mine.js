@@ -4,14 +4,47 @@ const app = getApp()
 Page({
   data: {
     userInfo: null,
-    needBindPhone: false
+    needBindPhone: false,
+    showAuthButton: true,
+    tempNickname: '' // 临时存储用户输入的昵称
   },
 
   onLoad() {
-    // 获取用户信息
+    // 获取用户信息，确保总是有一个默认对象
+    const initUserInfo = app.globalData.userInfo || {}
+
+    // 检查本地是否有保存的头像
+    let avatarUrl = initUserInfo.avatarUrl || '/images/default-avatar.png'
+    try {
+      const savedAvatarPath = wx.getStorageSync('userAvatarPath')
+      if (savedAvatarPath) {
+        // 检查文件是否存在
+        const fs = wx.getFileSystemManager()
+        try {
+          fs.accessSync(savedAvatarPath)
+          avatarUrl = savedAvatarPath
+          console.log('加载本地头像:', savedAvatarPath)
+        } catch (error) {
+          console.log('本地头像文件不存在，使用默认头像')
+          // 清除无效的存储
+          wx.removeStorageSync('userAvatarPath')
+        }
+      }
+    } catch (error) {
+      console.error('读取本地头像失败:', error)
+    }
+
+    const safeUserInfo = {
+      nickName: '',
+      avatarUrl: avatarUrl,
+      ...initUserInfo
+    }
+
     this.setData({
-      userInfo: app.globalData.userInfo,
-      needBindPhone: app.globalData.needBindPhone
+      userInfo: safeUserInfo,
+      needBindPhone: app.globalData.needBindPhone,
+      showAuthButton: !safeUserInfo.nickName,
+      tempNickname: safeUserInfo.nickName || ''
     })
 
     // 监听登录成功事件
@@ -19,6 +52,173 @@ Page({
 
     // 监听需要绑定手机号事件
     app.on('needBindPhone', this.handleNeedBindPhone)
+  },
+
+  // 选择头像
+  onChooseAvatar(e) {
+    console.log('选择头像:', e.detail)
+
+    // 检查是否有错误信息
+    if (e.detail.errMsg && e.detail.errMsg !== 'chooseAvatar:ok') {
+      console.error('选择头像失败:', e.detail.errMsg)
+      wx.showToast({
+        title: '头像选择失败，请重试',
+        icon: 'none'
+      })
+      return
+    }
+
+    const { avatarUrl } = e.detail
+
+    // 检查是否获取到头像地址
+    if (!avatarUrl) {
+      console.error('未获取到头像地址')
+      wx.showToast({
+        title: '头像获取失败，请重试',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 保存头像到本地存储
+    this.saveAvatarToLocal(avatarUrl)
+  },
+
+  // 保存头像到本地存储
+  saveAvatarToLocal(tempAvatarUrl) {
+    // 显示加载提示
+    wx.showLoading({
+      title: '保存头像中...'
+    })
+
+    // 获取文件管理器
+    const fs = wx.getFileSystemManager()
+    const avatarName = `avatar_${Date.now()}.jpg`
+    const avatarPath = `${wx.env.USER_DATA_PATH}/${avatarName}`
+
+    try {
+      // 将临时文件保存到本地存储
+      fs.saveFile({
+        tempFilePath: tempAvatarUrl,
+        filePath: avatarPath,
+        success: (res) => {
+          console.log('头像保存成功:', res.savedFilePath)
+
+          // 更新用户信息
+          this.updateUserAvatar(res.savedFilePath)
+
+          // 保存到本地缓存
+          wx.setStorageSync('userAvatarPath', res.savedFilePath)
+
+          wx.hideLoading()
+          wx.showToast({
+            title: '头像保存成功',
+            icon: 'success'
+          })
+        },
+        fail: (err) => {
+          console.error('头像保存失败:', err)
+
+          // 如果保存失败，仍然使用临时路径
+          this.updateUserAvatar(tempAvatarUrl)
+
+          wx.hideLoading()
+          wx.showToast({
+            title: '头像设置成功',
+            icon: 'success'
+          })
+        }
+      })
+    } catch (error) {
+      console.error('文件系统操作失败:', error)
+
+      // 降级处理：直接使用临时路径
+      this.updateUserAvatar(tempAvatarUrl)
+
+      wx.hideLoading()
+      wx.showToast({
+        title: '头像设置成功',
+        icon: 'success'
+      })
+    }
+  },
+
+  // 更新用户头像
+  updateUserAvatar(avatarUrl) {
+    // 确保 userInfo 存在
+    const currentUserInfo = this.data.userInfo || {
+      nickName: '',
+      avatarUrl: '/images/default-avatar.png'
+    }
+
+    // 更新头像
+    const updatedUserInfo = {
+      ...currentUserInfo,
+      avatarUrl: avatarUrl
+    }
+
+    // 更新页面数据
+    this.setData({
+      userInfo: updatedUserInfo
+    })
+
+    // 更新全局数据
+    app.globalData.userInfo = updatedUserInfo
+  },
+
+  // 昵称输入
+  onNicknameInput(e) {
+    this.setData({
+      tempNickname: e.detail.value
+    })
+  },
+
+  // 昵称改变
+  onNicknameChange(e) {
+    this.setData({
+      tempNickname: e.detail.value
+    })
+  },
+
+  // 确认用户信息
+  confirmUserInfo() {
+    const { tempNickname } = this.data
+    // 安全获取当前用户信息，提供默认值
+    const currentUserInfo = this.data.userInfo || {}
+    const { avatarUrl } = currentUserInfo
+
+    // 检查是否有昵称
+    if (!tempNickname || tempNickname.trim() === '') {
+      wx.showToast({
+        title: '请输入昵称',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 更新用户信息
+    const updatedUserInfo = {
+      ...currentUserInfo,
+      nickName: tempNickname.trim(),
+      avatarUrl: avatarUrl || '/images/default-avatar.png'
+    }
+
+    // 保存到全局数据
+    app.globalData.userInfo = updatedUserInfo
+
+    // 更新页面数据
+    this.setData({
+      userInfo: updatedUserInfo,
+      showAuthButton: false
+    })
+
+    // 触发登录成功事件
+    app.emit('loginSuccess', updatedUserInfo)
+
+    wx.showToast({
+      title: '信息完善成功',
+      icon: 'success'
+    })
   },
 
   onUnload() {
@@ -29,8 +229,17 @@ Page({
 
   // 处理登录成功事件
   handleLoginSuccess(userInfo) {
+    // 确保传入的 userInfo 有默认值
+    const safeUserInfo = {
+      nickName: '',
+      avatarUrl: '/images/default-avatar.png',
+      ...(userInfo || {})
+    }
+
     this.setData({
-      userInfo: userInfo
+      userInfo: safeUserInfo,
+      showAuthButton: !safeUserInfo.nickName,
+      tempNickname: safeUserInfo.nickName || ''
     })
   },
 

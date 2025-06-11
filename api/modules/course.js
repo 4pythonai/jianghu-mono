@@ -1,5 +1,5 @@
 // 球场相关API
-import request from '../request'
+import request from '../request-simple'
 
 const course = {
     // 获取最近的球场

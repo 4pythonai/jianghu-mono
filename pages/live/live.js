@@ -7,19 +7,19 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
                 "user": 24,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_380c99c653dca01dffe1d010a7ab280c.png"
+                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
                 "user": 25,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
 
         ],
@@ -36,16 +36,20 @@ const liveGames = [
         "course": "观澜湖高尔夫俱乐部",
         "players": [
             {
-                "user": 27,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3854f6e69c87c34398832a18369e6b2c.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 28,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_385834a2e196f3958b07eb396aed8899.png"
+                "user": 23,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
-                "user": 29,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3879475b8b57b101ba2ea40af5aae7a5.png"
+                "user": 24,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
+            },
+            {
+                "user": 25,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 25,
@@ -61,20 +65,20 @@ const liveGames = [
         "course": "佘山高尔夫俱乐部",
         "players": [
             {
-                "user": 30,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_38ab5c8ef31fa61c88b18e14f65f31e4.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 31,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_39431800a956199296983db6f83f1d2f.png"
+                "user": 23,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
-                "user": 32,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3994213a65ab838f36be9fa196d9d1f7.png"
+                "user": 24,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
-                "user": 33,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3a02e72479b954bd4b516562298b95f3.png"
+                "user": 25,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 45,
@@ -90,12 +94,12 @@ const liveGames = [
         "course": "三亚亚龙湾高尔夫俱乐部",
         "players": [
             {
-                "user": 34,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3a592a66ca7e109e03233b4aa36f97a9.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 35,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3a722d3513a38fa8336484dcd404de41.png"
+                "user": 23,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             }
         ],
         "watchers_number": 15,
@@ -111,20 +115,20 @@ const liveGames = [
         "course": "深圳高尔夫俱乐部",
         "players": [
             {
-                "user": 36,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3bae41f5671dbb593da63af69693b24e.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 37,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3bb3cd7d98606fb062f67c1aa6d5a2dc.png"
+                "user": 23,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
-                "user": 38,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3bb7a0d679ea9151548f490b19c38b26.png"
+                "user": 24,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
-                "user": 39,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3bbf7955aae76e87888254effd5ad8c3.png"
+                "user": 25,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 35,
@@ -140,18 +144,17 @@ const liveGames = [
         "course": "北京高尔夫俱乐部",
         "players": [
             {
-                "user": 40,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3c976bc1a2f732af7798b93e8eceb539.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 41,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3d08d5a55d1234258c9776a6cc228b47.png"
+                "user": 23,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
-                "user": 42,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3e973c1601c0a97f5e2d9db6c28dc223.png"
-            }
-        ],
+                "user": 25,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+            }],
         "watchers_number": 20,
         "game_start": "2025-05-25",
         "completed_holes": 9,
@@ -165,20 +168,20 @@ const liveGames = [
         "course": "上海高尔夫俱乐部",
         "players": [
             {
-                "user": 43,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3eb53e2ac0effb69ddcc7e306f7d042b.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 44,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3f0cd121c251620447b2a451c969d8ec.png"
+                "user": 23,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
-                "user": 45,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3f1c363d1ed4bb151d22bf30b874345b.png"
+                "user": 24,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
-                "user": 46,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3f4378f6277a927f5d4aeec5b14ee012.png"
+                "user": 25,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 50,
@@ -194,14 +197,13 @@ const liveGames = [
         "course": "广州高尔夫俱乐部",
         "players": [
             {
-                "user": 47,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3f52db79279aeddde1bd7925b568f65c.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 48,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_3f7cde7c12ba04a9dc73aca3c8c10987.png"
-            }
-        ],
+                "user": 25,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+            }],
         "watchers_number": 18,
         "game_start": "2025-05-27",
         "completed_holes": 12,
@@ -215,20 +217,20 @@ const liveGames = [
         "course": "杭州高尔夫俱乐部",
         "players": [
             {
-                "user": 49,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_40d52110ed71b00e93f8f066babd1d9b.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 50,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_414626515b1349a5983fb66c078c0922.png"
+                "user": 23,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
-                "user": 51,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_41742327e5426a8a465884773e160760.png"
+                "user": 24,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
-                "user": 52,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_41e048c89396f5b9a85b24c09d730efc.png"
+                "user": 25,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 40,
@@ -244,16 +246,16 @@ const liveGames = [
         "course": "成都高尔夫俱乐部",
         "players": [
             {
-                "user": 53,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_42baab82dde15ff959918d477ef1a352.png"
+                "user": 22,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
-                "user": 54,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_43166d4f7230db65a826aec546cee043.png"
+                "user": 24,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
-                "user": 55,
-                "avatar": "http://s1.golf-brother.com/data/attach/userVipPic/2025/05/20/p240_73ac8fb9cc8299edfc0115791ab436c3.png"
+                "user": 25,
+                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 22,
