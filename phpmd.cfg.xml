@@ -37,7 +37,7 @@
     </rule>
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
-            <property name="exceptions" value="id,q,i,j,v,e,f,fp" />
+            <property name="exceptions" value="id,q,i,j,v,e,f,fp,iv" />
         </properties>
     </rule>
     <!-- Import the entire unused code rule set -->
