@@ -13,25 +13,22 @@ Page({
     // 获取用户信息，确保总是有一个默认对象
     const initUserInfo = app.globalData.userInfo || {}
 
-    // 检查本地是否有保存的头像
+    // 使用Storage层获取头像
     let avatarUrl = initUserInfo.avatarUrl || '/images/default-avatar.png'
-    try {
-      const savedAvatarPath = wx.getStorageSync('userAvatarPath')
-      if (savedAvatarPath) {
-        // 检查文件是否存在
-        const fs = wx.getFileSystemManager()
-        try {
-          fs.accessSync(savedAvatarPath)
-          avatarUrl = savedAvatarPath
-          console.log('加载本地头像:', savedAvatarPath)
-        } catch (error) {
-          console.log('本地头像文件不存在，使用默认头像')
-          // 清除无效的存储
-          wx.removeStorageSync('userAvatarPath')
-        }
+    const savedAvatarPath = app.storage.getUserAvatar()
+
+    if (savedAvatarPath) {
+      // 检查文件是否存在
+      const fs = wx.getFileSystemManager()
+      try {
+        fs.accessSync(savedAvatarPath)
+        avatarUrl = savedAvatarPath
+        console.log('📸 加载本地头像:', savedAvatarPath)
+      } catch (error) {
+        console.log('🖼️ 本地头像文件不存在，使用默认头像')
+        // 清除无效的存储
+        app.storage.clearUserAvatar()
       }
-    } catch (error) {
-      console.error('读取本地头像失败:', error)
     }
 
     const safeUserInfo = {
@@ -54,13 +51,21 @@ Page({
     app.on('needBindPhone', this.handleNeedBindPhone)
   },
 
-  // 选择头像
+  // 选择头像（增强版）
   onChooseAvatar(e) {
-    console.log('选择头像:', e.detail)
+    console.log('📸 选择头像:', e.detail)
 
     // 检查是否有错误信息
     if (e.detail.errMsg && e.detail.errMsg !== 'chooseAvatar:ok') {
-      console.error('选择头像失败:', e.detail.errMsg)
+      console.error('❌ 选择头像失败:', e.detail.errMsg)
+
+      // 如果是开发工具的tmp目录问题，尝试备用方案
+      if (e.detail.errMsg.includes('ENOENT') || e.detail.errMsg.includes('tmp')) {
+        console.log('🔧 检测到开发工具bug，尝试备用方案')
+        this.chooseAvatarFallback()
+        return
+      }
+
       wx.showToast({
         title: '头像选择失败，请重试',
         icon: 'none'
@@ -72,7 +77,7 @@ Page({
 
     // 检查是否获取到头像地址
     if (!avatarUrl) {
-      console.error('未获取到头像地址')
+      console.error('❌ 未获取到头像地址')
       wx.showToast({
         title: '头像获取失败，请重试',
         icon: 'none'
@@ -84,7 +89,31 @@ Page({
     this.saveAvatarToLocal(avatarUrl)
   },
 
-  // 保存头像到本地存储
+  // 备用头像选择方案
+  chooseAvatarFallback() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      sizeType: ['compressed'],
+      success: (res) => {
+        if (res.tempFiles && res.tempFiles.length > 0) {
+          const tempFilePath = res.tempFiles[0].tempFilePath
+          console.log('✅ 备用方案获取头像成功:', tempFilePath)
+          this.saveAvatarToLocal(tempFilePath)
+        }
+      },
+      fail: (err) => {
+        console.error('❌ 备用方案也失败:', err)
+        wx.showToast({
+          title: '选择头像失败',
+          icon: 'none'
+        })
+      }
+    })
+  },
+
+  // 保存头像到本地存储（优化版）
   saveAvatarToLocal(tempAvatarUrl) {
     // 显示加载提示
     wx.showLoading({
@@ -102,13 +131,13 @@ Page({
         tempFilePath: tempAvatarUrl,
         filePath: avatarPath,
         success: (res) => {
-          console.log('头像保存成功:', res.savedFilePath)
+          console.log('✅ 头像保存成功:', res.savedFilePath)
 
           // 更新用户信息
           this.updateUserAvatar(res.savedFilePath)
 
-          // 保存到本地缓存
-          wx.setStorageSync('userAvatarPath', res.savedFilePath)
+          // 使用Storage层保存头像路径
+          app.storage.setUserAvatar(res.savedFilePath)
 
           wx.hideLoading()
           wx.showToast({
@@ -117,7 +146,7 @@ Page({
           })
         },
         fail: (err) => {
-          console.error('头像保存失败:', err)
+          console.error('❌ 头像保存失败:', err)
 
           // 如果保存失败，仍然使用临时路径
           this.updateUserAvatar(tempAvatarUrl)
@@ -130,7 +159,7 @@ Page({
         }
       })
     } catch (error) {
-      console.error('文件系统操作失败:', error)
+      console.error('❌ 文件系统操作失败:', error)
 
       // 降级处理：直接使用临时路径
       this.updateUserAvatar(tempAvatarUrl)
@@ -162,8 +191,9 @@ Page({
       userInfo: updatedUserInfo
     })
 
-    // 更新全局数据
+    // 更新全局数据和Storage
     app.globalData.userInfo = updatedUserInfo
+    app.storage.setUserInfo(updatedUserInfo)
   },
 
   // 昵称输入
