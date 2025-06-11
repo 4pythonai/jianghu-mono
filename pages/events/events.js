@@ -18,57 +18,10 @@ Page({
     onLoad() {
         // 页面加载时获取位置和加载团队列表
         this.getLocation()
-        this.loadTeamList()
     },
 
-    onPullDownRefresh() {
-        // 下拉刷新
-        this.setData({
-            page: 1,
-            hasMore: true,
-            teamList: []
-        }, () => {
-            this.loadTeamList().then(() => {
-                wx.stopPullDownRefresh()
-            })
-        })
-    },
+    onPullDownRefresh() { },
 
-    onReachBottom() {
-        // 上拉加载更多
-        if (this.data.hasMore && !this.data.loading) {
-            this.loadTeamList()
-        }
-    },
-
-    // 加载团队列表
-    async loadTeamList() {
-        if (this.data.loading || !this.data.hasMore) return
-
-        this.setData({ loading: true })
-
-        try {
-            const { page, pageSize } = this.data
-            const res = await api.team.list({ page, pageSize })
-
-            // 处理返回数据
-            const newList = this.data.page === 1 ? res.list : [...this.data.teamList, ...res.list]
-
-            this.setData({
-                teamList: newList,
-                page: page + 1,
-                hasMore: res.list.length === pageSize,
-                loading: false
-            })
-        } catch (error) {
-            console.error('加载团队列表失败：', error)
-            wx.showToast({
-                title: '加载失败',
-                icon: 'none'
-            })
-            this.setData({ loading: false })
-        }
-    },
 
     getLocation() {
         if (this.data.locationLoading) return

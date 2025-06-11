@@ -6,7 +6,6 @@
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
 		"pages/teamDetail/teamDetail",
-		"pages/editTeam/editTeam",
 		"pages/addGame/addGame"
 	],
 	"window": {
