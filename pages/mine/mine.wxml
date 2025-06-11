@@ -2,7 +2,7 @@
 	<!-- 用户信息区域 -->
 	<view class="user-info" wx:if="{{ userInfo }}">
 		<view class="avatar-container">
-			<image class="avatar" src="{{ userInfo.avatarUrl || '/assets/images/default-avatar.png' }}"></image>
+			<image class="avatar" src="{{ userInfo.avatarUrl || '/images/default-avatar.png' }}"></image>
 		</view>
 		<view class="user-details">
 			<text class="nickname">{{userInfo.nickName || '微信用户'}}</text>

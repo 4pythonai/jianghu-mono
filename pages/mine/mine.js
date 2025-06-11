@@ -15,16 +15,16 @@ Page({
     })
 
     // 监听登录成功事件
-    wx.event.on('loginSuccess', this.handleLoginSuccess)
+    app.on('loginSuccess', this.handleLoginSuccess)
 
     // 监听需要绑定手机号事件
-    wx.event.on('needBindPhone', this.handleNeedBindPhone)
+    app.on('needBindPhone', this.handleNeedBindPhone)
   },
 
   onUnload() {
     // 取消事件监听
-    wx.event.off('loginSuccess', this.handleLoginSuccess)
-    wx.event.off('needBindPhone', this.handleNeedBindPhone)
+    app.off('loginSuccess', this.handleLoginSuccess)
+    app.off('needBindPhone', this.handleNeedBindPhone)
   },
 
   // 处理登录成功事件
