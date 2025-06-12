@@ -4,7 +4,7 @@
 			<view class="marker-point point1" bindtap="handleMenuClick" data-type="playground" data-point="point1">
 				<view class="menu-item" animation="{{ animations.point1 }}">
 					<image class="menu-icon" src="/images/vectors/playground.png" mode="aspectFit"></image>
-					<text>运动场</text>
+					<text>更多创建</text>
 				</view>
 			</view>
 			<view class="marker-point point2" bindtap="handleMenuClick" data-type="commonCreate" data-point="point2">
@@ -17,12 +17,6 @@
 				<view class="menu-item" animation="{{ animations.point3 }}">
 					<image class="menu-icon" src="/images/vectors/quick.png" mode="aspectFit"></image>
 					<text>快速创建</text>
-				</view>
-			</view>
-			<view class="marker-point point4" bindtap="handleMenuClick" data-type="moreCreate" data-point="point4">
-				<view class="menu-item" animation="{{ animations.point4 }}">
-					<image class="menu-icon" src="/images/vectors/more.png" mode="aspectFit"></image>
-					<text>更多创建</text>
 				</view>
 			</view>
 		</view>

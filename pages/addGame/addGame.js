@@ -6,7 +6,6 @@ Page({
             point1: null,
             point2: null,
             point3: null,
-            point4: null
         }
     },
 
@@ -39,11 +38,6 @@ Page({
 
         // 根据type处理不同的菜单点击事件
         switch (type) {
-            case 'playground':
-                wx.navigateTo({
-                    url: '/pages/playground/playground'
-                });
-                break;
             case 'commonCreate':
                 wx.navigateTo({
                     url: '/pages/commonCreate/commonCreate'
@@ -73,7 +67,7 @@ Page({
 
         if (isOpen) {
             // 展开菜单时的卫星动画
-            const points = ['point1', 'point2', 'point3', 'point4'];
+            const points = ['point1', 'point2', 'point3'];
             points.forEach((point, index) => {
                 const animation = wx.createAnimation({
                     duration: 300,
@@ -94,7 +88,7 @@ Page({
             const resetAnim = wx.createAnimation({ duration: 0 });
             resetAnim.scale(1).opacity(1).step();
 
-            ['point1', 'point2', 'point3', 'point4'].forEach(point => {
+            ['point1', 'point2', 'point3'].forEach(point => {
                 this.setData({
                     [`animations.${point}`]: resetAnim.export()
                 });

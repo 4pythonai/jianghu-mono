@@ -78,26 +78,19 @@ page {
 	left: 50%;
 	top: 0;
 	transform-origin: center var(--circle-radius);
-	transform: translate(-50%, 0) rotate(-54deg);
+	transform: translate(-50%, 0) rotate(-45deg);
 }
 
 .menu-items .point2 {
 	left: 50%;
 	top: 0;
 	transform-origin: center var(--circle-radius);
-	transform: translate(-50%, 0) rotate(-18deg);
+	transform: translate(-50%, 0) rotate(0deg);
 }
 
 .menu-items .point3 {
 	left: 50%;
 	top: 0;
 	transform-origin: center var(--circle-radius);
-	transform: translate(-50%, 0) rotate(18deg);
-}
-
-.menu-items .point4 {
-	left: 50%;
-	top: 0;
-	transform-origin: center var(--circle-radius);
-	transform: translate(-50%, 0) rotate(54deg);
+	transform: translate(-50%, 0) rotate(45deg);
 }
