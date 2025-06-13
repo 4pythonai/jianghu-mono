@@ -1,6 +1,6 @@
 .page-container {
 	min-height: 100vh;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: linear-gradient(135deg, #51e95e 0%, #bde7af 100%);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -20,7 +20,7 @@
 .top-circle {
 	width: 120rpx;
 	height: 120rpx;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: linear-gradient(135deg, #51e95e 0%, #bde7af 100%);
 	border-radius: 50%;
 	position: absolute;
 	top: -60rpx;
@@ -147,10 +147,9 @@
 .create-btn {
 	width: 100%;
 	height: 88rpx;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	border-radius: 44rpx;
 	border: none;
-	color: white;
+	color: rgb(34, 31, 31);
 	font-size: 32rpx;
 	font-weight: 500;
 	display: flex;
