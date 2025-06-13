@@ -32,7 +32,7 @@
 					</view>
 				</view>
 			</view>
-			<text class="build-text">common Build</text>
+			<button class="create-btn" bindtap="handleCreateGame">创建比赛</button>
 		</view>
 	</view>
 </view>

@@ -43,10 +43,103 @@ Page({
     },
 
     /**
+     * 处理创建比赛
+     */
+    handleCreateGame() {
+        console.log('=== 创建比赛数据收集 ===');
+
+        // 收集所有数据
+        const gameData = {
+            // 基本信息
+            gameType: 'common', // 比赛类型
+            createTime: new Date().toISOString(), // 创建时间
+
+            // 球场信息
+            course: this.data.selectedCourse,
+
+            // 页面数据
+            pageData: this.data,
+
+            // 用户信息（如果有的话）
+            userInfo: getApp().globalData?.userInfo || null,
+
+            // 设备信息
+            systemInfo: wx.getSystemInfoSync(),
+
+            // 页面路径
+            currentPage: getCurrentPages()[getCurrentPages().length - 1].route
+        };
+
+        console.log('完整的比赛数据:', gameData);
+        console.log('选中的球场信息:', this.data.selectedCourse);
+        console.log('页面所有数据:', this.data);
+
+        // 数据验证
+        if (!this.data.selectedCourse) {
+            wx.showToast({
+                title: '请先选择球场',
+                icon: 'none'
+            });
+            console.warn('创建失败: 未选择球场');
+            return;
+        }
+
+        // 准备API请求数据
+        const apiRequestData = {
+            course_id: this.data.selectedCourse.id,
+            course_name: this.data.selectedCourse.name,
+            course_address: this.data.selectedCourse.address,
+            game_type: 'common',
+            create_time: new Date().toISOString()
+        };
+
+        console.log('准备发送给API的数据:', apiRequestData);
+
+        // 显示成功提示
+        wx.showToast({
+            title: '数据已收集完成',
+            icon: 'success'
+        });
+
+        // 这里可以调用API
+        // this.createGameAPI(apiRequestData);
+    },
+
+    /**
+     * 调用创建比赛API（示例）
+     */
+    async createGameAPI(data) {
+        try {
+            console.log('准备调用API创建比赛:', data);
+
+            // 示例API调用
+            // const result = await getApp().api.game.create(data);
+            // console.log('API返回结果:', result);
+
+            wx.showToast({
+                title: '比赛创建成功',
+                icon: 'success'
+            });
+
+            // 可以跳转到比赛详情页面
+            // wx.navigateTo({
+            //   url: `/pages/gameDetail/gameDetail?id=${result.game_id}`
+            // });
+
+        } catch (error) {
+            console.error('创建比赛失败:', error);
+            wx.showToast({
+                title: '创建失败，请重试',
+                icon: 'none'
+            });
+        }
+    },
+
+    /**
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-
+        console.log('commonCreate页面加载，参数:', options);
     },
 
     /**
@@ -60,7 +153,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
-
+        console.log('commonCreate页面显示，当前数据:', this.data);
     },
 
     /**
