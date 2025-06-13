@@ -3,7 +3,7 @@ import storage from './storage'
 
 /**
  * 认证管理器
- * 职责：微信登录、token验证、登录状态管理
+ * 职责：微信登录、token验证、登录状态管理、静默重新登录
  */
 class AuthManager {
     constructor() {
@@ -11,6 +11,7 @@ class AuthManager {
         this.isRefreshing = false
         this.retryCount = 0
         this.maxRetries = 3
+        this.silentLoginPromise = null // 静默登录的Promise，避免重复调用
     }
 
     /**
@@ -99,6 +100,62 @@ class AuthManager {
                 return await this.startWxLogin()
             }
 
+            throw error
+        }
+    }
+
+    /**
+     * 静默登录（用于HTTP客户端的自动重试）
+     */
+    async silentLogin() {
+        // 如果已经有静默登录在进行中，返回同一个Promise
+        if (this.silentLoginPromise) {
+            console.log('⏳ 静默登录已在进行中，等待完成')
+            return await this.silentLoginPromise
+        }
+
+        // 创建新的静默登录Promise
+        this.silentLoginPromise = this.performSilentLogin()
+
+        try {
+            const result = await this.silentLoginPromise
+            return result
+        } finally {
+            // 清除Promise引用
+            this.silentLoginPromise = null
+        }
+    }
+
+    /**
+     * 执行静默登录
+     */
+    async performSilentLogin() {
+        try {
+            console.log('🤫 开始静默登录流程')
+
+            // 清除过期的token
+            storage.clearTokens()
+
+            // 获取微信登录code
+            const code = await this.getWxLoginCode()
+
+            // 调用后端登录接口
+            const response = await api.user.wxLogin({ code })
+
+            if (response?.token) {
+                console.log('✅ 静默登录成功')
+
+                // 存储新的token和用户信息
+                await this.storeAuthData(response)
+
+                // 不通知app（静默登录）
+                return { success: true, user: response }
+            }
+
+            throw new Error('静默登录响应无效')
+
+        } catch (error) {
+            console.error('❌ 静默登录失败:', error)
             throw error
         }
     }
@@ -212,6 +269,9 @@ class AuthManager {
             // 清除所有认证相关数据
             this.clearAuthData()
 
+            // 清除静默登录Promise
+            this.silentLoginPromise = null
+
             // 通知app登出
             this.app.handleLogout()
 
@@ -290,6 +350,7 @@ class AuthManager {
         return {
             hasToken: storage.hasToken(),
             isRefreshing: this.isRefreshing,
+            isSilentLogin: !!this.silentLoginPromise,
             userInfo: storage.getUserInfo(),
             tokens: {
                 hasAccessToken: !!tokens.token,

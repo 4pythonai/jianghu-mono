@@ -84,6 +84,9 @@ App({
             // 连接HTTP客户端到App
             httpClient.setApp(this)
 
+            // 连接HTTP客户端到认证管理器
+            httpClient.setAuthManager(authManager)
+
             // 初始化认证管理器
             await authManager.initialize(this)
 

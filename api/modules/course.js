@@ -15,7 +15,10 @@ const course = {
     getFavorites: (data) => request('/course/getFavorites', data),
 
     // 搜索球场
-    searchCourse: (data) => request('/course/searchCourse', data)
+    searchCourse: (data) => request('/course/searchCourse', data),
+
+    // 获取球场详情
+    getCourseDetail: (data) => request('/course/getCourseDetail', data)
 }
 
 export default course

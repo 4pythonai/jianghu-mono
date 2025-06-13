@@ -3,7 +3,7 @@ import storage from '../utils/storage'
 
 /**
  * HTTP请求封装
- * 职责：网络请求、自动添加token、处理401响应、通知认证层
+ * 职责：网络请求、自动添加token、处理401响应、通知认证层、自动重试
  */
 class HttpClient {
     constructor(baseURL = config.baseURL) {
@@ -11,6 +11,9 @@ class HttpClient {
         this.timeout = config.timeout
         this.header = config.header
         this.app = null // App实例，用于事件通信
+        this.authManager = null // 认证管理器实例
+        this.isRefreshing = false // 是否正在刷新token
+        this.failedQueue = [] // 失败请求队列
     }
 
     /**
@@ -19,6 +22,14 @@ class HttpClient {
     setApp(app) {
         this.app = app
         console.log('🌐 HTTP客户端已连接到App')
+    }
+
+    /**
+     * 设置认证管理器实例
+     */
+    setAuthManager(authManager) {
+        this.authManager = authManager
+        console.log('🔐 HTTP客户端已连接到认证管理器')
     }
 
     /**
@@ -75,25 +86,114 @@ class HttpClient {
     /**
      * 处理响应
      */
-    handleResponse(response, requestConfig) {
+    async handleResponse(response, requestConfig) {
         // 检查HTTP状态码
         if (response.statusCode === 401) {
-            console.log('🔑 收到401响应，通知认证层处理')
-            this.notifyTokenExpired()
-            throw new Error('需要重新登录')
+            console.log('🔑 收到401响应，尝试静默重新登录')
+            return await this.handleAuthError(requestConfig)
         }
 
         // 检查业务状态码
         if (response.data?.code === ErrorCode.TOKEN_INVALID) {
-            console.log('🔑 业务层token失效，通知认证层处理')
-            this.notifyTokenExpired()
-            throw new Error('需要重新登录')
+            console.log('🔑 业务层token失效，尝试静默重新登录')
+            return await this.handleAuthError(requestConfig)
         }
 
         // 记录成功响应
         this.logResponse(response, requestConfig)
 
         return response.data
+    }
+
+    /**
+     * 处理认证错误，静默重新登录并重试请求
+     */
+    async handleAuthError(requestConfig) {
+        // 如果正在刷新token，将请求加入队列
+        if (this.isRefreshing) {
+            console.log('⏳ 正在刷新token，请求加入等待队列')
+            return new Promise((resolve, reject) => {
+                this.failedQueue.push({ resolve, reject, requestConfig })
+            })
+        }
+
+        // 开始刷新token
+        this.isRefreshing = true
+        console.log('🔄 开始静默重新登录')
+
+        try {
+            // 调用认证管理器进行静默登录
+            if (!this.authManager) {
+                throw new Error('认证管理器未设置')
+            }
+
+            await this.authManager.silentLogin()
+            console.log('✅ 静默重新登录成功，开始重试请求')
+
+            // 重试原始请求
+            const retryResult = await this.retryOriginalRequest(requestConfig)
+
+            // 处理队列中的请求
+            this.processFailedQueue(null)
+
+            return retryResult
+
+        } catch (error) {
+            console.error('❌ 静默重新登录失败:', error)
+
+            // 处理队列中的请求（全部失败）
+            this.processFailedQueue(error)
+
+            // 通知认证层处理登录失败
+            this.notifyTokenExpired()
+
+            throw error
+        } finally {
+            this.isRefreshing = false
+        }
+    }
+
+    /**
+     * 重试原始请求
+     */
+    async retryOriginalRequest(requestConfig) {
+        console.log('🔄 重试原始请求:', requestConfig._originalUrl)
+
+        // 重新构建请求配置（获取新的token）
+        const newRequestConfig = this.buildRequestConfig(
+            requestConfig._originalUrl,
+            requestConfig._originalData,
+            requestConfig._originalOptions
+        )
+
+        // 发送请求
+        const response = await this.wxRequest(newRequestConfig)
+
+        // 处理响应（不再处理401，避免无限循环）
+        if (response.statusCode === 401) {
+            throw new Error('重试后仍然401，认证失败')
+        }
+
+        this.logResponse(response, newRequestConfig)
+        return response.data
+    }
+
+    /**
+     * 处理失败队列中的请求
+     */
+    processFailedQueue(error) {
+        const queue = this.failedQueue.splice(0) // 清空队列
+
+        queue.forEach(({ resolve, reject, requestConfig }) => {
+            if (error) {
+                reject(error)
+            } else {
+                // 重试请求
+                this.retryOriginalRequest(requestConfig)
+                    .then(resolve)
+                    .catch(reject)
+            }
+        })
     }
 
     /**
@@ -105,8 +205,8 @@ class HttpClient {
 
         // 检查是否是认证相关错误
         if (this.isAuthError(error)) {
-            console.log('🔑 认证错误，通知认证层处理')
-            this.notifyTokenExpired()
+            console.log('🔑 认证错误，尝试静默重新登录')
+            return this.handleAuthError(requestConfig)
         }
 
         // 抛出错误
