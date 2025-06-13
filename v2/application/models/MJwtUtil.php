@@ -19,7 +19,7 @@ class MJwtUtil extends CI_Model {
      * @param int $expire 过期时间(秒)
      * @return string JWT Token
      */
-    public static function generateToken(array $payload, int $expire = 7200): string {
+    public static function generateToken(array $payload, int $expire): string {
         $header = [
             'alg' => self::$algorithm,
             'typ' => 'JWT'
@@ -69,7 +69,12 @@ class MJwtUtil extends CI_Model {
             return false;
         } else {
             logtext('MJwtUtil  验证过期时间 verify success');
-            logtext('过期时间:' .  $payload['exp'] . ' >当前时间:' . time());
+            $remainingSeconds = $payload['exp'] - time();
+            $days = floor($remainingSeconds / 86400);
+            $hours = floor(($remainingSeconds % 86400) / 3600);
+            $minutes = floor(($remainingSeconds % 3600) / 60);
+            $seconds = $remainingSeconds % 60;
+            logtext('Token还有' . $days . '天' . $hours . '小时' . $minutes . '分钟' . $seconds . '秒过期');
         }
 
         return $payload;

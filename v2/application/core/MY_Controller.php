@@ -195,7 +195,7 @@ class MY_Controller extends CI_Controller {
 
 
     $this->setUser($decoded['uid']);
-    $this->setMobile($decoded['openid']);
+    $this->setMobile($decoded['mobile']);
     return true;
   }
 

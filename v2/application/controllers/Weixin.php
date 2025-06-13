@@ -87,7 +87,7 @@ class Weixin extends CI_Controller {
             ];
 
 
-            $token = $this->MJwtUtil->generateToken($payload, 120);
+            $token = $this->MJwtUtil->generateToken($payload, 864000); // 10 天
             echo json_encode([
                 'code' => 200,
                 'success' => true,
