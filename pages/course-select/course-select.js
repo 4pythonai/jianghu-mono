@@ -1,26 +1,17 @@
 Page({
-    data: {},
-
-    handleBack() {
-        wx.navigateBack({
-            delta: 1
-        });
-    },
 
     /**
-     * 跳转到球场选择页面
+     * 页面的初始数据
      */
-    goToCourseSelect() {
-        wx.navigateTo({
-            url: '/pages/course-select/course-select'
-        });
+    data: {
+
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-
+        console.log('球场选择页面加载');
     },
 
     /**
@@ -71,4 +62,4 @@ Page({
     onShareAppMessage() {
 
     }
-}); 
+}) 
