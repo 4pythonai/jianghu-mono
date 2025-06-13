@@ -1,3 +1,19 @@
-<view class="content">
-	<text class="build-text">common Build</text>
+<view class="page-container">
+	<view class="main-card">
+		<view class="top-circle"></view>
+		<view class="card-content">
+			<view class="search-box">
+				<view class="search-input">
+					<view class="location-icon">
+						<image src="/assets/icons/location.svg" mode="aspectFit"></image>
+					</view>
+					<input type="text" placeholder="搜索球场" placeholder-class="input-placeholder" />
+					<view class="arrow-icon">
+						<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+					</view>
+				</view>
+			</view>
+			<text class="build-text">common Build</text>
+		</view>
+	</view>
 </view>
