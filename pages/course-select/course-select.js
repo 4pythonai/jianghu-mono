@@ -87,25 +87,61 @@ Page({
     },
 
     /**
-     * 选择球场
+     * 处理球场选择事件
      */
-    onSelectCourse(e) {
-        const course = e.currentTarget.dataset.course;
-        console.log('选中的球场:', course);
+    onCourseSelect(e) {
+        const { course } = e.detail
+        console.log('页面接收到选中的球场:', course)
 
-        // 将选中的球场信息存储到全局数据或者通过页面参数传递
-        const pages = getCurrentPages();
-        const prevPage = pages[pages.length - 2]; // 获取上一个页面
+        // 将选中的球场信息传递给上一个页面
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2] // 获取上一个页面
 
-        if (prevPage) {
+        if (prevPage && prevPage.setSelectedCourse) {
             // 调用上一个页面的方法来设置选中的球场
-            prevPage.setSelectedCourse(course);
+            prevPage.setSelectedCourse(course)
         }
 
         // 返回上一页
         wx.navigateBack({
             delta: 1
-        });
+        })
+    },
+
+    /**
+     * 处理错误事件
+     */
+    onError(e) {
+        const { type, error } = e.detail
+        console.error('CourseSelector错误:', type, error)
+
+        let message = '操作失败，请重试'
+        if (type === 'getFavorites') {
+            message = '获取收藏球场失败'
+        } else if (type === 'search') {
+            message = '搜索球场失败'
+        }
+
+        wx.showToast({
+            title: message,
+            icon: 'none'
+        })
+    },
+
+    /**
+     * 处理搜索开始事件
+     */
+    onSearchStart(e) {
+        const { keyword } = e.detail
+        console.log('开始搜索:', keyword)
+    },
+
+    /**
+     * 处理搜索完成事件
+     */
+    onSearchComplete(e) {
+        const { keyword, results } = e.detail
+        console.log('搜索完成:', keyword, '结果数量:', results.length)
     },
 
     /**

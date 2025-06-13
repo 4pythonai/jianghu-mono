@@ -1,5 +1,8 @@
 {
 	"navigationBarTitleText": "选择球场",
 	"navigationBarBackgroundColor": "#ffffff",
-	"navigationBarTextStyle": "black"
+	"navigationBarTextStyle": "black",
+	"usingComponents": {
+		"course-selector": "/components/CourseSelector/CourseSelector"
+	}
 }

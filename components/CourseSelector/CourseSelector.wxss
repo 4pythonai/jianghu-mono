@@ -1,0 +1,209 @@
+.course-selector {
+	width: 100%;
+	height: 100%;
+}
+
+/* 搜索框样式 */
+.search-box {
+	margin-bottom: 30rpx;
+}
+
+.search-input-wrap {
+	display: flex;
+	align-items: center;
+	background: #fff;
+	border-radius: 32rpx;
+	padding: 16rpx 24rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.search-icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-right: 16rpx;
+}
+
+.search-input {
+	flex: 1;
+	height: 40rpx;
+	font-size: 28rpx;
+	color: #333;
+}
+
+.search-placeholder {
+	color: #999;
+}
+
+/* 调试信息样式 */
+.debug-info {
+	padding: 16rpx;
+	background: #fff3cd;
+	border: 2rpx solid #ffeaa7;
+	border-radius: 8rpx;
+	margin-bottom: 20rpx;
+}
+
+.debug-info text {
+	font-size: 24rpx;
+	color: #856404;
+	font-family: monospace;
+}
+
+/* 搜索结果列表样式 */
+.search-list {
+	margin-top: 20rpx;
+}
+
+.search-item {
+	display: flex;
+	align-items: center;
+	padding: 24rpx;
+	background: #fff;
+	border-radius: 16rpx;
+	margin-bottom: 16rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+	transition: all 0.2s ease;
+}
+
+.search-item:active {
+	transform: scale(0.98);
+	background: #f8f8f8;
+}
+
+.course-image {
+	width: 120rpx;
+	height: 90rpx;
+	border-radius: 12rpx;
+	margin-right: 24rpx;
+	background: #f5f5f5;
+}
+
+.course-info {
+	flex: 1;
+}
+
+.course-name {
+	font-size: 32rpx;
+	color: #333;
+	font-weight: 500;
+	margin-bottom: 8rpx;
+	line-height: 1.4;
+}
+
+.course-address {
+	font-size: 26rpx;
+	color: #666;
+	line-height: 1.3;
+}
+
+.select-icon {
+	width: 32rpx;
+	height: 32rpx;
+	margin-left: 16rpx;
+	opacity: 0.6;
+}
+
+.select-icon image {
+	width: 100%;
+	height: 100%;
+}
+
+/* 收藏球场列表样式 */
+.favorite-list {
+	margin-top: 20rpx;
+}
+
+.section-title {
+	font-size: 32rpx;
+	color: #333;
+	font-weight: 500;
+	margin-bottom: 20rpx;
+	padding-left: 8rpx;
+}
+
+.favorite-item {
+	display: flex;
+	align-items: center;
+	padding: 24rpx;
+	background: #fff;
+	border-radius: 16rpx;
+	margin-bottom: 16rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+	transition: all 0.2s ease;
+}
+
+.favorite-item:active {
+	transform: scale(0.98);
+	background: #f8f8f8;
+}
+
+/* 空状态样式 */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 100rpx 40rpx;
+	text-align: center;
+}
+
+.empty-text {
+	font-size: 32rpx;
+	color: #666;
+	margin-bottom: 16rpx;
+}
+
+.empty-desc {
+	font-size: 26rpx;
+	color: #999;
+	line-height: 1.4;
+}
+
+/* 默认状态样式 */
+.default-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 100rpx 40rpx;
+	text-align: center;
+}
+
+.default-text {
+	font-size: 32rpx;
+	color: #999;
+	line-height: 1.4;
+}
+
+/* 加载状态样式 */
+.loading-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 100rpx 40rpx;
+}
+
+.loading-icon {
+	width: 60rpx;
+	height: 60rpx;
+	border: 4rpx solid #f3f3f3;
+	border-top: 4rpx solid #3498db;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+	margin-bottom: 20rpx;
+}
+
+.loading-text {
+	font-size: 28rpx;
+	color: #999;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
