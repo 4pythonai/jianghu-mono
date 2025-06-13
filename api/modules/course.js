@@ -9,7 +9,13 @@ const course = {
     getDetail: (data) => request('/course/getDetail', data),
 
     // 获取球场列表
-    getList: (data) => request('/course/getList', data)
+    getList: (data) => request('/course/getList', data),
+
+    // 获取常用球场
+    getFavorites: (data) => request('/course/getFavorites', data),
+
+    // 搜索球场
+    searchCourse: (data) => request('/course/searchCourse', data)
 }
 
 export default course

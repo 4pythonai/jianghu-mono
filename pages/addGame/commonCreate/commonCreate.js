@@ -1,5 +1,7 @@
 Page({
-    data: {},
+    data: {
+        selectedCourse: null // 选中的球场信息
+    },
 
     handleBack() {
         wx.navigateBack({
@@ -13,6 +15,30 @@ Page({
     goToCourseSelect() {
         wx.navigateTo({
             url: '/pages/course-select/course-select'
+        });
+    },
+
+    /**
+     * 设置选中的球场（由球场选择页面调用）
+     */
+    setSelectedCourse(course) {
+        console.log('接收到选中的球场:', course);
+        this.setData({
+            selectedCourse: course
+        });
+
+        wx.showToast({
+            title: `已选择 ${course.name}`,
+            icon: 'success'
+        });
+    },
+
+    /**
+     * 清除选中的球场
+     */
+    clearSelectedCourse() {
+        this.setData({
+            selectedCourse: null
         });
     },
 
