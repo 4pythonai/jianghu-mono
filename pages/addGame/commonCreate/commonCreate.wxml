@@ -22,6 +22,11 @@
 						<view class="course-details">
 							<view class="course-name">{{selectedCourse.name}}</view>
 							<view class="course-address">{{selectedCourse.address}}</view>
+							<!-- 显示半场信息 -->
+							<view class="court-info" wx:if="{{ selectedCourt }}">
+								<text class="court-name">{{selectedCourt.name}}</text>
+								<text class="court-price">¥{{selectedCourt.price}}</text>
+							</view>
 						</view>
 						<view class="change-icon">
 							<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>

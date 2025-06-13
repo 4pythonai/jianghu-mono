@@ -1,0 +1,41 @@
+<view class="page-container">
+	<!-- 选中的球场信息 -->
+	<view class="selected-course-info">
+		<view class="course-card">
+			<image class="course-image" src="{{ selectedCourse.cover_url }}" mode="aspectFill"></image>
+			<view class="course-details">
+				<view class="course-name">{{selectedCourse.name}}</view>
+				<view class="course-address">{{selectedCourse.address}}</view>
+			</view>
+		</view>
+	</view>
+	<!-- 半场选择标题 -->
+	<view class="section-title">选择半场</view>
+	<!-- 半场选项列表 -->
+	<view class="court-list">
+		<view
+			class="court-item {{ selectedCourt === item.value ? 'selected' : '' }}"
+			wx:for="{{ courtOptions }}"
+			wx:key="value"
+			bindtap="onSelectCourt"
+			data-court="{{ item }}"
+		>
+			<view class="court-info">
+				<view class="court-name">{{item.name}}</view>
+				<view class="court-desc">{{item.description}}</view>
+				<view class="court-holes">{{item.holes}}洞</view>
+			</view>
+			<view class="court-price">
+				<text class="price-label">价格</text>
+				<text class="price-value">¥{{item.price}}</text>
+			</view>
+			<view class="select-indicator" wx:if="{{ selectedCourt === item.value }}">
+				<image src="/assets/icons/check.svg" mode="aspectFit"></image>
+			</view>
+		</view>
+	</view>
+	<!-- 确认按钮 -->
+	<view class="confirm-section">
+		<button class="confirm-btn {{ selectedCourt ? 'active' : 'disabled' }}" bindtap="onConfirm" disabled="{{ !selectedCourt }}">确认选择</button>
+	</view>
+</view>

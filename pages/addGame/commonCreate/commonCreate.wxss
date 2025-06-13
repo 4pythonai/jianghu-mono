@@ -115,6 +115,29 @@
 	color: #666;
 }
 
+/* 半场信息样式 */
+.court-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 8rpx;
+	padding: 8rpx 12rpx;
+	background: #e8f5e8;
+	border-radius: 8rpx;
+}
+
+.court-name {
+	font-size: 24rpx;
+	color: #1aad19;
+	font-weight: 500;
+}
+
+.court-price {
+	font-size: 24rpx;
+	color: #e74c3c;
+	font-weight: 600;
+}
+
 .change-icon {
 	width: 32rpx;
 	height: 32rpx;

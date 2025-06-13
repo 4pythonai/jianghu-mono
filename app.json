@@ -9,7 +9,8 @@
 		"pages/addGame/moreCreate/moreCreate",
 		"pages/addGame/commonCreate/commonCreate",
 		"pages/addGame/quickCreate/quickCreate",
-		"pages/course-select/course-select"
+		"pages/course-select/course-select",
+		"pages/court-select/court-select"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

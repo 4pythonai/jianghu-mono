@@ -93,18 +93,9 @@ Page({
         const { course } = e.detail
         console.log('页面接收到选中的球场:', course)
 
-        // 将选中的球场信息传递给上一个页面
-        const pages = getCurrentPages()
-        const prevPage = pages[pages.length - 2] // 获取上一个页面
-
-        if (prevPage && prevPage.setSelectedCourse) {
-            // 调用上一个页面的方法来设置选中的球场
-            prevPage.setSelectedCourse(course)
-        }
-
-        // 返回上一页
-        wx.navigateBack({
-            delta: 1
+        // 跳转到半场选择页面，传递球场信息
+        wx.navigateTo({
+            url: `/pages/court-select/court-select?courseData=${encodeURIComponent(JSON.stringify(course))}`
         })
     },
 

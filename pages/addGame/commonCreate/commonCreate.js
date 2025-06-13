@@ -1,6 +1,7 @@
 Page({
     data: {
-        selectedCourse: null // 选中的球场信息
+        selectedCourse: null, // 选中的球场信息
+        selectedCourt: null   // 选中的半场信息
     },
 
     handleBack() {
@@ -34,11 +35,30 @@ Page({
     },
 
     /**
-     * 清除选中的球场
+     * 设置半场选择结果（由半场选择页面调用）
+     */
+    setCourtSelection(selectionData) {
+        console.log('接收到半场选择结果:', selectionData);
+
+        this.setData({
+            selectedCourse: selectionData.course,
+            selectedCourt: selectionData.court
+        });
+
+        wx.showToast({
+            title: `已选择 ${selectionData.course.name} - ${selectionData.court.name}`,
+            icon: 'success',
+            duration: 2000
+        });
+    },
+
+    /**
+     * 清除选中的球场和半场
      */
     clearSelectedCourse() {
         this.setData({
-            selectedCourse: null
+            selectedCourse: null,
+            selectedCourt: null
         });
     },
 
@@ -57,6 +77,9 @@ Page({
             // 球场信息
             course: this.data.selectedCourse,
 
+            // 半场信息
+            court: this.data.selectedCourt,
+
             // 页面数据
             pageData: this.data,
 
@@ -72,6 +95,7 @@ Page({
 
         console.log('完整的比赛数据:', gameData);
         console.log('选中的球场信息:', this.data.selectedCourse);
+        console.log('选中的半场信息:', this.data.selectedCourt);
         console.log('页面所有数据:', this.data);
 
         // 数据验证
@@ -84,11 +108,24 @@ Page({
             return;
         }
 
+        if (!this.data.selectedCourt) {
+            wx.showToast({
+                title: '请先选择半场',
+                icon: 'none'
+            });
+            console.warn('创建失败: 未选择半场');
+            return;
+        }
+
         // 准备API请求数据
         const apiRequestData = {
             course_id: this.data.selectedCourse.id,
             course_name: this.data.selectedCourse.name,
             course_address: this.data.selectedCourse.address,
+            court_type: this.data.selectedCourt.value,
+            court_name: this.data.selectedCourt.name,
+            court_holes: this.data.selectedCourt.holes,
+            court_price: this.data.selectedCourt.price,
             game_type: 'common',
             create_time: new Date().toISOString()
         };
