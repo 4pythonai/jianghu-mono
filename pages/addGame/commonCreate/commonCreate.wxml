@@ -1,0 +1,11 @@
+<view class="container">
+	<view class="header">
+		<view class="back-btn" bindtap="handleBack">
+			<text class="back-icon">←</text>
+		</view>
+		<text class="title">普通创建</text>
+	</view>
+	<view class="content">
+		<text class="build-text">Under Build</text>
+	</view>
+</view>

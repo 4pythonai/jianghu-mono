@@ -5,7 +5,10 @@
 		"pages/community/community",
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
-		"pages/addGame/addGame"
+		"pages/addGame/addGame",
+		"pages/addGame/moreCreate/moreCreate",
+		"pages/addGame/commonCreate/commonCreate",
+		"pages/addGame/quickCreate/quickCreate"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

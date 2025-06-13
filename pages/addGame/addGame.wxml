@@ -1,9 +1,9 @@
 <view class="container">
 	<view class="menu-container {{ isMenuOpen ? 'menu-open' : '' }}">
 		<view class="menu-items">
-			<view class="marker-point point1" bindtap="handleMenuClick" data-type="playground" data-point="point1">
+			<view class="marker-point point1" bindtap="handleMenuClick" data-type="moreCreate" data-point="point1">
 				<view class="menu-item" animation="{{ animations.point1 }}">
-					<image class="menu-icon" src="/images/vectors/playground.png" mode="aspectFit"></image>
+					<image class="menu-icon" src="/images/vectors/more.png" mode="aspectFit"></image>
 					<text>更多创建</text>
 				</view>
 			</view>
