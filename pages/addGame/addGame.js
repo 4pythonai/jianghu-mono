@@ -45,7 +45,7 @@ Page({
         if (isOpen) {
             // 展开菜单时的卫星动画
             const points = ['point1', 'point2', 'point3'];
-            points.forEach((point, index) => {
+            for (const [index, point] of points.entries()) {
                 const animation = wx.createAnimation({
                     duration: 300,
                     timingFunction: 'ease-out',
@@ -59,21 +59,28 @@ Page({
                 this.setData({
                     [`animations.${point}`]: animation.export()
                 });
-            });
+            }
         } else {
             // 关闭菜单时恢复初始状态
             const resetAnim = wx.createAnimation({ duration: 0 });
             resetAnim.scale(1).opacity(1).step();
 
-            ['point1', 'point2', 'point3'].forEach(point => {
+            const points = ['point1', 'point2', 'point3'];
+            for (const point of points) {
                 this.setData({
                     [`animations.${point}`]: resetAnim.export()
                 });
-            });
+            }
         }
 
         this.setData({
             isMenuOpen: isOpen
+        });
+    },
+
+    handleBack() {
+        wx.navigateBack({
+            delta: 1
         });
     }
 });
