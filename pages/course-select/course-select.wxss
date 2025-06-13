@@ -35,6 +35,21 @@
 	color: #999;
 }
 
+/* 调试信息样式 */
+.debug-info {
+	padding: 16rpx;
+	background: #fff3cd;
+	border: 2rpx solid #ffeaa7;
+	border-radius: 8rpx;
+	margin-bottom: 20rpx;
+}
+
+.debug-info text {
+	font-size: 24rpx;
+	color: #856404;
+	font-family: monospace;
+}
+
 /* 搜索结果列表样式 */
 .search-list {
 	margin-top: 20rpx;

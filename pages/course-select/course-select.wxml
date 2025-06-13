@@ -10,8 +10,14 @@
 				placeholder-class="search-placeholder"
 				value="{{ searchValue }}"
 				bindinput="onInput"
+				data-test="input-test"
+				data-debug="true"
 			/>
 		</view>
+	</view>
+	<!-- 调试信息 -->
+	<view class="debug-info">
+		<text>调试: searchValue = "{{searchValue}}" (长度: {{searchValue.length}})</text>
 	</view>
 	<!-- 搜索结果列表 -->
 	<view class="search-list" wx:if="{{ searchList.length > 0 }}">

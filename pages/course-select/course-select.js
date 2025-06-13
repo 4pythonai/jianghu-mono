@@ -17,6 +17,7 @@ Page({
      */
     onLoad(options) {
         console.log('球场选择页面加载');
+        console.log('初始数据:', this.data);
         this.getFavoriteCourses();
     },
 
@@ -40,23 +41,22 @@ Page({
     },
 
     /**
-     * 输入框内容变化
+     * 处理输入框输入事件
      */
-    async onInput(e) {
+    onInput(e) {
         const value = e.detail.value;
-        console.log('搜索关键词:', value);
+        console.log('输入事件:', value);
 
+        // 更新页面数据
         this.setData({
             searchValue: value
         });
 
+        // 执行搜索逻辑
         if (value && value.trim()) {
-            await this.searchCourses(value.trim());
+            this.searchCourses(value.trim());
         } else {
-            // 清空搜索结果
-            this.setData({
-                searchList: []
-            });
+            this.setData({ searchList: [] });
         }
     },
 
@@ -112,14 +112,14 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady() {
-
+        console.log('页面渲染完成，当前数据:', this.data);
     },
 
     /**
      * 生命周期函数--监听页面显示
      */
     onShow() {
-
+        console.log('页面显示，当前searchValue:', this.data.searchValue);
     },
 
     /**
