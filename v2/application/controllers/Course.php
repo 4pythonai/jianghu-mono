@@ -105,4 +105,25 @@ class Course extends MY_Controller {
         $courses = $this->db->query($query)->result_array();
         echo json_encode(['code' => 200, 'courses' => $courses], JSON_UNESCAPED_UNICODE);
     }
+
+
+    public function getCourseDetail() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $courseid = $json_paras['courseid'];
+        $query = "SELECT id,courseid,name,coverpath,covername,courtnum FROM t_course WHERE courseid = $courseid";
+        $course = $this->db->query($query)->row_array();
+
+        // courts
+        $query = "SELECT * FROM t_course_court WHERE courseid = $courseid order by courtname";
+        $courts = $this->db->query($query)->result_array();
+
+        // holes
+        foreach ($courts as &$court) {
+            $courtid = $court['courtid'];
+            $query = "SELECT  holeid,holename, par FROM t_court_hole WHERE courtid = $courtid ";
+            $holes = $this->db->query($query)->result_array();
+            $court['courtholes'] = $holes;
+        }
+        echo json_encode(['code' => 200, 'course' => $course, 'courts' => $courts], JSON_UNESCAPED_UNICODE);
+    }
 }

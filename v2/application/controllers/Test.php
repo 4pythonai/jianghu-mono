@@ -47,4 +47,25 @@ class Test extends CI_Controller {
             debug(['error' => 'game.json file not found']);
         }
     }
+
+
+
+    public function getCourseDetail() {
+        $courseid = 100021;
+        $query = "SELECT id,courseid,name,coverpath,covername,courtnum FROM t_course WHERE courseid = $courseid";
+        $course = $this->db->query($query)->row_array();
+
+        // courts
+        $query = "SELECT * FROM t_course_court WHERE courseid = $courseid";
+        $courts = $this->db->query($query)->result_array();
+
+        // holes
+        foreach ($courts as &$court) {
+            $courtid = $court['courtid'];
+            $query = "SELECT  holeid,holename, par FROM t_court_hole WHERE courtid = $courtid  limit 3";
+            $holes = $this->db->query($query)->result_array();
+            $court['courtholes'] = $holes;
+        }
+        echo json_encode(['code' => 200, 'course' => $course, 'courts' => $courts], JSON_UNESCAPED_UNICODE);
+    }
 }
