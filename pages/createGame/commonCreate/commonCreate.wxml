@@ -77,13 +77,13 @@
 				<view class="form-item">
 					<view class="form-label">赛制</view>
 					<view class="radio-group">
-						<radio-group bindchange="onGameTypeChange">
+						<radio-group bindchange="onScoringTypeChange">
 							<label class="radio-item">
-								<radio value="hole" checked="{{ formData.gameType === 'hole' }}" color="#4CAF50" />
+								<radio value="hole" checked="{{ formData.ScoringType === 'hole' }}" color="#4CAF50" />
 								<text class="radio-text">个人比杆</text>
 							</label>
 							<label class="radio-item">
-								<radio value="oneball" checked="{{ formData.gameType === 'oneball' }}" color="#4CAF50" />
+								<radio value="oneball" checked="{{ formData.ScoringType === 'oneball' }}" color="#4CAF50" />
 								<text class="radio-text">旺波</text>
 							</label>
 						</radio-group>

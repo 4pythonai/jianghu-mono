@@ -7,7 +7,7 @@ Page({
         formData: {
             gameName: '',       // 比赛名称
             openTime: '',       // 开球时间
-            gameType: 'hole',   // 赛制：hole-按洞赛, oneball-比杆赛
+            ScoringType: 'hole',   // 赛制：hole-按洞赛, oneball-比杆赛
             gameGroups: [       // 参赛组别（至少一组）
                 {
                     players: []
@@ -109,9 +109,9 @@ Page({
     /**
      * 赛制选择
      */
-    onGameTypeChange(e) {
+    onScoringTypeChange(e) {
         this.setData({
-            'formData.gameType': e.detail.value
+            'formData.ScoringType': e.detail.value
         });
     },
 
@@ -341,7 +341,7 @@ Page({
         // 收集所有数据
         const gameData = {
             // 基本信息
-            gameType: 'common', // 比赛类型
+            ScoringType: 'common', // 比赛类型
             createTime: new Date().toISOString(), // 创建时间
 
             // 球场信息
@@ -390,7 +390,7 @@ Page({
             game_type: 'common',
             game_name: this.data.formData.gameName,
             open_time: this.data.formData.openTime,
-            game_rule: this.data.formData.gameType, // hole 或 oneball
+            scoring_type: this.data.formData.ScoringType, // hole 或 oneball
             is_private: this.data.formData.isPrivate,
             password: this.data.formData.password,
             game_groups: this.data.formData.gameGroups,
