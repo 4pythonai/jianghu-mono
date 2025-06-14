@@ -220,12 +220,58 @@ Page({
         const { selectionData } = e.detail
         console.log('页面接收到确认选择:', selectionData)
 
-        // 将选择结果传递给上级页面
-        const pages = getCurrentPages()
-        const prevPage = pages[pages.length - 2] // 获取上一个页面
+        // 组合半场信息，将前九洞和后九洞合并为一个court对象
+        const combinedCourt = {
+            name: `${selectionData.frontNine?.courtname || '前九洞'} + ${selectionData.backNine?.courtname || '后九洞'}`,
+            value: 'full_18_holes', // 18洞标识
+            holes: 18, // 总洞数
+            price: (selectionData.frontNine?.price || 0) + (selectionData.backNine?.price || 0), // 价格相加
+            frontNine: selectionData.frontNine,
+            backNine: selectionData.backNine,
+            frontNineHoles: selectionData.frontNineHoles,
+            backNineHoles: selectionData.backNineHoles
+        }
 
-        // 如果上一个页面有处理方法，调用它
-        prevPage?.setCourtSelection?.(selectionData)
+        // 转换数据格式，匹配commonCreate期望的格式
+        const formattedData = {
+            course: selectionData.course,
+            court: combinedCourt, // 这里是关键！将组合后的半场信息赋值给court
+            timestamp: selectionData.timestamp
+        }
+
+        console.log('转换后的数据格式:', formattedData)
+
+        // 将选择结果传递给commonCreate页面
+        const pages = getCurrentPages()
+        const commonCreatePage = pages[pages.length - 3] // 获取commonCreate页面（跳过course-select页面）
+
+        console.log('=== 页面栈调试信息 ===')
+        console.log('当前页面栈:', pages.map(p => p.route))
+        console.log('页面栈长度:', pages.length)
+        console.log('当前页面(最后一个):', pages[pages.length - 1]?.route)
+        console.log('course-select页面(倒数第二个):', pages[pages.length - 2]?.route)
+        console.log('commonCreate页面(倒数第三个):', commonCreatePage?.route)
+        console.log('commonCreate页面是否存在:', !!commonCreatePage)
+        console.log('commonCreate页面是否有setCourtSelection方法:', typeof commonCreatePage?.setCourtSelection)
+
+        // 打印更多页面信息
+        pages.forEach((page, index) => {
+            console.log(`页面${index}: ${page.route}, 有setCourtSelection方法: ${typeof page.setCourtSelection}`)
+        })
+
+        // 调用commonCreate页面的方法
+        if (commonCreatePage?.setCourtSelection) {
+            console.log('调用commonCreate页面的setCourtSelection方法')
+            commonCreatePage.setCourtSelection(formattedData)
+        } else {
+            console.error('commonCreate页面没有setCourtSelection方法或页面不存在')
+
+            // 备用方案：尝试通过事件总线或者其他方式传递数据
+            console.log('尝试备用方案...')
+            // 可以尝试使用 wx.setStorageSync 临时存储数据
+            wx.setStorageSync('selectedCourtData', formattedData)
+            console.log('数据已存储到本地缓存')
+        }
 
         // 返回到创建比赛页面（跳过球场选择页面）
         wx.navigateBack({

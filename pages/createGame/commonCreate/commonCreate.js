@@ -38,15 +38,20 @@ Page({
      * 设置半场选择结果（由半场选择页面调用）
      */
     setCourtSelection(selectionData) {
+        console.log('=== commonCreate.setCourtSelection 被调用 ===');
         console.log('接收到半场选择结果:', selectionData);
+        console.log('selectionData.course:', selectionData.course);
+        console.log('selectionData.court:', selectionData.court);
 
         this.setData({
             selectedCourse: selectionData.course,
             selectedCourt: selectionData.court
         });
 
+        console.log('数据设置完成，当前页面数据:', this.data);
+
         wx.showToast({
-            title: `已选择 ${selectionData.course.name} - ${selectionData.court.name}`,
+            title: `已选择 ${selectionData.course?.name || '球场'} - ${selectionData.court?.name || '半场'}`,
             icon: 'success',
             duration: 2000
         });
@@ -119,13 +124,18 @@ Page({
 
         // 准备API请求数据
         const apiRequestData = {
-            course_id: this.data.selectedCourse.id,
+            course_id: this.data.selectedCourse.id || this.data.selectedCourse.courseid,
             course_name: this.data.selectedCourse.name,
             course_address: this.data.selectedCourse.address,
             court_type: this.data.selectedCourt.value,
             court_name: this.data.selectedCourt.name,
             court_holes: this.data.selectedCourt.holes,
             court_price: this.data.selectedCourt.price,
+            // 如果是18洞，还包含前九洞和后九洞的详细信息
+            front_nine: this.data.selectedCourt.frontNine,
+            back_nine: this.data.selectedCourt.backNine,
+            front_nine_holes: this.data.selectedCourt.frontNineHoles,
+            back_nine_holes: this.data.selectedCourt.backNineHoles,
             game_type: 'common',
             create_time: new Date().toISOString()
         };
@@ -191,6 +201,19 @@ Page({
      */
     onShow() {
         console.log('commonCreate页面显示，当前数据:', this.data);
+
+        // 检查本地缓存中是否有选择的半场数据（备用方案）
+        try {
+            const cachedCourtData = wx.getStorageSync('selectedCourtData')
+            if (cachedCourtData) {
+                console.log('从缓存中读取到半场选择数据:', cachedCourtData)
+                this.setCourtSelection(cachedCourtData)
+                // 清除缓存，避免重复使用
+                wx.removeStorageSync('selectedCourtData')
+            }
+        } catch (error) {
+            console.error('读取缓存数据失败:', error)
+        }
     },
 
     /**
