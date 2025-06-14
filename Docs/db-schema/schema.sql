@@ -16,7 +16,6 @@ CREATE TABLE `t_course` (
   `overallRating` int DEFAULT '0',
   `opStatus` varchar(50) DEFAULT NULL,
   `coverpath` varchar(255) DEFAULT NULL COMMENT '球场照片缩略图',
-  `covername` char(40) DEFAULT NULL,
   `lat` char(30) DEFAULT NULL,
   `lng` char(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `sLat` varchar(400) DEFAULT NULL,
@@ -25,13 +24,14 @@ CREATE TABLE `t_course` (
   `courtnum` int NOT NULL COMMENT '半场数量',
   `status` int DEFAULT '0' COMMENT '1为停用',
   PRIMARY KEY (`id`),
-  KEY `courseID` (`courseid`,`name`),
+  KEY `courseID` (`courseid`, `name`),
   KEY `idx_lat` (`lat`),
   KEY `idx_lgt` (`lng`),
   KEY `idx_pid` (`pid`),
   KEY `idx_courseid` (`courseid`),
   FULLTEXT KEY `ind_cname` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=37527 DEFAULT CHARSET=utf8mb3 COMMENT='球场';
+) ENGINE = InnoDB AUTO_INCREMENT = 37527 DEFAULT CHARSET = utf8mb3 COMMENT = '球场';
+
 CREATE TABLE `t_course_court` (
   `Id` int NOT NULL AUTO_INCREMENT,
   `courseid` int DEFAULT '0' COMMENT '球场ID',
@@ -40,7 +40,8 @@ CREATE TABLE `t_course_court` (
   `bak_field` varchar(400) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `courtid` (`courtid`)
-) ENGINE=InnoDB AUTO_INCREMENT=67350 DEFAULT CHARSET=utf8mb3 COMMENT='球场对应半场';
+) ENGINE = InnoDB AUTO_INCREMENT = 67350 DEFAULT CHARSET = utf8mb3 COMMENT = '球场对应半场';
+
 CREATE TABLE `t_court_hole` (
   `holeid` int NOT NULL AUTO_INCREMENT,
   `courseid` int DEFAULT '0' COMMENT '球场ID',
@@ -65,7 +66,8 @@ CREATE TABLE `t_court_hole` (
   KEY `idx_courseid` (`courseid`),
   KEY `idx_holeid` (`holeid`),
   KEY `idx_courtid` (`courtid`)
-) ENGINE=InnoDB AUTO_INCREMENT=606130 DEFAULT CHARSET=utf8mb3 COMMENT='半场对应球洞';
+) ENGINE = InnoDB AUTO_INCREMENT = 606130 DEFAULT CHARSET = utf8mb3 COMMENT = '半场对应球洞';
+
 CREATE TABLE `t_friend` (
   `id` int NOT NULL AUTO_INCREMENT,
   `userid` int DEFAULT '0' COMMENT '用户id',
@@ -80,12 +82,13 @@ CREATE TABLE `t_friend` (
   `lasttime` int DEFAULT '0' COMMENT '查看时间/接受时间',
   `lastip` varchar(20) DEFAULT NULL COMMENT '查看时间/接受ip',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_unq_userid_fuserid` (`userid`,`fuserid`),
-  UNIQUE KEY `userid` (`userid`,`fuserid`),
+  UNIQUE KEY `idx_unq_userid_fuserid` (`userid`, `fuserid`),
+  UNIQUE KEY `userid` (`userid`, `fuserid`),
   KEY `idx_userid` (`userid`),
   KEY `idx_fuserid` (`fuserid`),
   KEY `idx_status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=24026506 DEFAULT CHARSET=utf8mb3;
+) ENGINE = InnoDB AUTO_INCREMENT = 24026506 DEFAULT CHARSET = utf8mb3;
+
 CREATE TABLE `t_gamble_algorithm` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `cfg_item` char(255) DEFAULT NULL,
@@ -93,7 +96,8 @@ CREATE TABLE `t_gamble_algorithm` (
   `cfg_value` char(255) DEFAULT NULL,
   `cfg_opt` char(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 DEFAULT CHARSET = utf8mb3;
+
 CREATE TABLE `t_gamble_data_adjust` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gambleid` int DEFAULT NULL,
@@ -112,7 +116,8 @@ CREATE TABLE `t_gamble_data_adjust` (
   `debug` char(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_gambleid` (`gambleid`)
-) ENGINE=InnoDB AUTO_INCREMENT=783317 DEFAULT CHARSET=utf8mb3;
+) ENGINE = InnoDB AUTO_INCREMENT = 783317 DEFAULT CHARSET = utf8mb3;
+
 CREATE TABLE `t_gamble_game_alpha` (
   `gambleid` int unsigned NOT NULL AUTO_INCREMENT,
   `gameid` int DEFAULT NULL,
@@ -151,13 +156,15 @@ CREATE TABLE `t_gamble_game_alpha` (
   KEY `idx_gameid` (`gameid`),
   KEY `idx_groupid` (`groupid`),
   KEY `batchid` (`batchid`)
-) ENGINE=InnoDB AUTO_INCREMENT=689147 DEFAULT CHARSET=utf8mb3;
+) ENGINE = InnoDB AUTO_INCREMENT = 689147 DEFAULT CHARSET = utf8mb3;
+
 CREATE TABLE `t_gamble_kpi_cfg` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `kpi_name` char(11) DEFAULT NULL,
   `point` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 DEFAULT CHARSET = utf8mb3;
+
 CREATE TABLE `t_gamble_rule_alpha` (
   `sysruleid` int unsigned NOT NULL AUTO_INCREMENT,
   `rulename` char(100) DEFAULT NULL,
@@ -187,7 +194,8 @@ CREATE TABLE `t_gamble_rule_alpha` (
   `draw_8421` char(30) DEFAULT NULL COMMENT '8421打平后顺延的成绩',
   `duty_8421` char(30) DEFAULT NULL COMMENT '8421包分选项',
   PRIMARY KEY (`sysruleid`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb3;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 DEFAULT CHARSET = utf8mb3;
+
 CREATE TABLE `t_gamble_rule_user` (
   `userruleid` int unsigned NOT NULL AUTO_INCREMENT,
   `sysruleid` int DEFAULT NULL,
@@ -213,7 +221,8 @@ CREATE TABLE `t_gamble_rule_user` (
   `skin` int DEFAULT NULL,
   PRIMARY KEY (`userruleid`),
   KEY `idx_userid` (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=4902 DEFAULT CHARSET=utf8mb3;
+) ENGINE = InnoDB AUTO_INCREMENT = 4902 DEFAULT CHARSET = utf8mb3;
+
 CREATE TABLE `t_gamble_rule_user_alpha` (
   `userruleid` int unsigned NOT NULL AUTO_INCREMENT,
   `sysruleid` int DEFAULT NULL,
@@ -247,7 +256,8 @@ CREATE TABLE `t_gamble_rule_user_alpha` (
   `ruleshow` char(1) DEFAULT NULL,
   PRIMARY KEY (`userruleid`),
   KEY `idx_userid` (`userid`)
-) ENGINE=InnoDB AUTO_INCREMENT=87037 DEFAULT CHARSET=utf8mb3;
+) ENGINE = InnoDB AUTO_INCREMENT = 87037 DEFAULT CHARSET = utf8mb3;
+
 CREATE TABLE `t_game` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(400) DEFAULT NULL COMMENT '比赛名称',
@@ -264,17 +274,18 @@ CREATE TABLE `t_game` (
   `is_oneball` tinyint NOT NULL DEFAULT '0' COMMENT '是否 OneBall 赛',
   PRIMARY KEY (`id`),
   KEY `idx_addid` (`creatorid`),
-  KEY `idx_gamestate_privacy` (`gamestate`,`private`),
+  KEY `idx_gamestate_privacy` (`gamestate`, `private`),
   KEY `idx_starttime_gametype` (`starttime`),
   KEY `idx_name` (`name`(255)),
   KEY `idx_courseid` (`courseid`),
   KEY `idx_teamid` (`teamid`),
   KEY `idx_starttime` (`starttime`),
-  KEY `idx_courseid_gamestate` (`courseid`,`gamestate`),
-  KEY `idx_courseid_gamestate_createtime` (`courseid`,`gamestate`,`create_time`),
-  KEY `idx_courseid_gamestate_gameid` (`courseid`,`gamestate`,`id`),
+  KEY `idx_courseid_gamestate` (`courseid`, `gamestate`),
+  KEY `idx_courseid_gamestate_createtime` (`courseid`, `gamestate`, `create_time`),
+  KEY `idx_courseid_gamestate_gameid` (`courseid`, `gamestate`, `id`),
   FULLTEXT KEY `fulltext_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1337844 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
+) ENGINE = InnoDB AUTO_INCREMENT = 1337844 DEFAULT CHARSET = utf8mb3 COMMENT = '比赛表';
+
 CREATE TABLE `t_game_group` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_id` int unsigned NOT NULL COMMENT '比赛 ID',
@@ -282,10 +293,11 @@ CREATE TABLE `t_game_group` (
   `start_time` datetime DEFAULT NULL COMMENT '实际开球时间',
   `status` tinyint NOT NULL DEFAULT '1' COMMENT '状态 1=有效 0=无效',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_game_groupno` (`game_id`,`group_no`),
+  UNIQUE KEY `uk_game_groupno` (`game_id`, `group_no`),
   KEY `idx_gameid` (`game_id`),
   CONSTRAINT `fk_game_group_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='比赛分组';
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COMMENT = '比赛分组';
+
 CREATE TABLE `t_game_interaction` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_id` int unsigned NOT NULL,
@@ -299,7 +311,8 @@ CREATE TABLE `t_game_interaction` (
   KEY `idx_user` (`user_id`),
   CONSTRAINT `fk_interaction_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_interaction_user` FOREIGN KEY (`user_id`) REFERENCES `t_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='比赛互动';
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COMMENT = '比赛互动';
+
 CREATE TABLE `t_game_players` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_id` int unsigned NOT NULL COMMENT '比赛 ID',
@@ -307,18 +320,21 @@ CREATE TABLE `t_game_players` (
   `user_id` int NOT NULL COMMENT '用户 ID',
   `join_type` tinyint NOT NULL DEFAULT '1' COMMENT '加入方式 1=扫码 2=手动 3=老牌组合',
   `is_creator` tinyint NOT NULL DEFAULT '0' COMMENT '是否创建者',
-  `handicap` decimal(10,1) DEFAULT NULL COMMENT '差点',
+  `handicap` decimal(10, 1) DEFAULT NULL COMMENT '差点',
   `t_land` varchar(10) DEFAULT NULL COMMENT '使用 T 台',
   `status` tinyint NOT NULL DEFAULT '1' COMMENT '状态 1=有效 0=退出',
   `join_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_game_user` (`game_id`,`user_id`),
+  UNIQUE KEY `uk_game_user` (`game_id`, `user_id`),
   KEY `idx_group` (`group_id`),
   KEY `idx_user` (`user_id`),
   CONSTRAINT `fk_players_game` FOREIGN KEY (`game_id`) REFERENCES `t_game_group` (`game_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_players_group` FOREIGN KEY (`group_id`) REFERENCES `t_game_group` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `fk_players_user` FOREIGN KEY (`user_id`) REFERENCES `t_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='比赛参赛人员';
+  CONSTRAINT `fk_players_group` FOREIGN KEY (`group_id`) REFERENCES `t_game_group` (`id`) ON DELETE
+  SET
+    NULL ON UPDATE CASCADE,
+    CONSTRAINT `fk_players_user` FOREIGN KEY (`user_id`) REFERENCES `t_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COMMENT = '比赛参赛人员';
+
 CREATE TABLE `t_game_score` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_id` int unsigned NOT NULL,
@@ -334,14 +350,15 @@ CREATE TABLE `t_game_score` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `recorder_type` char(10) DEFAULT NULL COMMENT '记录者类型',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_game_user_hole` (`game_id`,`user_id`,`hole_id`),
-  KEY `idx_game_user` (`game_id`,`user_id`),
+  UNIQUE KEY `uk_game_user_hole` (`game_id`, `user_id`, `hole_id`),
+  KEY `idx_game_user` (`game_id`, `user_id`),
   KEY `fk_score_user` (`user_id`),
   KEY `fk_score_hole` (`hole_id`),
   CONSTRAINT `fk_score_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_score_hole` FOREIGN KEY (`hole_id`) REFERENCES `t_court_hole` (`holeid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_score_user` FOREIGN KEY (`user_id`) REFERENCES `t_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb3 COMMENT = '比赛每洞成绩';
+
 CREATE TABLE `t_user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `openid` char(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
@@ -350,7 +367,6 @@ CREATE TABLE `t_user` (
   `mobile` varchar(40) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '' COMMENT '手机号',
   `wx_nickname` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '微信昵称',
   `coverpath` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT 'user' COMMENT '个人头像路径',
-  `covername` varchar(64) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT 'holder_sys_cover.png' COMMENT '个人头像名称',
   `follownum` int DEFAULT '0' COMMENT '关注数',
   `fansnum` int DEFAULT '0' COMMENT '粉丝数',
   `friendnum` int DEFAULT '0' COMMENT '好友数',
@@ -358,7 +374,7 @@ CREATE TABLE `t_user` (
   `status` int DEFAULT '0' COMMENT '用户状态',
   `addip` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '添加ip',
   `addtime` datetime DEFAULT NULL COMMENT '添加时间',
-  `handicap` double(10,1) DEFAULT NULL COMMENT '差点',
+  `handicap` double(10, 1) DEFAULT NULL COMMENT '差点',
   `registe_type` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'U' COMMENT 'U为江湖用户添加，C为球童用户添加',
   `helper_id` int DEFAULT NULL COMMENT '添加人的ID',
   PRIMARY KEY (`id`),
@@ -366,4 +382,4 @@ CREATE TABLE `t_user` (
   KEY `idx_type` (`user_type`),
   KEY `idx_status` (`status`),
   KEY `index_nickname` (`wx_nickname`(191))
-) ENGINE=InnoDB AUTO_INCREMENT=837542 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 837542 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;

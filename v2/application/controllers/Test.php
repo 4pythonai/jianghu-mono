@@ -52,7 +52,7 @@ class Test extends CI_Controller {
 
     public function getCourseDetail() {
         $courseid = 100021;
-        $query = "SELECT id,courseid,name,coverpath,covername,courtnum FROM t_course WHERE courseid = $courseid";
+        $query = "SELECT id,courseid,name,coverpath,courtnum FROM t_course WHERE courseid = $courseid";
         $course = $this->db->query($query)->row_array();
 
         // courts
