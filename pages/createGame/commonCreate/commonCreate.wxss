@@ -9,7 +9,6 @@
 
 .main-card {
 	width: 100%;
-	max-width: 600rpx;
 	background: white;
 	border-radius: 32rpx;
 	position: relative;
