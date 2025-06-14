@@ -1,10 +1,15 @@
 <view class="page-container">
-	<CourtSelector
+	<court-selector
+		courseid="{{ selectedCourse.courseid }}"
 		course-info="{{ selectedCourse }}"
+		show-course-info="{{ true }}"
 		title="选择半场"
 		show-confirm-button="{{ true }}"
 		bind:confirm="onCourtConfirm"
-		bind:select="onCourtSelect"
+		bind:selectFrontNine="onSelectFrontNine"
+		bind:selectBackNine="onSelectBackNine"
+		bind:selectionComplete="onSelectionComplete"
+		bind:dataLoaded="onDataLoaded"
 		bind:error="onError"
 	/>
 </view>

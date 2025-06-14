@@ -46,7 +46,12 @@ Page({
                 this.setData({
                     selectedCourse: courseData
                 })
-                console.log('接收到的球场信息:', courseData)
+                console.log('接收到的球场信息 ❤️❤️❤️:', courseData)
+                console.log('球场ID字段检查 ❤️❤️❤️:')
+                console.log('- courseData.id:', courseData.id)
+                console.log('- courseData.courseid:', courseData.courseid)
+                console.log('- courseData.course_id:', courseData.course_id)
+                console.log('- 所有字段:', Object.keys(courseData))
             } catch (error) {
                 console.error('解析球场数据失败:', error)
                 this.showErrorAndGoBack('球场信息获取失败')
@@ -169,8 +174,8 @@ Page({
      */
     onShow() {
         // 打印所有的数据:
-        console.log('所有的数据:', this.data)
-
+        console.log('页面显示 ❤️❤️❤️ 所有的数据:', this.data)
+        console.log('selectedCourse ❤️❤️❤️:', this.data.selectedCourse)
     },
 
     /**
@@ -246,6 +251,43 @@ Page({
         wx.showToast({
             title: message || '操作失败，请重试',
             icon: 'none'
+        })
+    },
+
+    /**
+     * 处理数据加载完成事件
+     */
+    onDataLoaded(e) {
+        const { course, courts } = e.detail
+        console.log('球场数据加载完成:', course, courts)
+    },
+
+    /**
+     * 处理前九洞选择事件
+     */
+    onSelectFrontNine(e) {
+        const { court, holes } = e.detail
+        console.log('选择前九洞:', court, holes)
+    },
+
+    /**
+     * 处理后九洞选择事件
+     */
+    onSelectBackNine(e) {
+        const { court, holes } = e.detail
+        console.log('选择后九洞:', court, holes)
+    },
+
+    /**
+     * 处理选择完成事件
+     */
+    onSelectionComplete(e) {
+        const { frontNine, backNine, frontNineHoles, backNineHoles } = e.detail
+        console.log('选择完成:', {
+            frontNine,
+            backNine,
+            frontNineHoles,
+            backNineHoles
         })
     }
 }) 

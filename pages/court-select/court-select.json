@@ -3,6 +3,6 @@
 	"navigationBarBackgroundColor": "#ffffff",
 	"navigationBarTextStyle": "black",
 	"usingComponents": {
-		"CourtSelector": "/components/CourtSelector/CourtSelector"
+		"court-selector": "/components/CourtSelector/CourtSelector"
 	}
 }
