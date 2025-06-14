@@ -4,18 +4,26 @@
 		<view class="player-count">{{validPlayerCount}}/{{maxPlayers}}人</view>
 	</view>
 	<view class="players-list">
-		<view class="player-item" wx:for="{{ playerNames }}" wx:key="index">
-			<view class="player-input-wrapper">
-				<input
-					class="player-input"
-					type="text"
-					placeholder="请输入玩家{{ index + 1 }}姓名"
-					placeholder-class="input-placeholder"
-					value="{{ item }}"
-					data-index="{{ index }}"
-					bindinput="onPlayerNameInput"
-					maxlength="20"
-				/>
+		<view class="player-slot" wx:for="{{ playerSlots }}" wx:key="index">
+			<!-- 已选择的玩家 -->
+			<view wx:if="{{ item }}" class="player-card">
+				<view class="player-avatar">
+					<image src="{{ item.coverpath }}" mode="aspectFill" class="avatar-image"></image>
+				</view>
+				<view class="player-info">
+					<text class="player-nickname">{{item.wx_nickname}}</text>
+					<text class="player-id">ID: {{item.userid}}</text>
+				</view>
+				<view class="remove-btn" bindtap="removePlayer" data-index="{{ index }}">
+					<image src="/assets/icons/close.svg" mode="aspectFit"></image>
+				</view>
+			</view>
+			<!-- 空位 - 显示添加按钮 -->
+			<view wx:else class="empty-slot" bindtap="onSelectPlayer" data-index="{{ index }}">
+				<view class="add-player-btn">
+					<image src="/assets/icons/add.svg" class="add-icon" mode="aspectFit"></image>
+					<text class="add-text">添加玩家{{index + 1}}</text>
+				</view>
 			</view>
 		</view>
 	</view>

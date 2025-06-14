@@ -1,0 +1,20 @@
+<view class="page-container">
+	<view class="header">
+		<view class="title">为第{{groupIndex + 1}}组选择玩家{{slotIndex + 1}}</view>
+		<view class="subtitle">请选择添加玩家的方式</view>
+	</view>
+	<view class="methods-list">
+		<view class="method-item" wx:for="{{ selectMethods }}" wx:key="id" bindtap="onSelectMethod" data-method="{{ item }}">
+			<view class="method-icon">
+				<image src="{{ item.icon }}" mode="aspectFit"></image>
+			</view>
+			<view class="method-content">
+				<view class="method-title">{{item.title}}</view>
+				<view class="method-desc">{{item.desc}}</view>
+			</view>
+			<view class="method-arrow">
+				<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+			</view>
+		</view>
+	</view>
+</view>

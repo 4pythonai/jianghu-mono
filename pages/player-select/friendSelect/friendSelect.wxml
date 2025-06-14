@@ -1,0 +1,10 @@
+<view class="page-container">
+	<view class="header">
+		<text class="title">好友选择</text>
+		<text class="subtitle">为第{{groupIndex + 1}}组玩家{{slotIndex + 1}}选择</text>
+	</view>
+	<view class="content">
+		<!-- TODO: 实现好友选择功能 -->
+		<text class="placeholder">好友选择功能待开发...</text>
+	</view>
+</view>

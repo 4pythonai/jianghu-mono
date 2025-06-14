@@ -10,7 +10,13 @@
 		"pages/createGame/commonCreate/commonCreate",
 		"pages/createGame/quickCreate/quickCreate",
 		"pages/course-select/course-select",
-		"pages/court-select/court-select"
+		"pages/court-select/court-select",
+		"pages/player-select/player-select",
+		"pages/player-select/combineSelect/combineSelect",
+		"pages/player-select/friendSelect/friendSelect",
+		"pages/player-select/qrcode/qrcode",
+		"pages/player-select/searchAdd/searchAdd",
+		"pages/player-select/wxshare/wxshare"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",
