@@ -31,7 +31,7 @@ Page({
                 title: '手工添加',
                 desc: '通过用户名或ID搜索',
                 icon: '/assets/icons/4-01.png',
-                url: '/pages/player-select/searchAdd/searchAdd'
+                url: '/pages/player-select/manualAdd/searchAdd'
             },
             {
                 id: 'wxshare',

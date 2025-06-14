@@ -23,7 +23,7 @@ Component({
         // 收藏球场标题
         favoritesTitle: {
             type: String,
-            value: '收藏球场'
+            value: '常去的球场'
         },
         // 空状态文本
         emptyText: {
