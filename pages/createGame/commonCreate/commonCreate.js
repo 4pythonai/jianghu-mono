@@ -177,6 +177,59 @@ Page({
         });
 
         console.log(`第${groupIndex + 1}组玩家已更新为老牌组合:`, players);
+        console.log('更新后的完整 gameGroups 数据:', gameGroups);
+        console.log('更新后的页面数据:', this.data.formData.gameGroups);
+    },
+
+    /**
+     * 处理好友选择回调
+     * 从 friendSelect 页面返回时调用
+     */
+    onFriendsSelected(selectedFriends, groupIndex, slotIndex) {
+        console.log('接收到好友选择:', { selectedFriends, groupIndex, slotIndex });
+
+        if (!selectedFriends || !Array.isArray(selectedFriends) || selectedFriends.length === 0) {
+            wx.showToast({
+                title: '好友数据无效',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 转换好友数据格式，适配PlayerSelector组件的格式
+        const players = selectedFriends.map(friend => ({
+            userid: friend.userid,
+            wx_nickname: friend.nickname || friend.wx_nickname || '未知好友',
+            nickname: friend.nickname || friend.wx_nickname || '未知好友',
+            coverpath: friend.coverpath || friend.avatar || '/images/default-avatar.png',
+            handicap: friend.handicap || 0
+        }));
+
+        // 更新对应组的玩家数据
+        const gameGroups = [...this.data.formData.gameGroups];
+
+        // 确保组存在
+        if (!gameGroups[groupIndex]) {
+            gameGroups[groupIndex] = { players: [] };
+        }
+
+        // 将选择的好友添加到该组
+        gameGroups[groupIndex].players = players;
+
+        this.setData({
+            'formData.gameGroups': gameGroups
+        });
+
+        // 显示成功提示
+        wx.showToast({
+            title: `已添加${players.length}名好友到第${groupIndex + 1}组`,
+            icon: 'success',
+            duration: 2000
+        });
+
+        console.log(`第${groupIndex + 1}组玩家已更新为选择的好友:`, players);
+        console.log('更新后的完整 gameGroups 数据:', gameGroups);
+        console.log('更新后的页面数据:', this.data.formData.gameGroups);
     },
 
     /**
@@ -467,19 +520,11 @@ Page({
         try {
             console.log('准备调用API创建比赛:', data);
 
-            // 示例API调用
-            // const result = await getApp().api.game.create(data);
-            // console.log('API返回结果:', result);
 
             wx.showToast({
                 title: '比赛创建成功',
                 icon: 'success'
             });
-
-            // 可以跳转到比赛详情页面
-            // wx.navigateTo({
-            //   url: `/pages/gameDetail/gameDetail?id=${result.game_id}`
-            // });
 
         } catch (error) {
             console.error('创建比赛失败:', error);

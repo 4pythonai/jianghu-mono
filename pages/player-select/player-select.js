@@ -28,7 +28,7 @@ Page({
             },
             {
                 id: 'searchAdd',
-                title: '搜索添加',
+                title: '手工添加',
                 desc: '通过用户名或ID搜索',
                 icon: '/assets/icons/4-01.png',
                 url: '/pages/player-select/searchAdd/searchAdd'
@@ -85,6 +85,32 @@ Page({
         if (parentPage && typeof parentPage.onCombinationSelected === 'function') {
             // 转发给父页面
             parentPage.onCombinationSelected(combination, groupIndex, slotIndex);
+        }
+    },
+
+    /**
+     * 处理好友选择回调
+     * 从 friendSelect 页面返回时调用，然后转发给上一级页面
+     */
+    onFriendsSelected(selectedFriends, groupIndex, slotIndex) {
+        console.log('player-select 接收到好友选择:', { selectedFriends, groupIndex, slotIndex });
+
+        // 获取当前页面栈
+        const pages = getCurrentPages();
+
+        // 查找 commonCreate 页面或其他父页面
+        let parentPage = null;
+        for (let i = pages.length - 2; i >= 0; i--) {
+            const page = pages[i];
+            if (page.route.includes('commonCreate') || typeof page.onFriendsSelected === 'function') {
+                parentPage = page;
+                break;
+            }
+        }
+
+        if (parentPage && typeof parentPage.onFriendsSelected === 'function') {
+            // 转发给父页面
+            parentPage.onFriendsSelected(selectedFriends, groupIndex, slotIndex);
         }
     },
 

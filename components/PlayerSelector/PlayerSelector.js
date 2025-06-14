@@ -24,7 +24,42 @@ Component({
         validPlayerCount: 0
     },
 
+    observers: {
+        'players': function (newPlayers) {
+            console.log('PlayerSelector 监听到 players 变化:', newPlayers);
+            this.updatePlayerSlots(newPlayers);
+        }
+    },
+
     methods: {
+        /**
+         * 更新玩家位置数据
+         */
+        updatePlayerSlots(players) {
+            if (!Array.isArray(players)) {
+                console.log('PlayerSelector: players 不是数组，忽略更新');
+                return;
+            }
+
+            const playerSlots = [null, null, null, null];
+
+            // 将传入的玩家数据填充到对应位置
+            players.forEach((player, index) => {
+                if (index < 4 && player) {
+                    playerSlots[index] = player;
+                }
+            });
+
+            console.log('PlayerSelector 更新 playerSlots:', playerSlots);
+
+            this.setData({
+                playerSlots
+            });
+
+            // 更新有效玩家数量
+            this.updateValidPlayerCount();
+        },
+
         /**
          * 计算有效玩家数量
          */
@@ -51,6 +86,8 @@ Component({
          * 将玩家添加到指定位置（由玩家选择页面回调）
          */
         addPlayerToSlot(slotIndex, player) {
+            console.log('PlayerSelector addPlayerToSlot 被调用:', { slotIndex, player });
+
             const playerSlots = [...this.data.playerSlots];
             playerSlots[slotIndex] = player;
 
@@ -116,19 +153,11 @@ Component({
 
             // 初始化玩家位置（如果有传入的玩家数据）
             if (this.properties.players && this.properties.players.length > 0) {
-                const playerSlots = [null, null, null, null];
-                this.properties.players.forEach((player, index) => {
-                    if (index < 4) {
-                        playerSlots[index] = player;
-                    }
-                });
-                this.setData({
-                    playerSlots
-                });
+                this.updatePlayerSlots(this.properties.players);
+            } else {
+                // 初始化有效玩家数量
+                this.updateValidPlayerCount();
             }
-
-            // 初始化有效玩家数量
-            this.updateValidPlayerCount();
         }
     }
 }); 

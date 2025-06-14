@@ -4,7 +4,6 @@
 		<text class="subtitle">为第{{groupIndex + 1}}组玩家{{slotIndex + 1}}选择</text>
 	</view>
 	<view class="content">
-		<!-- TODO: 实现微信分享功能 -->
 		<text class="placeholder">微信分享功能待开发...</text>
 	</view>
 </view>

@@ -1,7 +1,13 @@
+import api from '../../../api/index'
+
 Page({
     data: {
         groupIndex: 0,
-        slotIndex: 0
+        slotIndex: 0,
+        friends: [], // 好友数据
+        loading: false,
+        selectedFriends: [], // 选中的好友
+        maxSelect: 4 // 最大选择数量
     },
 
     onLoad(options) {
@@ -9,23 +15,226 @@ Page({
 
         if (options.groupIndex !== undefined) {
             this.setData({
-                groupIndex: parseInt(options.groupIndex)
+                groupIndex: Number.parseInt(options.groupIndex)
             });
         }
 
         if (options.slotIndex !== undefined) {
             this.setData({
-                slotIndex: parseInt(options.slotIndex)
+                slotIndex: Number.parseInt(options.slotIndex)
             });
+        }
+
+        // 加载好友数据
+        this.loadFriends();
+    },
+
+    /**
+     * 加载好友数据
+     */
+    async loadFriends() {
+        try {
+            this.setData({ loading: true });
+
+            const result = await api.user.getFriendList({});
+
+            if (result?.code === 200 && result?.friends) {
+                // 为每个好友添加选中状态
+                const friends = result.friends.map(friend => ({
+                    ...friend,
+                    selected: false
+                }));
+
+                this.setData({
+                    friends: friends
+                });
+                console.log('好友数据加载成功:', friends);
+            } else {
+                wx.showToast({
+                    title: '加载失败',
+                    icon: 'none'
+                });
+            }
+        } catch (error) {
+            console.error('加载好友失败:', error);
+            wx.showToast({
+                title: '网络错误',
+                icon: 'none'
+            });
+        } finally {
+            this.setData({ loading: false });
         }
     },
 
+    /**
+     * 切换好友选择状态
+     */
+    toggleFriendSelection(e) {
+        const { index } = e.currentTarget.dataset;
+        const friends = [...this.data.friends];
+        const selectedFriends = [...this.data.selectedFriends];
+
+        const friend = friends[index];
+
+        if (friend.selected) {
+            // 取消选择
+            friend.selected = false;
+            const selectedIndex = selectedFriends.findIndex(f => f.userid === friend.userid);
+            if (selectedIndex > -1) {
+                selectedFriends.splice(selectedIndex, 1);
+            }
+        } else {
+            // 选择好友
+            if (selectedFriends.length >= this.data.maxSelect) {
+                wx.showToast({
+                    title: `最多只能选择${this.data.maxSelect}名好友`,
+                    icon: 'none'
+                });
+                return;
+            }
+
+            friend.selected = true;
+            selectedFriends.push(friend);
+        }
+
+        this.setData({
+            friends,
+            selectedFriends
+        });
+
+        console.log('当前选中的好友:', selectedFriends);
+    },
+
+    /**
+     * 确认选择好友
+     */
+    confirmSelection() {
+        const selectedFriends = this.data.selectedFriends;
+
+        if (selectedFriends.length === 0) {
+            wx.showToast({
+                title: '请选择至少一名好友',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 显示确认弹窗
+        wx.showModal({
+            title: '确认选择',
+            content: `确定选择这${selectedFriends.length}名好友吗？`,
+            success: (res) => {
+                if (res.confirm) {
+                    this.handleConfirmSelection(selectedFriends);
+                }
+            }
+        });
+    },
+
+    /**
+     * 处理确认选择
+     */
+    handleConfirmSelection(selectedFriends) {
+        // 获取当前页面栈
+        const pages = getCurrentPages();
+
+        // 查找 commonCreate 页面
+        let commonCreatePage = null;
+        for (let i = pages.length - 1; i >= 0; i--) {
+            const page = pages[i];
+            if (page.route.includes('commonCreate')) {
+                commonCreatePage = page;
+                break;
+            }
+        }
+
+        if (commonCreatePage && typeof commonCreatePage.onFriendsSelected === 'function') {
+            // 调用 commonCreate 页面的回调函数
+            commonCreatePage.onFriendsSelected(selectedFriends, this.data.groupIndex, this.data.slotIndex);
+
+            // 直接返回到 commonCreate 页面
+            const deltaLevel = pages.length - 1 - pages.findIndex(page => page.route.includes('commonCreate'));
+
+            if (deltaLevel > 0) {
+                wx.navigateBack({
+                    delta: deltaLevel
+                });
+            } else {
+                // 如果找不到 commonCreate 页面，则直接跳转
+                wx.navigateTo({
+                    url: '/pages/createGame/commonCreate/commonCreate'
+                });
+            }
+
+        } else {
+            // 备用方案：通过上一个页面传递
+            const prevPage = pages[pages.length - 2];
+            if (prevPage && typeof prevPage.onFriendsSelected === 'function') {
+                prevPage.onFriendsSelected(selectedFriends, this.data.groupIndex, this.data.slotIndex);
+            }
+
+            // 返回上一页
+            wx.navigateBack();
+        }
+    },
+
+    /**
+     * 搜索好友
+     */
+    onSearchInput(e) {
+        const keyword = e.detail.value.trim().toLowerCase();
+
+        if (!keyword) {
+            // 如果搜索关键词为空，重新加载所有好友
+            this.loadFriends();
+            return;
+        }
+
+        // 过滤好友列表
+        const allFriends = this.data.friends;
+        const filteredFriends = allFriends.filter(friend =>
+            friend.nickname?.toLowerCase().includes(keyword) ||
+            friend.wx_nickname?.toLowerCase().includes(keyword) ||
+            friend.userid?.toString().includes(keyword)
+        );
+
+        this.setData({
+            friends: filteredFriends
+        });
+    },
+
+    /**
+     * 清空搜索
+     */
+    clearSearch() {
+        this.loadFriends();
+    },
+
+    /**
+     * 刷新数据
+     */
+    onPullDownRefresh() {
+        this.loadFriends().finally(() => {
+            wx.stopPullDownRefresh();
+        });
+    },
+
     onReady() {
-        // TODO: 实现好友选择功能
+        // 页面准备完成
     },
 
     onShow() {
+        // 页面显示时重置选择状态
+        this.setData({
+            selectedFriends: []
+        });
 
+        // 重置好友选择状态
+        const friends = this.data.friends.map(friend => ({
+            ...friend,
+            selected: false
+        }));
+        this.setData({ friends });
     },
 
     onHide() {
@@ -36,15 +245,14 @@ Page({
 
     },
 
-    onPullDownRefresh() {
-
-    },
-
     onReachBottom() {
 
     },
 
     onShareAppMessage() {
-
+        return {
+            title: '好友选择',
+            path: '/pages/player-select/friendSelect/friendSelect'
+        };
     }
 }); 

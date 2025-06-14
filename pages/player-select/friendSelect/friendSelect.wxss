@@ -1,3 +1,304 @@
 @import "../common.wxss";
 
 /* 页面特有样式可以在这里添加 */
+
+/* 内容区域重新定义 */
+.content {
+	background: transparent;
+	padding: 0;
+	min-height: auto;
+	display: block;
+	box-shadow: none;
+}
+
+/* 搜索区域 */
+.search-section {
+	background: #fff;
+	border-radius: 16rpx;
+	margin-bottom: 30rpx;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.search-box {
+	display: flex;
+	align-items: center;
+	padding: 24rpx 30rpx;
+	gap: 20rpx;
+}
+
+.search-icon {
+	font-size: 32rpx;
+	opacity: 0.6;
+	color: #666;
+}
+
+.search-input {
+	flex: 1;
+	font-size: 28rpx;
+	color: #333;
+}
+
+.search-placeholder {
+	color: #999;
+}
+
+.clear-btn {
+	padding: 8rpx 20rpx;
+	background: #f0f0f0;
+	border-radius: 20rpx;
+	font-size: 24rpx;
+	color: #666;
+}
+
+.clear-btn:active {
+	background: #e0e0e0;
+}
+
+/* 选择统计 */
+.selection-stats {
+	background: #f0f8f0;
+	border-radius: 16rpx;
+	padding: 20rpx 30rpx;
+	margin-bottom: 30rpx;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.stats-text {
+	font-size: 28rpx;
+	color: #025028;
+	font-weight: 500;
+}
+
+.confirm-btn {
+	background: #025028;
+	color: #fff;
+	border: none;
+	border-radius: 24rpx;
+	padding: 16rpx 32rpx;
+	font-size: 26rpx;
+	line-height: 1;
+}
+
+.confirm-btn:active {
+	background: #014020;
+}
+
+/* 加载状态 */
+.loading-container {
+	background: #fff;
+	border-radius: 16rpx;
+	padding: 80rpx 40rpx;
+	text-align: center;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.loading-spinner {
+	width: 60rpx;
+	height: 60rpx;
+	border: 4rpx solid #f3f3f3;
+	border-top: 4rpx solid #025028;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+	margin: 0 auto 20rpx;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.loading-text {
+	font-size: 28rpx;
+	color: #666;
+}
+
+/* 好友列表 */
+.friends-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+/* 好友项 */
+.friend-item {
+	background: #fff;
+	border-radius: 16rpx;
+	transition: all 0.3s ease;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.friend-item.selected {
+	border: 2rpx solid #025028;
+	box-shadow: 0 4rpx 16rpx rgba(2, 80, 40, 0.2);
+}
+
+.friend-item:active {
+	transform: scale(0.98);
+}
+
+.friend-content {
+	display: flex;
+	align-items: center;
+	padding: 30rpx;
+	gap: 24rpx;
+}
+
+/* 好友头像 */
+.friend-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	border: 2rpx solid #eee;
+	flex-shrink: 0;
+}
+
+/* 好友信息 */
+.friend-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+}
+
+.friend-name {
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.friend-id {
+	font-size: 24rpx;
+	color: #999;
+}
+
+.friend-handicap {
+	font-size: 24rpx;
+	color: #666;
+}
+
+/* 选择状态指示器 */
+.selection-indicator {
+	flex-shrink: 0;
+}
+
+.selected-check {
+	width: 40rpx;
+	height: 40rpx;
+	background: #025028;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.check-text {
+	color: #fff;
+	font-size: 24rpx;
+	font-weight: bold;
+}
+
+.unselected-circle {
+	width: 40rpx;
+	height: 40rpx;
+	border: 2rpx solid #ddd;
+	border-radius: 50%;
+}
+
+/* 空状态 */
+.empty-state {
+	background: #fff;
+	border-radius: 16rpx;
+	padding: 80rpx 40rpx;
+	text-align: center;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+	font-size: 120rpx;
+	margin-bottom: 30rpx;
+	opacity: 0.6;
+	display: block;
+}
+
+.empty-text {
+	font-size: 32rpx;
+	color: #333;
+	margin-bottom: 16rpx;
+	display: block;
+}
+
+.empty-desc {
+	font-size: 28rpx;
+	color: #999;
+	display: block;
+}
+
+/* 底部操作区 */
+.bottom-action {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #fff;
+	padding: 30rpx;
+	box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.1);
+	z-index: 100;
+}
+
+.confirm-btn-bottom {
+	width: 100%;
+	background: #025028;
+	color: #fff;
+	border: none;
+	border-radius: 16rpx;
+	padding: 32rpx;
+	font-size: 32rpx;
+	font-weight: 500;
+}
+
+.confirm-btn-bottom:active {
+	background: #014020;
+}
+
+/* 为底部按钮预留空间 */
+.friends-list {
+	margin-bottom: 140rpx;
+}
+
+/* 动画效果 */
+.friend-item {
+	animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30rpx);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* 响应式布局 */
+@media (max-width: 600px) {
+	.friend-content {
+		padding: 24rpx;
+		gap: 20rpx;
+	}
+
+	.friend-avatar {
+		width: 70rpx;
+		height: 70rpx;
+	}
+}

@@ -15,7 +15,10 @@ const user = {
     uploadAvatar: (data) => request('/User/uploadAvatar', data),
 
     // 设置昵称
-    updateNickName: (data) => request('/User/updateNickName', data)
+    updateNickName: (data) => request('/User/updateNickName', data),
+
+    // friends 
+    getFriendList: (data) => request('/User/getFriendList', data),
 
 }
 
