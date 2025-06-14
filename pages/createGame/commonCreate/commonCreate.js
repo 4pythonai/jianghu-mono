@@ -1,7 +1,201 @@
 Page({
     data: {
         selectedCourse: null, // 选中的球场信息
-        selectedCourt: null   // 选中的半场信息
+        selectedCourt: null,   // 选中的半场信息
+
+        // 表单数据
+        formData: {
+            gameName: '',       // 比赛名称
+            openTime: '',       // 开球时间
+            gameType: 'hole',   // 赛制：hole-按洞赛, oneball-比杆赛
+            gameGroups: [       // 参赛组别（至少一组）
+                {
+                    players: []
+                }
+            ],
+            isPrivate: false,   // 是否秘密比赛
+            password: ''        // 密码
+        },
+
+        // 时间选择器配置
+        timePickerRange: [
+            // 日期范围（未来30天）
+            [],
+            // 小时范围
+            [
+                { label: '06:00', value: '06:00' },
+                { label: '06:30', value: '06:30' },
+                { label: '07:00', value: '07:00' },
+                { label: '07:30', value: '07:30' },
+                { label: '08:00', value: '08:00' },
+                { label: '08:30', value: '08:30' },
+                { label: '09:00', value: '09:00' },
+                { label: '09:30', value: '09:30' },
+                { label: '10:00', value: '10:00' },
+                { label: '10:30', value: '10:30' },
+                { label: '11:00', value: '11:00' },
+                { label: '11:30', value: '11:30' },
+                { label: '12:00', value: '12:00' },
+                { label: '12:30', value: '12:30' },
+                { label: '13:00', value: '13:00' },
+                { label: '13:30', value: '13:30' },
+                { label: '14:00', value: '14:00' },
+                { label: '14:30', value: '14:30' },
+                { label: '15:00', value: '15:00' },
+                { label: '15:30', value: '15:30' },
+                { label: '16:00', value: '16:00' },
+                { label: '16:30', value: '16:30' },
+                { label: '17:00', value: '17:00' },
+                { label: '17:30', value: '17:30' },
+                { label: '18:00', value: '18:00' }
+            ]
+        ],
+        timePickerValue: [0, 0] // 时间选择器当前值
+    },
+
+    /**
+     * 生成日期选择器数据
+     */
+    generateDateRange() {
+        const dates = [];
+        const today = new Date();
+
+        for (let i = 0; i < 30; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const weekDay = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()];
+
+            dates.push({
+                label: `${month}月${day}日 ${weekDay}`,
+                value: `${year}-${month}-${day}`
+            });
+        }
+
+        return dates;
+    },
+
+    /**
+     * 比赛名称输入
+     */
+    onGameNameInput(e) {
+        this.setData({
+            'formData.gameName': e.detail.value
+        });
+    },
+
+    /**
+     * 开球时间选择
+     */
+    onOpenTimeChange(e) {
+        const values = e.detail.value;
+        const dateIndex = values[0];
+        const timeIndex = values[1];
+
+        const selectedDate = this.data.timePickerRange[0][dateIndex];
+        const selectedTime = this.data.timePickerRange[1][timeIndex];
+
+        const openTime = `${selectedDate.label} ${selectedTime.label}`;
+
+        this.setData({
+            timePickerValue: values,
+            'formData.openTime': openTime
+        });
+    },
+
+    /**
+     * 赛制选择
+     */
+    onGameTypeChange(e) {
+        this.setData({
+            'formData.gameType': e.detail.value
+        });
+    },
+
+    /**
+     * 处理玩家变化
+     */
+    onPlayersChange(e) {
+        const { groupIndex, players } = e.detail;
+        const gameGroups = [...this.data.formData.gameGroups];
+        gameGroups[groupIndex].players = players;
+
+        this.setData({
+            'formData.gameGroups': gameGroups
+        });
+
+        console.log(`第${groupIndex + 1}组玩家更新:`, players);
+    },
+
+    /**
+     * 添加新组
+     */
+    addGroup() {
+        const gameGroups = [...this.data.formData.gameGroups];
+        gameGroups.push({
+            players: []
+        });
+
+        this.setData({
+            'formData.gameGroups': gameGroups
+        });
+
+        wx.showToast({
+            title: `已添加第${gameGroups.length}组`,
+            icon: 'success'
+        });
+    },
+
+    /**
+     * 删除组
+     */
+    deleteGroup(e) {
+        const index = e.currentTarget.dataset.index;
+        const gameGroups = [...this.data.formData.gameGroups];
+
+        if (gameGroups.length <= 1) {
+            wx.showToast({
+                title: '至少需要保留一组',
+                icon: 'none'
+            });
+            return;
+        }
+
+        gameGroups.splice(index, 1);
+
+        this.setData({
+            'formData.gameGroups': gameGroups
+        });
+
+        wx.showToast({
+            title: '已删除该组',
+            icon: 'success'
+        });
+    },
+
+    /**
+     * 隐私设置切换
+     */
+    onPrivateChange(e) {
+        const isPrivate = e.detail.value;
+
+        this.setData({
+            'formData.isPrivate': isPrivate,
+            // 如果取消私密，清空密码
+            'formData.password': isPrivate ? this.data.formData.password : ''
+        });
+    },
+
+    /**
+     * 密码输入
+     */
+    onPasswordInput(e) {
+        this.setData({
+            'formData.password': e.detail.value
+        });
     },
 
     handleBack() {
@@ -68,10 +262,81 @@ Page({
     },
 
     /**
+     * 表单验证
+     */
+    validateForm() {
+        const { formData, selectedCourse, selectedCourt } = this.data;
+
+        // 验证球场选择
+        if (!selectedCourse) {
+            wx.showToast({
+                title: '请先选择球场',
+                icon: 'none'
+            });
+            return false;
+        }
+
+        if (!selectedCourt) {
+            wx.showToast({
+                title: '请先选择半场',
+                icon: 'none'
+            });
+            return false;
+        }
+
+        // 验证比赛名称
+        if (!formData.gameName.trim()) {
+            wx.showToast({
+                title: '请填写比赛名称',
+                icon: 'none'
+            });
+            return false;
+        }
+
+        // 验证开球时间
+        if (!formData.openTime) {
+            wx.showToast({
+                title: '请选择开球时间',
+                icon: 'none'
+            });
+            return false;
+        }
+
+        // 验证参赛组别和玩家
+        const hasValidGroup = formData.gameGroups.some(group =>
+            group.players && group.players.length > 0
+        );
+
+        if (!hasValidGroup) {
+            wx.showToast({
+                title: '请至少添加一名参赛玩家',
+                icon: 'none'
+            });
+            return false;
+        }
+
+        // 验证私密比赛密码
+        if (formData.isPrivate && !formData.password.trim()) {
+            wx.showToast({
+                title: '私密比赛需要设置密码',
+                icon: 'none'
+            });
+            return false;
+        }
+
+        return true;
+    },
+
+    /**
      * 处理创建比赛
      */
     handleCreateGame() {
         console.log('=== 创建比赛数据收集 ===');
+
+        // 表单验证
+        if (!this.validateForm()) {
+            return;
+        }
 
         // 收集所有数据
         const gameData = {
@@ -84,6 +349,9 @@ Page({
 
             // 半场信息
             court: this.data.selectedCourt,
+
+            // 表单数据
+            ...this.data.formData,
 
             // 页面数据
             pageData: this.data,
@@ -101,29 +369,11 @@ Page({
         console.log('完整的比赛数据:', gameData);
         console.log('选中的球场信息:', this.data.selectedCourse);
         console.log('选中的半场信息:', this.data.selectedCourt);
-        console.log('页面所有数据:', this.data);
-
-        // 数据验证
-        if (!this.data.selectedCourse) {
-            wx.showToast({
-                title: '请先选择球场',
-                icon: 'none'
-            });
-            console.warn('创建失败: 未选择球场');
-            return;
-        }
-
-        if (!this.data.selectedCourt) {
-            wx.showToast({
-                title: '请先选择半场',
-                icon: 'none'
-            });
-            console.warn('创建失败: 未选择半场');
-            return;
-        }
+        console.log('表单数据:', this.data.formData);
 
         // 准备API请求数据
         const apiRequestData = {
+            // 球场信息
             course_id: this.data.selectedCourse.id || this.data.selectedCourse.courseid,
             course_name: this.data.selectedCourse.name,
             course_address: this.data.selectedCourse.address,
@@ -135,7 +385,17 @@ Page({
             back_nine: this.data.selectedCourt.backNine,
             front_nine_holes: this.data.selectedCourt.frontNineHoles,
             back_nine_holes: this.data.selectedCourt.backNineHoles,
+
+            // 比赛信息
             game_type: 'common',
+            game_name: this.data.formData.gameName,
+            open_time: this.data.formData.openTime,
+            game_rule: this.data.formData.gameType, // hole 或 oneball
+            is_private: this.data.formData.isPrivate,
+            password: this.data.formData.password,
+            game_groups: this.data.formData.gameGroups,
+
+            // 其他信息
             create_time: new Date().toISOString()
         };
 
@@ -143,7 +403,7 @@ Page({
 
         // 显示成功提示
         wx.showToast({
-            title: '数据已收集完成',
+            title: '比赛数据已收集完成',
             icon: 'success'
         });
 
@@ -186,6 +446,12 @@ Page({
      */
     onLoad(options) {
         console.log('commonCreate页面加载，参数:', options);
+
+        // 初始化日期选择器数据
+        const dateRange = this.generateDateRange();
+        this.setData({
+            'timePickerRange[0]': dateRange
+        });
     },
 
     /**

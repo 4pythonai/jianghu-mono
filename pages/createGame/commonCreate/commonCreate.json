@@ -1,4 +1,6 @@
 {
 	"navigationBarTitleText": "普通创建",
-	"usingComponents": {}
+	"usingComponents": {
+		"PlayerSelector": "/components/PlayerSelector/PlayerSelector"
+	}
 }

@@ -1,0 +1,22 @@
+<view class="player-selector">
+	<view class="group-header">
+		<text class="group-title">第{{groupIndex + 1}}组</text>
+		<view class="player-count">{{validPlayerCount}}/{{maxPlayers}}人</view>
+	</view>
+	<view class="players-list">
+		<view class="player-item" wx:for="{{ playerNames }}" wx:key="index">
+			<view class="player-input-wrapper">
+				<input
+					class="player-input"
+					type="text"
+					placeholder="请输入玩家{{ index + 1 }}姓名"
+					placeholder-class="input-placeholder"
+					value="{{ item }}"
+					data-index="{{ index }}"
+					bindinput="onPlayerNameInput"
+					maxlength="20"
+				/>
+			</view>
+		</view>
+	</view>
+</view>
