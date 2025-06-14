@@ -128,7 +128,7 @@ Page({
         const pages = getCurrentPages()
         const prevPage = pages[pages.length - 2] // 获取上一个页面
 
-        if (prevPage && prevPage.setCourtSelection) {
+        if (prevPage?.setCourtSelection) {
             // 如果上一个页面有处理方法，调用它
             prevPage.setCourtSelection(selectionData)
         }
@@ -168,6 +168,8 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
+        // 打印所有的数据:
+        console.log('所有的数据:', this.data)
 
     },
 
@@ -204,5 +206,46 @@ Page({
      */
     onShareAppMessage() {
 
+    },
+
+    /**
+     * 处理半场确认事件
+     */
+    onCourtConfirm(e) {
+        const { selectionData } = e.detail
+        console.log('页面接收到确认选择:', selectionData)
+
+        // 将选择结果传递给上级页面
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2] // 获取上一个页面
+
+        // 如果上一个页面有处理方法，调用它
+        prevPage?.setCourtSelection?.(selectionData)
+
+        // 返回到创建比赛页面（跳过球场选择页面）
+        wx.navigateBack({
+            delta: 2 // 返回两级页面
+        })
+    },
+
+    /**
+     * 处理半场选择事件
+     */
+    onCourtSelect(e) {
+        const { court } = e.detail
+        console.log('页面接收到半场选择:', court)
+    },
+
+    /**
+     * 处理错误事件
+     */
+    onError(e) {
+        const { type, message } = e.detail
+        console.error('CourtSelector错误:', type, message)
+
+        wx.showToast({
+            title: message || '操作失败，请重试',
+            icon: 'none'
+        })
     }
 }) 
