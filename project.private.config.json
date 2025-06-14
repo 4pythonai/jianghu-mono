@@ -1,14 +1,14 @@
 {
-  "libVersion": "3.8.5",
-  "projectname": "miniprogram",
-  "setting": {
-    "urlCheck": false,
-    "coverView": true,
-    "lazyloadPlaceholderEnable": false,
-    "skylineRenderEnable": false,
-    "preloadBackgroundData": false,
-    "autoAudits": false,
-    "showShadowRootInWxmlPanel": true,
-    "compileHotReLoad": true
-  }
+	"libVersion": "3.5.0",
+	"projectname": "miniprogram",
+	"setting": {
+		"urlCheck": false,
+		"coverView": true,
+		"lazyloadPlaceholderEnable": false,
+		"skylineRenderEnable": false,
+		"preloadBackgroundData": false,
+		"autoAudits": false,
+		"showShadowRootInWxmlPanel": true,
+		"compileHotReLoad": true
+	}
 }

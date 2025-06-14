@@ -9,6 +9,8 @@
 				placeholder="{{ placeholder || '搜索球场' }}"
 				placeholder-class="search-placeholder"
 				value="{{ searchValue }}"
+				auto-blur="{{ true }}"
+				auto-focus="{{ false }}"
 				bindinput="onInput"
 				focus="{{ autoFocus }}"
 			/>

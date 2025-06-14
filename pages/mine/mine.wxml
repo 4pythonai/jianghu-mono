@@ -26,6 +26,8 @@
 					type="nickname"
 					value="{{ userInfo.nickName || '' }}"
 					placeholder="请输入昵称"
+					auto-blur="{{ true }}"
+					auto-focus="{{ false }}"
 					bindchange="onNicknameChange"
 					bindinput="onNicknameInput"
 				/>
