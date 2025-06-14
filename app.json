@@ -15,7 +15,7 @@
 		"pages/player-select/combineSelect/combineSelect",
 		"pages/player-select/friendSelect/friendSelect",
 		"pages/player-select/qrcode/qrcode",
-		"pages/player-select/manualAdd/searchAdd",
+		"pages/player-select/manualAdd/manualAdd",
 		"pages/player-select/wxshare/wxshare"
 	],
 	"window": {

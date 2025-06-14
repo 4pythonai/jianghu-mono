@@ -4,11 +4,12 @@
 		<view class="card-content">
 			<view class="search-box">
 				<!-- 未选择球场时显示搜索框 -->
+				<view class="form-label">选择球场</view>
 				<view class="search-input" bindtap="goToCourseSelect" wx:if="{{ !selectedCourse }}">
 					<view class="location-icon">
 						<image src="/assets/icons/location.svg" mode="aspectFit"></image>
 					</view>
-					<input type="text" placeholder="搜索球场" placeholder-class="input-placeholder" disabled />
+					<input type="text" placeholder="选择球场" placeholder-class="input-placeholder" disabled />
 					<view class="arrow-icon">
 						<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
 					</view>

@@ -5,11 +5,7 @@ Component({
      * 组件的属性列表
      */
     properties: {
-        // 搜索框占位符
-        placeholder: {
-            type: String,
-            value: '搜索球场'
-        },
+
         // 是否自动聚焦
         autoFocus: {
             type: Boolean,
@@ -72,12 +68,10 @@ Component({
      */
     lifetimes: {
         attached() {
-            console.log('CourseSelector组件已挂载')
             this.initComponent()
         },
 
         detached() {
-            console.log('CourseSelector组件已卸载')
         }
     },
 
@@ -109,13 +103,11 @@ Component({
         async getFavoriteCourses() {
             try {
                 const res = await app.api.course.getFavorites()
-                console.log('收藏球场列表:', res)
                 this.setData({
                     favoriteList: res.courses || []
                 })
             } catch (error) {
                 console.error('获取收藏球场失败:', error)
-                // 组件内部不显示toast，通过事件通知父组件
                 this.triggerEvent('error', {
                     type: 'getFavorites',
                     error: error
@@ -160,9 +152,7 @@ Component({
             this.triggerEvent('searchStart', { keyword })
 
             try {
-                console.log('开始搜索:', keyword)
                 const res = await app.api.course.searchCourse({ keyword })
-                console.log('搜索结果:', res)
 
                 this.setData({
                     searchList: res.courses || []
@@ -175,8 +165,6 @@ Component({
                 })
 
             } catch (error) {
-                console.error('搜索球场失败:', error)
-
                 // 触发搜索错误事件
                 this.triggerEvent('error', {
                     type: 'search',
@@ -194,8 +182,6 @@ Component({
          */
         onSelectCourse(e) {
             const course = e.currentTarget.dataset.course
-            console.log('选中的球场:', course)
-
             // 触发选择事件，通知父组件
             this.triggerEvent('select', {
                 course: course

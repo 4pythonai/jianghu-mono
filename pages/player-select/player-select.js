@@ -8,30 +8,23 @@ Page({
             {
                 id: 'combineSelect',
                 title: '老牌组合',
-                desc: '从多种方式中选择玩家',
+                desc: '选择经常打球的组合',
                 icon: '/assets/icons/1-01.png',
                 url: '/pages/player-select/combineSelect/combineSelect'
             },
             {
                 id: 'friendSelect',
                 title: '好友选择',
-                desc: '从微信好友中选择',
+                desc: '从好友关系中选择',
                 icon: '/assets/icons/2-01.png',
                 url: '/pages/player-select/friendSelect/friendSelect'
             },
             {
-                id: 'qrcode',
-                title: '二维码',
-                desc: '扫描或生成二维码邀请',
-                icon: '/assets/icons/3-01.png',
-                url: '/pages/player-select/qrcode/qrcode'
-            },
-            {
-                id: 'searchAdd',
+                id: 'manualAdd',
                 title: '手工添加',
-                desc: '通过用户名或ID搜索',
+                desc: '通过昵称或手机号添加',
                 icon: '/assets/icons/4-01.png',
-                url: '/pages/player-select/manualAdd/searchAdd'
+                url: '/pages/player-select/manualAdd/manualAdd'
             },
             {
                 id: 'wxshare',
@@ -39,6 +32,13 @@ Page({
                 desc: '分享邀请链接给好友',
                 icon: '/assets/icons/5-01.png',
                 url: '/pages/player-select/wxshare/wxshare'
+            },
+            {
+                id: 'qrcode',
+                title: '二维码',
+                desc: '扫描或生成二维码邀请',
+                icon: '/assets/icons/3-01.png',
+                url: '/pages/player-select/qrcode/qrcode'
             }
         ]
     },
