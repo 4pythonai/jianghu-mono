@@ -1,4 +1,4 @@
-// addGame.js
+// createGame.js
 Page({
     data: {
         isMenuOpen: false, // 默认关闭菜单
@@ -21,13 +21,13 @@ Page({
 
         switch (type) {
             case 'moreCreate':
-                url = '/pages/addGame/moreCreate/moreCreate';
+                url = '/pages/createGame/moreCreate/moreCreate';
                 break;
             case 'commonCreate':
-                url = '/pages/addGame/commonCreate/commonCreate';
+                url = '/pages/createGame/commonCreate/commonCreate';
                 break;
             case 'quickCreate':
-                url = '/pages/addGame/quickCreate/quickCreate';
+                url = '/pages/createGame/quickCreate/quickCreate';
                 break;
         }
 

@@ -5,10 +5,10 @@
 		"pages/community/community",
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
-		"pages/addGame/addGame",
-		"pages/addGame/moreCreate/moreCreate",
-		"pages/addGame/commonCreate/commonCreate",
-		"pages/addGame/quickCreate/quickCreate",
+		"pages/createGame/createGame",
+		"pages/createGame/moreCreate/moreCreate",
+		"pages/createGame/commonCreate/commonCreate",
+		"pages/createGame/quickCreate/quickCreate",
 		"pages/course-select/course-select",
 		"pages/court-select/court-select"
 	],
@@ -36,7 +36,7 @@
 				"selectedIconPath": "images/tabbar/cup_selected.png"
 			},
 			{
-				"pagePath": "pages/addGame/addGame",
+				"pagePath": "pages/createGame/createGame",
 				"text": "",
 				"iconPath": "images/tabbar/add.png",
 				"selectedIconPath": "images/tabbar/add_selected.png"
