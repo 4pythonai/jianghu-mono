@@ -7,30 +7,7 @@ Page({
      */
     data: {
         selectedCourse: null, // 选中的球场信息
-        selectedCourt: '', // 选中的半场
-        courtOptions: [
-            {
-                value: 'front_nine',
-                name: '前九洞',
-                description: '1-9洞，适合初学者和时间较短的比赛',
-                holes: 9,
-                price: 280
-            },
-            {
-                value: 'back_nine',
-                name: '后九洞',
-                description: '10-18洞，挑战性更强，风景更佳',
-                holes: 9,
-                price: 320
-            },
-            {
-                value: 'full_course',
-                name: '全场',
-                description: '1-18洞完整体验，标准高尔夫比赛',
-                holes: 18,
-                price: 580
-            }
-        ]
+        selectedCourt: '' // 选中的半场
     },
 
     /**
@@ -60,35 +37,6 @@ Page({
             console.error('未接收到球场信息')
             this.showErrorAndGoBack('球场信息缺失')
         }
-
-        // 根据球场信息动态调整半场选项和价格
-        this.updateCourtOptions()
-    },
-
-    /**
-     * 根据球场信息更新半场选项
-     */
-    updateCourtOptions() {
-        const { selectedCourse } = this.data
-        if (!selectedCourse) return
-
-        // 这里可以根据不同球场调整价格和选项
-        // 示例：根据球场等级调整价格
-        let priceMultiplier = 1
-        if (selectedCourse.level === 'premium') {
-            priceMultiplier = 1.5
-        } else if (selectedCourse.level === 'luxury') {
-            priceMultiplier = 2
-        }
-
-        const updatedOptions = this.data.courtOptions.map(option => ({
-            ...option,
-            price: Math.round(option.price * priceMultiplier)
-        }))
-
-        this.setData({
-            courtOptions: updatedOptions
-        })
     },
 
     /**
@@ -107,7 +55,7 @@ Page({
      * 确认选择
      */
     onConfirm() {
-        const { selectedCourse, selectedCourt, courtOptions } = this.data
+        const { selectedCourse, selectedCourt } = this.data
 
         if (!selectedCourt) {
             wx.showToast({
@@ -117,13 +65,10 @@ Page({
             return
         }
 
-        // 找到选中的半场详细信息
-        const courtInfo = courtOptions.find(option => option.value === selectedCourt)
-
         // 组合完整的选择信息
         const selectionData = {
             course: selectedCourse,
-            court: courtInfo,
+            court: selectedCourt,
             timestamp: Date.now()
         }
 
@@ -225,7 +170,7 @@ Page({
             name: `${selectionData.frontNine?.courtname || '前九洞'} + ${selectionData.backNine?.courtname || '后九洞'}`,
             value: 'full_18_holes', // 18洞标识
             holes: 18, // 总洞数
-            price: (selectionData.frontNine?.price || 0) + (selectionData.backNine?.price || 0), // 价格相加
+            // 移除价格相关字段
             frontNine: selectionData.frontNine,
             backNine: selectionData.backNine,
             frontNineHoles: selectionData.frontNineHoles,

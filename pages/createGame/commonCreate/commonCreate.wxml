@@ -25,7 +25,6 @@
 							<!-- 显示半场信息 -->
 							<view class="court-info" wx:if="{{ selectedCourt }}">
 								<text class="court-name">{{selectedCourt.name}}</text>
-								<text class="court-price">¥{{selectedCourt.price}}</text>
 							</view>
 						</view>
 						<view class="change-icon">

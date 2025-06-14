@@ -25,11 +25,6 @@ Component({
             type: String,
             value: '选择半场'
         },
-        // 价格标签文本
-        priceLabel: {
-            type: String,
-            value: '价格'
-        },
         // 确认按钮文本
         confirmText: {
             type: String,
@@ -44,16 +39,6 @@ Component({
         checkIcon: {
             type: String,
             value: '/assets/icons/check.svg'
-        },
-        // 自定义半场选项
-        customCourtOptions: {
-            type: Array,
-            value: []
-        },
-        // 价格倍数（根据球场等级调整）
-        priceMultiplier: {
-            type: Number,
-            value: 1
         },
         // 初始选中的半场
         initialSelection: {
@@ -106,8 +91,8 @@ Component({
                 this.loadCourseDetail(courseInfo.courseid)
             }
         },
-        'courseInfo, priceMultiplier, customCourtOptions': function (courseInfo, priceMultiplier, customCourtOptions) {
-            this.updateCourtOptions()
+        'courseInfo': function (courseInfo) {
+            // 价格相关的功能已移除
         },
         'initialSelection': function (initialSelection) {
             if (initialSelection) {
@@ -250,50 +235,7 @@ Component({
             return this.data.courts.find(court => court.courtid === courtid)
         },
 
-        /**
-         * 更新半场选项
-         */
-        updateCourtOptions() {
-            let options = []
 
-            // 使用自定义选项或默认选项
-            if (this.properties.customCourtOptions?.length > 0) {
-                options = [...this.properties.customCourtOptions]
-            } else {
-                options = [...this.data.courts]
-            }
-
-            // 根据价格倍数调整价格
-            const priceMultiplier = this.properties.priceMultiplier || 1
-            if (priceMultiplier !== 1) {
-                options = options.map(option => ({
-                    ...option,
-                    price: Math.round(option.price * priceMultiplier)
-                }))
-            }
-
-            // 根据球场信息动态调整（如果需要）
-            const { courseInfo } = this.properties
-            if (courseInfo?.level) {
-                let levelMultiplier = 1
-                if (courseInfo.level === 'premium') {
-                    levelMultiplier = 1.5
-                } else if (courseInfo.level === 'luxury') {
-                    levelMultiplier = 2
-                }
-
-                if (levelMultiplier !== 1) {
-                    options = options.map(option => ({
-                        ...option,
-                        price: Math.round(option.price * levelMultiplier)
-                    }))
-                }
-            }
-
-            this.setData({
-                courts: options
-            })
-        },
 
         /**
          * 确认选择
@@ -372,7 +314,6 @@ Component({
             this.setData({
                 courseInfo: courseInfo
             })
-            this.updateCourtOptions()
         },
 
         /**

@@ -130,7 +130,6 @@ Page({
             court_type: this.data.selectedCourt.value,
             court_name: this.data.selectedCourt.name,
             court_holes: this.data.selectedCourt.holes,
-            court_price: this.data.selectedCourt.price,
             // 如果是18洞，还包含前九洞和后九洞的详细信息
             front_nine: this.data.selectedCourt.frontNine,
             back_nine: this.data.selectedCourt.backNine,

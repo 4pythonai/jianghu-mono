@@ -132,11 +132,7 @@
 	font-weight: 500;
 }
 
-.court-price {
-	font-size: 24rpx;
-	color: #e74c3c;
-	font-weight: 600;
-}
+/* 价格相关样式已移除 */
 
 .change-icon {
 	width: 32rpx;
