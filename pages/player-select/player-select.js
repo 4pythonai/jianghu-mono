@@ -63,6 +63,32 @@ Page({
     },
 
     /**
+     * 处理组合选择回调
+     * 从 combineSelect 页面返回时调用，然后转发给上一级页面
+     */
+    onCombinationSelected(combination, groupIndex, slotIndex) {
+        console.log('player-select 接收到组合选择:', { combination, groupIndex, slotIndex });
+
+        // 获取当前页面栈
+        const pages = getCurrentPages();
+
+        // 查找 commonCreate 页面或其他父页面
+        let parentPage = null;
+        for (let i = pages.length - 2; i >= 0; i--) {
+            const page = pages[i];
+            if (page.route.includes('commonCreate') || typeof page.onCombinationSelected === 'function') {
+                parentPage = page;
+                break;
+            }
+        }
+
+        if (parentPage && typeof parentPage.onCombinationSelected === 'function') {
+            // 转发给父页面
+            parentPage.onCombinationSelected(combination, groupIndex, slotIndex);
+        }
+    },
+
+    /**
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {

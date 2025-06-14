@@ -101,15 +101,45 @@ Page({
     confirmSelection(combination) {
         // 获取当前页面栈
         const pages = getCurrentPages();
-        const prevPage = pages[pages.length - 2]; // 上一个页面
 
-        if (prevPage && typeof prevPage.onCombinationSelected === 'function') {
-            // 调用上一个页面的回调函数
-            prevPage.onCombinationSelected(combination, this.data.groupIndex, this.data.slotIndex);
+        // 查找 commonCreate 页面
+        let commonCreatePage = null;
+        for (let i = pages.length - 1; i >= 0; i--) {
+            const page = pages[i];
+            if (page.route.includes('commonCreate')) {
+                commonCreatePage = page;
+                break;
+            }
         }
 
-        // 返回上一页
-        wx.navigateBack();
+        if (commonCreatePage && typeof commonCreatePage.onCombinationSelected === 'function') {
+            // 调用 commonCreate 页面的回调函数
+            commonCreatePage.onCombinationSelected(combination, this.data.groupIndex, this.data.slotIndex);
+
+            // 直接返回到 commonCreate 页面
+            const deltaLevel = pages.length - 1 - pages.findIndex(page => page.route.includes('commonCreate'));
+
+            if (deltaLevel > 0) {
+                wx.navigateBack({
+                    delta: deltaLevel
+                });
+            } else {
+                // 如果找不到 commonCreate 页面，则直接跳转
+                wx.navigateTo({
+                    url: '/pages/createGame/commonCreate/commonCreate'
+                });
+            }
+
+        } else {
+            // 备用方案：通过上一个页面传递
+            const prevPage = pages[pages.length - 2];
+            if (prevPage && typeof prevPage.onCombinationSelected === 'function') {
+                prevPage.onCombinationSelected(combination, this.data.groupIndex, this.data.slotIndex);
+            }
+
+            // 返回上一页
+            wx.navigateBack();
+        }
     },
 
     /**

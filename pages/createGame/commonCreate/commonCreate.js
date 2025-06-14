@@ -131,6 +131,55 @@ Page({
     },
 
     /**
+     * 处理老牌组合选择回调
+     * 从 combineSelect 页面返回时调用
+     */
+    onCombinationSelected(combination, groupIndex, slotIndex) {
+        console.log('接收到老牌组合选择:', { combination, groupIndex, slotIndex });
+
+        if (!combination || !Array.isArray(combination) || combination.length === 0) {
+            wx.showToast({
+                title: '组合数据无效',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 转换组合数据格式，适配PlayerSelector组件的格式
+        const players = combination.map(member => ({
+            userid: member.userid,
+            wx_nickname: member.nickname || '未知玩家',
+            nickname: member.nickname || '未知玩家',
+            coverpath: member.coverpath || '/images/default-avatar.png',
+            handicap: member.handicap || 0
+        }));
+
+        // 更新对应组的玩家数据
+        const gameGroups = [...this.data.formData.gameGroups];
+
+        // 确保组存在
+        if (!gameGroups[groupIndex]) {
+            gameGroups[groupIndex] = { players: [] };
+        }
+
+        // 将组合中的所有玩家添加到该组
+        gameGroups[groupIndex].players = players;
+
+        this.setData({
+            'formData.gameGroups': gameGroups
+        });
+
+        // 显示成功提示
+        wx.showToast({
+            title: `已添加${players.length}名玩家到第${groupIndex + 1}组`,
+            icon: 'success',
+            duration: 2000
+        });
+
+        console.log(`第${groupIndex + 1}组玩家已更新为老牌组合:`, players);
+    },
+
+    /**
      * 添加新组
      */
     addGroup() {
