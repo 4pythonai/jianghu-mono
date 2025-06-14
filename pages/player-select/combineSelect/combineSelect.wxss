@@ -1,3 +1,216 @@
 @import "../common.wxss";
 
 /* 页面特有样式可以在这里添加 */
+
+/* 内容区域重新定义 */
+.content {
+	background: transparent;
+	padding: 0;
+	min-height: auto;
+	display: block;
+	box-shadow: none;
+}
+
+/* 加载状态 */
+.loading-container {
+	background: #fff;
+	border-radius: 16rpx;
+	padding: 80rpx 40rpx;
+	text-align: center;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.loading-spinner {
+	width: 60rpx;
+	height: 60rpx;
+	border: 4rpx solid #f3f3f3;
+	border-top: 4rpx solid #025028;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+	margin: 0 auto 20rpx;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.loading-text {
+	font-size: 28rpx;
+	color: #666;
+}
+
+/* 组合列表 */
+.combinations-list {
+	display: flex;
+	flex-direction: column;
+	gap: 30rpx;
+}
+
+/* 组合卡片 */
+.combination-item {
+	background: #fff;
+	border-radius: 16rpx;
+	padding: 30rpx;
+	position: relative;
+	transition: all 0.3s ease;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.combination-item.selected {
+	border: 2rpx solid #025028;
+	box-shadow: 0 4rpx 16rpx rgba(2, 80, 40, 0.2);
+}
+
+.combination-item:active {
+	transform: scale(0.98);
+}
+
+/* 组合头部 */
+.combination-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 30rpx;
+	padding-bottom: 20rpx;
+	border-bottom: 1rpx solid #f0f0f0;
+}
+
+.combination-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333;
+}
+
+.member-count {
+	font-size: 24rpx;
+	color: #025028;
+	background: #f0f8f0;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+}
+
+/* 成员网格 */
+.members-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20rpx;
+}
+
+/* 成员卡片 */
+.member-card {
+	display: flex;
+	align-items: center;
+	background: #f8f9fa;
+	border-radius: 12rpx;
+	padding: 20rpx;
+	flex: 1;
+	min-width: 280rpx;
+	max-width: 320rpx;
+}
+
+.member-avatar {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	margin-right: 20rpx;
+	border: 2rpx solid #eee;
+}
+
+.member-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+}
+
+.member-name {
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #333;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.member-handicap {
+	font-size: 24rpx;
+	color: #666;
+}
+
+/* 选中状态指示器 */
+.selected-indicator {
+	position: absolute;
+	top: 20rpx;
+	right: 20rpx;
+	width: 40rpx;
+	height: 40rpx;
+	background: #025028;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.selected-text {
+	color: #fff;
+	font-size: 24rpx;
+	font-weight: bold;
+}
+
+/* 空状态 */
+.empty-state {
+	background: #fff;
+	border-radius: 16rpx;
+	padding: 80rpx 40rpx;
+	text-align: center;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+	font-size: 120rpx;
+	margin-bottom: 30rpx;
+	opacity: 0.6;
+	display: block;
+}
+
+.empty-text {
+	font-size: 32rpx;
+	color: #333;
+	margin-bottom: 16rpx;
+	display: block;
+}
+
+.empty-desc {
+	font-size: 28rpx;
+	color: #999;
+	display: block;
+}
+
+/* 响应式布局 */
+@media (max-width: 600px) {
+	.member-card {
+		min-width: 100%;
+		max-width: 100%;
+	}
+}
+
+/* 动画效果 */
+.combination-item {
+	animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(30rpx);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
