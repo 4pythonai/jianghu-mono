@@ -143,34 +143,56 @@ class User extends MY_Controller {
     public function createAndSelect() {
         $userid = $this->getUser();
         $json_paras = (array) json_decode(file_get_contents('php://input'));
-        $remarkName = isset($json_paras['nickname']) ? $json_paras['remarkName'] : '';
+        $remarkName = isset($json_paras['remarkName']) ? $json_paras['remarkName'] : '';
         $mobile = isset($json_paras['mobile']) ? $json_paras['mobile'] : '';
         $mobile = trim($mobile);
         $remarkName = trim($remarkName);
 
         // 没有手机号非注册用户
         if (strlen($mobile) !== 11) {
-            $payerid = $this->MUser->addRemakGhostUser($userid, $remarkName, '');
-            return $payerid;
+            $newuserid = $this->MUser->addRemakGhostUser($userid, $remarkName, '');
+            $ret = [];
+            $ret['code'] = 200;
+            $ret['message'] = 'OK 添加非注册用户成功';
+            $ret['user'] = $this->MUser->getUserbyId($newuserid);
+            echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+            return;
         }
 
         // 有手机号,先搜索
 
         $searchResult = $this->MUser->doubleSearchMobile($mobile);
+
+
         // 找到手机号相关的用户
         if ($searchResult['user']) {
             if ($searchResult['source'] == 'mini') {
-                return $searchResult['user']['id'];
+                $ret = [];
+                $ret['code'] = 200;
+                $ret['message'] = 'OK 找到小程序的注册用户';
+                $ret['user'] = $this->MUser->getUserbyId($searchResult['user']['id']);
+                echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+                return;
             }
 
             if ($searchResult['source'] == 'jhapp') {
                 $newuserid = $this->MUser->transferJHUser($searchResult['user']);
-                return $newuserid;
+                $ret = [];
+                $ret['code'] = 200;
+                $ret['message'] = 'OK 找到江湖的注册用户';
+                $ret['user'] = $this->MUser->getUserbyId($newuserid);
+                echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+                return;
             }
         } // 有手机号,但是没有找到,添加到小程序数据库
         else {
             $newuserid = $this->MUser->addMobileGhostUser($userid, $remarkName, $mobile);
-            return $newuserid;
+            $ret = [];
+            $ret['code'] = 200;
+            $ret['message'] = 'OK 添加非注册用户(withmobile)成功';
+            $ret['user'] = $this->MUser->getUserbyId($newuserid);
+            echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+            return;
         }
     }
 }

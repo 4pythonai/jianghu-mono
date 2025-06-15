@@ -2,7 +2,6 @@
 
 class MUser  extends CI_Model {
 
-  private $jhdb;
   public function __construct() {
     parent::__construct();
     $this->jhdb = $this->load->database('jh_db', TRUE);
@@ -42,6 +41,9 @@ class MUser  extends CI_Model {
   public function getUserbyMobile($mobile) {
     $this->db->where('mobile', $mobile);
     $user =  $this->db->get('t_user')->row_array();
+    if ($user) {
+      $user['coverpath'] = config_item('web_url') . $user['coverpath'];
+    }
     return $user;
   }
 
@@ -49,6 +51,9 @@ class MUser  extends CI_Model {
   public function getUserbyId($user_id) {
     $this->db->where('id', $user_id);
     $user = $this->db->get('t_user')->row_array();
+    if ($user) {
+      $user['coverpath'] = config_item('web_url')  . $user['coverpath'];
+    }
     return $user;
   }
 
@@ -71,8 +76,10 @@ class MUser  extends CI_Model {
 
 
 
+
   public function getFriends($user_id) {
-    $this->db->select("u.wx_nickname,  concat('http://140.179.50.120:7800/',u.coverpath) as coverpath, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
+    $web_url = config_item('web_url');
+    $this->db->select("u.wx_nickname, concat('{$web_url}',u.coverpath) as coverpath, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
     $this->db->from('t_friend f');
     $this->db->join('t_user u', 'f.fuserid = u.id');
     $this->db->where('f.userid', $user_id);
@@ -82,20 +89,6 @@ class MUser  extends CI_Model {
 
 
 
-  private function  AddUserHandler($helpuserid, $coverpath, $nickname, $mobile) {
-    $new_user = [
-      'wx_nickname' => $nickname,
-      'nickname' => $nickname,
-      'mobile' => $mobile,
-      'addtime' => date('Y-m-d H:i:s'),
-      'reg_type' => 'remark',
-      'coverpath' =>  $coverpath,
-      'helper_id' => $helpuserid
-    ];
-
-    $this->db->insert('t_user', $new_user);
-    return $this->db->insert_id();
-  }
 
 
   public function doubleSearchMobile($mobile) {
@@ -139,6 +132,7 @@ class MUser  extends CI_Model {
       'coverpath' =>  '/avatar/user_default_avatar.png',
       'helper_id' => $helperid
     ];
+    debug($new_user);
     $this->db->insert('t_user', $new_user);
     return $this->db->insert_id();
   }
@@ -147,8 +141,16 @@ class MUser  extends CI_Model {
 
   public function transferJHUser($jhuser) {
     // downloadJHAvatar
-    $jh_avatar_url = "http://s1.golf-brother.com/data/attach/." . $jhuser['coverpath'] . "/" . $jhuser['covername'];
-    $app_avatar_url = downloadJHAvatar($jh_avatar_url);
+    $jh_avatar_url = "http://s1.golf-brother.com/data/attach/" . $jhuser['coverpath'] . "/" . $jhuser['covername'];
+    $avatar_result = downloadJHAvatar($jh_avatar_url);
+
+    if ($avatar_result['success']) {
+      $app_avatar_url = $avatar_result['relative_path'];
+    } else {
+      $app_avatar_url = '/avatar/user_default_avatar.png';
+    }
+
+
     $row = [];
     $row['nickname'] = $jhuser['nickname'];
     $row['mobile'] = $jhuser['mobile'];
