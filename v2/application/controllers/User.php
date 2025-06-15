@@ -7,32 +7,23 @@ if (!defined('BASEPATH')) {
 }
 
 
+// 原 APP 头像地址
+// http://s1.golf-brother.com/data/attach
+///user/2017/04/30/074cfec13bb719376c0ee86c7def6d66.jpg
+// 目录 /opt/space/webroot/ugf/data/attach/user
+
 class User extends MY_Controller {
-    // public function __construct() {
-    //     parent::__construct();
-    //     header('Access-Control-Allow-Origin: * ');
-    //     header('Access-Control-Allow-Headers: Origin, X-Requested-With,Content-Type, Accept,authorization');
-    //     header('Access-Control-Allow-Credentials', true);
-    //     header('Content-Type: application/json; charset=utf-8');
-    //     if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
-    //         exit();
-    //     }
-    // }
 
 
     // 获取好友列表
     public function getFriendList() {
         try {
-            $json_paras = (array) json_decode(file_get_contents('php://input'));
-            $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
+            $user_id = $this->getUser();
             $ret = [];
             $friends = $this->MUser->getFriends($user_id);
             $ret['code'] = 200;
-            $ret['data'] = [
-                'friends' => $friends,
-                'total' => count($friends)
-            ];
-
+            $ret['friends'] = $friends;
+            $ret['total'] = count($friends);
             echo json_encode($ret, JSON_UNESCAPED_UNICODE);
         } catch (Exception $e) {
             $ret['code'] = 500;
@@ -141,9 +132,45 @@ class User extends MY_Controller {
                 'message' => 'OK 更新昵称成功',
             ]);
         } catch (Exception $e) {
+            $ret = [];
             $ret['code'] = 500;
             $ret['message'] = '服务器内部错误';
             echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    public function createAndSelect() {
+        $userid = $this->getUser();
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $remarkName = isset($json_paras['nickname']) ? $json_paras['remarkName'] : '';
+        $mobile = isset($json_paras['mobile']) ? $json_paras['mobile'] : '';
+        $mobile = trim($mobile);
+        $remarkName = trim($remarkName);
+
+        // 没有手机号非注册用户
+        if (strlen($mobile) !== 11) {
+            $payerid = $this->MUser->addRemakGhostUser($userid, $remarkName, '');
+            return $payerid;
+        }
+
+        // 有手机号,先搜索
+
+        $searchResult = $this->MUser->doubleSearchMobile($mobile);
+        // 找到手机号相关的用户
+        if ($searchResult['user']) {
+            if ($searchResult['source'] == 'mini') {
+                return $searchResult['user']['id'];
+            }
+
+            if ($searchResult['source'] == 'jhapp') {
+                $newuserid = $this->MUser->transferJHUser($searchResult['user']);
+                return $newuserid;
+            }
+        } // 有手机号,但是没有找到,添加到小程序数据库
+        else {
+            $newuserid = $this->MUser->addMobileGhostUser($userid, $remarkName, $mobile);
+            return $newuserid;
         }
     }
 }

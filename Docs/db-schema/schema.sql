@@ -375,7 +375,7 @@ CREATE TABLE `t_user` (
   `addip` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '添加ip',
   `addtime` datetime DEFAULT NULL COMMENT '添加时间',
   `handicap` double(10, 1) DEFAULT NULL COMMENT '差点',
-  `registe_type` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'U' COMMENT 'U为江湖用户添加，C为球童用户添加',
+  `reg_type` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'U' COMMENT 'weixin,remark,remarkwithmobile,transfer',
   `helper_id` int DEFAULT NULL COMMENT '添加人的ID',
   PRIMARY KEY (`id`),
   KEY `idx_telephone` (`mobile`),

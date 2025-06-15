@@ -23,7 +23,13 @@ class Test extends CI_Controller {
     }
 
 
+    public function index() {
 
+        // echo "index called ";
+        // $user = $this->MJHUser->getJianghuUserByMobile('18600089281');
+        // echo json_encode($user, JSON_UNESCAPED_UNICODE);
+        downloadJHAvatar('http://s1.golf-brother.com/data/attach/avatar/user_default_avatar.png');
+    }
 
 
 

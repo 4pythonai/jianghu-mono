@@ -136,5 +136,6 @@ $autoload['language'] = array();
 $autoload['model'] = [
     'MUser',
     'MFile',
-    'MJwtUtil'
+    'MJwtUtil',
+    'MJHUser'
 ];

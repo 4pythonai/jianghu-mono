@@ -352,3 +352,60 @@ function guidv4() {
   $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
   return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
+
+
+function downloadJHAvatar($url) {
+  $avatar_path = dirname(dirname(APPPATH));
+
+  // 获取当前日期
+  $year = date('Y');
+  $month = date('m');
+  $day = date('d');
+
+  // 构建目标目录路径
+  $target_dir = $avatar_path . '/avatar/' . $year . '/' . $month . '/' . $day;
+
+  // 创建目录（如果不存在）
+  if (!is_dir($target_dir)) {
+    if (!mkdir($target_dir, 0755, true)) {
+      return ['success' => false, 'message' => '无法创建目录'];
+    }
+  }
+
+  // 获取原始文件名
+  $path_info = pathinfo($url);
+  $filename = isset($path_info['basename']) ? $path_info['basename'] : 'image.jpg';
+  $filepath = $target_dir . '/' . $filename;
+
+  // 使用curl下载图片
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
+
+  $image_data = curl_exec($ch);
+  $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $error = curl_error($ch);
+  curl_close($ch);
+
+  // 检查下载是否成功
+  if ($image_data === false || $http_code !== 200) {
+    return ['success' => false, 'message' => '下载图片失败: ' . $error];
+  }
+
+  // 保存图片到文件
+  if (file_put_contents($filepath, $image_data) === false) {
+    return ['success' => false, 'message' => '保存图片失败'];
+  }
+
+  // 返回成功结果
+  return [
+    'success' => true,
+    'message' => '图片下载成功',
+    'filepath' => $filepath,
+    'relative_path' => '/avatar/' . $year . '/' . $month . '/' . $day . '/' . $filename,
+    'filename' => $filename
+  ];
+}
