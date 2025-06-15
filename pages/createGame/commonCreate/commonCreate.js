@@ -154,31 +154,8 @@ Page({
             handicap: member.handicap || 0
         }));
 
-        // 更新对应组的玩家数据
-        const gameGroups = [...this.data.formData.gameGroups];
-
-        // 确保组存在
-        if (!gameGroups[groupIndex]) {
-            gameGroups[groupIndex] = { players: [] };
-        }
-
-        // 将组合中的所有玩家添加到该组
-        gameGroups[groupIndex].players = players;
-
-        this.setData({
-            'formData.gameGroups': gameGroups
-        });
-
-        // 显示成功提示
-        wx.showToast({
-            title: `已添加${players.length}名玩家到第${groupIndex + 1}组`,
-            icon: 'success',
-            duration: 2000
-        });
-
-        console.log(`第${groupIndex + 1}组玩家已更新为老牌组合:`, players);
-        console.log('更新后的完整 gameGroups 数据:', gameGroups);
-        console.log('更新后的页面数据:', this.data.formData.gameGroups);
+        // 使用追加模式添加老牌组合到组中
+        this.appendPlayersToGroup(players, groupIndex, '老牌组合');
     },
 
     /**
@@ -205,7 +182,17 @@ Page({
             handicap: friend.handicap || 0
         }));
 
-        // 更新对应组的玩家数据
+        // 使用追加模式添加好友到组中
+        this.appendPlayersToGroup(players, groupIndex, '好友');
+    },
+
+    /**
+     * 通用的追加玩家到组的方法
+     * 确保每组最多4个玩家，新玩家追加到已有玩家后面，避免重复用户
+     */
+    appendPlayersToGroup(players, groupIndex, sourceType) {
+        console.log(`📥 准备追加${sourceType}到第${groupIndex + 1}组:`, players);
+
         const gameGroups = [...this.data.formData.gameGroups];
 
         // 确保组存在
@@ -213,23 +200,92 @@ Page({
             gameGroups[groupIndex] = { players: [] };
         }
 
-        // 将选择的好友添加到该组
-        gameGroups[groupIndex].players = players;
+        // 过滤掉null值，获取当前已有的真实玩家
+        const currentPlayers = gameGroups[groupIndex].players.filter(player => player !== null);
+        console.log(`📊 第${groupIndex + 1}组当前已有 ${currentPlayers.length} 名玩家:`, currentPlayers);
+
+        // 获取当前组中已有的用户ID列表
+        const existingUserIds = currentPlayers.map(player => player.userid.toString());
+        console.log(`🔍 第${groupIndex + 1}组已有用户ID:`, existingUserIds);
+
+        // 过滤掉重复的用户（根据userid判断）
+        const newPlayers = players.filter(player => {
+            const userId = player.userid.toString();
+            const isDuplicate = existingUserIds.includes(userId);
+            if (isDuplicate) {
+                console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${groupIndex + 1}组中，跳过`);
+            }
+            return !isDuplicate;
+        });
+
+        const duplicateCount = players.length - newPlayers.length;
+        console.log(`🔄 过滤重复用户后，${newPlayers.length} 名用户待添加，${duplicateCount} 名重复用户被跳过`);
+
+        if (newPlayers.length === 0) {
+            const message = duplicateCount > 0
+                ? `所有${sourceType}已在第${groupIndex + 1}组中，无需重复添加`
+                : `没有${sourceType}需要添加`;
+
+            wx.showToast({
+                title: message,
+                icon: 'none',
+                duration: 2000
+            });
+            return;
+        }
+
+        // 计算可以添加的玩家数量（每组最多4个）
+        const maxPlayers = 4;
+        const availableSlots = maxPlayers - currentPlayers.length;
+        console.log(`🎯 第${groupIndex + 1}组还可以添加 ${availableSlots} 名玩家`);
+
+        if (availableSlots <= 0) {
+            wx.showToast({
+                title: `第${groupIndex + 1}组已满（最多${maxPlayers}人）`,
+                icon: 'none',
+                duration: 2000
+            });
+            return;
+        }
+
+        // 取要添加的玩家（如果超过可用位置，只取前面的）
+        const playersToAdd = newPlayers.slice(0, availableSlots);
+        const capacitySkippedCount = newPlayers.length - playersToAdd.length;
+
+        // 追加玩家到现有玩家后面
+        const updatedPlayers = [...currentPlayers, ...playersToAdd];
+        gameGroups[groupIndex].players = updatedPlayers;
+
+        console.log(`✅ 成功追加 ${playersToAdd.length} 名${sourceType}到第${groupIndex + 1}组`);
+        console.log(`📊 更新后的第${groupIndex + 1}组玩家:`, updatedPlayers);
 
         this.setData({
             'formData.gameGroups': gameGroups
         });
 
-        // 显示成功提示
+        // 生成详细的成功提示信息
+        let message = `已添加${playersToAdd.length}名${sourceType}到第${groupIndex + 1}组`;
+
+        const totalSkipped = duplicateCount + capacitySkippedCount;
+        if (totalSkipped > 0) {
+            const skipReasons = [];
+            if (duplicateCount > 0) {
+                skipReasons.push(`${duplicateCount}人已存在`);
+            }
+            if (capacitySkippedCount > 0) {
+                skipReasons.push(`${capacitySkippedCount}人因组已满`);
+            }
+            message += `（${skipReasons.join('，')}被跳过）`;
+        }
+
         wx.showToast({
-            title: `已添加${players.length}名好友到第${groupIndex + 1}组`,
+            title: message,
             icon: 'success',
-            duration: 2000
+            duration: 2500
         });
 
-        console.log(`第${groupIndex + 1}组玩家已更新为选择的好友:`, players);
-        console.log('更新后的完整 gameGroups 数据:', gameGroups);
-        console.log('更新后的页面数据:', this.data.formData.gameGroups);
+        console.log(`🎉 第${groupIndex + 1}组更新完成，当前${updatedPlayers.length}/${maxPlayers}人`);
+        console.log(`📈 统计：添加${playersToAdd.length}人，重复跳过${duplicateCount}人，容量跳过${capacitySkippedCount}人`);
     },
 
     /**
@@ -239,7 +295,6 @@ Page({
     onUserCreated(createdUser, groupIndex, slotIndex) {
         console.log('🎯 commonCreate.onUserCreated 被调用!');
         console.log('📋 接收到手工创建用户:', { createdUser, groupIndex, slotIndex });
-        console.log('📊 当前 gameGroups 数据:', this.data.formData.gameGroups);
 
         if (!createdUser) {
             wx.showToast({
@@ -259,46 +314,8 @@ Page({
             mobile: createdUser.mobile || ''
         };
 
-        // 更新对应组的特定位置的玩家数据
-        const gameGroups = [...this.data.formData.gameGroups];
-
-        // 确保组存在
-        if (!gameGroups[groupIndex]) {
-            gameGroups[groupIndex] = { players: [] };
-        }
-
-        // 如果是指定位置添加单个用户
-        if (slotIndex !== undefined && slotIndex >= 0) {
-            // 确保玩家数组有足够的位置
-            while (gameGroups[groupIndex].players.length <= slotIndex) {
-                gameGroups[groupIndex].players.push(null);
-            }
-
-            // 将用户添加到指定位置
-            gameGroups[groupIndex].players[slotIndex] = user;
-        } else {
-            // 如果没有指定位置，添加到该组的末尾
-            gameGroups[groupIndex].players.push(user);
-        }
-
-        console.log('💾 准备更新页面数据, 新的 gameGroups:', gameGroups);
-
-        this.setData({
-            'formData.gameGroups': gameGroups
-        });
-
-        console.log('✅ 页面数据更新完成!');
-        console.log('📊 更新后的页面数据:', this.data.formData.gameGroups);
-
-        // 显示成功提示
-        wx.showToast({
-            title: `已将 ${user.nickname} 添加到第${groupIndex + 1}组`,
-            icon: 'success',
-            duration: 2000
-        });
-
-        console.log(`🎉 第${groupIndex + 1}组玩家已更新，新增用户:`, user);
-        console.log('🎯 slotIndex:', slotIndex, ', 最终位置:', gameGroups[groupIndex].players[slotIndex]);
+        // 使用通用追加方法添加手工创建的用户
+        this.appendPlayersToGroup([user], groupIndex, '手工添加用户');
     },
 
     /**
