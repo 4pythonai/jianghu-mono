@@ -6,9 +6,11 @@
 const ENV = {
     development: {
         baseURL: 'http://140.179.50.120:7800/v2',
+        webURL: 'http://140.179.50.120:7800/',
     },
     production: {
         baseURL: 'http://140.179.50.120:7800/v2',
+        webURL: 'http://140.179.50.120:7800/',
     }
 }
 

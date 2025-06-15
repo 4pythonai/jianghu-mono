@@ -20,6 +20,15 @@ const user = {
     // friends 
     getFriendList: (data) => request('/User/getFriendList', data),
 
+    // createAndSelect
+    createAndSelect: (data) => request('/User/createAndSelect', data),
+
+    // search by nickname 
+    searchUserByNickname: (data) => request('/User/searchUserByNickname', data),
+
+    // double-search mobile ,从小程序和app数据库
+    doubleSearchMobile: (data) => request('/User/doubleSearchMobile', data),
+
 }
 
 export default user
