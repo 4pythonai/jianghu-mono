@@ -233,6 +233,75 @@ Page({
     },
 
     /**
+     * 处理手工创建用户回调
+     * 从 manualAdd 页面返回时调用
+     */
+    onUserCreated(createdUser, groupIndex, slotIndex) {
+        console.log('🎯 commonCreate.onUserCreated 被调用!');
+        console.log('📋 接收到手工创建用户:', { createdUser, groupIndex, slotIndex });
+        console.log('📊 当前 gameGroups 数据:', this.data.formData.gameGroups);
+
+        if (!createdUser) {
+            wx.showToast({
+                title: '用户数据无效',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 确保用户数据格式正确
+        const user = {
+            userid: createdUser.userid,
+            wx_nickname: createdUser.wx_nickname || createdUser.nickname,
+            nickname: createdUser.nickname || createdUser.wx_nickname,
+            coverpath: createdUser.coverpath || '/images/default-avatar.png',
+            handicap: createdUser.handicap || 0,
+            mobile: createdUser.mobile || ''
+        };
+
+        // 更新对应组的特定位置的玩家数据
+        const gameGroups = [...this.data.formData.gameGroups];
+
+        // 确保组存在
+        if (!gameGroups[groupIndex]) {
+            gameGroups[groupIndex] = { players: [] };
+        }
+
+        // 如果是指定位置添加单个用户
+        if (slotIndex !== undefined && slotIndex >= 0) {
+            // 确保玩家数组有足够的位置
+            while (gameGroups[groupIndex].players.length <= slotIndex) {
+                gameGroups[groupIndex].players.push(null);
+            }
+
+            // 将用户添加到指定位置
+            gameGroups[groupIndex].players[slotIndex] = user;
+        } else {
+            // 如果没有指定位置，添加到该组的末尾
+            gameGroups[groupIndex].players.push(user);
+        }
+
+        console.log('💾 准备更新页面数据, 新的 gameGroups:', gameGroups);
+
+        this.setData({
+            'formData.gameGroups': gameGroups
+        });
+
+        console.log('✅ 页面数据更新完成!');
+        console.log('📊 更新后的页面数据:', this.data.formData.gameGroups);
+
+        // 显示成功提示
+        wx.showToast({
+            title: `已将 ${user.nickname} 添加到第${groupIndex + 1}组`,
+            icon: 'success',
+            duration: 2000
+        });
+
+        console.log(`🎉 第${groupIndex + 1}组玩家已更新，新增用户:`, user);
+        console.log('🎯 slotIndex:', slotIndex, ', 最终位置:', gameGroups[groupIndex].players[slotIndex]);
+    },
+
+    /**
      * 添加新组
      */
     addGroup() {
