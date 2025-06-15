@@ -123,9 +123,12 @@ Page({
             if (result) {
                 console.log('✅ API调用成功，返回数据:', JSON.stringify(result, null, 2))
 
-                // 检查不同的可能数据结构
-                if (result.success && result.user) {
-                    console.log('📋 使用 result.user 格式')
+                // 检查API返回数据结构
+                if (result.code === 200 && result.user) {
+                    console.log('📋 使用标准API格式 - code: 200, user对象')
+                    this.handleUserCreated(result.user)
+                } else if (result.success && result.user) {
+                    console.log('📋 使用 success 格式')
                     this.handleUserCreated(result.user)
                 } else if (result.code === 200 && result.data) {
                     console.log('📋 使用 result.data 格式')
@@ -134,20 +137,8 @@ Page({
                     console.log('📋 直接使用 result 格式')
                     this.handleUserCreated(result)
                 } else {
-                    console.log('❌ 未知的返回格式，使用临时测试数据:', result)
-
-                    // 创建一个临时的测试用户数据
-                    const testUser = {
-                        userid: Date.now(), // 使用时间戳作为临时ID
-                        remarkName: this.data.remarkName,
-                        wx_nickname: this.data.remarkName,
-                        mobile: this.data.mobile,
-                        coverpath: '/images/default-avatar.png',
-                        handicap: 0
-                    };
-
-                    console.log('🧪 使用测试用户数据:', testUser)
-                    this.handleUserCreated(testUser)
+                    console.log('❌ API返回格式不匹配，详细数据:', result)
+                    throw new Error(result?.message || '创建失败，API返回格式异常')
                 }
             } else {
                 throw new Error('API返回空数据')
@@ -177,12 +168,12 @@ Page({
 
         // 转换用户数据格式，适配PlayerSelector组件的格式
         const createdUser = {
-            userid: user.userid || user.id,
-            wx_nickname: user.remarkName || user.nickname || user.wx_nickname || this.data.remarkName,
-            nickname: user.remarkName || user.nickname || user.wx_nickname || this.data.remarkName,
-            coverpath: user.coverpath || user.avatar || '/images/default-avatar.png',
+            userid: user.id || user.userid, // API返回的是 user.id
+            wx_nickname: user.wx_nickname || user.nickname || this.data.remarkName,
+            nickname: user.nickname || user.wx_nickname || this.data.remarkName,
+            coverpath: user.coverpath || '/images/default-avatar.png',
             handicap: user.handicap || 0,
-            mobile: user.mobile || this.data.mobile
+            mobile: user.mobile || this.data.mobile || ''
         };
 
         console.log('🔄 转换后的用户数据:', createdUser);
