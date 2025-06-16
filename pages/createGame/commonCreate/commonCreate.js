@@ -204,18 +204,37 @@ Page({
         const currentPlayers = gameGroups[groupIndex].players.filter(player => player !== null);
         console.log(`📊 第${groupIndex + 1}组当前已有 ${currentPlayers.length} 名玩家:`, currentPlayers);
 
-        // 获取当前组中已有的用户ID列表
-        const existingUserIds = currentPlayers.map(player => player.userid.toString());
-        console.log(`🔍 第${groupIndex + 1}组已有用户ID:`, existingUserIds);
+        // 获取所有组中已有的用户ID列表（避免跨组重复）
+        const allExistingUserIds = [];
+        const userGroupMap = {}; // 记录每个用户在哪个组
 
-        // 过滤掉重复的用户（根据userid判断）
+        gameGroups.forEach((group, index) => {
+            if (group && group.players) {
+                group.players.filter(player => player !== null).forEach(player => {
+                    const userId = player.userid.toString();
+                    allExistingUserIds.push(userId);
+                    userGroupMap[userId] = index + 1; // 记录用户在第几组（从1开始）
+                });
+            }
+        });
+
+        console.log(`🔍 所有组已有用户ID:`, allExistingUserIds);
+        console.log(`📍 用户分组情况:`, userGroupMap);
+
+        // 过滤掉重复的用户（检查所有组，避免跨组重复）
         const newPlayers = players.filter(player => {
             const userId = player.userid.toString();
-            const isDuplicate = existingUserIds.includes(userId);
-            if (isDuplicate) {
-                console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${groupIndex + 1}组中，跳过`);
+            const existingGroupIndex = userGroupMap[userId];
+
+            if (existingGroupIndex) {
+                if (existingGroupIndex === groupIndex + 1) {
+                    console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${groupIndex + 1}组中，跳过`);
+                } else {
+                    console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${existingGroupIndex}组中，不能重复添加到第${groupIndex + 1}组`);
+                }
+                return false;
             }
-            return !isDuplicate;
+            return true;
         });
 
         const duplicateCount = players.length - newPlayers.length;
@@ -223,13 +242,13 @@ Page({
 
         if (newPlayers.length === 0) {
             const message = duplicateCount > 0
-                ? `所有${sourceType}已在第${groupIndex + 1}组中，无需重复添加`
+                ? `所有${sourceType}已在其他组中，无法重复添加`
                 : `没有${sourceType}需要添加`;
 
             wx.showToast({
                 title: message,
                 icon: 'none',
-                duration: 2000
+                duration: 2500
             });
             return;
         }
@@ -285,7 +304,33 @@ Page({
         });
 
         console.log(`🎉 第${groupIndex + 1}组更新完成，当前${updatedPlayers.length}/${maxPlayers}人`);
-        console.log(`📈 统计：添加${playersToAdd.length}人，重复跳过${duplicateCount}人，容量跳过${capacitySkippedCount}人`);
+        console.log(`📈 统计：添加${playersToAdd.length}人，重复跨组跳过${duplicateCount}人，容量跳过${capacitySkippedCount}人`);
+    },
+
+    /**
+     * 检查用户是否已存在于任何组中
+     * 返回用户所在的组索引，如果不存在返回null
+     */
+    findUserInGroups(userid) {
+        const gameGroups = this.data.formData.gameGroups;
+        const userIdStr = userid.toString();
+
+        for (let groupIndex = 0; groupIndex < gameGroups.length; groupIndex++) {
+            const group = gameGroups[groupIndex];
+            if (group && group.players) {
+                const foundPlayer = group.players.find(player =>
+                    player !== null && player.userid.toString() === userIdStr
+                );
+                if (foundPlayer) {
+                    return {
+                        groupIndex,
+                        groupNumber: groupIndex + 1,
+                        player: foundPlayer
+                    };
+                }
+            }
+        }
+        return null;
     },
 
     /**
