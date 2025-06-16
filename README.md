@@ -69,6 +69,33 @@
 
 ## 最近更新
 
+### 2024-12-19 - 游戏组管理工具函数重构
+- **代码重构**: 将 `handleAppendPlayersToGroup` 方法抽象到 `utils/gameGroupUtils.js` 中
+- **新增工具函数**:
+  - `handleAppendPlayersToGroup()` - 通用的玩家添加处理函数，支持任何框架环境
+  - `createWxPageHandler()` - 创建适用于微信小程序页面的处理函数
+  - 提供 `executeWxActions()` 便捷方法直接执行微信小程序UI操作
+- **架构优化**:
+  - 分离业务逻辑和UI操作，提高代码可测试性
+  - 支持不同框架环境的适配（通过UI操作指令）
+  - 减少 `commonCreate.js` 的代码量，从100+行的组管理逻辑简化为几行代码
+- **使用方式**:
+  ```javascript
+  // 在 Page() 对象中直接绑定
+  handleAppendPlayersToGroup: createWxPageHandler('formData.gameGroups')
+  
+  // 或者使用通用版本
+  const result = handleAppendPlayersToGroup(players, groupIndex, sourceType, gameGroups);
+  result.executeWxActions(this); // 执行微信小程序UI操作
+  ```
+- **技术优势**:
+  - 纯函数设计，易于单元测试
+  - 单一职责原则，每个函数职责明确
+  - 代码复用性强，可在多个页面使用
+  - 支持扩展配置（数据路径、最大玩家数等）
+
+## 最近更新
+
 ### 2024-12-19 - 完成好友选择功能
 - **新增功能**: 实现了完整的好友选择页面 (`/pages/player-select/friendSelect/`)
 - **API集成**: 集成 `api.user.getFriends` 接口获取好友数据

@@ -1,4 +1,10 @@
+import { createWxPageHandler, findUserInGroups } from '../../../utils/gameGroupUtils'
+import { validateForm } from '../../../utils/gameValidate'
+
 Page({
+    // 创建绑定了当前页面的处理函数
+    handleAppendPlayersToGroup: createWxPageHandler('formData.gameGroups'),
+
     data: {
         selectedCourse: null, // 选中的球场信息
         selectedCourt: null,   // 选中的半场信息
@@ -87,19 +93,14 @@ Page({
         });
     },
 
-    /**
-     * 开球时间选择
-     */
+
     onOpenTimeChange(e) {
         const values = e.detail.value;
         const dateIndex = values[0];
         const timeIndex = values[1];
-
         const selectedDate = this.data.timePickerRange[0][dateIndex];
         const selectedTime = this.data.timePickerRange[1][timeIndex];
-
         const openTime = `${selectedDate.label} ${selectedTime.label}`;
-
         this.setData({
             timePickerValue: values,
             'formData.openTime': openTime
@@ -155,7 +156,7 @@ Page({
         }));
 
         // 使用追加模式添加老牌组合到组中
-        this.appendPlayersToGroup(players, groupIndex, '老牌组合');
+        this.handleAppendPlayersToGroup(players, groupIndex, '老牌组合');
     },
 
     /**
@@ -183,154 +184,16 @@ Page({
         }));
 
         // 使用追加模式添加好友到组中
-        this.appendPlayersToGroup(players, groupIndex, '好友');
+        this.handleAppendPlayersToGroup(players, groupIndex, '好友');
     },
 
-    /**
-     * 通用的追加玩家到组的方法
-     * 确保每组最多4个玩家，新玩家追加到已有玩家后面，避免重复用户
-     */
-    appendPlayersToGroup(players, groupIndex, sourceType) {
-        console.log(`📥 准备追加${sourceType}到第${groupIndex + 1}组:`, players);
 
-        const gameGroups = [...this.data.formData.gameGroups];
-
-        // 确保组存在
-        if (!gameGroups[groupIndex]) {
-            gameGroups[groupIndex] = { players: [] };
-        }
-
-        // 过滤掉null值，获取当前已有的真实玩家
-        const currentPlayers = gameGroups[groupIndex].players.filter(player => player !== null);
-        console.log(`📊 第${groupIndex + 1}组当前已有 ${currentPlayers.length} 名玩家:`, currentPlayers);
-
-        // 获取所有组中已有的用户ID列表（避免跨组重复）
-        const allExistingUserIds = [];
-        const userGroupMap = {}; // 记录每个用户在哪个组
-
-        gameGroups.forEach((group, index) => {
-            if (group && group.players) {
-                group.players.filter(player => player !== null).forEach(player => {
-                    const userId = player.userid.toString();
-                    allExistingUserIds.push(userId);
-                    userGroupMap[userId] = index + 1; // 记录用户在第几组（从1开始）
-                });
-            }
-        });
-
-        console.log(`🔍 所有组已有用户ID:`, allExistingUserIds);
-        console.log(`📍 用户分组情况:`, userGroupMap);
-
-        // 过滤掉重复的用户（检查所有组，避免跨组重复）
-        const newPlayers = players.filter(player => {
-            const userId = player.userid.toString();
-            const existingGroupIndex = userGroupMap[userId];
-
-            if (existingGroupIndex) {
-                if (existingGroupIndex === groupIndex + 1) {
-                    console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${groupIndex + 1}组中，跳过`);
-                } else {
-                    console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${existingGroupIndex}组中，不能重复添加到第${groupIndex + 1}组`);
-                }
-                return false;
-            }
-            return true;
-        });
-
-        const duplicateCount = players.length - newPlayers.length;
-        console.log(`🔄 过滤重复用户后，${newPlayers.length} 名用户待添加，${duplicateCount} 名重复用户被跳过`);
-
-        if (newPlayers.length === 0) {
-            const message = duplicateCount > 0
-                ? `所有${sourceType}已在其他组中，无法重复添加`
-                : `没有${sourceType}需要添加`;
-
-            wx.showToast({
-                title: message,
-                icon: 'none',
-                duration: 2500
-            });
-            return;
-        }
-
-        // 计算可以添加的玩家数量（每组最多4个）
-        const maxPlayers = 4;
-        const availableSlots = maxPlayers - currentPlayers.length;
-        console.log(`🎯 第${groupIndex + 1}组还可以添加 ${availableSlots} 名玩家`);
-
-        if (availableSlots <= 0) {
-            wx.showToast({
-                title: `第${groupIndex + 1}组已满（最多${maxPlayers}人）`,
-                icon: 'none',
-                duration: 2000
-            });
-            return;
-        }
-
-        // 取要添加的玩家（如果超过可用位置，只取前面的）
-        const playersToAdd = newPlayers.slice(0, availableSlots);
-        const capacitySkippedCount = newPlayers.length - playersToAdd.length;
-
-        // 追加玩家到现有玩家后面
-        const updatedPlayers = [...currentPlayers, ...playersToAdd];
-        gameGroups[groupIndex].players = updatedPlayers;
-
-        console.log(`✅ 成功追加 ${playersToAdd.length} 名${sourceType}到第${groupIndex + 1}组`);
-        console.log(`📊 更新后的第${groupIndex + 1}组玩家:`, updatedPlayers);
-
-        this.setData({
-            'formData.gameGroups': gameGroups
-        });
-
-        // 生成详细的成功提示信息
-        let message = `已添加${playersToAdd.length}名${sourceType}到第${groupIndex + 1}组`;
-
-        const totalSkipped = duplicateCount + capacitySkippedCount;
-        if (totalSkipped > 0) {
-            const skipReasons = [];
-            if (duplicateCount > 0) {
-                skipReasons.push(`${duplicateCount}人已存在`);
-            }
-            if (capacitySkippedCount > 0) {
-                skipReasons.push(`${capacitySkippedCount}人因组已满`);
-            }
-            message += `（${skipReasons.join('，')}被跳过）`;
-        }
-
-        wx.showToast({
-            title: message,
-            icon: 'success',
-            duration: 2500
-        });
-
-        console.log(`🎉 第${groupIndex + 1}组更新完成，当前${updatedPlayers.length}/${maxPlayers}人`);
-        console.log(`📈 统计：添加${playersToAdd.length}人，重复跨组跳过${duplicateCount}人，容量跳过${capacitySkippedCount}人`);
-    },
 
     /**
-     * 检查用户是否已存在于任何组中
-     * 返回用户所在的组索引，如果不存在返回null
+     * 检查用户是否已存在于任何组中（使用工具函数）
      */
-    findUserInGroups(userid) {
-        const gameGroups = this.data.formData.gameGroups;
-        const userIdStr = userid.toString();
-
-        for (let groupIndex = 0; groupIndex < gameGroups.length; groupIndex++) {
-            const group = gameGroups[groupIndex];
-            if (group && group.players) {
-                const foundPlayer = group.players.find(player =>
-                    player !== null && player.userid.toString() === userIdStr
-                );
-                if (foundPlayer) {
-                    return {
-                        groupIndex,
-                        groupNumber: groupIndex + 1,
-                        player: foundPlayer
-                    };
-                }
-            }
-        }
-        return null;
+    checkUserInGroups(userid) {
+        return findUserInGroups(userid, this.data.formData.gameGroups);
     },
 
     /**
@@ -360,7 +223,7 @@ Page({
         };
 
         // 使用通用追加方法添加手工创建的用户
-        this.appendPlayersToGroup([user], groupIndex, '手工添加用户');
+        this.handleAppendPlayersToGroup([user], groupIndex, '手工添加用户');
     },
 
     /**
@@ -495,79 +358,13 @@ Page({
     },
 
     /**
-     * 表单验证
-     */
-    validateForm() {
-        const { formData, selectedCourse, selectedCourt } = this.data;
-
-        // 验证球场选择
-        if (!selectedCourse) {
-            wx.showToast({
-                title: '请先选择球场',
-                icon: 'none'
-            });
-            return false;
-        }
-
-        if (!selectedCourt) {
-            wx.showToast({
-                title: '请先选择半场',
-                icon: 'none'
-            });
-            return false;
-        }
-
-        // 验证比赛名称
-        if (!formData.gameName.trim()) {
-            wx.showToast({
-                title: '请填写比赛名称',
-                icon: 'none'
-            });
-            return false;
-        }
-
-        // 验证开球时间
-        if (!formData.openTime) {
-            wx.showToast({
-                title: '请选择开球时间',
-                icon: 'none'
-            });
-            return false;
-        }
-
-        // 验证参赛组别和玩家
-        const hasValidGroup = formData.gameGroups.some(group =>
-            group.players && group.players.length > 0
-        );
-
-        if (!hasValidGroup) {
-            wx.showToast({
-                title: '请至少添加一名参赛玩家',
-                icon: 'none'
-            });
-            return false;
-        }
-
-        // 验证私密比赛密码
-        if (formData.isPrivate && !formData.password.trim()) {
-            wx.showToast({
-                title: '私密比赛需要设置密码',
-                icon: 'none'
-            });
-            return false;
-        }
-
-        return true;
-    },
-
-    /**
      * 处理创建比赛
      */
     handleCreateGame() {
         console.log('=== 创建比赛数据收集 ===');
 
         // 表单验证
-        if (!this.validateForm()) {
+        if (!validateForm(this.data)) {
             return;
         }
 
@@ -706,38 +503,6 @@ Page({
         }
     },
 
-    /**
-     * 生命周期函数--监听页面隐藏
-     */
-    onHide() {
 
-    },
 
-    /**
-     * 生命周期函数--监听页面卸载
-     */
-    onUnload() {
-
-    },
-
-    /**
-     * 页面相关事件处理函数--监听用户下拉刷新
-     */
-    onPullDownRefresh() {
-
-    },
-
-    /**
-     * 页面上拉触底事件的处理函数
-     */
-    onReachBottom() {
-
-    },
-
-    /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage() {
-
-    }
 }); 
