@@ -46,11 +46,6 @@ class Game extends MY_Controller {
     }
 
 
-    // http://s1.golf-brother.com
-    // http://s1.golf-brother.com/data/attach/user/2017/04/30/074cfec13bb719376c0ee86c7def6d66.jpg
-
-    // 老牌组合 
-    // http://140.179.50.120:7800/
     public function getPlayerCombination() {
         $json_paras = (array) json_decode(file_get_contents('php://input'));
         // $user_id = $json_paras['user_id'];
@@ -70,5 +65,116 @@ class Game extends MY_Controller {
         $group2 = [$user5, $user6, $user7, $user8];
         $combination = [$group1, $group2];
         echo json_encode(['code' => 200, 'combination' => $combination], JSON_UNESCAPED_UNICODE);
+    }
+
+
+    public function createBlankGame() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $userid = $this->getUser();
+        $uuid = $json_paras['uuid'];
+        $row = [];
+        $row['uuid'] = $uuid;
+        $row['creatorid'] = $userid;
+        $row['create_time'] = date('Y-m-d H:i:s');
+        $this->db->insert('t_game', $row);
+        $game_id = $this->db->insert_id();
+        echo json_encode(['code' => 200, 'uuid' => $uuid, 'game_id' => $game_id], JSON_UNESCAPED_UNICODE);
+    }
+
+
+
+    public function updateGameCourseid() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $uuid = $json_paras['uuid'];
+        $courseid = $json_paras['courseid'];
+
+        $this->db->where('uuid', $uuid);
+        $this->db->update('t_game', ['courseid' => $courseid]);
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '球场ID更新成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function updateGameName() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $uuid = $json_paras['uuid'];
+        $name = $json_paras['gameName'];
+
+        $this->db->where('uuid', $uuid);
+        $this->db->update('t_game', ['name' => $name]);
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '比赛名称更新成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function updateGamePrivate() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $uuid = $json_paras['uuid'];
+        $private = $json_paras['isPrivate'];
+
+        $this->db->where('uuid', $uuid);
+        $this->db->update('t_game', ['private' => $private]);
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '隐私设置更新成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function updateGamepPivacyPassword() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $uuid = $json_paras['uuid'];
+        $privacy_password = $json_paras['password'];
+
+        $this->db->where('uuid', $uuid);
+        $this->db->update('t_game', ['privacy_password' => $privacy_password]);
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '隐私口令更新成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function updateGameIsOneball() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $uuid = $json_paras['uuid'];
+        $is_oneball = $json_paras['is_oneball'];
+
+        $this->db->where('uuid', $uuid);
+        $this->db->update('t_game', ['is_oneball' => $is_oneball]);
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = 'OneBall设置更新成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+
+    public function updateGameOpenTime() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $uuid = $json_paras['uuid'];
+        $open_time = $json_paras['openTime'];
+        $this->db->where('uuid', $uuid);
+        $this->db->update('t_game', ['open_time' => $open_time]);
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '开赛时间更新成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function updateGameScoringType() {
+        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $uuid = $json_paras['uuid'];
+        $scoring_type = $json_paras['scoringType'];
+        $this->db->where('uuid', $uuid);
+        $this->db->update('t_game', ['scoring_type' => $scoring_type]);
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '计分类型更新成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 }

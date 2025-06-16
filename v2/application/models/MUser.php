@@ -132,7 +132,6 @@ class MUser  extends CI_Model {
       'coverpath' =>  '/avatar/user_default_avatar.png',
       'helper_id' => $helperid
     ];
-    debug($new_user);
     $this->db->insert('t_user', $new_user);
     return $this->db->insert_id();
   }
