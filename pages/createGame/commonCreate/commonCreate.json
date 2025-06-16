@@ -1,6 +1,7 @@
 {
 	"navigationBarTitleText": "普通创建",
 	"usingComponents": {
-		"PlayerSelector": "/components/PlayerSelector/PlayerSelector"
+		"PlayerSelector": "/components/PlayerSelector/PlayerSelector",
+		"TimePicker": "/components/time-picker/time-picker"
 	}
 }

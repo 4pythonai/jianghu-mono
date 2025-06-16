@@ -38,6 +38,32 @@
 	margin-bottom: 40rpx;
 }
 
+/* UUID 显示区域样式 */
+.uuid-section {
+	margin-bottom: 32rpx;
+}
+
+.uuid-display {
+	background: #f8f9fa;
+	border: 2rpx solid #e9ecef;
+	border-radius: 16rpx;
+	padding: 20rpx;
+}
+
+.uuid-text {
+	font-family: "Monaco", "Menlo", "Consolas", monospace;
+	font-size: 22rpx;
+	color: #6c757d;
+	word-break: break-all;
+	line-height: 1.4;
+	display: block;
+}
+
+/* 球场选择区域样式 */
+.course-section {
+	/* 保持原有样式 */
+}
+
 .search-input {
 	display: flex;
 	align-items: center;
@@ -205,38 +231,6 @@
 .form-input:focus {
 	border-color: #4caf50;
 	background: #fff;
-}
-
-/* 时间选择器样式 */
-.time-picker {
-	width: 100%;
-}
-
-.picker-display {
-	height: 88rpx;
-	background: #f8f9fa;
-	border: 2rpx solid #e9ecef;
-	border-radius: 16rpx;
-	padding: 0 24rpx;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	font-size: 28rpx;
-	color: #333;
-}
-
-.picker-display:active {
-	background: #fff;
-	border-color: #4caf50;
-}
-
-.placeholder-text {
-	color: #999;
-}
-
-.picker-arrow {
-	width: 32rpx;
-	height: 32rpx;
 }
 
 /* 单选按钮组样式 */

@@ -3,39 +3,49 @@
 		<view class="top-circle"></view>
 		<view class="card-content">
 			<view class="search-box">
-				<!-- 未选择球场时显示搜索框 -->
-				<view class="form-label">选择球场</view>
-				<view class="search-input" bindtap="goToCourseSelect" wx:if="{{ !selectedCourse }}">
-					<view class="location-icon">
-						<image src="/assets/icons/location.svg" mode="aspectFit"></image>
-					</view>
-					<input type="text" placeholder="选择球场" placeholder-class="input-placeholder" disabled />
-					<view class="arrow-icon">
-						<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+				<!-- UUID 显示区域（调试用） -->
+				<view class="uuid-section">
+					<view class="form-label">游戏ID（调试）</view>
+					<view class="uuid-display">
+						<text class="uuid-text">{{uuid}}</text>
 					</view>
 				</view>
-				<!-- 已选择球场时显示球场信息 -->
-				<view class="selected-course" wx:if="{{ selectedCourse }}">
-					<view class="course-info" bindtap="goToCourseSelect">
+				<!-- 球场选择区域 -->
+				<view class="course-section">
+					<view class="form-label">选择球场</view>
+					<view class="search-input" bindtap="goToCourseSelect" wx:if="{{ !selectedCourse }}">
 						<view class="location-icon">
 							<image src="/assets/icons/location.svg" mode="aspectFit"></image>
 						</view>
-						<view class="course-details">
-							<view class="course-name">{{selectedCourse.name}}</view>
-							<view class="course-address">{{selectedCourse.address}}</view>
-							<!-- 显示半场信息 -->
-							<view class="court-info" wx:if="{{ selectedCourt }}">
-								<text class="court-name">{{selectedCourt.name}}</text>
-							</view>
-						</view>
-						<view class="change-icon">
+						<input type="text" placeholder="选择球场" placeholder-class="input-placeholder" disabled />
+						<view class="arrow-icon">
 							<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
 						</view>
 					</view>
-					<view class="clear-btn" bindtap="clearSelectedCourse">
-						<image src="/assets/icons/close.svg" mode="aspectFit"></image>
+					<!-- 已选择球场时显示球场信息 -->
+					<view class="selected-course" wx:if="{{ selectedCourse }}">
+						<view class="course-info" bindtap="goToCourseSelect">
+							<view class="location-icon">
+								<image src="/assets/icons/location.svg" mode="aspectFit"></image>
+							</view>
+							<view class="course-details">
+								<view class="course-name">{{selectedCourse.name}}</view>
+								<view class="course-address">{{selectedCourse.address}}</view>
+								<!-- 显示半场信息 -->
+								<view class="court-info" wx:if="{{ selectedCourt }}">
+									<text class="court-name">{{selectedCourt.name}}</text>
+								</view>
+							</view>
+							<view class="change-icon">
+								<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+							</view>
+						</view>
+						<view class="clear-btn" bindtap="clearSelectedCourse">
+							<image src="/assets/icons/close.svg" mode="aspectFit"></image>
+						</view>
 					</view>
 				</view>
+				<!-- 关闭 course-section -->
 			</view>
 			<!-- 比赛属性输入区域 -->
 			<view class="game-form">
@@ -58,20 +68,7 @@
 				<view class="form-item">
 					<view class="form-label">开球时间</view>
 					<view class="form-input-wrapper">
-						<picker
-							mode="multiSelector"
-							range="{{ timePickerRange }}"
-							range-key="label"
-							value="{{ timePickerValue }}"
-							bindchange="onOpenTimeChange"
-							class="time-picker"
-						>
-							<view class="picker-display">
-								<text wx:if="{{ formData.openTime }}">{{formData.openTime}}</text>
-								<text wx:else class="placeholder-text">请选择开球时间</text>
-								<image src="/assets/icons/arrow-right.svg" class="picker-arrow" mode="aspectFit"></image>
-							</view>
-						</picker>
+						<TimePicker value="{{ formData.openTime }}" placeholder="请选择开球时间" bind:change="onOpenTimeChange" />
 					</view>
 				</view>
 				<!-- 赛制选择 -->

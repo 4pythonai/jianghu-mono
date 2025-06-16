@@ -69,6 +69,33 @@
 
 ## 最近更新
 
+### 2024-12-19 - UUID 唯一标识符系统实现
+- **新增功能**: 完成了完整的 UUID 生成工具函数系统
+- **核心函数**:
+  - `uuid()` - 生成符合 RFC 4122 标准的 UUID v4
+  - `simpleUuid()` - 生成去掉连字符的简化 UUID
+  - `shortUuid()` - 生成8位短 UUID（适用于临时标识）
+  - `timestampUuid()` - 生成带时间戳前缀的 UUID
+- **技术特点**:
+  - 符合 RFC 4122 UUID v4 标准格式
+  - 使用高精度时间戳和性能计时器增强随机性
+  - 支持微信小程序环境，兼容性良好
+  - 通过唯一性测试和格式验证
+- **应用集成**:
+  - 在 `commonCreate.js` 页面加载时自动生成游戏 UUID
+  - 用于游戏数据的唯一标识和防重复提交
+  - API 请求中包含 `uuid`  字段
+- **使用示例**:
+  ```javascript
+  import { uuid, shortUuid } from '../../../utils/tool';
+  
+  // 生成标准 UUID
+  const gameId = uuid(); // e.g., "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+  
+  // 生成短 UUID
+  const sessionId = shortUuid(); // e.g., "k2j9n8m1"
+  ```
+
 ### 2024-12-19 - 游戏组管理工具函数重构
 - **代码重构**: 将 `handleAppendPlayersToGroup` 方法抽象到 `utils/gameGroupUtils.js` 中
 - **新增工具函数**:

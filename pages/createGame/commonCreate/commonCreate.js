@@ -1,11 +1,13 @@
 import { createWxPageHandler, findUserInGroups } from '../../../utils/gameGroupUtils'
 import { validateForm } from '../../../utils/gameValidate'
+import { uuid } from '../../../utils/tool'
 
 Page({
     // 创建绑定了当前页面的处理函数
     handleAppendPlayersToGroup: createWxPageHandler('formData.gameGroups'),
 
     data: {
+        uuid: '', // 游戏唯一标识符（调试用）
         selectedCourse: null, // 选中的球场信息
         selectedCourt: null,   // 选中的半场信息
 
@@ -21,68 +23,10 @@ Page({
             ],
             isPrivate: false,   // 是否秘密比赛
             password: ''        // 密码
-        },
-
-        // 时间选择器配置
-        timePickerRange: [
-            // 日期范围（未来30天）
-            [],
-            // 小时范围
-            [
-                { label: '06:00', value: '06:00' },
-                { label: '06:30', value: '06:30' },
-                { label: '07:00', value: '07:00' },
-                { label: '07:30', value: '07:30' },
-                { label: '08:00', value: '08:00' },
-                { label: '08:30', value: '08:30' },
-                { label: '09:00', value: '09:00' },
-                { label: '09:30', value: '09:30' },
-                { label: '10:00', value: '10:00' },
-                { label: '10:30', value: '10:30' },
-                { label: '11:00', value: '11:00' },
-                { label: '11:30', value: '11:30' },
-                { label: '12:00', value: '12:00' },
-                { label: '12:30', value: '12:30' },
-                { label: '13:00', value: '13:00' },
-                { label: '13:30', value: '13:30' },
-                { label: '14:00', value: '14:00' },
-                { label: '14:30', value: '14:30' },
-                { label: '15:00', value: '15:00' },
-                { label: '15:30', value: '15:30' },
-                { label: '16:00', value: '16:00' },
-                { label: '16:30', value: '16:30' },
-                { label: '17:00', value: '17:00' },
-                { label: '17:30', value: '17:30' },
-                { label: '18:00', value: '18:00' }
-            ]
-        ],
-        timePickerValue: [0, 0] // 时间选择器当前值
-    },
-
-    /**
-     * 生成日期选择器数据
-     */
-    generateDateRange() {
-        const dates = [];
-        const today = new Date();
-
-        for (let i = 0; i < 30; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
-
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const weekDay = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()];
-
-            dates.push({
-                label: `${month}月${day}日 ${weekDay}`,
-                value: `${year}-${month}-${day}`
-            });
         }
-
-        return dates;
     },
+
+
 
     /**
      * 比赛名称输入
@@ -94,16 +38,19 @@ Page({
     },
 
 
+    /**
+     * 时间选择器变化事件（来自组件）
+     */
     onOpenTimeChange(e) {
-        const values = e.detail.value;
-        const dateIndex = values[0];
-        const timeIndex = values[1];
-        const selectedDate = this.data.timePickerRange[0][dateIndex];
-        const selectedTime = this.data.timePickerRange[1][timeIndex];
-        const openTime = `${selectedDate.label} ${selectedTime.label}`;
+        const { value, display } = e.detail;
+
+        console.log('🕐 接收到时间选择器变化:', {
+            value,      // 如: "2024-12-19 14:30"
+            display     // 如: "12月19日 周四 14:30"
+        });
+
         this.setData({
-            timePickerValue: values,
-            'formData.openTime': openTime
+            'formData.openTime': display
         });
     },
 
@@ -294,6 +241,8 @@ Page({
         });
     },
 
+
+
     handleBack() {
         wx.navigateBack({
             delta: 1
@@ -370,6 +319,9 @@ Page({
 
         // 收集所有数据
         const gameData = {
+            // 游戏唯一标识符
+            gameId: this.data.uuid,
+
             // 基本信息
             ScoringType: 'common', // 比赛类型
             createTime: new Date().toISOString(), // 创建时间
@@ -403,6 +355,8 @@ Page({
 
         // 准备API请求数据
         const apiRequestData = {
+            // 游戏唯一标识符
+            uuid: this.data.uuid, // 客户端生成的游戏ID，用于防重复提交
             // 球场信息
             course_id: this.data.selectedCourse.id || this.data.selectedCourse.courseid,
             course_name: this.data.selectedCourse.name,
@@ -469,11 +423,17 @@ Page({
     onLoad(options) {
         console.log('commonCreate页面加载，参数:', options);
 
-        // 初始化日期选择器数据
-        const dateRange = this.generateDateRange();
+        // 生成唯一的游戏ID
+        const gameUuid = uuid();
+        console.log('🆔 生成游戏UUID:', gameUuid);
+
         this.setData({
-            'timePickerRange[0]': dateRange
+            uuid: gameUuid
         });
+
+        // 调试日志
+        console.log('🆔 生成游戏UUID:', gameUuid);
+        console.log('🕐 生成时间:', new Date().toLocaleString());
     },
 
     /**

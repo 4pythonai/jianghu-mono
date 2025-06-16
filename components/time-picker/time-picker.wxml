@@ -1,0 +1,17 @@
+<!-- 时间选择器组件 -->
+<view class="time-picker-wrapper">
+	<picker
+		mode="multiSelector"
+		range="{{ timePickerRange }}"
+		range-key="label"
+		value="{{ timePickerValue }}"
+		bindchange="onTimeChange"
+		class="time-picker"
+	>
+		<view class="picker-display">
+			<text wx:if="{{ selectedTime }}" class="selected-time">{{ selectedTime }}</text>
+			<text wx:else class="placeholder-text">{{ placeholder || '请选择开球时间' }}</text>
+			<image src="/assets/icons/arrow-right.svg" class="picker-arrow" mode="aspectFit"></image>
+		</view>
+	</picker>
+</view>
