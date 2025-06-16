@@ -10,4 +10,7 @@ const game = {
     updateGamePrivate: (data) => request('/Game/updateGamePrivate', data),
     updateGamepPivacyPassword: (data) => request('/Game/updateGamepPivacyPassword', data),
     updateGameOpenTime: (data) => request('/Game/updateGameOpenTime', data),
+    updateGameScoringType: (data) => request('/Game/updateGameScoringType', data),
 }
+
+export default game
