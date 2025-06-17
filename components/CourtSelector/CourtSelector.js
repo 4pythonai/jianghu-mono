@@ -217,13 +217,34 @@ Component({
         checkSelectionComplete() {
             const { selectedFrontNine, selectedBackNine } = this.data
 
-            if (selectedFrontNine && selectedBackNine) {
+            // 有任意一个选择就算完成
+            if (selectedFrontNine || selectedBackNine) {
+                const frontNineCourt = selectedFrontNine ? this.getCourtById(selectedFrontNine) : null
+                const backNineCourt = selectedBackNine ? this.getCourtById(selectedBackNine) : null
+
+                // 计算总洞数和半场类型
+                let totalHoles = 0
+                let gameType = ''
+
+                if (frontNineCourt && backNineCourt) {
+                    totalHoles = 18
+                    gameType = 'full'
+                } else if (frontNineCourt) {
+                    totalHoles = 9
+                    gameType = 'front_nine'
+                } else if (backNineCourt) {
+                    totalHoles = 9
+                    gameType = 'back_nine'
+                }
+
                 // 触发选择完成事件
                 this.triggerEvent('selectionComplete', {
-                    frontNine: this.getCourtById(selectedFrontNine),
-                    backNine: this.getCourtById(selectedBackNine),
+                    frontNine: frontNineCourt,
+                    backNine: backNineCourt,
                     frontNineHoles: this.data.frontNineHoles,
-                    backNineHoles: this.data.backNineHoles
+                    backNineHoles: this.data.backNineHoles,
+                    totalHoles: totalHoles,
+                    gameType: gameType
                 })
             }
         },
@@ -243,25 +264,43 @@ Component({
         onConfirm() {
             const { selectedFrontNine, selectedBackNine, courseDetail } = this.data
 
-            if (!selectedFrontNine || !selectedBackNine) {
+            // 至少要选择一个半场
+            if (!selectedFrontNine && !selectedBackNine) {
                 // 触发错误事件
                 this.triggerEvent('error', {
                     type: 'incompleteSelection',
-                    message: '请选择前九洞和后九洞'
+                    message: '请至少选择一个半场'
                 })
                 return
             }
 
-            const frontNineCourt = this.getCourtById(selectedFrontNine)
-            const backNineCourt = this.getCourtById(selectedBackNine)
+            const frontNineCourt = selectedFrontNine ? this.getCourtById(selectedFrontNine) : null
+            const backNineCourt = selectedBackNine ? this.getCourtById(selectedBackNine) : null
 
-            // 组合完整的选择信息
+            // 计算总洞数和半场类型
+            let totalHoles = 0
+            let gameType = ''
+
+            if (frontNineCourt && backNineCourt) {
+                totalHoles = 18
+                gameType = 'full'
+            } else if (frontNineCourt) {
+                totalHoles = 9
+                gameType = 'front_nine'
+            } else if (backNineCourt) {
+                totalHoles = 9
+                gameType = 'back_nine'
+            }
+
+            // 组合选择信息
             const selectionData = {
                 course: courseDetail,
                 frontNine: frontNineCourt,
                 backNine: backNineCourt,
                 frontNineHoles: this.data.frontNineHoles,
                 backNineHoles: this.data.backNineHoles,
+                totalHoles: totalHoles,
+                gameType: gameType,
                 timestamp: Date.now()
             }
 
@@ -302,9 +341,34 @@ Component({
          */
         getSelection() {
             const { selectedFrontNine, selectedBackNine } = this.data
-            if (!selectedFrontNine || !selectedBackNine) return null
+            if (!selectedFrontNine && !selectedBackNine) return null
 
-            return this.getCourtById(selectedFrontNine)
+            const frontNineCourt = selectedFrontNine ? this.getCourtById(selectedFrontNine) : null
+            const backNineCourt = selectedBackNine ? this.getCourtById(selectedBackNine) : null
+
+            // 计算总洞数和半场类型
+            let totalHoles = 0
+            let gameType = ''
+
+            if (frontNineCourt && backNineCourt) {
+                totalHoles = 18
+                gameType = 'full'
+            } else if (frontNineCourt) {
+                totalHoles = 9
+                gameType = 'front_nine'
+            } else if (backNineCourt) {
+                totalHoles = 9
+                gameType = 'back_nine'
+            }
+
+            return {
+                frontNine: frontNineCourt,
+                backNine: backNineCourt,
+                frontNineHoles: this.data.frontNineHoles,
+                backNineHoles: this.data.backNineHoles,
+                totalHoles: totalHoles,
+                gameType: gameType
+            }
         },
 
         /**

@@ -84,9 +84,9 @@
 	<!-- 确认按钮 -->
 	<view class="confirm-section" wx:if="{{ showConfirmButton && !loading }}">
 		<button
-			class="confirm-btn {{ selectedFrontNine && selectedBackNine ? 'active' : 'disabled' }}"
+			class="confirm-btn {{ selectedFrontNine || selectedBackNine ? 'active' : 'disabled' }}"
 			bindtap="onConfirm"
-			disabled="{{ !selectedFrontNine || !selectedBackNine }}"
+			disabled="{{ !selectedFrontNine && !selectedBackNine }}"
 		>{{confirmText || '确认选择'}}</button>
 	</view>
 </view>

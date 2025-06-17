@@ -1,4 +1,4 @@
-import { createWxPageHandler, findUserInGroups } from '../../../utils/gameGroupUtils'
+import { createWxPageHandler, findUserInGroups, handleAppendPlayersToGroup } from '../../../utils/gameGroupUtils'
 import { validateForm } from '../../../utils/gameValidate'
 import { uuid } from '../../../utils/tool'
 
@@ -6,8 +6,79 @@ const app = getApp()
 
 
 Page({
-    // 创建绑定了当前页面的处理函数
-    handleAppendPlayersToGroup: createWxPageHandler('formData.gameGroups'),
+    // 重写玩家添加处理函数，使用我们的统一更新方法
+    handleAppendPlayersToGroup(players, groupIndex, sourceType) {
+        console.log(`🎯 handleAppendPlayersToGroup 被调用:`, { players, groupIndex, sourceType });
+
+        // 获取当前页面的游戏组数据
+        const gameGroups = this.data.formData.gameGroups;
+
+        // 调用通用处理函数
+        const result = handleAppendPlayersToGroup(
+            players,
+            groupIndex,
+            sourceType,
+            gameGroups,
+            { dataPath: 'formData.gameGroups' }
+        );
+
+        console.log(`🎯 handleAppendPlayersToGroup 处理结果:`, result);
+
+        // 如果成功，使用我们的统一更新方法而不是直接 setData
+        if (result.success && result.gameGroups) {
+            this.updateGameGroups(result.gameGroups, `${sourceType}添加`);
+        }
+
+        // 显示 Toast
+        if (result.uiActions && result.uiActions.showToast && wx.showToast) {
+            wx.showToast(result.uiActions.showToast);
+        }
+
+        return result;
+    },
+
+    // 统一的 setData 方法，自动触发 API 同步
+    updateGameGroups(newGameGroups, description = '组数据更新') {
+        console.log('🌺 updateGameGroups 被调用:', newGameGroups);
+        console.log('🔍 当前 gameCreated 状态:', this.data.gameCreated);
+        console.log('🔍 当前 uuid:', this.data.uuid);
+        console.log('🔍 描述:', description);
+
+        // 更新页面数据
+        this.setData({
+            'formData.gameGroups': newGameGroups
+        });
+
+        // 确保游戏已创建且数据有效
+        if (this.data.gameCreated && newGameGroups && Array.isArray(newGameGroups)) {
+            console.log('✅ 条件满足，开始防抖调用');
+            // 使用较短的防抖时间，因为这是统一的变化监听
+            this.debounce('gameGroupsObserver', () => {
+                console.log('🚀 防抖结束，开始调用 updateGameGroupAndPlayers API');
+                const apiData = {
+                    uuid: this.data.uuid,
+                    groups: newGameGroups.map((group, index) => ({
+                        groupIndex: index,
+                        players: group.players || []
+                    }))
+                };
+                console.log('📤 API 调用数据:', apiData);
+                this.callUpdateAPI('updateGameGroupAndPlayers', apiData, `组数据同步-${description}`)
+            }, 300) // 较短的防抖时间
+        } else {
+            console.log('❌ 条件不满足，跳过 API 调用');
+            if (!this.data.gameCreated) {
+                console.log('   原因: gameCreated = false');
+            }
+            if (!newGameGroups) {
+                console.log('   原因: newGameGroups 为空');
+            }
+            if (!Array.isArray(newGameGroups)) {
+                console.log('   原因: newGameGroups 不是数组');
+            }
+        }
+    },
+
     data: {
         uuid: '', // 游戏唯一标识符（调试用）
         gameId: null, // 服务端返回的游戏ID
@@ -21,6 +92,7 @@ Page({
             openTime: '',       // 开球时间
             ScoringType: 'hole',   // 赛制：hole-按洞赛, oneball-比杆赛
             gameGroups: [       // 参赛组别（至少一组） { players: [] }
+                { players: [] }     // 默认创建第一组
             ],
             isPrivate: false,   // 是否秘密比赛
             password: ''        // 密码
@@ -34,12 +106,17 @@ Page({
      * 实时更新API调用 - 带防抖和错误处理
      */
     async callUpdateAPI(apiMethod, data, description) {
+        console.log(`🌐 开始调用 ${apiMethod} API, 描述: ${description}`);
+        console.log(`🌐 API 方法存在吗:`, typeof app.api.game[apiMethod]);
+        console.log(`🌐 调用数据:`, data);
+
         try {
             const result = await app.api.game[apiMethod](data)
             console.log(`✅ ${description}更新成功:`, result)
             return result
         } catch (error) {
             console.error(`❌ ${description}更新失败:`, error)
+            console.error(`❌ 错误详情:`, error.message || error);
             // 不显示错误提示，避免影响用户体验
             return null
         }
@@ -49,9 +126,15 @@ Page({
      * 防抖执行函数
      */
     debounce(key, fn, delay = 500) {
+        console.log(`⏱️ debounce 被调用, key: ${key}, delay: ${delay}ms`);
         clearTimeout(this.debounceTimers[key])
-        this.debounceTimers[key] = setTimeout(fn, delay)
+        this.debounceTimers[key] = setTimeout(() => {
+            console.log(`⏰ debounce 时间到，执行函数 key: ${key}`);
+            fn()
+        }, delay)
     },
+
+
 
     onGameNameInput(e) {
         const gameName = e.detail.value
@@ -109,11 +192,10 @@ Page({
         const gameGroups = [...this.data.formData.gameGroups];
         gameGroups[groupIndex].players = players;
 
-        this.setData({
-            'formData.gameGroups': gameGroups
-        });
+        console.log(`🎮 onPlayersChange 触发 - 第${groupIndex + 1}组玩家更新:`, players);
 
-        console.log(`第${groupIndex + 1}组玩家更新:`, players);
+        // 使用统一的更新方法
+        this.updateGameGroups(gameGroups, `第${groupIndex + 1}组玩家变化`);
     },
 
     /**
@@ -206,9 +288,8 @@ Page({
             players: []
         });
 
-        this.setData({
-            'formData.gameGroups': gameGroups
-        });
+        // 使用统一的更新方法
+        this.updateGameGroups(gameGroups, '添加新组');
 
         wx.showToast({
             title: `已添加第${gameGroups.length}组`,
@@ -229,9 +310,9 @@ Page({
         }
 
         gameGroups.splice(index, 1);
-        this.setData({
-            'formData.gameGroups': gameGroups
-        });
+
+        // 使用统一的更新方法
+        this.updateGameGroups(gameGroups, `删除第${index + 1}组`);
 
         wx.showToast({
             title: '已删除该组',
@@ -290,7 +371,7 @@ Page({
     },
 
     setSelectedCourse(course) {
-        console.log('接收到选中的球场:', course);
+        console.log('🏌️ 接收到选中的球场:', course);
         this.setData({
             selectedCourse: course
         });
@@ -300,34 +381,93 @@ Page({
             icon: 'success'
         });
 
-        // 实时更新球场ID
+        // 实时更新球场ID（只有球场ID，没有半场信息）
         if (this.data.gameCreated) {
-            this.callUpdateAPI('updateGameCourseid', {
+            const apiData = {
                 uuid: this.data.uuid,
-                courseid: course.id || course.courseid
-            }, '球场')
+                courseid: course.id || course.courseid,
+                frontNineCourtId: '', // 空值表示未选择
+                backNineCourtId: ''   // 空值表示未选择
+            };
+
+            console.log('🏌️ updateGameCourseCourt API 数据（仅球场）:', apiData);
+
+            this.callUpdateAPI('updateGameCourseCourt', apiData, '球场选择')
         }
     },
 
     setCourtSelection(selectionData) {
+        console.log('🏌️ setCourtSelection 接收到的数据:', selectionData);
+
+        // 创建一个显示用的 court 对象
+        const displayCourt = {
+            name: this.generateCourtDisplayName(selectionData),
+            gameType: selectionData.gameType,
+            totalHoles: selectionData.totalHoles
+        };
+
         this.setData({
             selectedCourse: selectionData.course,
-            selectedCourt: selectionData.court
+            selectedCourt: displayCourt
         });
 
+        // 根据选择类型生成提示信息
+        let toastTitle = '';
+        if (selectionData.gameType === 'full') {
+            toastTitle = `已选择 ${selectionData.course?.name || '球场'} - 18洞`
+        } else if (selectionData.gameType === 'front_nine') {
+            toastTitle = `已选择 ${selectionData.course?.name || '球场'} - 前9洞`
+        } else if (selectionData.gameType === 'back_nine') {
+            toastTitle = `已选择 ${selectionData.course?.name || '球场'} - 后9洞`
+        } else {
+            toastTitle = `已选择 ${selectionData.course?.name || '球场'}`
+        }
+
         wx.showToast({
-            title: `已选择 ${selectionData.course?.name || '球场'} - ${selectionData.court?.name || '半场'}`,
+            title: toastTitle,
             icon: 'success',
             duration: 2000
         });
 
-        // 实时更新球场ID（使用球场数据）
+        // 实时更新球场ID（发送球场ID、前9、后9的courtid）
         if (this.data.gameCreated && selectionData.course) {
-            this.callUpdateAPI('updateGameCourseid', {
+            // 直接从 selectionData 中提取前9和后9的courtid
+            const frontNineCourtId = selectionData.frontNine?.courtid || '';
+            const backNineCourtId = selectionData.backNine?.courtid || '';
+
+            console.log('🏌️ 提取的半场信息:');
+            console.log('  - 游戏类型:', selectionData.gameType);
+            console.log('  - 总洞数:', selectionData.totalHoles);
+            console.log('  - 前9 courtid:', frontNineCourtId);
+            console.log('  - 后9 courtid:', backNineCourtId);
+
+            const apiData = {
                 uuid: this.data.uuid,
-                courseid: selectionData.course.id || selectionData.course.courseid
-            }, '球场和半场')
+                courseid: selectionData.course.id || selectionData.course.courseid,
+                frontNineCourtId: frontNineCourtId,
+                backNineCourtId: backNineCourtId,
+                gameType: selectionData.gameType,
+                totalHoles: selectionData.totalHoles
+            };
+
+            console.log('🏌️ updateGameCourseCourt API 数据:', apiData);
+
+            this.callUpdateAPI('updateGameCourseCourt', apiData, '球场和半场选择')
         }
+    },
+
+    /**
+     * 生成半场显示名称
+     */
+    generateCourtDisplayName(selectionData) {
+        if (selectionData.gameType === 'full') {
+            return `${selectionData.frontNine?.courtname || '前九洞'} + ${selectionData.backNine?.courtname || '后九洞'}`;
+        } else if (selectionData.gameType === 'front_nine') {
+            return selectionData.frontNine?.courtname || '前九洞';
+        } else if (selectionData.gameType === 'back_nine') {
+            return selectionData.backNine?.courtname || '后九洞';
+        }
+        return '未知半场';
     },
 
     /**

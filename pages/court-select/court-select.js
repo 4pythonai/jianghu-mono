@@ -163,28 +163,25 @@ Page({
      */
     onCourtConfirm(e) {
         const { selectionData } = e.detail
-        console.log('页面接收到确认选择:', selectionData)
+        console.log('📍 court-select页面接收到确认选择:', selectionData)
 
-        // 组合半场信息，将前九洞和后九洞合并为一个court对象
-        const combinedCourt = {
-            name: `${selectionData.frontNine?.courtname || '前九洞'} + ${selectionData.backNine?.courtname || '后九洞'}`,
-            value: 'full_18_holes', // 18洞标识
-            holes: 18, // 总洞数
-            // 移除价格相关字段
+        // 直接传递 selectionData，不需要重新组合
+        // selectionData 已经包含了所有需要的数据：
+        // - frontNine, backNine (可能为null)
+        // - gameType, totalHoles
+        // - frontNineHoles, backNineHoles
+        const formattedData = {
+            course: selectionData.course,
             frontNine: selectionData.frontNine,
             backNine: selectionData.backNine,
             frontNineHoles: selectionData.frontNineHoles,
-            backNineHoles: selectionData.backNineHoles
-        }
-
-        // 转换数据格式，匹配commonCreate期望的格式
-        const formattedData = {
-            course: selectionData.course,
-            court: combinedCourt, // 这里是关键！将组合后的半场信息赋值给court
+            backNineHoles: selectionData.backNineHoles,
+            gameType: selectionData.gameType,
+            totalHoles: selectionData.totalHoles,
             timestamp: selectionData.timestamp
         }
 
-        console.log('转换后的数据格式:', formattedData)
+        console.log('📍 court-select转换后的数据格式:', formattedData)
 
         // 将选择结果传递给commonCreate页面
         const pages = getCurrentPages()
