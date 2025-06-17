@@ -100,12 +100,17 @@ class MGame  extends CI_Model {
     $this->db->where('gameid', $gameid)
       ->delete('t_game_group');
     $this->db->where('gameid', $gameid)
-      ->delete('t_game_group');
+      ->delete('t_game_group_user');
   }
 
 
   public function addGameGroupAndPlayers($gameid, $groups) {
-    foreach ($groups as  $gpidx => $group) {
+    foreach ($groups as $gpidx => $group) {
+      // 检查组中是否有玩家
+      if (empty($group['players'])) {
+        continue; // 如果没有玩家，跳过该组
+      }
+
       // 插入组信息到 t_game_group 表
       $groupData = [
         'gameid' => $gameid,
@@ -127,7 +132,7 @@ class MGame  extends CI_Model {
           'confirmed' => 0,
           'confirmed_time' => null,
           'addtime' => date('Y-m-d H:i:s'),
-          'join_type' => 'manual' // 根据需要设置
+          'join_type' => $player['join_type'] // 根据需要设置
         ];
         $this->db->insert('t_game_group_user', $playerData);
       }

@@ -115,6 +115,13 @@ class Game extends MY_Controller {
         $uuid = $json_paras['uuid'];
         $private = $json_paras['isPrivate'];
 
+        if ($private) {
+        } else {
+            $this->db->where('uuid', $uuid);
+            $this->db->update('t_game', ['privacy_password' => null]);
+        }
+
+
         $this->db->where('uuid', $uuid);
         $this->db->update('t_game', ['private' => $private]);
 

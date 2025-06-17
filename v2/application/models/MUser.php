@@ -113,7 +113,7 @@ class MUser  extends CI_Model {
       'nickname' => $remarkName,
       'mobile' => $mobile,
       'addtime' => date('Y-m-d H:i:s'),
-      'reg_type' => 'remark',
+      'reg_type' => 'manualAdd',
       'coverpath' =>  '/avatar/user_default_avatar.png',
       'helper_id' => $helperid
     ];
@@ -128,7 +128,7 @@ class MUser  extends CI_Model {
       'nickname' => $remarkName,
       'mobile' => $mobile,
       'addtime' => date('Y-m-d H:i:s'),
-      'reg_type' => 'remarkwithmobile',
+      'reg_type' => 'manualAddWithMobile',
       'coverpath' =>  '/avatar/user_default_avatar.png',
       'helper_id' => $helperid
     ];
