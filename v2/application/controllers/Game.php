@@ -20,7 +20,7 @@ class Game extends MY_Controller {
 
 
     public function createGame() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         // $game_id = $json_paras['game_id'];
         $user_id = $json_paras['user_id'];
         $course_id = $json_paras['course_id'];
@@ -35,19 +35,19 @@ class Game extends MY_Controller {
             'end_time' => $end_time
         ]);
 
-        $group_id = $this->db->insert_id();
-        $this->db->insert('t_game_players', [
-            'game_id' => $game_id,
-            'user_id' => $user_id,
-            'group_id' => $group_id
-        ]);
+        // $group_id = $this->db->insert_id();
+        // $this->db->insert('t_game_players', [
+        //     'game_id' => $game_id,
+        //     'user_id' => $user_id,
+        //     'group_id' => $group_id
+        // ]);
 
         echo json_encode(['code' => 200, 'game_id' => $game_id], JSON_UNESCAPED_UNICODE);
     }
 
 
     public function getPlayerCombination() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         // $user_id = $json_paras['user_id'];
         $user1 = ['userid' => 837545, 'nickname' => 'Alex', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
         $user2 = ['userid' => 14, 'nickname' => 'awen', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
@@ -69,7 +69,7 @@ class Game extends MY_Controller {
 
 
     public function createBlankGame() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $uuid = $json_paras['uuid'];
         $row = [];
@@ -83,22 +83,21 @@ class Game extends MY_Controller {
 
 
 
-    public function updateGameCourseid() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+
+    public function updateGameCourseCourt() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
-        $courseid = $json_paras['courseid'];
-
-        $this->db->where('uuid', $uuid);
-        $this->db->update('t_game', ['courseid' => $courseid]);
-
+        $gameid = $this->MGame->getGameidByUUID($uuid);
+        $this->MGame->clearGameCourt($gameid);
+        $this->MGame->addGameCourt($gameid, $json_paras['frontNineCourtId'], $json_paras['backNineCourtId']);
         $ret = [];
         $ret['code'] = 200;
-        $ret['message'] = '球场ID更新成功';
+        $ret['message'] = '球场/半场更新成功';
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
     public function updateGameName() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
         $name = $json_paras['gameName'];
 
@@ -112,7 +111,7 @@ class Game extends MY_Controller {
     }
 
     public function updateGamePrivate() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
         $private = $json_paras['isPrivate'];
 
@@ -126,7 +125,7 @@ class Game extends MY_Controller {
     }
 
     public function updateGamepPivacyPassword() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
         $privacy_password = $json_paras['password'];
 
@@ -140,7 +139,7 @@ class Game extends MY_Controller {
     }
 
     public function updateGameIsOneball() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
         $is_oneball = $json_paras['is_oneball'];
 
@@ -155,7 +154,7 @@ class Game extends MY_Controller {
 
 
     public function updateGameOpenTime() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
         $open_time = $json_paras['openTime'];
         $this->db->where('uuid', $uuid);
@@ -167,7 +166,7 @@ class Game extends MY_Controller {
     }
 
     public function updateGameScoringType() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
         $scoring_type = $json_paras['scoringType'];
         $this->db->where('uuid', $uuid);
@@ -176,5 +175,14 @@ class Game extends MY_Controller {
         $ret['code'] = 200;
         $ret['message'] = '计分类型更新成功';
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function updateGameGroupAndPlayers() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $uuid = $json_paras['uuid'];
+        $gameid = $this->MGame->getGameidByUUID($uuid);
+        $groups = $json_paras['groups'];
+        $this->MGame->clearGameGroupAndPlayers($gameid);
+        $this->MGame->addGameGroupAndPlayers($gameid, $groups);
     }
 }

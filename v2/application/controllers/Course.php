@@ -20,7 +20,8 @@ class Course extends MY_Controller {
 
 
     public function getNearestCourses() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+
         $lat = $json_paras['latitude'];
         $lng = $json_paras['longitude'];
 
@@ -65,7 +66,8 @@ class Course extends MY_Controller {
 
 
     public function searchCourse() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+
         $keyword = $json_paras['keyword'];
         $page = isset($json_paras['page']) ? (int)$json_paras['page'] : 1;
         $per_page = 10; // 每页显示10条记录
@@ -108,7 +110,7 @@ class Course extends MY_Controller {
 
 
     public function getCourseDetail() {
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $courseid = $json_paras['courseid'];
         $query = "SELECT id,courseid,name,coverpath,courtnum FROM t_course WHERE courseid = $courseid";
         $course = $this->db->query($query)->row_array();

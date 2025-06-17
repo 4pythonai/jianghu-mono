@@ -30,7 +30,7 @@ class Weixin extends CI_Controller {
         logtext('<div><span class =functionname>' . date('Y-m-d H:i:s') . '  Weixin/wxlogin</span></div>');
         logtext(" 参数:" . json_encode(file_get_contents('php://input'), JSON_UNESCAPED_UNICODE));
 
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $code = $json_paras['code'];
 
         try {
@@ -130,7 +130,7 @@ class Weixin extends CI_Controller {
         logtext('<div><span class =functionname>' . date('Y-m-d H:i:s') . '  Weixin/bindPhoneNumber</span></div>');
         logtext(" 参数:" . json_encode(file_get_contents('php://input'), JSON_UNESCAPED_UNICODE));
 
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $code = $json_paras['code'] ?? '';
         $encryptedData = $json_paras['encryptedData'] ?? '';
         $iv = $json_paras['iv'] ?? '';

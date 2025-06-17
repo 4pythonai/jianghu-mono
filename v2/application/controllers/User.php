@@ -36,7 +36,7 @@ class User extends MY_Controller {
 
     public function getUserInfo() {
         try {
-            $json_paras = (array) json_decode(file_get_contents('php://input'));
+            $json_paras = json_decode(file_get_contents('php://input'), true);
             $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
         } catch (Exception $e) {
             $ret['code'] = 500;
@@ -120,7 +120,7 @@ class User extends MY_Controller {
 
     public function updateNickName() {
         try {
-            $json_paras = (array) json_decode(file_get_contents('php://input'));
+            $json_paras = json_decode(file_get_contents('php://input'), true);
             $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
             $nickname = isset($json_paras['nickname']) ? $json_paras['nickname'] : '';
 
@@ -142,7 +142,7 @@ class User extends MY_Controller {
 
     public function createAndSelect() {
         $userid = $this->getUser();
-        $json_paras = (array) json_decode(file_get_contents('php://input'));
+        $json_paras = json_decode(file_get_contents('php://input'), true);
         $remarkName = isset($json_paras['remarkName']) ? $json_paras['remarkName'] : '';
         $mobile = isset($json_paras['mobile']) ? $json_paras['mobile'] : '';
         $mobile = trim($mobile);
