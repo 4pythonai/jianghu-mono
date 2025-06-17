@@ -80,82 +80,44 @@ Page({
     },
 
     /**
- * 提交表单
- */
-    async onSubmit() {
-        if (!this.data.isFormValid || this.data.isSubmitting) {
-            return
+     * 提交表单
+     */
+    onSubmit() {
+        if (!this.data.isFormValid) {
+            return;
         }
 
-        const { remarkName, mobile, groupIndex, slotIndex } = this.data
+        const player = {
+            wx_nickname: this.data.remarkName,
+            userid: Date.now().toString(), // 临时ID
+            mobile: this.data.mobile || '',
+            coverpath: '/images/default-avatar.png' // 默认头像
+        };
 
-        // 如果填写了手机号，需要验证格式
-        if (mobile && !/^1[3-9]\d{9}$/.test(mobile)) {
-            wx.showToast({
-                title: '请输入正确的手机号格式',
-                icon: 'none',
-                duration: 2000
-            })
-            return
+        // 获取当前页面栈
+        const pages = getCurrentPages();
+        const prevPage = pages[pages.length - 2]; // 获取上一个页面
+
+        // 如果上一个页面有回调方法，则调用
+        if (prevPage && typeof prevPage.onManualPlayerAdded === 'function') {
+            prevPage.onManualPlayerAdded(player, this.data.groupIndex, this.data.slotIndex);
+            wx.navigateBack();
+            return;
         }
 
-        try {
-            this.setData({ isSubmitting: true })
-
-            wx.showLoading({
-                title: '创建中...',
-                mask: true
-            })
-
-            // 调用创建并选择API
-            const result = await app.api.user.createAndSelect({
-                remarkName: remarkName,
-                mobile,
-                groupIndex,
-                slotIndex
-            })
-
-            console.log('🔍 API返回结果:', result)
-
-            wx.hideLoading()
-
-            // 先显示API返回的完整结果，便于调试
-            if (result) {
-                console.log('✅ API调用成功，返回数据:', JSON.stringify(result, null, 2))
-
-                // 检查API返回数据结构
-                if (result.code === 200 && result.user) {
-                    console.log('📋 使用标准API格式 - code: 200, user对象')
-                    this.handleUserCreated(result.user)
-                } else if (result.success && result.user) {
-                    console.log('📋 使用 success 格式')
-                    this.handleUserCreated(result.user)
-                } else if (result.code === 200 && result.data) {
-                    console.log('📋 使用 result.data 格式')
-                    this.handleUserCreated(result.data)
-                } else if (result.userid || result.id) {
-                    console.log('📋 直接使用 result 格式')
-                    this.handleUserCreated(result)
-                } else {
-                    console.log('❌ API返回格式不匹配，详细数据:', result)
-                    throw new Error(result?.message || '创建失败，API返回格式异常')
-                }
-            } else {
-                throw new Error('API返回空数据')
-            }
-
-        } catch (error) {
-            wx.hideLoading()
-            console.error('创建用户失败:', error)
-
-            wx.showToast({
-                title: error.message || '创建失败，请重试',
-                icon: 'none',
-                duration: 2000
-            })
-        } finally {
-            this.setData({ isSubmitting: false })
+        // 否则尝试调用 PlayerSelector 组件的方法
+        const playerSelector = this.selectComponent('/components/PlayerSelector/PlayerSelector');
+        if (playerSelector) {
+            playerSelector.addPlayerToSlot(this.data.slotIndex, player, 'manualAdd');
+            wx.navigateBack();
+            return;
         }
+
+        // 如果都不成功，显示错误提示
+        wx.showToast({
+            title: '无法添加玩家',
+            icon: 'none'
+        });
     },
 
     /**

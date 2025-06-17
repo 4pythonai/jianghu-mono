@@ -80,6 +80,17 @@
 .player-id {
 	font-size: 24rpx;
 	color: #999;
+	margin-bottom: 6rpx;
+}
+
+.player-source {
+	font-size: 22rpx;
+	color: #666;
+	background: #f0f0f0;
+	padding: 4rpx 12rpx;
+	border-radius: 10rpx;
+	display: inline-block;
+	max-width: fit-content;
 }
 
 .remove-btn {

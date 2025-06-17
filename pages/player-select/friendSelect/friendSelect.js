@@ -109,73 +109,38 @@ Page({
      * 确认选择好友
      */
     confirmSelection() {
-        const selectedFriends = this.data.selectedFriends;
-
-        if (selectedFriends.length === 0) {
+        if (this.data.selectedFriends.length === 0) {
             wx.showToast({
-                title: '请选择至少一名好友',
+                title: '请至少选择一名好友',
                 icon: 'none'
             });
             return;
         }
 
-        // 显示确认弹窗
-        wx.showModal({
-            title: '确认选择',
-            content: `确定选择这${selectedFriends.length}名好友吗？`,
-            success: (res) => {
-                if (res.confirm) {
-                    this.handleConfirmSelection(selectedFriends);
-                }
-            }
-        });
-    },
-
-    /**
-     * 处理确认选择
-     */
-    handleConfirmSelection(selectedFriends) {
         // 获取当前页面栈
         const pages = getCurrentPages();
+        const prevPage = pages[pages.length - 2]; // 获取上一个页面
 
-        // 查找 commonCreate 页面
-        let commonCreatePage = null;
-        for (let i = pages.length - 1; i >= 0; i--) {
-            const page = pages[i];
-            if (page.route.includes('commonCreate')) {
-                commonCreatePage = page;
-                break;
-            }
-        }
-
-        if (commonCreatePage && typeof commonCreatePage.onFriendsSelected === 'function') {
-            // 调用 commonCreate 页面的回调函数
-            commonCreatePage.onFriendsSelected(selectedFriends, this.data.groupIndex, this.data.slotIndex);
-
-            // 直接返回到 commonCreate 页面
-            const deltaLevel = pages.length - 1 - pages.findIndex(page => page.route.includes('commonCreate'));
-
-            if (deltaLevel > 0) {
-                wx.navigateBack({
-                    delta: deltaLevel
-                });
-            } else {
-                // 如果找不到 commonCreate 页面，则直接跳转
-                wx.navigateTo({
-                    url: '/pages/createGame/commonCreate/commonCreate'
-                });
-            }
-
-        } else {
-            // 备用方案：通过上一个页面传递
-            const prevPage = pages[pages.length - 2];
-            if (prevPage && typeof prevPage.onFriendsSelected === 'function') {
-                prevPage.onFriendsSelected(selectedFriends, this.data.groupIndex, this.data.slotIndex);
-            }
-
-            // 返回上一页
+        // 如果上一个页面有回调方法，则调用
+        if (prevPage && typeof prevPage.onFriendsSelected === 'function') {
+            prevPage.onFriendsSelected(this.data.selectedFriends, this.data.groupIndex, this.data.slotIndex);
             wx.navigateBack();
+            return;
         }
+
+        // 否则尝试调用 PlayerSelector 组件的方法
+        const playerSelector = this.selectComponent('/components/PlayerSelector/PlayerSelector');
+        if (playerSelector) {
+            playerSelector.addPlayerToSlot(this.data.slotIndex, this.data.selectedFriends[0], 'friendSelect');
+            wx.navigateBack();
+            return;
+        }
+
+        // 如果都不成功，显示错误提示
+        wx.showToast({
+            title: '无法添加好友',
+            icon: 'none'
+        });
     },
 
     /**

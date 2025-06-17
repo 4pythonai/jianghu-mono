@@ -102,44 +102,38 @@ Page({
         // 获取当前页面栈
         const pages = getCurrentPages();
 
-        // 查找 commonCreate 页面
-        let commonCreatePage = null;
+        // 查找最终的目标页面（commonCreate）
+        let targetPage = null;
         for (let i = pages.length - 1; i >= 0; i--) {
             const page = pages[i];
-            if (page.route.includes('commonCreate')) {
-                commonCreatePage = page;
+            if (page.route && page.route.includes('commonCreate')) {
+                targetPage = page;
                 break;
             }
         }
 
-        if (commonCreatePage && typeof commonCreatePage.onCombinationSelected === 'function') {
-            // 调用 commonCreate 页面的回调函数
-            commonCreatePage.onCombinationSelected(combination, this.data.groupIndex, this.data.slotIndex);
-
-            // 直接返回到 commonCreate 页面
-            const deltaLevel = pages.length - 1 - pages.findIndex(page => page.route.includes('commonCreate'));
-
-            if (deltaLevel > 0) {
-                wx.navigateBack({
-                    delta: deltaLevel
-                });
-            } else {
-                // 如果找不到 commonCreate 页面，则直接跳转
-                wx.navigateTo({
-                    url: '/pages/createGame/commonCreate/commonCreate'
-                });
-            }
-
-        } else {
-            // 备用方案：通过上一个页面传递
-            const prevPage = pages[pages.length - 2];
-            if (prevPage && typeof prevPage.onCombinationSelected === 'function') {
-                prevPage.onCombinationSelected(combination, this.data.groupIndex, this.data.slotIndex);
-            }
-
-            // 返回上一页
-            wx.navigateBack();
+        // 如果找到了最终目标页面，直接调用它的方法
+        if (targetPage && typeof targetPage.onCombinationSelected === 'function') {
+            targetPage.onCombinationSelected(combination, this.data.groupIndex, this.data.slotIndex);
+            // 计算需要返回的层级
+            const deltaLevel = pages.length - pages.indexOf(targetPage) - 1;
+            wx.navigateBack({ delta: deltaLevel });
+            return;
         }
+
+        // 如果没有找到最终目标页面，尝试调用 PlayerSelector 组件的方法
+        const playerSelector = this.selectComponent('/components/PlayerSelector/PlayerSelector');
+        if (playerSelector) {
+            playerSelector.addPlayerToSlot(this.data.slotIndex, combination[0], 'combineSelect');
+            wx.navigateBack();
+            return;
+        }
+
+        // 如果都不成功，显示错误提示
+        wx.showToast({
+            title: '无法添加玩家',
+            icon: 'none'
+        });
     },
 
     /**

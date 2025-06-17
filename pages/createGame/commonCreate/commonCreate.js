@@ -218,11 +218,12 @@ Page({
             wx_nickname: member.nickname || '未知玩家',
             nickname: member.nickname || '未知玩家',
             coverpath: member.coverpath || '/images/default-avatar.png',
-            handicap: member.handicap || 0
+            handicap: member.handicap || 0,
+            source: 'combineSelect'  // 添加来源字段
         }));
 
         // 使用追加模式添加老牌组合到组中
-        this.handleAppendPlayersToGroup(players, groupIndex, '老牌组合');
+        this.handleAppendPlayersToGroup(players, groupIndex, 'combineSelect');
     },
 
     /**
@@ -246,11 +247,12 @@ Page({
             wx_nickname: friend.nickname || friend.wx_nickname || '未知好友',
             nickname: friend.nickname || friend.wx_nickname || '未知好友',
             coverpath: friend.coverpath || friend.avatar || '/images/default-avatar.png',
-            handicap: friend.handicap || 0
+            handicap: friend.handicap || 0,
+            source: 'friendSelect'  // 添加来源字段
         }));
 
         // 使用追加模式添加好友到组中
-        this.handleAppendPlayersToGroup(players, groupIndex, '好友');
+        this.handleAppendPlayersToGroup(players, groupIndex, 'friendSelect');
     },
 
 
@@ -275,11 +277,12 @@ Page({
             nickname: createdUser.nickname || createdUser.wx_nickname,
             coverpath: createdUser.coverpath || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
-            mobile: createdUser.mobile || ''
+            mobile: createdUser.mobile || '',
+            source: 'manualAdd'  // 添加来源字段
         };
 
         // 使用通用追加方法添加手工创建的用户
-        this.handleAppendPlayersToGroup([user], groupIndex, '手工添加用户');
+        this.handleAppendPlayersToGroup([user], groupIndex, 'manualAdd');
     },
 
     addGroup() {
