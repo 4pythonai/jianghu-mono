@@ -83,7 +83,7 @@
 	margin-bottom: 6rpx;
 }
 
-.player-source {
+.player-join_type {
 	font-size: 22rpx;
 	color: #666;
 	background: #f0f0f0;

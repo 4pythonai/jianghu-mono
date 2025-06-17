@@ -13,7 +13,7 @@
 				<view class="player-info">
 					<text class="player-nickname">{{item.wx_nickname}}</text>
 					<text class="player-id">ID: {{item.userid}}</text>
-					<text class="player-source">来源: {{sourceMap[item.source] || '未知来源'}}</text>
+					<text class="player-source">来源: {{joinTypeMap[item.join_type] || '未知来源'}}</text>
 				</view>
 				<view class="remove-btn" bindtap="removePlayer" data-index="{{ index }}">
 					<image src="/assets/icons/close.svg" mode="aspectFit"></image>

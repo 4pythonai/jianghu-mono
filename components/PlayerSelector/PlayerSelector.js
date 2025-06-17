@@ -18,12 +18,12 @@ Component({
     },
 
     data: {
-        // 玩家列表（支持空位）- 每个玩家对象现在包含 source 字段
+        // 玩家列表（支持空位）- 每个玩家对象现在包含 join_type 字段
         playerSlots: [null, null, null, null], // null 表示空位，对象表示已选择的玩家
         // 有效玩家数量
         validPlayerCount: 0,
         // 玩家来源映射
-        sourceMap: {
+        joinTypeMap: {
             'combineSelect': '老牌组合',
             'friendSelect': '好友选择',
             'manualAdd': '手工添加',
@@ -54,10 +54,10 @@ Component({
             // 将传入的玩家数据填充到对应位置
             players.forEach((player, index) => {
                 if (index < 4 && player) {
-                    // 确保每个玩家对象都有 source 字段
+                    // 确保每个玩家对象都有 join_type 字段
                     playerSlots[index] = {
                         ...player,
-                        source: player.source || 'unknown'  // 如果没有 source 字段，设置为 unknown
+                        join_type: player.join_type || 'unknown'  // 如果没有 join_type 字段，设置为 unknown
                     };
                 }
             });
@@ -97,14 +97,14 @@ Component({
         /**
          * 将玩家添加到指定位置（由玩家选择页面回调）
          */
-        addPlayerToSlot(slotIndex, player, source = 'unknown') {
-            console.log('PlayerSelector addPlayerToSlot 被调用:', { slotIndex, player, source });
+        addPlayerToSlot(slotIndex, player, join_type = 'unknown') {
+            console.log('PlayerSelector addPlayerToSlot 被调用:', { slotIndex, player, join_type });
 
             const playerSlots = [...this.data.playerSlots];
-            // 添加 source 字段
+            // 添加 join_type 字段
             playerSlots[slotIndex] = {
                 ...player,
-                source: source
+                join_type: join_type
             };
 
             this.setData({
@@ -124,9 +124,9 @@ Component({
             });
 
             // 显示添加成功提示，包含来源信息
-            const sourceText = this.data.sourceMap[source] || '未知来源';
+            const joinTypeText = this.data.joinTypeMap[join_type] || '未知来源';
             wx.showToast({
-                title: `已添加 ${player.wx_nickname}（${sourceText}）`,
+                title: `已添加 ${player.wx_nickname}（${joinTypeText}）`,
                 icon: 'success'
             });
         },
@@ -158,9 +158,9 @@ Component({
             });
 
             // 显示移除成功提示，包含来源信息
-            const sourceText = this.data.sourceMap[removedPlayer.source] || '未知来源';
+            const joinTypeText = this.data.joinTypeMap[removedPlayer.join_type] || '未知来源';
             wx.showToast({
-                title: `已移除 ${removedPlayer.wx_nickname}（${sourceText}）`,
+                title: `已移除 ${removedPlayer.wx_nickname}（${joinTypeText}）`,
                 icon: 'success'
             });
         }

@@ -91,22 +91,34 @@ Page({
             wx_nickname: this.data.remarkName,
             userid: Date.now().toString(), // 临时ID
             mobile: this.data.mobile || '',
-            coverpath: '/images/default-avatar.png' // 默认头像
+            coverpath: '/images/default-avatar.png', // 默认头像
+            join_type: 'manualAdd' // 添加来源字段
         };
 
         // 获取当前页面栈
         const pages = getCurrentPages();
-        const prevPage = pages[pages.length - 2]; // 获取上一个页面
 
-        // 如果上一个页面有回调方法，则调用
-        if (prevPage && typeof prevPage.onManualPlayerAdded === 'function') {
-            prevPage.onManualPlayerAdded(player, this.data.groupIndex, this.data.slotIndex);
-            wx.navigateBack();
+        // 查找最终的目标页面（commonCreate）
+        let targetPage = null;
+        for (let i = pages.length - 1; i >= 0; i--) {
+            const page = pages[i];
+            if (page.route && page.route.includes('commonCreate')) {
+                targetPage = page;
+                break;
+            }
+        }
+
+        // 如果找到了最终目标页面，直接调用它的方法
+        if (targetPage && typeof targetPage.onUserCreated === 'function') {
+            targetPage.onUserCreated(player, this.data.groupIndex, this.data.slotIndex);
+            // 计算需要返回的层级
+            const deltaLevel = pages.length - pages.indexOf(targetPage) - 1;
+            wx.navigateBack({ delta: deltaLevel });
             return;
         }
 
-        // 否则尝试调用 PlayerSelector 组件的方法
-        const playerSelector = this.selectComponent('/components/PlayerSelector/PlayerSelector');
+        // 如果没有找到最终目标页面，尝试调用 PlayerSelector 组件的方法
+        const playerSelector = this.selectComponent('../../components/PlayerSelector/PlayerSelector');
         if (playerSelector) {
             playerSelector.addPlayerToSlot(this.data.slotIndex, player, 'manualAdd');
             wx.navigateBack();

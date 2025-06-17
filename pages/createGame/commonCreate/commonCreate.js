@@ -219,7 +219,7 @@ Page({
             nickname: member.nickname || '未知玩家',
             coverpath: member.coverpath || '/images/default-avatar.png',
             handicap: member.handicap || 0,
-            source: 'combineSelect'  // 添加来源字段
+            join_type: 'combineSelect'  // 添加来源字段
         }));
 
         // 使用追加模式添加老牌组合到组中
@@ -248,7 +248,7 @@ Page({
             nickname: friend.nickname || friend.wx_nickname || '未知好友',
             coverpath: friend.coverpath || friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
-            source: 'friendSelect'  // 添加来源字段
+            join_type: 'friendSelect'  // 添加来源字段
         }));
 
         // 使用追加模式添加好友到组中
@@ -278,7 +278,7 @@ Page({
             coverpath: createdUser.coverpath || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
             mobile: createdUser.mobile || '',
-            source: 'manualAdd'  // 添加来源字段
+            join_type: 'manualAdd'  // 添加来源字段
         };
 
         // 使用通用追加方法添加手工创建的用户
