@@ -2,6 +2,7 @@ Page({
     data: {
         groupIndex: 0,  // 组索引
         slotIndex: 0,   // 位置索引
+        uuid: '', // 游戏 UUID
 
         // 选择方式列表
         selectMethods: [
@@ -48,7 +49,12 @@ Page({
      */
     onSelectMethod(e) {
         const method = e.currentTarget.dataset.method;
-        const url = `${method.url}?groupIndex=${this.data.groupIndex}&slotIndex=${this.data.slotIndex}`;
+        let url = `${method.url}?groupIndex=${this.data.groupIndex}&slotIndex=${this.data.slotIndex}`;
+
+        // 如果是微信分享页面，添加 uuid 参数
+        if (method.id === 'wxshare' && this.data.uuid) {
+            url += `&uuid=${this.data.uuid}`;
+        }
 
         wx.navigateTo({
             url: url
@@ -71,6 +77,12 @@ Page({
         if (options.slotIndex !== undefined) {
             this.setData({
                 slotIndex: parseInt(options.slotIndex)
+            });
+        }
+
+        if (options.uuid) {
+            this.setData({
+                uuid: options.uuid
             });
         }
     },

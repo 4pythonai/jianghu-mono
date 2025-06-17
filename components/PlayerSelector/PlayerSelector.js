@@ -88,9 +88,24 @@ Component({
         onSelectPlayer(e) {
             const slotIndex = e.currentTarget.dataset.index;
 
-            // 跳转到玩家选择页面，传递组索引和位置索引
+            // 获取当前页面栈
+            const pages = getCurrentPages();
+            // 查找 commonCreate 页面
+            let commonCreatePage = null;
+            for (let i = pages.length - 1; i >= 0; i--) {
+                const page = pages[i];
+                if (page.route && page.route.includes('commonCreate')) {
+                    commonCreatePage = page;
+                    break;
+                }
+            }
+
+            // 获取 UUID
+            const uuid = commonCreatePage?.data?.uuid || '';
+
+            // 跳转到玩家选择页面，传递组索引、位置索引和 UUID
             wx.navigateTo({
-                url: `/pages/player-select/player-select?groupIndex=${this.properties.groupIndex}&slotIndex=${slotIndex}`
+                url: `/pages/player-select/player-select?groupIndex=${this.properties.groupIndex}&slotIndex=${slotIndex}&uuid=${uuid}`
             });
         },
 

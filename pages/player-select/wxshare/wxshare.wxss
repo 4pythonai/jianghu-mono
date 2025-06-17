@@ -1,3 +1,44 @@
 @import "../common.wxss";
 
 /* 页面特有样式可以在这里添加 */
+
+.container {
+    height: ~"calc(100vh - 80rpx)";
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40rpx;
+    background-color: #f8f8f8;
+}
+
+.uuid-container {
+    background-color: #ffffff;
+    padding: 40rpx;
+    border-radius: 16rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+    margin-bottom: 60rpx;
+    text-align: center;
+}
+
+.uuid-label {
+    font-size: 32rpx;
+    color: #666666;
+    margin-bottom: 20rpx;
+    display: block;
+}
+
+.uuid-value {
+    font-size: 40rpx;
+    color: #333333;
+    font-weight: bold;
+    display: block;
+    word-break: break-all;
+}
+
+.share-tip {
+    font-size: 28rpx;
+    color: #999999;
+    text-align: center;
+    padding: 20rpx;
+}
