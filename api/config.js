@@ -5,12 +5,10 @@
 // 环境配置
 const ENV = {
     development: {
-        baseURL: 'http://140.179.50.120:7800/v2',
-        webURL: 'http://140.179.50.120:7800/',
+        baseURL: 'https://qiaoyincapital.com/v3/index.php'
     },
     production: {
-        baseURL: 'http://140.179.50.120:7800/v2',
-        webURL: 'http://140.179.50.120:7800/',
+        baseURL: 'https://qiaoyincapital.com/v3/index.php'
     }
 }
 

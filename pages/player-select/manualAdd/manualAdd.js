@@ -82,54 +82,45 @@ Page({
     /**
      * 提交表单
      */
-    onSubmit() {
+    async onSubmit() {
         if (!this.data.isFormValid) {
+            console.log("验证失败,无法创建用户")
             return;
         }
 
-        const player = {
-            wx_nickname: this.data.remarkName,
-            userid: Date.now().toString(), // 临时ID
-            mobile: this.data.mobile || '',
-            coverpath: '/images/default-avatar.png', // 默认头像
-            join_type: 'manualAdd' // 添加来源字段
-        };
-
-        // 获取当前页面栈
-        const pages = getCurrentPages();
-
-        // 查找最终的目标页面（commonCreate）
-        let targetPage = null;
-        for (let i = pages.length - 1; i >= 0; i--) {
-            const page = pages[i];
-            if (page.route && page.route.includes('commonCreate')) {
-                targetPage = page;
-                break;
-            }
-        }
-
-        // 如果找到了最终目标页面，直接调用它的方法
-        if (targetPage && typeof targetPage.onUserCreated === 'function') {
-            targetPage.onUserCreated(player, this.data.groupIndex, this.data.slotIndex);
-            // 计算需要返回的层级
-            const deltaLevel = pages.length - pages.indexOf(targetPage) - 1;
-            wx.navigateBack({ delta: deltaLevel });
+        // 防止重复提交
+        if (this.data.isSubmitting) {
             return;
         }
 
-        // 如果没有找到最终目标页面，尝试调用 PlayerSelector 组件的方法
-        const playerSelector = this.selectComponent('../../components/PlayerSelector/PlayerSelector');
-        if (playerSelector) {
-            playerSelector.addPlayerToSlot(this.data.slotIndex, player, 'manualAdd');
-            wx.navigateBack();
-            return;
-        }
+        this.setData({ isSubmitting: true });
 
-        // 如果都不成功，显示错误提示
-        wx.showToast({
-            title: '无法添加玩家',
-            icon: 'none'
-        });
+        try {
+            // 准备用户数据
+            const userData = {
+                remarkName: this.data.remarkName,
+                mobile: this.data.mobile || '',
+                join_type: 'manualAdd'
+            };
+
+            // 调用创建用户API
+            const res = await app.api.user.createAndSelect(userData);
+            console.log("创建用户API返回:", res);
+
+            const createdUser = res.user;
+
+            // 处理创建成功的用户
+            this.handleUserCreated(createdUser);
+
+        } catch (error) {
+            console.error('创建用户失败:', error);
+            wx.showToast({
+                title: error.message || '创建用户失败',
+                icon: 'none'
+            });
+        } finally {
+            this.setData({ isSubmitting: false });
+        }
     },
 
     /**

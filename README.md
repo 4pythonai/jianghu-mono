@@ -242,3 +242,13 @@ USER_DATA_PATH/avatar_[timestamp].jpg
 3. **兼容性**: 确保小程序基础库版本支持新的API
 4. **开发者工具**: chooseAvatar 在开发者工具中可能有文件系统问题，真机测试正常
 5. **用户体验**: 提供清晰的授权引导和信息完善流程
+
+
+
+字体文件:
+
+
+/opt/space/webroot/ugf/web/DouyinSansBold.otf
+
+https://web.golf-brother.com/DouyinSansBold.otf
+

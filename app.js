@@ -52,6 +52,13 @@ App({
      */
     onLaunch() {
         console.log('🚀 应用启动')
+
+        wx.loadFontFace({
+            family: 'DouyinSansBold',
+            source: 'url("https://web.golf-brother.com/DouyinSansBold.otf")',
+            success: console.log
+        })
+
         // 获取系统信息
         this.initSystemInfo()
 

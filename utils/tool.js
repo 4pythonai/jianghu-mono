@@ -4,13 +4,8 @@
 
 import { config } from '../api/config'
 
-/**
- * 获取基础URL
- * @returns {string} 返回配置中的 webURL
- */
-export const getBaseUrl = () => {
-    return config.webURL
-}
+
+
 
 /**
  * 获取API基础URL

@@ -7,19 +7,19 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
                 "user": 24,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
 
         ],
@@ -37,19 +37,19 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
                 "user": 24,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 25,
@@ -66,19 +66,19 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
                 "user": 24,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 45,
@@ -95,11 +95,11 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             }
         ],
         "watchers_number": 15,
@@ -116,19 +116,19 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
                 "user": 24,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 35,
@@ -145,15 +145,15 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }],
         "watchers_number": 20,
         "game_start": "2025-05-25",
@@ -169,19 +169,19 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
                 "user": 24,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 50,
@@ -198,11 +198,11 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }],
         "watchers_number": 18,
         "game_start": "2025-05-27",
@@ -218,19 +218,19 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 23,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_3806ac7a15bf9cf4a47ef77fd36fbb10.png"
             },
             {
                 "user": 24,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 40,
@@ -247,15 +247,15 @@ const liveGames = [
         "players": [
             {
                 "user": 22,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_376beaa4c05158ba841306e8751adf80.png"
             },
             {
                 "user": 24,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_380c99c653dca01dffe1d010a7ab280c.png"
             },
             {
                 "user": 25,
-                "avatar": "http://140.179.50.120:7800/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
+                "avatar": "https://qiaoyincapital.com/avatar/p240_381962bf1b23a4596d2a6f77fde64f1b.png"
             }
         ],
         "watchers_number": 22,
