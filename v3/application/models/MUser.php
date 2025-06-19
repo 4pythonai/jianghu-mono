@@ -159,4 +159,9 @@ class MUser  extends CI_Model {
     $this->db->insert('t_user', $row);
     return $this->db->insert_id();
   }
+
+  public function updateUserAvatar($user_id, $fileName) {
+    $this->db->where('id', $user_id);
+    $this->db->update('t_user', ['coverpath' => $fileName]);
+  }
 }

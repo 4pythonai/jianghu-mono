@@ -84,7 +84,13 @@ class User extends MY_Controller {
             // 生成文件名
             $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
             $fileName = 'avatar_' . $user_id . '_' . time() . '.' . $extension;
-            $targetPath = '/tmp/' . $fileName;
+            $date_folder = date('Y/m/d/');
+            $full_path = '/var/www/html/avatar/' . $date_folder;
+            logtext("  文件保存路径: " . $full_path);
+            if (!is_dir($full_path)) {
+                mkdir($full_path, 0755, true);
+            }
+            $targetPath = $full_path . $fileName;
 
             // 移动文件到目标目录
             if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -94,7 +100,7 @@ class User extends MY_Controller {
             logtext("  文件保存成功: " . $targetPath);
 
             // 可以在这里更新用户的头像路径到数据库
-            // $this->MUser->updateUserAvatar($user_id, $fileName);
+            $this->MUser->updateUserAvatar($user_id, '/avatar/' . $date_folder . $fileName);
 
             echo json_encode([
                 'code' => 200,

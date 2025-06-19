@@ -164,18 +164,7 @@ class File extends MY_Controller {
 
 
 
-  public function uploadAvatar() {
-    $mobile = $this->getMobile();
-    $files_from_client = $this->uploadAction($_FILES, 'avatar');
-    if (count($files_from_client) >= 1) {
-      $this->db->where('mobile', $mobile);
-      $fname = $files_from_client[0]['url'];
-      $this->db->update('nanx_user', ['head_portrait' => $fname]);
-    }
-    $ret = ['code' => 200, 'data' => $files_from_client, 'message' => '头像上传/设置成功'];
-    echo json_encode($ret, JSON_UNESCAPED_UNICODE);
-    die;
-  }
+
 
 
   public function uploadPicture() {
