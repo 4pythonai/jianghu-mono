@@ -49,17 +49,17 @@ class Game extends MY_Controller {
     public function getPlayerCombination() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         // $user_id = $json_paras['user_id'];
-        $user1 = ['userid' => 837545, 'nickname' => 'Alex', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
-        $user2 = ['userid' => 14, 'nickname' => 'awen', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
-        $user3 = ['userid' => 59, 'nickname' => '唐昆', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
-        $user4 = ['userid' => 122, 'nickname' => 'nice6', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
+        $user1 = ['userid' => 837545, 'nickname' => 'Alex', 'coverpath' => 'https://qiaoyincapital.com//avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
+        $user2 = ['userid' => 14, 'nickname' => 'awen', 'coverpath' => 'https://qiaoyincapital.com//avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
+        $user3 = ['userid' => 59, 'nickname' => '唐昆', 'coverpath' => 'https://qiaoyincapital.com//avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
+        $user4 = ['userid' => 122, 'nickname' => 'nice6', 'coverpath' => 'https://qiaoyincapital.com//avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
 
 
 
-        $user5 = ['userid' => 837545, 'nickname' => 'Alex', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
-        $user6 = ['userid' => 126, 'nickname' => 'ecoeco', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
-        $user7 = ['userid' => 245, 'nickname' => 'JoYa', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
-        $user8 = ['userid' => 246, 'nickname' => '阿咪阿咪红', 'coverpath' => 'http://140.179.50.120:7800/avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
+        $user5 = ['userid' => 837545, 'nickname' => 'Alex', 'coverpath' => 'https://qiaoyincapital.com//avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
+        $user6 = ['userid' => 126, 'nickname' => 'ecoeco', 'coverpath' => 'https://qiaoyincapital.com//avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
+        $user7 = ['userid' => 245, 'nickname' => 'JoYa', 'coverpath' => 'https://qiaoyincapital.com//avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
+        $user8 = ['userid' => 246, 'nickname' => '阿咪阿咪红', 'coverpath' => 'https://qiaoyincapital.com//avatar/p240_376beaa4c05158ba841306e8751adf80.png', 'handicap' => 0];
 
         $group1 = [$user1, $user2, $user3, $user4];
         $group2 = [$user5, $user6, $user7, $user8];

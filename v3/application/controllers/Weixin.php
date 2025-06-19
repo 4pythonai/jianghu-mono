@@ -20,8 +20,7 @@ class Weixin extends CI_Controller {
     /**
      * 处理微信登录请求
      * 
-     * appid : wx62b6740a324428d1
-     * secret :4a24df970c85a83473e24f632921da14
+ 
      * 
      * @return array 返回登录结果
      */
@@ -40,8 +39,8 @@ class Weixin extends CI_Controller {
             }
 
             // 微信配置参数 - 需要替换为实际的appid和secret
-            $appid = 'wx62b6740a324428d1';
-            $secret = '4a24df970c85a83473e24f632921da14';
+            $appid = config_item('appid');
+            $secret = config_item('secret');
             $grant_type = 'authorization_code';
 
             // 构建请求URL
@@ -141,8 +140,8 @@ class Weixin extends CI_Controller {
             }
 
             // 获取session_key
-            $appid = 'wx62b6740a324428d1';
-            $secret = '4a24df970c85a83473e24f632921da14';
+            $appid = config_item('appid');
+            $secret = config_item('secret');
             $grant_type = 'authorization_code';
 
             $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appid}&secret={$secret}&js_code={$code}&grant_type={$grant_type}";

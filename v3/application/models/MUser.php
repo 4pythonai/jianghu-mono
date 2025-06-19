@@ -109,7 +109,6 @@ class MUser  extends CI_Model {
   //添加非注册用户
   public function addRemakGhostUser($helperid, $remarkName, $mobile) {
     $new_user = [
-      'wx_nickname' => $remarkName,
       'nickname' => $remarkName,
       'mobile' => $mobile,
       'addtime' => date('Y-m-d H:i:s'),

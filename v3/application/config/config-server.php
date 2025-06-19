@@ -25,8 +25,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 
 
-$config['base_url'] = 'http://127.0.0.1:7000/v2/';
-$config['web_url'] = 'http://140.179.50.120:7800';
+$config['base_url'] = 'http://127.0.0.1:7000/v3/';
+$config['web_url'] = 'https://qiaoyincapital.com/';
+
+
+
+$config['appid'] = 'wx5ecf5b3c7b91ce8a';
+$config['secret'] = 'e5628633c43fb11dbdd2ff56c4163b1f';
+
+
+
 /*
 
 |--------------------------------------------------------------------------
@@ -526,5 +534,4 @@ $config['rewrite_short_tags'] = FALSE;
  */
 $config['proxy_ips'] = '';
 // http://119.255.238.247:8080
-// $config['cur_service_url'] = "http://10.204.10.11:8080";
-$config['cur_service_url'] = "http://192.168.50.203:8080";
+$config['cur_service_url'] = "http://172.31.23.241:8080";
