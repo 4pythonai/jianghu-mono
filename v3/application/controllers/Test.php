@@ -26,16 +26,11 @@ class Test extends CI_Controller {
     public function index() {
 
 
-        $get_data_config = [
-            'creatorid' => [837581, 837590],
-        ];
-
-
-        $result  =  $this->MGamePipeRunner->GameDataHandler($get_data_config);
+        $get_data_config = ['userid' => 837590];
+        $result  =  $this->MGamePipeRunner->GameFeedHandler($get_data_config);
         $ret = [];
         $ret['code'] = 200;
-        $ret['allgames'] = $result['allgames'];
-        $ret['realgames'] = count($result['realgames']);
+        $ret['star_friends'] = $result['star_friends'];
         echo json_encode($ret);
     }
 

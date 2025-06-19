@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use League\Pipeline\Pipeline;
-use League\Pipeline\StageInterface;
 
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
@@ -15,17 +14,23 @@ class MGamePipeRunner extends CI_Model {
         $this->load->model('MGamePipe');
     }
 
-    public function  GameDataHandler($cfg) {
+    public function  GameFeedHandler($cfg) {
         $pipeline = (new Pipeline())
             ->pipe(function ($config) {
+
                 $this->MGamePipe->init($config);
             })
             ->pipe(function () {
-                $this->MGamePipe->setAllRows();
+                $this->MGamePipe->getMyGames();
+            })
+
+            ->pipe(function () {
+                $this->MGamePipe->getStarFriendsGames();
             })
             ->pipe(function () {
-                $this->MGamePipe->setRealRows();
+                $this->MGamePipe->getStarGames();
             })
+
             ->pipe(function () {
                 return $this->MGamePipe->getter();
             });

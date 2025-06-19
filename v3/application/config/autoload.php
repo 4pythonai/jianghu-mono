@@ -140,5 +140,6 @@ $autoload['model'] = [
     'MJHUser',
     'MGame',
     'MGamePipeRunner',
-    'MGamePipe'
+    'MGamePipe',
+    'MDetailGame'
 ];
