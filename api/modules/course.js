@@ -3,22 +3,22 @@ import request from '../request-simple'
 
 const course = {
     // 获取最近的球场
-    getNearestCourses: (data) => request('/course/getNearestCourses', data),
+    getNearestCourses: (data, options) => request('/course/getNearestCourses', data, options),
 
     // 获取球场详情
-    getDetail: (data) => request('/course/getDetail', data),
+    getDetail: (data, options) => request('/course/getDetail', data, options),
 
     // 获取球场列表
-    getList: (data) => request('/course/getList', data),
+    getList: (data, options) => request('/course/getList', data, options),
 
     // 获取常用球场
-    getFavorites: (data) => request('/course/getFavorites', data),
+    getFavorites: (data, options) => request('/course/getFavorites', data, options),
 
     // 搜索球场
-    searchCourse: (data) => request('/course/searchCourse', data),
+    searchCourse: (data, options) => request('/course/searchCourse', data, options),
 
     // 获取球场详情
-    getCourseDetail: (data) => request('/course/getCourseDetail', data)
+    getCourseDetail: (data, options) => request('/course/getCourseDetail', data, options)
 }
 
 export default course

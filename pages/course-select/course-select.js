@@ -6,10 +6,11 @@ Page({
      * 页面的初始数据
      */
     data: {
-        searchValue: '',
-        favoriteList: [],
-        searchList: [],
-        loading: false
+        // 移除不需要的数据，因为组件会自己管理
+        // searchValue: '',
+        // favoriteList: [],
+        // searchList: [],
+        // loading: false
     },
 
     /**
@@ -18,72 +19,8 @@ Page({
     onLoad(options) {
         console.log('球场选择页面加载');
         console.log('初始数据:', this.data);
-        this.getFavoriteCourses();
-    },
-
-    /**
-     * 获取收藏球场列表
-     */
-    async getFavoriteCourses() {
-        try {
-            const res = await app.api.course.getFavorites();
-            console.log('收藏球场列表:', res);
-            this.setData({
-                favoriteList: res.courses || []
-            });
-        } catch (error) {
-            console.error('获取收藏球场失败:', error);
-            wx.showToast({
-                title: '获取收藏球场失败',
-                icon: 'none'
-            });
-        }
-    },
-
-    /**
-     * 处理输入框输入事件
-     */
-    onInput(e) {
-        const value = e.detail.value;
-        console.log('输入事件:', value);
-
-        // 更新页面数据
-        this.setData({
-            searchValue: value
-        });
-
-        // 执行搜索逻辑
-        if (value && value.trim()) {
-            this.searchCourses(value.trim());
-        } else {
-            this.setData({ searchList: [] });
-        }
-    },
-
-    /**
-     * 搜索球场
-     */
-    async searchCourses(keyword) {
-        if (!keyword) return;
-
-        this.setData({ loading: true });
-        try {
-            console.log('开始搜索:', keyword);
-            const res = await app.api.course.searchCourse({ "keyword": keyword });
-            console.log('搜索结果:', res);
-
-            this.setData({
-                searchList: res.courses || []
-            });
-        } catch (error) {
-            console.error('搜索球场失败:', error);
-            wx.showToast({
-                title: '搜索球场失败',
-                icon: 'none'
-            });
-        } finally {
-            this.setData({ loading: false });
-        }
+        // 移除重复的getFavoriteCourses调用，让组件自己处理
+        // this.getFavoriteCourses();
     },
 
     /**
@@ -139,28 +76,42 @@ Page({
      * 生命周期函数--监听页面初次渲染完成
      */
     onReady() {
-        console.log('页面渲染完成，当前数据:', this.data);
+        console.log('球场选择页面渲染完成');
     },
 
     /**
      * 生命周期函数--监听页面显示
      */
     onShow() {
-        console.log('页面显示，当前searchValue:', this.data.searchValue);
+        console.log('球场选择页面显示');
     },
 
     /**
      * 生命周期函数--监听页面隐藏
      */
     onHide() {
-
+        // 页面隐藏时清理loading，防止loading一直显示
+        if (app?.http) {
+            const status = app.http.getLoadingStatus()
+            if (status.isLoading) {
+                console.log('⚠️ 页面隐藏时发现loading还在显示，强制清理')
+                app.http.forceHideLoading()
+            }
+        }
     },
 
     /**
      * 生命周期函数--监听页面卸载
      */
     onUnload() {
-
+        // 页面卸载时清理loading，防止loading一直显示
+        if (app?.http) {
+            const status = app.http.getLoadingStatus()
+            if (status.isLoading) {
+                console.log('⚠️ 页面卸载时发现loading还在显示，强制清理')
+                app.http.forceHideLoading()
+            }
+        }
     },
 
     /**

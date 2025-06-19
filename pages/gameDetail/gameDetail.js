@@ -1,4 +1,3 @@
-
 Page({
     usingComponents: {
         'bbs': './bbs/bbs',
@@ -42,11 +41,7 @@ Page({
             return
         }
 
-        // 显示加载提示
-        wx.showLoading({
-            title: '加载中...',
-            mask: true
-        })
+
 
         this.setData({
             loading: true,
@@ -64,17 +59,18 @@ Page({
                 throw new Error('API方法未定义: game.getGameDetail')
             }
 
-            const res = await this.app.api.game.getGameDetail({ gameId })
+            // 使用自定义loading文案
+            const res = await this.app.api.game.getGameDetail({ gameId }, {
+                loadingTitle: '加载比赛详情...',
+                loadingMask: true
+            })
             console.log(res.gameinfo)
 
             // 验证响应状态码和数据
             if (res?.code === 200) {
-
-
                 this.setData({
                     gameData: res.gameinfo
                 })
-
             }
         } catch (err) {
             console.error('❌ 获取比赛详情失败:', {
@@ -97,8 +93,8 @@ Page({
             console.log('🏁 比赛详情加载完成')
             this.setData({ loading: false })
 
-            // 隐藏加载提示
-            wx.hideLoading()
+            // 移除手动hideLoading，API会自动处理
+            // wx.hideLoading()
         }
     },
 

@@ -3,7 +3,41 @@ import storage from '../utils/storage'
 
 /**
  * HTTP请求封装
- * 职责：网络请求、自动添加token、处理401响应、通知认证层、自动重试
+ * 职责：网络请求、自动添加token、处理401响应、通知认证层、自动重试、统一loading管理
+ * 
+ * Loading功能特性：
+ * 1. 自动loading管理 - 默认所有请求都显示loading
+ * 2. 智能防闪烁 - 延迟显示和最小显示时间
+ * 3. 并发请求支持 - 多个请求共享一个loading状态
+ * 4. 灵活配置 - 支持自定义loading文案、遮罩等
+ * 
+ * 使用方式：
+ * 
+ * // 默认使用（自动显示loading）
+ * await app.api.user.createAndSelect(userData)
+ * 
+ * // 自定义loading文案
+ * await app.api.user.createAndSelect(userData, { 
+ *     loadingTitle: '正在创建用户...' 
+ * })
+ * 
+ * // 禁用loading
+ * await app.api.user.getUserInfo({}, { 
+ *     showLoading: false 
+ * })
+ * 
+ * // 自定义loading配置
+ * await app.api.course.searchCourse(data, {
+ *     loadingTitle: '搜索中...',
+ *     loadingMask: false
+ * })
+ * 
+ * // 全局配置loading行为
+ * app.http.setLoadingConfig({
+ *     delay: 500,           // 延迟显示时间
+ *     minDuration: 800,     // 最小显示时间
+ *     defaultTitle: '请稍候...'
+ * })
  */
 class HttpClient {
     constructor(baseURL = config.baseURL) {
@@ -14,6 +48,17 @@ class HttpClient {
         this.authManager = null // 认证管理器实例
         this.isRefreshing = false // 是否正在刷新token
         this.failedQueue = [] // 失败请求队列
+
+        // Loading管理相关
+        this.loadingCount = 0 // 当前loading请求数量
+        this.loadingTimer = null // loading延迟显示定时器
+        this.loadingHideTimer = null // loading延迟隐藏定时器
+        this.loadingConfig = {
+            delay: 300, // loading显示延迟时间(ms)，避免快速请求的闪烁
+            minDuration: 200, // loading最小显示时间(ms)，避免闪烁（从500ms减少到200ms）
+            defaultTitle: 'Loading...',
+            defaultMask: true
+        }
     }
 
     /**
@@ -33,17 +78,155 @@ class HttpClient {
     }
 
     /**
+     * Loading管理 - 显示loading
+     * @param {object} options - loading配置选项
+     */
+    showLoading(options = {}) {
+        const config = {
+            title: options.title || this.loadingConfig.defaultTitle,
+            mask: options.mask !== undefined ? options.mask : this.loadingConfig.defaultMask
+        }
+
+        // 增加loading计数
+        this.loadingCount++
+
+
+        // 如果是第一个请求，显示loading
+        if (this.loadingCount === 1) {
+            // 清除之前的定时器
+            if (this.loadingTimer) {
+                clearTimeout(this.loadingTimer)
+                this.loadingTimer = null
+            }
+
+            // 延迟显示loading，避免快速请求的闪烁
+            this.loadingTimer = setTimeout(() => {
+                wx.showLoading(config)
+                this.loadingStartTime = Date.now()
+                console.log('📱 系统Loading已显示')
+            }, this.loadingConfig.delay)
+        }
+    }
+
+    /**
+     * Loading管理 - 隐藏loading
+     */
+    hideLoading() {
+        // 减少loading计数
+        this.loadingCount = Math.max(0, this.loadingCount - 1)
+
+        console.log('✅ 隐藏Loading:', {
+            count: this.loadingCount,
+            timestamp: new Date().toISOString()
+        })
+
+        // 如果没有pending的请求了，隐藏loading
+        if (this.loadingCount === 0) {
+            // 检查是否有延迟显示的定时器
+            if (this.loadingTimer) {
+                clearTimeout(this.loadingTimer)
+                this.loadingTimer = null
+                console.log('⏹️ 取消Loading显示（请求太快）')
+                // 注意：这里不return，因为loading可能已经显示了
+            }
+
+            // 检查loading是否已经显示
+            if (this.loadingStartTime) {
+                // loading已经显示，需要隐藏
+                const showDuration = Date.now() - this.loadingStartTime
+                const remainingTime = Math.max(0, this.loadingConfig.minDuration - showDuration)
+
+                if (remainingTime > 0) {
+                    console.log(`⏱️ Loading最小显示时间未到，延迟${remainingTime}ms隐藏`)
+
+                    // 清除之前的隐藏定时器（如果存在）
+                    if (this.loadingHideTimer) {
+                        clearTimeout(this.loadingHideTimer)
+                        this.loadingHideTimer = null
+                    }
+
+                    const hideTimer = setTimeout(() => {
+                        // 简化条件检查：只要loadingCount为0就隐藏
+                        if (this.loadingCount === 0) {
+                            wx.hideLoading()
+                            console.log('📱 系统Loading已隐藏（延迟）')
+                            this.loadingStartTime = null
+                        } else {
+                            console.log('⚠️ 延迟隐藏时发现有新请求，保持loading显示')
+                        }
+                        // 清理定时器引用
+                        this.loadingHideTimer = null
+                    }, remainingTime)
+
+                    // 保存定时器引用，以便在forceHideLoading时清理
+                    this.loadingHideTimer = hideTimer
+                } else {
+                    // 立即隐藏loading
+                    wx.hideLoading()
+                    console.log('📱 系统Loading已隐藏')
+                    this.loadingStartTime = null
+                }
+            } else {
+                // loading从未显示过，无需隐藏
+                console.log('📱 Loading从未显示，无需隐藏')
+            }
+        }
+    }
+
+
+
+    /**
+     * 配置loading行为
+     * @param {object} config - loading配置
+     */
+    setLoadingConfig(config = {}) {
+        this.loadingConfig = {
+            ...this.loadingConfig,
+            ...config
+        }
+        console.log('⚙️ Loading配置已更新:', this.loadingConfig)
+    }
+
+    /**
+     * 获取当前loading状态
+     */
+    getLoadingStatus() {
+        return {
+            isLoading: this.loadingCount > 0,
+            loadingCount: this.loadingCount,
+            hasShowTimer: !!this.loadingTimer,
+            hasHideTimer: !!this.loadingHideTimer,
+            loadingStartTime: this.loadingStartTime
+        }
+    }
+
+    /**
      * 发送请求
      * @param {string} url - 请求地址
      * @param {object} data - 请求数据
      * @param {object} options - 其他选项
      */
     async request(url, data = {}, options = {}) {
+        // 解析loading配置
+        const loadingOptions = {
+            showLoading: options.showLoading !== false, // 默认显示loading
+            loadingTitle: options.loadingTitle || this.loadingConfig.defaultTitle,
+            loadingMask: options.loadingMask !== undefined ? options.loadingMask : this.loadingConfig.defaultMask
+        }
+
         // 构建请求配置
         const requestConfig = this.buildRequestConfig(url, data, options)
 
         // 记录请求日志
-        this.logRequest(requestConfig)
+        this.logRequest(requestConfig, loadingOptions)
+
+        // 显示loading
+        if (loadingOptions.showLoading) {
+            this.showLoading({
+                title: loadingOptions.loadingTitle,
+                mask: loadingOptions.loadingMask
+            })
+        }
 
         try {
             // 发送请求
@@ -55,6 +238,13 @@ class HttpClient {
         } catch (error) {
             // 处理错误
             return this.handleError(error, requestConfig)
+        } finally {
+            // 隐藏loading
+            if (loadingOptions.showLoading) {
+                console.log('🔍 request finally块 - 准备隐藏loading, 当前状态:', this.getLoadingStatus())
+                this.hideLoading()
+                console.log('🔍 request finally块 - 隐藏loading后状态:', this.getLoadingStatus())
+            }
         }
     }
 
@@ -90,12 +280,14 @@ class HttpClient {
         // 检查HTTP状态码
         if (response.statusCode === 401) {
             console.log('🔑 收到401响应，尝试静默重新登录')
+            console.log('🔍 401错误时loading状态:', this.getLoadingStatus())
             return await this.handleAuthError(requestConfig)
         }
 
         // 检查业务状态码
         if (response.data?.code === ErrorCode.TOKEN_INVALID) {
             console.log('🔑 业务层token失效，尝试静默重新登录')
+            console.log('🔍 token失效时loading状态:', this.getLoadingStatus())
             return await this.handleAuthError(requestConfig)
         }
 
@@ -130,7 +322,7 @@ class HttpClient {
             await this.authManager.silentLogin()
             console.log('✅ 静默重新登录成功，开始重试请求')
 
-            // 重试原始请求
+            // 重试原始请求 - 注意：这里不需要额外的loading管理，因为原始请求的finally会处理
             const retryResult = await this.retryOriginalRequest(requestConfig)
 
             // 处理队列中的请求
@@ -184,7 +376,7 @@ class HttpClient {
     processFailedQueue(error) {
         const queue = this.failedQueue.splice(0) // 清空队列
 
-        queue.forEach(({ resolve, reject, requestConfig }) => {
+        for (const { resolve, reject, requestConfig } of queue) {
             if (error) {
                 reject(error)
             } else {
@@ -193,7 +385,7 @@ class HttpClient {
                     .then(resolve)
                     .catch(reject)
             }
-        })
+        }
     }
 
     /**
@@ -267,11 +459,13 @@ class HttpClient {
     /**
      * 记录请求日志
      */
-    logRequest(config) {
+    logRequest(config, loadingOptions = {}) {
         console.log('🚀 发起请求:', {
             url: config.url,
             method: config.method,
             hasToken: !!config.header.Authorization,
+            showLoading: loadingOptions.showLoading,
+            loadingTitle: loadingOptions.loadingTitle,
             timestamp: new Date().toISOString()
         })
     }
@@ -315,7 +509,22 @@ class HttpClient {
      * @param {object} options - 上传选项
      */
     uploadFile(url, filePath, options = {}) {
+        // 解析loading配置
+        const loadingOptions = {
+            showLoading: options.showLoading !== false, // 默认显示loading
+            loadingTitle: options.loadingTitle || '上传中...',
+            loadingMask: options.loadingMask !== undefined ? options.loadingMask : this.loadingConfig.defaultMask
+        }
+
         return new Promise((resolve, reject) => {
+            // 显示loading
+            if (loadingOptions.showLoading) {
+                this.showLoading({
+                    title: loadingOptions.loadingTitle,
+                    mask: loadingOptions.loadingMask
+                })
+            }
+
             // 使用Storage层获取token
             const token = storage.getToken()
             const header = {
@@ -364,6 +573,12 @@ class HttpClient {
                     }
 
                     reject(error)
+                },
+                complete: () => {
+                    // 隐藏loading
+                    if (loadingOptions.showLoading) {
+                        this.hideLoading()
+                    }
                 }
             }
 
@@ -372,6 +587,8 @@ class HttpClient {
                 url: uploadConfig.url,
                 name: uploadConfig.name,
                 hasToken: !!token,
+                showLoading: loadingOptions.showLoading,
+                loadingTitle: loadingOptions.loadingTitle,
                 timestamp: new Date().toISOString()
             })
 

@@ -106,9 +106,6 @@ Page({
      * 实时更新API调用 - 带防抖和错误处理
      */
     async callUpdateAPI(apiMethod, data, description) {
-        console.log(`🌐 开始调用 ${apiMethod} API, 描述: ${description}`);
-        console.log(`🌐 API 方法存在吗:`, typeof app.api.game[apiMethod]);
-        console.log(`🌐 调用数据:`, data);
 
         try {
             const result = await app.api.game[apiMethod](data)
@@ -168,7 +165,7 @@ Page({
 
     onScoringTypeChange(e) {
 
-        // updateGameScoringType
+        // updateGameScoringTypeMBC 뉴스 이덕영입니다. 
         this.setData({
             'formData.ScoringType': e.detail.value
         });

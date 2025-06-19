@@ -5,7 +5,6 @@ Page({
         groupIndex: 0,
         slotIndex: 0,
         friends: [], // 好友数据
-        loading: false,
         selectedFriends: [], // 选中的好友
         maxSelect: 4 // 最大选择数量
     },
@@ -34,9 +33,10 @@ Page({
      */
     async loadFriends() {
         try {
-            this.setData({ loading: true });
-
-            const result = await api.user.getFriendList({});
+            // 移除手动loading管理，使用API自动管理
+            const result = await api.user.getFriendList({}, {
+                loadingTitle: '加载好友中...'
+            });
 
             if (result?.code === 200 && result?.friends) {
                 // 为每个好友添加选中状态
@@ -61,9 +61,8 @@ Page({
                 title: '网络错误',
                 icon: 'none'
             });
-        } finally {
-            this.setData({ loading: false });
         }
+        // 移除finally中的loading管理
     },
 
     /**

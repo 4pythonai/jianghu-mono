@@ -117,18 +117,19 @@ Page({
   uploadAvatarToServer(tempFilePath) {
     console.log('🚀 开始上传头像到服务器:', tempFilePath)
 
-    // 显示上传进度
-    wx.showLoading({
-      title: '上传头像中...'
-    })
+    // 移除手动loading，使用HTTP客户端自动管理的loading
+    // wx.showLoading({
+    //   title: '上传头像中...'
+    // })
 
-    // 使用HTTP客户端的uploadFile方法
+    // 使用HTTP客户端的uploadFile方法，自定义loading文案
     app.http.uploadFile('/User/uploadAvatar', tempFilePath, {
       name: 'avatar', // 后台接收的字段名
       formData: {
         platform: 'miniprogram',
         timestamp: Date.now()
-      }
+      },
+      loadingTitle: '上传头像中...'
     }).then(response => {
       console.log('✅ 头像上传成功:', response)
 
@@ -139,7 +140,8 @@ Page({
         // 更新用户头像
         this.updateUserAvatar(avatarUrl, true) // true表示是服务器URL
 
-        wx.hideLoading()
+        // 移除手动hideLoading，HTTP客户端会自动处理
+        // wx.hideLoading()
         wx.showToast({
           title: '头像上传成功',
           icon: 'success'
@@ -271,14 +273,11 @@ Page({
       return
     }
 
-    // 显示保存提示
-    wx.showLoading({
-      title: '保存中...'
-    })
-
-    // 调用API更新昵称
+    // 调用API更新昵称，使用自定义loading文案
     app.api.user.updateNickName({
       nickName: trimmedNickname
+    }, {
+      loadingTitle: '保存中...'
     }).then(response => {
       console.log('✅ 昵称更新成功:', response)
 
@@ -302,7 +301,6 @@ Page({
       // 触发登录成功事件
       app.emit('loginSuccess', updatedUserInfo)
 
-      wx.hideLoading()
       wx.showToast({
         title: '信息保存成功',
         icon: 'success'
@@ -333,7 +331,6 @@ Page({
       // 触发登录成功事件
       app.emit('loginSuccess', updatedUserInfo)
 
-      wx.hideLoading()
       wx.showToast({
         title: '信息已保存（本地）',
         icon: 'success'

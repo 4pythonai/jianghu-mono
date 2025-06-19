@@ -11,38 +11,7 @@
 	box-shadow: none;
 }
 
-/* 加载状态 */
-.loading-container {
-	background: #fff;
-	border-radius: 16rpx;
-	padding: 80rpx 40rpx;
-	text-align: center;
-	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
-}
-
-.loading-spinner {
-	width: 60rpx;
-	height: 60rpx;
-	border: 4rpx solid #f3f3f3;
-	border-top: 4rpx solid #025028;
-	border-radius: 50%;
-	animation: spin 1s linear infinite;
-	margin: 0 auto 20rpx;
-}
-
-@keyframes spin {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
-.loading-text {
-	font-size: 28rpx;
-	color: #666;
-}
+/* 移除loading相关样式，因为API统一管理 */
 
 /* 组合列表 */
 .combinations-list {

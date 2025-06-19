@@ -53,11 +53,11 @@ App({
     onLaunch() {
         console.log('🚀 应用启动')
 
-        wx.loadFontFace({
-            family: 'DouyinSansBold',
-            source: 'url("https://web.golf-brother.com/DouyinSansBold.otf")',
-            success: console.log
-        })
+        // wx.loadFontFace({
+        //     family: 'DouyinSansBold',
+        //     source: 'url("https://web.golf-brother.com/DouyinSansBold.otf")',
+        //     success: console.log
+        // })
 
         // 获取系统信息
         this.initSystemInfo()
@@ -226,5 +226,112 @@ App({
     onError(error) {
         console.error('💥 应用错误:', error)
         this.emit('appError', error)
-    }
+    },
+
+    /**
+     * 全局调试方法 - 可在控制台直接调用
+     */
+
+    // 检查loading状态
+    checkLoading() {
+        console.log('🔍 检查loading状态')
+        if (this.http) {
+            const status = this.http.getLoadingStatus()
+            console.log('📊 Loading状态:', status)
+
+            // 检查是否有异常状态
+            if (status.isLoading && status.loadingCount === 0) {
+                console.warn('⚠️ 异常：isLoading为true但loadingCount为0')
+            }
+
+            if (status.hasShowTimer && status.hasHideTimer) {
+                console.warn('⚠️ 异常：同时存在显示和隐藏定时器')
+            }
+
+            return status
+        } else {
+            console.error('❌ HTTP客户端未初始化')
+            return null
+        }
+    },
+
+    // 强制隐藏loading
+    fixLoading() {
+        console.log('🚨 强制修复loading')
+
+        // 方法1：通过HttpClient
+        if (this.http) {
+            console.log('1️⃣ 通过HttpClient清理')
+            this.http.forceHideLoading()
+        }
+
+        // 方法2：直接调用微信API
+        console.log('2️⃣ 直接调用wx.hideLoading')
+        try {
+            wx.hideLoading()
+        } catch (error) {
+            console.error('❌ wx.hideLoading失败:', error)
+        }
+
+        // 方法3：多次调用确保清理
+        console.log('3️⃣ 延迟再次清理')
+        setTimeout(() => {
+            try {
+                wx.hideLoading()
+                console.log('✅ 延迟清理完成')
+            } catch (error) {
+                console.error('❌ 延迟清理失败:', error)
+            }
+        }, 100)
+
+        console.log('✅ Loading修复完成')
+    },
+
+    // 全面诊断loading问题
+    diagnoseLoading() {
+        console.log('🔬 开始全面诊断loading问题')
+
+        // 1. 检查HttpClient状态
+        console.log('1️⃣ 检查HttpClient状态')
+        if (this.http) {
+            const status = this.http.getLoadingStatus()
+            console.log('HttpClient状态:', status)
+
+            // 检查内部变量
+            console.log('内部变量:', {
+                loadingCount: this.http.loadingCount,
+                loadingTimer: !!this.http.loadingTimer,
+                loadingHideTimer: !!this.http.loadingHideTimer,
+                loadingStartTime: this.http.loadingStartTime,
+                isRefreshing: this.http.isRefreshing
+            })
+        }
+
+        // 2. 检查当前页面
+        console.log('2️⃣ 检查当前页面')
+        const pages = getCurrentPages()
+        if (pages.length > 0) {
+            const currentPage = pages[pages.length - 1]
+            console.log('当前页面:', currentPage.route)
+
+            // 检查页面data中的loading状态
+            if (currentPage.data && typeof currentPage.data.loading !== 'undefined') {
+                console.log('页面loading状态:', currentPage.data.loading)
+            }
+        }
+
+        // 3. 尝试修复
+        console.log('3️⃣ 尝试修复')
+        this.fixLoading()
+
+        // 4. 再次检查
+        setTimeout(() => {
+            console.log('4️⃣ 修复后状态检查')
+            this.checkLoading()
+        }, 200)
+    },
+
+
+
+
 })

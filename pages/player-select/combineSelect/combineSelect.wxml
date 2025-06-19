@@ -4,13 +4,8 @@
 		<text class="subtitle">为第{{groupIndex + 1}}组玩家{{slotIndex + 1}}选择</text>
 	</view>
 	<view class="content">
-		<!-- 加载状态 -->
-		<view wx:if="{{ loading }}" class="loading-container">
-			<view class="loading-spinner"></view>
-			<text class="loading-text">加载中...</text>
-		</view>
 		<!-- 组合列表 -->
-		<view wx:elif="{{ combinations.length > 0 }}" class="combinations-list">
+		<view wx:if="{{ combinations.length > 0 }}" class="combinations-list">
 			<view
 				wx:for="{{ combinations }}"
 				wx:key="index"

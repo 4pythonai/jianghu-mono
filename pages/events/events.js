@@ -147,18 +147,15 @@ Page({
             return
         }
 
-
-
         this.setData({ courseLoading: true })
-        wx.showLoading({ title: '获取球场中...' })
 
         try {
             const { latitude, longitude } = this.data.location
             console.log("发送请求参数:", { latitude, longitude })
 
-            // const { api } = app.api
-
-            const courseList = await app.api.course.getNearestCourses({ latitude, longitude })
+            const courseList = await app.api.course.getNearestCourses({ latitude, longitude }, {
+                loadingTitle: '获取球场中...'
+            })
             console.log("API响应:", courseList)
 
             this.setData({ courseList: courseList.data })
@@ -178,7 +175,6 @@ Page({
                 icon: 'none'
             })
         } finally {
-            wx.hideLoading()
             this.setData({ courseLoading: false })
         }
     },

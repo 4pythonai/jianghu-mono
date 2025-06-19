@@ -137,7 +137,9 @@ Component({
 
             try {
                 console.log('开始加载球场详细信息:', courseid)
-                const res = await app.api.course.getCourseDetail({ courseid })
+                const res = await app.api.course.getCourseDetail({ courseid }, {
+                    loadingTitle: '获取球场详情中...'
+                })
                 console.log('球场详细信息:', res)
 
                 if (res.code === 200) {

@@ -5,7 +5,6 @@ Page({
         groupIndex: 0,
         slotIndex: 0,
         combinations: [], // 老牌组合数据
-        loading: false,
         selectedCombination: -1 // 选中的组合索引
     },
 
@@ -33,9 +32,9 @@ Page({
      */
     async loadCombinations() {
         try {
-            this.setData({ loading: true });
-
-            const result = await api.game.getPlayerCombination({});
+            const result = await api.game.getPlayerCombination({}, {
+                loadingTitle: '加载组合中...'
+            });
 
             if (result?.code === 200 && result?.combination) {
                 this.setData({
@@ -54,8 +53,6 @@ Page({
                 title: '网络错误',
                 icon: 'none'
             });
-        } finally {
-            this.setData({ loading: false });
         }
     },
 
@@ -135,6 +132,8 @@ Page({
             icon: 'none'
         });
     },
+
+
 
     /**
      * 刷新数据

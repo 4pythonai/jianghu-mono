@@ -104,7 +104,9 @@ Page({
             };
 
             // 调用创建用户API
-            const res = await app.api.user.createAndSelect(userData);
+            const res = await app.api.user.createAndSelect(userData, {
+                loadingTitle: '正在创建用户...'
+            });
             console.log("创建用户API返回:", res);
 
             const createdUser = res.user;

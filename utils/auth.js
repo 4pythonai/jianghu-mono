@@ -77,8 +77,10 @@ class AuthManager {
         try {
             console.log('🔑 验证token有效性')
 
-            // 调用需要认证的API来验证token
-            const response = await api.user.getUserInfo()
+            // 调用需要认证的API来验证token - 禁用loading（静默验证）
+            const response = await api.user.getUserInfo({}, {
+                showLoading: false
+            })
 
             if (response?.user) {
                 console.log('✅ Token验证成功')
@@ -139,8 +141,10 @@ class AuthManager {
             // 获取微信登录code
             const code = await this.getWxLoginCode()
 
-            // 调用后端登录接口
-            const response = await api.user.wxLogin({ code })
+            // 调用后端登录接口 - 禁用loading（静默登录）
+            const response = await api.user.wxLogin({ code }, {
+                showLoading: false
+            })
 
             if (response?.token) {
                 console.log('✅ 静默登录成功')
@@ -165,19 +169,25 @@ class AuthManager {
      */
     async startWxLogin() {
         try {
-            console.log('🚀 开始微信登录流程')
+            console.log('🚀 开始微信登录流程，重试次数:', this.retryCount)
 
             // 重置重试计数
             this.retryCount = 0
 
             // 获取微信登录code
+            console.log('📱 获取微信登录code...')
             const code = await this.getWxLoginCode()
+            console.log('✅ 获取微信code成功:', code)
 
-            // 调用后端登录接口
-            const response = await api.user.wxLogin({ code })
+            // 调用后端登录接口 - 使用自定义loading文案
+            console.log('🌐 调用后端登录接口...')
+            const response = await api.user.wxLogin({ code }, {
+                loadingTitle: '登录中...'
+            })
+            console.log('📨 后端登录接口响应:', response)
 
             if (response?.token) {
-                console.log('✅ 微信登录成功')
+                console.log('✅ 微信登录成功，token:', response.token?.substring(0, 10) + '...')
 
                 // 存储token和用户信息
                 await this.storeAuthData(response)
@@ -188,6 +198,7 @@ class AuthManager {
                 return { success: true, user: response }
             }
 
+            console.error('❌ 登录响应无效，response:', response)
             throw new Error('登录响应无效')
 
         } catch (error) {
@@ -204,6 +215,7 @@ class AuthManager {
             }
 
             // 重试次数耗尽，通知app登录失败
+            console.error('❌ 登录重试次数耗尽，通知app登录失败')
             this.app.handleLoginFailure(error)
             throw error
         }

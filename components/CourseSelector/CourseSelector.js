@@ -102,7 +102,13 @@ Component({
          */
         async getFavoriteCourses() {
             try {
-                const res = await app.api.course.getFavorites()
+                const res = await app.api.course.getFavorites({}, { loadingTitle: '获取收藏球场...' })
+
+                // const result = await app.api.user.createAndSelect(userData, {
+                //     loadingTitle: '正在创建用户...'
+                // })
+
+
                 this.setData({
                     favoriteList: res.courses || []
                 })
@@ -152,7 +158,9 @@ Component({
             this.triggerEvent('searchStart', { keyword })
 
             try {
-                const res = await app.api.course.searchCourse({ keyword })
+                const res = await app.api.course.searchCourse({ keyword }, {
+                    loadingTitle: '搜索球场中...'
+                })
 
                 this.setData({
                     searchList: res.courses || []
