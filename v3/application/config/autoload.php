@@ -138,5 +138,7 @@ $autoload['model'] = [
     'MFile',
     'MJwtUtil',
     'MJHUser',
-    'MGame'
+    'MGame',
+    'MGamePipeRunner',
+    'MGamePipe'
 ];

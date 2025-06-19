@@ -25,10 +25,18 @@ class Test extends CI_Controller {
 
     public function index() {
 
-        // echo "index called ";
-        // $user = $this->MJHUser->getJianghuUserByMobile('18600089281');
-        // echo json_encode($user, JSON_UNESCAPED_UNICODE);
-        downloadJHAvatar('http://s1.golf-brother.com/data/attach/avatar/user_default_avatar.png');
+
+        $get_data_config = [
+            'creatorid' => [837581, 837590],
+        ];
+
+
+        $result  =  $this->MGamePipeRunner->GameDataHandler($get_data_config);
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['allgames'] = $result['allgames'];
+        $ret['realgames'] = count($result['realgames']);
+        echo json_encode($ret);
     }
 
 

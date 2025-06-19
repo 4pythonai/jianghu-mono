@@ -7,6 +7,8 @@ class Log extends CI_Controller {
 
         $base_url = str_replace('log', '', $_SERVER['REQUEST_SCHEME']   . '://' . $_SERVER['HTTP_HOST'] .  $_SERVER['REQUEST_URI']);
         $base_url = str_replace('Log', '',  $base_url);
+        $base_url = str_replace('/v3/index.php', '',  $base_url);
+
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
@@ -19,7 +21,7 @@ class Log extends CI_Controller {
         $fontcss = $base_url . "css/font-awesome-4.7.0/css/font-awesome.min.css";
         $fontcss_str = "<link rel='stylesheet' href=$fontcss>";
 
-        echo '<html><head><meta http-equiv="content-type" content="text/html;charset=utf-8">' . $jstr . $css_str . $fontcss_str . '<title>GAPI日志</title></head>';
+        echo '<html><head><meta http-equiv="content-type" content="text/html;charset=utf-8">' . $jstr . $css_str . $fontcss_str . '<title>樵GAPI日志</title></head>';
         echo "<body><div>";
         echo "<input onclick=clear_log() type=button value=Clear_log name=Hide_Input>";
         echo "</div>";
