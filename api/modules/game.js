@@ -1,7 +1,7 @@
 import request from '../request-simple'
 
 const game = {
-    getGameDetail: (data, options) => request('/test/gameDetail', data, options),
+    getGameDetail: (data, options) => request('/Game/gameDetail', data, options),
     getPlayerCombination: (data, options) => request('/Game/getPlayerCombination', data, options),
     getPlayerList: (data, options) => request('/test/playerList', data, options),
     createBlankGame: (data, options) => request('/Game/createBlankGame', data, options),

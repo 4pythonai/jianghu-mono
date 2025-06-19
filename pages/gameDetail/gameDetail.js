@@ -54,22 +54,19 @@ Page({
         })
 
         try {
-            // 验证API实例
-            if (!this.app?.api?.game?.getGameDetail) {
-                throw new Error('API方法未定义: game.getGameDetail')
-            }
+
 
             // 使用自定义loading文案
             const res = await this.app.api.game.getGameDetail({ gameId }, {
                 loadingTitle: '加载比赛详情...',
                 loadingMask: true
             })
-            console.log(res.gameinfo)
+            console.log(res)
 
             // 验证响应状态码和数据
             if (res?.code === 200) {
                 this.setData({
-                    gameData: res.gameinfo
+                    gameData: res.game_detail
                 })
             }
         } catch (err) {
@@ -93,8 +90,6 @@ Page({
             console.log('🏁 比赛详情加载完成')
             this.setData({ loading: false })
 
-            // 移除手动hideLoading，API会自动处理
-            // wx.hideLoading()
         }
     },
 
