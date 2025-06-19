@@ -90,7 +90,10 @@ class Game extends MY_Controller {
     public function updateGameCourseCourt() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
+        $courseid = $json_paras['courseid'];
         $gameid = $this->MGame->getGameidByUUID($uuid);
+        $this->db->where('id', $gameid);
+        $this->db->update('t_game', ['courseid' => $courseid]);
         $this->MGame->clearGameCourt($gameid);
         $this->MGame->addGameCourt($gameid, $json_paras['frontNineCourtId'], $json_paras['backNineCourtId']);
         $ret = [];
@@ -194,5 +197,12 @@ class Game extends MY_Controller {
         $groups = $json_paras['groups'];
         $this->MGame->clearGameGroupAndPlayers($gameid);
         $this->MGame->addGameGroupAndPlayers($gameid, $groups);
+    }
+
+    public function gameDetail() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $game_id = $json_paras['gameId'];
+        $game_detail = $this->MDetailGame->get_detail_game($game_id);
+        echo json_encode(['code' => 200, 'game_detail' => $game_detail], JSON_UNESCAPED_UNICODE);
     }
 }

@@ -10,16 +10,67 @@ class MDetailGame  extends CI_Model {
 
     public function get_detail_game($game_id) {
         // 获取游戏基本信息
+        $game_info = $this->getGameInfo($game_id);
+        if (!$game_info) {
+            return null;
+        }
+
+
+        // 获取球场信息（根据 courseid）
+        $course_info = $this->getCourseInfo($game_info['courseid']);
+
+        // 获取游戏统计信息
+        $game_stats = $this->getGameStats($game_id);
+
+        // 获取赌球信息
+        $gamble_info = $this->getGambleInfo($game_id);
+
+        // 获取玩家信息
+        $players = $this->getPlayers($game_id);
+
+        // 获取球洞列表
+        $holeList = $this->getHoleListByGameId($game_id);
+
+        // 组装返回数据
+        $result = [
+            'game_id' => (string)$game_info['game_id'],
+            'game_name' => $game_info['game_name'] ?: '',
+            'course' => $course_info['coursename'] ?: '',
+            'players' => $players,
+            'watchers_number' => 0, // 暂时设为0
+            'game_start' => $game_info['game_start'] ?: $game_info['create_time'],
+            'completed_holes' => $game_stats['completed_holes'],
+            'holes' => $game_stats['total_holes'],
+            'have_gamble' => $gamble_info['have_gamble'],
+            'star_type' => $gamble_info['star_type'],
+            'courseinfo' => [
+                'courseid' => $course_info['courseid'],
+                'coursename' => $course_info['coursename'],
+                'lat' => $course_info['lat'],
+                'lgt' => $course_info['lgt']
+            ],
+            'holeList' => $holeList,
+            'scores' => []
+        ];
+
+        return $result;
+    }
+
+    /**
+     * 获取游戏基本信息
+     * @param int $game_id 游戏ID
+     * @return array|null 游戏信息，不存在返回null
+     */
+    public function getGameInfo($game_id) {
         $game_query = "
             SELECT 
-                g.id as game_id,
-                g.name as game_name,
-                g.open_time as game_start,
-                g.create_time,
-                c.name as course_name
-            FROM t_game g
-            LEFT JOIN t_course c ON g.courseid = c.courseid
-            WHERE g.id = ?
+                id as game_id,
+                courseid,
+                name as game_name,
+                open_time as game_start,
+                create_time
+            FROM t_game
+            WHERE id = ?
         ";
 
         $game_result = $this->db->query($game_query, [$game_id]);
@@ -28,29 +79,40 @@ class MDetailGame  extends CI_Model {
             return null;
         }
 
-        $game_info = $game_result->row_array();
+        return $game_result->row_array();
+    }
 
-        // 获取游戏玩家信息
-        $players_query = "
+    /**
+     * 获取球场信息
+     * @param int $courseid 球场ID
+     * @return array 球场信息
+     */
+    public function getCourseInfo($courseid) {
+        $course_query = "
             SELECT 
-                u.id as user_id,
-                u.coverpath as avatar
-            FROM t_game_group_user ggu
-            LEFT JOIN t_user u ON ggu.userid = u.id
-            WHERE ggu.gameid = ? 
-            ORDER BY ggu.addtime ASC
-        ";
+                courseid,
+                name as coursename,
+                lat,
+                lng as lgt,
+                coverpath,
+                courtnum,
+                totalPar,
+                totalYard
+            FROM t_course 
+            WHERE courseid = $courseid  ";
 
-        $players_result = $this->db->query($players_query, [$game_id]);
-        $players = [];
 
-        foreach ($players_result->result_array() as $player) {
-            $players[] = [
-                'user' => (int)$player['user_id'],
-                'avatar' => config_item('web_url') . $player['avatar'] ?: ''
-            ];
-        }
+        $course_result = $this->db->query($course_query);
+        $course = $course_result->row_array();
+        return $course;
+    }
 
+    /**
+     * 获取游戏统计信息
+     * @param int $game_id 游戏ID
+     * @return array 游戏统计信息
+     */
+    public function getGameStats($game_id) {
         // 计算已完成洞数 - 只有当某个洞所有玩家都记分时才算完成
         $completed_holes_query = "
             SELECT MAX(hole_id) as max_completed_hole
@@ -93,18 +155,117 @@ class MDetailGame  extends CI_Model {
         // 1个半场=9洞，2个半场=18洞
         $total_holes = $court_count == 1 ? 9 : 18;
 
-        // 组装返回数据
-        $result = [
-            'game_id' => (string)$game_info['game_id'],
-            'game_name' => $game_info['game_name'] ?: '',
-            'course' => $game_info['course_name'] ?: '',
-            'players' => $players,
-            'watchers_number' => 0, // 暂时设为0
-            'game_start' => $game_info['game_start'] ?: $game_info['create_time'],
+        return [
             'completed_holes' => $completed_holes,
-            'holes' => $total_holes
+            'total_holes' => $total_holes,
+            'court_count' => $court_count
         ];
+    }
 
-        return $result;
+    /**
+     * 获取赌球信息
+     * @param int $game_id 游戏ID
+     * @return array 赌球信息
+     */
+    public function getGambleInfo($game_id) {
+        // 暂时返回固定值，后续可以从数据库查询
+        return [
+            'have_gamble' => true,
+            'star_type' => 'green'
+        ];
+    }
+
+    /**
+     * 获取玩家列表
+     * @param int $game_id 游戏ID
+     * @return array 玩家列表
+     */
+    public function getPlayers($game_id) {
+        $players_query = "
+            SELECT 
+                u.id as user_id,
+                u.wx_nickname as wx_nickname,
+                u.coverpath as avatar
+            FROM t_game_group_user ggu
+            LEFT JOIN t_user u ON ggu.userid = u.id
+            WHERE ggu.gameid = ? 
+            ORDER BY ggu.addtime ASC
+        ";
+
+        $players_result = $this->db->query($players_query, [$game_id]);
+        $players = [];
+
+        foreach ($players_result->result_array() as $player) {
+            $players[] = [
+                'userid' => (int)$player['user_id'],
+                'nickname' => $player['wx_nickname'] ?: '',
+                'avatar' => config_item('web_url') . $player['avatar'] ?: '',
+                'tee' => 'black'
+            ];
+        }
+
+        return $players;
+    }
+
+    /**
+     * 根据游戏ID获取球洞列表
+     * @param int $gameid 游戏ID
+     * @return array 球洞列表
+     */
+    public function getHoleListByGameId($gameid) {
+        $holeList = [];
+
+        // 获取游戏使用的半场，按 court_key 排序
+        $courts_query = "
+            SELECT courtid, court_key
+            FROM t_game_court 
+            WHERE gameid = ?
+            ORDER BY court_key ASC
+        ";
+
+        $courts_result = $this->db->query($courts_query, [$gameid]);
+        foreach ($courts_result->result_array() as $court) {
+            $courtid = $court['courtid'];
+
+            // 获取该半场的所有球洞信息
+            $holes_query = "
+                    SELECT 
+                        holeid,
+                        holeno ,
+                        holename,
+                        par,
+                        black,
+                        gold,
+                        blue,
+                        white,
+                        red,
+                        Tnum,
+                        diffindex
+                    FROM t_court_hole
+                    WHERE courtid = ?
+                    ORDER BY holeid 
+                ";
+
+            $holes_result = $this->db->query($holes_query, [$courtid]);
+
+
+            foreach ($holes_result->result_array() as $hole) {
+                $holeList[] = [
+                    'holeid' => (int)$hole['holeid'],
+                    'holeno' => (int)$hole['holeno'],
+                    'holename' => $hole['holename'] ?: '',
+                    'par' => (int)$hole['par'],
+                    'black' => (int)$hole['black'],
+                    'gold' => (int)$hole['gold'],
+                    'blue' => (int)$hole['blue'],
+                    'white' => (int)$hole['white'],
+                    'red' => (int)$hole['red'],
+                    'Tnum' => (int)$hole['Tnum'],
+                    'diffindex' => (int)$hole['diffindex']
+                ];
+            }
+        }
+
+        return $holeList;
     }
 }
