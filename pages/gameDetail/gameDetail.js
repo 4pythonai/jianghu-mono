@@ -2,7 +2,7 @@ Page({
     usingComponents: {
         'bbs': './bbs/bbs',
         'gamble': './gamble/gamble',
-        'scoring': './scoring/scoring'
+        'ScoreTable': './ScoreTable/ScoreTable'
     },
     data: {
         currentTab: 0, // 当前激活的tab索引

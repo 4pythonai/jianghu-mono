@@ -3,6 +3,6 @@
 	"usingComponents": {
 		"gamble": "./gamble/gamble",
 		"bbs": "./bbs/bbs",
-		"scoring": "./scoring/scoring"
+		"ScoreTable": "./ScoreTable/ScoreTable"
 	}
 }
