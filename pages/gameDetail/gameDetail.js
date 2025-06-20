@@ -67,10 +67,10 @@ Page({
     },
 
     onCellClick(e) {
-        const { holeIndex, playerIndex } = e.detail;
+        const { holeIndex, playerIndex, unique_key } = e.detail;
         const scoreInputPanel = this.selectComponent('#scoreInputPanel');
         if (scoreInputPanel) {
-            scoreInputPanel.show({ holeIndex, playerIndex });
+            scoreInputPanel.show({ holeIndex, playerIndex, unique_key });
         } else {
             console.error("无法找到 #scoreInputPanel 组件");
         }

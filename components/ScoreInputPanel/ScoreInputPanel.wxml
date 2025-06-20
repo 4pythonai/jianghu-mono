@@ -93,8 +93,10 @@
 
     <!-- 底部按钮 -->
     <view class="footer-buttons">
-      <button class="btn-clear" bind:tap="handleClear">清除</button>
-      <button class="btn-confirm" bind:tap="handleConfirm">确定</button>
+      <button class="btn-clear" bind:tap="handleClear" disabled="{{isSaving}}">清除</button>
+      <button class="btn-confirm" bind:tap="handleConfirm" disabled="{{isSaving}}">
+        {{isSaving ? '保存中...' : '确定'}}
+      </button>
     </view>
   </view>
 </view> 

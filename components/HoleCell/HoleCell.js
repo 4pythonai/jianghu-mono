@@ -59,6 +59,10 @@ Component({
                 actions: ['updateCellScore'],
             });
 
+            if (typeof this.properties.unique_key !== 'string') {
+                console.warn(`⚠️ [HoleCell] unique_key 不是字符串类型: ${typeof this.properties.unique_key}, 值: ${this.properties.unique_key}`);
+            }
+
             const { putt = 0, diff = 0, score = 0, gambleflag = '' } = this.properties;
             this.setData({
                 formattedPutt: putt !== 0 ? putt.toString() : '0',
@@ -154,9 +158,13 @@ Component({
         },
 
         recordScore: function (e) {
+            // 确保传递的 unique_key 是字符串类型
+            const uniqueKey = this.properties.unique_key != null ? String(this.properties.unique_key) : '';
+
             this.triggerEvent('cellclick', {
                 holeIndex: this.properties.holeIndex,
-                playerIndex: this.properties.playerIndex
+                playerIndex: this.properties.playerIndex,
+                unique_key: uniqueKey
             });
         }
     }

@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../stores/gameStore';
+import gameApi from '../../api/modules/game';
 
 Component({
     /**
@@ -18,15 +19,16 @@ Component({
         holeInfo: null,
         localScores: [],
         players: [],
-        playerItemHeight: 120
+        playerItemHeight: 120,
+        isSaving: false
     },
 
     lifetimes: {
         attached() {
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
-                fields: ['gameData', 'players', 'holes', 'scores'],
-                actions: ['updateCellScore'],
+                fields: ['gameid', 'gameData', 'players', 'holes', 'scores', 'isSaving'],
+                actions: ['updateCellScore', 'setSaving', 'batchUpdateScoresForHole'],
             });
         },
         detached() {
@@ -38,11 +40,29 @@ Component({
      * 组件的方法列表
      */
     methods: {
-        show({ holeIndex, playerIndex }) {
-            console.log(`[ScoreInputPanel] Show triggered for Hole: ${holeIndex}, Player: ${playerIndex}`);
+        show({ holeIndex, playerIndex, unique_key }) {
+            console.log(`[ScoreInputPanel] Show triggered for Hole: ${holeIndex}, Player: ${playerIndex}, UniqueKey: ${unique_key}`);
+
+            // 类型检查和保护
+            if (typeof unique_key !== 'string') {
+                console.warn(`⚠️ [ScoreInputPanel] unique_key 不是字符串类型: ${typeof unique_key}, 值: ${unique_key}`);
+                unique_key = String(unique_key || ''); // 强制转换为字符串
+            }
 
             const holeInfo = this.data.holes[holeIndex];
+            if (!holeInfo) {
+                console.error(`❌ [ScoreInputPanel] 无法找到洞信息: holeIndex=${holeIndex}`);
+                return;
+            }
+
+            // 确保 holeInfo.unique_key 也是字符串
+            if (typeof holeInfo.unique_key !== 'string') {
+                console.warn(`⚠️ [ScoreInputPanel] holeInfo.unique_key 不是字符串类型: ${typeof holeInfo.unique_key}, 值: ${holeInfo.unique_key}`);
+                holeInfo.unique_key = String(holeInfo.unique_key || '');
+            }
+
             const players = this.data.players;
+            const gameData = this.data.gameData;
 
             const localScores = players.map((player, pIndex) => {
                 const scoreData = this.data.scores[pIndex][holeIndex];
@@ -64,8 +84,9 @@ Component({
 
             this.setData({
                 isVisible: true,
-                holeInfo: { ...holeInfo, originalIndex: holeIndex },
+                holeInfo: { ...holeInfo, originalIndex: holeIndex, unique_key: unique_key },
                 players: players,
+                gameData: gameData,
                 localScores: localScores,
                 activePlayerIndex: playerIndex,
             });
@@ -90,19 +111,11 @@ Component({
             const currentScore = this.data.localScores[index][type] || 0;
             const newValue = currentScore + Number(amount);
 
-            // 确保分数不小于0
-            if (newValue < 0) {
-                return;
-            }
+            if (newValue < 0) return;
 
             this.setData({
                 [`localScores[${index}].${type}`]: newValue
             });
-
-            // 自动更新总成绩
-            if (type !== 'score') {
-                this._calculateTotalScore(index);
-            }
         },
 
         _updateScopingAreaPosition(index) {
@@ -125,40 +138,68 @@ Component({
         },
 
         async _saveChanges() {
-            // 将 localScores 的改动同步回 mobx store
-            console.log('📦 Saving changes to store:', this.data.localScores);
-            const holeIndex = this.data.holeInfo.originalIndex; // 使用保存好的原始索引
+            if (this.data.isSaving) {
+                return; // 防止重复提交
+            }
+            const holeIndexForStore = this.data.holeInfo.originalIndex; // 用于更新store的数组索引
+            const holeUniqueKeyForAPI = this.data.holeInfo.unique_key; // 用于发送给API的唯一键
 
-            if (holeIndex === undefined) {
+            if (holeIndexForStore === undefined) {
                 console.error("无法获取到holeIndex，保存失败");
                 return;
             }
 
+            // 1. 保存旧值，用于回滚
+            const oldScores = this.data.players.map((_, pIndex) => {
+                return { ...this.data.scores[pIndex][holeIndexForStore] };
+            });
+
+            // 2. 设置保存状态
+            this.setSaving(true);
+
+            // 3. 乐观更新
             for (let i = 0; i < this.data.localScores.length; i++) {
                 const playerScore = this.data.localScores[i];
                 this.updateCellScore({
                     playerIndex: i,
-                    holeIndex: holeIndex,
-                    score: playerScore.score,
-                    putt: playerScore.putt,
-                    penalty: playerScore.penalty,
-                    sand: playerScore.sand,
+                    holeIndex: holeIndexForStore,
+                    ...playerScore
                 });
             }
-            // 这里可以加一个API调用来通知后端
-            wx.showToast({ title: '已保存', icon: 'success', duration: 1500 });
+
+            try {
+                // 4. 调用API
+                const apiData = {
+                    gameId: this.data.gameid,
+                    holeIndex: holeUniqueKeyForAPI, // <--- 使用 unique_key
+                    scores: this.data.localScores,
+                };
+                await gameApi.saveGameScores(apiData);
+                wx.showToast({ title: '已保存', icon: 'success', duration: 1500 });
+
+            } catch (err) {
+                // 5. 失败回滚
+                wx.showToast({ title: '保存失败,已撤销', icon: 'error' });
+                this.batchUpdateScoresForHole({
+                    holeIndex: holeIndexForStore,
+                    scoresToUpdate: oldScores,
+                });
+
+            } finally {
+                // 6. 无论成功失败，都结束保存状态
+                this.setSaving(false);
+            }
         },
 
         async handleConfirm() {
             await this._saveChanges();
+            if (this.data.isSaving) return; // 如果仍在保存中，则不切换
             const currentIndex = this.data.activePlayerIndex;
             const totalPlayers = this.data.players.length;
 
             if (currentIndex < totalPlayers - 1) {
-                // 切换到下一位
                 this._updateScopingAreaPosition(currentIndex + 1);
             } else {
-                // 是最后一位，关闭面板
                 this.hide();
             }
         },

@@ -26,15 +26,14 @@
 						<HoleCell
 							playerIndex="{{ playerIndex }}"
 							holeIndex="{{ holeIndex }}"
-							par="{{ item.par }}"
-							court_key="{{ item.court_key }}"
-							unique_key="{{ item.unique_key }}"
+							par="{{ holeList[holeIndex].par }}"
+							unique_key="{{ holeList[holeIndex].unique_key }}"
 							score="{{ playerScores[playerIndex][holeIndex].score }}"
 							putt="{{ playerScores[playerIndex][holeIndex].putt }}"
 							diff="{{ playerScores[playerIndex][holeIndex].diff }}"
 							gambleflag="{{ playerScores[playerIndex][holeIndex].gambleflag }}"
 							userid="{{ players[playerIndex].userid }}"
-							holeid="{{ item.holeid }}"
+							holeid="{{ holeList[holeIndex].holeid }}"
 							bind:cellclick="onCellClick"
 						/>
 					</view>
