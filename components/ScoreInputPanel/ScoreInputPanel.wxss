@@ -1,0 +1,259 @@
+/* components/ScoreInputPanel/ScoreInputPanel.wxss */
+.panel-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.5);
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	z-index: 1000;
+}
+
+.panel-container {
+	width: 100%;
+	min-height: 75vh;
+	background-color: #f0f4f0;
+	border-top-left-radius: 20rpx;
+	border-top-right-radius: 20rpx;
+	padding: 30rpx;
+	box-sizing: border-box;
+}
+
+.hole-info-bar {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 30rpx;
+	color: #333;
+}
+
+.hole-details-wrapper {
+	display: flex;
+	justify-content: space-around;
+	width: 100%;
+	margin-top: 20rpx;
+}
+
+.hole-name-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100rpx;
+	height: 100rpx;
+	background-color: #a4d4a5;
+	border-radius: 50%;
+}
+
+.hole-name-main {
+	color: white;
+	font-size: 40rpx;
+	font-weight: bold;
+}
+
+.hole-detail {
+	font-size: 28rpx;
+	display: flex;
+	align-items: center;
+}
+
+.tee-indicator {
+	width: 16rpx;
+	height: 16rpx;
+	background-color: #007aff;
+	border-radius: 50%;
+	margin-left: 10rpx;
+}
+
+.main-content {
+	display: flex;
+	min-height: 400rpx;
+}
+
+.player-list-scroll {
+	width: 160rpx;
+	height: 100%;
+	position: relative;
+}
+
+.player-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+
+.player-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 12rpx;
+}
+
+.player-score {
+	margin-top: 10rpx;
+	font-size: 32rpx;
+	font-weight: bold;
+}
+
+.player-selector-highlight {
+	position: absolute;
+	left: -20rpx;
+	top: 0;
+	width: calc(100% + 20rpx);
+	height: 120rpx; /* 假设每个item高度固定 */
+	background-color: #e0f0e0;
+	border-radius: 16rpx;
+	border: 2rpx solid #a4d4a5;
+	z-index: -1;
+	transition: top 0.2s ease-in-out;
+}
+
+.scoring-area {
+	flex: 1;
+	background-color: #e0f0e0;
+	border-radius: 16rpx;
+	padding: 20rpx;
+	margin-left: 20rpx;
+}
+
+.score-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+
+.score-label {
+	font-size: 32rpx;
+	font-weight: bold;
+}
+
+.score-control {
+	display: flex;
+	align-items: center;
+	background-color: white;
+	border-radius: 50rpx;
+	padding: 5rpx;
+}
+
+.control-btn {
+	width: 50rpx;
+	height: 50rpx;
+	line-height: 50rpx;
+	text-align: center;
+	background-color: #4caf50;
+	color: white;
+	border-radius: 50%;
+	margin: 0 15rpx;
+	padding: 0;
+	font-size: 36rpx;
+}
+
+.score-value {
+	font-size: 36rpx;
+	font-weight: bold;
+	min-width: 60rpx;
+	text-align: center;
+}
+
+.tee-shot-options {
+	display: flex;
+	justify-content: space-around;
+	margin-top: 30rpx;
+}
+
+.shot-option {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	opacity: 0.5;
+}
+.shot-option.active {
+	opacity: 1;
+}
+
+.shot-icon-wrapper {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	background-color: #cccccc;
+	position: relative;
+}
+.shot-option.active .shot-icon-wrapper {
+	background-color: #4caf50;
+}
+.shot-label {
+	font-size: 24rpx;
+	margin-top: 10rpx;
+}
+
+.footer-buttons {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30rpx;
+}
+
+.btn-clear,
+.btn-confirm {
+	width: 48%;
+	border-radius: 50rpx;
+	font-size: 32rpx;
+}
+
+.btn-clear {
+	background-color: #f0f0f0;
+	color: #333;
+	border: 1rpx solid #ccc;
+}
+
+.btn-confirm {
+	background-color: #4caf50;
+	color: white;
+}
+
+/* 绘制小箭头图标, 微信小程序不支持::before/::after, 我们用view代替 */
+.shot-icon-wrapper.center::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 20rpx;
+	height: 20rpx;
+	background-color: white;
+	border-radius: 50%;
+}
+.shot-icon-wrapper.left::before,
+.shot-icon-wrapper.right::before,
+.shot-icon-wrapper.up::before,
+.shot-icon-wrapper.down::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border-style: solid;
+}
+.shot-icon-wrapper.left::before {
+	transform: translate(-25%, -50%);
+	border-width: 10rpx 14rpx 10rpx 0;
+	border-color: transparent white transparent transparent;
+}
+.shot-icon-wrapper.right::before {
+	transform: translate(-75%, -50%);
+	border-width: 10rpx 0 10rpx 14rpx;
+	border-color: transparent transparent transparent white;
+}
+.shot-icon-wrapper.up::before {
+	transform: translate(-50%, -25%);
+	border-width: 0 10rpx 14rpx 10rpx;
+	border-color: transparent transparent white transparent;
+}
+.shot-icon-wrapper.down::before {
+	transform: translate(-50%, -75%);
+	border-width: 14rpx 10rpx 0 10rpx;
+	border-color: white transparent transparent transparent;
+}
