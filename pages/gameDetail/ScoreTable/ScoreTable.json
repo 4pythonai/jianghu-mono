@@ -2,6 +2,6 @@
 	"component": true,
 	"usingComponents": {
 		"PlayerInfo": "/components/player-info/player-info",
-		"HoleCell": "/components/hole-cell/hole-cell"
+		"HoleCell": "/components/HoleCell/HoleCell"
 	}
 }
