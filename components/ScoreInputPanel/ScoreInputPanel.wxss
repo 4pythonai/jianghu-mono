@@ -15,7 +15,7 @@
 .panel-container {
 	width: 100%;
 	min-height: 75vh;
-	background-color: #f0f4f0;
+	background-color: white;
 	border-top-left-radius: 20rpx;
 	border-top-right-radius: 20rpx;
 	padding: 30rpx;
@@ -69,13 +69,20 @@
 
 .main-content {
 	display: flex;
-	min-height: 400rpx;
+	height: 500rpx;
+}
+
+.player-list-container {
+	width: 160rpx;
+	height: 100%;
+	display: flex;
+	padding-top: 40rpx;
+	flex-direction: column;
 }
 
 .player-list-scroll {
-	width: 160rpx;
+	width: 100%;
 	height: 100%;
-	position: relative;
 }
 
 .player-item {
@@ -87,7 +94,7 @@
 
 .player-item.active {
 	background-color: #e0f0e0;
-	border-radius: 12rpx;
+	border-radius: 12rpx 0 0 12rpx;
 }
 
 .player-avatar {
@@ -102,13 +109,20 @@
 	font-weight: bold;
 }
 
-.scoring-area {
+.scoring-area-container {
 	flex: 1;
+	height: 100%;
+}
+
+.scoring-area {
+	width: 100%;
+	height: 100%;
 	background-color: #e0f0e0;
 	border-radius: 16rpx;
 	padding: 20rpx;
-	margin-left: 20rpx;
-	/* transition: margin-top 0.2s ease-in-out; */ /* 不再需要 */
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
 }
 
 .score-row {

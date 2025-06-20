@@ -159,14 +159,14 @@ export const gameStore = observable({
     }),
 
     // 更新单个格子的分数
-    updateCellScore: action(function ({ playerIndex, holeIndex, score, putt, penalty, sand }) {
+    updateCellScore: action(function ({ playerIndex, holeIndex, score, putt, penalty_strokes, sand_save }) {
         // 使用可选链确保分数对象存在
         const scoreObj = this.scores?.[playerIndex]?.[holeIndex];
         if (scoreObj) {
             if (score !== undefined) scoreObj.score = score;
             if (putt !== undefined) scoreObj.putt = putt;
-            if (penalty !== undefined) scoreObj.penalty = penalty;
-            if (sand !== undefined) scoreObj.sand = sand;
+            if (penalty_strokes !== undefined) scoreObj.penalty_strokes = penalty_strokes;
+            if (sand_save !== undefined) scoreObj.sand_save = sand_save;
         }
     }),
 

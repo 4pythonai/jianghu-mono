@@ -3,12 +3,7 @@ import { gameStore } from '../../stores/gameStore';
 import gameApi from '../../api/modules/game';
 
 Component({
-    /**
-     * 组件的属性列表
-     */
-    properties: {
 
-    },
 
     /**
      * 组件的初始数据
@@ -70,17 +65,17 @@ Component({
                     userid: player.userid,
                     score: scoreData.score,
                     putt: scoreData.putt,
-                    penalty: scoreData.penalty || 0,
-                    sand: scoreData.sand || 0,
+                    penalty_strokes: scoreData.penalty_strokes || 0,
+                    sand_save: scoreData.sand_save || 0,
                 };
             });
 
-            localScores.forEach(score => {
+            for (const score of localScores) {
                 if (!score.score || score.score === 0) {
                     score.score = holeInfo.par || 0;
                     score.putt = 2;
                 }
-            });
+            }
 
             this.setData({
                 isVisible: true,
@@ -130,7 +125,7 @@ Component({
             // 成绩 = PAR + 罚杆 + 沙坑进洞数(如果适用) + ... 这里暂时简化为 PAR + 罚杆
             // 实际的 "成绩" 应该是用户直接输入的总杆数，其他是辅助统计。
             // 这里我们让 "成绩" 跟随其他项变化
-            const totalScore = (playerScore.putt || 0) + (playerScore.penalty || 0);
+            const totalScore = (playerScore.putt || 0) + (playerScore.penalty_strokes || 0);
             // 这个逻辑需要根据产品需求细化，暂时以推杆+罚杆为例
             // this.setData({
             //     [`localScores[${playerIndex}].score`]: totalScore
@@ -214,8 +209,8 @@ Component({
                             ...item,
                             score: 0,
                             putt: 0,
-                            penalty: 0,
-                            sand: 0,
+                            penalty_strokes: 0,
+                            sand_save: 0,
                         }));
                         this.setData({ localScores: clearedScores });
                         await this._saveChanges();

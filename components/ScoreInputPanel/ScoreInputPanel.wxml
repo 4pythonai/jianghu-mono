@@ -18,75 +18,79 @@
     <!-- 主体内容 -->
     <view class="main-content">
       <!-- 左侧玩家列表 -->
-      <scroll-view class="player-list-scroll" scroll-y>
-        <view 
-          class="player-item {{index === activePlayerIndex ? 'active' : ''}}" 
-          wx:for="{{players}}" 
-          wx:key="index" 
-          bindtap="switchPlayer" 
-          data-index="{{index}}">
-          <image class="player-avatar" src="{{item.avatar}}" />
-          <view class="player-score">{{item.score}}</view>
-        </view>
-      </scroll-view>
+      <view class="player-list-container">
+        <scroll-view class="player-list-scroll" scroll-y>
+          <view 
+            class="player-item {{index === activePlayerIndex ? 'active' : ''}}" 
+            wx:for="{{players}}" 
+            wx:key="index" 
+            bindtap="switchPlayer" 
+            data-index="{{index}}">
+            <image class="player-avatar" src="{{item.avatar}}" />
+            <view class="player-score">{{item.score}}</view>
+          </view>
+        </scroll-view>
+      </view>
 
       <!-- 右侧计分区域 -->
-      <view class="scoring-area">
-        <view class="score-row">
-          <text class="score-label">成绩</text>
-          <view class="score-control">
-            <view class="control-btn minus" data-type="score" data-amount="-1" bind:tap="changeScore">-</view>
-            <text class="score-value">{{localScores[activePlayerIndex].score}}</text>
-            <view class="control-btn plus" data-type="score" data-amount="1" bind:tap="changeScore">+</view>
+      <view class="scoring-area-container">
+        <view class="scoring-area">
+          <view class="score-row">
+            <text class="score-label">成绩</text>
+            <view class="score-control">
+              <view class="control-btn minus" data-type="score" data-amount="-1" bind:tap="changeScore">-</view>
+              <text class="score-value">{{localScores[activePlayerIndex].score}}</text>
+              <view class="control-btn plus" data-type="score" data-amount="1" bind:tap="changeScore">+</view>
+            </view>
           </view>
-        </view>
-        <view class="score-row">
-          <text class="score-label">推杆</text>
-          <view class="score-control">
-            <view class="control-btn minus" data-type="putt" data-amount="-1" bind:tap="changeScore">-</view>
-            <text class="score-value">{{localScores[activePlayerIndex].putt}}</text>
-            <view class="control-btn plus" data-type="putt" data-amount="1" bind:tap="changeScore">+</view>
+          <view class="score-row">
+            <text class="score-label">推杆</text>
+            <view class="score-control">
+              <view class="control-btn minus" data-type="putt" data-amount="-1" bind:tap="changeScore">-</view>
+              <text class="score-value">{{localScores[activePlayerIndex].putt}}</text>
+              <view class="control-btn plus" data-type="putt" data-amount="1" bind:tap="changeScore">+</view>
+            </view>
           </view>
-        </view>
-        <view class="score-row">
-          <text class="score-label">罚杆</text>
-          <view class="score-control">
-            <view class="control-btn minus" data-type="penalty" data-amount="-1" bind:tap="changeScore">-</view>
-            <text class="score-value">{{localScores[activePlayerIndex].penalty || 0}}</text>
-            <view class="control-btn plus" data-type="penalty" data-amount="1" bind:tap="changeScore">+</view>
+          <view class="score-row">
+            <text class="score-label">罚杆</text>
+            <view class="score-control">
+              <view class="control-btn minus" data-type="penalty_strokes" data-amount="-1" bind:tap="changeScore">-</view>
+              <text class="score-value">{{localScores[activePlayerIndex].penalty_strokes || 0}}</text>
+              <view class="control-btn plus" data-type="penalty_strokes" data-amount="1" bind:tap="changeScore">+</view>
+            </view>
           </view>
-        </view>
-        <view class="score-row">
-          <text class="score-label">沙坑</text>
-          <view class="score-control">
-            <view class="control-btn minus" data-type="sand" data-amount="-1" bind:tap="changeScore">-</view>
-            <text class="score-value">{{localScores[activePlayerIndex].sand || 0}}</text>
-            <view class="control-btn plus" data-type="sand" data-amount="1" bind:tap="changeScore">+</view>
+          <view class="score-row">
+            <text class="score-label">沙坑</text>
+            <view class="score-control">
+              <view class="control-btn minus" data-type="sand_save" data-amount="-1" bind:tap="changeScore">-</view>
+              <text class="score-value">{{localScores[activePlayerIndex].sand_save || 0}}</text>
+              <view class="control-btn plus" data-type="sand_save" data-amount="1" bind:tap="changeScore">+</view>
+            </view>
           </view>
-        </view>
 
-        <!-- 开球方向 -->
-        <view class="tee-shot-options">
-            <view class="shot-option active">
-                <view class="shot-icon-wrapper center"></view>
-                <text class="shot-label">上球道</text>
-            </view>
-            <view class="shot-option">
-                <view class="shot-icon-wrapper left"></view>
-                <text class="shot-label">拉左</text>
-            </view>
-            <view class="shot-option">
-                <view class="shot-icon-wrapper right"></view>
-                <text class="shot-label">拉右</text>
-            </view>
-            <view class="shot-option">
-                <view class="shot-icon-wrapper up"></view>
-                <text class="shot-label">打穿</text>
-            </view>
-            <view class="shot-option">
-                <view class="shot-icon-wrapper down"></view>
-                <text class="shot-label">打短</text>
-            </view>
+          <!-- 开球方向 -->
+          <view class="tee-shot-options">
+              <view class="shot-option active">
+                  <view class="shot-icon-wrapper center"></view>
+                  <text class="shot-label">上球道</text>
+              </view>
+              <view class="shot-option">
+                  <view class="shot-icon-wrapper left"></view>
+                  <text class="shot-label">拉左</text>
+              </view>
+              <view class="shot-option">
+                  <view class="shot-icon-wrapper right"></view>
+                  <text class="shot-label">拉右</text>
+              </view>
+              <view class="shot-option">
+                  <view class="shot-icon-wrapper up"></view>
+                  <text class="shot-label">打穿</text>
+              </view>
+              <view class="shot-option">
+                  <view class="shot-icon-wrapper down"></view>
+                  <text class="shot-label">打短</text>
+              </view>
+          </view>
         </view>
       </view>
     </view>
