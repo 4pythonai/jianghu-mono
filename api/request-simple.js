@@ -115,10 +115,10 @@ class HttpClient {
         // 减少loading计数
         this.loadingCount = Math.max(0, this.loadingCount - 1)
 
-        console.log('✅ 隐藏Loading:', {
-            count: this.loadingCount,
-            timestamp: new Date().toISOString()
-        })
+        // console.log('✅ 隐藏Loading:', {
+        //     count: this.loadingCount,
+        //     timestamp: new Date().toISOString()
+        // })
 
         // 如果没有pending的请求了，隐藏loading
         if (this.loadingCount === 0) {
@@ -126,7 +126,7 @@ class HttpClient {
             if (this.loadingTimer) {
                 clearTimeout(this.loadingTimer)
                 this.loadingTimer = null
-                console.log('⏹️ 取消Loading显示（请求太快）')
+                // console.log('⏹️ 取消Loading显示（请求太快）')
                 // 注意：这里不return，因为loading可能已经显示了
             }
 
@@ -137,7 +137,7 @@ class HttpClient {
                 const remainingTime = Math.max(0, this.loadingConfig.minDuration - showDuration)
 
                 if (remainingTime > 0) {
-                    console.log(`⏱️ Loading最小显示时间未到，延迟${remainingTime}ms隐藏`)
+                    // console.log(`⏱️ Loading最小显示时间未到，延迟${remainingTime}ms隐藏`)
 
                     // 清除之前的隐藏定时器（如果存在）
                     if (this.loadingHideTimer) {
@@ -149,10 +149,10 @@ class HttpClient {
                         // 简化条件检查：只要loadingCount为0就隐藏
                         if (this.loadingCount === 0) {
                             wx.hideLoading()
-                            console.log('📱 系统Loading已隐藏（延迟）')
+                            // console.log('📱 系统Loading已隐藏（延迟）')
                             this.loadingStartTime = null
                         } else {
-                            console.log('⚠️ 延迟隐藏时发现有新请求，保持loading显示')
+                            // console.log('⚠️ 延迟隐藏时发现有新请求，保持loading显示')
                         }
                         // 清理定时器引用
                         this.loadingHideTimer = null
@@ -163,12 +163,12 @@ class HttpClient {
                 } else {
                     // 立即隐藏loading
                     wx.hideLoading()
-                    console.log('📱 系统Loading已隐藏')
+                    // console.log('📱 系统Loading已隐藏')
                     this.loadingStartTime = null
                 }
             } else {
                 // loading从未显示过，无需隐藏
-                console.log('📱 Loading从未显示，无需隐藏')
+                // console.log('📱 Loading从未显示，无需隐藏')
             }
         }
     }
@@ -184,7 +184,7 @@ class HttpClient {
             ...this.loadingConfig,
             ...config
         }
-        console.log('⚙️ Loading配置已更新:', this.loadingConfig)
+        // console.log('⚙️ Loading配置已更新:', this.loadingConfig)
     }
 
     /**
@@ -241,9 +241,9 @@ class HttpClient {
         } finally {
             // 隐藏loading
             if (loadingOptions.showLoading) {
-                console.log('🔍 request finally块 - 准备隐藏loading, 当前状态:', this.getLoadingStatus())
+                // console.log('🔍 request finally块 - 准备隐藏loading, 当前状态:', this.getLoadingStatus())
                 this.hideLoading()
-                console.log('🔍 request finally块 - 隐藏loading后状态:', this.getLoadingStatus())
+                // console.log('🔍 request finally块 - 隐藏loading后状态:', this.getLoadingStatus())
             }
         }
     }
@@ -460,26 +460,26 @@ class HttpClient {
      * 记录请求日志
      */
     logRequest(config, loadingOptions = {}) {
-        console.log('🚀 发起请求:', {
-            url: config.url,
-            method: config.method,
-            hasToken: !!config.header.Authorization,
-            showLoading: loadingOptions.showLoading,
-            loadingTitle: loadingOptions.loadingTitle,
-            timestamp: new Date().toISOString()
-        })
+        // console.log('🚀 发起请求:', {
+        //     url: config.url,
+        //     method: config.method,
+        //     hasToken: !!config.header.Authorization,
+        //     showLoading: loadingOptions.showLoading,
+        //     loadingTitle: loadingOptions.loadingTitle,
+        //     timestamp: new Date().toISOString()
+        // })
     }
 
     /**
      * 记录响应日志
      */
     logResponse(response, config) {
-        console.log('✅ 请求成功:', {
-            url: config.url,
-            statusCode: response.statusCode,
-            dataCode: response.data?.code,
-            timestamp: new Date().toISOString()
-        })
+        // console.log('✅ 请求成功:', {
+        //     url: config.url,
+        //     statusCode: response.statusCode,
+        //     dataCode: response.data?.code,
+        //     timestamp: new Date().toISOString()
+        // })
     }
 
     /**

@@ -25,10 +25,10 @@ class StorageManager {
         try {
             const data = encrypt ? this.encrypt(value) : value
             wx.setStorageSync(key, data)
-            console.log(`💾 存储成功: ${key}`)
+            // console.log(`💾 存储成功: ${key}`)
             return true
         } catch (error) {
-            console.error(`❌ 存储失败: ${key}`, error)
+            // console.error(`❌ 存储失败: ${key}`, error)
             return false
         }
     }

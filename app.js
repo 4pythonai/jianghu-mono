@@ -262,7 +262,6 @@ App({
         // 方法1：通过HttpClient
         if (this.http) {
             console.log('1️⃣ 通过HttpClient清理')
-            this.http.forceHideLoading()
         }
 
         // 方法2：直接调用微信API

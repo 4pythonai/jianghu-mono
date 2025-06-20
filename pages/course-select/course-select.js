@@ -95,7 +95,6 @@ Page({
             const status = app.http.getLoadingStatus()
             if (status.isLoading) {
                 console.log('⚠️ 页面隐藏时发现loading还在显示，强制清理')
-                app.http.forceHideLoading()
             }
         }
     },
@@ -109,7 +108,6 @@ Page({
             const status = app.http.getLoadingStatus()
             if (status.isLoading) {
                 console.log('⚠️ 页面卸载时发现loading还在显示，强制清理')
-                app.http.forceHideLoading()
             }
         }
     },

@@ -313,9 +313,9 @@ class AuthManager {
             }
 
             if (tokenResult && userResult) {
-                console.log('✅ 认证数据存储成功')
+                // console.log('✅ 认证数据存储成功')
             } else {
-                console.warn('⚠️ 认证数据存储部分失败')
+                // console.warn('⚠️ 认证数据存储部分失败')
             }
 
         } catch (error) {

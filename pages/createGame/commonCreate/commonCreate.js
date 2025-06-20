@@ -385,12 +385,10 @@ Page({
         if (this.data.gameCreated) {
             const apiData = {
                 uuid: this.data.uuid,
-                courseid: course.id || course.courseid,
+                courseid: course.courseid,
                 frontNineCourtId: '', // 空值表示未选择
                 backNineCourtId: ''   // 空值表示未选择
             };
-
-            console.log('🏌️ updateGameCourseCourt API 数据（仅球场）:', apiData);
 
             this.callUpdateAPI('updateGameCourseCourt', apiData, '球场选择')
         }
@@ -443,7 +441,7 @@ Page({
 
             const apiData = {
                 uuid: this.data.uuid,
-                courseid: selectionData.course.id || selectionData.course.courseid,
+                courseid: selectionData.course.courseid,
                 frontNineCourtId: frontNineCourtId,
                 backNineCourtId: backNineCourtId,
                 gameType: selectionData.gameType,
