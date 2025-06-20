@@ -38,17 +38,14 @@ Component({
 
             // 2. 处理球洞数据
             const holeList = gameData.holeList.map(hole => ({
+                court_key: hole.court_key,
+                unique_key: hole.unique_key,
                 holeid: hole.holeid,
                 holename: hole.holename,
                 par: hole.par
             }));
 
-            // 输出球洞列表信息
-            console.log('球洞列表:', holeList.map(hole => ({
-                holeid: hole.holeid,
-                holename: hole.holename,
-                par: hole.par
-            })));
+
 
             // 3. 预处理分数数据
             const scoreMap = {};
@@ -92,8 +89,6 @@ Component({
                 return total;
             });
 
-            console.log("++++++playerScores ++++++++", playerScores);
-            console.log("++++++players ++++++++", players);
 
             this.setData({
                 players,

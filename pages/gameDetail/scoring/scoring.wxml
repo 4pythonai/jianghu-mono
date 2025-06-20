@@ -14,7 +14,7 @@
 		<view class="scroll-content" style="width: {{ holeList.length * 80 }}px">
 			<!-- 表头 -->
 			<view class="tb-header tb-header-holes">
-				<view wx:for="{{ holeList }}" wx:key="holeid" class="tb-header-hole">
+				<view wx:for="{{ holeList }}" wx:key="unique_key" class="tb-header-hole">
 					<view class="hole-name">{{item.holename}}</view>
 					<view class="hole-par">{{item.par}}</view>
 				</view>
@@ -22,9 +22,11 @@
 			<!-- 内容行 -->
 			<scroll-view scroll-y class="table-body" id="holesTable" scroll-top="{{ scrollTop }}" bindscroll="onHolesScroll">
 				<view class="table-row" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIndex">
-					<view wx:for="{{ holeList }}" wx:key="holeid" wx:for-index="holeIndex" class="cell-score">
+				<view wx:for="{{holeList}}" wx:key="unique_key" wx:for-index="holeIndex" class="cell-score">
 						<HoleCell
 							par="{{ item.par }}"
+							court_key="{{ item.court_key }}"
+							unique_key="{{ item.unique_key }}"
 							score="{{ playerScores[playerIndex][holeIndex].score }}"
 							putt="{{ playerScores[playerIndex][holeIndex].putt }}"
 							diff="{{ playerScores[playerIndex][holeIndex].diff }}"
