@@ -35,6 +35,7 @@
 							gambleflag="{{ playerScores[playerIndex][holeIndex].gambleflag }}"
 							userid="{{ players[playerIndex].userid }}"
 							holeid="{{ item.holeid }}"
+							bind:cellclick="onCellClick"
 						/>
 					</view>
 				</view>

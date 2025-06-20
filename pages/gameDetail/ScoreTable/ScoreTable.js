@@ -85,6 +85,11 @@ Component({
                     res[0].node.scrollTop = scrollTop;
                 }
             });
+        },
+
+        // 作为一个中继，把事件继续往父组件传递
+        onCellClick: function (e) {
+            this.triggerEvent('cellclick', e.detail);
         }
     }
 })

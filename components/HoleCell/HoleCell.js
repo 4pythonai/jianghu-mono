@@ -154,33 +154,10 @@ Component({
         },
 
         recordScore: function (e) {
-            const cellInfo = {
-                cellid: this.properties.holeid,
-                court_key: this.properties.court_key,
-                unique_key: this.properties.unique_key,
-                playerIndex: this.properties.playerIndex,
+            this.triggerEvent('cellclick', {
                 holeIndex: this.properties.holeIndex,
-            };
-            console.log("点击的cell信息:", cellInfo);
-            console.log("比赛详情:", this.data.gameData);
-            console.log("所有用户:", this.data.players);
-
-            // console.log(`点击的cell信息: Player ${this.properties.playerIndex}, Hole ${this.properties.holeIndex}`);
-            // console.log(`Cell Clicked: Player ${this.data.playerIndex}, Hole ${this.data.holeIndex}`);
-
-            // const newScore = (this.properties.score || 0) + 1;
-
-            // this.updateCellScore({
-            //     playerIndex: this.properties.playerIndex,
-            //     holeIndex: this.properties.holeIndex,
-            //     score: newScore,
-            // });
-
-            // wx.showModal({
-            //     title: '分数已更新',
-            //     content: `您已将玩家 ${this.properties.userid} 在洞 ${this.properties.holeid} 的分数更新为 ${newScore}`,
-            //     showCancel: false,
-            // });
+                playerIndex: this.properties.playerIndex
+            });
         }
     }
 })

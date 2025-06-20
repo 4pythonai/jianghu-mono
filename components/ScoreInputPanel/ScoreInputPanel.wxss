@@ -85,6 +85,11 @@
 	margin-bottom: 20rpx;
 }
 
+.player-item.active {
+	background-color: #e0f0e0;
+	border-radius: 12rpx;
+}
+
 .player-avatar {
 	width: 80rpx;
 	height: 80rpx;
@@ -97,25 +102,13 @@
 	font-weight: bold;
 }
 
-.player-selector-highlight {
-	position: absolute;
-	left: -20rpx;
-	top: 0;
-	width: calc(100% + 20rpx);
-	height: 120rpx; /* 假设每个item高度固定 */
-	background-color: #e0f0e0;
-	border-radius: 16rpx;
-	border: 2rpx solid #a4d4a5;
-	z-index: -1;
-	transition: top 0.2s ease-in-out;
-}
-
 .scoring-area {
 	flex: 1;
 	background-color: #e0f0e0;
 	border-radius: 16rpx;
 	padding: 20rpx;
 	margin-left: 20rpx;
+	/* transition: margin-top 0.2s ease-in-out; */ /* 不再需要 */
 }
 
 .score-row {

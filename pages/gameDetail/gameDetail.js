@@ -64,5 +64,15 @@ Page({
             console.log('📝 页面显示，检测到错误状态，自动重试加载');
             this.fetchGameDetail(gameStore.gameid);
         }
+    },
+
+    onCellClick(e) {
+        const { holeIndex, playerIndex } = e.detail;
+        const scoreInputPanel = this.selectComponent('#scoreInputPanel');
+        if (scoreInputPanel) {
+            scoreInputPanel.show({ holeIndex, playerIndex });
+        } else {
+            console.error("无法找到 #scoreInputPanel 组件");
+        }
     }
 });
