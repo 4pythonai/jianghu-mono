@@ -1,5 +1,5 @@
 /* 基础容器样式 */
-.hole-score {
+.hole-cell {
 	width: 80px;
 	height: 80px; /* 添加固定高度以便绝对定位 */
 	flex-shrink: 0;

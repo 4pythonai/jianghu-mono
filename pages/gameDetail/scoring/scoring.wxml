@@ -23,7 +23,7 @@
 			<scroll-view scroll-y class="table-body" id="holesTable" scroll-top="{{ scrollTop }}" bindscroll="onHolesScroll">
 				<view class="table-row" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIndex">
 					<view wx:for="{{ holeList }}" wx:key="holeid" wx:for-index="holeIndex" class="cell-score">
-						<HoleScore
+						<HoleCell
 							par="{{ item.par }}"
 							score="{{ playerScores[playerIndex][holeIndex].score }}"
 							putt="{{ playerScores[playerIndex][holeIndex].putt }}"
