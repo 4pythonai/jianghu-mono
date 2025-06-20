@@ -1,4 +1,4 @@
-<view class="hole-cell flag-{{ formattedGambleflag }}">
+<view class="hole-cell flag-{{ formattedGambleflag }}" bindtap="recordScore">
 	<text class="score-text {{ scoreClass }}">{{formattedScore}}</text>
 	<text class="putt-text" wx:if="{{ formattedPutt !== '' }}">{{formattedPutt}}</text>
 	<text class="diff-text" wx:if="{{ formattedDiff !== '' }}">{{formattedDiff}}</text>

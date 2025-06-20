@@ -1,4 +1,3 @@
-
 Component({
     properties: {
         userid: {
@@ -10,6 +9,14 @@ Component({
             value: 0
         },
         holeid: {
+            type: String,
+            value: ''
+        },
+        court_key: {
+            type: String,
+            value: ''
+        },
+        unique_key: {
             type: String,
             value: ''
         },
@@ -141,6 +148,53 @@ Component({
             });
 
 
+        },
+        recordScore: function (e) {
+            const {
+                userid,
+                holeid,
+                par,
+                court_key,
+                unique_key,
+                score,
+                putt,
+                diff,
+                gambleflag
+            } = this.properties;
+
+            // 构造要传递的数据
+            const scoreData = {
+                userid: userid || '',
+                holeid: holeid || '',
+                par: par || 0,
+                score: score || 0,
+                putt: putt || 0,
+                diff: diff || 0,
+                court_key: court_key || '',
+                unique_key: unique_key || '',
+                gambleflag: gambleflag || '',
+                // 添加格式化后的数据
+                formattedScore: this.data.formattedScore,
+                formattedPutt: this.data.formattedPutt,
+                formattedDiff: this.data.formattedDiff,
+                scoreClass: this.data.scoreClass
+            };
+
+            // 在控制台显示数据（开发调试用）
+            console.log('HoleCell 点击数据:', scoreData);
+
+            // 通过模态框显示数据
+            const infoText = `用户ID: ${scoreData.userid}\n洞ID: ${scoreData.holeid}\n球场Key: ${scoreData.court_key}\n唯一Key: ${scoreData.unique_key}\n标准杆: ${scoreData.par}\n得分: ${scoreData.score}\n推杆数: ${scoreData.putt}\n杆数差: ${scoreData.diff}\n标记: ${scoreData.gambleflag}`;
+
+            wx.showModal({
+                title: '洞数据详情',
+                content: infoText,
+                showCancel: false,
+                confirmText: '确定'
+            });
+
+            // 向父组件触发事件，传递数据
+            this.triggerEvent('recordscore', scoreData);
         }
     }
 })
