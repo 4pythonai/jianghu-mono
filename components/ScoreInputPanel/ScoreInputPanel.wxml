@@ -1,6 +1,6 @@
 <!--components/ScoreInputPanel/ScoreInputPanel.wxml-->
 <view class="panel-overlay" wx:if="{{isVisible}}" bind:tap="handleMaskClick">
-  <view class="panel-container" catch:tap>
+  <view class="panel-container" catch:tap="preventBubble">
     <!-- 上方洞信息 -->
     <view class="hole-info-bar">
       <view class="hole-name-container">

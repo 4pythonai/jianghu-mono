@@ -229,5 +229,10 @@ Component({
             await this._saveChanges();
             this.hide();
         },
+
+        // 阻止事件冒泡的空方法
+        preventBubble() {
+            // 空方法，用于阻止事件冒泡
+        },
     }
 }) 
