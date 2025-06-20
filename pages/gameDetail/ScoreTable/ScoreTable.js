@@ -1,135 +1,45 @@
+import { createStoreBindings } from 'mobx-miniprogram-bindings'
+import { gameStore } from '../../../stores/gameStore'
+
 Component({
     properties: {
-        gameId: {
-            type: String,
-            value: ''
-        },
-        gameData: {
-            type: Object,
-            value: null,
-            observer: function (newVal) {
-                if (newVal) {
-                    this.processGameData(newVal);
-                }
-            }
-        }
+        // gameId 和 gameData 将通过 store 获取，不再需要作为属性传递
     },
 
     data: {
-        playerScores: [], // 分数数据矩阵
+        // playerScores, players, holeList, playerTotals 将从 store 映射过来
         scrollSync: true, // 是否同步滚动
         scrollTop: 0,     // 当前滚动位置
-        playerTotals: []  // 球员总分
+    },
+
+    lifetimes: {
+        attached() {
+            // ** 核心：创建 Store 和 Component 的绑定 **
+            this.storeBindings = createStoreBindings(this, {
+                store: gameStore, // 需要绑定的 store
+                fields: {
+                    // players, holes, scores 是 store 中的字段名
+                    // this.data.players, this.data.holeList, this.data.playerScores 是组件中的字段名
+                    players: 'players',
+                    holeList: 'holes',
+                    playerScores: 'scores',
+                    // 如果需要总分，可以在 store 中用 computed 计算，这里暂时保留
+                    // playerTotals: () => { ... 计算逻辑 ... }
+                },
+                actions: [], // 此组件不需要调用 action，只负责展示
+            });
+
+            // 数据加载后滚动到最左侧
+            // 可以在 store 中增加一个加载完成的标记来触发
+            this.scrollToLeft();
+        },
+        detached() {
+            // ** 关键：在组件销毁时清理绑定 **
+            this.storeBindings.destroyStoreBindings();
+        }
     },
 
     methods: {
-        // 处理比赛数据
-        processGameData(gameData) {
-            console.log('原始游戏数据:', gameData);
-
-            // 1. 处理球员数据
-            const players = gameData.players.map((player, index) => ({
-                userid: player.userid,
-                avatar: player.avatar,
-                tee: player.tee,
-                nickname: player.nickname,
-                index
-            }));
-
-            // 2. 处理球洞数据
-            const holeList = gameData.holeList.map(hole => ({
-                court_key: hole.court_key,
-                unique_key: hole.unique_key,
-                holeid: hole.holeid,
-                holename: hole.holename,
-                par: hole.par
-            }));
-
-
-
-            // 3. 预处理分数数据
-            const scoreMap = {};
-            for (const score of gameData.scores) {
-                const key = `${score.userid}_${score.holeid}`;
-                scoreMap[key] = {
-                    score: score.score,
-                    putt: score.putt,
-                    diff: score.diff,
-                    gambleflag: score.gambleflag
-                };
-            }
-
-            // 4. 创建球员分数矩阵
-            const playerScores = players.map(player =>
-                holeList.map(hole => ({
-                    ...(scoreMap[`${player.userid}_${hole.holeid}`] || { score: '', putt: '', diff: '', gambleflag: '' }),
-                    holeid: hole.holeid
-                }))
-            );
-
-            // 5. 计算每个球员的总分
-            const playerTotals = players.map((player, index) => {
-                console.log(`计算球员 ${player.userid} 的总分`);
-                const scores = playerScores[index];
-                if (!scores) {
-                    console.warn(`未找到球员 ${player.userid} 的分数数据`);
-                    return 0;
-                }
-
-                const total = scores.reduce((sum, hole) => {
-                    const score = parseInt(hole.score) || 0;
-                    // 只有当有实际分数时才输出详细日志
-                    if (hole.score) {
-                        console.log(`球洞 ${hole.holeid} 分数: ${score}, putt: ${hole.putt}, diff: ${hole.diff}`);
-                    }
-                    return sum + score;
-                }, 0);
-
-                console.log(`球员 ${player.userid} 总分:`, total);
-                return total;
-            });
-
-
-            this.setData({
-                players,
-                holeList,
-                playerScores,
-                playerTotals
-            }, () => {
-                this.scrollToLeft();
-            });
-        },
-
-        // 计算球员总分
-        calculateTotalScore(userId) {
-            console.log('计算总分，球员ID:', userId);
-            const playerIndex = this.data.players.findIndex(p => p.userid === userId);
-            if (playerIndex === -1) {
-                console.warn('未找到对应球员，ID:', userId);
-                return 0;
-            }
-
-            if (!this.data.playerScores || !this.data.playerScores[playerIndex]) {
-                console.error('缺少分数数据，球员索引:', playerIndex);
-                return 0;
-            }
-
-            const scores = this.data.playerScores[playerIndex];
-            console.log('球员分数数据:', scores);
-
-            const total = scores.reduce((sum, holeScore) => {
-                const score = parseInt(holeScore.score) || 0;
-                // 只有当有实际分数时才输出详细日志
-                if (holeScore.score) {
-                    console.log(`球洞 ${holeScore.holeid} - 分数: ${score}, putt: ${holeScore.putt}, diff: ${holeScore.diff}`);
-                }
-                return sum + score;
-            }, 0);
-
-            console.log(`球员 ${userId} 总分计算完成:`, total);
-            return total;
-        },
-
         // 滚动到最左侧
         scrollToLeft() {
             const query = wx.createSelectorQuery().in(this);

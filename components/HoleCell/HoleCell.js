@@ -1,5 +1,10 @@
+import { createStoreBindings } from 'mobx-miniprogram-bindings'
+import { gameStore } from '../../stores/gameStore'
+
 Component({
     properties: {
+        playerIndex: Number,
+        holeIndex: Number,
         userid: {
             type: String,
             value: ''
@@ -48,7 +53,12 @@ Component({
 
     lifetimes: {
         attached() {
-            // 初始化数据
+            this.storeBindings = createStoreBindings(this, {
+                store: gameStore,
+                fields: ['gameData', 'players'],
+                actions: ['updateCellScore'],
+            });
+
             const { putt = 0, diff = 0, score = 0, gambleflag = '' } = this.properties;
             this.setData({
                 formattedPutt: putt !== 0 ? putt.toString() : '0',
@@ -57,11 +67,8 @@ Component({
                 formattedGambleflag: gambleflag !== '' ? gambleflag : ''
             });
 
-            // 单独调用更新样式类的方法
             this.updateScoreClass(diff);
 
-
-            // 预绑定observer方法
             this.observers = {
                 'putt': function (putt) {
                     if (putt !== undefined && putt !== null) {
@@ -87,7 +94,6 @@ Component({
                             formattedScore: score.toString()
                         });
 
-                        // 计算diff如果没有提供
                         if (this.properties.diff === 0 && score > 0 && par > 0) {
                             const calculatedDiff = score - par;
                             const prefix = calculatedDiff > 0 ? '+' : '';
@@ -108,15 +114,15 @@ Component({
                     }
                 }.bind(this)
             };
+        },
+        detached() {
+            this.storeBindings.destroyStoreBindings();
         }
     },
 
     methods: {
         updateScoreClass: function (diff) {
             let scoreClass = '';
-
-
-
 
             if (diff <= -2) {
                 scoreClass = 'under-par-2';
@@ -129,7 +135,6 @@ Component({
             if (diff === 0) {
                 scoreClass = 'score-par';
             }
-
 
             if (diff === 1) {
                 scoreClass = 'over-par-1';
@@ -146,55 +151,36 @@ Component({
             this.setData({
                 scoreClass: scoreClass
             });
-
-
         },
+
         recordScore: function (e) {
-            const {
-                userid,
-                holeid,
-                par,
-                court_key,
-                unique_key,
-                score,
-                putt,
-                diff,
-                gambleflag
-            } = this.properties;
-
-            // 构造要传递的数据
-            const scoreData = {
-                userid: userid || '',
-                holeid: holeid || '',
-                par: par || 0,
-                score: score || 0,
-                putt: putt || 0,
-                diff: diff || 0,
-                court_key: court_key || '',
-                unique_key: unique_key || '',
-                gambleflag: gambleflag || '',
-                // 添加格式化后的数据
-                formattedScore: this.data.formattedScore,
-                formattedPutt: this.data.formattedPutt,
-                formattedDiff: this.data.formattedDiff,
-                scoreClass: this.data.scoreClass
+            const cellInfo = {
+                cellid: this.properties.holeid,
+                court_key: this.properties.court_key,
+                unique_key: this.properties.unique_key,
+                playerIndex: this.properties.playerIndex,
+                holeIndex: this.properties.holeIndex,
             };
+            console.log("点击的cell信息:", cellInfo);
+            console.log("比赛详情:", this.data.gameData);
+            console.log("所有用户:", this.data.players);
 
-            // 在控制台显示数据（开发调试用）
-            console.log('HoleCell 点击数据:', scoreData);
+            // console.log(`点击的cell信息: Player ${this.properties.playerIndex}, Hole ${this.properties.holeIndex}`);
+            // console.log(`Cell Clicked: Player ${this.data.playerIndex}, Hole ${this.data.holeIndex}`);
 
-            // 通过模态框显示数据
-            const infoText = `用户ID: ${scoreData.userid}\n洞ID: ${scoreData.holeid}\n球场Key: ${scoreData.court_key}\n唯一Key: ${scoreData.unique_key}\n标准杆: ${scoreData.par}\n得分: ${scoreData.score}\n推杆数: ${scoreData.putt}\n杆数差: ${scoreData.diff}\n标记: ${scoreData.gambleflag}`;
+            // const newScore = (this.properties.score || 0) + 1;
 
-            wx.showModal({
-                title: '洞数据详情',
-                content: infoText,
-                showCancel: false,
-                confirmText: '确定'
-            });
+            // this.updateCellScore({
+            //     playerIndex: this.properties.playerIndex,
+            //     holeIndex: this.properties.holeIndex,
+            //     score: newScore,
+            // });
 
-            // 向父组件触发事件，传递数据
-            this.triggerEvent('recordscore', scoreData);
+            // wx.showModal({
+            //     title: '分数已更新',
+            //     content: `您已将玩家 ${this.properties.userid} 在洞 ${this.properties.holeid} 的分数更新为 ${newScore}`,
+            //     showCancel: false,
+            // });
         }
     }
 })

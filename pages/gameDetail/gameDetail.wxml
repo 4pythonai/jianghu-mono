@@ -10,11 +10,11 @@
   </view>
 </view>
 <view class="tab-content" wx:if="{{currentTab === 0}}">
-  <ScoreTable gameId="{{gameId}}" gameData="{{gameData}}" />
+  <ScoreTable />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 1}}">
-  <bbs gameId="{{gameId}}" />
+  <bbs gameId="{{gameData.gameid}}" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 2}}">
-  <gamble gameId="{{gameId}}" players="{{players}}" />
+  <gamble gameId="{{gameData.gameid}}" players="{{gameData.players}}" />
 </view>
