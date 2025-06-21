@@ -71,22 +71,6 @@
 						<TimePicker value="{{ formData.openTime }}" placeholder="请选择开球时间" bind:change="onOpenTimeChange" />
 					</view>
 				</view>
-				<!-- 赛制选择 -->
-				<view class="form-item">
-					<view class="form-label">赛制</view>
-					<view class="radio-group">
-						<radio-group bindchange="onScoringTypeChange">
-							<label class="radio-item">
-								<radio value="hole" checked="{{ formData.ScoringType === 'hole' }}" color="#4CAF50" />
-								<text class="radio-text">个人比杆</text>
-							</label>
-							<label class="radio-item">
-								<radio value="oneball" checked="{{ formData.ScoringType === 'oneball' }}" color="#4CAF50" />
-								<text class="radio-text">旺波</text>
-							</label>
-						</radio-group>
-					</view>
-				</view>
 				<!-- 参赛组别 -->
 				<view class="form-item">
 					<view class="form-label">
@@ -108,6 +92,24 @@
 						</view>
 					</view>
 				</view>
+
+					<!-- 赛制选择 -->
+				<view class="form-item">
+					<view class="form-label">赛制</view>
+					<view class="radio-group">
+						<radio-group bindchange="onScoringTypeChange">
+							<label class="radio-item">
+								<radio value="hole" checked="{{ formData.ScoringType === 'hole' }}" color="#4CAF50" />
+								<text class="radio-text">个人比杆</text>
+							</label>
+							<label class="radio-item">
+								<radio value="oneball" checked="{{ formData.ScoringType === 'oneball' }}" color="#4CAF50" />
+								<text class="radio-text">旺波</text>
+							</label>
+						</radio-group>
+					</view>
+				</view>
+
 				<!-- 隐私设置 -->
 				<view class="form-item">
 					<view class="form-label">隐私设置</view>
