@@ -8,21 +8,30 @@ Page({
         'ScoreTable': './ScoreTable/ScoreTable'
     },
     data: {
-        currentTab: 0, // 当前激活的tab索引
+        // currentTab 现在从 store 中获取，不需要在 data 中定义
     },
 
     onLoad(options) {
         // ** 核心：创建 Store 和 Page 的绑定 **
         this.storeBindings = createStoreBindings(this, {
             store: gameStore, // 需要绑定的 store
-            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes'], // 将 store 中的字段映射到 page 的 data
-            actions: ['fetchGameDetail'], // 将 store 中的方法映射到 page 的 methods
+            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes', 'currentTab'], // 添加 currentTab
+            actions: ['fetchGameDetail', 'setCurrentTab'], // 添加 setCurrentTab
         });
 
         const gameId = options?.gameId;
+        const groupId = options?.groupId; // 新增：获取 groupId 参数
+
         if (gameId) {
             // 直接调用从 store 映射来的 action 来获取数据
-            this.fetchGameDetail(gameId);
+            // 如果有 groupId，一并传递
+            if (groupId) {
+                console.log('🎯 加载指定分组的比赛详情', { gameId, groupId });
+                this.fetchGameDetail(gameId, groupId);
+            } else {
+                console.log('🎯 加载比赛详情', { gameId });
+                this.fetchGameDetail(gameId);
+            }
         } else {
             console.warn('⚠️ 无效的比赛ID');
             wx.showToast({
@@ -52,9 +61,8 @@ Page({
         const newTab = Number.parseInt(e.currentTarget.dataset.tab, 10);
         console.log('📑 切换到Tab:', newTab);
 
-        this.setData({
-            currentTab: newTab
-        });
+        // 使用 store 的 action 来管理状态
+        this.setCurrentTab(newTab);
     },
 
     // 页面显示时检查数据

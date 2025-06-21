@@ -23,8 +23,8 @@ Component({
                     players: 'players',
                     holeList: 'holes',
                     playerScores: 'scores',
-                    // 如果需要总分，可以在 store 中用 computed 计算，这里暂时保留
-                    // playerTotals: () => { ... 计算逻辑 ... }
+                    // 使用 store 中的计算属性获取总分
+                    playerTotals: 'playerTotalScores',
                 },
                 actions: [], // 此组件不需要调用 action，只负责展示
             });

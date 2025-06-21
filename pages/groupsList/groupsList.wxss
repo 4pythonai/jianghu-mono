@@ -1,0 +1,166 @@
+/* pages/groupsList/groupsList.wxss */
+.container {
+	min-height: 100vh;
+	background-color: #f5f5f5;
+	padding: 20rpx;
+}
+
+/* 页面标题 */
+.header {
+	text-align: center;
+	margin-bottom: 40rpx;
+	padding: 20rpx 0;
+}
+
+.title {
+	font-size: 36rpx;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 10rpx;
+}
+
+.subtitle {
+	font-size: 28rpx;
+	color: #666;
+	margin-bottom: 8rpx;
+}
+
+.course-info {
+	font-size: 24rpx;
+	color: #999;
+}
+
+/* 加载状态 */
+.loading-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 400rpx;
+}
+
+.loading-text {
+	font-size: 32rpx;
+	color: #999;
+}
+
+/* 错误状态 */
+.error-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 400rpx;
+}
+
+.error-text {
+	font-size: 28rpx;
+	color: #ff4444;
+	margin-bottom: 30rpx;
+}
+
+.retry-btn {
+	background-color: #4caf50;
+	color: white;
+	border-radius: 50rpx;
+	padding: 20rpx 40rpx;
+	font-size: 28rpx;
+}
+
+/* 分组列表 */
+.groups-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+.group-item {
+	background-color: white;
+	border-radius: 16rpx;
+	padding: 30rpx;
+	box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+}
+
+.group-item:active {
+	transform: scale(0.98);
+	background-color: #f8f8f8;
+}
+
+/* 分组标题 */
+.group-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20rpx;
+	padding-bottom: 20rpx;
+	border-bottom: 1rpx solid #eee;
+}
+
+.group-name {
+	flex: 1;
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+}
+
+.group-count {
+	font-size: 24rpx;
+	color: #666;
+	background-color: #f0f0f0;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	margin-right: 20rpx;
+}
+
+.arrow-right {
+	font-size: 28rpx;
+	color: #ccc;
+	font-weight: bold;
+}
+
+/* 玩家列表 */
+.players-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20rpx;
+}
+
+.player-item {
+	display: flex;
+	align-items: center;
+	background-color: #f8f8f8;
+	border-radius: 30rpx;
+	padding: 10rpx 20rpx;
+	min-width: 0;
+	flex: 0 0 auto;
+}
+
+.player-avatar {
+	width: 40rpx;
+	height: 40rpx;
+	border-radius: 50%;
+	margin-right: 12rpx;
+	flex-shrink: 0;
+}
+
+.player-name {
+	font-size: 24rpx;
+	color: #333;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 120rpx;
+}
+
+/* 空状态 */
+.empty-players,
+.empty-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 120rpx;
+}
+
+.empty-text {
+	font-size: 28rpx;
+	color: #999;
+}

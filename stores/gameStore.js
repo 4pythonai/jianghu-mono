@@ -150,16 +150,22 @@ export const gameStore = observable({
     }),
 
     // 从API获取并初始化游戏数据
-    fetchGameDetail: action(async function (gameId) {
+    fetchGameDetail: action(async function (gameId, groupId = null) {
         if (this.loading) return; // 防止重复加载
 
-        console.log('📦 [Store] 开始获取比赛详情:', gameId);
+        console.log('📦 [Store] 开始获取比赛详情:', { gameId, groupId });
         this.loading = true;
         this.error = null;
         this.gameid = gameId;
 
         try {
-            const res = await gameApi.getGameDetail({ gameId }, {
+            // 构建请求参数
+            const params = { gameId };
+            if (groupId) {
+                params.groupId = groupId;
+            }
+
+            const res = await gameApi.getGameDetail(params, {
                 loadingTitle: '加载比赛详情...',
                 loadingMask: true
             });
@@ -210,8 +216,59 @@ export const gameStore = observable({
         this.scores.push(newScoresRow);
     }),
 
-    // ---- Computed (计算属性，可选) ----
-    // 可以在这里添加一些根据现有状态计算得出的新值
-    // 例如：计算每个玩家的总分
-    // get playerTotalScores() { ... }
+    // ---- Computed (计算属性) ----
+
+    // 计算每个玩家的总分
+    get playerTotalScores() {
+        if (!this.players.length || !this.scores.length) return [];
+
+        return this.players.map((player, playerIndex) => {
+            const playerScores = this.scores[playerIndex] || [];
+            return playerScores.reduce((total, scoreData) => {
+                return total + (scoreData.score || 0);
+            }, 0);
+        });
+    },
+
+    // 格式化分数显示
+    formatScore: action((score, par) => {
+        if (!score || score === 0) return '0';
+        return score.toString();
+    }),
+
+    // 格式化推杆显示
+    formatPutt: action((putt) => {
+        if (!putt || putt === 0) return '0';
+        return putt.toString();
+    }),
+
+    // 格式化差值显示
+    formatDiff: action((score, par) => {
+        if (!score || !par) return '0';
+        const diff = score - par;
+        if (diff === 0) return '0';
+        return diff > 0 ? `+${diff}` : diff.toString();
+    }),
+
+    // 计算分数样式类
+    getScoreClass: action((score, par) => {
+        if (!score || !par) return 'score-par';
+
+        const diff = score - par;
+
+        if (diff <= -2) return 'under-par-2';
+        if (diff === -1) return 'under-par-1';
+        if (diff === 0) return 'score-par';
+        if (diff === 1) return 'over-par-1';
+        if (diff === 2) return 'over-par-2';
+        if (diff >= 3) return 'over-par-3';
+
+        return 'score-par';
+    }),
+
+    // Tab 状态管理
+    currentTab: 0,
+    setCurrentTab: action(function (tabIndex) {
+        this.currentTab = tabIndex;
+    }),
 }); 
