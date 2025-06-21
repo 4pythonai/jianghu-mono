@@ -113,5 +113,67 @@ Page({
         });
     },
 
+    // OperationBar 更多按钮点击事件  
+    onMoreClick(e) {
+        console.log('📊 [GameDetail] OperationBar 更多按钮被点击');
+        // 弹窗逻辑已在OperationBar组件内部处理
+    },
 
+    // OperationBar 下拉按钮点击事件
+    onDropdownClick(e) {
+        console.log('📊 [GameDetail] OperationBar 下拉按钮被点击');
+        // TODO: 实现球场选择或比赛状态切换功能
+        wx.showActionSheet({
+            itemList: ['切换球场', '前九洞', '后九洞', '全部洞'],
+            success: (res) => {
+                console.log('用户选择了：', res.tapIndex);
+                // TODO: 根据选择切换显示内容
+            }
+        });
+    },
+
+    // OperationBar 功能选项点击事件
+    onOptionClick(e) {
+        const { option } = e.detail;
+        console.log('📊 [GameDetail] OperationBar 功能选项被点击:', option);
+
+        // TODO: 根据不同选项实现具体功能
+        switch (option) {
+            case 'edit':
+                console.log('执行修改功能');
+                break;
+            case 'qrcode':
+                console.log('显示比赛码');
+                break;
+            case 'scorecard':
+                console.log('生成成绩卡');
+                break;
+            case 'poster':
+                console.log('生成海报');
+                break;
+            case 'feedback':
+                console.log('提交反馈');
+                break;
+            case 'style':
+                console.log('切换风格');
+                break;
+            case 'account':
+                console.log('查看账本');
+                break;
+            default:
+                console.log('未知选项:', option);
+        }
+    },
+
+    // OperationBar 取消比赛事件
+    onCancelGame(e) {
+        console.log('📊 [GameDetail] OperationBar 取消比赛被触发');
+        // TODO: 实现取消比赛功能
+    },
+
+    // OperationBar 结束比赛事件
+    onFinishGame(e) {
+        console.log('📊 [GameDetail] OperationBar 结束比赛被触发');
+        // TODO: 实现结束比赛功能
+    }
 });

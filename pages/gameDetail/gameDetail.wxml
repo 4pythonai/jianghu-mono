@@ -14,7 +14,10 @@
   <OperationBar 
     bind:addclick="onAddClick"
     bind:moreclick="onMoreClick"
-    bind:dropdownclick="onDropdownClick" />
+    bind:dropdownclick="onDropdownClick"
+    bind:optionclick="onOptionClick"
+    bind:cancelgame="onCancelGame"
+    bind:finishgame="onFinishGame" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 1}}">
   <bbs gameId="{{gameData.gameid}}" />

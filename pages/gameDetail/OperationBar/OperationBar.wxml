@@ -44,4 +44,79 @@
     <text class="detail-label">开球时间:</text>
     <text class="detail-value">{{gameData.teeTime || gameData.tee_time || gameData.start_time || '2024-01-15 09:00'}}</text>
   </view>
+</view>
+
+<!-- 底部弹出面板 -->
+<view class="more-panel-mask {{showMorePanel ? 'show' : ''}}" bindtap="hideMorePanel">
+  <view class="more-panel {{showMorePanel ? 'show' : ''}}" catchtap="stopPropagation">
+    <!-- 面板标题 -->
+    <view class="panel-header">
+      <text class="panel-title">更多</text>
+    </view>
+    
+    <!-- 功能选项网格 -->
+    <view class="options-grid">
+      <view class="option-item" bindtap="onOptionClick" data-option="edit">
+        <view class="option-icon">
+          <text class="icon-text">✏️</text>
+        </view>
+        <text class="option-label">修改</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="qrcode">
+        <view class="option-icon">
+          <text class="icon-text">📱</text>
+        </view>
+        <text class="option-label">比赛码</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="scorecard">
+        <view class="option-icon">
+          <text class="icon-text">📊</text>
+        </view>
+        <text class="option-label">成绩卡</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="poster">
+        <view class="option-icon">
+          <text class="icon-text">🎯</text>
+        </view>
+        <text class="option-label">海报</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="feedback">
+        <view class="option-icon">
+          <text class="icon-text">❓</text>
+        </view>
+        <text class="option-label">反馈</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="style">
+        <view class="option-icon">
+          <text class="icon-text">🎨</text>
+        </view>
+        <text class="option-label">风格</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="account">
+        <view class="option-icon">
+          <text class="icon-text">💰</text>
+        </view>
+        <text class="option-label">账本</text>
+      </view>
+    </view>
+    
+    <!-- 分割线 -->
+    <view class="divider"></view>
+    
+    <!-- 底部操作按钮 -->
+    <view class="bottom-actions">
+      <view class="action-btn cancel-btn" bindtap="onCancelGame">
+        <text class="action-text">取消比赛</text>
+      </view>
+      <view class="action-btn finish-btn" bindtap="onFinishGame">
+        <text class="action-text">结束比赛</text>
+      </view>
+    </view>
+  </view>
 </view> 
