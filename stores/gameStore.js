@@ -214,14 +214,74 @@ export const gameStore = observable({
 
     // 更新单个格子的分数
     updateCellScore: action(function ({ playerIndex, holeIndex, score, putts, penalty_strokes, sand_save }) {
+        console.log(`🚀 [gameStore] updateCellScore 开始 - 玩家${playerIndex} 洞${holeIndex}`);
+        console.log(`🚀 [gameStore] 更新数据:`, { score, putts, penalty_strokes, sand_save });
+
         // 使用可选链确保分数对象存在
         const scoreObj = this.scores?.[playerIndex]?.[holeIndex];
-        if (scoreObj) {
-            if (score !== undefined) scoreObj.score = score;
-            if (putts !== undefined) scoreObj.putts = putts;
-            if (penalty_strokes !== undefined) scoreObj.penalty_strokes = penalty_strokes;
-            if (sand_save !== undefined) scoreObj.sand_save = sand_save;
+
+        if (!scoreObj) {
+            console.error(`❌ [gameStore] 无法找到分数对象: playerIndex=${playerIndex}, holeIndex=${holeIndex}`);
+            console.error(`❌ [gameStore] scores数组状态:`, {
+                scoresLength: this.scores?.length,
+                playerScoresLength: this.scores?.[playerIndex]?.length
+            });
+            return;
         }
+
+        console.log(`📊 [gameStore] 更新前的分数:`, { ...scoreObj });
+
+        // 🔧 更激进的修复：完全替换整个scores数组来强制触发响应式更新
+        // 创建新的scores数组副本
+        const newScores = this.scores.map((playerScores, pIndex) => {
+            if (pIndex === playerIndex) {
+                // 对于目标玩家，创建新的洞分数数组
+                return playerScores.map((holeScore, hIndex) => {
+                    if (hIndex === holeIndex) {
+                        // 对于目标洞，创建新的分数对象
+                        const newScoreObj = { ...holeScore };
+
+                        if (score !== undefined) {
+                            newScoreObj.score = score;
+                            console.log(`✅ [gameStore] 更新score: ${score}`);
+                        }
+                        if (putts !== undefined) {
+                            newScoreObj.putts = putts;
+                            console.log(`✅ [gameStore] 更新putts: ${putts}`);
+                        }
+                        if (penalty_strokes !== undefined) {
+                            newScoreObj.penalty_strokes = penalty_strokes;
+                            console.log(`✅ [gameStore] 更新penalty_strokes: ${penalty_strokes}`);
+                        }
+                        if (sand_save !== undefined) {
+                            newScoreObj.sand_save = sand_save;
+                            console.log(`✅ [gameStore] 更新sand_save: ${sand_save}`);
+                        }
+
+                        return newScoreObj;
+                    } else {
+                        // 其他洞保持不变
+                        return holeScore;
+                    }
+                });
+            } else {
+                // 其他玩家保持不变
+                return playerScores;
+            }
+        });
+
+        // 🎯 关键：完全替换scores数组，强制触发响应式更新
+        this.scores = newScores;
+
+        // 🧪 测试：强制更新一个简单字段来测试MobX响应式是否正常工作
+        this.isSaving = !this.isSaving;
+        setTimeout(() => {
+            this.isSaving = !this.isSaving;
+        }, 100);
+        console.log(`🧪 [gameStore] 测试性更新isSaving字段，期望触发组件响应`);
+
+        console.log(`📊 [gameStore] 更新后的分数:`, { ...newScores[playerIndex][holeIndex] });
+        console.log(`🎯 [gameStore] updateCellScore 完成 - 已强制替换整个scores数组`);
     }),
 
     // 用于回滚的批量更新

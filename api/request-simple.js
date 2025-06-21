@@ -56,7 +56,7 @@ class HttpClient {
         this.loadingConfig = {
             delay: 300, // loading显示延迟时间(ms)，避免快速请求的闪烁
             minDuration: 200, // loading最小显示时间(ms)，避免闪烁（从500ms减少到200ms）
-            defaultTitle: 'Loading...',
+            defaultTitle: 'APILoading...',
             defaultMask: true
         }
     }

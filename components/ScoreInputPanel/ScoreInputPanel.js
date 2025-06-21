@@ -16,6 +16,12 @@ Component({
         isSaving: false
     },
 
+    observers: {
+        'isSaving': function (newIsSaving) {
+            console.log('🧪 [ScoreInputPanel] isSaving变化检测:', newIsSaving);
+        }
+    },
+
     lifetimes: {
         attached() {
             this.storeBindings = createStoreBindings(this, {
@@ -134,36 +140,51 @@ Component({
 
         async _saveChanges() {
             if (this.data.isSaving) {
+                console.log('⚠️ [ScoreInputPanel] 正在保存中，跳过本次保存');
                 return; // 防止重复提交
             }
             const holeIndexForStore = this.data.holeInfo.originalIndex; // 用于更新store的数组索引
             const holeUniqueKeyForAPI = this.data.holeInfo.unique_key; // 用于发送给API的唯一键
 
             if (holeIndexForStore === undefined) {
-                console.error("无法获取到holeIndex，保存失败");
+                console.error("❌ [ScoreInputPanel] 无法获取到holeIndex，保存失败");
                 return;
             }
+
+            console.log('💾 [ScoreInputPanel] 开始保存流程:', {
+                holeIndexForStore,
+                holeUniqueKeyForAPI,
+                localScores: this.data.localScores
+            });
 
             // 1. 保存旧值，用于回滚
             const oldScores = this.data.players.map((_, pIndex) => {
                 return { ...this.data.scores[pIndex][holeIndexForStore] };
             });
+            console.log('💾 [ScoreInputPanel] 保存旧分数用于回滚:', oldScores);
 
             // 2. 设置保存状态
+            console.log('💾 [ScoreInputPanel] 设置保存状态为true');
             this.setSaving(true);
 
             // 3. 乐观更新
-            console.log('🔄 开始乐观更新，holeIndex:', holeIndexForStore);
+            console.log('🔄 [ScoreInputPanel] ===== 开始乐观更新 =====');
+            console.log('🔄 [ScoreInputPanel] 目标洞索引:', holeIndexForStore);
+            console.log('🔄 [ScoreInputPanel] 玩家数量:', this.data.localScores.length);
+
             for (let i = 0; i < this.data.localScores.length; i++) {
                 const playerScore = this.data.localScores[i];
-                console.log(`🔄 更新玩家 ${i} 分数:`, playerScore);
+                console.log(`🔄 [ScoreInputPanel] 更新玩家 ${i} 分数:`, playerScore);
+
+                // 调用store的乐观更新
                 this.updateCellScore({
                     playerIndex: i,
                     holeIndex: holeIndexForStore,
                     ...playerScore
                 });
+                console.log(`✅ [ScoreInputPanel] 玩家 ${i} 乐观更新完成`);
             }
-            console.log('✅ 乐观更新完成');
+            console.log('🔄 [ScoreInputPanel] ===== 乐观更新完成 =====');
 
             try {
                 // 4. 调用API
@@ -174,22 +195,26 @@ Component({
                     scores: this.data.localScores,
                 };
 
-                console.log('💾 保存分数数据:', apiData);
+                console.log('📡 [ScoreInputPanel] 发送API请求:', apiData);
                 await app.api.game.saveGameScore(apiData);  // 修复：使用正确的方法名
+                console.log('✅ [ScoreInputPanel] API调用成功');
                 wx.showToast({ title: '已保存', icon: 'success', duration: 1500 });
 
             } catch (err) {
                 // 5. 失败回滚
+                console.error('❌ [ScoreInputPanel] API调用失败，开始回滚:', err);
                 wx.showToast({ title: '保存失败,已撤销', icon: 'error' });
                 this.batchUpdateScoresForHole({
                     holeIndex: holeIndexForStore,
                     scoresToUpdate: oldScores,
                 });
+                console.log('🔄 [ScoreInputPanel] 回滚完成');
 
             } finally {
                 // 6. 无论成功失败，都结束保存状态
+                console.log('💾 [ScoreInputPanel] 重置保存状态为false');
                 this.setSaving(false);
-                console.log('💾 保存流程结束，isSaving 已重置为 false');
+                console.log('💾 [ScoreInputPanel] 保存流程结束，isSaving 已重置为 false');
 
                 // 7. 等待一个微任务周期，确保状态更新完成
                 await new Promise(resolve => setTimeout(resolve, 0));

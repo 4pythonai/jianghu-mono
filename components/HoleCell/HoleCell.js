@@ -29,12 +29,10 @@ Component({
             type: Number,
             value: 0
         },
-        // 移除 diff，改为计算属性
         score: {
             type: Number,
             value: 0
         },
-        // 新的字段，替代 gambleflag
         penalty_strokes: {
             type: Number,
             value: 0
@@ -53,6 +51,43 @@ Component({
         calculatedDiff: 0
     },
 
+    observers: {
+        'score, par': function (score, par) {
+            if (score > 0) {
+                console.log(`🔄 [HoleCell] 乐观更新生效 - 玩家${this.properties.playerIndex} 洞${this.properties.holeIndex}: score=${score} → 界面已更新`);
+            }
+
+            if (score !== undefined && score !== null) {
+                const formattedScore = score.toString();
+                this.setData({
+                    formattedScore: formattedScore
+                });
+            }
+
+            // 重新计算 diff
+            this.calculateAndUpdateDiff();
+        },
+
+        'putts': function (putts) {
+            if (putts > 0) {
+                console.log(`🔄 [HoleCell] 推杆更新生效 - 玩家${this.properties.playerIndex} 洞${this.properties.holeIndex}: putts=${putts}`);
+            }
+
+            if (putts !== undefined && putts !== null) {
+                const formattedputts = putts.toString();
+                this.setData({
+                    formattedputts: formattedputts
+                });
+            }
+        },
+
+        'penalty_strokes, sand_save': function (penalty_strokes, sand_save) {
+            if (penalty_strokes > 0 || sand_save > 0) {
+                console.log(`🔄 [HoleCell] 罚杆/沙坑更新 - 玩家${this.properties.playerIndex} 洞${this.properties.holeIndex}: penalty=${penalty_strokes}, sand=${sand_save}`);
+            }
+        }
+    },
+
     lifetimes: {
         attached() {
             this.storeBindings = createStoreBindings(this, {
@@ -65,38 +100,17 @@ Component({
                 console.warn(`⚠️ [HoleCell] unique_key 不是字符串类型: ${typeof this.properties.unique_key}, 值: ${this.properties.unique_key}`);
             }
 
-            // 计算 diff
-            this.calculateAndUpdateDiff();
-
+            // 初始化显示数据
             const { putts = 0, score = 0 } = this.properties;
             this.setData({
                 formattedputts: putts !== 0 ? putts.toString() : '0',
                 formattedScore: score !== 0 ? score.toString() : '0'
             });
 
-            this.observers = {
-                'putts': function (putts) {
-                    if (putts !== undefined && putts !== null) {
-                        this.setData({
-                            formattedputts: putts.toString()
-                        });
-                    }
-                }.bind(this),
-                'score, par': function (score, par) {
-                    if (score !== undefined && score !== null) {
-                        this.setData({
-                            formattedScore: score.toString()
-                        });
-                    }
-                    // 重新计算 diff
-                    this.calculateAndUpdateDiff();
-                }.bind(this),
-                'penalty_strokes, sand_save': function () {
-                    // 当罚杆或沙坑救球数据变化时，可以在这里处理
-                    console.log('penalty_strokes 或 sand_save 更新');
-                }.bind(this)
-            };
+            // 计算初始 diff
+            this.calculateAndUpdateDiff();
         },
+
         detached() {
             this.storeBindings.destroyStoreBindings();
         }
@@ -142,6 +156,8 @@ Component({
         },
 
         recordScore: function (e) {
+            console.log(`👆 [HoleCell] 点击记分 - 玩家${this.properties.playerIndex} 洞${this.properties.holeIndex}`);
+
             // 确保传递的 unique_key 是字符串类型
             const uniqueKey = this.properties.unique_key != null ? String(this.properties.unique_key) : '';
 

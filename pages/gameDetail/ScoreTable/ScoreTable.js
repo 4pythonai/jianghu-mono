@@ -39,6 +39,49 @@ Component({
         }
     },
 
+    observers: {
+        'playerScores': function (newScores) {
+            console.log('📊 [ScoreTable] playerScores变化检测:', {
+                有数据: !!newScores,
+                玩家数量: newScores?.length,
+                时间戳: new Date().toLocaleTimeString()
+            });
+
+            // 详细检查变化内容
+            if (newScores && newScores.length > 0) {
+                // 检查是否有非零分数，表示真正的数据更新
+                let hasRealData = false;
+                let changedCells = [];
+
+                for (let p = 0; p < newScores.length; p++) {
+                    for (let h = 0; h < (newScores[p]?.length || 0); h++) {
+                        const score = newScores[p][h]?.score;
+                        if (score > 0) {
+                            hasRealData = true;
+                            changedCells.push(`玩家${p}洞${h}:${score}`);
+                        }
+                    }
+                }
+
+                if (hasRealData) {
+                    console.log('📊 [ScoreTable] 检测到分数数据更新，界面应该同步');
+                    console.log('📊 [ScoreTable] 变化的格子:', changedCells.slice(0, 5)); // 只显示前5个
+                } else {
+                    console.log('📊 [ScoreTable] 监听到变化但都是初始数据(0分)');
+                }
+            }
+        },
+
+        // 添加对其他字段的监听，测试MobX绑定是否正常
+        'players': function (newPlayers) {
+            console.log('📊 [ScoreTable] players变化检测:', newPlayers?.length);
+        },
+
+        'holeList': function (newHoles) {
+            console.log('📊 [ScoreTable] holeList变化检测:', newHoles?.length);
+        }
+    },
+
     methods: {
         // 滚动到最左侧
         scrollToLeft() {
@@ -89,6 +132,7 @@ Component({
 
         // 作为一个中继，把事件继续往父组件传递
         onCellClick: function (e) {
+            console.log('📊 [ScoreTable] 转发cellclick事件:', e.detail);
             this.triggerEvent('cellclick', e.detail);
         }
     }
