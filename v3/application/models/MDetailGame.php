@@ -35,6 +35,9 @@ class MDetailGame  extends CI_Model {
         // 获取游戏分组信息
         $groups = $this->getGroupsInfo($game_id);
 
+        // 成绩 
+        $scores = $this->getScoreInfo($game_id);
+
         // 组装返回数据
         $result = [
             'game_id' => (string)$game_info['game_id'],
@@ -54,12 +57,41 @@ class MDetailGame  extends CI_Model {
                 'lgt' => $course_info['lgt']
             ],
             'holeList' => $holeList,
-            'scores' => [],
+            'scores' => $scores,
             'groups' => $groups,
             'debug1' => 11
         ];
 
         return $result;
+    }
+
+    // {
+    //     "userid": "14",           // 用户ID (字符串)
+    //     "holeid": "1378",         // 洞ID (字符串) 
+    //     "score": 5,               // 总杆数 (数字)
+    //     "putts": 2,                // 推杆数 (数字)
+    //     "penalty_strokes": 0,     // 罚杆数 (数字)
+    //     "sand_save": 0            // 沙坑救球数 (数字)
+    //   }
+
+    public function getScoreInfo($game_id) {
+        $score_query = "
+            SELECT * FROM t_game_score WHERE game_id = ?
+        ";
+        $score_result = $this->db->query($score_query, [$game_id]);
+        $scores = $score_result->result_array();
+        $fixedd = [];
+        foreach ($scores as $score) {
+            $fixedd[] = [
+                'userid' => $score['user_id'],
+                'holeid' => $score['hole_id'],
+                'score' => intval($score['score']),
+                'putts' => intval($score['putts']),
+                'penalty_strokes' => intval($score['penalty_strokes']),
+                'sand_save' => intval($score['sand_save'])
+            ];
+        }
+        return $fixedd;
     }
 
     /**

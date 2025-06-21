@@ -166,7 +166,7 @@
 			"userid": 22,
 			"par": 4,
 			"holeid": 1,
-			"putt": 3,
+			"putts": 3,
 			"score": 5,
 			"diff": 1,
 			"gambleflag": "red"
@@ -175,7 +175,7 @@
 			"userid": 23,
 			"par": 4,
 			"holeid": 1,
-			"putt": 4,
+			"putts": 4,
 			"score": 8,
 			"diff": 4,
 			"gambleflag": "blue"
@@ -184,7 +184,7 @@
 			"userid": 24,
 			"par": 4,
 			"holeid": 1,
-			"putt": 1,
+			"putts": 1,
 			"score": 3,
 			"diff": -1,
 			"gambleflag": "blue"
@@ -193,7 +193,7 @@
 			"userid": 25,
 			"par": 4,
 			"holeid": 1,
-			"putt": 1,
+			"putts": 1,
 			"score": 2,
 			"diff": -2,
 			"gambleflag": "red"

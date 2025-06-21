@@ -35,13 +35,6 @@ class Game extends MY_Controller {
             'end_time' => $end_time
         ]);
 
-        // $group_id = $this->db->insert_id();
-        // $this->db->insert('t_game_players', [
-        //     'game_id' => $game_id,
-        //     'user_id' => $user_id,
-        //     'group_id' => $group_id
-        // ]);
-
         echo json_encode(['code' => 200, 'game_id' => $game_id], JSON_UNESCAPED_UNICODE);
     }
 
@@ -204,5 +197,17 @@ class Game extends MY_Controller {
         $game_id = $json_paras['gameId'];
         $game_detail = $this->MDetailGame->get_detail_game($game_id);
         echo json_encode(['code' => 200, 'game_detail' => $game_detail], JSON_UNESCAPED_UNICODE);
+    }
+
+
+
+    public function saveGameScore() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $game_id = $json_paras['gameId'];
+        $group_id = $json_paras['groupId'];
+        $hole_unique_key = $json_paras['holeUniqueKey'];
+        $scores = $json_paras['scores'];
+        $this->MScore->saveScore($game_id, $group_id, $hole_unique_key, $scores);
+        echo json_encode(['code' => 200, 'message' => '保存成功'], JSON_UNESCAPED_UNICODE);
     }
 }
