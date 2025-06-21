@@ -37,7 +37,7 @@
 				<view class="friend-content">
 					<image
 						class="friend-avatar"
-						src="{{ item.coverpath || item.avatar || '/images/default-avatar.png' }}"
+						src="{{ item.avatar || item.avatar || '/images/default-avatar.png' }}"
 						mode="aspectFill"
 						lazy-load="true"
 					></image>

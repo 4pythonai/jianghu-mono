@@ -138,7 +138,7 @@ Page({
             userid: user.id || user.userid, // API返回的是 user.id
             wx_nickname: user.wx_nickname || user.nickname || this.data.remarkName,
             nickname: user.nickname || user.wx_nickname || this.data.remarkName,
-            coverpath: user.coverpath || '/images/default-avatar.png',
+            avatar: user.avatar || '/images/default-avatar.png',
             handicap: user.handicap || 0,
             mobile: user.mobile || this.data.mobile || ''
         };

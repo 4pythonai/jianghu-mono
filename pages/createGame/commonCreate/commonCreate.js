@@ -214,7 +214,7 @@ Page({
             userid: member.userid,
             wx_nickname: member.nickname || '未知玩家',
             nickname: member.nickname || '未知玩家',
-            coverpath: member.coverpath || '/images/default-avatar.png',
+            avatar: member.avatar || '/images/default-avatar.png',
             handicap: member.handicap || 0,
             join_type: 'combineSelect'  // 添加来源字段
         }));
@@ -243,7 +243,7 @@ Page({
             userid: friend.userid,
             wx_nickname: friend.nickname || friend.wx_nickname || '未知好友',
             nickname: friend.nickname || friend.wx_nickname || '未知好友',
-            coverpath: friend.coverpath || friend.avatar || '/images/default-avatar.png',
+            avatar: friend.avatar || friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
             join_type: 'friendSelect'  // 添加来源字段
         }));
@@ -272,7 +272,7 @@ Page({
             userid: createdUser.userid,
             wx_nickname: createdUser.wx_nickname || createdUser.nickname,
             nickname: createdUser.nickname || createdUser.wx_nickname,
-            coverpath: createdUser.coverpath || '/images/default-avatar.png',
+            avatar: createdUser.avatar || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
             mobile: createdUser.mobile || '',
             join_type: 'manualAdd'  // 添加来源字段
