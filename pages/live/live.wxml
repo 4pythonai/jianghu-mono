@@ -17,7 +17,7 @@
     <view class="tab-content">
       <view class="tab-pane" hidden="{{currentTab !== 0}}">
         <block wx:for="{{games}}" wx:key="game_id">
-          <match-item gameName="{{item.game_name}}" course="{{item.course}}" players="{{item.players}}" watchersNumber="{{item.watchers_number}}" gameStart="{{item.game_start}}" completedHoles="{{item.completed_holes}}" holes="{{item.holes}}" have_gamble="{{item.have_gamble}}" starType="{{item.star_type}}" gameId="{{item.game_id}}" />
+          <GameItem gameName="{{item.game_name}}" course="{{item.course}}" players="{{item.players}}" watchersNumber="{{item.watchers_number}}" gameStart="{{item.game_start}}" completedHoles="{{item.completed_holes}}" holes="{{item.holes}}" have_gamble="{{item.have_gamble}}" starType="{{item.star_type}}" gameId="{{item.game_id}}" />
         </block>
       </view>
       <view class="tab-pane" hidden="{{currentTab !== 1}}">

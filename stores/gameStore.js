@@ -35,6 +35,20 @@ export const gameStore = observable({
         };
     }),
 
+    // 标准化玩家数据
+    _normalizePlayer: action((player) => {
+        return {
+            ...player,
+            userid: String(player.userid || ''),
+            // 确保 nickname 字段存在且为字符串，优先级：nickname > wx_nickname > 默认值
+            nickname: player.nickname != null ? String(player.nickname) :
+                (player.wx_nickname != null ? String(player.wx_nickname) : '未知玩家'),
+            // 确保其他可能为 null 的字段也是字符串
+            avatar: player.avatar != null ? String(player.avatar) : '',
+            tee: player.tee != null ? String(player.tee) : '',
+        };
+    }),
+
     // 标准化分数数据
     _normalizeScore: action((score) => {
         return {
@@ -77,10 +91,7 @@ export const gameStore = observable({
     }),
 
     _processGameData: action(function (gameData) {
-        const players = (gameData.players || []).map(p => ({
-            ...p,
-            userid: String(p.userid || ''),
-        }));
+        const players = (gameData.players || []).map(p => this._normalizePlayer(p));
 
         const holes = (gameData.holeList || []).map(h => this._normalizeHole(h));
 
@@ -116,6 +127,17 @@ export const gameStore = observable({
             console.log(`洞 ${index + 1}: unique_key = "${uniqueKeyValue}" (类型: ${uniqueKeyType})`);
             if (uniqueKeyType !== 'string') {
                 console.warn(`⚠️ 洞 ${index + 1} 的 unique_key 不是字符串类型!`);
+            }
+        });
+
+        // 打印调试信息，确认玩家数据的类型
+        console.log('📦 [Store] 处理后的玩家数据 nickname 类型检查:');
+        players.forEach((player, index) => {
+            const nicknameType = typeof player.nickname;
+            const nicknameValue = player.nickname;
+            console.log(`玩家 ${index + 1}: nickname = "${nicknameValue}" (类型: ${nicknameType})`);
+            if (nicknameType !== 'string') {
+                console.warn(`⚠️ 玩家 ${index + 1} 的 nickname 不是字符串类型!`);
             }
         });
     }),
