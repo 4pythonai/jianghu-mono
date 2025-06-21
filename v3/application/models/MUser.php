@@ -42,7 +42,7 @@ class MUser  extends CI_Model {
     $this->db->where('mobile', $mobile);
     $user =  $this->db->get('t_user')->row_array();
     if ($user) {
-      $user['coverpath'] = config_item('web_url') . $user['coverpath'];
+      $user['avatar'] = config_item('web_url') . $user['avatar'];
     }
     return $user;
   }
@@ -52,7 +52,7 @@ class MUser  extends CI_Model {
     $this->db->where('id', $user_id);
     $user = $this->db->get('t_user')->row_array();
     if ($user) {
-      $user['coverpath'] = config_item('web_url')  . $user['coverpath'];
+      $user['avatar'] = config_item('web_url')  . $user['avatar'];
     }
     return $user;
   }
@@ -79,7 +79,7 @@ class MUser  extends CI_Model {
 
   public function getFriends($user_id) {
     $web_url = config_item('web_url');
-    $this->db->select("u.wx_nickname, concat('{$web_url}',u.coverpath) as coverpath, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
+    $this->db->select("u.wx_nickname, concat('{$web_url}',u.avatar) as avatar, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
     $this->db->from('t_friend f');
     $this->db->join('t_user u', 'f.fuserid = u.id');
     $this->db->where('f.userid', $user_id);
@@ -113,7 +113,7 @@ class MUser  extends CI_Model {
       'mobile' => $mobile,
       'addtime' => date('Y-m-d H:i:s'),
       'reg_type' => 'manualAdd',
-      'coverpath' =>  '/avatar/user_default_avatar.png',
+      'avatar' =>  '/avatar/user_default_avatar.png',
       'helper_id' => $helperid
     ];
     $this->db->insert('t_user', $new_user);
@@ -128,7 +128,7 @@ class MUser  extends CI_Model {
       'mobile' => $mobile,
       'addtime' => date('Y-m-d H:i:s'),
       'reg_type' => 'manualAddWithMobile',
-      'coverpath' =>  '/avatar/user_default_avatar.png',
+      'avatar' =>  '/avatar/user_default_avatar.png',
       'helper_id' => $helperid
     ];
     $this->db->insert('t_user', $new_user);
@@ -139,7 +139,7 @@ class MUser  extends CI_Model {
 
   public function transferJHUser($jhuser) {
     // downloadJHAvatar
-    $jh_avatar_url = "http://s1.golf-brother.com/data/attach/" . $jhuser['coverpath'] . "/" . $jhuser['covername'];
+    $jh_avatar_url = "http://s1.golf-brother.com/data/attach/" . $jhuser['avatar'] . "/" . $jhuser['covername'];
     $avatar_result = downloadJHAvatar($jh_avatar_url);
 
     if ($avatar_result['success']) {
@@ -154,7 +154,7 @@ class MUser  extends CI_Model {
     $row['mobile'] = $jhuser['mobile'];
     $row['handicap'] = $jhuser['handicap'];
     $row['reg_type'] = 'jhtransfer';
-    $row['coverpath'] = $app_avatar_url;
+    $row['avatar'] = $app_avatar_url;
     $row['addtime'] = date('Y-m-d H:i:s');
     $this->db->insert('t_user', $row);
     return $this->db->insert_id();
@@ -162,6 +162,6 @@ class MUser  extends CI_Model {
 
   public function updateUserAvatar($user_id, $fileName) {
     $this->db->where('id', $user_id);
-    $this->db->update('t_user', ['coverpath' => $fileName]);
+    $this->db->update('t_user', ['avatar' => $fileName]);
   }
 }

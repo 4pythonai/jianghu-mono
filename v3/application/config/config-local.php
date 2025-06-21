@@ -26,7 +26,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 $config['base_url'] = 'http://127.0.0.1:7000/v3/';
-$config['web_url'] = 'https://qiaoyincapital.com/';
+$config['web_url'] = 'https://qiaoyincapital.com';
 
 
 

@@ -33,10 +33,11 @@ class Feed extends MY_Controller {
             $games[] = $game_detail;
         }
         $ret = [];
+        $ret['debug'] = 42;
         $ret['code'] = 200;
         $ret['star_friends'] = $result['star_friends'];
         $allgames = $result['allgames'];
         $ret['games'] = $games;
-        echo json_encode($ret);
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 }

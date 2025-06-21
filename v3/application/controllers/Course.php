@@ -112,7 +112,7 @@ class Course extends MY_Controller {
     public function getCourseDetail() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $courseid = $json_paras['courseid'];
-        $query = "SELECT id,courseid,name,coverpath,courtnum FROM t_course WHERE courseid = $courseid";
+        $query = "SELECT id,courseid,name,avatar,courtnum FROM t_course WHERE courseid = $courseid";
         $course = $this->db->query($query)->row_array();
 
         // courts

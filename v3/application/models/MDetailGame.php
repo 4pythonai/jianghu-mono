@@ -31,6 +31,10 @@ class MDetailGame  extends CI_Model {
         // 获取球洞列表
         $holeList = $this->getHoleListByGameId($game_id);
 
+
+        // 获取游戏分组信息
+        $groups = $this->getGroupsInfo($game_id);
+
         // 组装返回数据
         $result = [
             'game_id' => (string)$game_info['game_id'],
@@ -50,7 +54,9 @@ class MDetailGame  extends CI_Model {
                 'lgt' => $course_info['lgt']
             ],
             'holeList' => $holeList,
-            'scores' => []
+            'scores' => [],
+            'groups' => $groups,
+            'debug1' => 11
         ];
 
         return $result;
@@ -94,7 +100,7 @@ class MDetailGame  extends CI_Model {
                 name as coursename,
                 lat,
                 lng as lgt,
-                coverpath,
+                avatar,
                 courtnum,
                 totalPar,
                 totalYard
@@ -181,30 +187,21 @@ class MDetailGame  extends CI_Model {
      * @return array 玩家列表
      */
     public function getPlayers($game_id) {
+        $web_url = config_item('web_url');
         $players_query = "
             SELECT 
+                ggu.groupid,
+                ggu.tee,
                 u.id as user_id,
                 u.wx_nickname as wx_nickname,
-                u.coverpath as avatar
+                concat('$web_url', u.avatar) as avatar
             FROM t_game_group_user ggu
             LEFT JOIN t_user u ON ggu.userid = u.id
             WHERE ggu.gameid = ? 
-            ORDER BY ggu.addtime ASC
-        ";
+            ORDER BY ggu.addtime ASC ";
 
-        $players_result = $this->db->query($players_query, [$game_id]);
-        $players = [];
-
-        foreach ($players_result->result_array() as $player) {
-            $players[] = [
-                'userid' => (int)$player['user_id'],
-                'nickname' => $player['wx_nickname'] ?: '',
-                'avatar' => config_item('web_url') . $player['avatar'] ?: '',
-                'tee' => 'black'
-            ];
-        }
-
-        return $players;
+        $players_result = $this->db->query($players_query, [$game_id])->result_array();
+        return $players_result;
     }
 
     /**
@@ -226,6 +223,8 @@ class MDetailGame  extends CI_Model {
         $courts_result = $this->db->query($courts_query, [$gameid]);
         foreach ($courts_result->result_array() as $court) {
             $courtid = $court['courtid'];
+
+            $court_key = $court['court_key'];
 
             // 获取该半场的所有球洞信息
             $holes_query = "
@@ -251,6 +250,8 @@ class MDetailGame  extends CI_Model {
 
             foreach ($holes_result->result_array() as $hole) {
                 $holeList[] = [
+                    'unique_key' => $court_key . '_' . $hole['holeid'],
+                    'court_key' => $court_key,
                     'holeid' => (int)$hole['holeid'],
                     'holeno' => (int)$hole['holeno'],
                     'holename' => $hole['holename'] ?: '',
@@ -267,5 +268,66 @@ class MDetailGame  extends CI_Model {
         }
 
         return $holeList;
+    }
+
+    /**
+     * 获取游戏分组信息
+     * @param int $gameid 游戏ID
+     * @return array 分组信息列表
+     */
+    public function getGroupsInfo($gameid) {
+        $groups = [];
+
+        // 获取游戏的所有分组
+        $groups_query = "
+            SELECT 
+                gg.groupid ,
+                gg.group_name,
+                gg.group_create_time
+            FROM t_game_group gg
+            WHERE gg.gameid = ?
+            ORDER BY gg.groupid ASC
+        ";
+
+        $groups_result = $this->db->query($groups_query, [$gameid]);
+
+        foreach ($groups_result->result_array() as $group) {
+            // 获取该分组下的所有用户
+            $users_query = "
+                SELECT 
+                    ggu.userid,
+                    ggu.confirmed,
+                    ggu.addtime,
+                    u.wx_nickname,
+                    u.avatar as avatar
+                FROM t_game_group_user ggu
+                LEFT JOIN t_user u ON ggu.userid = u.id
+                WHERE ggu.gameid = ? AND ggu.groupid = ?
+                ORDER BY ggu.addtime ASC
+            ";
+
+            $users_result = $this->db->query($users_query, [$gameid, $group['groupid']]);
+            $users = [];
+
+            foreach ($users_result->result_array() as $user) {
+                $users[] = [
+                    'userid' => (int)$user['userid'],
+                    'nickname' => $user['wx_nickname'] ?: '',
+                    'avatar' => config_item('web_url') . $user['avatar'] ?: '',
+                    'confirmed' => (int)$user['confirmed'],
+                    'addtime' => $user['addtime']
+                ];
+            }
+
+            $groups[] = [
+                'groupid' => (int)$group['groupid'],
+                'group_name' => $group['group_name'] ?: '',
+                'group_create_time' => $group['group_create_time'],
+                'users' => $users,
+                'user_count' => count($users)
+            ];
+        }
+
+        return $groups;
     }
 }
