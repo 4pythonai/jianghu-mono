@@ -243,7 +243,9 @@ USER_DATA_PATH/avatar_[timestamp].jpg
 4. **开发者工具**: chooseAvatar 在开发者工具中可能有文件系统问题，真机测试正常
 5. **用户体验**: 提供清晰的授权引导和信息完善流程
 
-
+## Eslint
+- 尽量使用arrow function
+- 尽量使用 template literals
 
 字体文件:
 

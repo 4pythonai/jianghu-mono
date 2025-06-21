@@ -13,7 +13,6 @@ const game = {
     updateGameScoringType: (data, options) => request('/Game/updateGameScoringType', data, options),
     updateGameGroupAndPlayers: (data, options) => request('/Game/updateGameGroupAndPlayers', data, options),
 
-    //saveGameScore
     saveGameScore: (data, options) => request('/Game/saveGameScore', data, options),
 
 }

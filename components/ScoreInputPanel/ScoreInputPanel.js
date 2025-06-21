@@ -17,7 +17,7 @@ Component({
     },
 
     observers: {
-        'isSaving': function (newIsSaving) {
+        'isSaving': (newIsSaving) => {
             console.log('🧪 [ScoreInputPanel] isSaving变化检测:', newIsSaving);
         }
     },
@@ -93,12 +93,16 @@ Component({
 
         hide() {
             console.log('🙈 执行 hide() 方法');
+            console.log('🙈 hide() 前的 isVisible:', this.data.isVisible);
+
             this.setData({
                 isVisible: false,
                 holeInfo: null,
                 localScores: [],
             });
-            console.log('🙈 hide() 方法执行完成，isVisible:', this.data.isVisible);
+
+            console.log('🙈 hide() 后的 isVisible:', this.data.isVisible);
+            console.log('🙈 hide() 方法执行完成');
         },
 
         switchPlayer(e) {
@@ -125,30 +129,19 @@ Component({
             });
         },
 
-        _calculateTotalScore(playerIndex) {
-            const playerScore = this.data.localScores[playerIndex];
-            const par = this.data.holeInfo.par || 0;
-            // 成绩 = PAR + 罚杆 + 沙坑进洞数(如果适用) + ... 这里暂时简化为 PAR + 罚杆
-            // 实际的 "成绩" 应该是用户直接输入的总杆数，其他是辅助统计。
-            // 这里我们让 "成绩" 跟随其他项变化
-            const totalScore = (playerScore.putts || 0) + (playerScore.penalty_strokes || 0);
-            // 这个逻辑需要根据产品需求细化，暂时以推杆+罚杆为例
-            // this.setData({
-            //     [`localScores[${playerIndex}].score`]: totalScore
-            // });
-        },
+
 
         async _saveChanges() {
             if (this.data.isSaving) {
                 console.log('⚠️ [ScoreInputPanel] 正在保存中，跳过本次保存');
-                return; // 防止重复提交
+                return false; // 防止重复提交，返回false表示未执行保存
             }
             const holeIndexForStore = this.data.holeInfo.originalIndex; // 用于更新store的数组索引
             const holeUniqueKeyForAPI = this.data.holeInfo.unique_key; // 用于发送给API的唯一键
 
             if (holeIndexForStore === undefined) {
                 console.error("❌ [ScoreInputPanel] 无法获取到holeIndex，保存失败");
-                return;
+                return false;
             }
 
             console.log('💾 [ScoreInputPanel] 开始保存流程:', {
@@ -196,67 +189,116 @@ Component({
                 };
 
                 console.log('📡 [ScoreInputPanel] 发送API请求:', apiData);
-                await app.api.game.saveGameScore(apiData);  // 修复：使用正确的方法名
-                console.log('✅ [ScoreInputPanel] API调用成功');
+                console.log('📡 [ScoreInputPanel] API调用前检查Loading状态');
+
+                // 🔧 禁用API自带的Loading，使用组件自己的isSaving状态管理
+                const result = await app.api.game.saveGameScore(apiData, {
+                    showLoading: false // 禁用API自带的Loading
+                });
+
+                console.log('✅ [ScoreInputPanel] API调用成功，返回结果:', result);
                 wx.showToast({ title: '已保存', icon: 'success', duration: 1500 });
+                return true; // 返回true表示保存成功
 
             } catch (err) {
                 // 5. 失败回滚
                 console.error('❌ [ScoreInputPanel] API调用失败，开始回滚:', err);
+
+                // 强制隐藏可能卡住的Loading
+                try {
+                    wx.hideLoading();
+                    console.log('🔧 [ScoreInputPanel] 异常处理中强制隐藏Loading');
+                } catch (e) {
+                    console.log('🔧 [ScoreInputPanel] 强制隐藏Loading失败:', e.message);
+                }
+
                 wx.showToast({ title: '保存失败,已撤销', icon: 'error' });
                 this.batchUpdateScoresForHole({
                     holeIndex: holeIndexForStore,
                     scoresToUpdate: oldScores,
                 });
                 console.log('🔄 [ScoreInputPanel] 回滚完成');
+                return false; // 返回false表示保存失败
 
             } finally {
                 // 6. 无论成功失败，都结束保存状态
+                console.log('💾 [ScoreInputPanel] 进入finally块，开始清理');
                 console.log('💾 [ScoreInputPanel] 重置保存状态为false');
                 this.setSaving(false);
                 console.log('💾 [ScoreInputPanel] 保存流程结束，isSaving 已重置为 false');
 
-                // 7. 等待一个微任务周期，确保状态更新完成
+                // 7. 多重保险：强制隐藏可能残留的Loading
+                try {
+                    wx.hideLoading();
+                    console.log('🔧 [ScoreInputPanel] finally块中强制隐藏Loading完成');
+                } catch (e) {
+                    console.log('🔧 [ScoreInputPanel] finally块中强制隐藏Loading失败（可能本来就没有Loading）:', e.message);
+                }
+
+                // 8. 额外保险：延迟再次检查并隐藏Loading
+                setTimeout(() => {
+                    try {
+                        wx.hideLoading();
+                        console.log('🔧 [ScoreInputPanel] 延迟强制隐藏Loading完成');
+                    } catch (e) {
+                        console.log('🔧 [ScoreInputPanel] 延迟强制隐藏Loading失败:', e.message);
+                    }
+                }, 500);
+
+                // 9. 等待一个微任务周期，确保状态更新完成
                 await new Promise(resolve => setTimeout(resolve, 0));
+                console.log('💾 [ScoreInputPanel] _saveChanges方法完全结束');
             }
         },
 
         async handleConfirm() {
             console.log('🎯 handleConfirm 开始，当前 isSaving:', this.data.isSaving);
-            await this._saveChanges();
 
-            // 等待状态更新完成
-            await new Promise(resolve => setTimeout(resolve, 10));
-            console.log('🎯 _saveChanges 完成，当前 isSaving:', this.data.isSaving);
-
-            // 移除这个检查，因为 _saveChanges 已经处理了保存状态
-            // if (this.data.isSaving) {
-            //     console.log('⚠️ 仍在保存中，不执行后续操作');
-            //     return; // 如果仍在保存中，则不切换
-            // }
-
-            const currentIndex = this.data.activePlayerIndex;
-            const totalPlayers = this.data.players.length;
-
-            console.log('🎯 准备切换/隐藏，当前玩家:', currentIndex, '总玩家数:', totalPlayers);
-            console.log('🎯 判断条件:', currentIndex, '<', totalPlayers - 1, '=', currentIndex < totalPlayers - 1);
-
-            if (currentIndex < totalPlayers - 1) {
-                console.log('🎯 切换到下一个玩家');
-                this._updateScopingAreaPosition(currentIndex + 1);
-            } else {
-                console.log('🎯 隐藏 Panel');
-                this.hide();
+            // 🔧 防止重复点击：如果正在保存，直接返回
+            if (this.data.isSaving) {
+                console.log('⚠️ [ScoreInputPanel] 正在保存中，忽略重复点击');
+                return;
             }
+
+            try {
+                const saveResult = await this._saveChanges();
+                if (saveResult === false) {
+                    console.log('⚠️ [ScoreInputPanel] 保存被跳过或失败，不关闭面板');
+                    return; // 保存失败或被跳过，不关闭面板
+                }
+                console.log('✅ [ScoreInputPanel] _saveChanges 执行成功');
+            } catch (error) {
+                console.error('❌ [ScoreInputPanel] _saveChanges 执行失败:', error);
+                return; // 如果保存失败，不执行后续操作
+            }
+
+            // 🔧 保存成功后直接关闭面板
+            console.log('🎯 保存完成，关闭面板');
+            this.hide();
+
             console.log('🎯 handleConfirm 结束');
         },
 
         handleClear() {
+            // 🔧 防止在保存过程中执行清除操作
+            if (this.data.isSaving) {
+                console.log('⚠️ [ScoreInputPanel] 正在保存中，不能执行清除操作');
+                wx.showToast({ title: '请稍后再试', icon: 'none' });
+                return;
+            }
+
             wx.showModal({
                 title: '确认清除',
                 content: '确定要清除本洞所有人的成绩吗？',
                 success: async (res) => {
                     if (res.confirm) {
+                        // 🔧 再次检查保存状态，防止用户在弹窗期间触发了其他保存操作
+                        if (this.data.isSaving) {
+                            console.log('⚠️ [ScoreInputPanel] 确认时正在保存中，取消清除操作');
+                            wx.showToast({ title: '请稍后再试', icon: 'none' });
+                            return;
+                        }
+
                         const clearedScores = this.data.localScores.map(item => ({
                             ...item,
                             score: 0,
@@ -265,15 +307,22 @@ Component({
                             sand_save: 0,
                         }));
                         this.setData({ localScores: clearedScores });
-                        await this._saveChanges();
-                        this.hide();
+
+                        try {
+                            const saveResult = await this._saveChanges();
+                            if (saveResult !== false) {
+                                this.hide(); // 只有保存成功才关闭面板
+                            }
+                        } catch (error) {
+                            console.error('❌ [ScoreInputPanel] 清除后保存失败:', error);
+                        }
                     }
                 }
             });
         },
 
         async handleMaskClick() {
-            await this._saveChanges();
+            console.log('👆 [ScoreInputPanel] 点击遮罩层，直接关闭面板');
             this.hide();
         },
 

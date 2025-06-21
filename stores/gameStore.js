@@ -76,7 +76,7 @@ export const gameStore = observable({
     }),
 
     // 根据 groupId 过滤玩家
-    _filterPlayersByGroup: action(function (players, groupId) {
+    _filterPlayersByGroup: action((players, groupId) => {
         if (!groupId) {
             console.log('📦 [Store] 无 groupId，返回所有玩家');
             return players;
@@ -86,17 +86,6 @@ export const gameStore = observable({
             const playerGroupId = String(player.groupid || player.group_id || '');
             const targetGroupId = String(groupId);
             return playerGroupId === targetGroupId;
-        });
-
-        console.log('📦 [Store] 按分组过滤玩家:', {
-            原始玩家数: players.length,
-            目标分组: groupId,
-            过滤后玩家数: filteredPlayers.length,
-            过滤后玩家: filteredPlayers.map(p => ({
-                userid: p.userid,
-                nickname: p.nickname,
-                groupid: p.groupid || p.group_id
-            }))
         });
 
         return filteredPlayers;
@@ -147,24 +136,6 @@ export const gameStore = observable({
                 console.warn(`⚠️ 洞 ${index + 1} 的 unique_key 不是字符串类型!`);
             }
         });
-
-        // 打印调试信息，确认玩家数据的类型
-        console.log('📦 [Store] 处理后的玩家数据 nickname 类型检查:');
-        players.forEach((player, index) => {
-            const nicknameType = typeof player.nickname;
-            const nicknameValue = player.nickname;
-            console.log(`玩家 ${index + 1}: nickname = "${nicknameValue}" (类型: ${nicknameType})`);
-            if (nicknameType !== 'string') {
-                console.warn(`⚠️ 玩家 ${index + 1} 的 nickname 不是字符串类型!`);
-            }
-        });
-
-        console.log('📦 [Store] 数据处理完成:', {
-            gameId: this.gameid,
-            groupId: this.groupId,
-            玩家数量: this.players.length,
-            洞数量: this.holes.length
-        });
     }),
 
     // ---- Actions (修改状态的动作) ----
@@ -214,22 +185,12 @@ export const gameStore = observable({
 
     // 更新单个格子的分数
     updateCellScore: action(function ({ playerIndex, holeIndex, score, putts, penalty_strokes, sand_save }) {
-        console.log(`🚀 [gameStore] updateCellScore 开始 - 玩家${playerIndex} 洞${holeIndex}`);
-        console.log(`🚀 [gameStore] 更新数据:`, { score, putts, penalty_strokes, sand_save });
 
         // 使用可选链确保分数对象存在
         const scoreObj = this.scores?.[playerIndex]?.[holeIndex];
 
-        if (!scoreObj) {
-            console.error(`❌ [gameStore] 无法找到分数对象: playerIndex=${playerIndex}, holeIndex=${holeIndex}`);
-            console.error(`❌ [gameStore] scores数组状态:`, {
-                scoresLength: this.scores?.length,
-                playerScoresLength: this.scores?.[playerIndex]?.length
-            });
-            return;
-        }
+        if (!scoreObj) { return; }
 
-        console.log(`📊 [gameStore] 更新前的分数:`, { ...scoreObj });
 
         // 🔧 更激进的修复：完全替换整个scores数组来强制触发响应式更新
         // 创建新的scores数组副本
@@ -278,10 +239,6 @@ export const gameStore = observable({
         setTimeout(() => {
             this.isSaving = !this.isSaving;
         }, 100);
-        console.log(`🧪 [gameStore] 测试性更新isSaving字段，期望触发组件响应`);
-
-        console.log(`📊 [gameStore] 更新后的分数:`, { ...newScores[playerIndex][holeIndex] });
-        console.log(`🎯 [gameStore] updateCellScore 完成 - 已强制替换整个scores数组`);
     }),
 
     // 用于回滚的批量更新
