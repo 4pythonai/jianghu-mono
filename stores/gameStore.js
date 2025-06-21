@@ -38,7 +38,7 @@ export const gameStore = observable({
     _normalizeScore: action((score) => {
         return {
             score: Number(score.score) || 0,
-            putt: Number(score.putt) || 0,
+            putts: Number(score.putts) || 0,
             penalty_strokes: Number(score.penalty_strokes) || 0,
             sand_save: Number(score.sand_save) || 0
         };
@@ -48,7 +48,7 @@ export const gameStore = observable({
     _createDefaultScore: action(() => {
         return {
             score: 0,
-            putt: 0,
+            putts: 0,
             penalty_strokes: 0,
             sand_save: 0
         };
@@ -213,12 +213,12 @@ export const gameStore = observable({
     }),
 
     // 更新单个格子的分数
-    updateCellScore: action(function ({ playerIndex, holeIndex, score, putt, penalty_strokes, sand_save }) {
+    updateCellScore: action(function ({ playerIndex, holeIndex, score, putts, penalty_strokes, sand_save }) {
         // 使用可选链确保分数对象存在
         const scoreObj = this.scores?.[playerIndex]?.[holeIndex];
         if (scoreObj) {
             if (score !== undefined) scoreObj.score = score;
-            if (putt !== undefined) scoreObj.putt = putt;
+            if (putts !== undefined) scoreObj.putts = putts;
             if (penalty_strokes !== undefined) scoreObj.penalty_strokes = penalty_strokes;
             if (sand_save !== undefined) scoreObj.sand_save = sand_save;
         }
@@ -263,9 +263,9 @@ export const gameStore = observable({
     }),
 
     // 格式化推杆显示
-    formatPutt: action((putt) => {
-        if (!putt || putt === 0) return '0';
-        return putt.toString();
+    formatputts: action((putts) => {
+        if (!putts || putts === 0) return '0';
+        return putts.toString();
     }),
 
     // 格式化差值显示

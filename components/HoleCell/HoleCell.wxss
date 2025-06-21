@@ -50,7 +50,7 @@
 }
 
 /* 推杆数样式 */
-.putt-text {
+.putts-text {
 	position: absolute;
 	bottom: 10px;
 	left: 10px;

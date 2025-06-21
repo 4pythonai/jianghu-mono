@@ -25,7 +25,7 @@ Component({
             type: String,
             value: ''
         },
-        putt: {
+        putts: {
             type: Number,
             value: 0
         },
@@ -46,7 +46,7 @@ Component({
     },
 
     data: {
-        formattedPutt: '',
+        formattedputts: '',
         formattedDiff: '',
         formattedScore: '',
         scoreClass: '',
@@ -67,18 +67,18 @@ Component({
 
             // 计算 diff
             this.calculateAndUpdateDiff();
-            
-            const { putt = 0, score = 0 } = this.properties;
+
+            const { putts = 0, score = 0 } = this.properties;
             this.setData({
-                formattedPutt: putt !== 0 ? putt.toString() : '0',
+                formattedputts: putts !== 0 ? putts.toString() : '0',
                 formattedScore: score !== 0 ? score.toString() : '0'
             });
 
             this.observers = {
-                'putt': function (putt) {
-                    if (putt !== undefined && putt !== null) {
+                'putts': function (putts) {
+                    if (putts !== undefined && putts !== null) {
                         this.setData({
-                            formattedPutt: putt.toString()
+                            formattedputts: putts.toString()
                         });
                     }
                 }.bind(this),
@@ -107,15 +107,15 @@ Component({
         calculateAndUpdateDiff: function () {
             const { score = 0, par = 0 } = this.properties;
             const calculatedDiff = (score > 0 && par > 0) ? score - par : 0;
-            
+
             const prefix = calculatedDiff > 0 ? '+' : '';
             const formattedDiff = calculatedDiff !== 0 ? prefix + calculatedDiff.toString() : '0';
-            
+
             this.setData({
                 calculatedDiff: calculatedDiff,
                 formattedDiff: formattedDiff
             });
-            
+
             this.updateScoreClass(calculatedDiff);
         },
 

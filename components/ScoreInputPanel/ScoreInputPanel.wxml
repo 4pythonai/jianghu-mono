@@ -46,9 +46,9 @@
           <view class="score-row">
             <text class="score-label">推杆</text>
             <view class="score-control">
-              <view class="control-btn minus" data-type="putt" data-amount="-1" bind:tap="changeScore">-</view>
-              <text class="score-value">{{localScores[activePlayerIndex].putt}}</text>
-              <view class="control-btn plus" data-type="putt" data-amount="1" bind:tap="changeScore">+</view>
+              <view class="control-btn minus" data-type="putts" data-amount="-1" bind:tap="changeScore">-</view>
+              <text class="score-value">{{localScores[activePlayerIndex].putts}}</text>
+              <view class="control-btn plus" data-type="putts" data-amount="1" bind:tap="changeScore">+</view>
             </view>
           </view>
           <view class="score-row">

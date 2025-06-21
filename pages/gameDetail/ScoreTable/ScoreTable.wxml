@@ -29,7 +29,7 @@
 							par="{{ holeList[holeIndex].par }}"
 							unique_key="{{ holeList[holeIndex].unique_key }}"
 							score="{{ playerScores[playerIndex][holeIndex].score }}"
-							putt="{{ playerScores[playerIndex][holeIndex].putt }}"
+							putts="{{ playerScores[playerIndex][holeIndex].putts }}"
 							penalty_strokes="{{ playerScores[playerIndex][holeIndex].penalty_strokes }}"
 							sand_save="{{ playerScores[playerIndex][holeIndex].sand_save }}"
 							userid="{{ players[playerIndex].userid }}"

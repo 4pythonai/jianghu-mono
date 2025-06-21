@@ -1,10 +1,8 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../stores/gameStore';
-import gameApi from '../../api/modules/game';
 
+const app = getApp()
 Component({
-
-
     /**
      * 组件的初始数据
      */
@@ -22,7 +20,7 @@ Component({
         attached() {
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
-                fields: ['gameid', 'gameData', 'players', 'holes', 'scores', 'isSaving'],
+                fields: ['gameid', 'groupId', 'gameData', 'players', 'holes', 'scores', 'isSaving'],
                 actions: ['updateCellScore', 'setSaving', 'batchUpdateScoresForHole'],
             });
         },
@@ -64,7 +62,7 @@ Component({
                 return {
                     userid: player.userid,
                     score: scoreData.score,
-                    putt: scoreData.putt,
+                    putts: scoreData.putts,
                     penalty_strokes: scoreData.penalty_strokes || 0,
                     sand_save: scoreData.sand_save || 0,
                 };
@@ -73,7 +71,7 @@ Component({
             for (const score of localScores) {
                 if (!score.score || score.score === 0) {
                     score.score = holeInfo.par || 0;
-                    score.putt = 2;
+                    score.putts = 2;
                 }
             }
 
@@ -88,11 +86,13 @@ Component({
         },
 
         hide() {
+            console.log('🙈 执行 hide() 方法');
             this.setData({
                 isVisible: false,
                 holeInfo: null,
                 localScores: [],
             });
+            console.log('🙈 hide() 方法执行完成，isVisible:', this.data.isVisible);
         },
 
         switchPlayer(e) {
@@ -125,7 +125,7 @@ Component({
             // 成绩 = PAR + 罚杆 + 沙坑进洞数(如果适用) + ... 这里暂时简化为 PAR + 罚杆
             // 实际的 "成绩" 应该是用户直接输入的总杆数，其他是辅助统计。
             // 这里我们让 "成绩" 跟随其他项变化
-            const totalScore = (playerScore.putt || 0) + (playerScore.penalty_strokes || 0);
+            const totalScore = (playerScore.putts || 0) + (playerScore.penalty_strokes || 0);
             // 这个逻辑需要根据产品需求细化，暂时以推杆+罚杆为例
             // this.setData({
             //     [`localScores[${playerIndex}].score`]: totalScore
@@ -153,23 +153,29 @@ Component({
             this.setSaving(true);
 
             // 3. 乐观更新
+            console.log('🔄 开始乐观更新，holeIndex:', holeIndexForStore);
             for (let i = 0; i < this.data.localScores.length; i++) {
                 const playerScore = this.data.localScores[i];
+                console.log(`🔄 更新玩家 ${i} 分数:`, playerScore);
                 this.updateCellScore({
                     playerIndex: i,
                     holeIndex: holeIndexForStore,
                     ...playerScore
                 });
             }
+            console.log('✅ 乐观更新完成');
 
             try {
                 // 4. 调用API
                 const apiData = {
                     gameId: this.data.gameid,
-                    holeIndex: holeUniqueKeyForAPI, // <--- 使用 unique_key
+                    groupId: this.data.groupId, // 添加分组ID
+                    holeUniqueKey: holeUniqueKeyForAPI, // 使用 unique_key 作为洞的唯一标识
                     scores: this.data.localScores,
                 };
-                await gameApi.saveGameScores(apiData);
+
+                console.log('💾 保存分数数据:', apiData);
+                await app.api.game.saveGameScore(apiData);  // 修复：使用正确的方法名
                 wx.showToast({ title: '已保存', icon: 'success', duration: 1500 });
 
             } catch (err) {
@@ -183,20 +189,41 @@ Component({
             } finally {
                 // 6. 无论成功失败，都结束保存状态
                 this.setSaving(false);
+                console.log('💾 保存流程结束，isSaving 已重置为 false');
+
+                // 7. 等待一个微任务周期，确保状态更新完成
+                await new Promise(resolve => setTimeout(resolve, 0));
             }
         },
 
         async handleConfirm() {
+            console.log('🎯 handleConfirm 开始，当前 isSaving:', this.data.isSaving);
             await this._saveChanges();
-            if (this.data.isSaving) return; // 如果仍在保存中，则不切换
+
+            // 等待状态更新完成
+            await new Promise(resolve => setTimeout(resolve, 10));
+            console.log('🎯 _saveChanges 完成，当前 isSaving:', this.data.isSaving);
+
+            // 移除这个检查，因为 _saveChanges 已经处理了保存状态
+            // if (this.data.isSaving) {
+            //     console.log('⚠️ 仍在保存中，不执行后续操作');
+            //     return; // 如果仍在保存中，则不切换
+            // }
+
             const currentIndex = this.data.activePlayerIndex;
             const totalPlayers = this.data.players.length;
 
+            console.log('🎯 准备切换/隐藏，当前玩家:', currentIndex, '总玩家数:', totalPlayers);
+            console.log('🎯 判断条件:', currentIndex, '<', totalPlayers - 1, '=', currentIndex < totalPlayers - 1);
+
             if (currentIndex < totalPlayers - 1) {
+                console.log('🎯 切换到下一个玩家');
                 this._updateScopingAreaPosition(currentIndex + 1);
             } else {
+                console.log('🎯 隐藏 Panel');
                 this.hide();
             }
+            console.log('🎯 handleConfirm 结束');
         },
 
         handleClear() {
@@ -208,7 +235,7 @@ Component({
                         const clearedScores = this.data.localScores.map(item => ({
                             ...item,
                             score: 0,
-                            putt: 0,
+                            putts: 0,
                             penalty_strokes: 0,
                             sand_save: 0,
                         }));
