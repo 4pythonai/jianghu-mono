@@ -67,16 +67,51 @@ App({
     },
 
     /**
-     * 初始化系统信息
+     * 初始化系统信息 - 使用新的 API
      */
     initSystemInfo() {
+        try {
+            // 使用新的 API 获取系统信息
+            const deviceInfo = wx.getDeviceInfo()
+            const windowInfo = wx.getWindowInfo()
+            const appBaseInfo = wx.getAppBaseInfo()
+
+            // 合并系统信息，保持与旧 API 的兼容性
+            this.globalData.systemInfo = {
+                ...deviceInfo,
+                ...windowInfo,
+                ...appBaseInfo,
+                // 添加一些常用的计算属性
+                screenWidth: windowInfo.screenWidth,
+                screenHeight: windowInfo.screenHeight,
+                windowWidth: windowInfo.windowWidth,
+                windowHeight: windowInfo.windowHeight,
+                pixelRatio: windowInfo.pixelRatio,
+                platform: deviceInfo.platform,
+                system: deviceInfo.system,
+                version: appBaseInfo.version,
+                SDKVersion: appBaseInfo.SDKVersion
+            }
+
+            console.log('📱 系统信息获取成功:', this.globalData.systemInfo)
+        } catch (error) {
+            console.error('❌ 获取系统信息失败:', error)
+            // 降级处理：如果新 API 不可用，尝试使用旧 API
+            this.fallbackGetSystemInfo()
+        }
+    },
+
+    /**
+     * 降级处理：使用旧的系统信息 API
+     */
+    fallbackGetSystemInfo() {
         wx.getSystemInfo({
             success: (res) => {
                 this.globalData.systemInfo = res
-                console.log('📱 系统信息获取成功')
+                console.log('📱 系统信息获取成功（降级模式）')
             },
             fail: (err) => {
-                console.error('❌ 获取系统信息失败:', err)
+                console.error('❌ 获取系统信息失败（降级模式）:', err)
             }
         })
     },
@@ -235,24 +270,24 @@ App({
     // 检查loading状态
     checkLoading() {
         console.log('🔍 检查loading状态')
-        if (this.http) {
-            const status = this.http.getLoadingStatus()
-            console.log('📊 Loading状态:', status)
-
-            // 检查是否有异常状态
-            if (status.isLoading && status.loadingCount === 0) {
-                console.warn('⚠️ 异常：isLoading为true但loadingCount为0')
-            }
-
-            if (status.hasShowTimer && status.hasHideTimer) {
-                console.warn('⚠️ 异常：同时存在显示和隐藏定时器')
-            }
-
-            return status
-        } else {
+        if (!this.http) {
             console.error('❌ HTTP客户端未初始化')
             return null
         }
+
+        const status = this.http.getLoadingStatus()
+        console.log('📊 Loading状态:', status)
+
+        // 检查是否有异常状态
+        if (status.isLoading && status.loadingCount === 0) {
+            console.warn('⚠️ 异常：isLoading为true但loadingCount为0')
+        }
+
+        if (status.hasShowTimer && status.hasHideTimer) {
+            console.warn('⚠️ 异常：同时存在显示和隐藏定时器')
+        }
+
+        return status
     },
 
     // 强制隐藏loading
@@ -328,9 +363,5 @@ App({
             console.log('4️⃣ 修复后状态检查')
             this.checkLoading()
         }, 200)
-    },
-
-
-
-
+    }
 })

@@ -29,8 +29,8 @@
             starType="{{item.star_type}}" 
             gameId="{{item.game_id}}"
             groups="{{item.groups}}"
-            groupid="{{item.groupid}}"
-            group_name="{{item.group_name}}" />
+            groupid="{{item.groupid || ''}}"
+            group_name="{{item.group_name || ''}}" />
         </block>
       </view>
       <view class="tab-pane" hidden="{{currentTab !== 1}}">

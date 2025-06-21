@@ -2,60 +2,45 @@ import { observable, action } from 'mobx-miniprogram'
 import gameApi from '../api/modules/game' // 导入整个默认导出的对象
 
 export const gameStore = observable({
-    // ---- Observables (可观察的状态) ----
+    // ---- 状态数据 ----
+    gameData: null,      // 原始游戏数据
+    players: [],         // 玩家列表
+    holes: [],           // 洞信息列表
+    scores: [],          // 分数矩阵 [playerIndex][holeIndex]
+    loading: false,      // 加载状态
+    error: null,         // 错误信息
+    isSaving: false,     // 保存状态
+    gameid: null,        // 当前游戏ID
+    groupId: null,       // 当前分组ID
 
-    // 游戏ID
-    gameid: '',
-    // 完整的游戏数据
-    gameData: null,
-    // 参与玩家列表
-    players: [],
-    // 所有洞的信息
-    holes: [],
-    // 分数二维数组, 结构: scores[playerIndex][holeIndex]
-    scores: [],
-    // 加载状态
-    loading: false,
-    // 错误信息
-    error: null,
-    // 保存状态
-    isSaving: false,
-
-    // ---- 私有辅助方法 ----
-
-    // 标准化洞数据
-    _normalizeHole: action((hole) => {
-        const par = Number(hole.par);
-        return {
-            ...hole,
-            holeid: hole.holeid ? String(hole.holeid) : '',
-            // 确保 unique_key 始终是字符串，即使原值是 null 或 undefined
-            unique_key: hole.unique_key != null ? String(hole.unique_key) : '',
-            par: Number.isNaN(par) ? 0 : par,
-        };
-    }),
+    // ---- 私有方法 (数据处理) ----
 
     // 标准化玩家数据
     _normalizePlayer: action((player) => {
         return {
             ...player,
-            userid: String(player.userid || ''),
-            // 确保 nickname 字段存在且为字符串，优先级：nickname > wx_nickname > 默认值
-            nickname: player.nickname != null ? String(player.nickname) :
-                (player.wx_nickname != null ? String(player.wx_nickname) : '未知玩家'),
-            // 确保其他可能为 null 的字段也是字符串
-            avatar: player.avatar != null ? String(player.avatar) : '',
-            tee: player.tee != null ? String(player.tee) : '',
+            userid: player.userid != null ? String(player.userid) : (player.user_id != null ? String(player.user_id) : ''),
+            nickname: player.nickname || player.wx_nickname || '未知玩家'
+        };
+    }),
+
+    // 标准化洞数据
+    _normalizeHole: action((hole) => {
+        return {
+            ...hole,
+            holeid: hole.holeid != null ? String(hole.holeid) : '',
+            unique_key: hole.unique_key != null ? String(hole.unique_key) : '',
+            par: Number(hole.par) || 0
         };
     }),
 
     // 标准化分数数据
     _normalizeScore: action((score) => {
         return {
-            score: Number(score.score || 0),
-            putt: Number(score.putt || 0),
-            diff: Number(score.diff || 0),
-            gambleflag: String(score.gambleflag || ''),
+            score: Number(score.score) || 0,
+            putt: Number(score.putt) || 0,
+            penalty_strokes: Number(score.penalty_strokes) || 0,
+            sand_save: Number(score.sand_save) || 0
         };
     }),
 
@@ -64,8 +49,8 @@ export const gameStore = observable({
         return {
             score: 0,
             putt: 0,
-            diff: 0,
-            gambleflag: '',
+            penalty_strokes: 0,
+            sand_save: 0
         };
     }),
 
@@ -90,8 +75,39 @@ export const gameStore = observable({
         }
     }),
 
-    _processGameData: action(function (gameData) {
-        const players = (gameData.players || []).map(p => this._normalizePlayer(p));
+    // 根据 groupId 过滤玩家
+    _filterPlayersByGroup: action(function (players, groupId) {
+        if (!groupId) {
+            console.log('📦 [Store] 无 groupId，返回所有玩家');
+            return players;
+        }
+
+        const filteredPlayers = players.filter(player => {
+            const playerGroupId = String(player.groupid || player.group_id || '');
+            const targetGroupId = String(groupId);
+            return playerGroupId === targetGroupId;
+        });
+
+        console.log('📦 [Store] 按分组过滤玩家:', {
+            原始玩家数: players.length,
+            目标分组: groupId,
+            过滤后玩家数: filteredPlayers.length,
+            过滤后玩家: filteredPlayers.map(p => ({
+                userid: p.userid,
+                nickname: p.nickname,
+                groupid: p.groupid || p.group_id
+            }))
+        });
+
+        return filteredPlayers;
+    }),
+
+    _processGameData: action(function (gameData, groupId = null) {
+        // 标准化所有玩家数据
+        const allPlayers = (gameData.players || []).map(p => this._normalizePlayer(p));
+
+        // 根据 groupId 过滤玩家（如果提供了 groupId）
+        const players = this._filterPlayersByGroup(allPlayers, groupId);
 
         const holes = (gameData.holeList || []).map(h => this._normalizeHole(h));
 
@@ -101,6 +117,7 @@ export const gameStore = observable({
             scoreMap.set(key, this._normalizeScore(s));
         }
 
+        // 只为当前分组的玩家创建分数矩阵
         const scores = players.map(player => {
             return holes.map(hole => {
                 const key = `${player.userid}_${hole.holeid}`;
@@ -115,9 +132,10 @@ export const gameStore = observable({
 
         // 用清洗过的数据更新状态
         this.gameData = gameData;
-        this.players = players;
+        this.players = players;  // 注意：这里是过滤后的玩家
         this.holes = holes;
-        this.scores = scores;
+        this.scores = scores;    // 注意：这里是过滤后玩家的分数矩阵
+        this.groupId = groupId;  // 存储当前分组ID
 
         // 打印调试信息，确认 unique_key 类型
         console.log('📦 [Store] 处理后的洞数据 unique_key 类型检查:');
@@ -140,6 +158,13 @@ export const gameStore = observable({
                 console.warn(`⚠️ 玩家 ${index + 1} 的 nickname 不是字符串类型!`);
             }
         });
+
+        console.log('📦 [Store] 数据处理完成:', {
+            gameId: this.gameid,
+            groupId: this.groupId,
+            玩家数量: this.players.length,
+            洞数量: this.holes.length
+        });
     }),
 
     // ---- Actions (修改状态的动作) ----
@@ -157,6 +182,7 @@ export const gameStore = observable({
         this.loading = true;
         this.error = null;
         this.gameid = gameId;
+        this.groupId = groupId;  // 存储分组ID
 
         try {
             // 构建请求参数
@@ -173,7 +199,7 @@ export const gameStore = observable({
             console.log('📦 [Store] API 响应:', res);
             if (res?.code === 200 && res.game_detail) {
                 // ** 调用私有方法处理数据 **
-                this._processGameData(res.game_detail);
+                this._processGameData(res.game_detail, groupId);
             } else {
                 throw new Error(res?.msg || '获取比赛详情失败');
             }

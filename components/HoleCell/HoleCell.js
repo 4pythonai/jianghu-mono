@@ -29,17 +29,19 @@ Component({
             type: Number,
             value: 0
         },
-        diff: {
-            type: Number,
-            value: 0
-        },
+        // 移除 diff，改为计算属性
         score: {
             type: Number,
             value: 0
         },
-        gambleflag: {
-            type: String,
-            value: ''
+        // 新的字段，替代 gambleflag
+        penalty_strokes: {
+            type: Number,
+            value: 0
+        },
+        sand_save: {
+            type: Number,
+            value: 0
         }
     },
 
@@ -48,7 +50,7 @@ Component({
         formattedDiff: '',
         formattedScore: '',
         scoreClass: '',
-        formattedGambleflag: ''
+        calculatedDiff: 0
     },
 
     lifetimes: {
@@ -63,15 +65,14 @@ Component({
                 console.warn(`⚠️ [HoleCell] unique_key 不是字符串类型: ${typeof this.properties.unique_key}, 值: ${this.properties.unique_key}`);
             }
 
-            const { putt = 0, diff = 0, score = 0, gambleflag = '' } = this.properties;
+            // 计算 diff
+            this.calculateAndUpdateDiff();
+            
+            const { putt = 0, score = 0 } = this.properties;
             this.setData({
                 formattedPutt: putt !== 0 ? putt.toString() : '0',
-                formattedDiff: diff !== 0 ? (diff > 0 ? '+' : '') + diff.toString() : '0',
-                formattedScore: score !== 0 ? score.toString() : '0',
-                formattedGambleflag: gambleflag !== '' ? gambleflag : ''
+                formattedScore: score !== 0 ? score.toString() : '0'
             });
-
-            this.updateScoreClass(diff);
 
             this.observers = {
                 'putt': function (putt) {
@@ -81,41 +82,18 @@ Component({
                         });
                     }
                 }.bind(this),
-                'diff': function (diff) {
-                    if (diff !== undefined && diff !== null) {
-                        const prefix = diff > 0 ? '+' : '';
-                        this.setData({
-                            formattedDiff: prefix + diff.toString()
-                        });
-                        if (typeof this.updateScoreClass === 'function') {
-                            this.updateScoreClass(diff);
-                        }
-                    }
-                }.bind(this),
                 'score, par': function (score, par) {
-                    if (score !== undefined && score !== null && par !== undefined && par !== null) {
+                    if (score !== undefined && score !== null) {
                         this.setData({
                             formattedScore: score.toString()
                         });
-
-                        if (this.properties.diff === 0 && score > 0 && par > 0) {
-                            const calculatedDiff = score - par;
-                            const prefix = calculatedDiff > 0 ? '+' : '';
-                            this.setData({
-                                formattedDiff: prefix + calculatedDiff.toString()
-                            });
-                            if (typeof this.updateScoreClass === 'function') {
-                                this.updateScoreClass(calculatedDiff);
-                            }
-                        }
                     }
+                    // 重新计算 diff
+                    this.calculateAndUpdateDiff();
                 }.bind(this),
-                'gambleflag': function (gambleflag) {
-                    if (gambleflag !== undefined && gambleflag !== null) {
-                        this.setData({
-                            formattedGambleflag: gambleflag
-                        });
-                    }
+                'penalty_strokes, sand_save': function () {
+                    // 当罚杆或沙坑救球数据变化时，可以在这里处理
+                    console.log('penalty_strokes 或 sand_save 更新');
                 }.bind(this)
             };
         },
@@ -125,30 +103,36 @@ Component({
     },
 
     methods: {
+        // 计算并更新 diff
+        calculateAndUpdateDiff: function () {
+            const { score = 0, par = 0 } = this.properties;
+            const calculatedDiff = (score > 0 && par > 0) ? score - par : 0;
+            
+            const prefix = calculatedDiff > 0 ? '+' : '';
+            const formattedDiff = calculatedDiff !== 0 ? prefix + calculatedDiff.toString() : '0';
+            
+            this.setData({
+                calculatedDiff: calculatedDiff,
+                formattedDiff: formattedDiff
+            });
+            
+            this.updateScoreClass(calculatedDiff);
+        },
+
         updateScoreClass: function (diff) {
             let scoreClass = '';
 
             if (diff <= -2) {
                 scoreClass = 'under-par-2';
-            }
-
-            if (diff === -1) {
+            } else if (diff === -1) {
                 scoreClass = 'under-par-1';
-            }
-
-            if (diff === 0) {
+            } else if (diff === 0) {
                 scoreClass = 'score-par';
-            }
-
-            if (diff === 1) {
+            } else if (diff === 1) {
                 scoreClass = 'over-par-1';
-            }
-
-            if (diff === 2) {
+            } else if (diff === 2) {
                 scoreClass = 'over-par-2';
-            }
-
-            if (diff >= 3) {
+            } else if (diff >= 3) {
                 scoreClass = 'over-par-3';
             }
 
