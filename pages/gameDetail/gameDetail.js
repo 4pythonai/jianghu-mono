@@ -101,5 +101,17 @@ Page({
         } else {
             console.error("无法找到 #scoreInputPanel 组件");
         }
-    }
+    },
+
+    // OperationBar 添加按钮点击事件
+    onAddClick(e) {
+        console.log('📊 [GameDetail] OperationBar 添加按钮被点击');
+        // TODO: 实现添加功能，比如添加玩家、添加洞等
+        wx.showToast({
+            title: '添加功能开发中',
+            icon: 'none'
+        });
+    },
+
+
 });

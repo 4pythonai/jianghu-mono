@@ -4,6 +4,7 @@
 		"gamble": "./gamble/gamble",
 		"bbs": "./bbs/bbs",
 		"ScoreTable": "./ScoreTable/ScoreTable",
+		"OperationBar": "./OperationBar/OperationBar",
 		"ScoreInputPanel": "/components/ScoreInputPanel/ScoreInputPanel"
 	}
 }

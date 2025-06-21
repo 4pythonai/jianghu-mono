@@ -2,10 +2,6 @@ import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../../stores/gameStore'
 
 Component({
-    properties: {
-        // gameId 和 gameData 将通过 store 获取，不再需要作为属性传递
-    },
-
     data: {
         // playerScores, players, holeList, playerTotals 将从 store 映射过来
         scrollSync: true, // 是否同步滚动
@@ -40,18 +36,14 @@ Component({
     },
 
     observers: {
-        'playerScores': function (newScores) {
-            console.log('📊 [ScoreTable] playerScores变化检测:', {
-                有数据: !!newScores,
-                玩家数量: newScores?.length,
-                时间戳: new Date().toLocaleTimeString()
-            });
+        'playerScores': (newScores) => {
+
 
             // 详细检查变化内容
             if (newScores && newScores.length > 0) {
                 // 检查是否有非零分数，表示真正的数据更新
                 let hasRealData = false;
-                let changedCells = [];
+                const changedCells = [];
 
                 for (let p = 0; p < newScores.length; p++) {
                     for (let h = 0; h < (newScores[p]?.length || 0); h++) {
@@ -73,11 +65,11 @@ Component({
         },
 
         // 添加对其他字段的监听，测试MobX绑定是否正常
-        'players': function (newPlayers) {
+        'players': (newPlayers) => {
             console.log('📊 [ScoreTable] players变化检测:', newPlayers?.length);
         },
 
-        'holeList': function (newHoles) {
+        'holeList': (newHoles) => {
             console.log('📊 [ScoreTable] holeList变化检测:', newHoles?.length);
         }
     },
