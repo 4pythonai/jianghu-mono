@@ -30,7 +30,15 @@
   </view>
   <view class="detail-row">
     <text class="detail-label">创建人:</text>
-    <text class="detail-value">{{gameData.creator || gameData.creator_name || gameData.create_user_name || '张三'}}</text>
+    <view class="creator-info">
+      <image 
+        class="creator-avatar" 
+        src="{{gameData.creator.avatar || '/images/default-avatar.png'}}" 
+        mode="aspectFill"
+        lazy-load="true"
+      ></image>
+      <text class="creator-name">{{gameData.creator.nickname || gameData.creator.wx_nickname || '未知用户'}}</text>
+    </view>
   </view>
   <view class="detail-row">
     <text class="detail-label">创建时间:</text>
