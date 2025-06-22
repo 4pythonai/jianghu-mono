@@ -1,25 +1,31 @@
 Page({
     data: {
         gameId: null,
-        webviewUrl: 'https://qiaoyincapital.com/index.html',
+        webviewUrl: 'https://qiaoyincapital.com/v3/index.php/ScoreCard?gameid=',
         showWebView: true
     },
 
     onLoad(options) {
         const gameId = options?.gameId;
         console.log('📊 [Scorecard] 页面加载', { gameId });
-
+        
+        // 动态构建webview URL
+        const finalWebviewUrl = `${this.data.webviewUrl}${gameId || ''}`;
+        
         this.setData({
-            gameId: gameId || '未获取到gameId'
+            gameId: gameId || '未获取到gameId',
+            webviewUrl: finalWebviewUrl
         });
-
+        
+        console.log('📊 [Scorecard] 最终WebView URL:', finalWebviewUrl);
+        
         // 监听屏幕旋转变化
         wx.onDeviceMotionChange(this.onDeviceMotionChange);
     },
 
     onShow() {
         console.log('📊 [Scorecard] 页面显示');
-
+        
         // 强制设置为横屏
         wx.setDeviceOrientation({
             orientation: 'landscape',
@@ -66,8 +72,8 @@ Page({
             icon: 'error',
             duration: 3000
         });
-
-        // 如果加载失败，显示备用内容
+        
+        // 如果加载失败，隐藏WebView
         this.setData({
             showWebView: false
         });
@@ -77,8 +83,9 @@ Page({
     onWebViewMessage(e) {
         console.log('📊 [Scorecard] 收到WebView消息', e);
         const messages = e.detail?.data || [];
-        messages.forEach(msg => {
+        // 修复linter错误：使用for...of替代forEach
+        for (const msg of messages) {
             console.log('📊 [Scorecard] WebView消息内容', msg);
-        });
+        }
     }
 });

@@ -291,19 +291,15 @@ export const gameStore = observable({
         return diff > 0 ? `+${diff}` : diff.toString();
     }),
 
+
     // 计算分数样式类
-    getScoreClass: action((score, par) => {
-        if (!score || !par) return 'score-par';
-
-        const diff = score - par;
-
-        if (diff <= -2) return 'under-par-2';
-        if (diff === -1) return 'under-par-1';
-        if (diff === 0) return 'score-par';
-        if (diff === 1) return 'over-par-1';
-        if (diff === 2) return 'over-par-2';
-        if (diff >= 3) return 'over-par-3';
-
+    getScoreClass: action(( diff) => {
+        if (diff <= -2) return 'score-eagle';  // score-eagle
+        if (diff === -1) return 'score-birdie'; // score-birdie
+        if (diff === 0) return 'score-par';   // score-par
+        if (diff === 1) return 'score-bogey';  // score-bogey
+        if (diff === 2) return 'score-double-bogey';  // score-double-bogey
+        if (diff >= 3) return 'score-triple-bogey';   // score-triple-bogey
         return 'score-par';
     }),
 

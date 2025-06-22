@@ -66,7 +66,7 @@
 	color: #666;
 }
 
-.under-par-2 {
+.score-eagle {
 	color: #ffffff;
 	background-color: #ff0000;
 	border-radius: 50%;
@@ -77,7 +77,7 @@
 	justify-content: center;
 }
 
-.under-par-1 {
+.score-birdie {
 	color: #ff0000;
 	background-color: #ffffff;
 	border: 2px solid #ff0000;
@@ -90,10 +90,10 @@
 }
 
 .score-par {
-	color: #000000;
+	color:  blue;
 }
 
-.over-par-1 {
+.score-bogey {
 	color: #000000;
 	background-color: #ffffff;
 	border: 2px solid #000000;
@@ -104,7 +104,7 @@
 	justify-content: center;
 }
 
-.over-par-2 {
+.score-double-bogey {
 	color: #000000;
 	background-color: #e9e2e2;
 	width: 24px;
@@ -114,7 +114,7 @@
 	justify-content: center;
 }
 
-.over-par-3 {
+.score-triple-bogey {
 	color: #000000;
 	background-color: #8a8484;
 	width: 24px;

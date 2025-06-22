@@ -26,6 +26,9 @@
 .debug-content {
 	color: #856404;
 	font-family: monospace;
+	/* 允许多行显示和换行 */
+	display: block;
+	word-wrap: break-word;
 }
 
 .page-content {
@@ -75,6 +78,29 @@ web-view {
 	font-size: 28rpx;
 }
 
+/* 加载失败提示 */
+.error-placeholder {
+	text-align: center;
+	padding: 80rpx 0;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: #e74c3c;
+}
+
+.error-text {
+	font-size: 32rpx;
+	font-weight: bold;
+	margin-bottom: 16rpx;
+}
+
+.error-desc {
+	font-size: 24rpx;
+	color: #c0392b;
+}
+
 /* 横屏专用样式 */
 @media (orientation: landscape) {
 	.container {
@@ -110,5 +136,9 @@ web-view {
 
 	.placeholder {
 		padding: 20rpx 0;
+	}
+	
+	.error-placeholder {
+		padding: 40rpx 0;
 	}
 }

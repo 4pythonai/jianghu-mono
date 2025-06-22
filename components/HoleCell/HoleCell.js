@@ -53,10 +53,7 @@ Component({
 
     observers: {
         'score, par': function (score, par) {
-            if (score > 0) {
-                console.log(`🔄 [HoleCell] 乐观更新生效 - 玩家${this.properties.playerIndex} 洞${this.properties.holeIndex}: score=${score} → 界面已更新`);
-            }
-
+       
             if (score !== undefined && score !== null) {
                 const formattedScore = score.toString();
                 this.setData({
@@ -69,9 +66,6 @@ Component({
         },
 
         'putts': function (putts) {
-            if (putts > 0) {
-                console.log(`🔄 [HoleCell] 推杆更新生效 - 玩家${this.properties.playerIndex} 洞${this.properties.holeIndex}: putts=${putts}`);
-            }
 
             if (putts !== undefined && putts !== null) {
                 const formattedputts = putts.toString();
@@ -80,12 +74,7 @@ Component({
                 });
             }
         },
-
-        'penalty_strokes, sand_save': function (penalty_strokes, sand_save) {
-            if (penalty_strokes > 0 || sand_save > 0) {
-                console.log(`🔄 [HoleCell] 罚杆/沙坑更新 - 玩家${this.properties.playerIndex} 洞${this.properties.holeIndex}: penalty=${penalty_strokes}, sand=${sand_save}`);
-            }
-        }
+ 
     },
 
     lifetimes: {
@@ -125,33 +114,12 @@ Component({
             const prefix = calculatedDiff > 0 ? '+' : '';
             const formattedDiff = calculatedDiff !== 0 ? prefix + calculatedDiff.toString() : '0';
 
+            const newScoreClass = gameStore.getScoreClass(calculatedDiff);
+
             this.setData({
                 calculatedDiff: calculatedDiff,
-                formattedDiff: formattedDiff
-            });
-
-            this.updateScoreClass(calculatedDiff);
-        },
-
-        updateScoreClass: function (diff) {
-            let scoreClass = '';
-
-            if (diff <= -2) {
-                scoreClass = 'under-par-2';
-            } else if (diff === -1) {
-                scoreClass = 'under-par-1';
-            } else if (diff === 0) {
-                scoreClass = 'score-par';
-            } else if (diff === 1) {
-                scoreClass = 'over-par-1';
-            } else if (diff === 2) {
-                scoreClass = 'over-par-2';
-            } else if (diff >= 3) {
-                scoreClass = 'over-par-3';
-            }
-
-            this.setData({
-                scoreClass: scoreClass
+                formattedDiff: formattedDiff,
+                scoreClass: newScoreClass
             });
         },
 
