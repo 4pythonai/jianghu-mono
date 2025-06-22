@@ -90,6 +90,21 @@
             height: 45px;
         }
 
+        /* 修复最后一行的双重边框问题 */
+        .scorecard-table tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        /* 确保表格容器没有额外边框 */
+        .table-container {
+            border: none;
+        }
+
+        /* 确保表格本身没有额外边框 */
+        .scorecard-table {
+            border: none !important;
+        }
+
         /* 表头样式 */
         .scorecard-table thead th {
             background: #4CAF50;
@@ -142,13 +157,12 @@
             color: #1b5e20;
         }
 
-        /* 粘性列样式 */
+        /* 粘性列样式 - 最小化样式 */
         .sticky-left {
             position: sticky;
             left: 0;
-            z-index: 10;
-            background: #f8f9fa;
-            min-width: 100px;
+            /* 完全不设置z-index，让浏览器自然处理 */
+            /* 完全不设置背景色和边框，完全依赖表格默认样式 */
         }
 
         .sticky-total {
@@ -179,14 +193,15 @@
             z-index: 6;
         }
 
-        /* 球员信息样式 */
+        /* 球员信息样式 - 强制覆盖所有可能的冲突样式 */
         .player-info {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 4px 8px !important;
-            gap: 8px;
-            min-width: 100px;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            gap: 8px !important;
+            padding: 8px 4px !important; /* 与表格默认padding一致 */
+            text-align: center !important; /* 与表格默认对齐一致 */
+            background:rgb(79, 153, 79) !important; /* 淡绿色背景 */
         }
 
         /* 用户信息列 */
@@ -225,15 +240,15 @@
         .tee-column {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end; /* 右对齐，紧贴右边框 */
             flex-shrink: 0;
         }
 
         .tee-indicator {
-            width: 20px;
+            width: 12px; /* 减少宽度 */
             height: 36px; /* 80% of 45px cell height */
-            border-radius: 2px;
-            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 2px; /* 恢复正常圆角 */
+            border: none; /* 完全无边框 */
         }
 
         /* Tee颜色 */
@@ -243,7 +258,7 @@
 
         .tee-indicator[data-tee="white"] {
             background: #ffffff;
-            border: 2px solid #333;
+            /* 暂时不设置边框，后面会加背景色来区分 */
         }
 
         .tee-indicator[data-tee="yellow"] {
@@ -344,8 +359,10 @@
                 font-size: 0.6rem;
             }
 
+            /* .player-info 不设置特殊样式，使用表格默认 */
+
             .tee-indicator {
-                width: 18px;
+                width: 10px;
                 height: 32px; /* 80% of 40px */
             }
             
@@ -388,13 +405,10 @@
                 font-size: 0.55rem;
             }
 
-            .player-info {
-                min-width: 80px;
-                padding: 3px 5px !important;
-            }
+            /* .player-info 不设置特殊样式，使用表格默认 */
 
             .tee-indicator {
-                width: 16px;
+                width: 9px;
                 height: 28px; /* 80% of 35px */
             }
 
@@ -441,10 +455,7 @@
                 font-size: 0.8rem;
             }
 
-            .player-info {
-                min-width: 70px;
-                padding: 2px 3px !important;
-            }
+            /* .player-info 不设置特殊样式，使用表格默认 */
 
             .player-avatar {
                 width: 16px;
@@ -452,7 +463,7 @@
             }
 
             .tee-indicator {
-                width: 14px;
+                width: 8px;
                 height: 24px; /* 80% of 30px */
             }
 
