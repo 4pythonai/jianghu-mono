@@ -148,7 +148,7 @@
             left: 0;
             z-index: 10;
             background: #f8f9fa;
-            min-width: 80px;
+            min-width: 100px;
         }
 
         .sticky-total {
@@ -183,15 +183,24 @@
         .player-info {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
-            padding-left: 8px !important;
-            gap: 6px;
-            min-width: 80px;
+            justify-content: space-between;
+            padding: 4px 8px !important;
+            gap: 8px;
+            min-width: 100px;
+        }
+
+        /* 用户信息列 */
+        .user-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            flex: 1;
         }
 
         .player-avatar {
-            width: 25px;
-            height: 25px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             overflow: hidden;
             flex-shrink: 0;
@@ -207,8 +216,54 @@
         .player-name {
             font-weight: bold;
             color: #333;
-            font-size: clamp(0.6rem, 2vw, 0.65rem);
-            text-align: left;
+            font-size: clamp(0.55rem, 1.8vw, 0.6rem);
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        /* Tee信息列 */
+        .tee-column {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tee-indicator {
+            width: 20px;
+            height: 36px; /* 80% of 45px cell height */
+            border-radius: 2px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        /* Tee颜色 */
+        .tee-indicator[data-tee="red"] {
+            background: #ff4444;
+        }
+
+        .tee-indicator[data-tee="white"] {
+            background: #ffffff;
+            border: 2px solid #333;
+        }
+
+        .tee-indicator[data-tee="yellow"] {
+            background: #ffeb3b;
+        }
+
+        .tee-indicator[data-tee="blue"] {
+            background: #2196f3;
+        }
+
+        .tee-indicator[data-tee="black"] {
+            background: #424242;
+        }
+
+        .tee-indicator[data-tee="gold"] {
+            background: #ffd700;
+        }
+
+        .tee-indicator[data-tee="green"] {
+            background: #4caf50;
         }
 
         /* 成绩单元格样式 */
@@ -281,12 +336,17 @@
             }
 
             .player-avatar {
-                width: 22px;
-                height: 22px;
+                width: 20px;
+                height: 20px;
             }
 
             .player-name {
                 font-size: 0.6rem;
+            }
+
+            .tee-indicator {
+                width: 18px;
+                height: 32px; /* 80% of 40px */
             }
             
             .hole-name {
@@ -320,8 +380,8 @@
             }
 
             .player-avatar {
-                width: 20px;
-                height: 20px;
+                width: 18px;
+                height: 18px;
             }
 
             .player-name {
@@ -329,8 +389,13 @@
             }
 
             .player-info {
-                min-width: 70px;
-                padding-left: 5px !important;
+                min-width: 80px;
+                padding: 3px 5px !important;
+            }
+
+            .tee-indicator {
+                width: 16px;
+                height: 28px; /* 80% of 35px */
             }
 
             .sticky-total {
@@ -377,7 +442,18 @@
             }
 
             .player-info {
-                min-width: 60px;
+                min-width: 70px;
+                padding: 2px 3px !important;
+            }
+
+            .player-avatar {
+                width: 16px;
+                height: 16px;
+            }
+
+            .tee-indicator {
+                width: 14px;
+                height: 24px; /* 80% of 30px */
             }
 
             .sticky-total {

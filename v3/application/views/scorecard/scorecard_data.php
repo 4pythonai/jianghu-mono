@@ -102,6 +102,7 @@ if (isset($game_info['players']) && is_array($game_info['players'])) {
             'id' => $user_id,
             'name' => $player_name,
             'avatar' => $player['avatar'],
+            'tee' => isset($player['tee']) ? $player['tee'] : 'white', // 默认白色tee
             'scores' => $all_scores,
             'out' => $out_total > 0 ? $out_total : 0,
             'in' => $in_total > 0 ? $in_total : 0,
@@ -121,6 +122,7 @@ if (empty($players_data)) {
             'id' => 1,
             'name' => 'Tigerhoods',
             'avatar' => $base_url . '/avatar/default.jpg',
+            'tee' => 'red', // 示例使用红色tee
             'scores' => array_slice($example_scores, 0, $total_holes),
             'out' => array_sum(array_slice($example_scores, 0, $front_nine_count)),
             'in' => $is_nine_hole ? 0 : array_sum(array_slice($example_scores, $front_nine_count, $back_nine_count)),
@@ -148,3 +150,4 @@ $scorecard_config = [
     'total_par' => $total_par,
     'hole_names' => $hole_names
 ];
+

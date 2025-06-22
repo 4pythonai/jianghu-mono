@@ -1,6 +1,9 @@
 <?php
 // 引入数据处理文件
 include_once(VIEWPATH . 'scorecard/scorecard_data.php');
+
+// 引入头部文件
+include_once(VIEWPATH . 'scorecard/header.php');
 ?>
 
 <div class="scorecard-container">
@@ -46,11 +49,16 @@ include_once(VIEWPATH . 'scorecard/scorecard_data.php');
                     <?php foreach ($players_data as $player): ?>
                         <tr class="player-row">
                             <td class="player-info sticky-left">
-                                <div class="player-avatar">
-                                    <img src="<?php echo $player['avatar']; ?>" alt="<?php echo htmlspecialchars($player['name']); ?>"
-                                        onerror="this.src='<?php echo $base_url; ?>/avatar/default.jpg'">
+                                <div class="user-column">
+                                    <div class="player-avatar">
+                                        <img src="<?php echo $player['avatar']; ?>" alt="<?php echo htmlspecialchars($player['name']); ?>"
+                                            onerror="this.src='<?php echo $base_url; ?>/avatar/default.jpg'">
+                                    </div>
+                                    <div class="player-name"><?php echo htmlspecialchars($player['name']); ?></div>
                                 </div>
-                                <div class="player-name"><?php echo htmlspecialchars($player['name']); ?></div>
+                                <div class="tee-column">
+                                    <div class="tee-indicator" data-tee="<?php echo strtolower($player['tee']); ?>"></div>
+                                </div>
                             </td>
 
                             <?php for ($i = 0; $i < $scorecard_config['front_nine_count']; $i++): ?>
@@ -117,3 +125,8 @@ include_once(VIEWPATH . 'scorecard/scorecard_data.php');
         </div>
     </div>
 </div>
+
+<?php
+// 引入底部文件
+include_once(VIEWPATH . 'scorecard/footer.php');
+?>

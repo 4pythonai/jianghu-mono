@@ -43,7 +43,8 @@ class ScoreCard extends CI_Controller {
 
         // 获取比赛详细信息
         $game_info = $this->MDetailGame->get_detail_game($game_id);
-
+        // debug($game_info);
+        // exit;
         if (empty($game_info)) {
             show_404();
             return;
