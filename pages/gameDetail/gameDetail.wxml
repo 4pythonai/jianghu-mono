@@ -12,12 +12,8 @@
 <view class="tab-content" wx:if="{{currentTab === 0}}">
   <ScoreTable bind:cellclick="onCellClick" />
   <OperationBar 
-    bind:addclick="onAddClick"
-    bind:moreclick="onMoreClick"
-    bind:dropdownclick="onDropdownClick"
-    bind:optionclick="onOptionClick"
-    bind:cancelgame="onCancelGame"
-    bind:finishgame="onFinishGame" />
+    bind:showaddplayer="onShowAddPlayer"
+    bind:showgameoperation="onShowGameOperation" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 1}}">
   <bbs gameId="{{gameData.gameid}}" />
@@ -28,3 +24,9 @@
 
 <!-- 记分面板 -->
 <ScoreInputPanel id="scoreInputPanel" />
+
+<!-- 添加球员面板 -->
+<AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
+
+<!-- 游戏操作面板 -->
+<GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" bind:cancelgame="onCancelGame" bind:finishgame="onFinishGame" />

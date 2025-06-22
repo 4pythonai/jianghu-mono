@@ -1,0 +1,30 @@
+<!-- 添加球员面板 -->
+<view class="panel-mask {{isVisible ? 'show' : ''}}" bindtap="hide">
+  <view class="panel-container {{isVisible ? 'show' : ''}}" catchtap="stopPropagation">
+    <!-- 面板头部 -->
+    <view class="panel-header">
+      <text class="panel-title">添加球员</text>
+      <view class="close-btn" bindtap="hide">
+        <image class="close-icon" src="/assets/icons/close.svg" mode="aspectFit"></image>
+      </view>
+    </view>
+
+    <!-- 面板内容区域 -->
+    <view class="panel-content">
+      <!-- 这里先留空，后续添加具体内容 -->
+      <view class="content-placeholder">
+        <text class="placeholder-text">添加球员功能开发中...</text>
+      </view>
+    </view>
+
+    <!-- 面板底部操作按钮 -->
+    <view class="panel-footer">
+      <view class="footer-btn cancel-btn" bindtap="hide">
+        <text class="btn-text">取消</text>
+      </view>
+      <view class="footer-btn confirm-btn" bindtap="onConfirm">
+        <text class="btn-text">确定</text>
+      </view>
+    </view>
+  </view>
+</view> 

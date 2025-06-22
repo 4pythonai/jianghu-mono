@@ -103,20 +103,40 @@ Page({
         }
     },
 
-    // OperationBar 添加按钮点击事件
-    onAddClick(e) {
-        console.log('📊 [GameDetail] OperationBar 添加按钮被点击');
-        // TODO: 实现添加功能，比如添加玩家、添加洞等
+    // OperationBar 显示添加球员面板事件
+    onShowAddPlayer(e) {
+        console.log('📊 [GameDetail] 显示添加球员面板');
+        const addPlayerHubPanel = this.selectComponent('#addPlayerHubPanel');
+        if (addPlayerHubPanel) {
+            addPlayerHubPanel.show({
+                gameId: this.data.gameId
+            });
+        } else {
+            console.error("无法找到 #addPlayerHubPanel 组件");
+        }
+    },
+
+    // 添加球员确认事件
+    onAddPlayerConfirm(e) {
+        console.log('📊 [GameDetail] 添加球员确认', e.detail);
+        // TODO: 处理添加球员的确认逻辑
         wx.showToast({
-            title: '添加功能开发中',
-            icon: 'none'
+            title: '添加球员成功',
+            icon: 'success'
         });
     },
 
-    // OperationBar 更多按钮点击事件  
-    onMoreClick(e) {
-        console.log('📊 [GameDetail] OperationBar 更多按钮被点击');
-        // 弹窗逻辑已在OperationBar组件内部处理
+
+
+    // OperationBar 显示游戏操作面板事件
+    onShowGameOperation(e) {
+        console.log('📊 [GameDetail] 显示游戏操作面板');
+        const gameOperationPanel = this.selectComponent('#gameOperationPanel');
+        if (gameOperationPanel) {
+            gameOperationPanel.show();
+        } else {
+            console.error("无法找到 #gameOperationPanel 组件");
+        }
     },
 
 
@@ -160,7 +180,6 @@ Page({
         // TODO: 实现取消比赛功能
     },
 
-    // OperationBar 结束比赛事件
     onFinishGame(e) {
         console.log('📊 [GameDetail] OperationBar 结束比赛被触发');
         // TODO: 实现结束比赛功能

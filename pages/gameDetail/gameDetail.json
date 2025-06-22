@@ -5,6 +5,8 @@
 		"bbs": "./bbs/bbs",
 		"ScoreTable": "./ScoreTable/ScoreTable",
 		"OperationBar": "./OperationBar/OperationBar",
-		"ScoreInputPanel": "/components/ScoreInputPanel/ScoreInputPanel"
+		"ScoreInputPanel": "/components/ScoreInputPanel/ScoreInputPanel",
+		"AddPlayerHubPanel": "./AddPlayerHubPanel/AddPlayerHubPanel",
+		"GameOperationPanel": "./GameOperationPanel/GameOperationPanel"
 	}
 }

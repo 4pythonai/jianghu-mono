@@ -1,0 +1,85 @@
+<!-- 游戏操作面板 -->
+<view class="operation-panel-mask {{isVisible ? 'show' : ''}}" bindtap="hide">
+  <view class="operation-panel {{isVisible ? 'show' : ''}}" catchtap="stopPropagation">
+    <!-- 面板标题 -->
+    <view class="panel-header">
+      <text class="panel-title">更多</text>
+    </view>
+    
+    <!-- 功能选项网格 -->
+    <view class="options-grid">
+      <view class="option-item" bindtap="onOptionClick" data-option="edit">
+        <view class="option-icon">
+          <text class="icon-text">✏️</text>
+        </view>
+        <text class="option-label">修改</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="qrcode">
+        <view class="option-icon">
+          <text class="icon-text">📱</text>
+        </view>
+        <text class="option-label">比赛码</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="scorecard">
+        <view class="option-icon">
+          <text class="icon-text">📊</text>
+        </view>
+        <text class="option-label">成绩卡</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="poster">
+        <view class="option-icon">
+          <text class="icon-text">🎯</text>
+        </view>
+        <text class="option-label">海报</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="feedback">
+        <view class="option-icon">
+          <text class="icon-text">❓</text>
+        </view>
+        <text class="option-label">反馈</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="style">
+        <view class="option-icon">
+          <text class="icon-text">🎨</text>
+        </view>
+        <text class="option-label">风格</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="account">
+        <view class="option-icon">
+          <text class="icon-text">💰</text>
+        </view>
+        <text class="option-label">账本</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="cancel">
+        <view class="option-icon cancel-icon">
+          <text class="icon-text">❌</text>
+        </view>
+        <text class="option-label">取消比赛</text>
+      </view>
+      
+      <view class="option-item" bindtap="onOptionClick" data-option="finish">
+        <view class="option-icon finish-icon">
+          <text class="icon-text">🏁</text>
+        </view>
+        <text class="option-label">结束比赛</text>
+      </view>
+    </view>
+    
+    <!-- 分割线 -->
+    <view class="divider"></view>
+    
+    <!-- 底部关闭按钮 -->
+    <view class="bottom-actions">
+      <view class="action-btn close-btn" bindtap="hide">
+        <text class="action-text">关闭</text>
+      </view>
+    </view>
+  </view>
+</view> 

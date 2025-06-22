@@ -8,8 +8,7 @@ Component({
      * 组件的初始数据
      */
     data: {
-        isExpanded: false, // 控制详细信息是否展开
-        showMorePanel: false // 控制更多面板是否显示
+        isExpanded: false // 控制详细信息是否展开
     },
 
     lifetimes: {
@@ -43,101 +42,21 @@ Component({
      * 组件的方法列表
      */
     methods: {
-        // 点击添加按钮
-        onAddClick() {
-            console.log('📊 [OperationBar] 点击添加按钮');
-            this.triggerEvent('addclick', {});
+        // 点击添加球员按钮
+        onAddPlayers() {
+            console.log('📊 [OperationBar] 点击添加球员按钮');
+            // 触发事件让父页面显示添加球员面板
+            this.triggerEvent('showaddplayer', {});
         },
 
         // 点击更多按钮
         onMoreClick() {
             console.log('📊 [OperationBar] 点击更多按钮');
-            this.setData({
-                showMorePanel: true
-            });
-            this.triggerEvent('moreclick', {});
+            // 触发事件让父页面显示游戏操作面板
+            this.triggerEvent('showgameoperation', {});
         },
 
-        // 隐藏更多面板
-        hideMorePanel() {
-            console.log('📊 [OperationBar] 隐藏更多面板');
-            this.setData({
-                showMorePanel: false
-            });
-        },
 
-        // 阻止冒泡
-        stopPropagation() {
-            // 空函数，用于阻止点击面板内容时关闭弹窗
-        },
-
-        // 功能选项点击
-        onOptionClick(e) {
-            const option = e.currentTarget.dataset.option;
-            console.log('📊 [OperationBar] 点击功能选项:', option);
-
-            // 隐藏面板
-            this.hideMorePanel();
-
-            // 触发自定义事件，传递选项类型
-            this.triggerEvent('optionclick', { option });
-
-            // 根据选项显示不同的提示
-            const optionNames = {
-                edit: '修改',
-                qrcode: '比赛码',
-                scorecard: '成绩卡',
-                poster: '海报',
-                feedback: '反馈',
-                style: '风格',
-                account: '账本'
-            };
-
-            wx.showToast({
-                title: `${optionNames[option]}功能开发中`,
-                icon: 'none'
-            });
-        },
-
-        // 取消比赛
-        onCancelGame() {
-            console.log('📊 [OperationBar] 点击取消比赛');
-            this.hideMorePanel();
-
-            wx.showModal({
-                title: '确认取消',
-                content: '确定要取消这场比赛吗？',
-                success: (res) => {
-                    if (res.confirm) {
-                        this.triggerEvent('cancelgame', {});
-                        wx.showToast({
-                            title: '取消比赛功能开发中',
-                            icon: 'none'
-                        });
-                    }
-                }
-            });
-        },
-
-        // 结束比赛
-        onFinishGame() {
-            console.log('📊 [OperationBar] 点击结束比赛');
-            this.hideMorePanel();
-
-            wx.showModal({
-                title: '确认结束',
-                content: '确定要结束这场比赛吗？',
-                success: (res) => {
-                    if (res.confirm) {
-                        this.triggerEvent('finishgame', {});
-                        wx.showToast({
-                            title: '结束比赛功能开发中',
-                            icon: 'none'
-                        });
-                    }
-                }
-            });
-        },
 
         // 点击下拉按钮,展示详情,通过开关  isExpanded   bug?
 

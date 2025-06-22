@@ -11,33 +11,33 @@
 	height: 100%;
 	box-sizing: border-box;
 	overflow: hidden;
+	position: relative;
 }
 
 .player-info-column {
-	width: 48px;
-	height: 76px;
-	float: left;
-	padding-left: 3px;
-	padding-top: 16px;
+	width: 100%;
+	height: 100%;
+	padding-left: 16rpx;
+	padding-right: 28rpx;
+	box-sizing: border-box;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
-	align-items: left;
+	align-items: flex-start;
 	justify-content: center;
 }
 
 /* 球员头像 */
 .player-avatar {
-	width: 32px;
-	height: 32px;
+	width: 64rpx;
+	height: 64rpx;
 	border-radius: 50%;
 }
 
 .player-name {
-	font-size: 10px;
+	font-size: 20rpx;
 	width: 100%;
-	margin-top: 6px;
-	height: 30px;
+	margin-top: 12rpx;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	text-align: left;
@@ -45,27 +45,15 @@
 }
 
 .tee-info-column {
-	padding-right: 4px;
-	width: 28px;
-	height: 76px;
-	float: right;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	width: 10rpx;
+	height: 70%;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
 }
 
-/* T台指示器基本样式 */
-.tee-indicator {
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
-	font-size: 11px;
-	font-weight: bold;
-	color: white;
-	margin-left: auto;
-}
-
-/* 不同颜色T台样式 */
+/* T台颜色样式 - 直接应用到竖条 */
 .tee-black {
 	background-color: #000;
 }
@@ -76,13 +64,11 @@
 
 .tee-white {
 	background-color: #f0f0f0;
-	color: #333;
-	border: 1px solid #ccc;
+	border: 2rpx solid #ccc;
 }
 
 .tee-gold {
 	background-color: #ffd700;
-	color: #333;
 }
 
 .tee-red {
@@ -92,43 +78,4 @@
 /* 默认T台样式 */
 .tee-default {
 	background-color: #999;
-}
-
-.tee-indicator {
-	width: 24px;
-	height: 24px;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.tee-black {
-	background-color: black;
-	color: yellow;
-}
-
-.tee-blue {
-	background-color: blue;
-	color: white;
-}
-
-.tee-white {
-	background-color: white;
-	color: black;
-}
-
-.tee-gold {
-	background-color: gold;
-	color: black;
-}
-
-.tee-red {
-	background-color: red;
-	color: white;
-}
-
-.tee-default {
-	background-color: gray;
-	color: black;
 }

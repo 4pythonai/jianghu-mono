@@ -4,10 +4,7 @@
       <image class="player-avatar" src="{{avatar}}" mode="aspectFill"></image>
       <text class="player-name">{{nickname}}</text>
     </view>
-    <view class="tee-info-column">
-      <view class="tee-indicator {{isValidTee ? 'tee-' + currentTee : 'tee-default'}}">
-        {{displayText}}
-      </view>
+    <view class="tee-info-column {{isValidTee ? 'tee-' + currentTee : 'tee-default'}}">
     </view>
   </view>
 </view>
