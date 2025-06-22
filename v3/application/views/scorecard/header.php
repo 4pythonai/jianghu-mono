@@ -68,6 +68,7 @@
         .scorecard-table {
             width: 100%;
             border-collapse: collapse;
+            border-spacing: 0;
             font-size: clamp(0.6rem, 2vw, 0.7rem);
             min-width: 600px;
             /* 9洞基础宽度 */
@@ -81,11 +82,12 @@
 
         .scorecard-table th,
         .scorecard-table td {
-            padding: 6px 3px;
+            padding: 8px 4px;
             text-align: center;
             border: 1px solid #ddd;
             white-space: nowrap;
             vertical-align: middle;
+            height: 45px;
         }
 
         /* 表头样式 */
@@ -94,6 +96,37 @@
             color: white;
             font-weight: bold;
             font-size: clamp(0.55rem, 1.8vw, 0.6rem);
+            padding: 8px 4px;
+            vertical-align: middle;
+        }
+
+        /* 球洞信息样式 */
+        .hole-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .hole-name {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #fff;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: clamp(0.6rem, 1.8vw, 0.7rem);
+            line-height: 1;
+            margin: 0 auto;
+        }
+
+        .hole-par {
+            font-size: clamp(0.45rem, 1.3vw, 0.5rem);
+            opacity: 0.9;
+            line-height: 1;
         }
 
         /* 标准杆行样式 */
@@ -228,7 +261,7 @@
 
         /* 球员行样式 */
         .player-row {
-            height: 45px;
+            /* 高度由统一的 th,td 样式控制 */
         }
 
         /* 响应式设计 */
@@ -243,7 +276,8 @@
 
             .scorecard-table th,
             .scorecard-table td {
-                padding: 5px 2px;
+                padding: 6px 2px;
+                height: 40px;
             }
 
             .player-avatar {
@@ -252,6 +286,12 @@
             }
 
             .player-name {
+                font-size: 0.6rem;
+            }
+            
+            .hole-name {
+                width: 25px;
+                height: 25px;
                 font-size: 0.6rem;
             }
         }
@@ -275,7 +315,8 @@
 
             .scorecard-table th,
             .scorecard-table td {
-                padding: 4px 2px;
+                padding: 5px 2px;
+                height: 35px;
             }
 
             .player-avatar {
@@ -304,6 +345,12 @@
                 right: 0;
                 min-width: 50px;
             }
+            
+            .hole-name {
+                width: 22px;
+                height: 22px;
+                font-size: 0.55rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -317,7 +364,8 @@
 
             .scorecard-table th,
             .scorecard-table td {
-                padding: 3px 1px;
+                padding: 4px 1px;
+                height: 30px;
             }
 
             .scorecard-title {
@@ -344,6 +392,12 @@
             .nine-hole .sticky-total {
                 right: 0;
                 min-width: 45px;
+            }
+            
+            .hole-name {
+                width: 20px;
+                height: 20px;
+                font-size: 0.5rem;
             }
         }
 

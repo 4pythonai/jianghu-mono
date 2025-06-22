@@ -19,7 +19,10 @@ include_once(VIEWPATH . 'scorecard/scorecard_data.php');
                         <th class="player-column sticky-left">球员</th>
                         <?php for ($i = 0; $i < $scorecard_config['front_nine_count']; $i++): ?>
                             <th class="hole-column hole-<?php echo $i + 1; ?>">
-                                <?php echo $i + 1; ?>
+                                <div class="hole-info">
+                                    <div class="hole-name"><?php echo isset($scorecard_config['hole_names'][$i]) ? $scorecard_config['hole_names'][$i] : ($i + 1); ?></div>
+                                    <div class="hole-par"><?php echo $course_pars[$i]; ?></div>
+                                </div>
                             </th>
                         <?php endfor; ?>
                         <th class="total-column sticky-total">
@@ -28,25 +31,14 @@ include_once(VIEWPATH . 'scorecard/scorecard_data.php');
                         <?php if (!$scorecard_config['is_nine_hole']): ?>
                             <?php for ($i = 0; $i < $scorecard_config['back_nine_count']; $i++): ?>
                                 <th class="hole-column hole-<?php echo $i + $scorecard_config['front_nine_count'] + 1; ?>">
-                                    <?php echo $i + 1; ?>
+                                    <div class="hole-info">
+                                        <div class="hole-name"><?php echo isset($scorecard_config['hole_names'][$i + $scorecard_config['front_nine_count']]) ? $scorecard_config['hole_names'][$i + $scorecard_config['front_nine_count']] : ($i + 1); ?></div>
+                                        <div class="hole-par"><?php echo $course_pars[$i + $scorecard_config['front_nine_count']]; ?></div>
+                                    </div>
                                 </th>
                             <?php endfor; ?>
                             <th class="total-column">IN</th>
                             <th class="total-column sticky-final">总分</th>
-                        <?php endif; ?>
-                    </tr>
-                    <tr class="par-row">
-                        <td class="sticky-left"><strong>标准杆</strong></td>
-                        <?php for ($i = 0; $i < $scorecard_config['front_nine_count']; $i++): ?>
-                            <td class="par-cell"><?php echo $course_pars[$i]; ?></td>
-                        <?php endfor; ?>
-                        <td class="sticky-total par-total"><?php echo $scorecard_config['out_par']; ?></td>
-                        <?php if (!$scorecard_config['is_nine_hole']): ?>
-                            <?php for ($i = $scorecard_config['front_nine_count']; $i < $scorecard_config['total_holes']; $i++): ?>
-                                <td class="par-cell"><?php echo $course_pars[$i]; ?></td>
-                            <?php endfor; ?>
-                            <td class="par-total"><?php echo $scorecard_config['in_par']; ?></td>
-                            <td class="sticky-final par-total"><?php echo $scorecard_config['total_par']; ?></td>
                         <?php endif; ?>
                     </tr>
                 </thead>
