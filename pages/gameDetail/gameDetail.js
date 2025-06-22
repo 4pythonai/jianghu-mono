@@ -119,18 +119,7 @@ Page({
         // 弹窗逻辑已在OperationBar组件内部处理
     },
 
-    // OperationBar 下拉按钮点击事件
-    onDropdownClick(e) {
-        console.log('📊 [GameDetail] OperationBar 下拉按钮被点击');
-        // TODO: 实现球场选择或比赛状态切换功能
-        wx.showActionSheet({
-            itemList: ['切换球场', '前九洞', '后九洞', '全部洞'],
-            success: (res) => {
-                console.log('用户选择了：', res.tapIndex);
-                // TODO: 根据选择切换显示内容
-            }
-        });
-    },
+
 
     // OperationBar 功能选项点击事件
     onOptionClick(e) {

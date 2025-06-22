@@ -2,12 +2,7 @@ import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../../stores/gameStore'
 
 Component({
-    /**
-     * 组件的属性列表
-     */
-    properties: {
-        // 移除原有的属性，改为从store获取
-    },
+
 
     /**
      * 组件的初始数据
@@ -144,13 +139,11 @@ Component({
             });
         },
 
-        // 点击下拉按钮
+        // 点击下拉按钮,展示详情,通过开关  isExpanded   bug?
+
         onDropdownClick() {
             console.log('📊 [OperationBar] 点击下拉按钮');
             this.setData({
-                isExpanded: !this.data.isExpanded
-            });
-            this.triggerEvent('dropdownclick', {
                 isExpanded: !this.data.isExpanded
             });
         }
