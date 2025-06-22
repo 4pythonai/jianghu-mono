@@ -17,7 +17,13 @@
 		"pages/player-select/friendSelect/friendSelect",
 		"pages/player-select/qrcode/qrcode",
 		"pages/player-select/manualAdd/manualAdd",
-		"pages/player-select/wxshare/wxshare"
+		"pages/player-select/wxshare/wxshare",
+		"pages/tland-select/tland-select",
+		"pages/gameOperation/feedback/feedback",
+		"pages/gameOperation/scorecard/scorecard",
+		"pages/gameOperation/poster/poster",
+		"pages/gameOperation/personalBilingBook/personalBilingBook",
+		"pages/gameOperation/socreStyle/socreStyle"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

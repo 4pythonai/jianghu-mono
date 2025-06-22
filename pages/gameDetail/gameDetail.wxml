@@ -29,4 +29,4 @@
 <AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
 
 <!-- 游戏操作面板 -->
-<GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" bind:cancelgame="onCancelGame" bind:finishgame="onFinishGame" />
+<GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick"/>

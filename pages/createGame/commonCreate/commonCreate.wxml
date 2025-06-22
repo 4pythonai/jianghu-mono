@@ -93,7 +93,7 @@
 					</view>
 				</view>
 
-					<!-- 赛制选择 -->
+				<!-- 赛制选择 -->
 				<view class="form-item">
 					<view class="form-label">赛制</view>
 					<view class="radio-group">
@@ -107,6 +107,25 @@
 								<text class="radio-text">旺波</text>
 							</label>
 						</radio-group>
+					</view>
+				</view>
+
+					<!-- T台选择  TlandSelector -->
+				<view class="form-item">
+					<view class="form-label">T台选择</view>
+					<view class="tee-selector-wrapper">
+						<view class="tee-selector-btn" bindtap="goToTeeSelect">
+							<view class="selector-content">
+								<view class="selector-icon">🏌️</view>
+								<view class="selector-text">
+									<text class="primary-text">设置T台</text>
+									<text class="sub-text">为所有球员分配T台颜色</text>
+								</view>
+							</view>
+							<view class="arrow-icon">
+								<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+							</view>
+						</view>
 					</view>
 				</view>
 
@@ -133,7 +152,7 @@
 					</view>
 				</view>
 			</view>
-			<button class="create-btn" bindtap="handleCreateGame">创建比赛</button>
+			<button class="create-btn">开始计分</button>
 		</view>
 	</view>
 </view>

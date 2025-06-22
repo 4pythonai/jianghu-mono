@@ -358,6 +358,57 @@
 	}
 }
 
+/* T台选择样式 */
+.tee-selector-wrapper {
+	background: #f8f9fa;
+	border-radius: 16rpx;
+	overflow: hidden;
+}
+
+.tee-selector-btn {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 32rpx 24rpx;
+	background: #fff;
+	border: 2rpx solid #e9ecef;
+	border-radius: 16rpx;
+	transition: all 0.2s ease;
+}
+
+.tee-selector-btn:active {
+	background: #f8f9fa;
+	border-color: #4caf50;
+}
+
+.selector-content {
+	display: flex;
+	align-items: center;
+	flex: 1;
+}
+
+.selector-icon {
+	font-size: 48rpx;
+	margin-right: 24rpx;
+}
+
+.selector-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.primary-text {
+	font-size: 30rpx;
+	color: #333;
+	font-weight: 500;
+	margin-bottom: 6rpx;
+}
+
+.sub-text {
+	font-size: 24rpx;
+	color: #999;
+}
+
 /* 创建按钮样式 */
 .create-btn {
 	width: 100%;

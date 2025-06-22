@@ -29,6 +29,10 @@ const user = {
     // double-search mobile ,从小程序和app数据库
     doubleSearchMobile: (data, options) => request('/User/doubleSearchMobile', data, options),
 
+
+    // billongBook 账本
+    billongBook: (data, options) => request('/User/billongBook', data, options),
+
 }
 
 export default user

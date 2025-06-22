@@ -1,0 +1,253 @@
+/* T台选择页面样式 */
+.page-container {
+	min-height: 100vh;
+	background: linear-gradient(to bottom, #4caf50 0%, #81c784 25%, #f5f5f5 25%);
+	padding-bottom: 200rpx;
+}
+
+/* 页面头部 */
+.header {
+	padding: 40rpx 32rpx 60rpx;
+	color: white;
+}
+
+.header-content {
+	text-align: center;
+}
+
+.title {
+	font-size: 48rpx;
+	font-weight: 600;
+	margin-bottom: 16rpx;
+}
+
+.subtitle {
+	font-size: 28rpx;
+	opacity: 0.9;
+}
+
+/* 玩家容器 */
+.players-container {
+	flex: 1;
+	padding: 0 32rpx;
+}
+
+/* 空状态 */
+.empty-state {
+	text-align: center;
+	padding: 120rpx 0;
+	color: #999;
+}
+
+.empty-icon {
+	font-size: 120rpx;
+	margin-bottom: 32rpx;
+	opacity: 0.6;
+}
+
+.empty-text {
+	font-size: 32rpx;
+	margin-bottom: 16rpx;
+	color: #666;
+}
+
+.empty-sub {
+	font-size: 28rpx;
+}
+
+/* 玩家列表 */
+.players-list {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+}
+
+.player-item {
+	background: white;
+	border-radius: 24rpx;
+	padding: 32rpx;
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+	transition: all 0.3s ease;
+}
+
+.player-item:active {
+	transform: translateY(2rpx);
+	box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 玩家信息 */
+.player-info {
+	display: flex;
+	align-items: center;
+	margin-bottom: 32rpx;
+}
+
+.player-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-right: 24rpx;
+	background: #f0f0f0;
+}
+
+.avatar-image {
+	width: 100%;
+	height: 100%;
+}
+
+.player-details {
+	flex: 1;
+}
+
+.player-name {
+	font-size: 32rpx;
+	font-weight: 500;
+	color: #333;
+	margin-bottom: 8rpx;
+}
+
+.player-meta {
+	font-size: 24rpx;
+	color: #999;
+}
+
+/* T台选择器 */
+.tee-selector {
+	border-top: 1rpx solid #f0f0f0;
+	padding-top: 32rpx;
+}
+
+.tee-options {
+	display: flex;
+	justify-content: space-between;
+	gap: 12rpx;
+}
+
+.tee-option {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20rpx 12rpx;
+	border-radius: 16rpx;
+	background: #f8f9fa;
+	border: 2rpx solid #f0f0f0;
+	transition: all 0.2s ease;
+}
+
+.tee-option.selected {
+	background: #e8f5e8;
+	border-color: #4caf50;
+}
+
+.tee-option:active {
+	opacity: 0.8;
+}
+
+.tee-color {
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 50%;
+	margin-bottom: 12rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+}
+
+.tee-label {
+	font-size: 22rpx;
+	color: #666;
+	font-weight: 500;
+}
+
+.tee-option.selected .tee-label {
+	color: #4caf50;
+	font-weight: 600;
+}
+
+/* T台颜色样式 */
+.tee-black {
+	background-color: #000;
+}
+
+.tee-blue {
+	background-color: #2196f3;
+}
+
+.tee-white {
+	background-color: #fff;
+	border: 2rpx solid #e0e0e0;
+}
+
+.tee-gold {
+	background-color: #ffd700;
+}
+
+.tee-red {
+	background-color: #f44336;
+}
+
+/* 底部操作区 */
+.bottom-actions {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: white;
+	padding: 32rpx;
+	border-top: 1rpx solid #f0f0f0;
+	box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.action-summary {
+	text-align: center;
+	margin-bottom: 32rpx;
+}
+
+.summary-text {
+	font-size: 28rpx;
+	color: #666;
+}
+
+.action-buttons {
+	display: flex;
+	gap: 24rpx;
+}
+
+.cancel-btn,
+.confirm-btn {
+	flex: 1;
+	height: 88rpx;
+	border-radius: 44rpx;
+	font-size: 32rpx;
+	font-weight: 500;
+	border: none;
+	transition: all 0.3s ease;
+}
+
+.cancel-btn {
+	background: #f5f5f5;
+	color: #666;
+}
+
+.cancel-btn::after {
+	border: none;
+}
+
+.cancel-btn:active {
+	background: #e0e0e0;
+}
+
+.confirm-btn {
+	background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+	color: white;
+	box-shadow: 0 4rpx 16rpx rgba(76, 175, 80, 0.3);
+}
+
+.confirm-btn::after {
+	border: none;
+}
+
+.confirm-btn:active {
+	transform: translateY(2rpx);
+	box-shadow: 0 2rpx 8rpx rgba(76, 175, 80, 0.3);
+}

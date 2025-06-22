@@ -220,15 +220,13 @@ export const gameStore = observable({
                         }
 
                         return newScoreObj;
-                    } else {
-                        // 其他洞保持不变
-                        return holeScore;
                     }
+                    // 其他洞保持不变
+                    return holeScore;
                 });
-            } else {
-                // 其他玩家保持不变
-                return playerScores;
             }
+            // 其他玩家保持不变
+            return playerScores;
         });
 
         // 🎯 关键：完全替换scores数组，强制触发响应式更新

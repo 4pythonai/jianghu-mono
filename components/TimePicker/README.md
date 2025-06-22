@@ -19,7 +19,7 @@
 ```json
 {
   "usingComponents": {
-    "TimePicker": "/components/time-picker/time-picker"
+    "TimePicker": "/components/TimePicker/time-picker"
   }
 }
 ```

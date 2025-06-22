@@ -140,7 +140,8 @@ Page({
             nickname: user.nickname || user.wx_nickname || this.data.remarkName,
             avatar: user.avatar || '/images/default-avatar.png',
             handicap: user.handicap || 0,
-            mobile: user.mobile || this.data.mobile || ''
+            mobile: user.mobile || this.data.mobile || '',
+            tee: user.tee || 'blue'  // 添加T台字段，默认蓝T
         };
 
         console.log('🔄 转换后的用户数据:', createdUser);

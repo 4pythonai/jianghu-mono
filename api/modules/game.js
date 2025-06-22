@@ -12,8 +12,19 @@ const game = {
     updateGameOpenTime: (data, options) => request('/Game/updateGameOpenTime', data, options),
     updateGameScoringType: (data, options) => request('/Game/updateGameScoringType', data, options),
     updateGameGroupAndPlayers: (data, options) => request('/Game/updateGameGroupAndPlayers', data, options),
-
     saveGameScore: (data, options) => request('/Game/saveGameScore', data, options),
+    // set gameScoreStype,设置计分风格
+    gameScoreStype: (data, options) => request('/Game/gameScoreStype', data, options),
+    // 用户反馈
+    userFeedback: (data, options) => request('/Game/userFeedback', data, options),
+
+    // 取消比赛
+    cancelGame: (data, options) => request('/Game/cancelGame', data, options),
+    // 结束比赛
+    finishGame: (data, options) => request('/Game/finishGame', data, options),
+
+    // 设置T台
+    setTee: (data, options) => request('/Game/setTee', data, options),
 
 }
 

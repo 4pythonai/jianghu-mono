@@ -216,7 +216,8 @@ Page({
             nickname: member.nickname || '未知玩家',
             avatar: member.avatar || '/images/default-avatar.png',
             handicap: member.handicap || 0,
-            join_type: 'combineSelect'  // 添加来源字段
+            join_type: 'combineSelect',  // 添加来源字段
+            tee: member.tee || 'blue'  // 添加T台字段，默认蓝T
         }));
 
         // 使用追加模式添加老牌组合到组中
@@ -245,7 +246,8 @@ Page({
             nickname: friend.nickname || friend.wx_nickname || '未知好友',
             avatar: friend.avatar || friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
-            join_type: 'friendSelect'  // 添加来源字段
+            join_type: 'friendSelect',  // 添加来源字段
+            tee: friend.tee || 'blue'  // 添加T台字段，默认蓝T
         }));
 
         // 使用追加模式添加好友到组中
@@ -275,7 +277,8 @@ Page({
             avatar: createdUser.avatar || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
             mobile: createdUser.mobile || '',
-            join_type: 'manualAdd'  // 添加来源字段
+            join_type: 'manualAdd',  // 添加来源字段
+            tee: createdUser.tee || 'blue'  // 添加T台字段，默认蓝T
         };
 
         // 使用通用追加方法添加手工创建的用户
@@ -479,19 +482,110 @@ Page({
     },
 
     /**
-     * 处理创建比赛 - 实时更新模式下主要用于最终验证和跳转
+     * 跳转到T台选择页面
      */
-    handleCreateGame() {
+    goToTeeSelect() {
+        // 收集所有已添加的玩家
+        const allPlayers = [];
+        this.data.formData.gameGroups.forEach((group, groupIndex) => {
+            if (group.players && Array.isArray(group.players)) {
+                group.players.forEach((player, playerIndex) => {
+                    if (player) {
+                        allPlayers.push({
+                            ...player,
+                            groupIndex,
+                            playerIndex
+                        });
+                    }
+                });
+            }
+        });
 
-        // 可以跳转到游戏详情页或其他页面
-        setTimeout(() => {
-            // wx.navigateTo({
-            //     url: `/pages/gameDetail/gameDetail?gameId=${this.data.uuid}`
-            // });
-        }, 2000);
+        if (allPlayers.length === 0) {
+            wx.showToast({
+                title: '请先添加球员',
+                icon: 'none'
+            });
+            return;
+        }
+
+        console.log('🏌️ 跳转到T台选择页面，当前球员:', allPlayers);
+
+        // 跳转到T台选择页面，传递UUID用于回传数据
+        wx.navigateTo({
+            url: `/pages/tland-select/tland-select?uuid=${this.data.uuid}`
+        });
     },
 
+    /**
+     * T台选择完成回调
+     * 从 tland-select 页面返回时调用
+     */
+    onTeeSelectionComplete(updatedPlayers) {
+        console.log('🏌️ T台选择完成，接收到更新的玩家数据:', updatedPlayers);
 
+        // 更新formData中的玩家T台信息
+        const updatedGameGroups = [...this.data.formData.gameGroups];
+
+        updatedPlayers.forEach(player => {
+            const { groupIndex, playerIndex, tee } = player;
+
+            if (updatedGameGroups[groupIndex] &&
+                updatedGameGroups[groupIndex].players &&
+                updatedGameGroups[groupIndex].players[playerIndex]) {
+
+                // 更新对应位置玩家的T台信息
+                updatedGameGroups[groupIndex].players[playerIndex].tee = tee;
+
+                console.log(`🏌️ 更新第${groupIndex + 1}组玩家${playerIndex + 1}: ${player.wx_nickname} -> T台: ${tee}`);
+            }
+        });
+
+        // 更新数据
+        this.setData({
+            'formData.gameGroups': updatedGameGroups
+        });
+
+        console.log('🏌️ T台信息更新完成，当前gameGroups:', updatedGameGroups);
+
+        // 显示统计信息
+        const teeStats = this.calculateTeeStatistics(updatedPlayers);
+        const statsText = Object.entries(teeStats).map(([tee, count]) =>
+            `${this.getTeeDisplayName(tee)}: ${count}人`
+        ).join('，');
+
+        wx.showToast({
+            title: `T台分配完成 - ${statsText}`,
+            icon: 'none',
+            duration: 3000
+        });
+    },
+
+    /**
+     * 计算T台统计信息
+     */
+    calculateTeeStatistics(players) {
+        const stats = {};
+        players.forEach(player => {
+            const tee = player.tee || 'blue';
+            stats[tee] = (stats[tee] || 0) + 1;
+        });
+        return stats;
+    },
+
+    /**
+     * 获取T台显示名称
+     */
+    getTeeDisplayName(tee) {
+        const teeNames = {
+            black: '黑T',
+            blue: '蓝T',
+            white: '白T',
+            gold: '金T',
+            red: '红T'
+        };
+        return teeNames[tee] || '未知T台';
+    },
 
     /**
      * 生命周期函数--监听页面加载

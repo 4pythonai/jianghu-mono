@@ -197,7 +197,7 @@ Component({
                 });
 
                 console.log('✅ [ScoreInputPanel] API调用成功，返回结果:', result);
-                wx.showToast({ title: '已保存', icon: 'success', duration: 1500 });
+                wx.showToast({ title: result.message, icon: 'success', duration: 1500 });
                 return true; // 返回true表示保存成功
 
             } catch (err) {

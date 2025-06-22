@@ -54,10 +54,11 @@ Component({
             // 将传入的玩家数据填充到对应位置
             players.forEach((player, index) => {
                 if (index < 4 && player) {
-                    // 确保每个玩家对象都有 join_type 字段
+                    // 确保每个玩家对象都有必要字段
                     playerSlots[index] = {
                         ...player,
-                        join_type: player.join_type || 'unknown'  // 如果没有 join_type 字段，设置为 unknown
+                        join_type: player.join_type || 'unknown',  // 如果没有 join_type 字段，设置为 unknown
+                        tee: player.tee || 'blue'  // 如果没有 tee 字段，设置为默认蓝T
                     };
                 }
             });
@@ -116,10 +117,11 @@ Component({
             console.log('PlayerSelector addPlayerToSlot 被调用:', { slotIndex, player, join_type });
 
             const playerSlots = [...this.data.playerSlots];
-            // 添加 join_type 字段
+            // 添加 join_type 和 tee 字段
             playerSlots[slotIndex] = {
                 ...player,
-                join_type: join_type
+                join_type: join_type,
+                tee: player.tee || 'blue'  // 默认设置为蓝T
             };
 
             this.setData({

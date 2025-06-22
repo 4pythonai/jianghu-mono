@@ -8,7 +8,6 @@ Page({
         'ScoreTable': './ScoreTable/ScoreTable'
     },
     data: {
-        // currentTab 现在从 store 中获取，不需要在 data 中定义
         gameId: '',
         groupId: ''
     },
@@ -133,7 +132,9 @@ Page({
         console.log('📊 [GameDetail] 显示游戏操作面板');
         const gameOperationPanel = this.selectComponent('#gameOperationPanel');
         if (gameOperationPanel) {
-            gameOperationPanel.show();
+            gameOperationPanel.show({
+                gameId: this.data.gameId
+            });
         } else {
             console.error("无法找到 #gameOperationPanel 组件");
         }

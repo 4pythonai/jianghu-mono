@@ -46,13 +46,17 @@ Component({
      */
     methods: {
         /**
-         * 生成日期选择器数据
+         * 生成日期选择器数据 - 支持过去1个月到未来1个月
          */
         generateDateRange() {
             const dates = [];
             const today = new Date();
 
-            for (let i = 0; i < this.properties.dayRange; i++) {
+            // 从过去30天开始，到未来30天结束
+            const startOffset = -30; // 过去30天
+            const endOffset = 30;    // 未来30天
+
+            for (let i = startOffset; i <= endOffset; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() + i);
 
@@ -61,9 +65,15 @@ Component({
                 const day = String(date.getDate()).padStart(2, '0');
                 const weekDay = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][date.getDay()];
 
+                // 特殊标记今天
+                const isToday = i === 0;
+                const todayLabel = isToday ? ' 今天' : '';
+
                 dates.push({
-                    label: `${month}月${day}日 ${weekDay}`,
-                    value: `${year}-${month}-${day}`
+                    label: `${month}月${day}日 ${weekDay}${todayLabel}`,
+                    value: `${year}-${month}-${day}`,
+                    isToday: isToday,
+                    offset: i
                 });
             }
 
@@ -133,13 +143,19 @@ Component({
             const dateRange = this.generateDateRange();
             const timeRange = this.generateTimeRange();
 
+            // 找到今天的索引作为默认选择
+            const todayIndex = dateRange.findIndex(item => item.isToday);
+            const defaultDateIndex = todayIndex !== -1 ? todayIndex : 30; // 如果找不到今天，默认选择中间位置
+
             this.setData({
                 'timePickerRange[0]': dateRange,
-                'timePickerRange[1]': timeRange
+                'timePickerRange[1]': timeRange,
+                'timePickerValue[0]': defaultDateIndex // 默认选中今天
             });
 
             console.log('🚀 时间选择器组件初始化完成');
-            console.log('📅 日期范围:', dateRange.length, '天');
+            console.log('📅 日期范围:', dateRange.length, '天 (过去30天 + 今天 + 未来30天)');
+            console.log('📍 今天索引:', todayIndex, '默认选择:', defaultDateIndex);
             console.log('⏰ 时间范围:', timeRange.length, '个时间点');
         },
 
@@ -153,19 +169,35 @@ Component({
                 // 解析格式如: "2024-12-19 14:30" 或 "12月19日 周四 14:30"
                 const parts = value.split(' ');
                 if (parts.length >= 2) {
-                    const timeStr = parts[parts.length - 1]; // 取最后一部分作为时间
+                    const dateStr = parts[0]; // 第一部分作为日期
+                    const timeStr = parts[parts.length - 1]; // 最后一部分作为时间
+
+                    // 在日期范围中查找匹配的索引
+                    const dateIndex = this.data.timePickerRange[0].findIndex(item =>
+                        item.value === dateStr
+                    );
 
                     // 在时间范围中查找匹配的索引
                     const timeIndex = this.data.timePickerRange[1].findIndex(item =>
                         item.value === timeStr || item.label === timeStr
                     );
 
-                    if (timeIndex !== -1) {
-                        this.setData({
-                            'timePickerValue[1]': timeIndex,
-                            selectedTime: value
-                        });
+                    const updates = {};
+                    if (dateIndex !== -1) {
+                        updates['timePickerValue[0]'] = dateIndex;
                     }
+                    if (timeIndex !== -1) {
+                        updates['timePickerValue[1]'] = timeIndex;
+                    }
+                    updates.selectedTime = value;
+
+                    this.setData(updates);
+
+                    console.log('🔍 解析时间值:', {
+                        原始值: value,
+                        日期索引: dateIndex,
+                        时间索引: timeIndex
+                    });
                 }
             } catch (error) {
                 console.error('解析时间值失败:', error, value);
