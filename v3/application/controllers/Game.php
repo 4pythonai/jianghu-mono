@@ -72,6 +72,10 @@ class Game extends MY_Controller {
         $row['uuid'] = $uuid;
         $row['creatorid'] = $userid;
         $row['create_time'] = date('Y-m-d H:i:s');
+        $row['private'] = 'n';
+        $row['scoring_type'] = 'hole';
+        $row['privacy_password'] = null;
+        $row['status'] = 'init';
         $this->db->insert('t_game', $row);
         $game_id = $this->db->insert_id();
         echo json_encode(['code' => 200, 'uuid' => $uuid, 'game_id' => $game_id], JSON_UNESCAPED_UNICODE);
@@ -115,7 +119,9 @@ class Game extends MY_Controller {
         $private = $json_paras['isPrivate'];
 
         if ($private) {
+            $private = 'y';
         } else {
+            $private = 'n';
             $this->db->where('uuid', $uuid);
             $this->db->update('t_game', ['privacy_password' => null]);
         }
@@ -141,20 +147,6 @@ class Game extends MY_Controller {
         $ret = [];
         $ret['code'] = 200;
         $ret['message'] = '隐私口令更新成功';
-        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
-    }
-
-    public function updateGameIsOneball() {
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $uuid = $json_paras['uuid'];
-        $is_oneball = $json_paras['is_oneball'];
-
-        $this->db->where('uuid', $uuid);
-        $this->db->update('t_game', ['is_oneball' => $is_oneball]);
-
-        $ret = [];
-        $ret['code'] = 200;
-        $ret['message'] = 'OneBall设置更新成功';
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
@@ -204,10 +196,42 @@ class Game extends MY_Controller {
     public function saveGameScore() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['gameId'];
+
+        $game_info = $this->MDetailGame->getGameInfo($game_id);
+        if ($game_info['status'] == 'finished' || $game_info['status'] == 'canceled') {
+            echo json_encode(['code' => 500, 'message' => '比赛已结束或取消'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+
         $group_id = $json_paras['groupId'];
         $hole_unique_key = $json_paras['holeUniqueKey'];
         $scores = $json_paras['scores'];
         $this->MScore->saveScore($game_id, $group_id, $hole_unique_key, $scores);
         echo json_encode(['code' => 200, 'message' => '保存成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function setTee() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $json_paras['userid'];
+        $uuid = $json_paras['uuid'];
+        $gameid = $this->MGame->getGameidByUUID($uuid);
+        $tee = $json_paras['tee'];
+        $this->MGame->setTee($gameid, $userid, $tee);
+        echo json_encode(['code' => 200, 'message' => '保存成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function cancelGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = $json_paras['gameid'];
+        $this->MGame->cancelGame($gameid, null);
+        echo json_encode(['code' => 200, 'message' => '取消成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+    public function finishGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = $json_paras['gameid'];
+        $this->MGame->finishGame($gameid, null);
+        echo json_encode(['code' => 200, 'message' => '结束比赛成功'], JSON_UNESCAPED_UNICODE);
     }
 }

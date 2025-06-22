@@ -271,7 +271,6 @@ CREATE TABLE `t_game` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `starttime` datetime DEFAULT NULL COMMENT '开始比赛时间',
   `endtime` datetime DEFAULT NULL COMMENT '结束比赛时间',
-  `is_oneball` tinyint NOT NULL DEFAULT '0' COMMENT '是否 OneBall 赛',
   PRIMARY KEY (`id`),
   KEY `idx_addid` (`creatorid`),
   KEY `idx_gamestate_privacy` (`gamestate`, `private`),

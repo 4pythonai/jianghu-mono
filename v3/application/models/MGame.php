@@ -33,22 +33,6 @@ class MGame  extends CI_Model {
   }
 
 
-
-
-
-
-  // CREATE TABLE `t_game_court` (
-  //   `id` int NOT NULL AUTO_INCREMENT,
-  //   `gameid` int DEFAULT '0' COMMENT '比赛id',
-  //   `courtid` int DEFAULT NULL COMMENT '半场id',
-  //   `court_key` int DEFAULT NULL COMMENT '半场标识',
-  //   `uuid` char(32) DEFAULT NULL,
-  //   PRIMARY KEY (`id`),
-  //   KEY `idx_gameid` (`gameid`),
-  //   KEY `idx_courtid` (`courtid`)
-  // ) ENGINE=InnoDB AUTO_INCREMENT=3021110 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
-
-
   public function clearGameCourt($gameid) {
     $this->db->where('gameid', $gameid)
       ->delete('t_game_court');
@@ -56,13 +40,6 @@ class MGame  extends CI_Model {
   }
 
 
-
-  // [uuid] => 81a9ecb5-9195-4ade-ab8b-bde8a73f834b
-  // [courseid] => 3
-  // [frontNineCourtId] => 2590
-  // [backNineCourtId] => 2590
-  // [gameType] => full
-  // [totalHoles] => 18
 
   public function addGameCourt($gameid, $frontNineCourtId, $backNineCourtId) {
     $uuid = uniqid();
@@ -128,7 +105,7 @@ class MGame  extends CI_Model {
           'gameid' => $gameid,
           'groupid' => $groupid,
           'userid' => $player['userid'],
-          'tland' => null, // 根据需要设置
+          'tee' => 'blue', // 缺省
           'confirmed' => 0,
           'confirmed_time' => null,
           'addtime' => date('Y-m-d H:i:s'),
@@ -137,5 +114,23 @@ class MGame  extends CI_Model {
         $this->db->insert('t_game_group_user', $playerData);
       }
     }
+  }
+
+
+  public function setTee($gameid, $userid, $tee) {
+    $this->db->where('gameid', $gameid)
+      ->where('userid', $userid)
+      ->update('t_game_group_user', ['tee' => $tee]);
+  }
+
+
+  public function cancelGame($gameid) {
+    $this->db->where('id', $gameid)
+      ->update('t_game', ['status' => 'canceled']);
+  }
+
+  public function finishGame($gameid) {
+    $this->db->where('id', $gameid)
+      ->update('t_game', ['status' => 'finished']);
   }
 }

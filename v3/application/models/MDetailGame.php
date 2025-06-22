@@ -41,8 +41,14 @@ class MDetailGame  extends CI_Model {
         // 组装返回数据
         $result = [
             'game_id' => (string)$game_info['game_id'],
+            'uuid' => $game_info['uuid'],
+            'private' => $game_info['private'],
+            'scoring_type' => $game_info['scoring_type'],
+            'privacy_password' => $game_info['privacy_password'],
+            'creatorid' => $game_info['creatorid'],
             'game_name' => $game_info['game_name'] ?: '',
             'course' => $course_info['coursename'] ?: '',
+            'status' => $game_info['status'],
             'players' => $players,
             'watchers_number' => 0, // 暂时设为0
             'game_start' => $game_info['game_start'] ?: $game_info['create_time'],
@@ -59,20 +65,11 @@ class MDetailGame  extends CI_Model {
             'holeList' => $holeList,
             'scores' => $scores,
             'groups' => $groups,
-            'debug1' => 11
         ];
 
         return $result;
     }
 
-    // {
-    //     "userid": "14",           // 用户ID (字符串)
-    //     "holeid": "1378",         // 洞ID (字符串) 
-    //     "score": 5,               // 总杆数 (数字)
-    //     "putts": 2,                // 推杆数 (数字)
-    //     "penalty_strokes": 0,     // 罚杆数 (数字)
-    //     "sand_save": 0            // 沙坑救球数 (数字)
-    //   }
 
     public function getScoreInfo($game_id) {
         $score_query = "
@@ -103,7 +100,14 @@ class MDetailGame  extends CI_Model {
         $game_query = "
             SELECT 
                 id as game_id,
+                uuid,
                 courseid,
+                status,
+                private,
+                scoring_type,
+                scoring_type,
+                privacy_password,
+                creatorid,
                 name as game_name,
                 open_time as game_start,
                 create_time
