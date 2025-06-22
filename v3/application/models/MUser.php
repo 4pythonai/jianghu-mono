@@ -9,6 +9,15 @@ class MUser  extends CI_Model {
 
 
 
+  public function getUserProfile($user_id) {
+    $this->db->where('id', $user_id);
+    $user = $this->db->get('t_user')->row_array();
+    $user['avatar'] = config_item('web_url') . $user['avatar'];
+    return $user;
+  }
+
+
+
 
   public function addWeixinUser($openid) {
 

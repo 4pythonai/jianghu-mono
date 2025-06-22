@@ -38,6 +38,9 @@ class MDetailGame  extends CI_Model {
         // 成绩 
         $scores = $this->getScoreInfo($game_id);
 
+        // 创建者信息
+        $creator = $this->MUser->getUserProfile($game_info['creatorid']);
+
         // 组装返回数据
         $result = [
             'game_id' => (string)$game_info['game_id'],
@@ -46,6 +49,7 @@ class MDetailGame  extends CI_Model {
             'scoring_type' => $game_info['scoring_type'],
             'privacy_password' => $game_info['privacy_password'],
             'creatorid' => $game_info['creatorid'],
+            'creator' => $creator,
             'game_name' => $game_info['game_name'] ?: '',
             'course' => $course_info['coursename'] ?: '',
             'status' => $game_info['status'],
