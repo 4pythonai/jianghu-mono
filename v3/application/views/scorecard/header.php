@@ -22,25 +22,25 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: white;
             min-height: 100vh;
             line-height: 1.6;
             padding: 10px;
         }
 
-        .container {
+        .scorecard-container {
             max-width: 100%;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+            overflow: hidden;            
         }
 
         /* 标题样式 */
         .scorecard-header {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
+            background: white; 
+            color: black;
             padding: 20px;
             text-align: center;
         }
