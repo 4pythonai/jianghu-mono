@@ -64,6 +64,10 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        .game-date {
+            margin-left: 0.7rem;
+        }
+
         /* 记分卡表格 */
         .scorecard-table {
             width: 100%;
@@ -288,36 +292,60 @@
             min-width: 30px;
         }
 
+        .score-cell span {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            border-radius: 50%;
+            text-align: center;
+        }
+
         /* 成绩颜色编码 - 保持简洁 */
         .score-eagle {
-            background: #ff4444 !important;
-            color: white;
+            color: #ffffff;
+            background-color: #ff0000;
             font-weight: bold;
         }
 
         .score-birdie {
-            background: #4285f4 !important;
-            color: white;
+            background: #ffffff !important;
+            color: #ff0000;
             font-weight: bold;
+            border: 1px solid #ff0000;
         }
 
         .score-par {
-            background: white;
-            color: #333;
+            background: transparent;
+            color: #0d6efd; /* blue */
+            border: none;
+            border-radius: 0;
+            width: auto;
+            height: auto;
+            line-height: normal;
         }
 
-        .score-bogey {
-            background: #9e9e9e !important;
-            color: white;
+        .score-cell .score-bogey {
+            background: white !important;
+            color:  black;
             font-weight: bold;
+            border: 1px solid #333;
+            border-radius: 0;
         }
 
         .score-double-bogey {
-            background: #424242 !important;
+            background:rgb(135, 132, 132) !important;
+            color:  #ffffff;
+            font-weight: bold;
+        }
+
+        .score-triple-bogey {
+            background:rgb(56, 54, 54) !important;
             color: white;
             font-weight: bold;
         }
 
+        
         /* 总分样式 */
         .total-cell {
             font-weight: bold;

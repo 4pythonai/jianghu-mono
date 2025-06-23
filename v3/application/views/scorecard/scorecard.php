@@ -10,8 +10,10 @@ include_once(VIEWPATH . 'scorecard/header.php');
     <!-- 头部信息 -->
     <div class="scorecard-header">
         <h1 class="scorecard-title"><?php echo htmlspecialchars($game_title); ?></h1>
-        <div class="course-info"><?php echo htmlspecialchars($course_name); ?></div>
-        <div class="course-info"><?php echo $game_date; ?></div>
+        <div class="course-info">
+            <?php echo htmlspecialchars($course_name); ?>
+            <span class="game-date"><?php echo $game_date; ?></span>
+        </div>
     </div>
 
     <div class="content-wrapper">
@@ -62,10 +64,12 @@ include_once(VIEWPATH . 'scorecard/header.php');
                             </td>
 
                             <?php for ($i = 0; $i < $scorecard_config['front_nine_count']; $i++): ?>
-                                <td class="score-cell <?php echo getScoreClass($player['scores'][$i], $course_pars[$i]); ?>"
+                                <td class="score-cell"
                                     data-score="<?php echo $player['scores'][$i]; ?>"
                                     data-par="<?php echo $course_pars[$i]; ?>">
-                                    <?php echo $player['scores'][$i] > 0 ? $player['scores'][$i] : ''; ?>
+                                    <span class="<?php echo getScoreClass($player['scores'][$i], $course_pars[$i]); ?>">
+                                        <?php echo $player['scores'][$i] > 0 ? $player['scores'][$i] : ''; ?>
+                                    </span>
                                 </td>
                             <?php endfor; ?>
 
@@ -75,10 +79,12 @@ include_once(VIEWPATH . 'scorecard/header.php');
 
                             <?php if (!$scorecard_config['is_nine_hole']): ?>
                                 <?php for ($i = $scorecard_config['front_nine_count']; $i < $scorecard_config['total_holes']; $i++): ?>
-                                    <td class="score-cell <?php echo getScoreClass($player['scores'][$i], $course_pars[$i]); ?>"
+                                    <td class="score-cell"
                                         data-score="<?php echo $player['scores'][$i]; ?>"
                                         data-par="<?php echo $course_pars[$i]; ?>">
-                                        <?php echo $player['scores'][$i] > 0 ? $player['scores'][$i] : ''; ?>
+                                        <span class="<?php echo getScoreClass($player['scores'][$i], $course_pars[$i]); ?>">
+                                            <?php echo $player['scores'][$i] > 0 ? $player['scores'][$i] : ''; ?>
+                                        </span>
                                     </td>
                                 <?php endfor; ?>
 

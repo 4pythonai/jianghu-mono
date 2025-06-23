@@ -2,7 +2,8 @@
 if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 
-// 全局函数：计算成绩类型CSS类名
+
+
 if (!function_exists('getScoreClass')) {
     function getScoreClass($score, $par) {
         if ($score <= 0) {
@@ -18,8 +19,10 @@ if (!function_exists('getScoreClass')) {
             return 'score-par';
         } elseif ($diff == 1) {
             return 'score-bogey';
-        } else {
+        } elseif ($diff == 2) {
             return 'score-double-bogey';
+        } else {
+            return 'score-triple-bogey';
         }
     }
 }
@@ -31,8 +34,9 @@ class ScoreCard extends CI_Controller {
     }
 
     public function index() {
+        $gameid=$this->input->get('gameid');
         // 默认显示比赛ID 1338073 的记分卡
-        $this->show(1338073);
+        $this->show($gameid);
     }
 
     public function show($game_id = null) {
