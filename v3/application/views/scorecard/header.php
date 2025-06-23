@@ -34,7 +34,8 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-            overflow: hidden;            
+            overflow-x: auto;
+            overflow-y: hidden;
         }
 
         /* 标题样式 */
@@ -60,7 +61,7 @@
 
         /* 表格容器 */
         .table-container {
-            overflow-x: auto;
+            overflow: visible;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -70,13 +71,11 @@
 
         /* 记分卡表格 */
         .scorecard-table {
-            width: 100%;
+            width: auto;
             border-collapse: collapse;
             border-spacing: 0;
             font-size: clamp(0.6rem, 2vw, 0.7rem);
             min-width: 600px;
-            /* 9洞基础宽度 */
-            background: white;
         }
 
         /* 18洞时增加最小宽度 */
@@ -97,11 +96,6 @@
         /* 修复最后一行的双重边框问题 */
         .scorecard-table tbody tr:last-child td {
             border-bottom: none !important;
-        }
-
-        /* 确保表格容器没有额外边框 */
-        .table-container {
-            border: none;
         }
 
         /* 确保表格本身没有额外边框 */
@@ -159,42 +153,6 @@
             background: #c8e6c9 !important;
             font-weight: bold;
             color: #1b5e20;
-        }
-
-        /* 粘性列样式 - 最小化样式 */
-        .sticky-left {
-            position: sticky;
-            left: 0;
-            /* 完全不设置z-index，让浏览器自然处理 */
-            /* 完全不设置背景色和边框，完全依赖表格默认样式 */
-        }
-
-        .sticky-total {
-            position: sticky;
-            right: 120px;
-            /* 为最终总分留出空间 */
-            z-index: 5;
-            background: #4CAF50 !important;
-            color: white;
-            font-weight: bold;
-            min-width: 50px;
-        }
-
-        .sticky-final {
-            position: sticky;
-            right: 0;
-            z-index: 6;
-            background: #2E7D32 !important;
-            color: white;
-            font-weight: bold;
-            min-width: 60px;
-        }
-
-        /* 9洞比赛时调整粘性列位置 */
-        .nine-hole .sticky-total {
-            right: 0;
-            background: #2E7D32 !important;
-            z-index: 6;
         }
 
         /* 球员信息样式 - 强制覆盖所有可能的冲突样式 */
@@ -292,13 +250,15 @@
             min-width: 30px;
         }
 
-        .score-cell span {
+        .score-shape {
             display: inline-block;
             width: 28px;
             height: 28px;
             line-height: 28px;
             border-radius: 50%;
             text-align: center;
+            margin: 0 auto 5px;
+            vertical-align: middle;
         }
 
         /* 成绩颜色编码 - 保持简洁 */
@@ -325,7 +285,7 @@
             line-height: normal;
         }
 
-        .score-cell .score-bogey {
+        .score-bogey {
             background: white !important;
             color:  black;
             font-weight: bold;
@@ -357,12 +317,25 @@
             font-size: clamp(0.8rem, 2.5vw, 0.9rem);
         }
 
-        /* 球员行样式 */
-        .player-row {
-            /* 高度由统一的 th,td 样式控制 */
+        .legend {
+            width: 100%;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #ddd;
+            white-space: nowrap;
+            overflow-x: auto;
         }
 
-        /* 响应式设计 */
+        .legend .row {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+        }
+
+        /* 球员行样式 */
+        
+ 
+         /* 响应式设计 */
         @media (max-width: 1024px) {
             .scorecard-table {
                 font-size: 0.6rem;
@@ -440,19 +413,6 @@
                 height: 28px; /* 80% of 35px */
             }
 
-            .sticky-total {
-                right: 80px;
-            }
-
-            .sticky-final {
-                min-width: 50px;
-            }
-
-            .nine-hole .sticky-total {
-                right: 0;
-                min-width: 50px;
-            }
-            
             .hole-name {
                 width: 22px;
                 height: 22px;
@@ -495,20 +455,6 @@
                 height: 24px; /* 80% of 30px */
             }
 
-            .sticky-total {
-                right: 60px;
-                min-width: 40px;
-            }
-
-            .sticky-final {
-                min-width: 45px;
-            }
-
-            .nine-hole .sticky-total {
-                right: 0;
-                min-width: 45px;
-            }
-            
             .hole-name {
                 width: 20px;
                 height: 20px;

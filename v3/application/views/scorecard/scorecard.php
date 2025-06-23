@@ -3,11 +3,11 @@
 include_once(VIEWPATH . 'scorecard/scorecard_data.php');
 
 // 引入头部文件
-include_once(VIEWPATH . 'scorecard/scoreCss.php');
+include_once(VIEWPATH . 'scorecard/header.php');
 ?>
 
 <div class="scorecard-container">
-    <!-- 头部信息 -->
+    <!-- 头部信息 ---->
     <div class="scorecard-header">
         <h1 class="scorecard-title"><?php echo htmlspecialchars($game_title); ?></h1>
         <div class="course-info">
@@ -67,7 +67,7 @@ include_once(VIEWPATH . 'scorecard/scoreCss.php');
                                 <td class="score-cell"
                                     data-score="<?php echo $player['scores'][$i]; ?>"
                                     data-par="<?php echo $course_pars[$i]; ?>">
-                                    <span class="<?php echo getScoreClass($player['scores'][$i], $course_pars[$i]); ?>">
+                                    <span class="score-shape <?php echo getScoreClass($player['scores'][$i], $course_pars[$i]); ?>">
                                         <?php echo $player['scores'][$i] > 0 ? $player['scores'][$i] : ''; ?>
                                     </span>
                                 </td>
@@ -82,7 +82,7 @@ include_once(VIEWPATH . 'scorecard/scoreCss.php');
                                     <td class="score-cell"
                                         data-score="<?php echo $player['scores'][$i]; ?>"
                                         data-par="<?php echo $course_pars[$i]; ?>">
-                                        <span class="<?php echo getScoreClass($player['scores'][$i], $course_pars[$i]); ?>">
+                                        <span class="score-shape <?php echo getScoreClass($player['scores'][$i], $course_pars[$i]); ?>">
                                             <?php echo $player['scores'][$i] > 0 ? $player['scores'][$i] : ''; ?>
                                         </span>
                                     </td>
@@ -106,27 +106,31 @@ include_once(VIEWPATH . 'scorecard/scoreCss.php');
     </div>
 
     <!-- 图例说明 -->
-    <div class="legend" style="padding: 20px; background: #f8f9fa; border-top: 1px solid #ddd;">
+    <div class="legend">
         <div class="row text-center">
-            <div class="col-6 col-md-2 mb-2">
-                <div class="score-eagle" style="width: 20px; height: 20px; border-radius: 50%; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold;">E</div>
-                <small>EAGLE</small>
+            <div class="col-4 col-md-2" style="margin-bottom: 10px;">
+                <div class="score-shape score-eagle">E</div>
+                <small>EAGLE-</small>
             </div>
-            <div class="col-6 col-md-2 mb-2">
-                <div class="score-birdie" style="width: 20px; height: 20px; border-radius: 50%; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold;">B</div>
+            <div class="col-4 col-md-2" style="margin-bottom: 10px;">
+                <div class="score-shape score-birdie">B</div>
                 <small>BIRDIE</small>
             </div>
-            <div class="col-6 col-md-2 mb-2">
-                <div class="score-par" style="width: 20px; height: 20px; border-radius: 50%; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; border: 1px solid #ddd;">P</div>
+            <div class="col-4 col-md-2" style="margin-bottom: 10px;">
+                <div class="score-shape score-par">P</div>
                 <small>PAR</small>
             </div>
-            <div class="col-6 col-md-2 mb-2">
-                <div class="score-bogey" style="width: 20px; height: 20px; border-radius: 50%; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold;">+1</div>
+            <div class="col-4 col-md-2" style="margin-bottom: 10px;">
+                <div class="score-shape score-bogey">+1</div>
                 <small>BOGEY</small>
             </div>
-            <div class="col-6 col-md-2 mb-2">
-                <div class="score-double-bogey" style="width: 20px; height: 20px; border-radius: 50%; margin: 0 auto 5px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold;">+2</div>
-                <small>DOUBLE BOGEY+</small>
+            <div class="col-4 col-md-2" style="margin-bottom: 10px;">
+                <div class="score-shape score-double-bogey">+2</div>
+                <small>DBL BOGEY</small>
+            </div>
+            <div class="col-4 col-md-2" style="margin-bottom: 10px;">
+                <div class="score-shape score-triple-bogey">+3</div>
+                <small>TPL BOGEY+</small>
             </div>
         </div>
     </div>
