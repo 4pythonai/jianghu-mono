@@ -3,7 +3,7 @@
 include_once(VIEWPATH . 'scorecard/scorecard_data.php');
 
 // 引入头部文件
-include_once(VIEWPATH . 'scorecard/header.php');
+include_once(VIEWPATH . 'scorecard/scoreCss.php');
 ?>
 
 <div class="scorecard-container">
