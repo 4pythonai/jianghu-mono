@@ -21,7 +21,7 @@ include_once(VIEWPATH . 'scorecard/header.php');
             <table class="scorecard-table">
                 <thead>
                     <tr class="header-row">
-                        <th class="player-column sticky-left">球员</th>
+                        <th class="player-column">球员</th>
                         <?php for ($i = 0; $i < $scorecard_config['front_nine_count']; $i++): ?>
                             <th class="hole-column hole-<?php echo $i + 1; ?>">
                                 <div class="hole-info">
@@ -50,17 +50,8 @@ include_once(VIEWPATH . 'scorecard/header.php');
                 <tbody>
                     <?php foreach ($players_data as $player): ?>
                         <tr class="player-row">
-                            <td class="player-info sticky-left">
-                                <div class="user-column">
-                                    <div class="player-avatar">
-                                        <img src="<?php echo $player['avatar']; ?>" alt="<?php echo htmlspecialchars($player['name']); ?>"
-                                            onerror="this.src='<?php echo $base_url; ?>/avatar/default.jpg'">
-                                    </div>
-                                    <div class="player-name"><?php echo htmlspecialchars($player['name']); ?></div>
-                                </div>
-                                <div class="tee-column">
-                                    <div class="tee-indicator" data-tee="<?php echo strtolower($player['tee']); ?>"></div>
-                                </div>
+                            <td class="player-cell">
+                                    <div class="player-name">PLAYER</div>
                             </td>
 
                             <?php for ($i = 0; $i < $scorecard_config['front_nine_count']; $i++): ?>

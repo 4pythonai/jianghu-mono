@@ -38,6 +38,11 @@
             overflow-y: hidden;
         }
 
+        .content-wrapper {
+            width: 100%;
+            overflow: hidden;
+        }
+
         /* 标题样式 */
         .scorecard-header {
             background: white; 
@@ -71,7 +76,7 @@
 
         /* 记分卡表格 */
         .scorecard-table {
-            width: auto;
+            width: 100%;
             border-collapse: collapse;
             border-spacing: 0;
             font-size: clamp(0.6rem, 2vw, 0.7rem);
@@ -155,16 +160,6 @@
             color: #1b5e20;
         }
 
-        /* 球员信息样式 - 强制覆盖所有可能的冲突样式 */
-        .player-info {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-between !important;
-            gap: 8px !important;
-            padding: 8px 4px !important; /* 与表格默认padding一致 */
-            text-align: center !important; /* 与表格默认对齐一致 */
-            background:rgb(79, 153, 79) !important; /* 淡绿色背景 */
-        }
 
         /* 用户信息列 */
         .user-column {
@@ -173,6 +168,7 @@
             align-items: center;
             gap: 2px;
             flex: 1;
+            height: 100%;
         }
 
         .player-avatar {
@@ -204,6 +200,7 @@
             align-items: center;
             justify-content: flex-end; /* 右对齐，紧贴右边框 */
             flex-shrink: 0;
+            height: 100%;
         }
 
         .tee-indicator {
@@ -244,6 +241,14 @@
         }
 
         /* 成绩单元格样式 */
+        .player-cell {
+            font-weight: bold;
+            font-size: clamp(0.7rem, 2.2vw, 0.8rem);
+            min-width: 30px;
+            background: #4caf50;
+
+        }
+
         .score-cell {
             font-weight: bold;
             font-size: clamp(0.7rem, 2.2vw, 0.8rem);
@@ -334,8 +339,7 @@
 
         /* 球员行样式 */
         
- 
-         /* 响应式设计 */
+        /* 响应式设计 */
         @media (max-width: 1024px) {
             .scorecard-table {
                 font-size: 0.6rem;
@@ -360,7 +364,6 @@
                 font-size: 0.6rem;
             }
 
-            /* .player-info 不设置特殊样式，使用表格默认 */
 
             .tee-indicator {
                 width: 10px;
@@ -406,7 +409,6 @@
                 font-size: 0.55rem;
             }
 
-            /* .player-info 不设置特殊样式，使用表格默认 */
 
             .tee-indicator {
                 width: 9px;
@@ -443,7 +445,6 @@
                 font-size: 0.8rem;
             }
 
-            /* .player-info 不设置特殊样式，使用表格默认 */
 
             .player-avatar {
                 width: 16px;
