@@ -1,6 +1,8 @@
 /* 添加规则组件样式 */
 .add-rule-container {
-	min-height: 400px;
+	min-height: 100vh;
+	background-color: #efede8;
+	padding-bottom: 30rpx;
 }
 
 .form-container {
@@ -211,4 +213,100 @@
 button[disabled] {
 	opacity: 0.6;
 	pointer-events: none;
+}
+
+/* 分组滚动区域 */
+.rules-group-scroll {
+	height: 100vh;
+	padding: 0 32rpx 32rpx 32rpx;
+	box-sizing: border-box;
+}
+
+/* 分组块 */
+.group-block {
+	margin-bottom: 48rpx;
+}
+
+.group-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #222;
+	margin-bottom: 24rpx;
+	display: block;
+}
+
+/* 卡片行 */
+.card-row {
+	display: flex;
+	flex-direction: row;
+	gap: 32rpx;
+	margin-bottom: 24rpx;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+}
+
+/* 规则卡片 */
+.rule-card {
+	width: 300rpx;
+	min-width: 300rpx;
+	max-width: 300rpx;
+	min-height: 96rpx;
+	background: #4caf7a;
+	border-radius: 24rpx;
+	box-shadow: 8rpx 8rpx 16rpx 0 rgba(0, 0, 0, 0.18);
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 0;
+	padding: 0 24rpx;
+	transition: transform 0.1s;
+}
+
+.rule-card:active {
+	transform: scale(0.97);
+}
+
+.rule-card text {
+	color: #fff;
+	font-size: 32rpx;
+	font-weight: 500;
+	text-shadow: 2rpx 2rpx 8rpx rgba(0, 0, 0, 0.18);
+}
+
+/* 加号按钮 */
+.plus-btn {
+	position: absolute;
+	right: 18rpx;
+	bottom: 12rpx;
+	width: 44rpx;
+	height: 44rpx;
+	background: #e6f4e6;
+	color: #4caf7a;
+	border-radius: 50%;
+	box-shadow: 2rpx 2rpx 8rpx 0 rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 36rpx;
+	font-weight: bold;
+	z-index: 2;
+	border: 2rpx solid #c8e6c9;
+}
+
+.plus-btn:active {
+	background: #c8e6c9;
+}
+
+/* 适配单个卡片居左 */
+.card-row .rule-card:only-child {
+	margin-right: 0;
+}
+
+/* 响应式适配 */
+@media screen and (max-width: 400px) {
+	.rule-card {
+		min-width: 160rpx;
+		font-size: 28rpx;
+	}
 }
