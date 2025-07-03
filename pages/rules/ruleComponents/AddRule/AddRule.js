@@ -204,11 +204,28 @@ Component({
         // 卡片点击跳转规则配置页
         onConfigRule(e) {
             const { title } = e.currentTarget.dataset;
-            // 只处理 4p-8421，其他弹提示
-            if (title === '4p-8421') {
-                wx.navigateTo({
-                    url: '/pages/ruleConfig/4player/4p-8421/4p-8421'
-                });
+            // 路由映射
+            const map = {
+                // 2人
+                '2p-gross': '/pages/ruleConfig/2player/2p-gross/2p-gross',
+                '2p-hole': '/pages/ruleConfig/2player/2p-hole/2p-hole',
+                '2p-8421': '/pages/ruleConfig/2player/2p-8421/2p-8421',
+                // 3人
+                '3p-doudizhu': '/pages/ruleConfig/3player/3p-doudizhu/3p-doudizhu',
+                '3p-dizhupo': '/pages/ruleConfig/3player/3p-dizhupo/3p-dizhupo',
+                '3p-8421': '/pages/ruleConfig/3player/3p-8421/3p-8421',
+                // 4人
+                '4p-lasi': '/pages/ruleConfig/4player/4p-lasi/4p-lasi',
+                '4p-8421': '/pages/ruleConfig/4player/4p-8421/4p-8421',
+                '4p-dizhupo': '/pages/ruleConfig/4player/4p-dizhupo/4p-dizhupo',
+                '4p-3da1': '/pages/ruleConfig/4player/4p-3da1/4p-3da1',
+                '4p-bestak': '/pages/ruleConfig/4player/4p-bestak/4p-bestak',
+                // 4人以上
+                'mp-labahua': '/pages/ruleConfig/mplayer/mp-labahua/mp-labahua',
+                'mp-dabudui': '/pages/ruleConfig/mplayer/mp-dabudui/mp-dabudui',
+            };
+            if (map[title]) {
+                wx.navigateTo({ url: map[title] });
             } else {
                 wx.showToast({
                     title: '暂未开放，敬请期待',
