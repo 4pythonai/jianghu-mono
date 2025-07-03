@@ -243,6 +243,10 @@ button[disabled] {
 	margin-bottom: 24rpx;
 	justify-content: flex-start;
 	flex-wrap: wrap;
+	overflow: visible;
+	max-width: 632rpx;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 /* 规则卡片 */
