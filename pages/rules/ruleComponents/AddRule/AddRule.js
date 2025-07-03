@@ -207,7 +207,7 @@ Component({
             // 只处理 4p-8421，其他弹提示
             if (title === '4p-8421') {
                 wx.navigateTo({
-                    url: '/pages/ruleConfig/4player/4p-8421'
+                    url: '/pages/ruleConfig/4player/4p-8421/4p-8421'
                 });
             } else {
                 wx.showToast({
