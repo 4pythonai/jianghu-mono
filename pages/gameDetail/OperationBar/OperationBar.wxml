@@ -50,7 +50,7 @@
   </view>
   <view class="detail-row">
     <text class="detail-label">开球时间:</text>
-    <text class="detail-value">{{gameData.teeTime || gameData.tee_time || gameData.start_time || '2024-01-15 09:00'}}</text>
+    <text class="detail-value">{{formatEuropeanDate(gameData.teeTime || gameData.tee_time || gameData.start_time || '2024-01-15 09:00')}}</text>
   </view>
 </view>
 

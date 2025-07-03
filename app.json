@@ -23,7 +23,8 @@
 		"pages/gameOperation/scorecard/scorecard",
 		"pages/gameOperation/poster/poster",
 		"pages/gameOperation/personalBilingBook/personalBilingBook",
-		"pages/gameOperation/socreStyle/socreStyle"
+		"pages/gameOperation/socreStyle/socreStyle",
+		"pages/rules/rules"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

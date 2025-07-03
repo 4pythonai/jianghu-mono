@@ -1,0 +1,95 @@
+<!-- 添加规则组件（重写，参考图片） -->
+<view wx:if="{{ show }}" class="add-rule-container">
+    <!-- Tab栏（与页面保持一致，仅展示，不负责切换）-->
+
+    <!-- 内容区域 -->
+    <scroll-view scroll-y class="rules-group-scroll">
+        <!-- 2人游戏 -->
+        <view class="group-block">
+            <text class="group-title">2人游戏</text>
+            <view class="card-row">
+                <view class="rule-card" bindtap="onAddRule" data-title="2人比杆">
+                    <text>2人比杆</text>
+                    <view class="plus-btn">+</view>
+                </view>
+                <view class="rule-card" bindtap="onAddRule" data-title="2人比洞">
+                    <text>2人比洞</text>
+                    <view class="plus-btn">+</view>
+                </view>
+            </view>
+            <view class="card-row">
+                <view class="rule-card" bindtap="onAddRule" data-title="8421">
+                    <text>8421</text>
+                    <view class="plus-btn">+</view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 3人游戏 -->
+        <view class="group-block">
+            <text class="group-title">3人游戏</text>
+            <view class="card-row">
+                <view class="rule-card" bindtap="onAddRule" data-title="斗地主">
+                    <text>斗地主</text>
+                    <view class="plus-btn">+</view>
+                </view>
+                <view class="rule-card" bindtap="onAddRule" data-title="地主婆">
+                    <text>地主婆</text>
+                    <view class="plus-btn">+</view>
+                </view>
+            </view>
+            <view class="card-row">
+                <view class="rule-card" bindtap="onAddRule" data-title="8421">
+                    <text>8421</text>
+                    <view class="plus-btn">+</view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 4人游戏 -->
+        <view class="group-block">
+            <text class="group-title">4人游戏</text>
+            <view class="card-row">
+                <view class="rule-card" bindtap="onAddRule" data-title="四人拉丝">
+                    <text>四人拉丝</text>
+                    <view class="plus-btn">+</view>
+                </view>
+                <view class="rule-card" bindtap="onAddRule" data-title="8421">
+                    <text>8421</text>
+                    <view class="plus-btn">+</view>
+                </view>
+            </view>
+            <view class="card-row">
+                <view class="rule-card" bindtap="onAddRule" data-title="地主婆">
+                    <text>地主婆</text>
+                    <view class="plus-btn">+</view>
+                </view>
+                <view class="rule-card" bindtap="onAddRule" data-title="三打一">
+                    <text>三打一</text>
+                    <view class="plus-btn">+</view>
+                </view>
+            </view>
+            <view class="card-row">
+                <view class="rule-card" bindtap="onAddRule" data-title="比A比K">
+                    <text>比A比K</text>
+                    <view class="plus-btn">+</view>
+                </view>
+            </view>
+        </view>
+
+        <!-- 4人以上游戏 -->
+        <view class="group-block">
+            <text class="group-title">4人以上游戏</text>
+            <view class="card-row">
+                <view class="rule-card" bindtap="onAddRule" data-title="喇叭花">
+                    <text>喇叭花</text>
+                    <view class="plus-btn">+</view>
+                </view>
+                <view class="rule-card" bindtap="onAddRule" data-title="大部队">
+                    <text>大部队</text>
+                    <view class="plus-btn">+</view>
+                </view>
+            </view>
+        </view>
+    </scroll-view>
+</view> 

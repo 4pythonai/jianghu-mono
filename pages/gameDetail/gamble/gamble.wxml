@@ -3,7 +3,28 @@
     <view class="gamble-header">
         <text>游戏竞猜</text>
     </view>
+    
+    <!-- Debug信息 -->
+    <view class="debug-info" bindtap="toggleGambleStatus">
+        <text class="debug-text">Debug: GameID = {{ gameid || '未获取到gameid' }}</text>
+        <text class="debug-text">have_gamble = {{ have_gamble }} (点击切换)</text>
+    </view>
+    
     <view class="gamble-content">
-        <text>tab---游戏功能开发中...</text>
+        <view wx:if="{{ !have_gamble }}" class="no-gamble-container">
+            <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
+            <text class="empty-hint">暂无游戏竞猜</text>
+        </view>
+        <view wx:else class="has-gamble-container">
+            <text class="has-gamble-text">已经有游戏</text>
+        </view>
+    </view>
+    
+    <!-- 底部按钮区域 -->
+    <view wx:if="{{ !have_gamble }}" class="bottom-button-area">
+        <button class="add-game-button" bindtap="handleAddGame">
+            <text class="button-emoji">🎮</text>
+            <text class="button-text">添加游戏</text>
+        </button>
     </view>
 </view>

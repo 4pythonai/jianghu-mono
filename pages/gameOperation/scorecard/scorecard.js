@@ -26,16 +26,20 @@ Page({
     onShow() {
         console.log('📊 [Scorecard] 页面显示');
         
-        // 强制设置为横屏
-        wx.setDeviceOrientation({
-            orientation: 'landscape',
-            success: () => {
-                console.log('📊 [Scorecard] 成功设置为横屏模式');
-            },
-            fail: (err) => {
-                console.log('📊 [Scorecard] 设置横屏失败', err);
-            }
-        });
+        // 强制设置为横屏（检查API是否存在以兼容开发者工具）
+        if (wx.setDeviceOrientation) {
+            wx.setDeviceOrientation({
+                orientation: 'landscape',
+                success: () => {
+                    console.log('📊 [Scorecard] 成功设置为横屏模式');
+                },
+                fail: (err) => {
+                    console.log('📊 [Scorecard] 设置横屏失败', err);
+                }
+            });
+        } else {
+            console.warn('⚠️ [Scorecard] wx.setDeviceOrientation API 在当前环境不可用（可能是在开发者工具中）');
+        }
     },
 
     onReady() {

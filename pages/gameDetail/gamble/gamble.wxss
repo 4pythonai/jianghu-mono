@@ -1,6 +1,10 @@
 /* 游戏(Gamble)模块样式 */
 .gamble-container {
 	padding: 15px;
+	display: flex;
+	flex-direction: column;
+	min-height: 400px;
+	position: relative;
 }
 
 .gamble-header {
@@ -11,8 +15,33 @@
 	text-align: center;
 }
 
+/* Debug信息样式 */
+.debug-info {
+	background-color: #fff3cd;
+	border: 1px solid #ffeaa7;
+	border-radius: 4px;
+	padding: 8px 12px;
+	margin-bottom: 15px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.debug-info:active {
+	background-color: #ffeaa7;
+}
+
+.debug-text {
+	font-size: 12px;
+	color: #856404;
+	font-family: "Courier New", monospace;
+	display: block;
+}
+
 .gamble-content {
-	min-height: 200px;
+	flex: 1;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -20,4 +49,83 @@
 	font-size: 14px;
 	background-color: #f5f5f5;
 	border-radius: 8px;
+	margin-bottom: 80px;
+}
+
+/* 无游戏状态样式 */
+.no-gamble-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+.ps-image {
+	width: 150px;
+	height: 150px;
+	border-radius: 12px;
+	margin-bottom: 15px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.empty-hint {
+	font-size: 16px;
+	color: #999;
+	margin-top: 15px;
+}
+
+/* 有游戏状态样式 */
+.has-gamble-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.has-gamble-text {
+	font-size: 18px;
+	color: #333;
+	font-weight: bold;
+}
+
+/* 底部按钮区域样式 */
+.bottom-button-area {
+	position: absolute;
+	bottom: 15px;
+	left: 15px;
+	right: 15px;
+}
+
+.add-game-button {
+	width: 100%;
+	height: 50px;
+	background: linear-gradient(135deg, #4caf50, #45a049);
+	border: none;
+	border-radius: 25px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+	transition: all 0.3s ease;
+}
+
+.add-game-button::after {
+	border: none;
+}
+
+.add-game-button:active {
+	transform: translateY(2px);
+	box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+}
+
+.button-emoji {
+	font-size: 20px;
+}
+
+.button-text {
+	font-size: 16px;
+	color: white;
+	font-weight: 600;
 }

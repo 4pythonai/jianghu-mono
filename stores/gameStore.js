@@ -12,6 +12,7 @@ export const gameStore = observable({
     isSaving: false,     // 保存状态
     gameid: null,        // 当前游戏ID
     groupId: null,       // 当前分组ID
+    have_gamble: false,  // 是否有游戏竞猜
 
     // ---- 私有方法 (数据处理) ----
 
@@ -293,7 +294,7 @@ export const gameStore = observable({
 
 
     // 计算分数样式类
-    getScoreClass: action(( diff) => {
+    getScoreClass: action((diff) => {
         if (diff <= -2) return 'score-eagle';  // score-eagle
         if (diff === -1) return 'score-birdie'; // score-birdie
         if (diff === 0) return 'score-par';   // score-par

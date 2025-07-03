@@ -1,0 +1,61 @@
+<!-- 我的规则组件 -->
+<view wx:if="{{ show }}" class="my-rules-container">
+    <!-- 加载状态 -->
+    <view wx:if="{{ loading }}" class="loading-container">
+        <text class="loading-text">加载中...</text>
+    </view>
+    
+    <!-- 规则列表 -->
+    <view wx:else class="rules-list">
+        <!-- 空状态 -->
+        <view wx:if="{{ myRules.length === 0 }}" class="empty-state">
+            <text class="empty-text">暂无规则</text>
+            <text class="empty-hint">点击"添加规则"创建您的第一条规则</text>
+        </view>
+        
+        <!-- 规则列表项 -->
+        <view wx:else>
+            <view 
+                wx:for="{{ myRules }}" 
+                wx:key="id" 
+                class="rule-item"
+                bindtap="onViewRule"
+                data-item="{{ item }}"
+            >
+                <!-- 规则头部 -->
+                <view class="rule-header">
+                    <text class="rule-title">{{ item.title }}</text>
+                    <view class="rule-type {{ item.type }}">
+                        <text>{{ item.type === 'system' ? '系统' : '自定义' }}</text>
+                    </view>
+                </view>
+                
+                <!-- 规则描述 -->
+                <view class="rule-description">
+                    <text>{{ item.description }}</text>
+                </view>
+                
+                <!-- 规则底部 -->
+                <view class="rule-footer">
+                    <text class="rule-time">{{ item.createTime }}</text>
+                    <view class="rule-actions" catchtap="true">
+                        <text 
+                            class="action-btn edit-btn" 
+                            bindtap="onEditRule"
+                            data-item="{{ item }}"
+                        >
+                            编辑
+                        </text>
+                        <text 
+                            class="action-btn delete-btn" 
+                            bindtap="onDeleteRule"
+                            data-id="{{ item.id }}"
+                        >
+                            删除
+                        </text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</view> 
