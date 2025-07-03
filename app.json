@@ -24,7 +24,8 @@
 		"pages/gameOperation/poster/poster",
 		"pages/gameOperation/personalBilingBook/personalBilingBook",
 		"pages/gameOperation/socreStyle/socreStyle",
-		"pages/rules/rules"
+		"pages/rules/rules",
+		"pages/ruleConfig/4player/4p-8421/4p-8421"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

@@ -8,17 +8,17 @@
         <view class="group-block">
             <text class="group-title">2人游戏</text>
             <view class="card-row">
-                <view class="rule-card" bindtap="onAddRule" data-title="2人比杆">
+                <view class="rule-card" bindtap="onConfigRule" data-title="2p-2人比杆">
                     <text>2人比杆</text>
                     <view class="plus-btn">+</view>
                 </view>
-                <view class="rule-card" bindtap="onAddRule" data-title="2人比洞">
+                <view class="rule-card" bindtap="onConfigRule" data-title="2p-2人比洞">
                     <text>2人比洞</text>
                     <view class="plus-btn">+</view>
                 </view>
             </view>
             <view class="card-row">
-                <view class="rule-card" bindtap="onAddRule" data-title="8421">
+                <view class="rule-card" bindtap="onConfigRule" data-title="2p-8421">
                     <text>8421</text>
                     <view class="plus-btn">+</view>
                 </view>
@@ -29,17 +29,17 @@
         <view class="group-block">
             <text class="group-title">3人游戏</text>
             <view class="card-row">
-                <view class="rule-card" bindtap="onAddRule" data-title="斗地主">
+                <view class="rule-card" bindtap="onConfigRule" data-title="3p-斗地主">
                     <text>斗地主</text>
                     <view class="plus-btn">+</view>
                 </view>
-                <view class="rule-card" bindtap="onAddRule" data-title="地主婆">
+                <view class="rule-card" bindtap="onConfigRule" data-title="3p-地主婆">
                     <text>地主婆</text>
                     <view class="plus-btn">+</view>
                 </view>
             </view>
             <view class="card-row">
-                <view class="rule-card" bindtap="onAddRule" data-title="8421">
+                <view class="rule-card" bindtap="onConfigRule" data-title="3p-8421">
                     <text>8421</text>
                     <view class="plus-btn">+</view>
                 </view>
@@ -50,27 +50,27 @@
         <view class="group-block">
             <text class="group-title">4人游戏</text>
             <view class="card-row">
-                <view class="rule-card" bindtap="onAddRule" data-title="四人拉丝">
+                <view class="rule-card" bindtap="onConfigRule" data-title="4p-四人拉丝">
                     <text>四人拉丝</text>
                     <view class="plus-btn">+</view>
                 </view>
-                <view class="rule-card" bindtap="onAddRule" data-title="8421">
+                <view class="rule-card" bindtap="onConfigRule" data-title="4p-8421">
                     <text>8421</text>
                     <view class="plus-btn">+</view>
                 </view>
             </view>
             <view class="card-row">
-                <view class="rule-card" bindtap="onAddRule" data-title="地主婆">
+                <view class="rule-card" bindtap="onConfigRule" data-title="4p-地主婆">
                     <text>地主婆</text>
                     <view class="plus-btn">+</view>
                 </view>
-                <view class="rule-card" bindtap="onAddRule" data-title="三打一">
+                <view class="rule-card" bindtap="onConfigRule" data-title="4p-三打一">
                     <text>三打一</text>
                     <view class="plus-btn">+</view>
                 </view>
             </view>
             <view class="card-row">
-                <view class="rule-card" bindtap="onAddRule" data-title="比A比K">
+                <view class="rule-card" bindtap="onConfigRule" data-title="4p-比A比K">
                     <text>比A比K</text>
                     <view class="plus-btn">+</view>
                 </view>
@@ -81,11 +81,11 @@
         <view class="group-block">
             <text class="group-title">4人以上游戏</text>
             <view class="card-row">
-                <view class="rule-card" bindtap="onAddRule" data-title="喇叭花">
+                <view class="rule-card" bindtap="onConfigRule" data-title="mp-喇叭花">
                     <text>喇叭花</text>
                     <view class="plus-btn">+</view>
                 </view>
-                <view class="rule-card" bindtap="onAddRule" data-title="大部队">
+                <view class="rule-card" bindtap="onConfigRule" data-title="mp-大部队">
                     <text>大部队</text>
                     <view class="plus-btn">+</view>
                 </view>
