@@ -1,3 +1,38 @@
-<view class="rule-config-empty">
-  <text>这里是4人8421规则配置页（待开发）</text>
+<view class="rule-config-bg">
+  <view class="rule-config-card">
+    <!-- 规则名称 -->
+    <view class="form-label">规则名称</view>
+    <input class="form-input" value="8421" disabled />
+
+    <view class="section-label">请配置游戏规则</view>
+
+    <!-- 扣分规则 -->
+    <view class="form-label">扣分规则</view>
+    <view class="form-select" bindtap="onShowKoufen">
+      <input class="form-input" value="par+4开始/不封顶" disabled />
+      <view class="select-arrow"><text class="arrow-circle">▼</text></view>
+    </view>
+
+    <!-- 顶洞规则 -->
+    <view class="form-label">顶洞规则</view>
+    <view class="form-select" bindtap="onShowDingdong">
+      <input class="form-input" value="得分打平" disabled />
+      <view class="select-arrow"><text class="arrow-circle">▼</text></view>
+    </view>
+
+    <!-- 吃肉规则 -->
+    <view class="form-label">吃肉规则</view>
+    <view class="form-select" bindtap="onShowEatmeat">
+      <input class="form-input" value="赢就吃1个/肉算1分" disabled />
+      <view class="select-arrow"><text class="arrow-circle">▼</text></view>
+    </view>
+
+    <!-- 底部按钮 -->
+    <button class="add-btn">添加至我的规则</button>
+  </view>
+
+  <!-- 弹窗组件 -->
+  <koufen visible="{{showKoufen}}" bind:cancel="onCloseKoufen" bind:confirm="onKoufenConfirm" />
+  <dingdong visible="{{showDingdong}}" bind:cancel="onCloseDingdong" bind:confirm="onDingdongConfirm" />
+  <eatmeat visible="{{showEatmeat}}" bind:cancel="onCloseEatmeat" bind:confirm="onEatmeatConfirm" />
 </view>

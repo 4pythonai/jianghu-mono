@@ -1,0 +1,41 @@
+<view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
+  <view class="modal-content" catchtap>
+    <view class="modal-title">吃肉规则</view>
+    <view class="modal-list">
+      <view class="eat-row">
+        <view class="eat-label">成绩</view>
+        <view class="eat-label right">吃肉数量</view>
+      </view>
+      <block wx:for="{{eatList}}" wx:key="index">
+        <view class="eat-row">
+          <view class="eat-label">{{item.label}}</view>
+          <input class="eat-input" value="{{item.value}}" data-index="{{index}}" bindinput="onEatInput" />
+        </view>
+      </block>
+      <view class="modal-divider"></view>
+      <view class="eat-row">肉的分值</view>
+      <block wx:for="{{scoreOptions}}" wx:key="index">
+        <view class="modal-item" bindtap="onScoreSelect" data-index="{{index}}">
+          <view class="radio-outer {{scoreSelected === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{scoreSelected === index}}"></view>
+          </view>
+          <text>{{item}}</text>
+        </view>
+      </block>
+      <view class="modal-divider"></view>
+      <view class="eat-row">肉值封顶</view>
+      <block wx:for="{{topOptions}}" wx:key="index">
+        <view class="modal-item" bindtap="onTopSelect" data-index="{{index}}">
+          <view class="radio-outer {{topSelected === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{topSelected === index}}"></view>
+          </view>
+          <text>{{item}}</text>
+        </view>
+      </block>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定保存</button>
+    </view>
+  </view>
+</view>

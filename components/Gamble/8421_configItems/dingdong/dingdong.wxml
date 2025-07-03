@@ -1,0 +1,19 @@
+<view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
+  <view class="modal-content" catchtap>
+    <view class="modal-title">顶洞规则</view>
+    <view class="modal-list">
+      <block wx:for="{{options}}" wx:key="index">
+        <view class="modal-item" bindtap="onSelect" data-index="{{index}}">
+          <view class="radio-outer {{selected === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{selected === index}}"></view>
+          </view>
+          <text>{{item}}</text>
+        </view>
+      </block>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定保存</button>
+    </view>
+  </view>
+</view>
