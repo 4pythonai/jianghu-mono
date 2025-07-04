@@ -52,6 +52,7 @@ export const G_4P_8421_Store = observable({
         this.eatmeat_score_value_pair = scorePair;
         this.meat_value = meatValue;
         this.meat_fengding = fengding;
+        this.user_rulename = this.generateAbstractName();
     }),
 
     // 更新规则名称的action
