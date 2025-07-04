@@ -3,6 +3,11 @@ import gameApi from '../../../../api/modules/game' // 导入整个默认导出�
 
 export const G_4P_8421_Store = observable({
 
+    ename: '8421',
+    sysruleid: 17,
+    user_rulename: '8421',
+    creatorId: null,
+
     // 封顶配置: 不封顶,扣2分后再封顶
     koufen_fengding: null,
 
@@ -43,6 +48,11 @@ export const G_4P_8421_Store = observable({
         this.meat_fengding = fengding;
     }),
 
+    // 更新规则名称的action
+    updateUserRulename: action(function (name) {
+        this.user_rulename = name;
+    }),
+
     // 重置所有规则的action
     resetAllRules: action(function () {
         this.koufen_fengding = null;
@@ -55,8 +65,24 @@ export const G_4P_8421_Store = observable({
     }),
 
     // 获取所有规则数据的action
-    getAllRulesData: action(function () {
+    debugAllRulesData: action(function () {
+        console.log('=== 完整Store数据 ===');
+        console.log('=== 4P-8421 规则配置数据 ===');
+        console.log('规则名称:', this.user_rulename);
+        console.log('封顶配置:', this.koufen_fengding);
+        console.log('扣分开始值:', this.koufen_start);
+        console.log('同伴惩罚配置:', this.partner_punishment);
+        console.log('顶洞规则:', this.dingdong);
+        console.log('吃肉得分配对:', this.eatmeat_score_value_pair);
+        console.log('肉分值计算:', this.meat_value);
+        console.log('吃肉封顶:', this.meat_fengding);
+        console.log(JSON.stringify(this, null, 2));
+
         return {
+            user_rulename: this.user_rulename,
+            sysruleid: this.sysruleid,
+            ename: this.ename,
+            creatorId: this.creatorId,
             koufen_fengding: this.koufen_fengding,
             koufen_start: this.koufen_start,
             partner_punishment: this.partner_punishment,

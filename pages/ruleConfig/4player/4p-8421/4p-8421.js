@@ -8,9 +8,18 @@ Page({
     koufenValue: '',
     dingdongValue: '',
     eatmeatValue: '',
+    user_rulename: '',
     koufenDisplayValue: '请配置扣分规则',
     dingdongDisplayValue: '请配置顶洞规则',
     eatmeatDisplayValue: '请配置吃肉规则'
+  },
+
+  // 规则名称输入事件
+  onRuleNameInput(e) {
+    const value = e.detail.value;
+    this.setData({ user_rulename: value });
+    G_4P_8421_Store.updateUserRulename(value);
+    console.log('规则名称已更新:', value);
   },
   // 打开弹窗
   onShowKoufen() { this.setData({ showKoufen: true }); },
@@ -64,18 +73,7 @@ Page({
   // 添加至我的规则按钮点击事件
   onAddToMyRules() {
     // 获取所有规则数据
-    const allRulesData = G_4P_8421_Store.getAllRulesData();
-
-    console.log('=== 4P-8421 规则配置数据 ===');
-    console.log('封顶配置:', allRulesData.koufen_fengding);
-    console.log('扣分开始值:', allRulesData.koufen_start);
-    console.log('同伴惩罚配置:', allRulesData.partner_punishment);
-    console.log('顶洞规则:', allRulesData.dingdong);
-    console.log('吃肉得分配对:', allRulesData.eatmeat_score_value_pair);
-    console.log('肉分值计算:', allRulesData.meat_value);
-    console.log('吃肉封顶:', allRulesData.meat_fengding);
-    console.log('=== 完整Store数据 ===');
-    console.log(JSON.stringify(allRulesData, null, 2));
+    G_4P_8421_Store.debugAllRulesData();
 
     // 显示提示消息
     wx.showToast({
@@ -188,6 +186,7 @@ Page({
     console.log('4P-8421 规则配置页面加载完成');
 
     // 初始化显示值
+    this.setData({ user_rulename: G_4P_8421_Store.user_rulename });
     this.updateKoufenDisplayValue();
     this.updateDingdongDisplayValue();
     this.updateEatmeatDisplayValue();
