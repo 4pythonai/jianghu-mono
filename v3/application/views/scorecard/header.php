@@ -90,7 +90,6 @@
 
         .scorecard-table th,
         .scorecard-table td {
-            padding: 8px 4px;
             text-align: center;
             border: 1px solid #ddd;
             white-space: nowrap;
@@ -160,93 +159,29 @@
             color: #1b5e20;
         }
 
-
-        /* 用户信息列 */
-        .user-column {
+      
+        /* 合并和简化样式 */
+        .user-column, .tee-column {
+            height: 100%;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 2px;
-            flex: 1;
-            height: 100%;
+            justify-content: center;
         }
 
-        .player-avatar {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            overflow: hidden;
-            flex-shrink: 0;
-            border: 2px solid #4CAF50;
-        }
-
-        .player-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .player-name {
-            font-weight: bold;
-            color: #333;
-            font-size: clamp(0.55rem, 1.8vw, 0.6rem);
-            text-align: center;
-            line-height: 1.1;
-        }
-
-        /* Tee信息列 */
         .tee-column {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end; /* 右对齐，紧贴右边框 */
-            flex-shrink: 0;
-            height: 100%;
-        }
-
-        .tee-indicator {
-            width: 12px; /* 减少宽度 */
-            height: 36px; /* 80% of 45px cell height */
-            border-radius: 2px; /* 恢复正常圆角 */
-            border: none; /* 完全无边框 */
-        }
-
-        /* Tee颜色 */
-        .tee-indicator[data-tee="red"] {
-            background: #ff4444;
-        }
-
-        .tee-indicator[data-tee="white"] {
-            background: #ffffff;
-            /* 暂时不设置边框，后面会加背景色来区分 */
-        }
-
-        .tee-indicator[data-tee="yellow"] {
-            background: #ffeb3b;
-        }
-
-        .tee-indicator[data-tee="blue"] {
-            background: #2196f3;
-        }
-
-        .tee-indicator[data-tee="black"] {
-            background: #424242;
-        }
-
-        .tee-indicator[data-tee="gold"] {
-            background: #ffd700;
-        }
-
-        .tee-indicator[data-tee="green"] {
-            background: #4caf50;
+            width: 20px;
+            position: relative;
+            min-height: 36px; /* 设置最小高度 */
         }
 
         /* 成绩单元格样式 */
         .player-cell {
+            padding: 0;
             font-weight: bold;
             font-size: clamp(0.7rem, 2.2vw, 0.8rem);
             min-width: 30px;
-            background: #4caf50;
-
+            background:rgb(175, 76, 129);
+            box-sizing: border-box;
         }
 
         .score-cell {
@@ -499,6 +434,51 @@
 
         .table-container::-webkit-scrollbar-thumb:hover {
             background: #45a049;
+        }
+
+        .tee-indicator {
+            width: 100%;
+            height: 100%;
+            border-radius: 2px;
+            position: relative;
+            background-color: inherit;
+            color: transparent;
+            text-align: center;
+            display: block; /* 确保显示 */
+        }
+
+        /* Tee颜色 */
+        .tee-indicator[data-tee="red"] {
+            background: #ff4444;
+        }
+
+        .tee-indicator[data-tee="white"] {
+            background: #ffffff;
+        }
+
+        .tee-indicator[data-tee="yellow"] {
+            background: #ffeb3b;
+        }
+
+        .tee-indicator[data-tee="blue"] {
+            background: #2196f3;
+        }
+
+        .tee-indicator[data-tee="black"] {
+            background: #424242;
+        }
+
+        .tee-indicator[data-tee="gold"] {
+            background: #ffd700;
+        }
+
+        .tee-indicator[data-tee="green"] {
+            background: #4caf50;
+        } 
+
+        /* 删除未使用的样式 */
+        .player-avatar {
+            display: none;
         }
     </style>
 </head>

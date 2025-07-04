@@ -214,11 +214,22 @@ class MDetailGame  extends CI_Model {
      * @return array 赌球信息
      */
     public function getGambleInfo($game_id) {
-        // 暂时返回固定值，后续可以从数据库查询
-        return [
-            'have_gamble' => true,
-            'star_type' => 'green'
-        ];
+        $gamble_query = "
+            SELECT * FROM t_gamble_game_alpha WHERE gameid = ?
+        ";
+        $gamble_result = $this->db->query($gamble_query, [$game_id]);
+        $gamble = $gamble_result->row_array();
+        if ($gamble) {
+            return [
+                'have_gamble' => true,
+                'star_type' => $gamble['star_type']
+            ];
+        } else {
+            return [
+                'have_gamble' => false,
+                'star_type' => 'green'
+            ];
+        }
     }
 
     /**

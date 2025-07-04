@@ -21,7 +21,7 @@ include_once(VIEWPATH . 'scorecard/header.php');
             <table class="scorecard-table">
                 <thead>
                     <tr class="header-row">
-                        <th class="player-column">球员</th>
+                        <th class="hole-column">HOLE</th>
                         <?php for ($i = 0; $i < $scorecard_config['front_nine_count']; $i++): ?>
                             <th class="hole-column hole-<?php echo $i + 1; ?>">
                                 <div class="hole-info">
@@ -50,8 +50,8 @@ include_once(VIEWPATH . 'scorecard/header.php');
                 <tbody>
                     <?php foreach ($players_data as $player): ?>
                         <tr class="player-row">
-                            <td class="player-cell">
-                                    <div class="player-name">PLAYER</div>
+                            <td class="score-cell">
+                                    <div>AAA</div>
                             </td>
 
                             <?php for ($i = 0; $i < $scorecard_config['front_nine_count']; $i++): ?>
