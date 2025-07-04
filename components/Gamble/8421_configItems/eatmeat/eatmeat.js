@@ -1,3 +1,5 @@
+import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+
 Component({
   properties: {
     value: Object,
@@ -34,7 +36,27 @@ Component({
       this.triggerEvent('cancel');
     },
     onConfirm() {
-      this.triggerEvent('confirm', { value: this.data });
+      const data = this.data;
+
+      // 解析配置数据
+      const scorePair = data.eatList; // 吃肉得分配对
+      const meatValue = data.scoreOptions[data.scoreSelected]; // 肉分值计算方式
+      const fengding = data.topOptions[data.topSelected]; // 吃肉封顶
+
+      // 调用store的action更新数据
+      G_4P_8421_Store.updateEatmeatRule(scorePair, meatValue, fengding);
+
+      console.log('吃肉组件已更新store:', {
+        scorePair,
+        meatValue,
+        fengding
+      });
+
+      // 向父组件传递事件
+      this.triggerEvent('confirm', {
+        value: data,
+        parsedData: { scorePair, meatValue, fengding }
+      });
     }
   }
 });

@@ -9,26 +9,26 @@
     <!-- 扣分规则 -->
     <view class="form-label">扣分规则</view>
     <view class="form-select" bindtap="onShowKoufen">
-      <input class="form-input" value="par+4开始/不封顶" disabled />
+      <input class="form-input" value="{{koufenDisplayValue}}" disabled />
       <view class="select-arrow"><text class="arrow-circle">▼</text></view>
     </view>
 
     <!-- 顶洞规则 -->
     <view class="form-label">顶洞规则</view>
     <view class="form-select" bindtap="onShowDingdong">
-      <input class="form-input" value="得分打平" disabled />
+      <input class="form-input" value="{{dingdongDisplayValue}}" disabled />
       <view class="select-arrow"><text class="arrow-circle">▼</text></view>
     </view>
 
     <!-- 吃肉规则 -->
     <view class="form-label">吃肉规则</view>
     <view class="form-select" bindtap="onShowEatmeat">
-      <input class="form-input" value="赢就吃1个/肉算1分" disabled />
+      <input class="form-input" value="{{eatmeatDisplayValue}}" disabled />
       <view class="select-arrow"><text class="arrow-circle">▼</text></view>
     </view>
 
     <!-- 底部按钮 -->
-    <button class="add-btn">添加至我的规则</button>
+    <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>
   </view>
 
   <!-- 弹窗组件 -->
