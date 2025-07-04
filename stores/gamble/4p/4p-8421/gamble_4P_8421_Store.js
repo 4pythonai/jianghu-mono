@@ -2,6 +2,10 @@ import { observable, action } from 'mobx-miniprogram'
 import gameApi from '../../../../api/modules/game' // 导入整个默认导出的对象
 
 export const G_4P_8421_Store = observable({
+    // 生成规则摘要名称
+    generateAbstractName: function () {
+        return `规则_${Math.floor(Math.random() * 10000)}`;
+    },
 
     ename: '8421',
     sysruleid: 17,
@@ -34,11 +38,13 @@ export const G_4P_8421_Store = observable({
         this.koufen_fengding = fengding;
         this.koufen_start = start;
         this.partner_punishment = punishment;
+        this.user_rulename = this.generateAbstractName();
     }),
 
     // 更新顶洞规则的action
     updateDingdongRule: action(function (dingdong) {
         this.dingdong = dingdong;
+        this.user_rulename = this.generateAbstractName();
     }),
 
     // 更新吃肉规则的action

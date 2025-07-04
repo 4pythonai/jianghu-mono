@@ -2,7 +2,7 @@
   <view class="rule-config-card">
     <!-- 规则名称 -->
     <view class="form-label">规则名称</view>
-    <input class="form-input" value="{{user_rulename}}" bindinput="onRuleNameInput" />
+    <input class="form-input" model:value="{{user_rulename}}" bindinput="onRuleNameInput" />
 
     <view class="section-label">请配置游戏规则</view>
 

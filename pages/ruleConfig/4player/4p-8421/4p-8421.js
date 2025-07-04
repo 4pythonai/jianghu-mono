@@ -1,6 +1,9 @@
 import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { reaction } from 'mobx-miniprogram'
 
 Page({
+  // 存储reaction清理函数
+  _storeReactions: null,
   data: {
     showKoufen: false,
     showDingdong: false,
@@ -193,5 +196,24 @@ Page({
     this.updateKoufenDisplayValue();
     this.updateDingdongDisplayValue();
     this.updateEatmeatDisplayValue();
+
+    // 监听Store变化
+    this._storeReactions = [
+      reaction(
+        () => G_4P_8421_Store.user_rulename,
+        (value) => {
+          this.setData({ user_rulename: value });
+          console.log('Store规则名称变化:', value);
+        }
+      )
+    ];
+  },
+
+  onUnload() {
+    // 清理Store监听
+    if (this._storeReactions) {
+      this._storeReactions.forEach(dispose => dispose());
+      this._storeReactions = null;
+    }
   }
 });
