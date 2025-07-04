@@ -22,8 +22,8 @@
 
     <!-- 吃肉规则 -->
     <view class="form-label">吃肉规则</view>
-    <view class="form-select" bindtap="onShowEatmeat">
-      <input class="form-input" value="{{eatmeatDisplayValue}}" disabled />
+    <view class="form-select" bindtap="{{dingdong === '无顶洞' ? '' : 'onShowEatmeat'}}">
+      <input class="form-input {{dingdong === '无顶洞' ? 'conditionally-disabled' : ''}}" value="{{eatmeatDisplayValue}}" disabled="{{dingdong === '无顶洞'}}" />
       <view class="select-arrow"><text class="arrow-circle">▼</text></view>
     </view>
 

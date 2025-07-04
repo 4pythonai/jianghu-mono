@@ -58,9 +58,18 @@
 	box-sizing: border-box;
 }
 
-.form-input[disabled] {
-	color: #888;
-	background: #f8f8f8;
+.form-input.conditionally-disabled {
+	color: #bbb;
+	background: #f0f0f0;
+	border-color: #e0e0e0;
+}
+
+.form-input.conditionally-disabled::after {
+	content: "已禁用";
+	position: absolute;
+	right: 80rpx;
+	color: #999;
+	font-size: 24rpx;
 }
 
 .form-select {

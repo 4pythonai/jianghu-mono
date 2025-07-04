@@ -9,6 +9,7 @@ Page({
     dingdongValue: '',
     eatmeatValue: '',
     user_rulename: '',
+    dingdong: null,
     koufenDisplayValue: '请配置扣分规则',
     dingdongDisplayValue: '请配置顶洞规则',
     eatmeatDisplayValue: '请配置吃肉规则'
@@ -47,6 +48,7 @@ Page({
     const detail = e.detail;
     this.setData({
       dingdongValue: detail.value,
+      dingdong: detail.value,
       showDingdong: false
     });
 
