@@ -10,6 +10,7 @@ Page({
     eatmeatValue: '',
     user_rulename: '',
     dingdong: null,
+    noKoufen: false,
     koufenDisplayValue: '请配置扣分规则',
     dingdongDisplayValue: '请配置顶洞规则',
     eatmeatDisplayValue: '请配置吃肉规则'

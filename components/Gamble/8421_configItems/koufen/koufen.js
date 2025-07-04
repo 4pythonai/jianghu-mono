@@ -8,11 +8,11 @@ Component({
   data: {
     groups: [
       {
-        options: ['不封顶', '扣2分封顶'],
+        options: ['从帕+4开始扣分', '从双帕+0开始扣分', '不扣分'],
         selected: 0
       },
       {
-        options: ['从帕+4开始扣分', '从双帕+0开始扣分', '不扣分'],
+        options: ['不封顶', '扣2分封顶'],
         selected: 0
       },
       {

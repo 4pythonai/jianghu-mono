@@ -5,7 +5,10 @@
       <block wx:for="{{groups}}" wx:key="groupIdx" wx:for-index="groupIdx">
         <view wx:if="{{groupIdx > 0}}" class="modal-divider"></view>
         <block wx:for="{{item.options}}" wx:key="index">
-          <view class="modal-item" bindtap="onSelectGroup" data-group="{{groupIdx}}" data-index="{{index}}">
+          <view class="modal-item {{groupIdx > 0 && groups[0].selected === 2 ? 'disabled-item' : ''}}" 
+                bindtap="{{groupIdx > 0 && groups[0].selected === 2 ? '' : 'onSelectGroup'}}" 
+                data-group="{{groupIdx}}" 
+                data-index="{{index}}">
             <view class="radio-outer {{groups[groupIdx].selected === index ? 'checked' : ''}}">
               <view class="radio-inner" wx:if="{{groups[groupIdx].selected === index}}"></view>
             </view>

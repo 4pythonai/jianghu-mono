@@ -9,13 +9,17 @@
       <block wx:for="{{eatList}}" wx:key="index">
         <view class="eat-row">
           <view class="eat-label">{{item.label}}</view>
-          <input class="eat-input" value="{{item.value}}" data-index="{{index}}" bindinput="onEatInput" />
+          <input class="eat-input {{noKoufen ? 'disabled-input' : ''}}" 
+                 value="{{item.value}}" 
+                 data-index="{{index}}" 
+                 bindinput="{{noKoufen ? '' : 'onEatInput'}}"
+                 disabled="{{noKoufen}}" />
         </view>
       </block>
       <view class="modal-divider"></view>
       <view class="eat-row">肉的分值</view>
       <block wx:for="{{scoreOptions}}" wx:key="index">
-        <view class="modal-item" bindtap="onScoreSelect" data-index="{{index}}">
+        <view class="modal-item {{noKoufen ? 'disabled' : ''}}" bindtap="{{noKoufen ? '' : 'onScoreSelect'}}" data-index="{{index}}">
           <view class="radio-outer {{scoreSelected === index ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{scoreSelected === index}}"></view>
           </view>
@@ -25,7 +29,7 @@
       <view class="modal-divider"></view>
       <view class="eat-row">肉值封顶</view>
       <block wx:for="{{topOptions}}" wx:key="index">
-        <view class="modal-item" bindtap="onTopSelect" data-index="{{index}}">
+        <view class="modal-item {{noKoufen ? 'disabled' : ''}}" bindtap="{{noKoufen ? '' : 'onTopSelect'}}" data-index="{{index}}">
           <view class="radio-outer {{topSelected === index ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{topSelected === index}}"></view>
           </view>
