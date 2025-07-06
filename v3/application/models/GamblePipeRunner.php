@@ -26,23 +26,26 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $attenders;  // 参与赌球的人员
     private $gamble_result;    // 一个赌球游戏的结果
 
+    private $red_blue_config;
+
 
 
 
     public function __invoke($cfg) {
-        return $cfg;
     }
 
+    public function __construct() {
+        $this->load->model('gamble/MRuntimeConfig');
+        $this->load->model('gamble/MStroking');
+    }
 
     public function StrokingScores() {
-        $this->load->model('gamble/MRuntimeConfig');
         $stroking_config = $this->MRuntimeConfig->getStrokingConfig($this->gambleid, $this->userid);
-        $this->load->model('gamble/MStroking');
         $this->scores = $this->MStroking->processStroking($this->scores, $stroking_config);
     }
 
 
-
+    // 初始化信息,包括分组方法,kpi名称,让杆配置
     public function initGamble($config) {
         $this->config = $config;
         $this->gameid = $config['gameid'];
@@ -56,55 +59,12 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gambleid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->firstholeindex, $this->lastholeindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
-        $this->players = [
-            [
-                'userid' => 93,
-                'username' => 'A为峰_a2',
-                'nickname' => 'A为峰_a2',
-                'cover' => 'http://s1.golf-brother.com/data/attach/user/2014/12/29/c240_cb01d5ff2b7ec41ebeab07c461e191aa.jpg',
-                'is_attender' => true,
-                'initial_team' => 'blue',
-                'skill_level' => 1, // 技术水平排名
-            ],
-            [
-                'userid' => 160,
-                'username' => 'A高攀_a1',
-                'nickname' => 'A高攀_a1',
-                'cover' => 'http://s1.golf-brother.com/data/attach/user/2014/10/15/c240_97e3c9ba9b58bb48c08ab6871decde0f.png',
-                'is_attender' => true,
-                'initial_team' => 'red',
-                'skill_level' => 2,
-            ],
-            [
-                'userid' => 185,
-                'username' => 'A图图手机',
-                'nickname' => 'A图图手机',
-                'cover' => 'http://s1.golf-brother.com/data/attach/userVipPic/2023/05/14/c240_c93a158495a41393d4799324c952cea1.png',
-                'is_attender' => true,
-                'initial_team' => 'blue',
-                'skill_level' => 3,
-            ],
-            [
-                'userid' => 2271,
-                'username' => 'B何斌_b2',
-                'nickname' => 'B何斌_b2',
-                'cover' => 'http://s1.golf-brother.com/data/attach/user/c240_holder_formal_user_cover.png',
-                'is_attender' => true,
-                'initial_team' => 'red',
-                'skill_level' => 4,
-            ]
-        ];
-        $this->attenders = [93, 160, 185, 2271];
-        $this->firstHolePlayersOrder = [93, 160, 185, 2271];
+        $this->players =  $this->MRuntimeConfig->getAllPlayers($this->gambleid);
+        $this->attenders = $this->MRuntimeConfig->getAttenders($this->gambleid);
+        $this->firstHolePlayersOrder = $this->MRuntimeConfig->getFirstHolePlayersOrder($this->gambleid);
     }
 
 
-
-
-
-    public  function DoGetGambleResult() {
-        $this->GambleArray = "GambleArray";
-    }
 
 
 
