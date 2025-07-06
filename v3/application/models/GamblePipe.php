@@ -28,6 +28,13 @@ class GamblePipe extends CI_Model {
             ->pipe(function () {
                 $this->GamblePipeRunner->DoGetGambleResult();
             })
+
+            // 处理让杆
+            ->pipe(function () {
+                $this->GamblePipeRunner->StrokingScores();
+            })
+
+
             ->pipe(function () {
                 return $this->GamblePipeRunner->getter();
             });

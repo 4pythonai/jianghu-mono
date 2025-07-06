@@ -27,7 +27,7 @@ class Audit extends CI_Controller {
     }
 
     public function printResult($result) {
-        debug($result);
+        // debug($result);
         $this->load->view('gamble/VGambleResut', $result);
     }
 
@@ -39,15 +39,16 @@ class Audit extends CI_Controller {
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
 
         // 获取 gamble_result 数据
-        $gamble_result = $final_result['gamble_result'] ?? [];
+        // $gamble_result = $final_result['gamble_result'] ?? [];
 
-        // 如果没有数据，使用demo数据
-        if (empty($gamble_result)) {
-            $gamble_result = $this->GamblePipeRunner->getGambleResultDemo();
-        }
+        // // 如果没有数据，使用demo数据
+        // if (empty($gamble_result)) {
+        //     $gamble_result = $this->GamblePipeRunner->getGambleResultDemo();
+        // }
 
         // 调试输出
-        debug($gamble_result);
+        debug($final_result);
+        die;
 
         // 传递数据到视图
         $this->printResult($gamble_result);

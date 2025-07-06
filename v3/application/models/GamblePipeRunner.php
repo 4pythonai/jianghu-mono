@@ -34,6 +34,14 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     }
 
 
+    public function StrokingScores() {
+        $this->load->model('gamble/MRuntimeConfig');
+        $stroking_config = $this->MRuntimeConfig->getStrokingConfig($this->gambleid, $this->userid);
+        $this->load->model('gamble/MStroking');
+        $this->scores = $this->MStroking->processStroking($this->scores, $stroking_config);
+    }
+
+
 
     public function initGamble($config) {
         $this->config = $config;
@@ -48,6 +56,46 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gambleid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->firstholeindex, $this->lastholeindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
+        $this->players = [
+            [
+                'userid' => 93,
+                'username' => 'A为峰_a2',
+                'nickname' => 'A为峰_a2',
+                'cover' => 'http://s1.golf-brother.com/data/attach/user/2014/12/29/c240_cb01d5ff2b7ec41ebeab07c461e191aa.jpg',
+                'is_attender' => true,
+                'initial_team' => 'blue',
+                'skill_level' => 1, // 技术水平排名
+            ],
+            [
+                'userid' => 160,
+                'username' => 'A高攀_a1',
+                'nickname' => 'A高攀_a1',
+                'cover' => 'http://s1.golf-brother.com/data/attach/user/2014/10/15/c240_97e3c9ba9b58bb48c08ab6871decde0f.png',
+                'is_attender' => true,
+                'initial_team' => 'red',
+                'skill_level' => 2,
+            ],
+            [
+                'userid' => 185,
+                'username' => 'A图图手机',
+                'nickname' => 'A图图手机',
+                'cover' => 'http://s1.golf-brother.com/data/attach/userVipPic/2023/05/14/c240_c93a158495a41393d4799324c952cea1.png',
+                'is_attender' => true,
+                'initial_team' => 'blue',
+                'skill_level' => 3,
+            ],
+            [
+                'userid' => 2271,
+                'username' => 'B何斌_b2',
+                'nickname' => 'B何斌_b2',
+                'cover' => 'http://s1.golf-brother.com/data/attach/user/c240_holder_formal_user_cover.png',
+                'is_attender' => true,
+                'initial_team' => 'red',
+                'skill_level' => 4,
+            ]
+        ];
+        $this->attenders = [93, 160, 185, 2271];
+        $this->firstHolePlayersOrder = [93, 160, 185, 2271];
     }
 
 
@@ -103,45 +151,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
                 'created_at' => date('Y-m-d H:i:s'),
             ],
 
-            'players' => [
-                [
-                    'userid' => 93,
-                    'username' => 'A为峰_a2',
-                    'nickname' => 'A为峰_a2',
-                    'cover' => 'http://s1.golf-brother.com/data/attach/user/2014/12/29/c240_cb01d5ff2b7ec41ebeab07c461e191aa.jpg',
-                    'is_attender' => true,
-                    'initial_team' => 'blue',
-                    'skill_level' => 1, // 技术水平排名
-                ],
-                [
-                    'userid' => 160,
-                    'username' => 'A高攀_a1',
-                    'nickname' => 'A高攀_a1',
-                    'cover' => 'http://s1.golf-brother.com/data/attach/user/2014/10/15/c240_97e3c9ba9b58bb48c08ab6871decde0f.png',
-                    'is_attender' => true,
-                    'initial_team' => 'red',
-                    'skill_level' => 2,
-                ],
-                [
-                    'userid' => 185,
-                    'username' => 'A图图手机',
-                    'nickname' => 'A图图手机',
-                    'cover' => 'http://s1.golf-brother.com/data/attach/userVipPic/2023/05/14/c240_c93a158495a41393d4799324c952cea1.png',
-                    'is_attender' => true,
-                    'initial_team' => 'blue',
-                    'skill_level' => 3,
-                ],
-                [
-                    'userid' => 2271,
-                    'username' => 'B何斌_b2',
-                    'nickname' => 'B何斌_b2',
-                    'cover' => 'http://s1.golf-brother.com/data/attach/user/c240_holder_formal_user_cover.png',
-                    'is_attender' => true,
-                    'initial_team' => 'red',
-                    'skill_level' => 4,
-                ],
-            ],
-
+            'players' =>  $this->players,
             'holes' => [
                 [
                     'holeid' => 2485,
