@@ -120,10 +120,19 @@ function helper_getlogname() {
   return $logdir . '/' . $fname;
 }
 
-function debug($para) {
-  echo '<pre>';
-  print_r($para);
-  echo '</pre>';
+function debug($title, $var = null) {
+  echo "<pre>";
+
+  if (func_num_args() == 1) {
+    // 单个参数模式: debug($arr)
+    print_r($title);
+  } else {
+    // 两个参数模式: debug($title, $var)
+    echo  $title . "\n";
+    print_r($var);
+  }
+
+  echo "</pre>";
 }
 
 function debugtime($str) {

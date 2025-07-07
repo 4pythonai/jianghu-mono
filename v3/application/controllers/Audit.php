@@ -24,6 +24,11 @@ class Audit extends CI_Controller {
         $this->load->model('GamblePipe');
         $this->load->model('GamblePipeRunner');
         $this->load->model('gamble/MGambleDataFactory');
+        $this->load->model('gamble/MRuntimeConfig');
+        $this->load->model('gamble/MStroking');
+        $this->load->model('gamble/MIndicator');
+        $this->load->model('gamble/MRedBlue');
+        $this->load->model('gamble/MMoney');
     }
 
     public function printResult($result) {
@@ -33,9 +38,11 @@ class Audit extends CI_Controller {
 
 
 
+    //  update t_game set gamestate=3 where gameid=1344463
 
     public function index() {
-        $cfg = ['gameid' => 1318446, 'gambleid' => 679528, 'groupid' => 2689120, 'userid' => 185];
+        $cfg = ['gambleSysName' => '8421',  'gameid' => 1344463, 'gambleid' => 679528, 'groupid' => 2742243, 'userid' => 185];
+
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
 
         // 获取 gamble_result 数据
@@ -47,11 +54,11 @@ class Audit extends CI_Controller {
         // }
 
         // 调试输出
-        debug($final_result);
-        die;
+        // debug($final_result);
+        // die;
 
         // 传递数据到视图
-        $this->printResult($gamble_result);
+        // $this->printResult($gamble_result);
     }
 
     /**

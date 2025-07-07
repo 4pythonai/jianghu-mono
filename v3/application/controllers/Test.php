@@ -36,6 +36,81 @@ class Test extends CI_Controller {
 
 
 
+    public function test8421() {
+        $par = 5;
+        $score = 13;
+        $config = "DoublePar+1";
+        $config = "DoublePar+3";
+        $config = "DoublePar";
+        // $config = "Par+2";
+        // $config = "Par+0";
+
+        // 计算扣分项
+        $subValue = $this->get8421SubValue($par, $score, $config);
+        debug([
+            "PAR" => $par,
+            "SCORE" => $score,
+            "CONFIG" => $config,
+            "SUBVALUE" => $subValue,
+        ]);
+    }
+
+
+    public function get8421SubValue($par, $score, $configString) {
+        // 解析配置字符串，计算阈值
+        $threshold = $this->parseConfigString($par, $configString);
+
+        // 如果分数小于阈值，不扣分
+        if ($score < $threshold) {
+            return 0;
+        }
+
+        // 如果分数等于阈值，扣1分
+        if ($score == $threshold) {
+            return -1;
+        }
+
+        // 如果分数大于阈值，除了基础扣1分，每超过1分再扣1分
+        $overScore = $score - $threshold;
+        return -1 - $overScore;
+    }
+
+    /**
+     * 解析配置字符串，计算实际阈值
+     * 
+     * @param int $par 标准杆数
+     * @param string $configString 配置字符串
+     * @return int 计算出的阈值
+     */
+    private function parseConfigString($par, $configString) {
+        if (strpos($configString, 'DoublePar') !== false) {
+            // 处理 DoublePar 相关配置
+            $basePar = 2 * $par;
+            if (strpos($configString, '+') !== false) {
+                $parts = explode('+', $configString);
+                $addition = (int)$parts[1];
+                return $basePar + $addition;
+            } else {
+                return $basePar;
+            }
+        } elseif (strpos($configString, 'Par') !== false) {
+            // 处理 Par 相关配置
+            $basePar = $par;
+            if (strpos($configString, '+') !== false) {
+                $parts = explode('+', $configString);
+                $addition = (int)$parts[1];
+                return $basePar + $addition;
+            } else {
+                return $basePar;
+            }
+        }
+
+        // 默认返回标准杆
+        return  0;
+    }
+
+
+
     /**
      * 测试控制器index方法
      * 

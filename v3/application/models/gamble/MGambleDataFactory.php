@@ -176,4 +176,52 @@ class MGambleDataFactory extends CI_Model {
     $group_user = $this->db->query($sql_group_user)->result_array();
     return $group_user;
   }
+
+  public function getUsefulHoles($holes, $scores) {
+
+
+    $useful_holes = [];
+
+    // 循环所有的洞
+    foreach ($holes as $hole) {
+      $holeId = $hole['id']; // 例如: #1, #2
+
+      // 在scores中找到对应的成绩记录
+      $correspondingScore = null;
+      foreach ($scores as $score) {
+        if ($score['id'] == $holeId) {
+          $correspondingScore = $score;
+          break;
+        }
+      }
+
+      // 如果没有找到对应的成绩记录，跳过这个洞
+      if ($correspondingScore === null) {
+        continue;
+      }
+
+      // 检查 computedScores 是否有任何一个为0（表示记分未完成）
+      $hasUnfinishedScore = false;
+
+      foreach ($correspondingScore['computedScores'] as  $realScore) {
+        if ((float)$realScore == 0) {
+          $hasUnfinishedScore = true;
+          break;
+        }
+      }
+
+      // 如果发现未完成记分，退出循环
+      if ($hasUnfinishedScore) {
+        break;
+      }
+
+      // 组装 hole 和 score 的组合
+      $oneHoleMeta =  $hole;
+      $oneHoleMeta['computedScores'] = $correspondingScore['computedScores'];
+      $oneHoleMeta['raw_scores'] = $correspondingScore['raw_scores'];
+      $useful_holes[] = $oneHoleMeta;
+    }
+
+    return $useful_holes;
+  }
 }

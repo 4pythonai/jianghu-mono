@@ -29,7 +29,14 @@ class GamblePipe extends CI_Model {
             ->pipe(function () {
                 $this->GamblePipeRunner->StrokingScores();
             })
+            ->pipe(function () {
+                $this->GamblePipeRunner->setUsefulHoles();
+            })
 
+            // processHoles
+            ->pipe(function () {
+                $this->GamblePipeRunner->processHoles();
+            })
 
             ->pipe(function () {
                 return $this->GamblePipeRunner->getter();

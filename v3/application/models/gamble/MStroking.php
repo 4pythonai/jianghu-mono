@@ -34,12 +34,12 @@ class MStroking extends CI_Model {
         $hole_number = (int)str_replace('#', '', $hole_id);
 
         // 复制原始得分作为基础
-        $one_hole['realScores'] = [];
+        $one_hole['computedScores'] = [];
 
         // 处理每个玩家的得分
         foreach ($one_hole['raw_scores'] as $player_id => $raw_score) {
             $real_score = $this->calculatePlayerStroking($player_id, $raw_score, $hole_id, $hole_number, $par, $stroking_config);
-            $one_hole['realScores'][$player_id] = $real_score;
+            $one_hole['computedScores'][$player_id] = $real_score;
         }
 
         return $one_hole;

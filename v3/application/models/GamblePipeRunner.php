@@ -12,6 +12,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     public  $config = [];
 
     // private 参数
+    private $gambleSysName;
     private $gameid;
     private $gambleid;
     private $groupid;
@@ -25,8 +26,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $group_info;       // 组信息,所有人
     private $attenders;  // 参与赌球的人员
     private $gamble_result;    // 一个赌球游戏的结果
+    private $redBlueConfig;
 
-    private $red_blue_config;
+    // 以下为结果
+    private $useful_holes;
 
 
 
@@ -34,20 +37,14 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     public function __invoke($cfg) {
     }
 
-    public function __construct() {
-        $this->load->model('gamble/MRuntimeConfig');
-        $this->load->model('gamble/MStroking');
-    }
 
-    public function StrokingScores() {
-        $stroking_config = $this->MRuntimeConfig->getStrokingConfig($this->gambleid, $this->userid);
-        $this->scores = $this->MStroking->processStroking($this->scores, $stroking_config);
-    }
+
 
 
     // 初始化信息,包括分组方法,kpi名称,让杆配置
     public function initGamble($config) {
         $this->config = $config;
+        $this->gambleSysName = $config['gambleSysName'];
         $this->gameid = $config['gameid'];
         $this->gambleid = $config['gambleid'];
         $this->groupid = $config['groupid'];
@@ -55,14 +52,86 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
         $this->firstholeindex = 1;
         $this->lastholeindex =  18;
-
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gambleid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->firstholeindex, $this->lastholeindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
         $this->players =  $this->MRuntimeConfig->getAllPlayers($this->gambleid);
         $this->attenders = $this->MRuntimeConfig->getAttenders($this->gambleid);
         $this->firstHolePlayersOrder = $this->MRuntimeConfig->getFirstHolePlayersOrder($this->gambleid);
+        $this->redBlueConfig = $this->MRuntimeConfig->getRedBlueConfig($this->gambleid, count($this->attenders));
     }
+
+    // 处理让杆
+    public function StrokingScores() {
+        $stroking_config = $this->MRuntimeConfig->getStrokingConfig($this->gambleid, $this->userid);
+        $this->scores = $this->MStroking->processStroking($this->scores, $stroking_config);
+    }
+
+    // 得到需要计算的洞
+    public function setUsefulHoles() {
+        $this->useful_holes = $this->MGambleDataFactory->getUsefulHoles($this->holes, $this->scores);
+        // gambleSysName 给每个洞加上 输赢点数
+        foreach ($this->useful_holes as &$hole) {
+            $hole['gambleSysName'] = $this->gambleSysName;
+        }
+    }
+
+    public function processHoles() {
+        foreach ($this->useful_holes as  $index => &$hole) {
+            $hole['debug'] = [];
+            $this->setRedBlue($index, $hole);
+            $this->calIndicator($index, $hole);
+            $this->MIndicator->judgeWinner($hole);
+            $this->MMoney->setHoleMoneyDetail($hole);
+            debug($hole);
+        }
+    }
+
+    private function calIndicator($index, &$hole) {
+        if ($this->gambleSysName == '8421') {
+            $this->cal8421Indicators($index, $hole);
+        }
+    }
+
+
+    private function cal8421Indicators($index, &$hole) {
+        $val8421_config = $this->MRuntimeConfig->get8421UserAddValuePair($this->gambleid);
+
+
+        $indicatorBlue = 0;
+        $indicatorRed = 0;
+        foreach ($hole['red']  as $userid) {
+            $indicator = $this->MIndicator->calOnePlayer8421Indicator($hole['par'],  $hole['computedScores'][$userid], $val8421_config[$userid]);
+            $logMsg = sprintf(
+                "第 %s 洞,红队,队员:%4d,PAR:%d,分值:%2d,指标:%2d",
+                $hole['id'],
+                $userid,
+                $hole['par'],
+                $hole['computedScores'][$userid],
+                $indicator
+            );
+            $this->addDebugLog($hole, $logMsg);
+            $indicatorRed += $indicator;
+        }
+
+        foreach ($hole['blue']  as $userid) {
+            $indicator = $this->MIndicator->calOnePlayer8421Indicator($hole['par'],  $hole['computedScores'][$userid], $val8421_config[$userid]);
+            $logMsg = sprintf(
+                "第 %s 洞,蓝队,队员:%4d,PAR:%d,分值:%2d,指标:%2d",
+                $hole['id'],
+                $userid,
+                $hole['par'],
+                $hole['computedScores'][$userid],
+                $indicator
+            );
+            $this->addDebugLog($hole, $logMsg);
+            $indicatorBlue += $indicator;
+        }
+
+        $hole['indicatorBlue'] = $indicatorBlue;
+        $hole['indicatorRed'] = $indicatorRed;
+    }
+
 
 
 
@@ -73,10 +142,45 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         echo json_encode($this->payload, JSON_PRETTY_PRINT);
     }
 
+    public function setRedBlue($index, &$hole) {
+        if (count($this->attenders) == 2) {
+            $this->set2RedBlue($index, $hole);
+        }
+
+        if (count($this->attenders) == 3) {
+            $this->set3RedBlue($index, $hole);
+        }
+
+        if (count($this->attenders) == 4) {
+            $this->set4RedBlue($index, $hole);
+        }
+    }
+
+    // 2人红蓝分组,一人一边
+    public function set2RedBlue($index, &$hole) {
+        $hole['blue'] = $this->attenders[0];
+        $hole['red'] = $this->attenders[1];
+    }
+
+    public function set3RedBlue($index, &$hole) {
+    }
+
+    public function set4RedBlue($index, &$hole) {
+        if (count($this->attenders) == 4) {
+            if ($index == 0) {
+                $hole['blue'] = [$this->firstHolePlayersOrder[0], $this->firstHolePlayersOrder[3]];
+                $hole['red'] = [$this->firstHolePlayersOrder[1], $this->firstHolePlayersOrder[2]];
+                // $hole['debug'][] = "分组:$this->redBlueConfig,第一洞分组,采用出发设置";
+                $this->addDebugLog($hole, "分组:$this->redBlueConfig,第一洞分组,采用出发设置");
+            }
+        }
+    }
+
 
     public function getter() {
         return  [
             'gameid' => $this->gameid,
+            '分组方式' => $this->redBlueConfig,
             'gambleid' => $this->gambleid,
             'groupid' => $this->groupid,
             'userid' => $this->userid,
@@ -91,9 +195,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     }
 
 
-    public function cleanup() {
-        $this->GambleArray = [];
-    }
+
 
     /**
      * 生成完整的 gamble_result demo 数据
@@ -293,5 +395,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
                 ],
             ],
         ];
+    }
+
+    private function addDebugLog(&$hole, $msg) {
+        $hole['debug'][] = $msg;
     }
 }
