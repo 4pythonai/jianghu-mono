@@ -26,69 +26,27 @@ class MRuntimeConfig extends CI_Model {
 
 
 
-    // 8421 减分配置,公共的,不特定针对某个用户,
-    // 从XXX开始扣分意思是扣1分,成绩再差点,扣2分,再差,扣3分 
-
-    public function get8421SubValue($par, $score, $configString) {
-        // 解析配置字符串，计算阈值
-        $threshold = $this->parseConfigString($par, $configString);
-
-        // 如果分数小于阈值，不扣分
-        if ($score < $threshold) {
-            return 0;
-        }
-
-        // 如果分数等于阈值，扣1分
-        if ($score == $threshold) {
-            return -1;
-        }
-
-        // 如果分数大于阈值，除了基础扣1分，每超过1分再扣1分
-        $overScore = $score - $threshold;
-        return -1 - $overScore;
-    }
-
-    /**
-     * 解析配置字符串，计算实际阈值
-     * 
-     * @param int $par 标准杆数
-     * @param string $configString 配置字符串
-     * @return int 计算出的阈值
-     */
-    private function parseConfigString($par, $configString) {
-        if (strpos($configString, 'DoublePar') !== false) {
-            // 处理 DoublePar 相关配置
-            $basePar = 2 * $par;
-            if (strpos($configString, '+') !== false) {
-                $parts = explode('+', $configString);
-                $addition = (int)$parts[1];
-                return $basePar + $addition;
-            } else {
-                return $basePar;
-            }
-        } elseif (strpos($configString, 'Par') !== false) {
-            // 处理 Par 相关配置
-            $basePar = $par;
-            if (strpos($configString, '+') !== false) {
-                $parts = explode('+', $configString);
-                $addition = (int)$parts[1];
-                return $basePar + $addition;
-            } else {
-                return $basePar;
-            }
-        }
-
-        // 默认返回标准杆
-        return  0;
-    }
 
 
-
-    // 扣分封顶配置, 是否有最多的扣分
-
+    /*
+    扣分封顶配置,即最多扣多少分,返回正数,小程序界面的
+    不封顶为100,因为不可能发生
+    */
     public function  get8421MaxSubValue($gambleid) {
-        // return  -2  ; // 扣2分为止
-        return  -100; // 不封顶
+        // return  2  ; // 扣2分为止
+        return  100; // 不封顶
+    }
+
+    /*
+      扣分的配置,3种格式:
+       1: Par+X ,从Par+X开始扣1分, 如Par+2,从Par+2开始扣1分,打到Par+3,则扣2分
+       2: DoublePar+X ,从DoublePar+X开始扣1分, 如DoublePar+2,从DoublePar+2开始扣1分,打到DoublePar+3,则扣2分
+       3: NoSub ,不扣分
+    */
+    public function get8421SubConfigString($gambleid) {
+        // Par+2 开始扣分
+        // return "NoSub"; // 不扣分
+        return "Par+2";
     }
 
 
@@ -103,29 +61,29 @@ class MRuntimeConfig extends CI_Model {
 
         $data = [
             67 => [
-                "DoubleBogey" => 1,
-                "Bogey" => 2,
+                "Par+2" => 1,
+                "Par+1" => 2,
                 "Par" => 4,
                 "Birdie" => 8,
             ],
 
             93 => [
-                "DoubleBogey" => 1,
-                "Bogey" => 2,
+                "Par+2" => 1,
+                "Par+1" => 2,
                 "Par" => 4,
                 "Birdie" => 8,
             ],
 
             160 => [
-                "DoubleBogey" => 1,
-                "Bogey" => 2,
+                "Par+2" => 1,
+                "Par+1" => 2,
                 "Par" => 4,
                 "Birdie" => 8,
             ],
 
             185 => [
-                "DoubleBogey" => 1,
-                "Bogey" => 2,
+                "Par+2" => 1,
+                "Par+1" => 2,
                 "Par" => 4,
                 "Birdie" => 8,
             ],

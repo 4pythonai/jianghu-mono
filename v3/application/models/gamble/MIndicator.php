@@ -7,33 +7,35 @@ if (!defined('BASEPATH')) {
 }
 class MIndicator extends CI_Model {
 
-    public function calOnePlayer8421Indicator($par, $userComputedScore, $val8421) {
-        // 计算成绩与标准杆的差值
-        $scoreDiff = $userComputedScore - $par;
 
-        // 首先处理特殊情况：双倍标准杆及以上
-        if ($userComputedScore >= $par * 2) {
-            return ($userComputedScore == $par * 2) ? $val8421['DoublePar'] : $val8421['DoublePar+1'];
+    public function __construct() {
+        parent::__construct();
+        $this->load->model('gamble/Indicators/MIndicator8421');
+    }
+
+
+
+    // 当规则配置里有”加三“的扣分设置时，以得分项优先,即:即如果根据配置,一个人的成绩在配置项有,冲突, 有正有负,以正分为准, 有0有负,以负分为准.
+
+    public function OnePlayer8421Indicator($par, $userComputedScore, $_8421_add_sub_max_config) {
+
+        $add_value = $this->MIndicator8421->get8421AddValue($par, $userComputedScore, $_8421_add_sub_max_config['add']);
+        $sub_value = $this->MIndicator8421->get8421SubValue($par, $userComputedScore, $_8421_add_sub_max_config['sub'], $_8421_add_sub_max_config['max']);
+
+        // 有正有0,以正份为准
+        if ($add_value > 0 && abs($sub_value) == 0) {
+            return  $add_value;
         }
 
-        // 处理成绩太好的情况（比Eagle还好）
-        if ($scoreDiff <= -2) {
-            return $val8421['Eagle'];  // 使用Eagle的分值16
+        // 有正有负,以正份为准
+        if ($add_value > 0 && abs($sub_value) > 0) {
+            return  $add_value;
         }
 
-        // 根据差值映射成绩类型
-        // 于标准杆差值--名称
-        $scoreTypeMap = [
-            -1 => 'Birdie',     // 小鸟球
-            0  => 'Par',        // 标准杆
-            1  => 'Bogey',      // 柏忌
-            2  => 'DoubleBogey', // 双柏忌
-            3  => 'TripleBogey', // 三柏忌
-        ];
-
-        // 查找对应的成绩类型，如果找不到（成绩太差），使用TripleBogey
-        $scoreType = $scoreTypeMap[$scoreDiff] ?? 'TripleBogey';
-        return $val8421[$scoreType];
+        //  有0有负,以负分为准.
+        if ($add_value == 0 && abs($sub_value) > 0) {
+            return  $sub_value;
+        }
     }
 
     public function judgeWinner(&$hole) {
