@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
@@ -13,18 +11,16 @@ class MRanking extends CI_Model {
     }
 
     /**
-     * 对参赛者进行排名，不允许并列
+     * 对参赛者进行排名，不允许并列 (使用上下文对象)
      * @param array $hole 当前洞的数据（包含indicators）
      * @param int $holeIndex 当前洞的索引
-     * @param array $usefulHoles 历史洞数据用于回溯
-     * @param array $bootStrapOrder 出发顺序
-     * @param string $gambleSysName 赌球系统名称
+     * @param GambleContext $context 赌球上下文对象
      * @return array 排名结果 [userid => rank]
      */
-    public function rankAttenders(array &$hole, int $holeIndex, array $usefulHoles, array $bootStrapOrder, string $gambleSysName): array {
-        if ($gambleSysName == '8421') {
+    public function rankAttendersWithContext(&$hole, $holeIndex, $context) {
+        if ($context->gambleSysName == '8421') {
             $participants = array_keys($hole['indicators']);
-            $ranking = $this->calculateRanking($participants, $holeIndex, $hole, $usefulHoles, $bootStrapOrder);
+            $ranking = $this->calculateRanking($participants, $holeIndex, $hole, $context->usefulHoles, $context->bootStrapOrder);
             $hole['ranking'] = $ranking;
 
             // 添加调试信息
@@ -37,6 +33,27 @@ class MRanking extends CI_Model {
     }
 
     /**
+     * 对参赛者进行排名，不允许并列 (保持向后兼容)
+     * @param array $hole 当前洞的数据（包含indicators）
+     * @param int $holeIndex 当前洞的索引
+     * @param array $usefulHoles 历史洞数据用于回溯
+     * @param array $bootStrapOrder 出发顺序
+     * @param string $gambleSysName 赌球系统名称
+     * @return array 排名结果 [userid => rank]
+     * @deprecated 建议使用 rankAttendersWithContext 方法
+     */
+    public function rankAttenders(&$hole, $holeIndex, $usefulHoles, $bootStrapOrder, $gambleSysName) {
+        // 创建临时上下文对象
+        $context = new GambleContext([
+            'gambleSysName' => $gambleSysName,
+            'usefulHoles' => $usefulHoles,
+            'bootStrapOrder' => $bootStrapOrder,
+        ]);
+
+        return $this->rankAttendersWithContext($hole, $holeIndex, $context);
+    }
+
+    /**
      * 计算参赛者排名
      * @param array $participants 参赛者用户ID数组
      * @param int $currentHoleIndex 当前洞的索引
@@ -45,7 +62,7 @@ class MRanking extends CI_Model {
      * @param array $bootStrapOrder 出发顺序
      * @return array 排名结果 [userid => rank]
      */
-    private function calculateRanking(array $participants, int $currentHoleIndex, array $currentHole, array $usefulHoles, array $bootStrapOrder): array {
+    private function calculateRanking($participants, $currentHoleIndex, $currentHole, $usefulHoles, $bootStrapOrder) {
         // 按当前洞indicators降序排列（分数越高排名越靠前）
         $sorted = $participants;
         usort($sorted, function ($a, $b) use ($currentHole) {
@@ -73,7 +90,7 @@ class MRanking extends CI_Model {
      * @param array $bootStrapOrder 出发顺序
      * @return array 最终排序的参赛者数组
      */
-    private function resolveTies(array $sortedParticipants, int $currentHoleIndex, array $currentHole, array $usefulHoles, array $bootStrapOrder): array {
+    private function resolveTies($sortedParticipants, $currentHoleIndex, $currentHole, $usefulHoles, $bootStrapOrder) {
         $groups = $this->groupByIndicators($sortedParticipants, $currentHole['indicators']);
 
         $finalOrder = [];
@@ -98,7 +115,7 @@ class MRanking extends CI_Model {
      * @param array $indicators indicators数据
      * @return array 分组结果
      */
-    private function groupByIndicators(array $participants, array $indicators): array {
+    private function groupByIndicators($participants, $indicators) {
         $groups = [];
         $indicatorToGroup = [];
 
@@ -124,7 +141,7 @@ class MRanking extends CI_Model {
      * @param array $bootStrapOrder 出发顺序
      * @return array 解决并列后的排序
      */
-    private function resolveGroupTies(array $tiedGroup, int $currentHoleIndex, array $usefulHoles, array $bootStrapOrder): array {
+    private function resolveGroupTies($tiedGroup, $currentHoleIndex, $usefulHoles, $bootStrapOrder) {
         // 从前一洞开始往前回溯
         for ($holeIndex = $currentHoleIndex - 1; $holeIndex >= 0; $holeIndex--) {
             // 检查该历史洞是否存在且已计算indicators
@@ -171,7 +188,7 @@ class MRanking extends CI_Model {
      * @param array $indicators indicators数据
      * @return bool 是否完全解决并列
      */
-    private function isGroupFullyResolved(array $group, array $indicators): bool {
+    private function isGroupFullyResolved($group, $indicators) {
         if (count($group) <= 1) {
             return true;
         }
@@ -194,7 +211,7 @@ class MRanking extends CI_Model {
      * @param array $bootStrapOrder 出发顺序
      * @return array 按出发顺序排序的结果
      */
-    private function resolveByStartOrder(array $tiedGroup, array $bootStrapOrder): array {
+    private function resolveByStartOrder($tiedGroup, $bootStrapOrder) {
         // 按照在 bootStrapOrder  中的位置排序
         // 注意：所有参与用户都保证在出发顺序中
         usort($tiedGroup, function ($a, $b) use ($bootStrapOrder) {
@@ -220,7 +237,7 @@ class MRanking extends CI_Model {
      * @param array $hole 洞数据
      * @param string $msg 调试信息
      */
-    private function addDebugLog(array &$hole, string $msg): void {
+    private function addDebugLog(&$hole, $msg) {
         $hole['debug'][] = $msg;
     }
 }

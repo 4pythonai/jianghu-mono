@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 set_time_limit(0);
 
 
@@ -136,14 +135,11 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         //     [67] => -2
         // )
 
+        // 创建上下文对象，避免传递过多参数
+        $context = GambleContext::fromGamblePipeRunner($this);
+
         // 调用 MRanking 模型进行排名计算
-        $this->MRanking->rankAttenders(
-            $hole,
-            $index,
-            $this->useful_holes,
-            $this->bootStrapOrder,
-            $this->gambleSysName
-        );
+        $this->MRanking->rankAttendersWithContext($hole, $index, $context);
     }
 
 
@@ -469,5 +465,46 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
      */
     private function addDebugLog(&$hole, $msg) {
         $hole['debug'][] = $msg;
+    }
+
+    // Getter 方法用于上下文对象
+    public function getGambleSysName() {
+        return $this->gambleSysName;
+    }
+
+    public function getGameid() {
+        return $this->gameid;
+    }
+
+    public function getGambleid() {
+        return $this->gambleid;
+    }
+
+    public function getGroupid() {
+        return $this->groupid;
+    }
+
+    public function getUserid() {
+        return $this->userid;
+    }
+
+    public function getUsefulHoles() {
+        return $this->useful_holes;
+    }
+
+    public function getBootStrapOrder() {
+        return $this->bootStrapOrder;
+    }
+
+    public function getAttenders() {
+        return $this->attenders;
+    }
+
+    public function getRedBlueConfig() {
+        return $this->redBlueConfig;
+    }
+
+    public function getDutyConfig() {
+        return $this->dutyConfig;
     }
 }
