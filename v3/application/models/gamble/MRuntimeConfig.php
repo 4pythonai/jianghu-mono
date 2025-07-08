@@ -21,7 +21,7 @@ class MRuntimeConfig extends CI_Model {
         //     ];
         // }
 
-        return null;
+        return [];
     }
 
 
@@ -33,8 +33,8 @@ class MRuntimeConfig extends CI_Model {
     不封顶为100,因为不可能发生
     */
     public function  get8421MaxSubValue($gambleid) {
-        // return  2  ; // 扣2分为止
-        return  100; // 不封顶
+        return  3; // 扣2分为止
+        // return  100; // 不封顶
     }
 
     /*
@@ -183,5 +183,19 @@ class MRuntimeConfig extends CI_Model {
 
     public function getAttenders($gambleid) {
         return [185, 93, 160, 67];
+    }
+
+    /* 包负分配置
+    * 1: 不包负分       NODUTY
+    * 2: 包负分         DUTY_NEGATIVE
+    * 3: 同伴顶头保负分  DUTY_CODITIONAL
+    *
+    *
+    *
+    *
+    */
+    public function getDutyConfig($gambleid) {
+        return  "DUTY_NEGATIVE";
+        return "DUTY_CODITIONAL";
     }
 }

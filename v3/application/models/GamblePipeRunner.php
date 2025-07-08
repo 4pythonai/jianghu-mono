@@ -23,10 +23,11 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $firstholeindex;   // 第一个参与计算的洞的index,因为要支持从某个洞开始赌球
     private $lastholeindex;    // 最后一个参与计算的洞的index,因为要支持从某个洞开始赌球
     private $scores;           // 记分
-    private $group_info;       // 组信息,所有人
+    private $group_info;       // group信息,所有人
     private $attenders;  // 参与赌球的人员
     private $gamble_result;    // 一个赌球游戏的结果
     private $redBlueConfig;
+    private $dutyConfig;  // 包洞配置
 
     // 以下为结果
     private $useful_holes;
@@ -59,6 +60,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->attenders = $this->MRuntimeConfig->getAttenders($this->gambleid);
         $this->firstHolePlayersOrder = $this->MRuntimeConfig->getFirstHolePlayersOrder($this->gambleid);
         $this->redBlueConfig = $this->MRuntimeConfig->getRedBlueConfig($this->gambleid, count($this->attenders));
+        $this->dutyConfig = $this->MRuntimeConfig->getDutyConfig($this->gambleid);
     }
 
     // 处理让杆
@@ -79,10 +81,12 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     public function processHoles() {
         foreach ($this->useful_holes as  $index => &$hole) {
             $hole['debug'] = [];
+            $hole['indicators'] = [];
+
             $this->setRedBlue($index, $hole);
             $this->calIndicator($index, $hole);
             $this->MIndicator->judgeWinner($hole);
-            $this->MMoney->setHoleMoneyDetail($hole);
+            $this->MMoney->setHoleMoneyDetail($hole, $this->dutyConfig);
             debug($hole);
         }
     }
@@ -102,6 +106,11 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $sub8421ConfigString = $this->MRuntimeConfig->get8421SubConfigString($this->gambleid);
         // 8421 扣分封顶,正数
         $max8421SubValue = $this->MRuntimeConfig->get8421MaxSubValue($this->gambleid);
+
+        debug("扣分配置", $sub8421ConfigString);
+        debug("扣分封顶", $max8421SubValue);
+        debug("负分配置", $this->dutyConfig);
+
 
 
 
@@ -127,6 +136,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
                 $hole['computedScores'][$userid],
                 $indicator
             );
+            $hole['indicators'][$userid] = $indicator;
             $this->addDebugLog($hole, $logMsg);
             $indicatorRed += $indicator;
         }
@@ -150,6 +160,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
                 $hole['computedScores'][$userid],
                 $indicator
             );
+            $hole['indicators'][$userid] = $indicator;
             $this->addDebugLog($hole, $logMsg);
             $indicatorBlue += $indicator;
         }

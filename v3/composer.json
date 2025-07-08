@@ -1,6 +1,6 @@
 {
   "require": {
-    "php": ">=7.3.33",
+    "php": ">=7.3.28",
     "league/pipeline": "^1.0"
   }
 }
