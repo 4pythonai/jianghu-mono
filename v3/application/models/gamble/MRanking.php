@@ -44,8 +44,8 @@ class MRanking extends CI_Model {
     private function calculateRanking($participants, $currentHoleIndex, $currentHole, $usefulHoles, $bootStrapOrder) {
         // 按当前洞indicators降序排列（分数越高排名越靠前）
         $sorted = $participants;
-        usort($sorted, function ($a, $b) use ($currentHole) {
-            return $currentHole['indicators'][$b] <=> $currentHole['indicators'][$a];
+        usort($sorted, function ($aKey, $bKey) use ($currentHole) {
+            return $currentHole['indicators'][$bKey] <=> $currentHole['indicators'][$aKey];
         });
 
         // 检查并列情况并处理
@@ -132,8 +132,8 @@ class MRanking extends CI_Model {
 
             // 按历史洞的indicators排序当前并列组
             // 注意：所有参与用户都保证有数据，无需检查isset()
-            usort($tiedGroup, function ($a, $b) use ($historicalIndicators) {
-                return $historicalIndicators[$b] <=> $historicalIndicators[$a]; // 降序，分数高的排前面
+            usort($tiedGroup, function ($aKey, $bKey) use ($historicalIndicators) {
+                return $historicalIndicators[$bKey] <=> $historicalIndicators[$aKey]; // 降序，分数高的排前面
             });
 
             // 检查是否成功打破并列
@@ -173,8 +173,8 @@ class MRanking extends CI_Model {
         }
 
         $firstIndicator = $indicators[$group[0]];
-
-        for ($i = 1; $i < count($group); $i++) {
+        $groupCount = count($group);
+        for ($i = 1; $i < $groupCount; $i++) {
             $currentIndicator = $indicators[$group[$i]];
             if ($currentIndicator == $firstIndicator) {
                 return false; // 还有并列
@@ -193,16 +193,16 @@ class MRanking extends CI_Model {
     private function resolveByStartOrder($tiedGroup, $bootStrapOrder) {
         // 按照在 bootStrapOrder  中的位置排序
         // 注意：所有参与用户都保证在出发顺序中
-        usort($tiedGroup, function ($a, $b) use ($bootStrapOrder) {
-            $posA = array_search($a, $bootStrapOrder);
-            $posB = array_search($b, $bootStrapOrder);
+        usort($tiedGroup, function ($aKey, $bKey) use ($bootStrapOrder) {
+            $posA = array_search($aKey, $bootStrapOrder);
+            $posB = array_search($bKey, $bootStrapOrder);
 
             // 业务逻辑验证：确保所有用户都在出发顺序中
             if ($posA === false) {
-                throw new Exception("用户 $a 不在出发顺序 bootStrapOrder 中，业务逻辑错误！");
+                throw new Exception("用户 $aKey 不在出发顺序 bootStrapOrder 中，业务逻辑错误！");
             }
             if ($posB === false) {
-                throw new Exception("用户 $b 不在出发顺序 bootStrapOrder 中，业务逻辑错误！");
+                throw new Exception("用户 $bKey 不在出发顺序 bootStrapOrder 中，业务逻辑错误！");
             }
 
             return $posA <=> $posB;

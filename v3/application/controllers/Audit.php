@@ -69,9 +69,9 @@ class Audit extends CI_Controller {
      * 直接展示demo数据的方法
      * 访问: /Audit/demo
      */
-    public function demo() {
-        $gamble_result = $this->GamblePipeRunner->getGambleResultDemo();
-        // 直接传递到视图，不调试输出
-        $this->load->view('gamble/VGambleResut', $gamble_result);
-    }
+    // public function demo() {
+    //     $gamble_result = $this->GamblePipeRunner->getGambleResultDemo();
+    //     // 直接传递到视图，不调试输出
+    //     $this->load->view('gamble/VGambleResut', $gamble_result);
+    // }
 }

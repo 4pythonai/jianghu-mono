@@ -61,3 +61,210 @@
 ◎ 一律按成绩排序
 ◎ 相同得分按输赢排序，出身看得分
 ◎ 相同得分按输赢排序，出身看输赢
+
+### 最终结果
+
+```
+
+
+    /**
+     * 生成完整的 gamble_result demo 数据
+     * 用于展示表格结构和数据格式
+     */
+    public function getGambleResultDemo() {
+        return [
+            'meta' => [
+                'gameid' => 1318446,
+                'gambleid' => 679528,
+                'groupid' => 2689120,
+                'gamble_type' => '2v2',
+                'total_holes' => 18,
+                'calculated_holes' => 2, // 实际计算的洞数
+                'created_at' => date('Y-m-d H:i:s'),
+            ],
+
+            'players' =>  $this->players,
+            'holes' => [
+                [
+                    'holeid' => 2485,
+                    'holename' => 'A1',
+                    'par' => 5,
+                    'hindex' => 1,
+                    'court_key' => 1,
+                    'details' => [
+                        93 => [
+                            'score' => 5,              // 实际成绩
+                            'stroking_score' => 5,     // 让杆后成绩
+                            'stroking_value' => 0,     // 让杆数
+                            'team' => 'blue',          // 分队
+                            'point' => 0.5,            // 输赢点数 (正数赢，负数输)
+                            'is_attender' => true,     // 是否参与赌博
+                            'is_baodong' => false,     // 是否包洞
+                            'baodong_detail' => '',    // 包洞详细说明
+                            'indicator' => 4.5,        // 队伍指标贡献值
+                        ],
+                        160 => [
+                            'score' => 5,
+                            'stroking_score' => 5,
+                            'stroking_value' => 0,
+                            'team' => 'red',
+                            'point' => -0.5,
+                            'is_attender' => true,
+                            'is_baodong' => false,
+                            'baodong_detail' => '',
+                            'indicator' => 5.0,
+                        ],
+                        185 => [
+                            'score' => 4,
+                            'stroking_score' => 4,
+                            'stroking_value' => 0,
+                            'team' => 'blue',
+                            'point' => 0.5,
+                            'is_attender' => true,
+                            'is_baodong' => false,
+                            'baodong_detail' => '',
+                            'indicator' => 4.5,
+                        ],
+                        2271 => [
+                            'score' => 10,
+                            'stroking_score' => 9,     // 让了1杆
+                            'stroking_value' => 1,
+                            'team' => 'red',
+                            'point' => -0.5,
+                            'is_attender' => true,
+                            'is_baodong' => true,       // 包洞
+                            'baodong_detail' => '成绩过差，触发包洞机制',
+                            'indicator' => 5.0,
+                        ],
+                    ],
+                    'team_summary' => [
+                        'blue' => [
+                            'indicator' => 4.5,        // 队伍指标 (取最好成绩)
+                            'total_point' => 1.0,      // 队伍总得分
+                            'members' => [93, 185],
+                        ],
+                        'red' => [
+                            'indicator' => 5.0,        // 队伍指标
+                            'total_point' => -1.0,     // 队伍总得分
+                            'members' => [160, 2271],
+                        ],
+                    ],
+                    'hole_summary' => [
+                        'draw' => false,            // 是否顶洞
+                        'meat_count' => 0,          // 肉的数量
+                        'multiplier' => 1,          // 倍数
+                        'winner_team' => 'blue',    // 获胜队伍
+                        'point_diff' => 0.5,        // 点数差
+                        'calculation_method' => 'best_score', // 计算方法
+                    ],
+                ],
+                [
+                    'holeid' => 2486,
+                    'holename' => 'A2',
+                    'par' => 4,
+                    'hindex' => 2,
+                    'court_key' => 1,
+                    'details' => [
+                        93 => [
+                            'score' => 4,
+                            'stroking_score' => 4,
+                            'stroking_value' => 0,
+                            'team' => 'blue',
+                            'point' => 0,              // 平局
+                            'is_attender' => true,
+                            'is_baodong' => false,
+                            'baodong_detail' => '',
+                            'indicator' => 4.0,
+                        ],
+                        160 => [
+                            'score' => 8,
+                            'stroking_score' => 7.5,   // 让了0.5杆
+                            'stroking_value' => 0.5,
+                            'team' => 'red',
+                            'point' => 0,
+                            'is_attender' => true,
+                            'is_baodong' => false,
+                            'baodong_detail' => '',
+                            'indicator' => 4.0,
+                        ],
+                        185 => [
+                            'score' => 4,
+                            'stroking_score' => 4,
+                            'stroking_value' => 0,
+                            'team' => 'blue',
+                            'point' => 0,
+                            'is_attender' => true,
+                            'is_baodong' => false,
+                            'baodong_detail' => '',
+                            'indicator' => 4.0,
+                        ],
+                        2271 => [
+                            'score' => 4,
+                            'stroking_score' => 4,
+                            'stroking_value' => 0,
+                            'team' => 'red',
+                            'point' => 0,
+                            'is_attender' => true,
+                            'is_baodong' => false,
+                            'baodong_detail' => '',
+                            'indicator' => 4.0,
+                        ],
+                    ],
+                    'team_summary' => [
+                        'blue' => [
+                            'indicator' => 4.0,
+                            'total_point' => 0,
+                            'members' => [93, 185],
+                        ],
+                        'red' => [
+                            'indicator' => 4.0,
+                            'total_point' => 0,
+                            'members' => [160, 2271],
+                        ],
+                    ],
+                    'hole_summary' => [
+                        'draw' => true,             // 顶洞
+                        'meat_count' => 1,          // 产生1个肉
+                        'multiplier' => 1,
+                        'winner_team' => null,
+                        'point_diff' => 0,
+                        'calculation_method' => 'best_score',
+                    ],
+                ],
+            ],
+
+            'summary' => [
+                'total_points' => [
+                    93 => 0.5,      // 总输赢点数
+                    160 => -0.5,
+                    185 => 0.5,
+                    2271 => -0.5,
+                ],
+                'team_points' => [
+                    'blue' => 1.0,
+                    'red' => -1.0,
+                ],
+                'meat_summary' => [
+                    'total_meat' => 1,          // 总肉数
+                    'pending_holes' => [2],     // 待决定的洞
+                ],
+                'special_events' => [
+                    'baodong_count' => 1,       // 包洞次数
+                    'punishment_count' => 0,    // 惩罚次数
+                ],
+                'statistics' => [
+                    'total_calculated_holes' => 2,
+                    'draw_holes' => 1,
+                    'decided_holes' => 1,
+                    'average_score' => [
+                        93 => 4.5,
+                        160 => 6.5,
+                        185 => 4.0,
+                        2271 => 7.0,
+                    ],
+                ],
+            ],
+        ];
+    }
+    
+    ```

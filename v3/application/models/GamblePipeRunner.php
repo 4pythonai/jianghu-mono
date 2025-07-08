@@ -34,13 +34,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     // 以下为结果
     private $useful_holes;
-
-    // 8421 配置缓存
-    private $_8421Configs = null;
-
-
-
-
     public function __invoke($cfg) {
     }
 
@@ -98,13 +91,14 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     }
 
     public function processHoles() {
-        // 如果是8421系统，预先加载所有配置避免重复获取
-        if ($this->gambleSysName == '8421') {
-            $this->init8421Configs();
-        }
-
         // 创建上下文对象，避免重复创建
         $context = GambleContext::fromGamblePipeRunner($this);
+
+        // 获取8421配置（如果需要）
+        $configs = null;
+        if ($this->gambleSysName == '8421') {
+            $configs = $this->MRuntimeConfig->get8421AllConfigs($this->gambleid);
+        }
 
         foreach ($this->useful_holes as  $index => &$hole) {
             $hole['debug'] = [];
@@ -113,7 +107,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 使用context对象优化参数传递
             $this->MRedBlue->setRedBlueWithContext($index, $hole, $context);
 
-            $this->ComputeIndicator($index, $hole);
+            // 调用MIndicator计算指标
+            $this->MIndicator->computeIndicators($index, $hole, $configs, $context);
 
             // 直接调用MRanking进行排名计算
             $this->MRanking->rankAttendersWithContext($hole, $index, $context);
@@ -124,88 +119,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         }
     }
 
-    /**
-     * 初始化8421配置缓存
-     * 避免在每个洞的计算中重复获取相同配置
-     */
-    private function init8421Configs() {
-        if ($this->_8421Configs === null) {
-            $this->_8421Configs = [
-                'val8421_config' => $this->MRuntimeConfig->get8421UserAddValuePair($this->gambleid),
-                'sub8421ConfigString' => $this->MRuntimeConfig->get8421SubConfigString($this->gambleid),
-                'max8421SubValue' => $this->MRuntimeConfig->get8421MaxSubValue($this->gambleid),
-            ];
-        }
-    }
-
-    private function ComputeIndicator($index, &$hole) {
-        if ($this->gambleSysName == '8421') {
-            $this->cal8421Indicators($index, $hole);
-        }
-    }
 
 
 
-
-
-    private function cal8421Indicators($index, &$hole) {
-        // 使用缓存的配置，避免重复获取
-        $val8421_config = $this->_8421Configs['val8421_config'];
-        $sub8421ConfigString = $this->_8421Configs['sub8421ConfigString'];
-        $max8421SubValue = $this->_8421Configs['max8421SubValue'];
-
-        $indicatorBlue = 0;
-        $indicatorRed = 0;
-        foreach ($hole['red']  as $userid) {
-
-            $userAddConfigPair = $val8421_config[$userid];
-            $_8421_add_sub_max_config = [
-                'add' => $userAddConfigPair,
-                'sub' => $sub8421ConfigString,
-                'max' => $max8421SubValue,
-            ];
-
-            $indicator = $this->MIndicator->OnePlayer8421Indicator($hole['par'],  $hole['computedScores'][$userid], $_8421_add_sub_max_config);
-            $logMsg = sprintf(
-                "第 %s 洞,红队,队员:%4d,PAR:%d,分值:%2d,指标:%2d",
-                $hole['id'],
-                $userid,
-                $hole['par'],
-                $hole['computedScores'][$userid],
-                $indicator
-            );
-            $hole['indicators'][$userid] = $indicator;
-            $this->addDebugLog($hole, $logMsg);
-            $indicatorRed += $indicator;
-        }
-
-        foreach ($hole['blue']  as $userid) {
-
-            $userAddConfigPair = $val8421_config[$userid];
-
-            $_8421_add_sub_max_config = [
-                'add' => $userAddConfigPair,
-                'sub' => $sub8421ConfigString,
-                'max' => $max8421SubValue,
-            ];
-
-            $indicator = $this->MIndicator->OnePlayer8421Indicator($hole['par'],  $hole['computedScores'][$userid], $_8421_add_sub_max_config);
-            $logMsg = sprintf(
-                "第 %s 洞,蓝队,队员:%4d,PAR:%d,分值:%2d,指标:%2d",
-                $hole['id'],
-                $userid,
-                $hole['par'],
-                $hole['computedScores'][$userid],
-                $indicator
-            );
-            $hole['indicators'][$userid] = $indicator;
-            $this->addDebugLog($hole, $logMsg);
-            $indicatorBlue += $indicator;
-        }
-
-        $hole['indicatorBlue'] = $indicatorBlue;
-        $hole['indicatorRed'] = $indicatorRed;
-    }
 
 
 
@@ -242,206 +158,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
 
-
-    /**
-     * 生成完整的 gamble_result demo 数据
-     * 用于展示表格结构和数据格式
-     */
-    public function getGambleResultDemo() {
-        return [
-            'meta' => [
-                'gameid' => 1318446,
-                'gambleid' => 679528,
-                'groupid' => 2689120,
-                'gamble_type' => '2v2',
-                'total_holes' => 18,
-                'calculated_holes' => 2, // 实际计算的洞数
-                'created_at' => date('Y-m-d H:i:s'),
-            ],
-
-            'players' =>  $this->players,
-            'holes' => [
-                [
-                    'holeid' => 2485,
-                    'holename' => 'A1',
-                    'par' => 5,
-                    'hindex' => 1,
-                    'court_key' => 1,
-                    'details' => [
-                        93 => [
-                            'score' => 5,              // 实际成绩
-                            'stroking_score' => 5,     // 让杆后成绩
-                            'stroking_value' => 0,     // 让杆数
-                            'team' => 'blue',          // 分队
-                            'point' => 0.5,            // 输赢点数 (正数赢，负数输)
-                            'is_attender' => true,     // 是否参与赌博
-                            'is_baodong' => false,     // 是否包洞
-                            'baodong_detail' => '',    // 包洞详细说明
-                            'indicator' => 4.5,        // 队伍指标贡献值
-                        ],
-                        160 => [
-                            'score' => 5,
-                            'stroking_score' => 5,
-                            'stroking_value' => 0,
-                            'team' => 'red',
-                            'point' => -0.5,
-                            'is_attender' => true,
-                            'is_baodong' => false,
-                            'baodong_detail' => '',
-                            'indicator' => 5.0,
-                        ],
-                        185 => [
-                            'score' => 4,
-                            'stroking_score' => 4,
-                            'stroking_value' => 0,
-                            'team' => 'blue',
-                            'point' => 0.5,
-                            'is_attender' => true,
-                            'is_baodong' => false,
-                            'baodong_detail' => '',
-                            'indicator' => 4.5,
-                        ],
-                        2271 => [
-                            'score' => 10,
-                            'stroking_score' => 9,     // 让了1杆
-                            'stroking_value' => 1,
-                            'team' => 'red',
-                            'point' => -0.5,
-                            'is_attender' => true,
-                            'is_baodong' => true,       // 包洞
-                            'baodong_detail' => '成绩过差，触发包洞机制',
-                            'indicator' => 5.0,
-                        ],
-                    ],
-                    'team_summary' => [
-                        'blue' => [
-                            'indicator' => 4.5,        // 队伍指标 (取最好成绩)
-                            'total_point' => 1.0,      // 队伍总得分
-                            'members' => [93, 185],
-                        ],
-                        'red' => [
-                            'indicator' => 5.0,        // 队伍指标
-                            'total_point' => -1.0,     // 队伍总得分
-                            'members' => [160, 2271],
-                        ],
-                    ],
-                    'hole_summary' => [
-                        'draw' => false,            // 是否顶洞
-                        'meat_count' => 0,          // 肉的数量
-                        'multiplier' => 1,          // 倍数
-                        'winner_team' => 'blue',    // 获胜队伍
-                        'point_diff' => 0.5,        // 点数差
-                        'calculation_method' => 'best_score', // 计算方法
-                    ],
-                ],
-                [
-                    'holeid' => 2486,
-                    'holename' => 'A2',
-                    'par' => 4,
-                    'hindex' => 2,
-                    'court_key' => 1,
-                    'details' => [
-                        93 => [
-                            'score' => 4,
-                            'stroking_score' => 4,
-                            'stroking_value' => 0,
-                            'team' => 'blue',
-                            'point' => 0,              // 平局
-                            'is_attender' => true,
-                            'is_baodong' => false,
-                            'baodong_detail' => '',
-                            'indicator' => 4.0,
-                        ],
-                        160 => [
-                            'score' => 8,
-                            'stroking_score' => 7.5,   // 让了0.5杆
-                            'stroking_value' => 0.5,
-                            'team' => 'red',
-                            'point' => 0,
-                            'is_attender' => true,
-                            'is_baodong' => false,
-                            'baodong_detail' => '',
-                            'indicator' => 4.0,
-                        ],
-                        185 => [
-                            'score' => 4,
-                            'stroking_score' => 4,
-                            'stroking_value' => 0,
-                            'team' => 'blue',
-                            'point' => 0,
-                            'is_attender' => true,
-                            'is_baodong' => false,
-                            'baodong_detail' => '',
-                            'indicator' => 4.0,
-                        ],
-                        2271 => [
-                            'score' => 4,
-                            'stroking_score' => 4,
-                            'stroking_value' => 0,
-                            'team' => 'red',
-                            'point' => 0,
-                            'is_attender' => true,
-                            'is_baodong' => false,
-                            'baodong_detail' => '',
-                            'indicator' => 4.0,
-                        ],
-                    ],
-                    'team_summary' => [
-                        'blue' => [
-                            'indicator' => 4.0,
-                            'total_point' => 0,
-                            'members' => [93, 185],
-                        ],
-                        'red' => [
-                            'indicator' => 4.0,
-                            'total_point' => 0,
-                            'members' => [160, 2271],
-                        ],
-                    ],
-                    'hole_summary' => [
-                        'draw' => true,             // 顶洞
-                        'meat_count' => 1,          // 产生1个肉
-                        'multiplier' => 1,
-                        'winner_team' => null,
-                        'point_diff' => 0,
-                        'calculation_method' => 'best_score',
-                    ],
-                ],
-            ],
-
-            'summary' => [
-                'total_points' => [
-                    93 => 0.5,      // 总输赢点数
-                    160 => -0.5,
-                    185 => 0.5,
-                    2271 => -0.5,
-                ],
-                'team_points' => [
-                    'blue' => 1.0,
-                    'red' => -1.0,
-                ],
-                'meat_summary' => [
-                    'total_meat' => 1,          // 总肉数
-                    'pending_holes' => [2],     // 待决定的洞
-                ],
-                'special_events' => [
-                    'baodong_count' => 1,       // 包洞次数
-                    'punishment_count' => 0,    // 惩罚次数
-                ],
-                'statistics' => [
-                    'total_calculated_holes' => 2,
-                    'draw_holes' => 1,
-                    'decided_holes' => 1,
-                    'average_score' => [
-                        93 => 4.5,
-                        160 => 6.5,
-                        185 => 4.0,
-                        2271 => 7.0,
-                    ],
-                ],
-            ],
-        ];
-    }
 
     /**
      * 添加调试日志

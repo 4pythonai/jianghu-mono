@@ -5,6 +5,26 @@ if (!defined('BASEPATH')) {
 }
 class MRuntimeConfig extends CI_Model {
 
+    // 8421 配置缓存
+    private $_8421ConfigsCache = [];
+
+    /**
+     * 获取8421系统的所有配置（带缓存）
+     * @param int $gambleid 赌球ID
+     * @return array 包含所有8421配置的数组
+     */
+    public function get8421AllConfigs($gambleid) {
+        // 使用缓存避免重复获取
+        if (!isset($this->_8421ConfigsCache[$gambleid])) {
+            $this->_8421ConfigsCache[$gambleid] = [
+                'val8421_config' => $this->get8421UserAddValuePair($gambleid),
+                'sub8421ConfigString' => $this->get8421SubConfigString($gambleid),
+                'max8421SubValue' => $this->get8421MaxSubValue($gambleid),
+            ];
+        }
+
+        return $this->_8421ConfigsCache[$gambleid];
+    }
 
     // 让杆的配置,可能返回多条记录,即调整让杆, 受让杆数永远为正数,
     // 如界面为负,则是1人让3人,生成3条记录.
@@ -51,10 +71,10 @@ class MRuntimeConfig extends CI_Model {
     public function  get8421UserAddValuePair($gambleid) {
         // ------------------
         // |成绩     | 加分  | 
-        // |”鸟“     |  8   | 
-        // |”帕“     |  4   | 
-        // |”加1     |  2   | 
-        // |”加2“    |  1   | 
+        // |"鸟"     |  8   | 
+        // |"帕"     |  4   | 
+        // |"加1     |  2   | 
+        // |"加2"    |  1   | 
         // |"加3"    |  X   | 
 
         $data = [
