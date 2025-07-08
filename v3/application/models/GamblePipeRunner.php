@@ -144,16 +144,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
 
-
-
-
-
-
-
-
-
-
-
     private function cal8421Indicators($index, &$hole) {
 
         // 8421加分项

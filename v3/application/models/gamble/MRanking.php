@@ -33,27 +33,6 @@ class MRanking extends CI_Model {
     }
 
     /**
-     * 对参赛者进行排名，不允许并列 (保持向后兼容)
-     * @param array $hole 当前洞的数据（包含indicators）
-     * @param int $holeIndex 当前洞的索引
-     * @param array $usefulHoles 历史洞数据用于回溯
-     * @param array $bootStrapOrder 出发顺序
-     * @param string $gambleSysName 赌球系统名称
-     * @return array 排名结果 [userid => rank]
-     * @deprecated 建议使用 rankAttendersWithContext 方法
-     */
-    public function rankAttenders(&$hole, $holeIndex, $usefulHoles, $bootStrapOrder, $gambleSysName) {
-        // 创建临时上下文对象
-        $context = new GambleContext([
-            'gambleSysName' => $gambleSysName,
-            'usefulHoles' => $usefulHoles,
-            'bootStrapOrder' => $bootStrapOrder,
-        ]);
-
-        return $this->rankAttendersWithContext($hole, $holeIndex, $context);
-    }
-
-    /**
      * 计算参赛者排名
      * @param array $participants 参赛者用户ID数组
      * @param int $currentHoleIndex 当前洞的索引
