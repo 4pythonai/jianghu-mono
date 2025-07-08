@@ -198,4 +198,10 @@ class MRuntimeConfig extends CI_Model {
         return  "DUTY_NEGATIVE";
         return "DUTY_CODITIONAL";
     }
+
+    // 排名配置
+    public function getRankingConfig($gambleid) {
+        return "BYSCORE"; // 根据得分
+        return "BYINDICATOR"; // 根据指标
+    }
 }

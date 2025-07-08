@@ -142,5 +142,6 @@ $autoload['model'] = [
     'MGamePipeRunner',
     'MGamePipe',
     'MDetailGame',
-    'MScore'
+    'MScore',
+    'gamble/MRanking'
 ];

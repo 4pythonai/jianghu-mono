@@ -39,7 +39,7 @@ class MIndicator8421 extends CI_Model {
             $currentScoreType = 'Par+3';
         }
 
-        debug("  PAR: " . $par . "  SCORE: " . $score . "  currentScoreType: " . $currentScoreType);
+        // debug("  PAR: " . $par . "  SCORE: " . $score . "  currentScoreType: " . $currentScoreType);
 
         // 从当前成绩类型开始，找到第一个有配置的成绩类型
         $currentIndex = array_search($currentScoreType, $scoreTypes);

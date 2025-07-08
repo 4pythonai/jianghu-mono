@@ -25,6 +25,9 @@ class GamblePipe extends CI_Model {
                 $this->GamblePipeRunner->initGamble($cfg);
             })
 
+            ->pipe(function ($cfg) {
+                $this->GamblePipeRunner->printGambleConfig($cfg);
+            })
             // 处理让杆
             ->pipe(function () {
                 $this->GamblePipeRunner->StrokingScores();

@@ -60,7 +60,7 @@ class MMoney extends CI_Model {
                 }
             }
 
-            debug($hole);
+            // debug($hole);
         }
     }
 
