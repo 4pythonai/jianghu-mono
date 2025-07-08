@@ -35,6 +35,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     // 以下为结果
     private $useful_holes;
 
+    // 8421 配置缓存
+    private $_8421Configs = null;
+
 
 
 
@@ -95,16 +98,38 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     }
 
     public function processHoles() {
+        // 如果是8421系统，预先加载所有配置避免重复获取
+        if ($this->gambleSysName == '8421') {
+            $this->init8421Configs();
+        }
+
         foreach ($this->useful_holes as  $index => &$hole) {
             $hole['debug'] = [];
             $hole['indicators'] = [];
 
-            $this->MRedBlue->setRedBlue($index, $hole, $this->attenders, $this->bootStrapOrder, $this->redBlueConfig);
+            // 使用context对象优化参数传递
+            $context = GambleContext::fromGamblePipeRunner($this);
+            $this->MRedBlue->setRedBlueWithContext($index, $hole, $context);
+
             $this->ComputeIndicator($index, $hole);
             $this->RankingAttenders($index, $hole);
             $this->MIndicator->judgeWinner($hole);
             $this->MMoney->setHoleMoneyDetail($hole, $this->dutyConfig);
             debug($hole);
+        }
+    }
+
+    /**
+     * 初始化8421配置缓存
+     * 避免在每个洞的计算中重复获取相同配置
+     */
+    private function init8421Configs() {
+        if ($this->_8421Configs === null) {
+            $this->_8421Configs = [
+                'val8421_config' => $this->MRuntimeConfig->get8421UserAddValuePair($this->gambleid),
+                'sub8421ConfigString' => $this->MRuntimeConfig->get8421SubConfigString($this->gambleid),
+                'max8421SubValue' => $this->MRuntimeConfig->get8421MaxSubValue($this->gambleid),
+            ];
         }
     }
 
@@ -145,24 +170,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
     private function cal8421Indicators($index, &$hole) {
-
-        // 8421加分项
-        $val8421_config = $this->MRuntimeConfig->get8421UserAddValuePair($this->gambleid);
-        // 8421 减分项
-        $sub8421ConfigString = $this->MRuntimeConfig->get8421SubConfigString($this->gambleid);
-        // 8421 扣分封顶,正数
-        $max8421SubValue = $this->MRuntimeConfig->get8421MaxSubValue($this->gambleid);
-
-        // debug("8421加分项", $val8421_config);
-        // debug("扣分配置", $sub8421ConfigString);
-        // debug("扣分封顶", $max8421SubValue);
-        // debug("负分配置", $this->dutyConfig);
-        // debug("分组方式", $this->redBlueConfig);
-
-
-
-
-
+        // 使用缓存的配置，避免重复获取
+        $val8421_config = $this->_8421Configs['val8421_config'];
+        $sub8421ConfigString = $this->_8421Configs['sub8421ConfigString'];
+        $max8421SubValue = $this->_8421Configs['max8421SubValue'];
 
         $indicatorBlue = 0;
         $indicatorRed = 0;
@@ -233,17 +244,20 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     public function getter() {
         return  [
             'gameid' => $this->gameid,
-            '分组方式' => $this->redBlueConfig,
             'gambleid' => $this->gambleid,
             'groupid' => $this->groupid,
             'userid' => $this->userid,
+            'gambleSysName' => $this->gambleSysName,
+            'redBlueConfig' => $this->redBlueConfig,
             'holes' => $this->holes,
             'firstholeindex' => $this->firstholeindex,
             'lastholeindex' => $this->lastholeindex,
             'scores' => $this->scores,
             'group_info' => $this->group_info,
-            'attenders' => [93, 160, 185, 2271],
-            'gamble_result' => $this->getGambleResultDemo(),
+            'attenders' => $this->attenders,
+            'bootStrapOrder' => $this->bootStrapOrder,
+            'dutyConfig' => $this->dutyConfig,
+            'useful_holes' => $this->useful_holes, // 实际的计算结果
         ];
     }
 

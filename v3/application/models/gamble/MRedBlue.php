@@ -7,25 +7,41 @@ if (!defined('BASEPATH')) {
 class MRedBlue extends CI_Model {
 
     /**
-     * 设置红蓝分组
+     * 设置红蓝分组 (使用上下文对象)
+     * @param int $index 洞索引
+     * @param array $hole 洞数据（引用传递）
+     * @param GambleContext $context 赌球上下文对象
+     */
+    public function setRedBlueWithContext($index, &$hole, $context) {
+        $attenderCount = count($context->attenders);
+
+        if ($attenderCount == 2) {
+            $this->set2RedBlue($index, $hole, $context->attenders);
+        } elseif ($attenderCount == 3) {
+            $this->set3RedBlue($index, $hole, $context->attenders);
+        } elseif ($attenderCount == 4) {
+            $this->set4RedBlue($index, $hole, $context->attenders, $context->bootStrapOrder, $context->redBlueConfig);
+        }
+    }
+
+    /**
+     * 设置红蓝分组 (保持向后兼容)
      * @param int $index 洞索引
      * @param array $hole 洞数据（引用传递）
      * @param array $attenders 参与赌球的人员
      * @param array $bootStrapOrder 出发顺序
      * @param string $redBlueConfig 分组配置
+     * @deprecated 建议使用 setRedBlueWithContext 方法
      */
     public function setRedBlue($index, &$hole, $attenders, $bootStrapOrder, $redBlueConfig) {
-        if (count($attenders) == 2) {
-            $this->set2RedBlue($index, $hole, $attenders);
-        }
+        // 创建临时上下文对象
+        $context = new GambleContext([
+            'attenders' => $attenders,
+            'bootStrapOrder' => $bootStrapOrder,
+            'redBlueConfig' => $redBlueConfig,
+        ]);
 
-        if (count($attenders) == 3) {
-            $this->set3RedBlue($index, $hole, $attenders);
-        }
-
-        if (count($attenders) == 4) {
-            $this->set4RedBlue($index, $hole, $attenders, $bootStrapOrder, $redBlueConfig);
-        }
+        return $this->setRedBlueWithContext($index, $hole, $context);
     }
 
     /**
