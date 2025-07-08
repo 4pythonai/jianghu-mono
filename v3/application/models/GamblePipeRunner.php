@@ -103,16 +103,21 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $this->init8421Configs();
         }
 
+        // 创建上下文对象，避免重复创建
+        $context = GambleContext::fromGamblePipeRunner($this);
+
         foreach ($this->useful_holes as  $index => &$hole) {
             $hole['debug'] = [];
             $hole['indicators'] = [];
 
             // 使用context对象优化参数传递
-            $context = GambleContext::fromGamblePipeRunner($this);
             $this->MRedBlue->setRedBlueWithContext($index, $hole, $context);
 
             $this->ComputeIndicator($index, $hole);
-            $this->RankingAttenders($index, $hole);
+
+            // 直接调用MRanking进行排名计算
+            $this->MRanking->rankAttendersWithContext($hole, $index, $context);
+
             $this->MIndicator->judgeWinner($hole);
             $this->MMoney->setHoleMoneyDetail($hole, $this->dutyConfig);
             debug($hole);
@@ -139,33 +144,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         }
     }
 
-    /**
-     * 对参赛者在本洞进行排名，不允许并列
-     * 
-     * 排名逻辑已移植到 MRanking 模型中，支持：
-     * - 当前洞indicators比较
-     * - 历史洞回溯打破并列  
-     * - 出发顺序兜底
-     * 
-     * @param int $index 洞索引
-     * @param array $hole 洞数据（包含indicators，会被添加ranking）
-     */
-    private function RankingAttenders($index, &$hole) {
 
-        // [indicators] => Array
-        // (
-        //     [93] => 8
-        //     [160] => 8
-        //     [185] => -3
-        //     [67] => -2
-        // )
-
-        // 创建上下文对象，避免传递过多参数
-        $context = GambleContext::fromGamblePipeRunner($this);
-
-        // 调用 MRanking 模型进行排名计算
-        $this->MRanking->rankAttendersWithContext($hole, $index, $context);
-    }
 
 
 
