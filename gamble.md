@@ -11,7 +11,7 @@
 ### 分组 Grouping ,blueTeam 与 redTeam
 - 分组:blueTeam,redTeam,即红蓝两对,根据赌博的类型,可能有多种分组的方式,如 "1 vs 1" , "1 vs 2" , "1 vs 3", "2 vs 2".
   注意:除了"1 vs 1"方式,其他方式都有可能发生人员组合变化的情况,比如根据上一洞的score情况,决定下一洞的分组方式.
-- 初次分组:firstHolePlayersOrder,即比赛开始前强行指定的参数人员排名(一般根据技术水平排序)****
+- 初次分组:bootStrapOrder,即比赛开始前强行指定的参数人员排名(一般根据技术水平排序)****
 
 
 ### 让杆机制, Stroking

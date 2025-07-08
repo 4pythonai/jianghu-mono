@@ -177,7 +177,7 @@ class MRuntimeConfig extends CI_Model {
 
 
     // 获取出发顺序  
-    public function getFirstHolePlayersOrder($gambleid) {
+    public function getBootStrapOrder($gambleid) {
         return [185, 93, 160, 67];
     }
 

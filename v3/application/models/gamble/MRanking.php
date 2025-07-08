@@ -17,14 +17,14 @@ class MRanking extends CI_Model {
      * @param array $hole 当前洞的数据（包含indicators）
      * @param int $holeIndex 当前洞的索引
      * @param array $usefulHoles 历史洞数据用于回溯
-     * @param array $firstHolePlayersOrder 出发顺序
+     * @param array $bootStrapOrder 出发顺序
      * @param string $gambleSysName 赌球系统名称
      * @return array 排名结果 [userid => rank]
      */
-    public function rankAttenders(array &$hole, int $holeIndex, array $usefulHoles, array $firstHolePlayersOrder, string $gambleSysName): array {
+    public function rankAttenders(array &$hole, int $holeIndex, array $usefulHoles, array $bootStrapOrder, string $gambleSysName): array {
         if ($gambleSysName == '8421') {
             $participants = array_keys($hole['indicators']);
-            $ranking = $this->calculateRanking($participants, $holeIndex, $hole, $usefulHoles, $firstHolePlayersOrder);
+            $ranking = $this->calculateRanking($participants, $holeIndex, $hole, $usefulHoles, $bootStrapOrder);
             $hole['ranking'] = $ranking;
 
             // 添加调试信息
@@ -42,10 +42,10 @@ class MRanking extends CI_Model {
      * @param int $currentHoleIndex 当前洞的索引
      * @param array $currentHole 当前洞的数据
      * @param array $usefulHoles 历史洞数据
-     * @param array $firstHolePlayersOrder 出发顺序
+     * @param array $bootStrapOrder 出发顺序
      * @return array 排名结果 [userid => rank]
      */
-    private function calculateRanking(array $participants, int $currentHoleIndex, array $currentHole, array $usefulHoles, array $firstHolePlayersOrder): array {
+    private function calculateRanking(array $participants, int $currentHoleIndex, array $currentHole, array $usefulHoles, array $bootStrapOrder): array {
         // 按当前洞indicators降序排列（分数越高排名越靠前）
         $sorted = $participants;
         usort($sorted, function ($a, $b) use ($currentHole) {
@@ -53,7 +53,7 @@ class MRanking extends CI_Model {
         });
 
         // 检查并列情况并处理
-        $finalRanking = $this->resolveTies($sorted, $currentHoleIndex, $currentHole, $usefulHoles, $firstHolePlayersOrder);
+        $finalRanking = $this->resolveTies($sorted, $currentHoleIndex, $currentHole, $usefulHoles, $bootStrapOrder);
 
         // 转换为 userid => rank 格式
         $ranking = [];
@@ -70,10 +70,10 @@ class MRanking extends CI_Model {
      * @param int $currentHoleIndex 当前洞索引
      * @param array $currentHole 当前洞数据
      * @param array $usefulHoles 历史洞数据
-     * @param array $firstHolePlayersOrder 出发顺序
+     * @param array $bootStrapOrder 出发顺序
      * @return array 最终排序的参赛者数组
      */
-    private function resolveTies(array $sortedParticipants, int $currentHoleIndex, array $currentHole, array $usefulHoles, array $firstHolePlayersOrder): array {
+    private function resolveTies(array $sortedParticipants, int $currentHoleIndex, array $currentHole, array $usefulHoles, array $bootStrapOrder): array {
         $groups = $this->groupByIndicators($sortedParticipants, $currentHole['indicators']);
 
         $finalOrder = [];
@@ -84,7 +84,7 @@ class MRanking extends CI_Model {
                 $finalOrder = array_merge($finalOrder, $group);
             } else {
                 // 有并列，需要回溯历史洞
-                $resolvedGroup = $this->resolveGroupTies($group, $currentHoleIndex, $usefulHoles, $firstHolePlayersOrder);
+                $resolvedGroup = $this->resolveGroupTies($group, $currentHoleIndex, $usefulHoles, $bootStrapOrder);
                 $finalOrder = array_merge($finalOrder, $resolvedGroup);
             }
         }
@@ -121,10 +121,10 @@ class MRanking extends CI_Model {
      * @param array $tiedGroup 并列的参赛者组
      * @param int $currentHoleIndex 当前洞索引
      * @param array $usefulHoles 历史洞数据
-     * @param array $firstHolePlayersOrder 出发顺序
+     * @param array $bootStrapOrder 出发顺序
      * @return array 解决并列后的排序
      */
-    private function resolveGroupTies(array $tiedGroup, int $currentHoleIndex, array $usefulHoles, array $firstHolePlayersOrder): array {
+    private function resolveGroupTies(array $tiedGroup, int $currentHoleIndex, array $usefulHoles, array $bootStrapOrder): array {
         // 从前一洞开始往前回溯
         for ($holeIndex = $currentHoleIndex - 1; $holeIndex >= 0; $holeIndex--) {
             // 检查该历史洞是否存在且已计算indicators
@@ -153,7 +153,7 @@ class MRanking extends CI_Model {
                     if (count($subGroup) == 1) {
                         $result = array_merge($result, $subGroup);
                     } else {
-                        $resolvedSubGroup = $this->resolveGroupTies($subGroup, $holeIndex, $usefulHoles, $firstHolePlayersOrder);
+                        $resolvedSubGroup = $this->resolveGroupTies($subGroup, $holeIndex, $usefulHoles, $bootStrapOrder);
                         $result = array_merge($result, $resolvedSubGroup);
                     }
                 }
@@ -162,7 +162,7 @@ class MRanking extends CI_Model {
         }
 
         // 如果回溯完所有历史洞还是并列，使用出发顺序
-        return $this->resolveByStartOrder($tiedGroup, $firstHolePlayersOrder);
+        return $this->resolveByStartOrder($tiedGroup, $bootStrapOrder);
     }
 
     /**
@@ -191,22 +191,22 @@ class MRanking extends CI_Model {
     /**
      * 使用出发顺序解决最终并列
      * @param array $tiedGroup 仍然并列的参赛者组
-     * @param array $firstHolePlayersOrder 出发顺序
+     * @param array $bootStrapOrder 出发顺序
      * @return array 按出发顺序排序的结果
      */
-    private function resolveByStartOrder(array $tiedGroup, array $firstHolePlayersOrder): array {
-        // 按照在firstHolePlayersOrder中的位置排序
+    private function resolveByStartOrder(array $tiedGroup, array $bootStrapOrder): array {
+        // 按照在 bootStrapOrder  中的位置排序
         // 注意：所有参与用户都保证在出发顺序中
-        usort($tiedGroup, function ($a, $b) use ($firstHolePlayersOrder) {
-            $posA = array_search($a, $firstHolePlayersOrder);
-            $posB = array_search($b, $firstHolePlayersOrder);
+        usort($tiedGroup, function ($a, $b) use ($bootStrapOrder) {
+            $posA = array_search($a, $bootStrapOrder);
+            $posB = array_search($b, $bootStrapOrder);
 
             // 业务逻辑验证：确保所有用户都在出发顺序中
             if ($posA === false) {
-                throw new Exception("用户 $a 不在出发顺序 firstHolePlayersOrder 中，业务逻辑错误！");
+                throw new Exception("用户 $a 不在出发顺序 bootStrapOrder 中，业务逻辑错误！");
             }
             if ($posB === false) {
-                throw new Exception("用户 $b 不在出发顺序 firstHolePlayersOrder 中，业务逻辑错误！");
+                throw new Exception("用户 $b 不在出发顺序 bootStrapOrder 中，业务逻辑错误！");
             }
 
             return $posA <=> $posB;

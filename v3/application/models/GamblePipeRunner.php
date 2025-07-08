@@ -23,7 +23,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $userid;
     private $holes;
     private $players; //参与赌球的人员
-    private $firstHolePlayersOrder; //出发顺序,即参与赌球的人员的初始排名,因为没有比赛成绩,所以要硬性规定下
+    private $bootStrapOrder; //出发顺序,即参与赌球的人员的初始排名,因为没有比赛成绩,所以要硬性规定下
     private $firstholeindex;   // 第一个参与计算的洞的index,因为要支持从某个洞开始赌球
     private $lastholeindex;    // 最后一个参与计算的洞的index,因为要支持从某个洞开始赌球
     private $scores;           // 记分
@@ -62,7 +62,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
         $this->players =  $this->MRuntimeConfig->getAllPlayers($this->gambleid);
         $this->attenders = $this->MRuntimeConfig->getAttenders($this->gambleid);
-        $this->firstHolePlayersOrder = $this->MRuntimeConfig->getFirstHolePlayersOrder($this->gambleid);
+        $this->bootStrapOrder = $this->MRuntimeConfig->getBootStrapOrder($this->gambleid);
         $this->redBlueConfig = $this->MRuntimeConfig->getRedBlueConfig($this->gambleid, count($this->attenders));
         $this->dutyConfig = $this->MRuntimeConfig->getDutyConfig($this->gambleid);
     }
@@ -100,7 +100,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $hole['debug'] = [];
             $hole['indicators'] = [];
 
-            $this->MRedBlue->setRedBlue($index, $hole, $this->attenders, $this->firstHolePlayersOrder, $this->redBlueConfig);
+            $this->MRedBlue->setRedBlue($index, $hole, $this->attenders, $this->bootStrapOrder, $this->redBlueConfig);
             $this->ComputeIndicator($index, $hole);
             $this->RankingAttenders($index, $hole);
             $this->MIndicator->judgeWinner($hole);
@@ -141,7 +141,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $hole,
             $index,
             $this->useful_holes,
-            $this->firstHolePlayersOrder,
+            $this->bootStrapOrder,
             $this->gambleSysName
         );
     }

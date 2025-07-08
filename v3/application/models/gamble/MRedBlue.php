@@ -13,10 +13,10 @@ class MRedBlue extends CI_Model {
      * @param int $index 洞索引
      * @param array $hole 洞数据（引用传递）
      * @param array $attenders 参与赌球的人员
-     * @param array $firstHolePlayersOrder 出发顺序
+     * @param array $bootStrapOrder 出发顺序
      * @param string $redBlueConfig 分组配置
      */
-    public function setRedBlue($index, &$hole, $attenders, $firstHolePlayersOrder, $redBlueConfig) {
+    public function setRedBlue($index, &$hole, $attenders, $bootStrapOrder, $redBlueConfig) {
         if (count($attenders) == 2) {
             $this->set2RedBlue($index, $hole, $attenders);
         }
@@ -26,7 +26,7 @@ class MRedBlue extends CI_Model {
         }
 
         if (count($attenders) == 4) {
-            $this->set4RedBlue($index, $hole, $attenders, $firstHolePlayersOrder, $redBlueConfig);
+            $this->set4RedBlue($index, $hole, $attenders, $bootStrapOrder, $redBlueConfig);
         }
     }
 
@@ -48,11 +48,11 @@ class MRedBlue extends CI_Model {
     /**
      * 4人红蓝分组
      */
-    public function set4RedBlue($index, &$hole, $attenders, $firstHolePlayersOrder, $redBlueConfig) {
+    public function set4RedBlue($index, &$hole, $attenders, $bootStrapOrder, $redBlueConfig) {
         if (count($attenders) == 4) {
             if ($index == 0) {
-                $hole['blue'] = [$firstHolePlayersOrder[0], $firstHolePlayersOrder[3]];
-                $hole['red'] = [$firstHolePlayersOrder[1], $firstHolePlayersOrder[2]];
+                $hole['blue'] = [$bootStrapOrder[0], $bootStrapOrder[3]];
+                $hole['red'] = [$bootStrapOrder[1], $bootStrapOrder[2]];
                 $hole['debug'][] = "分组:$redBlueConfig,第一洞分组,采用出发设置";
             }
         }
