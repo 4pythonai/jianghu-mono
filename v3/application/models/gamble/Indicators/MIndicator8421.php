@@ -18,25 +18,41 @@ class MIndicator8421 extends CI_Model {
 
         $difference = $score - $par;
 
-        // 差值与成绩类型的映射表
-        $scoreTypeMap = [
-            -2 => 'Eagle',
-            -1 => 'Birdie',
-            0  => 'Par',
-            1  => 'Par+1',
-            2  => 'Par+2',
-            3  => 'Par+3'
-        ];
 
-        // 处理老鹰球或更好的情况（差值小于等于-2）
+        // 成绩类型按优先级排序（从好到差）
+        $scoreTypes = ['Eagle', 'Birdie', 'Par', 'Par+1', 'Par+2', 'Par+3'];
+        $scoreTypesCount = count($scoreTypes);
+
+        // 根据差值确定当前成绩类型
+        $currentScoreType = 'VERYBAD';
         if ($difference <= -2) {
-            $scoreType = 'Eagle';
-        } else {
-            $scoreType = $scoreTypeMap[$difference] ?? null;
+            $currentScoreType = 'Eagle';
+        } elseif ($difference == -1) {
+            $currentScoreType = 'Birdie';
+        } elseif ($difference == 0) {
+            $currentScoreType = 'Par';
+        } elseif ($difference == 1) {
+            $currentScoreType = 'Par+1';
+        } elseif ($difference == 2) {
+            $currentScoreType = 'Par+2';
+        } elseif ($difference == 3) {
+            $currentScoreType = 'Par+3';
         }
 
-        // 返回对应的加分，如果没有配置则返回0
-        return isset($userConfig[$scoreType]) ? $userConfig[$scoreType] : 0;
+        debug("  PAR: " . $par . "  SCORE: " . $score . "  currentScoreType: " . $currentScoreType);
+
+        // 从当前成绩类型开始，找到第一个有配置的成绩类型
+        $currentIndex = array_search($currentScoreType, $scoreTypes);
+        if ($currentIndex !== false) {
+            for ($i = $currentIndex; $i < $scoreTypesCount; $i++) {
+                if (isset($userConfig[$scoreTypes[$i]])) {
+                    return $userConfig[$scoreTypes[$i]];
+                }
+            }
+        }
+
+        // 如果没有找到任何配置,返回0
+        return 0;
     }
 
 

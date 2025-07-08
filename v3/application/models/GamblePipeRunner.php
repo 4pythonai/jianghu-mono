@@ -103,17 +103,21 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         // 8421 扣分封顶,正数
         $max8421SubValue = $this->MRuntimeConfig->get8421MaxSubValue($this->gambleid);
 
-        $_8421_add_sub_max_config = [
-            'add' => $val8421_config,
-            'sub' => $sub8421ConfigString,
-            'max' => $max8421SubValue,
-        ];
+
 
 
 
         $indicatorBlue = 0;
         $indicatorRed = 0;
         foreach ($hole['red']  as $userid) {
+
+            $userAddConfigPair = $val8421_config[$userid];
+            $_8421_add_sub_max_config = [
+                'add' => $userAddConfigPair,
+                'sub' => $sub8421ConfigString,
+                'max' => $max8421SubValue,
+            ];
+
             $indicator = $this->MIndicator->OnePlayer8421Indicator($hole['par'],  $hole['computedScores'][$userid], $_8421_add_sub_max_config);
             $logMsg = sprintf(
                 "第 %s 洞,红队,队员:%4d,PAR:%d,分值:%2d,指标:%2d",
@@ -128,6 +132,15 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         }
 
         foreach ($hole['blue']  as $userid) {
+
+            $userAddConfigPair = $val8421_config[$userid];
+
+            $_8421_add_sub_max_config = [
+                'add' => $userAddConfigPair,
+                'sub' => $sub8421ConfigString,
+                'max' => $max8421SubValue,
+            ];
+
             $indicator = $this->MIndicator->OnePlayer8421Indicator($hole['par'],  $hole['computedScores'][$userid], $_8421_add_sub_max_config);
             $logMsg = sprintf(
                 "第 %s 洞,蓝队,队员:%4d,PAR:%d,分值:%2d,指标:%2d",
