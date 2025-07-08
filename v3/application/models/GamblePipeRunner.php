@@ -100,7 +100,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $hole['debug'] = [];
             $hole['indicators'] = [];
 
-            $this->setRedBlue($index, $hole);
+            $this->MRedBlue->setRedBlue($index, $hole, $this->attenders, $this->firstHolePlayersOrder, $this->redBlueConfig);
             $this->ComputeIndicator($index, $hole);
             $this->RankingAttenders($index, $hole);
             $this->MIndicator->judgeWinner($hole);
@@ -464,40 +464,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         ];
     }
 
-    public function setRedBlue($index, &$hole) {
-        if (count($this->attenders) == 2) {
-            $this->set2RedBlue($index, $hole);
-        }
-
-        if (count($this->attenders) == 3) {
-            $this->set3RedBlue($index, $hole);
-        }
-
-        if (count($this->attenders) == 4) {
-            $this->set4RedBlue($index, $hole);
-        }
-    }
-
-    // 2人红蓝分组,一人一边
-    public function set2RedBlue($index, &$hole) {
-        $hole['blue'] = $this->attenders[0];
-        $hole['red'] = $this->attenders[1];
-    }
-
-    public function set3RedBlue($index, &$hole) {
-    }
-
-    public function set4RedBlue($index, &$hole) {
-        if (count($this->attenders) == 4) {
-            if ($index == 0) {
-                $hole['blue'] = [$this->firstHolePlayersOrder[0], $this->firstHolePlayersOrder[3]];
-                $hole['red'] = [$this->firstHolePlayersOrder[1], $this->firstHolePlayersOrder[2]];
-                // $hole['debug'][] = "分组:$this->redBlueConfig,第一洞分组,采用出发设置";
-                $this->addDebugLog($hole, "分组:$this->redBlueConfig,第一洞分组,采用出发设置");
-            }
-        }
-    }
-
+    /**
+     * 添加调试日志
+     */
     private function addDebugLog(&$hole, $msg) {
         $hole['debug'][] = $msg;
     }
