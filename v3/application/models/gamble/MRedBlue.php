@@ -25,26 +25,6 @@ class MRedBlue extends CI_Model {
     }
 
     /**
-     * 设置红蓝分组 (保持向后兼容)
-     * @param int $index 洞索引
-     * @param array $hole 洞数据（引用传递）
-     * @param array $attenders 参与赌球的人员
-     * @param array $bootStrapOrder 出发顺序
-     * @param string $redBlueConfig 分组配置
-     * @deprecated 建议使用 setRedBlueWithContext 方法
-     */
-    public function setRedBlue($index, &$hole, $attenders, $bootStrapOrder, $redBlueConfig) {
-        // 创建临时上下文对象
-        $context = new GambleContext([
-            'attenders' => $attenders,
-            'bootStrapOrder' => $bootStrapOrder,
-            'redBlueConfig' => $redBlueConfig,
-        ]);
-
-        return $this->setRedBlueWithContext($index, $hole, $context);
-    }
-
-    /**
      * 2人红蓝分组,一人一边
      */
     public function set2RedBlue($index, &$hole, $attenders) {
