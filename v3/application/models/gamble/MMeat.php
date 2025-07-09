@@ -1,0 +1,274 @@
+<?php
+
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+class MMeat extends CI_Model {
+
+    /**
+     * 检查当前洞是否产生肉（顶洞）
+     * @param array $hole 当前洞数据（通过引用传递）
+     * @param GambleContext $context 上下文数据（通过引用传递）
+     */
+    public function addMeatIfDraw(&$hole, &$context) {
+        // 如果当前洞是顶洞（draw == 'y'），则产生一块肉
+        if (isset($hole['draw']) && $hole['draw'] == 'y') {
+            $context->meat_pool[] = [
+                'hole_index' => $hole['index'] ?? count($context->meat_pool),
+                'is_eaten' => false
+            ];
+
+            $hole['debug'][] = "产生一块肉，当前肉池数量：" . count($context->meat_pool);
+        }
+    }
+
+    /**
+     * 根据赢家表现计算能吃几块肉
+     * @param string $winner_performance 赢家表现 (如 'Birdie', 'Par', 'Par+1' 等)
+     * @param array $configs 配置信息
+     * @return int 能吃的肉数量
+     */
+    public function getEatingCount($winner_performance, $configs) {
+        $eating_range = $configs['eatingRange'] ?? [];
+
+        // 根据表现决定能吃几块肉
+        if (strpos($winner_performance, 'Par+') === 0) {
+            $par_plus = intval(str_replace('Par+', '', $winner_performance));
+            if ($par_plus >= 2) {
+                return $eating_range['BelowBirdie'] ?? 2; // 鸟以下
+            } else {
+                return $eating_range['PAR'] ?? 1; // 加1算帕水平
+            }
+        } elseif ($winner_performance === 'Par') {
+            return $eating_range['PAR'] ?? 1;
+        } elseif ($winner_performance === 'Birdie') {
+            return $eating_range['Birdie'] ?? 1;
+        } elseif (strpos($winner_performance, 'Eagle') !== false || strpos($winner_performance, 'Par-') === 0) {
+            return $eating_range['AbovePAR'] ?? 1; // 帕以上
+        }
+
+        return 0; // 默认不能吃肉
+    }
+
+    /**
+     * 执行吃肉并计算获得的金额
+     * @param int $eating_count 能吃的肉数量
+     * @param int $base_score 本洞基础得分
+     * @param array $configs 配置信息
+     * @param GambleContext $context 上下文数据（通过引用传递）
+     * @return int 吃肉获得的金额
+     */
+    public function eatMeat($eating_count, $base_score, $configs, &$context) {
+        if ($eating_count <= 0) {
+            debug("eatMeat: 吃肉数量 <= 0，返回 0");
+            return 0;
+        }
+
+        if (empty($context->meat_pool)) {
+            debug("eatMeat: 肉池为空，返回 0");
+            return 0;
+        }
+
+        debug("eatMeat: 尝试吃 {$eating_count} 块肉，基础分数: {$base_score}");
+
+        // 找出可以吃的肉（按顺序，先产生的先吃）
+        $available_meat = [];
+        foreach ($context->meat_pool as $index => &$meat) {
+            if (!$meat['is_eaten'] && count($available_meat) < $eating_count) {
+                $available_meat[] = $index;
+                $meat['is_eaten'] = true; // 标记为已吃
+                debug("eatMeat: 吃掉第 {$index} 块肉");
+            }
+        }
+
+        $actual_eaten_count = count($available_meat);
+        debug("eatMeat: 实际吃到 {$actual_eaten_count} 块肉");
+
+        if ($actual_eaten_count == 0) {
+            debug("eatMeat: 实际吃到的肉数量为 0，返回 0");
+            return 0;
+        }
+
+        // 根据配置计算吃肉金额
+        $meat_value_config = $configs['meatValueConfigString'] ?? 'MEAT_AS_1';
+        $meat_max_value = $configs['meatMaxValue'] ?? 1000000;
+
+        debug("eatMeat: 肉价值配置: {$meat_value_config}, 封顶: {$meat_max_value}");
+
+        $result = $this->calculateMeatMoney($actual_eaten_count, $base_score, $meat_value_config, $meat_max_value);
+        debug("eatMeat: 计算结果: {$result}");
+
+        return $result;
+    }
+
+    /**
+     * 根据配置计算吃肉金额
+     * @param int $eaten_count 实际吃到的肉数量
+     * @param int $base_score 本洞基础得分
+     * @param string $meat_value_config 肉价值配置
+     * @param int $meat_max_value 每次吃肉的封顶值
+     * @return int 吃肉金额
+     */
+    private function calculateMeatMoney($eaten_count, $base_score, $meat_value_config, $meat_max_value) {
+        if ($eaten_count <= 0) {
+            debug("calculateMeatMoney: 吃肉数量 <= 0，返回 0");
+            return 0;
+        }
+
+        debug("calculateMeatMoney: 吃了 {$eaten_count} 块肉，配置: {$meat_value_config}");
+
+        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
+            // MEAT_AS_X 模式：每块肉固定价值
+            $meat_value = $this->parseMeatAsX($meat_value_config);
+            $total_meat_money = $eaten_count * $meat_value;
+            $final_money = min($total_meat_money, $meat_max_value);
+            debug("calculateMeatMoney: MEAT_AS模式，每块肉 {$meat_value} 分，总计 {$total_meat_money}，封顶后 {$final_money}");
+            return $final_money;
+        } elseif ($meat_value_config === 'SINGLE_DOUBLE') {
+            // 分值翻倍模式：本洞赢 8 分, 吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分)
+            $multiplier = $eaten_count + 1; // 1个肉2倍，2个肉3倍，3个肉4倍
+            $total_money = $base_score * $multiplier;
+            $extra_money = $total_money - $base_score; // 额外获得的钱
+            $final_money = min($extra_money, $base_score + $eaten_count * $meat_max_value);
+            debug("calculateMeatMoney: SINGLE_DOUBLE模式，倍数 {$multiplier}，额外获得 {$extra_money}，封顶后 {$final_money}");
+            return $final_money;
+        } elseif ($meat_value_config === 'CONTINUE_DOUBLE') {
+            // 连续翻倍模式：1个肉乘以2,2个肉乘以4,3个肉乘以8
+            $multiplier = pow(2, $eaten_count); // 2^eaten_count
+            $extra_money = $base_score * ($multiplier - 1); // 减去原本的base_score，只返回额外部分
+            debug("calculateMeatMoney: CONTINUE_DOUBLE模式，倍数 {$multiplier}，额外获得 {$extra_money}");
+            return $extra_money;
+        }
+
+        debug("calculateMeatMoney: 未匹配到配置模式，返回 0");
+        return 0;
+    }
+
+    /**
+     * 解析 MEAT_AS_X 配置字符串
+     * @param string $config_string 配置字符串，如 "MEAT_AS_3"
+     * @return int X值，默认为1
+     */
+    private function parseMeatAsX($config_string) {
+        if (preg_match('/MEAT_AS_(\d+)/', $config_string, $matches)) {
+            return intval($matches[1]);
+        }
+        return 1; // 默认值
+    }
+
+    /**
+     * 处理整个吃肉流程
+     * @param array $hole 当前洞数据（通过引用传递）
+     * @param array $configs 配置信息
+     * @param GambleContext $context 上下文数据（通过引用传递）
+     * @return void
+     */
+    public function processEating(&$hole, $configs, &$context) {
+        // 只有有输赢的洞才能吃肉
+        if (!isset($hole['draw']) || $hole['draw'] == 'y') {
+            $hole['debug'][] = "吃肉检查: 顶洞或无输赢，不能吃肉";
+            return;
+        }
+
+        // 获取赢家信息
+        $winner_detail = $hole['winner_detail'] ?? [];
+        if (empty($winner_detail)) {
+            $hole['debug'][] = "吃肉检查: 没有赢家信息";
+            return;
+        }
+
+        // winner_detail 是一个数组，找出表现最好的赢家（computedScore最小）
+        $best_winner = $this->findBestWinner($winner_detail);
+        if (!$best_winner) {
+            $hole['debug'][] = "吃肉检查: 找不到最佳赢家";
+            return;
+        }
+
+        // 根据最好赢家的杆数计算表现
+        $winner_performance = $this->calculatePerformance($best_winner['computedScore'], $hole);
+        $base_score = abs($best_winner['indicator']); // 使用指标分数作为基础分数
+
+        $hole['debug'][] = "吃肉分析: 最佳赢家(userid: {$best_winner['userid']})杆数: {$best_winner['computedScore']}, Par: {$hole['par']}, 表现: {$winner_performance}";
+
+        // 计算能吃几块肉
+        $eating_count = $this->getEatingCount($winner_performance, $configs);
+        $hole['debug'][] = "吃肉分析: 根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉";
+
+        // 检查肉池状态
+        $meat_pool_count = count($context->meat_pool);
+        $available_meat_count = 0;
+        foreach ($context->meat_pool as $meat) {
+            if (!$meat['is_eaten']) {
+                $available_meat_count++;
+            }
+        }
+        $hole['debug'][] = "肉池状态: 总共 {$meat_pool_count} 块肉，可用 {$available_meat_count} 块肉";
+
+        // 执行吃肉，获得金额
+        $meatMoney = $this->eatMeat($eating_count, $base_score, $configs, $context);
+        $hole['debug'][] = "吃肉结果: 获得金额 {$meatMoney}";
+
+        // 将吃肉金额添加到每个赢家的详细信息中
+        if ($meatMoney > 0) {
+            for ($i = 0; $i < count($hole['winner_detail']); $i++) {
+                $hole['winner_detail'][$i]['meatMoney'] = $meatMoney;
+            }
+            $hole['debug'][] = "所有赢家每人获得吃肉金额: {$meatMoney}";
+        } else {
+            // 如果没有吃到肉，也要设置 meatMoney 为 0
+            for ($i = 0; $i < count($hole['winner_detail']); $i++) {
+                $hole['winner_detail'][$i]['meatMoney'] = 0;
+            }
+            $hole['debug'][] = "没有吃到肉，meatMoney 设为 0";
+        }
+    }
+
+    /**
+     * 找出表现最好的赢家（杆数最少）
+     * @param array $winner_detail 赢家详细信息数组
+     * @return array|null 最佳赢家信息
+     */
+    private function findBestWinner($winner_detail) {
+        if (empty($winner_detail)) {
+            return null;
+        }
+
+        $best_winner = null;
+        $best_score = PHP_INT_MAX;
+
+        foreach ($winner_detail as $winner) {
+            if (isset($winner['computedScore']) && $winner['computedScore'] < $best_score) {
+                $best_score = $winner['computedScore'];
+                $best_winner = $winner;
+            }
+        }
+
+        return $best_winner;
+    }
+
+    /**
+     * 根据杆数和洞的Par值计算表现
+     * @param int $computed_score 实际杆数
+     * @param array $hole 洞信息
+     * @return string 表现描述
+     */
+    private function calculatePerformance($computed_score, $hole) {
+        $par = $hole['par'] ?? 4; // 默认Par 4
+        $diff = $computed_score - $par;
+
+        if ($diff <= -2) {
+            return 'Eagle'; // 老鹰球或更好
+        } elseif ($diff == -1) {
+            return 'Birdie'; // 小鸟球
+        } elseif ($diff == 0) {
+            return 'Par'; // 标准杆
+        } elseif ($diff == 1) {
+            return 'Par+1'; // 柏忌
+        } elseif ($diff == 2) {
+            return 'Par+2'; // 双柏忌
+        } else {
+            return 'Par+' . $diff; // 更多杆
+        }
+    }
+}

@@ -61,7 +61,7 @@ class MRuntimeConfig extends CI_Model {
 
     // 每次吃肉的值得封顶,以极大数 1000000 为封顶,即不封顶
     public function getMeatMaxValue($gambleid) {
-        return 3; // 肉封顶3点
+        return 2; // 肉封顶3点
         // return 1000000;
     }
 
