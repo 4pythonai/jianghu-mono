@@ -16,15 +16,15 @@ class MRuntimeConfig extends CI_Model {
     public function get8421AllConfigs($gambleid) {
         // 使用缓存避免重复获取
         if (!isset($this->_8421ConfigsCache[$gambleid])) {
-            $this->_8421ConfigsCache[$gambleid] = [
-                'val8421_config' => $this->get8421UserAddValuePair($gambleid),
-                'sub8421ConfigString' => $this->get8421SubConfigString($gambleid),
-                'max8421SubValue' => $this->get8421MaxSubValue($gambleid),
-                'draw8421Config' => $this->get8421DrawConfig($gambleid),
-                'eatingRange' => $this->get8421EatingRange($gambleid),
-                'meatValueConfigString' => $this->getMeatValueConfigString($gambleid),
-                'meatMaxValue' => $this->getMeatMaxValue($gambleid),
-            ];
+            $this->_8421ConfigsCache[$gambleid]['val8421_config'] = $this->get8421UserAddValuePair($gambleid);
+            $this->_8421ConfigsCache[$gambleid]['sub8421ConfigString'] = $this->get8421SubConfigString($gambleid);
+            $this->_8421ConfigsCache[$gambleid]['max8421SubValue'] = $this->get8421MaxSubValue($gambleid);
+            $this->_8421ConfigsCache[$gambleid]['draw8421Config'] = $this->get8421DrawConfig($gambleid);
+
+            // 吃肉相关配置
+            $this->_8421ConfigsCache[$gambleid]['eatingRange'] = $this->get8421EatingRange($gambleid);
+            $this->_8421ConfigsCache[$gambleid]['meatValueConfigString'] = $this->getMeatValueConfigString($gambleid);
+            $this->_8421ConfigsCache[$gambleid]['meatMaxValue'] = $this->getMeatMaxValue($gambleid);
         }
 
         return $this->_8421ConfigsCache[$gambleid];
@@ -32,6 +32,10 @@ class MRuntimeConfig extends CI_Model {
 
 
 
+    // 肉的分值
+    // 肉算 X 分, 吃肉数量由上面表格决定,考虑封顶
+    // 分值翻倍:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3
+    // 连续翻倍: 吃完所有的洞, 2,4,8,16,不考虑封顶,也不考虑成绩表
 
 
     // 可以吃肉的范围, 赢方最好成绩----对应吃肉数量
@@ -49,19 +53,13 @@ class MRuntimeConfig extends CI_Model {
         ];
     }
 
-    // 肉的分值
-    // 肉算 X 分, 吃肉数量由上面表格决定,考虑封顶
-    // 分值翻倍:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3
-    // 连续翻倍: 吃完所有的洞, 2,4,8,16,不考虑封顶,也不考虑成绩表
-
-
     public function getMeatValueConfigString($gambleid) {
         return "MEAT_AS_X"; // 肉算1点 肉算 X 分, 吃肉数量由上面表格(get8421EatingRange)决定,考虑封顶
         // return "SINGLE_DOUBLE"; //  分值翻倍翻倍,比如:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3
         // return "CONTINUE_DOUBLE"; // 连续翻倍,不遗留任何肉,无需考虑封顶,无需考虑 get8421EatingRange
     }
 
-    // 肉的封顶,以极大数 1000000 为封顶,即不封顶
+    // 每次吃肉的值得封顶,以极大数 1000000 为封顶,即不封顶
     public function getMeatMaxValue($gambleid) {
         return 3; // 肉封顶3点
         // return 1000000;

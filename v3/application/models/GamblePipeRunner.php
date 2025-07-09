@@ -103,7 +103,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         foreach ($this->useful_holes as  $index => &$hole) {
             $hole['debug'] = [];
             $hole['indicators'] = [];
-            $hole['meat'] = [];
+
 
             // 红蓝分组 - 直接传递 useful_holes 的引用以确保实时数据
             $this->MRedBlue->setRedBlueWithContext($index, $hole, $context, $this->useful_holes);
