@@ -30,20 +30,34 @@ class GambleContext extends CI_Model {
     }
 
     /**
+     * 属性映射配置：定义 GambleContext 属性和 GamblePipeRunner getter 方法的对应关系
+     */
+    private static $propertyMapping = [
+        'gambleSysName' => 'getGambleSysName',
+        'gameid' => 'getGameid',
+        'gambleid' => 'getGambleid',
+        'groupid' => 'getGroupid',
+        'userid' => 'getUserid',
+        'usefulHoles' => 'getUsefulHoles',
+        'bootStrapOrder' => 'getBootStrapOrder',
+        'attenders' => 'getAttenders',
+        'redBlueConfig' => 'getRedBlueConfig',
+        'dutyConfig' => 'getDutyConfig',
+    ];
+
+    /**
      * 从 GamblePipeRunner 创建上下文对象
+     * 只需要在 $propertyMapping 中添加新属性即可自动同步
      */
     public static function fromGamblePipeRunner($runner) {
-        return new self([
-            'gambleSysName' => $runner->getGambleSysName(),
-            'gameid' => $runner->getGameid(),
-            'gambleid' => $runner->getGambleid(),
-            'groupid' => $runner->getGroupid(),
-            'userid' => $runner->getUserid(),
-            'usefulHoles' => $runner->getUsefulHoles(),
-            'bootStrapOrder' => $runner->getBootStrapOrder(),
-            'attenders' => $runner->getAttenders(),
-            'redBlueConfig' => $runner->getRedBlueConfig(),
-            'dutyConfig' => $runner->getDutyConfig(),
-        ]);
+        $data = [];
+        
+        foreach (self::$propertyMapping as $property => $getterMethod) {
+            if (method_exists($runner, $getterMethod)) {
+                $data[$property] = $runner->$getterMethod();
+            }
+        }
+        
+        return new self($data);
     }
 }

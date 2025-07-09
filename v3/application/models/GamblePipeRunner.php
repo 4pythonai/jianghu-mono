@@ -94,7 +94,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         // 创建上下文对象，避免重复创建
         $context = GambleContext::fromGamblePipeRunner($this);
 
-        // 获取8421配置（如果需要）
+        // 获取8421配置 （如果需要）
         $configs = null;
         if ($this->gambleSysName == '8421') {
             $configs = $this->MRuntimeConfig->get8421AllConfigs($this->gambleid);
@@ -104,17 +104,21 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $hole['debug'] = [];
             $hole['indicators'] = [];
 
-            // 使用context对象优化参数传递
-            $this->MRedBlue->setRedBlueWithContext($index, $hole, $context);
+            // 红蓝分组 - 直接传递 useful_holes 的引用以确保实时数据
+            $this->MRedBlue->setRedBlueWithContext($index, $hole, $context, $this->useful_holes);
 
-            // 调用MIndicator计算指标
+            // 计算指标
             $this->MIndicator->computeIndicators($index, $hole, $configs, $context);
 
-            // 直接调用MRanking进行排名计算
-            $this->MRanking->rankAttendersWithContext($hole, $index, $context);
+            // 进行排名计算
+            $this->MRanking->rankAttendersWithContext($index, $hole, $context);
 
-            $this->MIndicator->judgeWinner($hole);
+            // 判断输赢
+            $this->MIndicator->judgeWinner($hole, $context);
+
+            // 设置双方金额
             $this->MMoney->setHoleMoneyDetail($hole, $this->dutyConfig);
+
             debug($hole);
         }
     }

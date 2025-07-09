@@ -20,6 +20,7 @@ class MRuntimeConfig extends CI_Model {
                 'val8421_config' => $this->get8421UserAddValuePair($gambleid),
                 'sub8421ConfigString' => $this->get8421SubConfigString($gambleid),
                 'max8421SubValue' => $this->get8421MaxSubValue($gambleid),
+                'draw8421Config' => $this->get8421DrawConfig($gambleid),
             ];
         }
 
@@ -65,6 +66,13 @@ class MRuntimeConfig extends CI_Model {
         // Par+2 开始扣分
         // return "NoSub"; // 不扣分
         return "Par+2";
+    }
+
+
+    public function get8421DrawConfig($gambleid) {
+        return "NoDraw"; // 不考虑顶洞
+        return "DrawEven"; // 打平算顶洞
+        return "Diff_x"; // Indicator差值绝对值在x分以内算顶洞
     }
 
 

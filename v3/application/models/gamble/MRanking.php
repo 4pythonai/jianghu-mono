@@ -12,12 +12,12 @@ class MRanking extends CI_Model {
 
     /**
      * 对参赛者进行排名，不允许并列 (使用上下文对象)
-     * @param array $hole 当前洞的数据（包含indicators）
+     * @param array $hole 当前洞的数据 (包含indicators)   
      * @param int $holeIndex 当前洞的索引
      * @param GambleContext $context 赌球上下文对象
-     * @return array 排名结果 [userid => rank]
+     * @return array 排名结果 [rank => userid]
      */
-    public function rankAttendersWithContext(&$hole, $holeIndex, $context) {
+    public function rankAttendersWithContext($holeIndex, &$hole, $context) {
         if ($context->gambleSysName == '8421') {
             $participants = array_keys($hole['indicators']);
             $ranking = $this->calculateRanking($participants, $holeIndex, $hole, $context->usefulHoles, $context->bootStrapOrder);
@@ -39,7 +39,7 @@ class MRanking extends CI_Model {
      * @param array $currentHole 当前洞的数据
      * @param array $usefulHoles 历史洞数据
      * @param array $bootStrapOrder 出发顺序
-     * @return array 排名结果 [userid => rank]
+     * @return array 排名结果 [rank => userid]
      */
     private function calculateRanking($participants, $currentHoleIndex, $currentHole, $usefulHoles, $bootStrapOrder) {
         // 按当前洞indicators降序排列（分数越高排名越靠前）
@@ -51,10 +51,10 @@ class MRanking extends CI_Model {
         // 检查并列情况并处理
         $finalRanking = $this->resolveTies($sorted, $currentHoleIndex, $currentHole, $usefulHoles, $bootStrapOrder);
 
-        // 转换为 userid => rank 格式
+        // 转换为 rank => userid 格式
         $ranking = [];
         foreach ($finalRanking as $rank => $userid) {
-            $ranking[$userid] = $rank + 1; // 排名从1开始
+            $ranking[$rank + 1] = $userid; // 排名从1开始
         }
 
         return $ranking;

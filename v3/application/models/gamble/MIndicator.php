@@ -115,7 +115,7 @@ class MIndicator extends CI_Model {
         }
     }
 
-    public function judgeWinner(&$hole) {
+    public function judgeWinner(&$hole, $context) {
 
 
         $indicatorBlue = $hole['indicatorBlue'];
