@@ -116,28 +116,61 @@ class MIndicator extends CI_Model {
     }
 
     public function judgeWinner(&$hole, $context) {
-
-
         $indicatorBlue = $hole['indicatorBlue'];
         $indicatorRed = $hole['indicatorRed'];
 
-        if ($indicatorBlue == $indicatorRed) {
+        // 获取顶洞配置
+        $drawConfig = $this->MRuntimeConfig->get8421DrawConfig($context->gambleid);
+
+        // 判断是否为顶洞
+        $isDraw = $this->checkDraw($indicatorBlue, $indicatorRed, $drawConfig);
+
+        if ($isDraw) {
             $hole['draw'] = 'y';
             $hole['winner'] = null;
             $hole['failer'] = null;
-        }
+            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果: 顶洞";
+        } else {
+            $hole['draw'] = 'n';
 
-        if ($indicatorBlue > $indicatorRed) {
-            $hole['draw'] = 'n';
-            $hole['winner'] = 'blue';
-            $hole['failer'] = 'red';
-        } else if ($indicatorRed > $indicatorBlue) {
-            $hole['draw'] = 'n';
-            $hole['winner'] = 'red';
-            $hole['failer'] = 'blue';
+            if ($indicatorBlue > $indicatorRed) {
+                $hole['winner'] = 'blue';
+                $hole['failer'] = 'red';
+            } else {
+                $hole['winner'] = 'red';
+                $hole['failer'] = 'blue';
+            }
+
+            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果: {$hole['winner']}队获胜";
         }
 
         $points = abs($indicatorBlue - $indicatorRed);
         $hole['points'] = $points;
+    }
+
+    /**
+     * 根据顶洞配置判断是否为顶洞
+     * @param int $indicatorBlue 蓝队指标
+     * @param int $indicatorRed 红队指标  
+     * @param string $drawConfig 顶洞配置
+     * @return bool 是否为顶洞
+     */
+    private function checkDraw($indicatorBlue, $indicatorRed, $drawConfig) {
+        if ($drawConfig == "NoDraw") {
+            // 不考虑顶洞，只有完全相等才算顶洞
+            return false;
+        }
+
+        // 检查是否为 "Diff_x" 格式
+        if (preg_match('/^Diff_(\d+)$/', $drawConfig, $matches)) {
+            $allowedDiff = (int)$matches[1];
+            $actualDiff = abs($indicatorBlue - $indicatorRed);
+
+            // 差值在允许范围内算顶洞
+            return $actualDiff <= $allowedDiff;
+        }
+
+        // 默认情况：完全相等才算顶洞
+        return $indicatorBlue == $indicatorRed;
     }
 }

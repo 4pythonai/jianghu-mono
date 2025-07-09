@@ -70,9 +70,8 @@ class MRuntimeConfig extends CI_Model {
 
 
     public function get8421DrawConfig($gambleid) {
-        return "NoDraw"; // 不考虑顶洞
-        return "DrawEven"; // 打平算顶洞
-        return "Diff_x"; // Indicator差值绝对值在x分以内算顶洞
+        // return "NoDraw"; // 不考虑顶洞
+        return "Diff_1"; // Indicator差值绝对值在x分以内算顶洞,0即为完全一样
     }
 
 
