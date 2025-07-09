@@ -43,6 +43,17 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     // 初始化信息,包括分组方法,kpi名称,让杆配置
     public function initGamble($config) {
+        // 手动加载需要的模型
+        $this->load->model('gamble/MGambleDataFactory');
+        $this->load->model('gamble/MRuntimeConfig');
+        $this->load->model('gamble/MStroking');
+        $this->load->model('gamble/MRedBlue');
+        $this->load->model('gamble/MIndicator');
+        $this->load->model('gamble/MRanking');
+        $this->load->model('gamble/MMoney');
+        $this->load->model('gamble/MMeat');
+        $this->load->model('gamble/GambleContext');
+
         $this->config = $config;
         $this->gambleSysName = $config['gambleSysName'];
         $this->gameid = $config['gameid'];
@@ -117,8 +128,16 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 判断输赢
             $this->MIndicator->judgeWinner($hole, $context);
 
-            // 设置双方金额
+            // 检查是否产生肉（顶洞）
+            $this->MMeat->addMeatIfDraw($hole, $context);
+
+            // 设置双方金额（这会设置 winner_detail）
             $this->MMoney->setHoleMoneyDetail($hole, $this->dutyConfig);
+
+            // 处理吃肉逻辑（在 winner_detail 设置之后）
+            if ($this->gambleSysName == '8421' && $configs) {
+                $this->MMeat->processEating($hole, $configs, $context);
+            }
 
             debug($hole);
         }

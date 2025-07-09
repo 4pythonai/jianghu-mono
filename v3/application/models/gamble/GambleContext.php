@@ -19,6 +19,7 @@ class GambleContext extends CI_Model {
     public $attenders;
     public $redBlueConfig;
     public $dutyConfig;
+    public $meat_pool = []; // 肉池管理
 
     public function __construct($data = []) {
         parent::__construct();
@@ -51,13 +52,13 @@ class GambleContext extends CI_Model {
      */
     public static function fromGamblePipeRunner($runner) {
         $data = [];
-        
+
         foreach (self::$propertyMapping as $property => $getterMethod) {
             if (method_exists($runner, $getterMethod)) {
                 $data[$property] = $runner->$getterMethod();
             }
         }
-        
+
         return new self($data);
     }
 }
