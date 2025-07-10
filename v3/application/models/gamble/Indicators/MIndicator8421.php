@@ -10,50 +10,73 @@ class MIndicator8421 extends CI_Model {
     /**
      * 计算8421加分值
      * 
-     * 基础分值表：
-     * Par+2(双柏忌) => 1分
-     * Par+1(柏忌)   => 2分  
-     * Par(标准杆)   => 4分
-     * Birdie(小鸟) => 8分
+     * 直接使用用户配置的分值表：
+     * 根据 $userConfig 中的配置来计算分值，如：
+     * Par+2(双柏忌) => 配置值
+     * Par+1(柏忌)   => 配置值  
+     * Par(标准杆)   => 配置值
+     * Birdie(小鸟) => 配置值
      * 
-     * 更好成绩规则：比Birdie少N杆，分值 = 8 * (2^N)
+     * 更好成绩规则：比Birdie少N杆，分值 = Birdie配置值 * (2^N)
      * 更差成绩规则：比Par+2多1杆及以上，分值 = 0
      * 
      * @param int $par 标准杆数
      * @param int $score 实际成绩
-     * @param array $userConfig 用户配置(暂未使用)
+     * @param array $userConfig 用户配置分值表
      * @return int 8421指标值(不会为负数)
      */
     public function get8421AddValue($par, $score, $userConfig) {
+
+        // debug("用户分值配置", $userConfig);
+
         // 计算相对于Par的差值 (负数表示低于标准杆，正数表示高于标准杆)
         $diffFromPar = $score - $par;
 
-        // 基础分值映射表
-        $baseScores = [
-            2  => 1,    // Par+2 => 1分
-            1  => 2,    // Par+1 => 2分  
-            0  => 4,    // Par   => 4分
-            -1 => 8,    // Birdie => 8分
-        ];
+        // 将差值转换为配置键名
+        $configKey = $this->diffToConfigKey($diffFromPar);
 
-        // 情况1: 基础分值表中有直接映射
-        if (isset($baseScores[$diffFromPar])) {
-            return $baseScores[$diffFromPar];
+        // 情况1: 配置中有直接映射
+        if (isset($userConfig[$configKey])) {
+            debug("找到配置键 {$configKey}，分值：{$userConfig[$configKey]}");
+            return $userConfig[$configKey];
         }
 
         // 情况2: 比Birdie更好的成绩 (Eagle, Albatross等)
         if ($diffFromPar < -1) {
             $betterThanBirdie = abs($diffFromPar + 1); // 比Birdie好多少杆
-            return 8 * pow(2, $betterThanBirdie);
+            $birdieScore = $userConfig['Birdie'] ?? 8; // 获取Birdie的配置分值，默认8
+            $result = $birdieScore * pow(2, $betterThanBirdie);
+            debug("比Birdie好{$betterThanBirdie}杆，基于Birdie分值{$birdieScore}，计算结果：{$result}");
+            return $result;
         }
 
-        // 情况3: 比Par+2更差的成绩
+        // 情况3: 比配置中最差成绩更差的情况
         if ($diffFromPar > 2) {
+            debug("成绩太差(Par+{$diffFromPar})，返回0分");
             return 0; // 太差了，没有分值
         }
 
         // 兜底情况，理论上不应该到达这里
+        debug("未找到匹配的配置，返回0分");
         return 0;
+    }
+
+    /**
+     * 将杆数差值转换为配置键名
+     * @param int $diffFromPar 相对于Par的差值
+     * @return string 配置键名
+     */
+    private function diffToConfigKey($diffFromPar) {
+        if ($diffFromPar == 0) {
+            return 'Par';
+        } elseif ($diffFromPar == -1) {
+            return 'Birdie';
+        } elseif ($diffFromPar > 0) {
+            return 'Par+' . $diffFromPar;
+        } else {
+            // 对于Eagle等情况，虽然不会直接使用，但提供一个标准格式
+            return 'Par' . $diffFromPar; // 如 "Par-2" 代表Eagle
+        }
     }
 
 

@@ -76,7 +76,7 @@ class MRuntimeConfig extends CI_Model {
         //     return [
         //         '185' => [
         //             '1#' => ['PAR3' => 1, 'PAR4' => 0.5, 'PAR5' => 0.5],
-        //             '8#' => ['PAR3' => 0.5, 'PAR4' => 0.5, 'PAR5' => 0.5]
+        //             '3#' => ['PAR3' => 0.5, 'PAR4' => 0.5, 'PAR5' => 0.5]
         //         ]
         //     ];
         // }
@@ -148,8 +148,8 @@ class MRuntimeConfig extends CI_Model {
             ],
 
             185 => [
-                "Par+2" => 1,
-                "Par+1" => 2,
+                "Par+2" => 2,
+                "Par+1" => 3,
                 "Par" => 4,
                 "Birdie" => 8,
             ],

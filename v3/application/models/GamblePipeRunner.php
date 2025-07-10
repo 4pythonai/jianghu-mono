@@ -43,16 +43,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     // 初始化信息,包括分组方法,kpi名称,让杆配置
     public function initGamble($config) {
-        // 手动加载需要的模型
-        // $this->load->model('gamble/MGambleDataFactory');
-        // $this->load->model('gamble/MRuntimeConfig');
-        // $this->load->model('gamble/MStroking');
-        // $this->load->model('gamble/MRedBlue');
-        // $this->load->model('gamble/MIndicator');
-        // $this->load->model('gamble/MRanking');
-        // $this->load->model('gamble/MMoney');
-        // $this->load->model('gamble/MMeat');
-        // $this->load->model('gamble/GambleContext');
 
         $this->config = $config;
         $this->gambleSysName = $config['gambleSysName'];
@@ -86,7 +76,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         debug("赌球id", $this->gambleid);
         debug("分组id", $this->groupid);
         debug("用户id", $this->userid);
-
         debug(["93:A为峰_a2", "185:A图图手机", "67:不发力", "160:A高攀_a1"]);
 
         // * 1: 不包负分       NODUTY
