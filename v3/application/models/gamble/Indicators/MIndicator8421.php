@@ -7,48 +7,52 @@ class MIndicator8421 extends CI_Model {
 
 
 
-    // 计算加分值
+    /**
+     * 计算8421加分值
+     * 
+     * 基础分值表：
+     * Par+2(双柏忌) => 1分
+     * Par+1(柏忌)   => 2分  
+     * Par(标准杆)   => 4分
+     * Birdie(小鸟) => 8分
+     * 
+     * 更好成绩规则：比Birdie少N杆，分值 = 8 * (2^N)
+     * 更差成绩规则：比Par+2多1杆及以上，分值 = 0
+     * 
+     * @param int $par 标准杆数
+     * @param int $score 实际成绩
+     * @param array $userConfig 用户配置(暂未使用)
+     * @return int 8421指标值(不会为负数)
+     */
     public function get8421AddValue($par, $score, $userConfig) {
-        // 检查用户是否在配置中
-        if (!isset($userConfig)) {
-            return 0;
+        // 计算相对于Par的差值 (负数表示低于标准杆，正数表示高于标准杆)
+        $diffFromPar = $score - $par;
+
+        // 基础分值映射表
+        $baseScores = [
+            2  => 1,    // Par+2 => 1分
+            1  => 2,    // Par+1 => 2分  
+            0  => 4,    // Par   => 4分
+            -1 => 8,    // Birdie => 8分
+        ];
+
+        // 情况1: 基础分值表中有直接映射
+        if (isset($baseScores[$diffFromPar])) {
+            return $baseScores[$diffFromPar];
         }
 
-        $difference = $score - $par;
-
-
-        // 成绩类型按优先级排序（从好到差）
-        $scoreTypes = ['Eagle', 'Birdie', 'Par', 'Par+1', 'Par+2', 'Par+3'];
-        $scoreTypesCount = count($scoreTypes);
-
-        // 根据差值确定当前成绩类型
-        $currentScoreType = 'VERYBAD';
-        if ($difference <= -2) {
-            $currentScoreType = 'Eagle';
-        } elseif ($difference == -1) {
-            $currentScoreType = 'Birdie';
-        } elseif ($difference == 0) {
-            $currentScoreType = 'Par';
-        } elseif ($difference == 1) {
-            $currentScoreType = 'Par+1';
-        } elseif ($difference == 2) {
-            $currentScoreType = 'Par+2';
-        } elseif ($difference == 3) {
-            $currentScoreType = 'Par+3';
+        // 情况2: 比Birdie更好的成绩 (Eagle, Albatross等)
+        if ($diffFromPar < -1) {
+            $betterThanBirdie = abs($diffFromPar + 1); // 比Birdie好多少杆
+            return 8 * pow(2, $betterThanBirdie);
         }
 
-
-        // 从当前成绩类型开始，找到第一个有配置的成绩类型
-        $currentIndex = array_search($currentScoreType, $scoreTypes);
-        if ($currentIndex !== false) {
-            for ($i = $currentIndex; $i < $scoreTypesCount; $i++) {
-                if (isset($userConfig[$scoreTypes[$i]])) {
-                    return $userConfig[$scoreTypes[$i]];
-                }
-            }
+        // 情况3: 比Par+2更差的成绩
+        if ($diffFromPar > 2) {
+            return 0; // 太差了，没有分值
         }
 
-        // 如果没有找到任何配置,返回0
+        // 兜底情况，理论上不应该到达这里
         return 0;
     }
 

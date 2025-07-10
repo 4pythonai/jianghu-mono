@@ -37,7 +37,6 @@ class Audit extends CI_Controller {
     }
 
     public function printResult($result) {
-        // debug($result);
         $this->load->view('gamble/VGambleResut', $result);
     }
 
@@ -49,17 +48,8 @@ class Audit extends CI_Controller {
         $cfg = ['gambleSysName' => '8421',  'gameid' => 1344463, 'gambleid' => 679528, 'groupid' => 2742243, 'userid' => 185];
 
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
-        debug("Final Result>>>>>>>>>>>>>>>>>>>>>>>");
+        debug($final_result['useful_holes']);
+        // debug("Final Result>>>>>>>>>>>>>>>>>>>>>>>");
         $this->printResult($final_result);
     }
-
-    /**
-     * 直接展示demo数据的方法
-     * 访问: /Audit/demo
-     */
-    // public function demo() {
-    //     $gamble_result = $this->GamblePipeRunner->getGambleResultDemo();
-    //     // 直接传递到视图，不调试输出
-    //     $this->load->view('gamble/VGambleResut', $gamble_result);
-    // }
 }

@@ -86,8 +86,66 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         debug("赌球id", $this->gambleid);
         debug("分组id", $this->groupid);
         debug("用户id", $this->userid);
-        debug("负分配置", $this->dutyConfig);
+
+        debug(["93:A为峰_a2", "185:A图图手机", "67:不发力", "160:A高攀_a1"]);
+
+        // * 1: 不包负分       NODUTY
+        // * 2: 包负分         DUTY_NEGATIVE
+        // * 3: 同伴顶头保负分  DUTY_CODITIONAL
+
+        $dutyConfigMeaning = [
+            '1' => '不包负分 (NODUTY)',
+            '2' => '包负分 (DUTY_NEGATIVE)',
+            '3' => '同伴顶头保负分 (DUTY_CODITIONAL)',
+            'NODUTY' => '不包负分',
+            'DUTY_NEGATIVE' => '包负分',
+            'DUTY_CODITIONAL' => '同伴顶头保负分'
+        ];
+
+        $meaningText = isset($dutyConfigMeaning[$this->dutyConfig]) ? $dutyConfigMeaning[$this->dutyConfig] : '未知配置';
+        debug("负分配置", $this->dutyConfig . " => " . $meaningText);
+
         debug("分组方式", $this->redBlueConfig);
+        debug("出发顺序", $this->bootStrapOrder);
+
+        // 打印8421系统配置
+        debug("=== 8421系统配置 ===");
+        if ($this->gambleSysName == '8421') {
+            $configs = $this->MRuntimeConfig->get8421AllConfigs($this->gambleid);
+            if ($configs) {
+                debug("8421用户添加值对配置", $configs['val8421_config'] ?? '未设置');
+                /*
+                扣分的配置,3种格式:
+                1: Par+X ,从Par+X开始扣1分, 如Par+2,从Par+2开始扣1分,打到Par+3,则扣2分
+                2: DoublePar+X ,从DoublePar+X开始扣1分, 如DoublePar+2,从DoublePar+2开始扣1分,打到DoublePar+3,则扣2分
+                3: NoSub ,不扣分
+                */
+
+
+                debug("8421 扣分的配置", $configs['sub8421ConfigString'] ?? '未设置');
+                debug("8421 扣分封顶", $configs['max8421SubValue'] ?? '未设置');
+                debug("8421 顶洞配置", $configs['draw8421Config'] ?? '未设置');
+                debug("8421 吃肉范围配置", $configs['eatingRange'] ?? '未设置');
+
+                // return "MEAT_AS_3"; // 每块肉3分，吃肉数量由上面表格(get8421EatingRange)决定,考虑封顶
+                // // return "SINGLE_DOUBLE"; //  分值翻倍翻倍,比如:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3
+                // // return "CONTINUE_DOUBLE"; // 连续翻倍,不遗留任何肉,无需考虑封顶,无需考虑 get8421EatingRange
+                debug("8421 肉值配置字符串");
+                debug([
+                    "MEAT_AS_3" => "每块肉3分，吃肉数量由上面表格(get8421EatingRange)决定,考虑封顶",
+                    "SINGLE_DOUBLE" => "分值翻倍翻倍,比如:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3",
+                    "CONTINUE_DOUBLE" => "连续翻倍,不遗留任何肉,无需考虑封顶,无需考虑 get8421EatingRange"
+                ]);
+                debug("8421 肉值配置字符串", $configs['meatValueConfigString'] ?? '未设置');
+                debug("8421 肉最大值", $configs['meatMaxValue'] ?? '未设置');
+            } else {
+                debug("8421配置", "未找到gambleid=" . $this->gambleid . "的配置");
+            }
+        } else {
+            debug("8421配置", "当前不是8421游戏系统");
+        }
+
+        debug("-------------++++++++++++++++++++++++++++++++++---------");
     }
 
 

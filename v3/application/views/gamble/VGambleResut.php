@@ -102,6 +102,16 @@
             color: #6c757d;
         }
 
+        .team-red {
+            background-color: #ffebee;
+            border-left: 3px solid #f44336;
+        }
+
+        .team-blue {
+            background-color: #e3f2fd;
+            border-left: 3px solid #2196f3;
+        }
+
         .total-row {
             background-color: #fff3cd;
             font-weight: bold;
@@ -127,32 +137,7 @@
             <h1>高尔夫赌球结果</h1>
         </div>
 
-        <!-- 调试信息 -->
-        <div class="debug-info">
-            <h3>调试信息：</h3>
 
-            <h4>useful_holes 数据（前2个）：</h4>
-            <pre><?php
-                    if (isset($useful_holes)) {
-                        echo "useful_holes 数组长度: " . count($useful_holes) . "\n";
-                        print_r(array_slice($useful_holes, 0, 2));
-                    } else {
-                        echo "useful_holes 变量不存在";
-                    }
-                    ?></pre>
-
-            <h4>测试球员信息：</h4>
-            <pre><?php
-                    if (isset($group_info)) {
-                        foreach ($group_info as $player) {
-                            echo "用户ID: " . $player['userid'] . "\n";
-                            echo "昵称: " . $player['nickname'] . "\n";
-                            echo "头像: " . $player['cover'] . "\n";
-                            echo "---\n";
-                        }
-                    }
-                    ?></pre>
-        </div>
 
         <table class="result-table">
             <thead>
@@ -232,7 +217,16 @@
                         <tr>
                             <td class="hole-header"><?php echo $hole['holename'] ?? $hole['id'] ?? ''; ?></td>
                             <?php foreach ($players as $userid => $player): ?>
-                                <td>
+                                <td class="<?php
+                                            // 确定球员所属的队伍
+                                            $teamClass = '';
+                                            if (isset($hole['red']) && is_array($hole['red']) && in_array($userid, $hole['red'])) {
+                                                $teamClass = 'team-red';
+                                            } elseif (isset($hole['blue']) && is_array($hole['blue']) && in_array($userid, $hole['blue'])) {
+                                                $teamClass = 'team-blue';
+                                            }
+                                            echo $teamClass;
+                                            ?>">
                                     <?php
                                     $money = $hole_money[$userid];
                                     $class = '';

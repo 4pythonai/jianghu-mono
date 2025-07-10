@@ -49,7 +49,7 @@ class MRuntimeConfig extends CI_Model {
             'AbovePAR' => 1,
             'PAR' => 1,
             'Birdie' => 1,
-            'BelowBirdie' => 2,
+            'BelowBirdie' => 1,
         ];
     }
 
@@ -105,7 +105,7 @@ class MRuntimeConfig extends CI_Model {
     public function get8421SubConfigString($gambleid) {
         // Par+2 开始扣分
         // return "NoSub"; // 不扣分
-        return "Par+2";
+        return "Par+4";
     }
 
 
@@ -189,8 +189,8 @@ class MRuntimeConfig extends CI_Model {
     // 4人分组方式
     public function get4playersRedBlueConfig($gambleid, $attender_number) {
         if ($gambleid == 679528) {
-            return "4_乱拉";  //  (1,4 名 ) vs (2,3名),第一洞为 1,4 名,第二洞为 2,3名
-            // return "4_固拉"; //  确定后不改变
+            // return "4_乱拉";  //  (1,4 名 ) vs (2,3名),第一洞为 1,4 名,第二洞为 2,3名
+            return "4_固拉"; //  确定后不改变
             // return "4_高手不见面";  // (A组 第1名+B组第2名) vs (B组第1+A组第2),防止一方实力太强
         }
     }
