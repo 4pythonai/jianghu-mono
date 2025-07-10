@@ -54,15 +54,15 @@ class MRuntimeConfig extends CI_Model {
     }
 
     public function getMeatValueConfigString($gambleid) {
-        return "MEAT_AS_3"; // 每块肉3分，吃肉数量由上面表格(get8421EatingRange)决定,考虑封顶
-        // return "SINGLE_DOUBLE"; //  分值翻倍翻倍,比如:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3
+        // return "MEAT_AS_3"; // 每块肉3分，吃肉数量由上面表格(get8421EatingRange)决定,考虑封顶
+        return "SINGLE_DOUBLE"; //  分值翻倍翻倍,比如:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3
         // return "CONTINUE_DOUBLE"; // 连续翻倍,不遗留任何肉,无需考虑封顶,无需考虑 get8421EatingRange
     }
 
     // 每次吃肉的值得封顶,以极大数 1000000 为封顶,即不封顶
     public function getMeatMaxValue($gambleid) {
-        return 2; // 肉封顶3点
-        // return 1000000;
+        // return 2; // 肉封顶3点
+        return 1000000;
     }
 
 
@@ -92,8 +92,8 @@ class MRuntimeConfig extends CI_Model {
     不封顶为100,因为不可能发生
     */
     public function  get8421MaxSubValue($gambleid) {
-        return  3; // 扣2分为止
-        // return  100; // 不封顶
+        // return  3; // 扣2分为止
+        return  10000000; // 不封顶
     }
 
     /*

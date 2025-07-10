@@ -215,7 +215,15 @@
                         }
                 ?>
                         <tr>
-                            <td class="hole-header"><?php echo $hole['holename'] ?? $hole['id'] ?? ''; ?></td>
+                            <td class="hole-header">
+                                <?php
+                                $holename = $hole['holename'] ?? $hole['id'] ?? '';
+                                if (isset($hole['draw']) && $hole['draw'] === 'y') {
+                                    $holename .= ' ❓';
+                                }
+                                echo $holename;
+                                ?>
+                            </td>
                             <?php foreach ($players as $userid => $player): ?>
                                 <td class="<?php
                                             // 确定球员所属的队伍
