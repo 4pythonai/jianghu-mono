@@ -28,6 +28,12 @@ class MMeat extends CI_Model {
      * @param string $winner_performance 赢家表现 (如 'Birdie', 'Par', 'Par+1' 等)
      * @param array $configs 配置信息
      * @return int 能吃的肉数量
+     * 
+     * 配置示例:
+     * 'BetterThanBirdie' => 2,     // Eagle等（比小鸟球更好的成绩）
+     * 'Birdie' => 2,               // 小鸟球
+     * 'Par' => 1,                  // 标准杆
+     * 'WorseThanPar' => 0,         // Bogey及以上（比Par更差的成绩）
      */
     public function getEatingCount($winner_performance, $configs) {
         $eating_range = $configs['eatingRange'] ?? [];
@@ -36,16 +42,19 @@ class MMeat extends CI_Model {
         if (strpos($winner_performance, 'Par+') === 0) {
             $par_plus = intval(str_replace('Par+', '', $winner_performance));
             if ($par_plus >= 2) {
-                return $eating_range['BelowBirdie'] ?? 2; // 鸟以下
+                // Double Bogey及以上，比Birdie差很多
+                return $eating_range['WorseThanPar'] ?? 0;
             } else {
-                return $eating_range['PAR'] ?? 1; // 加1算帕水平
+                // Bogey (Par+1)，算作Par水平
+                return $eating_range['Par'] ?? 1;
             }
         } elseif ($winner_performance === 'Par') {
-            return $eating_range['PAR'] ?? 1;
+            return $eating_range['Par'] ?? 1;
         } elseif ($winner_performance === 'Birdie') {
-            return $eating_range['Birdie'] ?? 1;
+            return $eating_range['Birdie'] ?? 2;
         } elseif (strpos($winner_performance, 'Eagle') !== false || strpos($winner_performance, 'Par-') === 0) {
-            return $eating_range['AbovePAR'] ?? 1; // 帕以上
+            // Eagle、Albatross等，比小鸟球更好的成绩
+            return $eating_range['BetterThanBirdie'] ?? 2;
         }
 
         return 0; // 默认不能吃肉

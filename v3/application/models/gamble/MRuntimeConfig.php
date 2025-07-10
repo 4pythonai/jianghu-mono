@@ -41,22 +41,23 @@ class MRuntimeConfig extends CI_Model {
     // 可以吃肉的范围, 赢方最好成绩----对应吃肉数量
     public function get8421EatingRange($gambleid) {
 
-        // 帕以上  x
-        // 帕     y
-        // 鸟     z
-        // 鸟以下  p
+        // 成绩越好，能吃的肉越多
+        // BetterThanBirdie: Eagle、Albatross等（比小鸟球更好）
+        // Birdie: 小鸟球
+        // Par: 标准杆 
+        // WorseThanPar: Bogey及以上（比Par更差）
         return [
-            'AbovePAR' => 1,
-            'PAR' => 1,
-            'Birdie' => 1,
-            'BelowBirdie' => 1,
+            'BetterThanBirdie' => 2,     // Eagle等，比小鸟球更好，能吃最多肉
+            'Birdie' => 2,               // 小鸟球，能吃2块肉
+            'Par' => 1,                  // 标准杆，能吃1块肉
+            'WorseThanPar' => 0,         // Bogey及以上，不能吃肉
         ];
     }
 
     public function getMeatValueConfigString($gambleid) {
-        // return "MEAT_AS_3"; // 每块肉3分，吃肉数量由上面表格(get8421EatingRange)决定,考虑封顶,每个洞只能吃1次
+        return "MEAT_AS_2"; // 每块肉3分，吃肉数量由上面表格(get8421EatingRange)决定,考虑封顶,每个洞只能吃1次
         // return "SINGLE_DOUBLE"; //  分值翻倍翻倍,比如:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3,吃肉数量由上面表格(get8421EatingRange)决定,每个洞只能吃1次
-        return "CONTINUE_DOUBLE"; // 连续翻倍,会吃掉当前所有可以吃的肉,不遗留任何肉,无需考虑封顶,无需考虑 get8421EatingRange,每个洞只能吃1次
+        // return "CONTINUE_DOUBLE"; // 连续翻倍,会吃掉当前所有可以吃的肉,不遗留任何肉,无需考虑封顶,无需考虑 get8421EatingRange,每个洞只能吃1次
     }
 
     // 每次吃肉的值得封顶,以极大数 1000000 为封顶,即不封顶
