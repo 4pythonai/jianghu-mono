@@ -49,21 +49,8 @@ class Audit extends CI_Controller {
         $cfg = ['gambleSysName' => '8421',  'gameid' => 1344463, 'gambleid' => 679528, 'groupid' => 2742243, 'userid' => 185];
 
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
-
-        // 获取 gamble_result 数据
-        // $gamble_result = $final_result['gamble_result'] ?? [];
-
-        // // 如果没有数据，使用demo数据
-        // if (empty($gamble_result)) {
-        //     $gamble_result = $this->GamblePipeRunner->getGambleResultDemo();
-        // }
-
-        // 调试输出
-        // debug($final_result);
-        // die;
-
-        // 传递数据到视图
-        // $this->printResult($gamble_result);
+        debug("Final Result>>>>>>>>>>>>>>>>>>>>>>>");
+        $this->printResult($final_result);
     }
 
     /**
