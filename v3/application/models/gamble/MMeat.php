@@ -59,7 +59,7 @@ class MMeat extends CI_Model {
      * @param GambleContext $context 上下文数据（通过引用传递）
      * @return int 吃肉获得的金额
      */
-    public function eatMeat($eating_count, $points, $configs, &$context) {
+    public function eatMeat($holename, $eating_count, $points, $configs, &$context) {
         if ($eating_count <= 0) {
             debug("eatMeat: 吃肉数量 <= 0，返回 0");
             return 0;
@@ -96,7 +96,7 @@ class MMeat extends CI_Model {
 
         debug("eatMeat: 肉价值配置: {$meat_value_config}, 封顶: {$meat_max_value}");
 
-        $result = $this->calculateMeatMoney($actual_eaten_count, $points, $meat_value_config, $meat_max_value);
+        $result = $this->calculateMeatMoney($holename, $actual_eaten_count, $points, $meat_value_config, $meat_max_value);
         debug("eatMeat: 计算结果: {$result}");
 
         return $result;
@@ -110,13 +110,13 @@ class MMeat extends CI_Model {
      * @param int $meat_max_value 每次吃肉的封顶值
      * @return int 吃肉金额
      */
-    private function calculateMeatMoney($eaten_count, $points, $meat_value_config, $meat_max_value) {
+    private function calculateMeatMoney($holename, $eaten_count, $points, $meat_value_config, $meat_max_value) {
         if ($eaten_count <= 0) {
             debug("calculateMeatMoney: 吃肉数量 <= 0，返回 0");
             return 0;
         }
 
-        debug("calculateMeatMoney: 吃了 {$eaten_count} 块肉，配置: {$meat_value_config}");
+        debug("calculateMeatMoney:  {$holename} 吃了 {$eaten_count} 块肉，配置: {$meat_value_config}");
 
         if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
             debug("AAAAAAAAAAAAAAAA");
@@ -139,7 +139,7 @@ class MMeat extends CI_Model {
             $multiplier = pow(2, $eaten_count); // 2^eaten_count
             $meat_money = $points * ($multiplier - 1); // 减去原本的base_score，只返回额外部分
             $final_money = min($meat_money,  $meat_max_value);
-            debug("calculateMeatMoney: CONTINUE_DOUBLE模式，倍数 {$multiplier}，肉为 {$meat_money}，封顶后 {$final_money}");
+            debug("calculateMeatMoney: [CONTINUE_DOUBLE模式], {$holename} 吃了 {$eaten_count} 块肉, 倍数 {$multiplier}，肉为 {$meat_money}，封顶后 {$final_money}");
             return $final_money;
         }
 
@@ -193,10 +193,6 @@ class MMeat extends CI_Model {
 
         $hole['debug'][] = "吃肉分析: 最佳赢家(userid: {$best_winner['userid']})杆数: {$best_winner['computedScore']}, Par: {$hole['par']}, 表现: {$winner_performance}";
 
-        // 计算能吃几块肉
-        $eating_count = $this->getEatingCount($winner_performance, $configs);
-        $hole['debug'][] = "吃肉分析: 根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉";
-
         // 检查肉池状态
         $meat_pool_count = count($context->meat_pool);
         $available_meat_count = 0;
@@ -207,8 +203,20 @@ class MMeat extends CI_Model {
         }
         $hole['debug'][] = "肉池状态: 总共 {$meat_pool_count} 块肉，可用 {$available_meat_count} 块肉";
 
+        // 根据配置决定能吃几块肉
+        $meat_value_config = $configs['meatValueConfigString'] ?? 'MEAT_AS_1';
+        if ($meat_value_config === 'CONTINUE_DOUBLE') {
+            // CONTINUE_DOUBLE模式：直接吃掉所有可用的肉
+            $eating_count = $available_meat_count;
+            $hole['debug'][] = "吃肉分析: CONTINUE_DOUBLE模式，直接吃掉所有 {$eating_count} 块可用肉";
+        } else {
+            // 其他模式：根据表现决定能吃几块肉
+            $eating_count = $this->getEatingCount($winner_performance, $configs);
+            $hole['debug'][] = "吃肉分析: 根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉";
+        }
+
         // 执行吃肉，获得金额
-        $meatMoney = $this->eatMeat($eating_count, $ponits, $configs, $context);
+        $meatMoney = $this->eatMeat($hole['holename'],  $eating_count, $ponits, $configs, $context);
         $hole['debug'][] = "吃肉结果: 获得金额 {$meatMoney}";
 
         // 将吃肉金额添加到每个赢家的详细信息中
