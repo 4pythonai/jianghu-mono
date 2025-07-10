@@ -5,20 +5,28 @@ if (!defined('BASEPATH')) {
 }
 class MMoney extends CI_Model {
 
+    /**
+     * 
+     * 实际比赛情况:
+     *    如果Draw==y,但是仍然产生"交割",比如:
+     *    蓝方 6 分,
+     *    红发 4分,
+     *    顶洞配置为Diff_2,即两分以内算"顶洞",但仍然发生了2个点的输赢.
+     * 
+     * 
+     */
+
     public function setHoleMoneyDetail(&$hole, $dutyConfig) {
 
-        // 参与人数
         $attendersNum = count($hole['red']) + count($hole['blue']);
-        if ($hole['draw'] == 'n') {
-            if ($attendersNum == 2) {
-                $this->set2PlayerHoleMoneyDetail($hole);
-            }
-            if ($attendersNum == 3) {
-                $this->set3PlayerHoleMoneyDetail($hole);
-            }
-            if ($attendersNum == 4) {
-                $this->set4PlayerHoleMoneyDetail($hole, $dutyConfig);
-            }
+        if ($attendersNum == 2) {
+            $this->set2PlayerHoleMoneyDetail($hole);
+        }
+        if ($attendersNum == 3) {
+            $this->set3PlayerHoleMoneyDetail($hole);
+        }
+        if ($attendersNum == 4) {
+            $this->set4PlayerHoleMoneyDetail($hole, $dutyConfig);
         }
     }
 
@@ -49,14 +57,20 @@ class MMoney extends CI_Model {
                 ];
             }
 
-            // 输家里面只要出现一个负分,就靠考虑下"包负分"的情况
-            if ($hole['failer_detail'][0]['indicator'] < 0 || $hole['failer_detail'][1]['indicator'] < 0) {
-                $duty = $this->checkIfDuty($dutyConfig, $hole['winner_detail'], $hole['failer_detail']);
-                if ($duty) {
-                    debug("需要包负分,处理负分情况");
-                    $this->processDuty($hole);
+            // debug($hole);
+
+            if (array_key_exists('failer_detail', $hole)) {
+                // 输家里面只要出现一个负分,就靠考虑下"包负分"的情况
+                if ($hole['failer_detail'][0]['indicator'] < 0 || $hole['failer_detail'][1]['indicator'] < 0) {
+                    $duty = $this->checkIfDuty($dutyConfig, $hole['winner_detail'], $hole['failer_detail']);
+                    if ($duty) {
+                        debug("需要包负分,处理负分情况");
+                        $this->processDuty($hole);
+                    }
                 }
             }
+
+
 
             // debug($hole);
         }

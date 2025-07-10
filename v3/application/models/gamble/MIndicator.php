@@ -127,24 +127,31 @@ class MIndicator extends CI_Model {
 
         if ($isDraw) {
             $hole['draw'] = 'y';
-            $hole['winner'] = null;
-            $hole['failer'] = null;
-            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果: 顶洞";
         } else {
             $hole['draw'] = 'n';
-
-            if ($indicatorBlue > $indicatorRed) {
-                $hole['winner'] = 'blue';
-                $hole['failer'] = 'red';
-            } else {
-                $hole['winner'] = 'red';
-                $hole['failer'] = 'blue';
-            }
-
-            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果: {$hole['winner']}队获胜";
         }
 
         $points = abs($indicatorBlue - $indicatorRed);
+
+        if ($indicatorBlue > $indicatorRed) {
+            $hole['winner'] = 'blue';
+            $hole['failer'] = 'red';
+            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:蓝队获胜";
+        }
+
+        if ($indicatorBlue < $indicatorRed) {
+            $hole['winner'] = 'red';
+            $hole['failer'] = 'blue';
+            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:红队获胜";
+        }
+
+        if ($indicatorBlue == $indicatorRed) {
+            $hole['winner'] = null;
+            $hole['failer'] = null;
+            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:指标一样,无输赢";
+        }
+
+
         $hole['points'] = $points;
     }
 
