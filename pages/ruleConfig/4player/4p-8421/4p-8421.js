@@ -85,6 +85,31 @@ Page({
     console.log('页面收到吃肉规则更新:', detail.parsedData);
   },
   onAddToMyRules() {
+    // 检查是否已配置规则
+    const store = G_4P_8421_Store;
+    let missingConfigs = [];
+
+    if (!store.sub8421configstring || !store.dutyconfig) {
+      missingConfigs.push('扣分规则');
+    }
+    if (!store.draw8421Config) {
+      missingConfigs.push('顶洞规则');
+    }
+    if (!store.eatingRange || !store.meat_value) {
+      missingConfigs.push('吃肉规则');
+    }
+
+    if (missingConfigs.length > 0) {
+      wx.showModal({
+        title: '配置不完整',
+        content: `请先配置：${missingConfigs.join('、')}`,
+        showCancel: false,
+        confirmText: '我知道了',
+        confirmColor: '#ff6b6b'
+      });
+      return;
+    }
+
     // 输出完整Store数据用于调试
     const allData = G_4P_8421_Store.debugAllRulesData();
 

@@ -1,5 +1,6 @@
 import { observable, action } from 'mobx-miniprogram'
 import gameApi from '../../../../api/modules/game' // 导入整个默认导出的对象
+import { gameStore } from '../../../gameStore' // 导入 gameStore 来获取 gameid
 
 export const G_4P_8421_Store = observable({
     // 生成规则摘要名称
@@ -75,6 +76,7 @@ export const G_4P_8421_Store = observable({
     debugAllRulesData: action(function () {
         console.log('=== 完整Store数据 ===');
         console.log('=== 4P-8421 规则配置数据 ===');
+        console.log('游戏ID:', gameStore.gameid);
         console.log('规则名称:', this.user_rulename);
         console.log('封顶配置:', this.max8421_sub_value);
         console.log('扣分开始值:', this.sub8421configstring);
@@ -84,8 +86,8 @@ export const G_4P_8421_Store = observable({
         console.log('肉分值计算:', this.meat_value);
         console.log('吃肉封顶:', this.meatMaxValue);
         console.log(JSON.stringify(this, null, 2));
-
-        return {
+        const gambleConfig = {
+            gameid: gameStore.gameid,
             user_rulename: this.user_rulename,
             sysruleid: this.sysruleid,
             ename: this.ename,
@@ -98,6 +100,8 @@ export const G_4P_8421_Store = observable({
             meat_value: this.meat_value,
             meatMaxValue: this.meatMaxValue
         };
+        console.log(JSON.stringify(gambleConfig, null, 2));
+        return gambleConfig;
     })
 
 }); 

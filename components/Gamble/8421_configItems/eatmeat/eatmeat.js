@@ -8,10 +8,10 @@ Component({
   data: {
     // 新的JSON格式数据
     eatingRange: {
-      "BetterThanBirdie": 2,
-      "Birdie": 2,
+      "BetterThanBirdie": 1,
+      "Birdie": 1,
       "Par": 1,
-      "WorseThanPar": 0
+      "WorseThanPar": 1
     },
     // 键到中文标签的映射
     eatRangeLabels: {
