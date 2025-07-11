@@ -20,7 +20,7 @@
     
     <!-- 洞范围选择 -->
     <view class="section">
-      <view class="section-title">选择洞范围</view>
+      <view class="section-title">选择本游戏的起始洞与终止洞</view>
       <HoleRangeSelector 
         startHole="{{runtimeConfig.startHole}}"
         endHole="{{runtimeConfig.endHole}}"

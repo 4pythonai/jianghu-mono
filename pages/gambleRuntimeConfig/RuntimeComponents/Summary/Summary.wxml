@@ -21,12 +21,14 @@
   <view class="players-section">
     <view class="players-title">参与人员</view>
     <view class="players-list">
-      <view class="player-item" wx:for="{{players}}" wx:key="userid">
+      <view class="player-item" wx:for="{{playersWithAvatar}}" wx:key="index">
         <image 
           class="player-avatar" 
-          src="{{getPlayerAvatar(item.avatar)}}"
+          src="{{item.avatarUrl}}"
           lazy-load="true"
           mode="aspectFill"
+          binderror="onAvatarError"
+          data-index="{{index}}"
         />
         <text class="player-name">{{item.nickname || item.wx_nickname || '未知玩家'}}</text>
       </view>
