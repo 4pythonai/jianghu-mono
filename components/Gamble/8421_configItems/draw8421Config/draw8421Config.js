@@ -30,7 +30,7 @@ Component({
 
   methods: {
     syncSelectedFromStore() {
-      const currentValue = G_4P_8421_Store.draw8421Config;
+      const currentValue = G_4P_8421_Store.draw8421_config;
       if (currentValue) {
         if (currentValue === 'DrawEqual') {
           this.setData({ selected: 0 });

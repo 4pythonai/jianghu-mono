@@ -7,7 +7,7 @@ Component({
   },
   data: {
     // 新的JSON格式数据
-    eatingRange: {
+    eating_range: {
       "BetterThanBirdie": 1,
       "Birdie": 1,
       "Par": 1,
@@ -59,27 +59,27 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const eatingRange = G_4P_8421_Store.eatingRange;
-      const meatValue = G_4P_8421_Store.meat_value;
-      const meatMaxValue = G_4P_8421_Store.meatMaxValue;
+      const eating_range = G_4P_8421_Store.eating_range;
+      const meatValue = G_4P_8421_Store.meat_value_config_string;
+      const meat_max_value = G_4P_8421_Store.meat_max_value;
 
-      if (eatingRange || meatValue || meatMaxValue !== 10000000) {
+      if (eating_range || meatValue || meat_max_value !== 10000000) {
         // 解析已保存的配置
         this.parseStoredConfig({
-          eatingRange,
+          eating_range,
           meatValue,
-          meatMaxValue
+          meat_max_value
         });
       }
     },
     // 解析存储的配置
     parseStoredConfig(config) {
-      const { eatingRange, meatValue, meatMaxValue } = config;
+      const { eating_range, meatValue, meat_max_value } = config;
       console.log('从store加载吃肉配置:', config);
 
       // 解析吃肉数量配置 - 新格式：JSON对象
-      if (eatingRange && typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
-        this.setData({ eatingRange });
+      if (eating_range && typeof eating_range === 'object' && !Array.isArray(eating_range)) {
+        this.setData({ eating_range });
       }
 
       // 解析肉分值计算方式 - 新格式：MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
@@ -96,12 +96,12 @@ Component({
       }
 
       // 解析封顶配置 - 新格式：数字，10000000表示不封顶
-      if (meatMaxValue === 10000000) {
+      if (meat_max_value === 10000000) {
         this.setData({ topSelected: 0 });
-      } else if (typeof meatMaxValue === 'number' && meatMaxValue < 10000000) {
+      } else if (typeof meat_max_value === 'number' && meat_max_value < 10000000) {
         this.setData({
           topSelected: 1,
-          topScoreLimit: meatMaxValue
+          topScoreLimit: meat_max_value
         });
       }
     },
@@ -110,9 +110,9 @@ Component({
       const keyIndex = e.currentTarget.dataset.index;
       const value = this.data.eatValueRange[e.detail.value];
       const key = this.data.eatRangeKeys[keyIndex];
-      const newEatingRange = { ...this.data.eatingRange };
+      const newEatingRange = { ...this.data.eating_range };
       newEatingRange[key] = value;
-      this.setData({ eatingRange: newEatingRange });
+      this.setData({ eating_range: newEatingRange });
       console.log('更新吃肉配置:', key, value);
     },
     onScoreSelect(e) {
@@ -133,7 +133,7 @@ Component({
       const data = this.data;
 
       // 解析配置数据 - 使用新的JSON格式
-      const eatingRange = data.eatingRange; // 吃肉得分配对，JSON格式
+      const eating_range = data.eating_range; // 吃肉得分配对，JSON格式
 
       // 肉分值计算方式改为新格式
       let meatValueConfig = null;
@@ -150,15 +150,15 @@ Component({
       }
 
       // 吃肉封顶改为数字格式，10000000表示不封顶
-      const meatMaxValue = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
+      const meat_max_value = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
 
       // 调用store的action更新数据
-      G_4P_8421_Store.updateEatmeatRule(eatingRange, meatValueConfig, meatMaxValue);
+      G_4P_8421_Store.updateEatmeatRule(eating_range, meatValueConfig, meat_max_value);
 
       console.log('吃肉组件已更新store:', {
-        eatingRange,
+        eating_range,
         meatValueConfig,
-        meatMaxValue,
+        meat_max_value,
         customValues: { topScoreLimit: data.topScoreLimit }
       });
 
@@ -168,7 +168,7 @@ Component({
           ...data,
           topScoreLimit: data.topScoreLimit
         },
-        parsedData: { eatingRange, meatValueConfig, meatMaxValue }
+        parsedData: { eating_range, meatValueConfig, meat_max_value }
       });
     }
   }

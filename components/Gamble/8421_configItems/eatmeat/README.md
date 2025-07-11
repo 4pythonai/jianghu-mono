@@ -85,9 +85,9 @@ Page({
     topScoreLimit: 3      // 封顶分数
   },
   parsedData: {
-    eatingRange: [...],              // 吃肉得分配对数组
+    eating_range: [...],              // 吃肉得分配对数组
     meatValueConfig: "MEAT_AS_1",    // 新格式：MEAT_AS_X/SINGLE_DOUBLE/CONTINUE_DOUBLE
-    meatMaxValue: 3                  // 封顶分数数字，10000000表示不封顶
+    meat_max_value	: 3                  // 封顶分数数字，10000000表示不封顶
   }
 }
 ```
@@ -95,21 +95,21 @@ Page({
 ## 数据格式说明
 
 ### 最新版本数据格式 (v2.1)
-- **meat_value**: 字符串格式
+- **meat_value_config_string**: 字符串格式
   - `"MEAT_AS_1"` - 肉算1分（可扩展为MEAT_AS_X）
   - `"SINGLE_DOUBLE"` - 分值翻倍
   - `"CONTINUE_DOUBLE"` - 分值连续翻倍
-- **meatMaxValue**: 纯数字类型
+- **meat_max_value	**: 纯数字类型
   - 具体数字：表示封顶分数，如 `3` 表示3分封顶
   - `10000000`：表示不封顶（统一使用大数值，避免null）
 
 ### 版本 v2.0 数据格式 - 已废弃
-- **meat_value**: 同v2.1
-- **meatMaxValue**: 数字类型，如 `3` 表示3分封顶，`null` 表示不封顶
+- **meat_value_config_string**: 同v2.1
+- **meat_max_value	**: 数字类型，如 `3` 表示3分封顶，`null` 表示不封顶
 
 ### 旧版本数据格式 (v1.0) - 已废弃
-- **meat_value**: `"肉算1分"` 或 `"分值翻倍"` 或 `"分值连续翻倍"`
-- **meatMaxValue**: `"3分封顶"` 或 `"不封顶"`
+- **meat_value_config_string**: `"肉算1分"` 或 `"分值翻倍"` 或 `"分值连续翻倍"`
+- **meat_max_value	**: `"3分封顶"` 或 `"不封顶"`
 
 ## 数据示例对比
 
@@ -117,30 +117,30 @@ Page({
 ```javascript
 // 有封顶的情况
 {
-  eatingRange: [
+  eating_range: [
     { label: '帕以上', value: 1 },
     { label: '帕', value: 2 },
     { label: '鸟', value: 3 },
     { label: '鸟以下', value: 1 }
   ],
   meatValueConfig: "SINGLE_DOUBLE", // 分值翻倍
-  meatMaxValue: 5                   // 5分封顶
+  meat_max_value	: 5                   // 5分封顶
 }
 
 // 不封顶的情况
 {
-  eatingRange: [...],
+  eating_range: [...],
   meatValueConfig: "MEAT_AS_1",     // 肉算1分
-  meatMaxValue: 10000000            // 不封顶（大数值表示）
+  meat_max_value	: 10000000            // 不封顶（大数值表示）
 }
 ```
 
 ### v2.0格式（已废弃）
 ```javascript
 {
-  eatingRange: [...],
+  eating_range: [...],
   meatValueConfig: "MEAT_AS_1",
-  meatMaxValue: null                // 不封顶（null表示）
+  meat_max_value	: null                // 不封顶（null表示）
 }
 ```
 
@@ -206,7 +206,7 @@ data: {
 const NO_LIMIT_VALUE = 10000000; // 表示不封顶
 
 // 使用示例
-if (meatMaxValue === NO_LIMIT_VALUE) {
+if (meat_max_value	 === NO_LIMIT_VALUE) {
   // 处理不封顶的情况
 }
 ``` 

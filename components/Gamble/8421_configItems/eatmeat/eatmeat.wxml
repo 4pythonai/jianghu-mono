@@ -12,11 +12,11 @@
           <!-- 改为滚轮选择器 -->
           <picker class="eat-picker {{noKoufen ? 'disabled-picker' : ''}}" 
                   range="{{eatValueRange}}" 
-                  value="{{eatingRange[item] - 1}}" 
+                  value="{{eating_range[item] - 1}}" 
                   data-index="{{index}}"
                   bindchange="{{noKoufen ? '' : 'onEatValueChange'}}"
                   disabled="{{noKoufen}}">
-            <view class="picker-value">{{eatingRange[item]}}</view>
+            <view class="picker-value">{{eating_range[item]}}</view>
           </picker>
         </view>
       </block>

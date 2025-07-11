@@ -83,7 +83,7 @@ Page({
   parsedData: {
     max8421SubValue: 2,           // 封顶分数数字，10000000表示不封顶
     sub8421ConfigString: "Par+4", // 扣分开始条件：NoSub/Par+X/DoublePar+X
-    dutyconfig: "NODUTY"          // 同伴惩罚配置：NODUTY/DUTY_CODITIONAL/DUTY_NEGATIVE
+    duty_config: "NODUTY"          // 同伴惩罚配置：NODUTY/DUTY_CODITIONAL/DUTY_NEGATIVE
   }
 }
 ```
@@ -94,23 +94,23 @@ Page({
 - **max8421_sub_value**: 纯数字类型
   - 具体数字：表示封顶分数，如 `2` 表示扣2分封顶
   - `10000000`：表示不封顶（统一使用大数值，避免null）
-- **sub8421configstring**: 字符串格式
+- **sub8421_config_string**: 字符串格式
   - `"NoSub"` - 不扣分
   - `"Par+4"` - 从帕+4开始扣分
   - `"DoublePar+0"` - 从双帕+0开始扣分
-- **dutyconfig**: 字符串枚举格式
+- **duty_config**: 字符串枚举格式
   - `"NODUTY"` - 不包负分
   - `"DUTY_CODITIONAL"` - 同伴顶头包负分
   - `"DUTY_NEGATIVE"` - 包负分
 
 ### 版本 v2.1 数据格式 - 已废弃
 - **max8421_sub_value**: 数字类型，如 `2` 表示扣2分封顶，`null` 表示不封顶
-- **sub8421configstring**: 同v2.2
-- **dutyconfig**: 中文字符串，如 `"不包负分"`
+- **sub8421_config_string**: 同v2.2
+- **duty_config**: 中文字符串，如 `"不包负分"`
 
 ### 旧版本数据格式 (v1.0) - 已废弃
 - **max8421_sub_value**: `"扣2分封顶"` 或 `"不封顶"`
-- **sub8421configstring**: `"从帕+4开始扣分"` 或 `"从双帕+0开始扣分"` 或 `"不扣分"`
+- **sub8421_config_string**: `"从帕+4开始扣分"` 或 `"从双帕+0开始扣分"` 或 `"不扣分"`
 - **partner_punishment**: `"不包负分"` 或 `"同伴顶头包负分"` 或 `"包负分"`
 
 ## 数据示例对比
@@ -121,14 +121,14 @@ Page({
 {
   max8421SubValue: 2,           // 扣2分封顶
   sub8421ConfigString: "Par+4", // 从帕+4开始扣分
-  dutyconfig: "NODUTY"          // 不包负分
+  duty_config: "NODUTY"          // 不包负分
 }
 
 // 不封顶的情况
 {
   max8421SubValue: 10000000,    // 不封顶（大数值表示）
   sub8421ConfigString: "NoSub", // 不扣分
-  dutyconfig: "DUTY_NEGATIVE"   // 包负分
+  duty_config: "DUTY_NEGATIVE"   // 包负分
 }
 ```
 
@@ -137,7 +137,7 @@ Page({
 {
   max8421SubValue: null,        // 不封顶（null表示）
   sub8421ConfigString: "Par+4",
-  dutyconfig: "不包负分"        // 中文字符串
+  duty_config: "不包负分"        // 中文字符串
 }
 ```
 
@@ -152,14 +152,14 @@ Page({
 
 ## 枚举值映射表
 
-### dutyconfig 枚举映射
+### duty_config 枚举映射
 | UI显示文本 | 枚举值 | API传输值 | 含义 |
 |------------|--------|-----------|------|
 | 不包负分 | 0 | `NODUTY` | 同伴不承担负分 |
 | 同伴顶头包负分 | 1 | `DUTY_CODITIONAL` | 同伴承担顶头包负分 |
 | 包负分 | 2 | `DUTY_NEGATIVE` | 同伴完全承担负分 |
 
-### sub8421configstring 格式映射
+### sub8421_config_string 格式映射
 | UI显示文本 | 枚举值 | API传输值 | 含义 |
 |------------|--------|-----------|------|
 | 从帕+X开始扣分 | 0 | `Par+X` | 从帕+X开始扣分 |
@@ -240,7 +240,7 @@ if (partnerPunishment) {
 // 推荐的常量定义
 const NO_LIMIT_VALUE = 10000000; // 表示不封顶
 
-// dutyconfig 枚举常量
+// duty_config 枚举常量
 const DUTY_CONFIG = {
   NODUTY: 'NODUTY',
   DUTY_CODITIONAL: 'DUTY_CODITIONAL',
@@ -252,5 +252,5 @@ if (max8421SubValue === NO_LIMIT_VALUE) {
   // 处理不封顶的情况
 }
 
-const dutyconfig = DUTY_CONFIG.NODUTY;
+const duty_config = DUTY_CONFIG.NODUTY;
 ``` 

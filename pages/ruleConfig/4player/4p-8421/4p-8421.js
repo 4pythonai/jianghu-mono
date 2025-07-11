@@ -12,7 +12,7 @@ Page({
     dingdongValue: '',
     eatmeatValue: '',
     user_rulename: '',
-    draw8421Config: null,
+    draw8421_config: null,
     noKoufen: false,
     koufenDisplayValue: '请配置扣分规则',
     dingdongDisplayValue: '请配置顶洞规则',
@@ -112,17 +112,17 @@ Page({
 
     // 格式化扣分开始值 - 适配新格式：NoSub, Par+X, DoublePar+X
     let startText = '';
-    if (store.sub8421configstring) {
-      if (store.sub8421configstring === 'NoSub') {
+    if (store.sub8421_config_string) {
+      if (store.sub8421_config_string === 'NoSub') {
         startText = '不扣分';
-      } else if (store.sub8421configstring?.startsWith('Par+')) {
-        const score = store.sub8421configstring.replace('Par+', '');
+      } else if (store.sub8421_config_string?.startsWith('Par+')) {
+        const score = store.sub8421_config_string.replace('Par+', '');
         startText = `帕+${score}`;
-      } else if (store.sub8421configstring?.startsWith('DoublePar+')) {
-        const score = store.sub8421configstring.replace('DoublePar+', '');
+      } else if (store.sub8421_config_string?.startsWith('DoublePar+')) {
+        const score = store.sub8421_config_string.replace('DoublePar+', '');
         startText = `双帕+${score}`;
       } else {
-        startText = store.sub8421configstring;
+        startText = store.sub8421_config_string;
       }
     }
 
@@ -158,8 +158,8 @@ Page({
     let displayValue = '';
 
     // 映射英文格式到中文显示
-    if (store.draw8421Config) {
-      switch (store.draw8421Config) {
+    if (store.draw8421_config) {
+      switch (store.draw8421_config) {
         case 'DrawEqual':
           displayValue = '得分打平';
           break;
@@ -171,11 +171,11 @@ Page({
           break;
         default:
           // 处理 Diff_X 格式
-          if (store.draw8421Config.startsWith('Diff_')) {
-            const score = store.draw8421Config.replace('Diff_', '');
+          if (store.draw8421_config.startsWith('Diff_')) {
+            const score = store.draw8421_config.replace('Diff_', '');
             displayValue = `得分${score}分以内`;
           } else {
-            displayValue = store.draw8421Config;
+            displayValue = store.draw8421_config;
           }
           break;
       }
@@ -197,24 +197,24 @@ Page({
 
     // 格式化吃肉规则显示 - 适配新格式
     let meatValueText = '';
-    if (store.meat_value) {
-      if (store.meat_value?.startsWith('MEAT_AS_')) {
+    if (store.meat_value_config_string) {
+      if (store.meat_value_config_string?.startsWith('MEAT_AS_')) {
         meatValueText = '肉算1分';
-      } else if (store.meat_value === 'SINGLE_DOUBLE') {
+      } else if (store.meat_value_config_string === 'SINGLE_DOUBLE') {
         meatValueText = '分值翻倍';
-      } else if (store.meat_value === 'CONTINUE_DOUBLE') {
+      } else if (store.meat_value_config_string === 'CONTINUE_DOUBLE') {
         meatValueText = '分值连续翻倍';
       } else {
-        meatValueText = store.meat_value;
+        meatValueText = store.meat_value_config_string;
       }
     }
 
     // 格式化封顶值 - 适配新格式：数字，10000000表示不封顶
     let meatMaxText = '';
-    if (store.meatMaxValue === 10000000) {
+    if (store.meat_max_value === 10000000) {
       meatMaxText = '不封顶';
-    } else if (typeof store.meatMaxValue === 'number' && store.meatMaxValue < 10000000) {
-      meatMaxText = `${store.meatMaxValue}分封顶`;
+    } else if (typeof store.meat_max_value === 'number' && store.meat_max_value < 10000000) {
+      meatMaxText = `${store.meat_max_value}分封顶`;
     }
 
     // 简化显示，只显示主要的肉分值计算方式
@@ -242,7 +242,7 @@ Page({
     // 初始化显示值
     this.setData({
       user_rulename: G_4P_8421_Store.user_rulename,
-      draw8421Config: G_4P_8421_Store.draw8421Config
+      draw8421_config: G_4P_8421_Store.draw8421_config
     });
     this.updateKoufenDisplayValue();
     this.updateDingdongDisplayValue();
@@ -258,22 +258,22 @@ Page({
         }
       ),
       reaction(
-        () => G_4P_8421_Store.draw8421Config,
+        () => G_4P_8421_Store.draw8421_config,
         (value) => {
-          this.setData({ draw8421Config: value });
+          this.setData({ draw8421_config: value });
           this.updateDingdongDisplayValue();
           console.log('Store顶洞规则变化:', value);
         }
       ),
       reaction(
-        () => [G_4P_8421_Store.max8421_sub_value, G_4P_8421_Store.sub8421configstring, G_4P_8421_Store.dutyconfig],
+        () => [G_4P_8421_Store.max8421_sub_value, G_4P_8421_Store.sub8421_config_string, G_4P_8421_Store.duty_config],
         () => {
           this.updateKoufenDisplayValue();
           console.log('Store扣分规则变化');
         }
       ),
       reaction(
-        () => [G_4P_8421_Store.eatingRange, G_4P_8421_Store.meat_value, G_4P_8421_Store.meatMaxValue],
+        () => [G_4P_8421_Store.eating_range, G_4P_8421_Store.meat_value_config_string, G_4P_8421_Store.meat_max_value],
         () => {
           this.updateEatmeatDisplayValue();
           console.log('Store吃肉规则变化');

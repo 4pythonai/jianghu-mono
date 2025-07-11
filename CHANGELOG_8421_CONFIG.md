@@ -17,7 +17,7 @@
 - 数据类型：数字
 - 格式示例：`2` (表示扣2分封顶), `10000000` (表示不封顶)
 
-### 2. sub8421configstring (扣分开始条件)
+### 2. sub8421_config_string (扣分开始条件)
 **修改前:**
 - 数据类型：字符串
 - 格式示例：`"从双帕+0开始扣分"`, `"从帕+4开始扣分"`, `"不扣分"`
@@ -26,7 +26,7 @@
 - 数据类型：字符串（简化格式）
 - 格式示例：`"DoublePar+0"`, `"Par+4"`, `"NoSub"`
 
-### 3. meat_value (肉分值配置)
+### 3. meat_value_config_string (肉分值配置)
 **修改前:**
 - 数据类型：字符串
 - 格式示例：`"肉算1分"`, `"分值翻倍"`, `"分值连续翻倍"`
@@ -35,7 +35,7 @@
 - 数据类型：字符串（枚举格式）
 - 格式示例：`"MEAT_AS_1"`, `"SINGLE_DOUBLE"`, `"CONTINUE_DOUBLE"`
 
-### 4. meatMaxValue (吃肉封顶配置)
+### 4. meat_max_value	 (吃肉封顶配置)
 **修改前:**
 - 数据类型：字符串
 - 格式示例：`"3分封顶"`, `"不封顶"`
@@ -44,14 +44,14 @@
 - 数据类型：数字
 - 格式示例：`3` (表示3分封顶), `10000000` (表示不封顶)
 
-### 5. dutyconfig (同伴惩罚配置) ⭐ 新增
+### 5. duty_config (同伴惩罚配置) ⭐ 新增
 **修改前:**
 - 字段名：`partner_punishment`
 - 数据类型：字符串
 - 格式示例：`"不包负分"`, `"同伴顶头包负分"`, `"包负分"`
 
 **修改后:**
-- 字段名：`dutyconfig`
+- 字段名：`duty_config`
 - 数据类型：字符串（枚举格式）
 - 格式示例：`"NODUTY"`, `"DUTY_CODITIONAL"`, `"DUTY_NEGATIVE"`
 
@@ -124,21 +124,21 @@
 
 ## 枚举值映射表
 
-### dutyconfig 枚举映射
+### duty_config 枚举映射
 | 中文 | 英文枚举 | 含义 |
 |------|----------|------|
 | 不包负分 | `NODUTY` | 同伴不承担负分 |
 | 同伴顶头包负分 | `DUTY_CODITIONAL` | 同伴承担顶头包负分 |
 | 包负分 | `DUTY_NEGATIVE` | 同伴完全承担负分 |
 
-### meat_value 枚举映射
+### meat_value_config_string 枚举映射
 | 中文 | 英文枚举 | 含义 |
 |------|----------|------|
 | 肉算1分 | `MEAT_AS_1` | 每个肉固定算1分 |
 | 分值翻倍 | `SINGLE_DOUBLE` | 肉的分值翻倍计算 |
 | 分值连续翻倍 | `CONTINUE_DOUBLE` | 肉的分值连续翻倍计算 |
 
-### sub8421configstring 格式映射
+### sub8421_config_string 格式映射
 | 中文 | 英文格式 | 含义 |
 |------|----------|------|
 | 不扣分 | `NoSub` | 不进行扣分 |
@@ -188,9 +188,9 @@
 ```javascript
 {
   max8421_sub_value: "扣2分封顶",
-  sub8421configstring: "从双帕+0开始扣分", 
-  meat_value: "肉算1分",
-  meatMaxValue: "3分封顶",
+  sub8421_config_string: "从双帕+0开始扣分", 
+  meat_value_config_string: "肉算1分",
+  meat_max_value	: "3分封顶",
   partner_punishment: "不包负分"
 }
 ```
@@ -199,19 +199,19 @@
 ```javascript
 {
   max8421_sub_value: 2,           // 2分封顶
-  sub8421configstring: "DoublePar+0",
-  meat_value: "MEAT_AS_1", 
-  meatMaxValue: 3,                // 3分封顶
-  dutyconfig: "NODUTY"            // 不包负分
+  sub8421_config_string: "DoublePar+0",
+  meat_value_config_string: "MEAT_AS_1", 
+  meat_max_value	: 3,                // 3分封顶
+  duty_config: "NODUTY"            // 不包负分
 }
 
 // 不封顶的情况
 {
   max8421_sub_value: 10000000,    // 不封顶
-  sub8421configstring: "NoSub",
-  meat_value: "MEAT_AS_1",
-  meatMaxValue: 10000000,         // 不封顶
-  dutyconfig: "DUTY_NEGATIVE"     // 包负分
+  sub8421_config_string: "NoSub",
+  meat_value_config_string: "MEAT_AS_1",
+  meat_max_value	: 10000000,         // 不封顶
+  duty_config: "DUTY_NEGATIVE"     // 包负分
 }
 ```
 
@@ -260,14 +260,14 @@
 // 常量定义
 const NO_LIMIT_VALUE = 10000000; // 表示不封顶的数值
 
-// dutyconfig 枚举常量
+// duty_config 枚举常量
 const DUTY_CONFIG = {
   NODUTY: 'NODUTY',
   DUTY_CODITIONAL: 'DUTY_CODITIONAL', 
   DUTY_NEGATIVE: 'DUTY_NEGATIVE'
 };
 
-// meat_value 枚举常量
+// meat_value_config_string 枚举常量
 const MEAT_VALUE = {
   MEAT_AS_1: 'MEAT_AS_1',
   SINGLE_DOUBLE: 'SINGLE_DOUBLE',
@@ -276,5 +276,5 @@ const MEAT_VALUE = {
 
 // 使用示例
 const max8421SubValue = selectedMax === 0 ? NO_LIMIT_VALUE : maxSubScore;
-const dutyconfig = DUTY_CONFIG.NODUTY;
+const duty_config = DUTY_CONFIG.NODUTY;
 ``` 

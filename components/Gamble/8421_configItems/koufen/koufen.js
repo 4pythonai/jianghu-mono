@@ -49,8 +49,8 @@ Component({
     initializeFromStore() {
       // 直接访问store的属性
       const max8421SubValue = G_4P_8421_Store.max8421_sub_value;
-      const koufenStart = G_4P_8421_Store.sub8421configstring;
-      const partnerPunishment = G_4P_8421_Store.dutyconfig;
+      const koufenStart = G_4P_8421_Store.sub8421_config_string;
+      const partnerPunishment = G_4P_8421_Store.duty_config;
 
       if (max8421SubValue !== 10000000 || koufenStart || partnerPunishment) {
         // 解析已保存的配置
@@ -171,26 +171,26 @@ Component({
       const max8421SubValue = selectedMax === 0 ? 10000000 : maxSubScore;
 
       // 同伴惩罚配置改为枚举格式
-      let dutyconfig = null;
+      let duty_config = null;
       switch (selectedDuty) {
         case 0:
-          dutyconfig = 'NODUTY';
+          duty_config = 'NODUTY';
           break;
         case 1:
-          dutyconfig = 'DUTY_CODITIONAL';
+          duty_config = 'DUTY_CODITIONAL';
           break;
         case 2:
-          dutyconfig = 'DUTY_NEGATIVE';
+          duty_config = 'DUTY_NEGATIVE';
           break;
       }
 
       // 调用store的action更新数据
-      G_4P_8421_Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, dutyconfig);
+      G_4P_8421_Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, duty_config);
 
       console.log('扣分组件已更新store:', {
         max8421SubValue,
         sub8421ConfigString,
-        dutyconfig,
+        duty_config,
         customValues: { paScore, doubleParScore, maxSubScore }
       });
 
@@ -204,7 +204,7 @@ Component({
           doubleParScore,
           maxSubScore
         },
-        parsedData: { max8421SubValue, sub8421ConfigString, dutyconfig }
+        parsedData: { max8421SubValue, sub8421ConfigString, duty_config }
       });
     }
   }

@@ -8,25 +8,25 @@ export const G_4P_8421_Store = observable({
         return `规则_${Math.floor(Math.random() * 10000)}`;
     },
 
-    ename: '8421',
+    gamblesysname: '8421',
     sysruleid: 17,
     user_rulename: '8421',
-    creatorId: null,
+    creator_id: null,
 
     // 封顶配置: 数字类型，如 2 表示扣2分封顶，10000000 表示不封顶
     max8421_sub_value: 10000000,
 
     // 扣分开始的值: NoSub, Par+X, DoublePar+X (X为数字) - 默认：Par+4
-    sub8421configstring: 'Par+4',
+    sub8421_config_string: 'Par+4',
 
     // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL - 默认：NODUTY
-    dutyconfig: 'NODUTY',
+    duty_config: 'NODUTY',
 
     // 顶洞规则: NoDraw(无顶洞), Diff_X(得分X分以内), DrawEqual(得分打平) - 默认：DrawEqual
-    draw8421Config: 'DrawEqual',
+    draw8421_config: 'DrawEqual',
 
     // 吃肉规则：默认配置
-    eatingRange: {
+    eating_range: {
         "BetterThanBirdie": 2,
         "Birdie": 2,
         "Par": 1,
@@ -34,30 +34,30 @@ export const G_4P_8421_Store = observable({
     },
 
     // meat option: MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE - 默认：MEAT_AS_1
-    meat_value: 'MEAT_AS_1',
+    meat_value_config_string: 'MEAT_AS_1',
 
     // 吃肉封顶：  数字类型，如 3 表示3分封顶，10000000 表示不封顶
-    meatMaxValue: 10000000,
+    meat_max_value: 10000000,
 
     // 更新扣分规则的action
-    updateKoufenRule: action(function (max8421SubValue, sub8421ConfigString, dutyconfig) {
+    updateKoufenRule: action(function (max8421SubValue, sub8421ConfigString, duty_config) {
         this.max8421_sub_value = max8421SubValue;
-        this.sub8421configstring = sub8421ConfigString;
-        this.dutyconfig = dutyconfig;
+        this.sub8421_config_string = sub8421ConfigString;
+        this.duty_config = duty_config;
         this.user_rulename = this.generateAbstractName();
     }),
 
     // 更新顶洞规则的action
-    updateDingdongRule: action(function (draw8421Config) {
-        this.draw8421Config = draw8421Config;
+    updateDingdongRule: action(function (draw8421_config) {
+        this.draw8421_config = draw8421_config;
         this.user_rulename = this.generateAbstractName();
     }),
 
     // 更新吃肉规则的action
-    updateEatmeatRule: action(function (eatingRange, meatValueConfig, meatMaxValue) {
-        this.eatingRange = eatingRange;
-        this.meat_value = meatValueConfig;
-        this.meatMaxValue = meatMaxValue;
+    updateEatmeatRule: action(function (eating_range, meatValueConfig, meat_max_value) {
+        this.eating_range = eating_range;
+        this.meat_value_config_string = meatValueConfig;
+        this.meat_max_value = meat_max_value;
         this.user_rulename = this.generateAbstractName();
     }),
 
@@ -69,17 +69,17 @@ export const G_4P_8421_Store = observable({
     // 重置所有规则的action
     resetAllRules: action(function () {
         this.max8421_sub_value = 10000000;
-        this.sub8421configstring = 'Par+4';
-        this.dutyconfig = 'NODUTY';
-        this.draw8421Config = 'DrawEqual';
-        this.eatingRange = {
+        this.sub8421_config_string = 'Par+4';
+        this.duty_config = 'NODUTY';
+        this.draw8421_config = 'DrawEqual';
+        this.eating_range = {
             "BetterThanBirdie": 2,
             "Birdie": 2,
             "Par": 1,
             "WorseThanPar": 0
         };
-        this.meat_value = 'MEAT_AS_1';
-        this.meatMaxValue = 10000000;
+        this.meat_value_config_string = 'MEAT_AS_1';
+        this.meat_max_value = 10000000;
     }),
 
     // 获取所有规则数据的action
@@ -89,26 +89,26 @@ export const G_4P_8421_Store = observable({
         console.log('游戏ID:', gameStore.gameid);
         console.log('规则名称:', this.user_rulename);
         console.log('封顶配置:', this.max8421_sub_value);
-        console.log('扣分开始值:', this.sub8421configstring);
-        console.log('同伴惩罚配置:', this.dutyconfig);
-        console.log('顶洞规则:', this.draw8421Config);
-        console.log('吃肉得分配对:', this.eatingRange);
-        console.log('肉分值计算:', this.meat_value);
-        console.log('吃肉封顶:', this.meatMaxValue);
+        console.log('扣分开始值:', this.sub8421_config_string);
+        console.log('同伴惩罚配置:', this.duty_config);
+        console.log('顶洞规则:', this.draw8421_config);
+        console.log('吃肉得分配对:', this.eating_range);
+        console.log('肉分值计算:', this.meat_value_config_string);
+        console.log('吃肉封顶:', this.meat_max_value);
         console.log(JSON.stringify(this, null, 2));
         const gambleConfig = {
             gameid: gameStore.gameid,
             user_rulename: this.user_rulename,
             sysruleid: this.sysruleid,
-            ename: this.ename,
-            creatorId: this.creatorId,
+            gamblesysname: this.gamblesysname,
+            creator_id: this.creator_id,
             max8421_sub_value: this.max8421_sub_value,
-            sub8421configstring: this.sub8421configstring,
-            dutyconfig: this.dutyconfig,
-            draw8421Config: this.draw8421Config,
-            eatingRange: this.eatingRange,
-            meat_value: this.meat_value,
-            meatMaxValue: this.meatMaxValue
+            sub8421_config_string: this.sub8421_config_string,
+            duty_config: this.duty_config,
+            draw8421_config: this.draw8421_config,
+            eating_range: this.eating_range,
+            meat_value_config_string: this.meat_value_config_string,
+            meat_max_value: this.meat_max_value
         };
         console.log(JSON.stringify(gambleConfig, null, 2));
         return gambleConfig;
