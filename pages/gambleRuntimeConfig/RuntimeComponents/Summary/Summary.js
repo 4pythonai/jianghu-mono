@@ -36,42 +36,92 @@ Component({
             '4p-3da1': '4人3打1',
             '4p-bestak': '4人Bestak',
             // 多人游戏
-            'mp-labahua': '多人拉八花',
-            'mp-dabudui': '多人打不对'
+            'mp-labahua': '多人喇叭花',
+            'mp-dabudui': '多人大部队'
+        },
+        // 显示的规则名称
+        displayRuleName: '未知规则'
+    },
+
+    // 监听属性变化
+    observers: {
+        'ruleType, userRule': function (ruleType, userRule) {
+            console.log('📋 [Summary] 属性变化:', {
+                ruleType: ruleType,
+                userRule: userRule?.gambleUserName || userRule?.user_rulename
+            });
+
+            // 更新显示名称
+            this.updateDisplayRuleName();
         }
     },
 
-    computed: {
-        // 计算显示的规则名称
-        displayRuleName() {
-            return this.data.ruleTypeMap[this.data.ruleType] || this.data.ruleType;
-        },
-
-        // 计算玩家数量
-        playerCount() {
-            return this.data.players.length;
-        }
+    // 组件生命周期 - 组件实例进入页面节点树时执行
+    attached() {
+        console.log('📋 [Summary] 组件attached，初始化displayRuleName');
+        this.updateDisplayRuleName();
     },
 
     methods: {
+        // 更新显示的规则名称
+        updateDisplayRuleName() {
+            let displayName = '未知规则';
+
+            console.log('📋 [Summary] 更新显示名称:', {
+                ruleType: this.data.ruleType,
+                userRule: this.data.userRule,
+                properties: this.properties
+            });
+
+            // 如果有用户规则，优先显示用户规则名称
+            if (this.data.userRule) {
+                displayName = this.data.userRule.gambleUserName ||
+                    this.data.userRule.user_rulename ||
+                    this.data.userRule.title ||
+                    '用户自定义规则';
+                console.log('📋 [Summary] 使用用户规则名称:', displayName);
+            } else if (this.data.ruleType) {
+                // 否则显示系统规则名称
+                displayName = this.data.ruleTypeMap[this.data.ruleType] || this.data.ruleType;
+                console.log('📋 [Summary] 使用系统规则名称:', displayName);
+            }
+
+            // 更新data中的displayRuleName
+            this.setData({
+                displayRuleName: displayName
+            });
+
+            console.log('📋 [Summary] 最终显示名称:', displayName);
+        },
+
         // 点击重新选择规则
         onReSelectRule() {
             console.log('📋 [Summary] 重新选择规则');
             this.triggerEvent('reselect');
         },
 
-        // 获取规则显示名称
+        // 获取规则显示名称 (保留此方法作为备用)
         getRuleDisplayName() {
+            console.log('📋 [Summary] 获取规则显示名称:', {
+                ruleType: this.data.ruleType,
+                userRule: this.data.userRule,
+                ruleTypeMap: this.data.ruleTypeMap
+            });
+
             // 如果有用户规则，优先显示用户规则名称
             if (this.data.userRule) {
-                return this.data.userRule.gambleUserName ||
+                const userRuleName = this.data.userRule.gambleUserName ||
                     this.data.userRule.user_rulename ||
                     this.data.userRule.title ||
                     '用户自定义规则';
+                console.log('📋 [Summary] 返回用户规则名称:', userRuleName);
+                return userRuleName;
             }
 
             // 否则显示系统规则名称
-            return this.data.ruleTypeMap[this.data.ruleType] || this.data.ruleType;
+            const systemRuleName = this.data.ruleTypeMap[this.data.ruleType] || this.data.ruleType || '未知规则';
+            console.log('📋 [Summary] 返回系统规则名称:', systemRuleName);
+            return systemRuleName;
         },
 
         // 获取玩家头像，如果没有则返回默认头像

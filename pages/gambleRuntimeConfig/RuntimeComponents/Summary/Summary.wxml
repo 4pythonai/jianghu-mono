@@ -5,7 +5,7 @@
     <view class="rule-row">
       <text class="rule-label">选择的规则:</text>
       <view class="rule-value-container">
-        <text class="rule-value">{{getRuleDisplayName()}}</text>
+        <text class="rule-value">{{displayRuleName}}</text>
         <text class="rule-type-badge" wx:if="{{userRule}}">自定义</text>
         <text class="rule-type-badge system" wx:else>系统</text>
       </view>
