@@ -196,14 +196,14 @@ class MRuntimeConfig extends CI_Model {
         }
     }
 
-    public function get4RankingTieResolveConfig($gambleid) {
+    public function getRanking4TieResolveConfig($gambleid) {
 
-        //         // A类排序（按成绩）
+        // A类排序（按成绩）
         // "score.reverse"                    // A.1: 按成绩排序，冲突时回溯成绩
         // "score.win_loss.reverse_win"       // A.2.1: 按成绩排序，按输赢，回溯输赢
-        "score.win_loss.reverse_score"     // A.2.2: 按成绩排序，按输赢，回溯成绩
+        return "score.win_loss.reverse_score";     // A.2.2: 按成绩排序，按输赢，回溯成绩
 
-        // // B类排序（按得分）
+        // B类排序（按得分）
         // "indicator.reverse"                // B.1: 按得分排序，冲突时回溯得分
         // "indicator.win_loss.reverse_win"   // B.2.1: 按得分排序，按输赢，回溯输赢
         // "indicator.win_loss.reverse_indicator" // B.2.2: 按得分排序，按输赢，回溯得分

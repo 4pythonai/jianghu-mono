@@ -19,6 +19,7 @@ class GambleContext extends CI_Model {
     public $attenders;
     public $redBlueConfig;
     public $dutyConfig;
+    public $ranking4TieResolveConfig;
     public $meat_pool = []; // 肉池管理
 
     public function __construct($data = []) {
@@ -44,6 +45,7 @@ class GambleContext extends CI_Model {
         'attenders' => 'getAttenders',
         'redBlueConfig' => 'getRedBlueConfig',
         'dutyConfig' => 'getDutyConfig',
+        'ranking4TieResolveConfig' => 'getRanking4TieResolveConfig',
     ];
 
     /**

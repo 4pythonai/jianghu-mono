@@ -31,6 +31,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $gamble_result;    // 一个赌球游戏的结果
     private $redBlueConfig;
     private $dutyConfig;  // 包洞配置
+    private $ranking4TieResolveConfig;  // 排名解决平局配置
 
     // 以下为结果
     private $useful_holes;
@@ -61,6 +62,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->bootStrapOrder = $this->MRuntimeConfig->getBootStrapOrder($this->gambleid);
         $this->redBlueConfig = $this->MRuntimeConfig->getRedBlueConfig($this->gambleid, count($this->attenders));
         $this->dutyConfig = $this->MRuntimeConfig->getDutyConfig($this->gambleid);
+        $this->ranking4TieResolveConfig = $this->MRuntimeConfig->getRanking4TieResolveConfig($this->gambleid);
     }
 
     // 处理让杆
@@ -95,6 +97,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         debug("负分配置", $this->dutyConfig . " => " . $meaningText);
 
         debug("分组方式", $this->redBlueConfig);
+        debug("排名解决平局配置", $this->ranking4TieResolveConfig);
         debug("出发顺序", $this->bootStrapOrder);
 
         // 打印8421系统配置
@@ -207,6 +210,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'userid' => $this->userid,
             'gambleSysName' => $this->gambleSysName,
             'redBlueConfig' => $this->redBlueConfig,
+            'ranking4TieResolveConfig' => $this->ranking4TieResolveConfig,
             'holes' => $this->holes,
             'firstholeindex' => $this->firstholeindex,
             'lastholeindex' => $this->lastholeindex,
@@ -268,5 +272,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getDutyConfig() {
         return $this->dutyConfig;
+    }
+
+    public function getRanking4TieResolveConfig() {
+        return $this->ranking4TieResolveConfig;
     }
 }
