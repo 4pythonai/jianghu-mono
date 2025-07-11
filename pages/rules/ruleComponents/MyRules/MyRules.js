@@ -110,54 +110,73 @@ Component({
             this.loadMyRules();
         },
 
-        // 删除规则
-        onDeleteRule(e) {
-            const { id, group } = e.currentTarget.dataset;
+        // 长按规则处理
+        onLongPressRule(e) {
+            const { id, group, item } = e.currentTarget.dataset;
+
+            if (!id || !group) {
+                wx.showToast({
+                    title: '操作失败，参数错误',
+                    icon: 'none'
+                });
+                return;
+            }
+
             const rules = this.data.myRules[group] || [];
-            const rule = rules.find(r => r.id === id);
+            const rule = rules.find(r => r.userRuleId === id);
+
+            if (!rule) {
+                wx.showToast({
+                    title: '操作失败，规则不存在',
+                    icon: 'none'
+                });
+                return;
+            }
 
             wx.showModal({
                 title: '确认删除',
-                content: `确定要删除规则"${rule?.gambleUserName || rule?.user_rulename || rule?.title}"吗？`,
+                content: `确定要删除规则"${rule.gambleUserName || rule.user_rulename || rule.title}"吗？`,
                 success: (res) => {
                     if (res.confirm) {
-                        console.log('📋 [MyRules] 删除规则:', id, '分组:', group);
-
-                        // TODO: 调用API删除规则
-                        app.api.gamble.deleteGambleRule({ ruleId: id }).then(apiRes => {
-                            console.log('📋 [MyRules] 删除规则API成功:', apiRes);
-
-                            // 从列表中移除
-                            const newRules = { ...this.data.myRules };
-                            newRules[group] = newRules[group].filter(r => r.id !== id);
-
-                            // 更新统计
-                            const newTotal = { ...this.data.total };
-                            newTotal[group] = newRules[group].length;
-                            newTotal.overall = newRules.twoPlayers.length + newRules.threePlayers.length + newRules.fourPlayers.length;
-
-                            this.setData({
-                                myRules: newRules,
-                                total: newTotal
-                            });
-
-                            wx.showToast({
-                                title: '删除成功',
-                                icon: 'success'
-                            });
-
-                            // 通知父组件规则已删除
-                            this.triggerEvent('ruleDeleted', { id, group });
-
-                        }).catch(err => {
-                            console.error('📋 [MyRules] 删除规则API失败:', err);
-                            wx.showToast({
-                                title: '删除失败，请重试',
-                                icon: 'none'
-                            });
-                        });
+                        this.deleteRule(id, group);
                     }
                 }
+            });
+        },
+
+        // 删除规则的实际执行方法
+        deleteRule(id, group) {
+            app.api.gamble.deleteGambleRule({ userRuleId: id }).then(apiRes => {
+                console.log('📋 [MyRules] 删除规则API成功:', apiRes);
+
+                // 从列表中移除
+                const newRules = { ...this.data.myRules };
+                newRules[group] = newRules[group].filter(r => r.userRuleId !== id);
+
+                // 更新统计
+                const newTotal = { ...this.data.total };
+                newTotal[group] = newRules[group].length;
+                newTotal.overall = newRules.twoPlayers.length + newRules.threePlayers.length + newRules.fourPlayers.length;
+
+                this.setData({
+                    myRules: newRules,
+                    total: newTotal
+                });
+
+                wx.showToast({
+                    title: '删除成功',
+                    icon: 'success'
+                });
+
+                // 通知父组件规则已删除
+                this.triggerEvent('ruleDeleted', { id, group });
+
+            }).catch(err => {
+                console.error('📋 [MyRules] 删除规则API失败:', err);
+                wx.showToast({
+                    title: '删除失败，请重试',
+                    icon: 'none'
+                });
             });
         },
 
