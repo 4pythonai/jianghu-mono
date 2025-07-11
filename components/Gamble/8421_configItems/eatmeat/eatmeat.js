@@ -7,10 +7,10 @@ Component({
   },
   data: {
     eatList: [
-      { label: '帕以上', value: 0 },
+      { label: '帕以上', value: 1 },
       { label: '帕', value: 1 },
-      { label: '鸟', value: 2 },
-      { label: '鸟以下', value: 4 }
+      { label: '鸟', value: 1 },
+      { label: '鸟以下', value: 1 }
     ],
     scoreOptions: [
       '肉算1分', '分值翻倍', '分值连续翻倍'
