@@ -103,3 +103,37 @@
 	opacity: 0.5;
 	pointer-events: none;
 }
+
+/* 新增样式 */
+.option-content {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8rpx;
+}
+
+.score-picker {
+	display: inline-block;
+	margin: 0 8rpx;
+}
+
+.picker-value {
+	display: inline-block;
+	min-width: 48rpx;
+	height: 48rpx;
+	line-height: 48rpx;
+	text-align: center;
+	background: #4caf7a;
+	color: #fff;
+	border-radius: 24rpx;
+	font-size: 28rpx;
+	font-weight: 600;
+	padding: 0 12rpx;
+	box-shadow: 0 4rpx 8rpx rgba(76, 175, 122, 0.3);
+	border: 2rpx solid #4caf7a;
+}
+
+.picker-value:active {
+	background: #45a072;
+	transform: scale(0.95);
+}

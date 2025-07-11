@@ -10,7 +10,35 @@
           <view class="radio-outer {{selectedStart === index ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{selectedStart === index}}"></view>
           </view>
-          <text>{{item}}</text>
+          <view class="option-content">
+            <text wx:if="{{index === 0}}">从帕+</text>
+            <text wx:elif="{{index === 1}}">从双帕+</text>
+            <text wx:else>{{item}}</text>
+            
+            <!-- 帕分数选择器 -->
+            <picker wx:if="{{index === 0 && selectedStart === 0}}" 
+                    class="score-picker" 
+                    range="{{paScoreRange}}" 
+                    value="{{paScore}}" 
+                    bindchange="onPaScoreChange">
+              <view class="picker-value">{{paScore}}</view>
+            </picker>
+            <text wx:if="{{index === 0 && selectedStart === 0}}">开始扣分</text>
+            
+            <!-- 双帕分数选择器 -->
+            <picker wx:if="{{index === 1 && selectedStart === 1}}" 
+                    class="score-picker" 
+                    range="{{doubleParScoreRange}}" 
+                    value="{{doubleParScore}}" 
+                    bindchange="onDoubleParScoreChange">
+              <view class="picker-value">{{doubleParScore}}</view>
+            </picker>
+            <text wx:if="{{index === 1 && selectedStart === 1}}">开始扣分</text>
+            
+            <!-- 显示当前选中但未激活的选项文本 -->
+            <text wx:if="{{index === 0 && selectedStart !== 0}}">{{paScore}}开始扣分</text>
+            <text wx:if="{{index === 1 && selectedStart !== 1}}">{{doubleParScore}}开始扣分</text>
+          </view>
         </view>
       </block>
       
@@ -25,7 +53,23 @@
           <view class="radio-outer {{selectedMax === index ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{selectedMax === index}}"></view>
           </view>
-          <text>{{item}}</text>
+          <view class="option-content">
+            <text wx:if="{{index === 0}}">{{item}}</text>
+            <text wx:elif="{{index === 1}}">扣</text>
+            
+            <!-- 封顶分数选择器 -->
+            <picker wx:if="{{index === 1 && selectedMax === 1}}" 
+                    class="score-picker" 
+                    range="{{maxSubScoreRange}}" 
+                    value="{{maxSubScore - 1}}" 
+                    bindchange="onMaxSubScoreChange">
+              <view class="picker-value">{{maxSubScore}}</view>
+            </picker>
+            <text wx:if="{{index === 1 && selectedMax === 1}}">分封顶</text>
+            
+            <!-- 显示当前选中但未激活的选项文本 -->
+            <text wx:if="{{index === 1 && selectedMax !== 1}}">{{maxSubScore}}分封顶</text>
+          </view>
         </view>
       </block>
       
