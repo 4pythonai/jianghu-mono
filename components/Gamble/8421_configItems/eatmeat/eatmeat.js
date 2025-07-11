@@ -6,12 +6,23 @@ Component({
     visible: Boolean
   },
   data: {
-    eatList: [
-      { label: '帕以上', value: 1 },
-      { label: '帕', value: 1 },
-      { label: '鸟', value: 1 },
-      { label: '鸟以下', value: 1 }
-    ],
+    // 新的JSON格式数据
+    eatingRange: {
+      "BetterThanBirdie": 2,
+      "Birdie": 2,
+      "Par": 1,
+      "WorseThanPar": 0
+    },
+    // 键到中文标签的映射
+    eatRangeLabels: {
+      "BetterThanBirdie": "帕以上",
+      "Birdie": "鸟",
+      "Par": "帕",
+      "WorseThanPar": "鸟以下"
+    },
+    // 用于渲染的键数组
+    eatRangeKeys: ["BetterThanBirdie", "Birdie", "Par", "WorseThanPar"],
+
     meatValueOptions: [
       '肉算1分', '分值翻倍', '分值连续翻倍'
     ],
@@ -66,9 +77,9 @@ Component({
       const { eatingRange, meatValue, meatMaxValue } = config;
       console.log('从store加载吃肉配置:', config);
 
-      // 解析吃肉数量配置
-      if (eatingRange && Array.isArray(eatingRange)) {
-        this.setData({ eatList: eatingRange });
+      // 解析吃肉数量配置 - 新格式：JSON对象
+      if (eatingRange && typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
+        this.setData({ eatingRange });
       }
 
       // 解析肉分值计算方式 - 新格式：MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
@@ -94,12 +105,15 @@ Component({
         });
       }
     },
-    // 废弃原来的输入方法，改用滚轮选择器
+    // 修改为适应新的JSON格式
     onEatValueChange(e) {
-      const idx = e.currentTarget.dataset.index;
+      const keyIndex = e.currentTarget.dataset.index;
       const value = this.data.eatValueRange[e.detail.value];
-      const key = `eatList[${idx}].value`;
-      this.setData({ [key]: value });
+      const key = this.data.eatRangeKeys[keyIndex];
+      const newEatingRange = { ...this.data.eatingRange };
+      newEatingRange[key] = value;
+      this.setData({ eatingRange: newEatingRange });
+      console.log('更新吃肉配置:', key, value);
     },
     onScoreSelect(e) {
       this.setData({ scoreSelected: e.currentTarget.dataset.index });
@@ -118,8 +132,8 @@ Component({
     onConfirm() {
       const data = this.data;
 
-      // 解析配置数据
-      const eatingRange = data.eatList; // 吃肉得分配对
+      // 解析配置数据 - 使用新的JSON格式
+      const eatingRange = data.eatingRange; // 吃肉得分配对，JSON格式
 
       // 肉分值计算方式改为新格式
       let meatValueConfig = null;

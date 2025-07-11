@@ -6,17 +6,17 @@
         <view class="eat-label">成绩</view>
         <view class="eat-label right">吃肉数量</view>
       </view>
-      <block wx:for="{{eatList}}" wx:key="index">
+      <block wx:for="{{eatRangeKeys}}" wx:key="index">
         <view class="eat-row">
-          <view class="eat-label">{{item.label}}</view>
+          <view class="eat-label">{{eatRangeLabels[item]}}</view>
           <!-- 改为滚轮选择器 -->
           <picker class="eat-picker {{noKoufen ? 'disabled-picker' : ''}}" 
                   range="{{eatValueRange}}" 
-                  value="{{item.value - 1}}" 
+                  value="{{eatingRange[item] - 1}}" 
                   data-index="{{index}}"
                   bindchange="{{noKoufen ? '' : 'onEatValueChange'}}"
                   disabled="{{noKoufen}}">
-            <view class="picker-value">{{item.value}}</view>
+            <view class="picker-value">{{eatingRange[item]}}</view>
           </picker>
         </view>
       </block>
