@@ -85,37 +85,21 @@ Page({
     console.log('页面收到吃肉规则更新:', detail.parsedData);
   },
   onAddToMyRules() {
-    // 检查是否已配置规则
-    const store = G_4P_8421_Store;
-    let missingConfigs = [];
-
-    if (!store.sub8421configstring || !store.dutyconfig) {
-      missingConfigs.push('扣分规则');
-    }
-    if (!store.draw8421Config) {
-      missingConfigs.push('顶洞规则');
-    }
-    if (!store.eatingRange || !store.meat_value) {
-      missingConfigs.push('吃肉规则');
-    }
-
-    if (missingConfigs.length > 0) {
-      wx.showModal({
-        title: '配置不完整',
-        content: `请先配置：${missingConfigs.join('、')}`,
-        showCancel: false,
-        confirmText: '我知道了',
-        confirmColor: '#ff6b6b'
-      });
-      return;
-    }
-
     // 输出完整Store数据用于调试
     const allData = G_4P_8421_Store.debugAllRulesData();
 
     wx.showToast({
       title: '已添加至我的规则',
-      icon: 'success'
+      icon: 'success',
+      duration: 1500,
+      success: () => {
+        // Toast显示完成后跳转到规则页面
+        setTimeout(() => {
+          wx.navigateTo({
+            url: '/pages/rules/rules'
+          });
+        }, 1000);
+      }
     });
 
     console.log('完整规则配置数据:', allData);
@@ -256,7 +240,10 @@ Page({
     console.log('4P-8421 规则配置页面加载完成');
 
     // 初始化显示值
-    this.setData({ user_rulename: G_4P_8421_Store.user_rulename });
+    this.setData({
+      user_rulename: G_4P_8421_Store.user_rulename,
+      draw8421Config: G_4P_8421_Store.draw8421Config
+    });
     this.updateKoufenDisplayValue();
     this.updateDingdongDisplayValue();
     this.updateEatmeatDisplayValue();
@@ -277,6 +264,20 @@ Page({
           this.updateDingdongDisplayValue();
           console.log('Store顶洞规则变化:', value);
         }
+      ),
+      reaction(
+        () => [G_4P_8421_Store.max8421_sub_value, G_4P_8421_Store.sub8421configstring, G_4P_8421_Store.dutyconfig],
+        () => {
+          this.updateKoufenDisplayValue();
+          console.log('Store扣分规则变化');
+        }
+      ),
+      reaction(
+        () => [G_4P_8421_Store.eatingRange, G_4P_8421_Store.meat_value, G_4P_8421_Store.meatMaxValue],
+        () => {
+          this.updateEatmeatDisplayValue();
+          console.log('Store吃肉规则变化');
+        }
       )
     ];
   },
@@ -284,7 +285,9 @@ Page({
   onUnload() {
     // 清理reactions
     if (this._storeReactions) {
-      this._storeReactions.forEach(dispose => dispose?.());
+      for (const dispose of this._storeReactions) {
+        dispose?.();
+      }
       this._storeReactions = null;
     }
   }

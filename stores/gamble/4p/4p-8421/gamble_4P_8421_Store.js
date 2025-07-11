@@ -16,20 +16,25 @@ export const G_4P_8421_Store = observable({
     // 封顶配置: 数字类型，如 2 表示扣2分封顶，10000000 表示不封顶
     max8421_sub_value: 10000000,
 
-    // 扣分开始的值: NoSub, Par+X, DoublePar+X (X为数字)
-    sub8421configstring: null,
+    // 扣分开始的值: NoSub, Par+X, DoublePar+X (X为数字) - 默认：Par+4
+    sub8421configstring: 'Par+4',
 
-    // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL
-    dutyconfig: null,
+    // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL - 默认：NODUTY
+    dutyconfig: 'NODUTY',
 
-    // 顶洞规则: NoDraw(无顶洞), Diff_X(得分X分以内), DrawEqual(得分打平)
-    draw8421Config: null,
+    // 顶洞规则: NoDraw(无顶洞), Diff_X(得分X分以内), DrawEqual(得分打平) - 默认：DrawEqual
+    draw8421Config: 'DrawEqual',
 
-    // 吃肉规则：
-    eatingRange: null,
+    // 吃肉规则：默认配置
+    eatingRange: {
+        "BetterThanBirdie": 2,
+        "Birdie": 2,
+        "Par": 1,
+        "WorseThanPar": 0
+    },
 
-    // meat option: MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
-    meat_value: null,
+    // meat option: MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE - 默认：MEAT_AS_1
+    meat_value: 'MEAT_AS_1',
 
     // 吃肉封顶：  数字类型，如 3 表示3分封顶，10000000 表示不封顶
     meatMaxValue: 10000000,
@@ -64,11 +69,16 @@ export const G_4P_8421_Store = observable({
     // 重置所有规则的action
     resetAllRules: action(function () {
         this.max8421_sub_value = 10000000;
-        this.sub8421configstring = null;
-        this.dutyconfig = null;
-        this.draw8421Config = null;
-        this.eatingRange = null;
-        this.meat_value = null;
+        this.sub8421configstring = 'Par+4';
+        this.dutyconfig = 'NODUTY';
+        this.draw8421Config = 'DrawEqual';
+        this.eatingRange = {
+            "BetterThanBirdie": 2,
+            "Birdie": 2,
+            "Par": 1,
+            "WorseThanPar": 0
+        };
+        this.meat_value = 'MEAT_AS_1';
         this.meatMaxValue = 10000000;
     }),
 
