@@ -22,8 +22,8 @@
 
     <!-- 吃肉规则 -->
     <view class="form-label">吃肉规则</view>
-    <view class="form-select" bindtap="{{noKoufen || draw8421Config === '无顶洞' ? '' : 'onShowEatmeat'}}">
-      <input class="form-input {{noKoufen || draw8421Config === '无顶洞' ? 'conditionally-disabled' : ''}}" value="{{eatmeatDisplayValue}}" disabled="{{noKoufen || draw8421Config === '无顶洞'}}" />
+    <view class="form-select" bindtap="{{noKoufen || draw8421Config === 'NoDraw' ? '' : 'onShowEatmeat'}}">
+      <input class="form-input {{noKoufen || draw8421Config === 'NoDraw' ? 'conditionally-disabled' : ''}}" value="{{eatmeatDisplayValue}}" disabled="{{noKoufen || draw8421Config === 'NoDraw'}}" />
       <view class="select-arrow"><text class="arrow-circle">▼</text></view>
     </view>
 

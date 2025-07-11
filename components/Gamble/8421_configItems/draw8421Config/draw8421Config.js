@@ -7,13 +7,33 @@ Component({
   },
   data: {
     options: [
+      'DrawEqual',
+      'Diff_1',
+      'NoDraw'
+    ],
+    displayOptions: [
       '得分打平',
       '得分1分以内',
       '无顶洞'
     ],
     selected: 0
   },
+  attached() {
+    // 组件初始化时，根据store中的值设置选中状态
+    this.syncSelectedFromStore();
+  },
+
   methods: {
+    syncSelectedFromStore() {
+      const currentValue = G_4P_8421_Store.draw8421Config;
+      if (currentValue) {
+        const index = this.data.options.findIndex(option => option === currentValue);
+        if (index !== -1) {
+          this.setData({ selected: index });
+        }
+      }
+    },
+
     onSelect(e) {
       this.setData({ selected: e.currentTarget.dataset.index });
     },

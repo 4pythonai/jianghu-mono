@@ -3,7 +3,7 @@ import gameApi from '../../../../api/modules/game' // 导入整个默认导出�
 
 export const G_4P_8421_Store = observable({
     // 生成规则摘要名称
-    generateAbstractName: function () {
+    generateAbstractName: () => {
         return `规则_${Math.floor(Math.random() * 10000)}`;
     },
 
@@ -12,32 +12,32 @@ export const G_4P_8421_Store = observable({
     user_rulename: '8421',
     creatorId: null,
 
-    // 封顶配置: 不封顶,扣2分后再封顶
-    max8421_sub_value: null,
+    // 封顶配置: 数字类型，如 2 表示扣2分封顶，10000000 表示不封顶
+    max8421_sub_value: 10000000,
 
-    // 扣分开始的值: 从帕+4开始扣分,从双帕+0开始扣分,不扣分
-    koufen_start: null,
+    // 扣分开始的值: NoSub, Par+X, DoublePar+X (X为数字)
+    sub8421configstring: null,
 
-    // 同伴惩罚配置: 不包负分,同伴顶头包负分,包负分
-    partner_punishment: null,
+    // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL
+    dutyconfig: null,
 
-    // 顶洞规则       '得分打平', '得分1分以内', '无顶洞'
+    // 顶洞规则: NoDraw(无顶洞), Diff_X(得分X分以内), DrawEqual(得分打平)
     draw8421Config: null,
 
     // 吃肉规则：
     eatingRange: null,
 
-    // meat option: '肉算1分', '分值翻倍', '分值连续翻倍'
+    // meat option: MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
     meat_value: null,
 
-    // 吃肉封顶：  ['不封顶', '3分封顶'],
-    meatMaxValue: null,
+    // 吃肉封顶：  数字类型，如 3 表示3分封顶，10000000 表示不封顶
+    meatMaxValue: 10000000,
 
     // 更新扣分规则的action
-    updateKoufenRule: action(function (meatMaxValue, start, punishment) {
-        this.max8421_sub_value = meatMaxValue;
-        this.koufen_start = start;
-        this.partner_punishment = punishment;
+    updateKoufenRule: action(function (max8421SubValue, sub8421ConfigString, dutyconfig) {
+        this.max8421_sub_value = max8421SubValue;
+        this.sub8421configstring = sub8421ConfigString;
+        this.dutyconfig = dutyconfig;
         this.user_rulename = this.generateAbstractName();
     }),
 
@@ -48,9 +48,9 @@ export const G_4P_8421_Store = observable({
     }),
 
     // 更新吃肉规则的action
-    updateEatmeatRule: action(function (eatingRange, meatValueConfigString, meatMaxValue) {
+    updateEatmeatRule: action(function (eatingRange, meatValueConfig, meatMaxValue) {
         this.eatingRange = eatingRange;
-        this.meat_value = meatValueConfigString;
+        this.meat_value = meatValueConfig;
         this.meatMaxValue = meatMaxValue;
         this.user_rulename = this.generateAbstractName();
     }),
@@ -62,13 +62,13 @@ export const G_4P_8421_Store = observable({
 
     // 重置所有规则的action
     resetAllRules: action(function () {
-        this.max8421_sub_value = null;
-        this.koufen_start = null;
-        this.partner_punishment = null;
+        this.max8421_sub_value = 10000000;
+        this.sub8421configstring = null;
+        this.dutyconfig = null;
         this.draw8421Config = null;
         this.eatingRange = null;
         this.meat_value = null;
-        this.meatMaxValue = null;
+        this.meatMaxValue = 10000000;
     }),
 
     // 获取所有规则数据的action
@@ -77,8 +77,8 @@ export const G_4P_8421_Store = observable({
         console.log('=== 4P-8421 规则配置数据 ===');
         console.log('规则名称:', this.user_rulename);
         console.log('封顶配置:', this.max8421_sub_value);
-        console.log('扣分开始值:', this.koufen_start);
-        console.log('同伴惩罚配置:', this.partner_punishment);
+        console.log('扣分开始值:', this.sub8421configstring);
+        console.log('同伴惩罚配置:', this.dutyconfig);
         console.log('顶洞规则:', this.draw8421Config);
         console.log('吃肉得分配对:', this.eatingRange);
         console.log('肉分值计算:', this.meat_value);
@@ -91,8 +91,8 @@ export const G_4P_8421_Store = observable({
             ename: this.ename,
             creatorId: this.creatorId,
             max8421_sub_value: this.max8421_sub_value,
-            koufen_start: this.koufen_start,
-            partner_punishment: this.partner_punishment,
+            sub8421configstring: this.sub8421configstring,
+            dutyconfig: this.dutyconfig,
             draw8421Config: this.draw8421Config,
             eatingRange: this.eatingRange,
             meat_value: this.meat_value,

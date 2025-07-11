@@ -9,11 +9,15 @@
       <block wx:for="{{eatList}}" wx:key="index">
         <view class="eat-row">
           <view class="eat-label">{{item.label}}</view>
-          <input class="eat-input {{noKoufen ? 'disabled-input' : ''}}" 
-                 value="{{item.value}}" 
-                 data-index="{{index}}" 
-                 bindinput="{{noKoufen ? '' : 'onEatInput'}}"
-                 disabled="{{noKoufen}}" />
+          <!-- 改为滚轮选择器 -->
+          <picker class="eat-picker {{noKoufen ? 'disabled-picker' : ''}}" 
+                  range="{{eatValueRange}}" 
+                  value="{{item.value - 1}}" 
+                  data-index="{{index}}"
+                  bindchange="{{noKoufen ? '' : 'onEatValueChange'}}"
+                  disabled="{{noKoufen}}">
+            <view class="picker-value">{{item.value}}</view>
+          </picker>
         </view>
       </block>
       <view class="modal-divider"></view>
@@ -33,7 +37,21 @@
           <view class="radio-outer {{topSelected === index ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{topSelected === index}}"></view>
           </view>
-          <text>{{item}}</text>
+          <view class="option-content">
+            <text wx:if="{{index === 0}}">{{item}}</text>
+            <text wx:elif="{{index === 1 && topSelected === 1}}"></text>
+            <text wx:elif="{{index === 1 && topSelected !== 1}}">{{topScoreLimit}}分封顶</text>
+            
+            <!-- 封顶分数选择器 -->
+            <picker wx:if="{{index === 1 && topSelected === 1}}" 
+                    class="score-picker" 
+                    range="{{topScoreRange}}" 
+                    value="{{topScoreLimit - 1}}" 
+                    bindchange="onTopScoreChange">
+              <view class="picker-value">{{topScoreLimit}}</view>
+            </picker>
+            <text wx:if="{{index === 1 && topSelected === 1}}">分封顶</text>
+          </view>
         </view>
       </block>
     </view>

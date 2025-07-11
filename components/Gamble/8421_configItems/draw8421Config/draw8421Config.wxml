@@ -2,7 +2,7 @@
   <view class="modal-content" catchtap>
     <view class="modal-title">顶洞规则</view>
     <view class="modal-list">
-      <block wx:for="{{options}}" wx:key="index">
+      <block wx:for="{{displayOptions}}" wx:key="index">
         <view class="modal-item {{noKoufen && index > 0 ? 'disabled-item' : ''}}" 
               bindtap="{{noKoufen && index > 0 ? '' : 'onSelect'}}" 
               data-index="{{index}}">

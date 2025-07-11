@@ -47,29 +47,90 @@ Component({
   methods: {
     // 从store初始化配置
     initializeFromStore() {
-      const storeData = G_4P_8421_Store.getKoufenRule();
-      if (storeData) {
+      // 直接访问store的属性
+      const max8421SubValue = G_4P_8421_Store.max8421_sub_value;
+      const koufenStart = G_4P_8421_Store.sub8421configstring;
+      const partnerPunishment = G_4P_8421_Store.dutyconfig;
+
+      if (max8421SubValue !== 10000000 || koufenStart || partnerPunishment) {
         // 解析已保存的配置
-        this.parseStoredConfig(storeData);
+        this.parseStoredConfig({
+          max8421SubValue,
+          koufenStart,
+          partnerPunishment
+        });
       }
     },
     // 解析存储的配置
     parseStoredConfig(config) {
-      // 这里可以根据实际的store数据结构来解析
-      // 暂时保持默认值，实际使用时需要根据store的数据结构来修改
+      const { max8421SubValue, koufenStart, partnerPunishment } = config;
       console.log('从store加载配置:', config);
+
+      // 解析扣分开始条件 - 新格式：NoSub, Par+X, DoublePar+X
+      if (koufenStart) {
+        if (koufenStart === 'NoSub') {
+          this.setData({ selectedStart: 2 });
+        } else if (koufenStart?.startsWith('Par+')) {
+          this.setData({ selectedStart: 0 });
+          // 提取帕分数
+          const scoreStr = koufenStart.replace('Par+', '');
+          const score = parseInt(scoreStr);
+          if (!isNaN(score)) {
+            this.setData({ paScore: score });
+          }
+        } else if (koufenStart?.startsWith('DoublePar+')) {
+          this.setData({ selectedStart: 1 });
+          // 提取双帕分数
+          const scoreStr = koufenStart.replace('DoublePar+', '');
+          const score = parseInt(scoreStr);
+          if (!isNaN(score)) {
+            this.setData({ doubleParScore: score });
+          }
+        }
+      }
+
+      // 解析封顶配置 - 新格式：数字，10000000表示不封顶
+      if (max8421SubValue === 10000000) {
+        this.setData({ selectedMax: 0 });
+      } else if (typeof max8421SubValue === 'number' && max8421SubValue < 10000000) {
+        this.setData({
+          selectedMax: 1,
+          maxSubScore: max8421SubValue
+        });
+      }
+
+      // 解析同伴惩罚配置 - 新格式：NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL
+      if (partnerPunishment) {
+        let selectedDuty = 0;
+        switch (partnerPunishment) {
+          case 'NODUTY':
+            selectedDuty = 0;
+            break;
+          case 'DUTY_CODITIONAL':
+            selectedDuty = 1;
+            break;
+          case 'DUTY_NEGATIVE':
+            selectedDuty = 2;
+            break;
+          default:
+            // 兼容旧格式
+            const dutyOptions = ['不包负分', '同伴顶头包负分', '包负分'];
+            const index = dutyOptions.indexOf(partnerPunishment);
+            if (index !== -1) {
+              selectedDuty = index;
+            }
+        }
+        this.setData({ selectedDuty });
+      }
     },
     onSelectStart(e) {
-      const index = e.currentTarget.dataset.index;
-      this.setData({ selectedStart: index });
+      this.setData({ selectedStart: e.currentTarget.dataset.index });
     },
     onSelectMax(e) {
-      const index = e.currentTarget.dataset.index;
-      this.setData({ selectedMax: index });
+      this.setData({ selectedMax: e.currentTarget.dataset.index });
     },
     onSelectDuty(e) {
-      const index = e.currentTarget.dataset.index;
-      this.setData({ selectedDuty: index });
+      this.setData({ selectedDuty: e.currentTarget.dataset.index });
     },
     // 帕分数改变
     onPaScoreChange(e) {
@@ -90,49 +151,60 @@ Component({
       this.triggerEvent('cancel');
     },
     onConfirm() {
-      const { Sub8421ConfigString, selectedStart, maxOptions, selectedMax, dutyOptions, selectedDuty, paScore, doubleParScore, maxSubScore } = this.data;
+      const { selectedStart, selectedMax, selectedDuty, paScore, doubleParScore, maxSubScore } = this.data;
 
-      // 构建动态文本
-      const dynamicStartTexts = [
-        `从帕+${paScore}开始扣分`,
-        `从双帕+${doubleParScore}开始扣分`,
-        '不扣分'
-      ];
+      // 构建新格式的配置数据
+      let sub8421ConfigString = null;
+      switch (selectedStart) {
+        case 0:
+          sub8421ConfigString = `Par+${paScore}`;
+          break;
+        case 1:
+          sub8421ConfigString = `DoublePar+${doubleParScore}`;
+          break;
+        case 2:
+          sub8421ConfigString = 'NoSub';
+          break;
+      }
 
-      const dynamicMaxTexts = [
-        '不封顶',
-        `扣${maxSubScore}分封顶`
-      ];
+      // 封顶配置改为数字格式，10000000表示不封顶
+      const max8421SubValue = selectedMax === 0 ? 10000000 : maxSubScore;
 
-      // 解析配置数据
-      const start = dynamicStartTexts[selectedStart]; // 扣分开始  
-      const meatMaxValue = dynamicMaxTexts[selectedMax]; // 封顶配置
-      const punishment = dutyOptions[selectedDuty]; // 同伴惩罚
+      // 同伴惩罚配置改为枚举格式
+      let dutyconfig = null;
+      switch (selectedDuty) {
+        case 0:
+          dutyconfig = 'NODUTY';
+          break;
+        case 1:
+          dutyconfig = 'DUTY_CODITIONAL';
+          break;
+        case 2:
+          dutyconfig = 'DUTY_NEGATIVE';
+          break;
+      }
 
       // 调用store的action更新数据
-      G_4P_8421_Store.updateKoufenRule(meatMaxValue, start, punishment);
+      G_4P_8421_Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, dutyconfig);
 
       console.log('扣分组件已更新store:', {
-        meatMaxValue,
-        start,
-        punishment,
+        max8421SubValue,
+        sub8421ConfigString,
+        dutyconfig,
         customValues: { paScore, doubleParScore, maxSubScore }
       });
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
         value: {
-          Sub8421ConfigString,
           selectedStart,
-          maxOptions,
           selectedMax,
-          dutyOptions,
           selectedDuty,
           paScore,
           doubleParScore,
           maxSubScore
         },
-        parsedData: { meatMaxValue, start, punishment }
+        parsedData: { max8421SubValue, sub8421ConfigString, dutyconfig }
       });
     }
   }

@@ -16,21 +16,101 @@ Component({
       '肉算1分', '分值翻倍', '分值连续翻倍'
     ],
     scoreSelected: 0,
-    topOptions: ['不封顶', '3分封顶'],
-    topSelected: 0
+
+    // 修改封顶选项，支持可编辑数字
+    topOptions: ['不封顶', 'X分封顶'],
+    topSelected: 0,
+
+    // 新增可编辑变量
+    topScoreLimit: 3, // 封顶分数，默认3
+
+    // 数字选择器范围
+    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20，吃肉数量范围
+    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20，封顶分数范围
+  },
+  // 组件生命周期
+  lifetimes: {
+    attached() {
+      // 从store获取当前配置并初始化组件状态
+      this.initializeFromStore();
+    }
+  },
+  // 属性变化监听
+  observers: {
+    'visible': function (newVal) {
+      if (newVal) {
+        // 每次显示时重新加载配置
+        this.initializeFromStore();
+      }
+    }
   },
   methods: {
-    onEatInput(e) {
+    // 从store初始化配置
+    initializeFromStore() {
+      // 直接访问store的属性
+      const eatingRange = G_4P_8421_Store.eatingRange;
+      const meatValue = G_4P_8421_Store.meat_value;
+      const meatMaxValue = G_4P_8421_Store.meatMaxValue;
+
+      if (eatingRange || meatValue || meatMaxValue !== 10000000) {
+        // 解析已保存的配置
+        this.parseStoredConfig({
+          eatingRange,
+          meatValue,
+          meatMaxValue
+        });
+      }
+    },
+    // 解析存储的配置
+    parseStoredConfig(config) {
+      const { eatingRange, meatValue, meatMaxValue } = config;
+      console.log('从store加载吃肉配置:', config);
+
+      // 解析吃肉数量配置
+      if (eatingRange && Array.isArray(eatingRange)) {
+        this.setData({ eatList: eatingRange });
+      }
+
+      // 解析肉分值计算方式 - 新格式：MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
+      if (meatValue) {
+        let scoreSelected = 0;
+        if (meatValue?.startsWith('MEAT_AS_')) {
+          scoreSelected = 0;
+        } else if (meatValue === 'SINGLE_DOUBLE') {
+          scoreSelected = 1;
+        } else if (meatValue === 'CONTINUE_DOUBLE') {
+          scoreSelected = 2;
+        }
+        this.setData({ scoreSelected });
+      }
+
+      // 解析封顶配置 - 新格式：数字，10000000表示不封顶
+      if (meatMaxValue === 10000000) {
+        this.setData({ topSelected: 0 });
+      } else if (typeof meatMaxValue === 'number' && meatMaxValue < 10000000) {
+        this.setData({
+          topSelected: 1,
+          topScoreLimit: meatMaxValue
+        });
+      }
+    },
+    // 废弃原来的输入方法，改用滚轮选择器
+    onEatValueChange(e) {
       const idx = e.currentTarget.dataset.index;
-      const val = e.detail.value.replace(/\D/g, '');
+      const value = this.data.eatValueRange[e.detail.value];
       const key = `eatList[${idx}].value`;
-      this.setData({ [key]: val });
+      this.setData({ [key]: value });
     },
     onScoreSelect(e) {
       this.setData({ scoreSelected: e.currentTarget.dataset.index });
     },
     onTopSelect(e) {
       this.setData({ topSelected: e.currentTarget.dataset.index });
+    },
+    // 封顶分数改变
+    onTopScoreChange(e) {
+      const value = this.data.topScoreRange[e.detail.value];
+      this.setData({ topScoreLimit: value });
     },
     onCancel() {
       this.triggerEvent('cancel');
@@ -40,22 +120,41 @@ Component({
 
       // 解析配置数据
       const eatingRange = data.eatList; // 吃肉得分配对
-      const meatValueConfigString = data.meatValueOptions[data.scoreSelected]; // 肉分值计算方式
-      const meatMaxValue = data.topOptions[data.topSelected]; // 吃肉封顶
+
+      // 肉分值计算方式改为新格式
+      let meatValueConfig = null;
+      switch (data.scoreSelected) {
+        case 0:
+          meatValueConfig = 'MEAT_AS_1'; // 固定为MEAT_AS_1，如需要其他数值可以再扩展
+          break;
+        case 1:
+          meatValueConfig = 'SINGLE_DOUBLE';
+          break;
+        case 2:
+          meatValueConfig = 'CONTINUE_DOUBLE';
+          break;
+      }
+
+      // 吃肉封顶改为数字格式，10000000表示不封顶
+      const meatMaxValue = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
 
       // 调用store的action更新数据
-      G_4P_8421_Store.updateEatmeatRule(eatingRange, meatValueConfigString, meatMaxValue);
+      G_4P_8421_Store.updateEatmeatRule(eatingRange, meatValueConfig, meatMaxValue);
 
       console.log('吃肉组件已更新store:', {
         eatingRange,
-        meatValueConfigString,
-        meatMaxValue
+        meatValueConfig,
+        meatMaxValue,
+        customValues: { topScoreLimit: data.topScoreLimit }
       });
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
-        value: data,
-        parsedData: { eatingRange, meatValueConfigString, meatMaxValue }
+        value: {
+          ...data,
+          topScoreLimit: data.topScoreLimit
+        },
+        parsedData: { eatingRange, meatValueConfig, meatMaxValue }
       });
     }
   }
