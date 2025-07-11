@@ -1,0 +1,9 @@
+{
+    "navigationBarTitleText": "游戏运行时配置",
+    "usingComponents": {
+        "Summary": "./RuntimeComponents/Summary/Summary",
+        "HoleRangeSelector": "./RuntimeComponents/HoleRangeSelector/HoleRangeSelector",
+        "RedBlueConfig": "./RuntimeComponents/RedBlueConfig/RedBlueConfig",
+        "RankingSelector": "./RuntimeComponents/RankingSelector/RankingSelector"
+    }
+}

@@ -1,0 +1,278 @@
+/* RedBlueConfig组件样式 */
+.red-blue-config {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+/* 操作按钮 */
+.action-buttons {
+	display: flex;
+	gap: 15rpx;
+	margin-bottom: 10rpx;
+}
+
+.auto-assign-btn {
+	flex: 1;
+	height: 70rpx;
+	background-color: #4caf50;
+	color: #fff;
+	border: none;
+	border-radius: 35rpx;
+	font-size: 28rpx;
+	font-weight: bold;
+}
+
+.auto-assign-btn::after {
+	border: none;
+}
+
+.reset-btn {
+	flex: 1;
+	height: 70rpx;
+	background-color: #f44336;
+	color: #fff;
+	border: none;
+	border-radius: 35rpx;
+	font-size: 28rpx;
+	font-weight: bold;
+}
+
+.reset-btn::after {
+	border: none;
+}
+
+/* 未分组玩家区域 */
+.unassigned-section {
+	margin-bottom: 20rpx;
+}
+
+.section-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 15rpx;
+}
+
+.players-list {
+	display: flex;
+	flex-direction: column;
+	gap: 15rpx;
+}
+
+.player-item {
+	display: flex;
+	align-items: center;
+	padding: 15rpx;
+	background-color: #f8f8f8;
+	border-radius: 15rpx;
+	gap: 15rpx;
+}
+
+.player-item.unassigned {
+	border: 2rpx solid #e0e0e0;
+}
+
+.player-item.assigned {
+	border: 2rpx solid #4caf50;
+}
+
+.player-avatar {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	background-color: #f0f0f0;
+	border: 2rpx solid #e0e0e0;
+	flex-shrink: 0;
+}
+
+.player-name {
+	font-size: 28rpx;
+	color: #333;
+	font-weight: 500;
+	flex: 1;
+}
+
+/* 分配按钮 */
+.assign-buttons {
+	display: flex;
+	gap: 10rpx;
+}
+
+.assign-red-btn {
+	padding: 8rpx 16rpx;
+	background-color: #ff5252;
+	color: #fff;
+	border: none;
+	border-radius: 20rpx;
+	font-size: 24rpx;
+	font-weight: bold;
+}
+
+.assign-red-btn::after {
+	border: none;
+}
+
+.assign-blue-btn {
+	padding: 8rpx 16rpx;
+	background-color: #2196f3;
+	color: #fff;
+	border: none;
+	border-radius: 20rpx;
+	font-size: 24rpx;
+	font-weight: bold;
+}
+
+.assign-blue-btn::after {
+	border: none;
+}
+
+/* 移除按钮 */
+.remove-btn {
+	width: 50rpx;
+	height: 50rpx;
+	background-color: #f44336;
+	color: #fff;
+	border: none;
+	border-radius: 50%;
+	font-size: 24rpx;
+	font-weight: bold;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.remove-btn::after {
+	border: none;
+}
+
+/* 队伍分组 */
+.teams-section {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+.team-group {
+	border-radius: 15rpx;
+	overflow: hidden;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.red-team {
+	border: 3rpx solid #ff5252;
+}
+
+.blue-team {
+	border: 3rpx solid #2196f3;
+}
+
+.team-header {
+	padding: 15rpx 20rpx;
+	background: linear-gradient(135deg, #ff5252, #e53935);
+	color: #fff;
+}
+
+.blue-team .team-header {
+	background: linear-gradient(135deg, #2196f3, #1976d2);
+}
+
+.team-title {
+	font-size: 32rpx;
+	font-weight: bold;
+}
+
+.team-players {
+	padding: 15rpx;
+	background-color: #fff;
+	min-height: 120rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 10rpx;
+}
+
+.empty-team {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 80rpx;
+	border: 2rpx dashed #e0e0e0;
+	border-radius: 10rpx;
+}
+
+.empty-text {
+	font-size: 24rpx;
+	color: #999;
+}
+
+/* 提示信息 */
+.hint-text {
+	text-align: center;
+	padding: 10rpx;
+	margin-top: 10rpx;
+}
+
+.hint-text text {
+	font-size: 24rpx;
+	color: #999;
+}
+
+/* 响应式设计 */
+@media (max-width: 600rpx) {
+	.action-buttons {
+		flex-direction: column;
+		gap: 10rpx;
+	}
+
+	.auto-assign-btn,
+	.reset-btn {
+		height: 60rpx;
+		font-size: 26rpx;
+	}
+
+	.teams-section {
+		gap: 15rpx;
+	}
+
+	.team-header {
+		padding: 12rpx 15rpx;
+	}
+
+	.team-title {
+		font-size: 28rpx;
+	}
+
+	.team-players {
+		padding: 12rpx;
+	}
+
+	.player-item {
+		padding: 12rpx;
+	}
+
+	.player-avatar {
+		width: 50rpx;
+		height: 50rpx;
+	}
+
+	.player-name {
+		font-size: 26rpx;
+	}
+
+	.assign-buttons {
+		flex-direction: column;
+		gap: 5rpx;
+	}
+
+	.assign-red-btn,
+	.assign-blue-btn {
+		padding: 6rpx 12rpx;
+		font-size: 22rpx;
+	}
+
+	.remove-btn {
+		width: 40rpx;
+		height: 40rpx;
+		font-size: 20rpx;
+	}
+}

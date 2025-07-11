@@ -201,37 +201,48 @@ Component({
             });
         },
 
-        // 卡片点击跳转规则配置页
+        // 卡片点击跳转运行时配置页
         onConfigRule(e) {
             const { title } = e.currentTarget.dataset;
-            // 路由映射
-            const map = {
-                // 2人
-                '2p-gross': '/pages/ruleConfig/2player/2p-gross/2p-gross',
-                '2p-hole': '/pages/ruleConfig/2player/2p-hole/2p-hole',
-                '2p-8421': '/pages/ruleConfig/2player/2p-8421/2p-8421',
-                // 3人
-                '3p-doudizhu': '/pages/ruleConfig/3player/3p-doudizhu/3p-doudizhu',
-                '3p-dizhupo': '/pages/ruleConfig/3player/3p-dizhupo/3p-dizhupo',
-                '3p-8421': '/pages/ruleConfig/3player/3p-8421/3p-8421',
-                // 4人
-                '4p-lasi': '/pages/ruleConfig/4player/4p-lasi/4p-lasi',
-                '4p-8421': '/pages/ruleConfig/4player/4p-8421/4p-8421',
-                '4p-dizhupo': '/pages/ruleConfig/4player/4p-dizhupo/4p-dizhupo',
-                '4p-3da1': '/pages/ruleConfig/4player/4p-3da1/4p-3da1',
-                '4p-bestak': '/pages/ruleConfig/4player/4p-bestak/4p-bestak',
-                // 4人以上
-                'mp-labahua': '/pages/ruleConfig/mplayer/mp-labahua/mp-labahua',
-                'mp-dabudui': '/pages/ruleConfig/mplayer/mp-dabudui/mp-dabudui',
+
+            // 导入gameStore来获取游戏数据
+            const { gameStore } = require('../../../../stores/gameStore');
+
+            // 准备传递给运行时配置页面的数据（简化版）
+            const runtimeConfigData = {
+                ruleType: title,
+                gameId: gameStore.gameid || null,
+                playerCount: gameStore.players?.length || 0,
+                holeCount: gameStore.holes?.length || 18,
+                fromUserRule: false // 标识这是从系统规则进入的
             };
-            if (map[title]) {
-                wx.navigateTo({ url: map[title] });
-            } else {
-                wx.showToast({
-                    title: '暂未开放，敬请期待',
-                    icon: 'none'
-                });
-            }
+
+            // 将完整数据暂存到全局（为了保持一致性）
+            const app = getApp();
+            app.globalData = app.globalData || {};
+            app.globalData.currentGameData = {
+                players: gameStore.players || [],
+                holes: gameStore.holes || [],
+                gameData: gameStore.gameData || null
+            };
+
+            // 编码传递的数据
+            const encodedData = encodeURIComponent(JSON.stringify(runtimeConfigData));
+
+            // 跳转到运行时配置页面
+            wx.navigateTo({
+                url: `/pages/gambleRuntimeConfig/gambleRuntimeConfig?data=${encodedData}`,
+                success: () => {
+                    console.log('🎮 成功跳转到运行时配置页面，规则类型:', title);
+                },
+                fail: (err) => {
+                    console.error('🎮 跳转失败:', err);
+                    wx.showToast({
+                        title: '页面跳转失败',
+                        icon: 'none'
+                    });
+                }
+            });
         }
     }
 }); 

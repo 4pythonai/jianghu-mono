@@ -189,25 +189,119 @@ Component({
             this.triggerEvent('editRule', { rule: item, group });
         },
 
-        // 查看规则详情
+        // 查看规则详情 - 跳转到运行时配置页面
         onViewRule(e) {
             const { item, group } = e.currentTarget.dataset;
-            console.log('📋 [MyRules] 查看规则详情:', item, '分组:', group);
+            console.log('📋 [MyRules] 使用用户规则:', item, '分组:', group);
 
-            // 构建规则详情内容
-            let content = `规则名称：${item.gambleUserName || item.user_rulename || item.title}\n`;
-            content += `游戏人数：${this.getGroupDisplayName(group)}\n`;
-            content += `创建时间：${item.created_at || '未知'}\n`;
-            if (item.description) {
-                content += `\n规则描述：${item.description}`;
+            // 导入gameStore来获取游戏数据
+            const { gameStore } = require('../../../../stores/gameStore');
+
+            // 根据用户规则确定ruleType
+            const ruleType = this.mapUserRuleToRuleType(item, group);
+
+            if (!ruleType) {
+                wx.showToast({
+                    title: '无法识别规则类型',
+                    icon: 'none'
+                });
+                return;
             }
 
-            wx.showModal({
-                title: '规则详情',
-                content: content,
-                showCancel: false,
-                confirmText: '我知道了'
+            // 准备传递给运行时配置页面的数据（简化版，减少URL长度）
+            const runtimeConfigData = {
+                ruleType: ruleType,
+                gameId: gameStore.gameid || null,
+                playerCount: gameStore.players?.length || 0,
+                holeCount: gameStore.holes?.length || 18,
+                userRuleId: item.userRuleId || null,
+                userRuleName: item.gambleUserName || item.user_rulename || item.title,
+                fromUserRule: true // 标识这是从用户规则进入的
+            };
+
+            // 将完整的用户规则数据暂存到全局
+            const app = getApp();
+            app.globalData = app.globalData || {};
+            app.globalData.currentUserRule = item;
+            app.globalData.currentGameData = {
+                players: gameStore.players || [],
+                holes: gameStore.holes || [],
+                gameData: gameStore.gameData || null
+            };
+
+            // 编码传递的数据
+            const encodedData = encodeURIComponent(JSON.stringify(runtimeConfigData));
+
+            // 跳转到运行时配置页面
+            wx.navigateTo({
+                url: `/pages/gambleRuntimeConfig/gambleRuntimeConfig?data=${encodedData}`,
+                success: () => {
+                    console.log('🎮 成功跳转到运行时配置页面，用户规则:', item.gambleUserName || item.user_rulename);
+                },
+                fail: (err) => {
+                    console.error('🎮 跳转失败:', err);
+                    wx.showToast({
+                        title: '页面跳转失败',
+                        icon: 'none'
+                    });
+                }
             });
+        },
+
+        // 将用户规则映射到标准规则类型
+        mapUserRuleToRuleType(userRule, group) {
+            // 根据游戏系统名称和人数确定规则类型
+            const gamblesysname = userRule.gamblesysname || '';
+
+            // 构建规则类型映射
+            const ruleTypeMap = {
+                'twoPlayers': {
+                    '8421': '2p-8421',
+                    'gross': '2p-gross',
+                    'hole': '2p-hole'
+                },
+                'threePlayers': {
+                    '8421': '3p-8421',
+                    'doudizhu': '3p-doudizhu',
+                    'dizhupo': '3p-dizhupo'
+                },
+                'fourPlayers': {
+                    '8421': '4p-8421',
+                    'lasi': '4p-lasi',
+                    'dizhupo': '4p-dizhupo',
+                    '3da1': '4p-3da1',
+                    'bestak': '4p-bestak'
+                }
+            };
+
+            // 首先根据gamblesysname精确匹配
+            if (ruleTypeMap[group] && ruleTypeMap[group][gamblesysname]) {
+                return ruleTypeMap[group][gamblesysname];
+            }
+
+            // 如果精确匹配失败，根据规则名称进行模糊匹配
+            const ruleName = (userRule.gambleUserName || userRule.user_rulename || '').toLowerCase();
+
+            if (ruleName.includes('8421')) {
+                return ruleTypeMap[group]['8421'];
+            } else if (ruleName.includes('比杆') || ruleName.includes('gross')) {
+                return ruleTypeMap[group]['gross'];
+            } else if (ruleName.includes('比洞') || ruleName.includes('hole')) {
+                return ruleTypeMap[group]['hole'];
+            } else if (ruleName.includes('斗地主') || ruleName.includes('doudizhu')) {
+                return ruleTypeMap[group]['doudizhu'];
+            } else if (ruleName.includes('地主婆') || ruleName.includes('dizhupo')) {
+                return ruleTypeMap[group]['dizhupo'];
+            } else if (ruleName.includes('拉死') || ruleName.includes('lasi')) {
+                return ruleTypeMap[group]['lasi'];
+            } else if (ruleName.includes('3打1') || ruleName.includes('3da1')) {
+                return ruleTypeMap[group]['3da1'];
+            } else if (ruleName.includes('bestak')) {
+                return ruleTypeMap[group]['bestak'];
+            }
+
+            // 默认返回该组的8421规则
+            return ruleTypeMap[group]['8421'] || null;
         },
 
         // 获取分组显示名称

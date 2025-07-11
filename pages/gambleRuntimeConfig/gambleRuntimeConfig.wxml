@@ -1,0 +1,71 @@
+<!-- 游戏运行时配置页面 -->
+<view class="runtime-config-container">
+  <!-- 错误状态 -->
+  <view class="error-container" wx:if="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+  
+  <!-- 主要内容 -->
+  <view class="main-content" wx:else>
+    <!-- 游戏规则摘要 -->
+    <view class="section">
+      <view class="section-title">游戏规则</view>
+      <Summary 
+        ruleType="{{ruleType}}"
+        players="{{players}}"
+        userRule="{{userRule}}"
+        bind:reselect="onReSelectRule"
+      />
+    </view>
+    
+    <!-- 洞范围选择 -->
+    <view class="section">
+      <view class="section-title">选择洞范围</view>
+      <HoleRangeSelector 
+        startHole="{{runtimeConfig.startHole}}"
+        endHole="{{runtimeConfig.endHole}}"
+        totalHoles="{{holes.length}}"
+        bind:change="onHoleRangeChange"
+      />
+    </view>
+    
+    <!-- 红蓝分组配置 -->
+    <view class="section" wx:if="{{runtimeConfig.red_blue_config.enable}}">
+      <view class="section-title">红蓝分组</view>
+      <RedBlueConfig 
+        players="{{players}}"
+        redTeam="{{runtimeConfig.red_blue_config.redTeam}}"
+        blueTeam="{{runtimeConfig.red_blue_config.blueTeam}}"
+        bind:change="onRedBlueConfigChange"
+      />
+    </view>
+    
+    <!-- 排名配置 -->
+    <view class="section">
+      <view class="section-title">排名规则</view>
+      <RankingSelector 
+        selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        bind:change="onRankingConfigChange"
+      />
+    </view>
+  </view>
+  
+  <!-- 底部按钮 -->
+  <view class="bottom-buttons">
+    <button 
+      class="cancel-btn" 
+      bindtap="onCancelConfig"
+      disabled="{{loading}}"
+    >
+      取消
+    </button>
+    <button 
+      class="confirm-btn" 
+      bindtap="onConfirmConfig"
+      disabled="{{loading}}"
+      loading="{{loading}}"
+    >
+      确定
+    </button>
+  </view>
+</view> 

@@ -1,0 +1,168 @@
+/* RankingSelector组件样式 */
+.ranking-selector {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+/* 选项列表 */
+.ranking-options {
+	display: flex;
+	flex-direction: column;
+	gap: 15rpx;
+}
+
+.ranking-option {
+	display: flex;
+	align-items: flex-start;
+	padding: 20rpx;
+	background-color: #f8f8f8;
+	border: 2rpx solid #e0e0e0;
+	border-radius: 15rpx;
+	cursor: pointer;
+	transition: all 0.3s;
+	gap: 15rpx;
+}
+
+.ranking-option:active {
+	transform: scale(0.98);
+}
+
+.ranking-option.selected {
+	background-color: #e8f5e8;
+	border-color: #4caf50;
+}
+
+/* 选择指示器 */
+.radio-indicator {
+	width: 40rpx;
+	height: 40rpx;
+	border: 3rpx solid #e0e0e0;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 5rpx;
+	flex-shrink: 0;
+	transition: all 0.3s;
+}
+
+.ranking-option.selected .radio-indicator {
+	border-color: #4caf50;
+}
+
+.radio-dot {
+	width: 20rpx;
+	height: 20rpx;
+	background-color: #4caf50;
+	border-radius: 50%;
+	animation: radioSelect 0.3s ease-in-out;
+}
+
+@keyframes radioSelect {
+	from {
+		transform: scale(0);
+	}
+	to {
+		transform: scale(1);
+	}
+}
+
+/* 选项内容 */
+.option-content {
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+	flex: 1;
+}
+
+.option-label {
+	font-size: 30rpx;
+	font-weight: bold;
+	color: #333;
+	line-height: 1.2;
+}
+
+.option-description {
+	font-size: 26rpx;
+	color: #666;
+	line-height: 1.4;
+}
+
+/* 当前选择显示 */
+.current-selection {
+	display: flex;
+	align-items: center;
+	padding: 15rpx 20rpx;
+	background-color: #f0f8f0;
+	border-radius: 15rpx;
+	border: 2rpx solid #4caf50;
+	gap: 10rpx;
+}
+
+.selection-label {
+	font-size: 28rpx;
+	color: #666;
+	font-weight: 500;
+}
+
+.selection-value {
+	font-size: 30rpx;
+	color: #4caf50;
+	font-weight: bold;
+}
+
+/* 提示信息 */
+.hint-text {
+	text-align: center;
+	padding: 10rpx;
+	margin-top: 10rpx;
+}
+
+.hint-text text {
+	font-size: 24rpx;
+	color: #999;
+	line-height: 1.4;
+}
+
+/* 响应式设计 */
+@media (max-width: 600rpx) {
+	.ranking-option {
+		padding: 15rpx;
+		gap: 12rpx;
+	}
+
+	.radio-indicator {
+		width: 35rpx;
+		height: 35rpx;
+	}
+
+	.radio-dot {
+		width: 18rpx;
+		height: 18rpx;
+	}
+
+	.option-label {
+		font-size: 28rpx;
+	}
+
+	.option-description {
+		font-size: 24rpx;
+	}
+
+	.current-selection {
+		padding: 12rpx 15rpx;
+	}
+
+	.selection-label {
+		font-size: 26rpx;
+	}
+
+	.selection-value {
+		font-size: 28rpx;
+	}
+
+	.hint-text text {
+		font-size: 22rpx;
+	}
+}

@@ -1,0 +1,35 @@
+<!-- RankingSelector组件 - 排名规则选择器 -->
+<view class="ranking-selector">
+  <!-- 选项列表 -->
+  <view class="ranking-options">
+    <view 
+      class="ranking-option {{selectedIndex === index ? 'selected' : ''}}"
+      wx:for="{{rankingOptions}}"
+      wx:key="value"
+      bindtap="onSelectRanking"
+      data-index="{{index}}"
+    >
+      <!-- 选择指示器 -->
+      <view class="radio-indicator">
+        <view class="radio-dot" wx:if="{{selectedIndex === index}}"></view>
+      </view>
+      
+      <!-- 选项内容 -->
+      <view class="option-content">
+        <view class="option-label">{{item.label}}</view>
+        <view class="option-description">{{item.description}}</view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 当前选择显示 -->
+  <view class="current-selection">
+    <view class="selection-label">当前选择：</view>
+    <view class="selection-value">{{rankingOptions[selectedIndex].label}}</view>
+  </view>
+  
+  <!-- 提示信息 -->
+  <view class="hint-text">
+    <text>提示：选择用于确定玩家排名的规则，影响红蓝分组的分配</text>
+  </view>
+</view> 
