@@ -142,7 +142,7 @@ CREATE TABLE `t_gamble_game_alpha` (
   `total_weak_num` int DEFAULT NULL,
   `addtime` datetime DEFAULT NULL,
   `unit` int DEFAULT NULL,
-  `firstholeindex` int DEFAULT NULL,
+  `firstHoleindex` int DEFAULT NULL,
   `lastholeindex` int DEFAULT NULL,
   `juanguo_point` int DEFAULT NULL,
   `juanguo_type` char(20) DEFAULT NULL,

@@ -173,12 +173,12 @@ class Gamble extends CI_Controller {
         //是否设置了起始洞
         //getgamecourt
 
-        if (array_key_exists('firstholeindex', $para)) {
-            if (intval($para['firstholeindex']) > 0) {
-                $data['firstholeindex'] = $para['firstholeindex'];
+        if (array_key_exists('firstHoleindex', $para)) {
+            if (intval($para['firstHoleindex']) > 0) {
+                $data['firstHoleindex'] = $para['firstHoleindex'];
             }
         } else {
-            $data['firstholeindex'] = 1;
+            $data['firstHoleindex'] = 1;
         }
 
 
@@ -396,10 +396,10 @@ class Gamble extends CI_Controller {
             }
 
 
-            if (array_key_exists('firstholeindex', $one_gamble)) {
-                $tmp['firstholeindex'] = $one_gamble['firstholeindex'];
+            if (array_key_exists('firstHoleindex', $one_gamble)) {
+                $tmp['firstHoleindex'] = $one_gamble['firstHoleindex'];
             } else {
-                $tmp['firstholeindex'] = 1;
+                $tmp['firstHoleindex'] = 1;
             }
 
             if (array_key_exists('lastholeindex', $one_gamble)) {
@@ -495,8 +495,8 @@ class Gamble extends CI_Controller {
         $data['holeorder'] = $this->getholeorder($groupid);
         $data['juanguo'] = $this->getjuanguo($gameid, $groupid);
         //getPublicFirstHoleIndex
-        //$data['firstholeindex'] = $this->getPublicFirstHoleIndex($groupid);
-        $data['firstholeindex'] = 1;
+        //$data['firstHoleindex'] = $this->getPublicFirstHoleIndex($groupid);
+        $data['firstHoleindex'] = 1;
         // $this->getPublicFirstHoleIndex($groupid);
 
 
@@ -506,11 +506,11 @@ class Gamble extends CI_Controller {
 
     public function getPublicFirstHoleIndex($groupid) {
 
-        $sql = "select distinct firstholeindex from t_game_group where groupid=$groupid limit 1";
+        $sql = "select distinct firstHoleindex from t_game_group where groupid=$groupid limit 1";
         $row = $this->db->query($sql)->row_array();
 
         if ($row) {
-            return $row['firstholeindex'];
+            return $row['firstHoleindex'];
         } else {
             return 1;
         }
@@ -893,8 +893,8 @@ class Gamble extends CI_Controller {
 
 
 
-        if (array_key_exists('firstholeindex', $para)) {
-            $data['firstholeindex'] = $para['firstholeindex'];
+        if (array_key_exists('firstHoleindex', $para)) {
+            $data['firstHoleindex'] = $para['firstHoleindex'];
         }
 
 
@@ -1003,7 +1003,7 @@ class Gamble extends CI_Controller {
     }
 
 
-    public function extend_holeorder($groupid, $firstholeindex) {
+    public function extend_holeorder($groupid, $firstHoleindex) {
 
 
 
@@ -1011,12 +1011,12 @@ class Gamble extends CI_Controller {
         $segment1 = array();
         $segment2 = array();
 
-        for ($i = $firstholeindex; $i <= $holecounter; $i++) {
+        for ($i = $firstHoleindex; $i <= $holecounter; $i++) {
             $segment1[] = $i;
         }
 
 
-        for ($i = 1; $i < $firstholeindex; $i++) {
+        for ($i = 1; $i < $firstHoleindex; $i++) {
             $segment2[] = $i;
         }
 
@@ -1031,15 +1031,15 @@ class Gamble extends CI_Controller {
         $groupid        = $para['groupid'];
         $gameid        =  $para['gameid'];
 
-        $firstholeindex = $para['firstholeindex'];
+        $firstHoleindex = $para['firstHoleindex'];
 
 
-        $sql = "update  t_game_group   set firstholeindex=$firstholeindex  where   groupid=$groupid";
+        $sql = "update  t_game_group   set firstHoleindex=$firstHoleindex  where   groupid=$groupid";
         logtext($sql);
         $this->db->query($sql);
 
         //重置 holeorder
-        $holeorder = $this->extend_holeorder($groupid, $firstholeindex);
+        $holeorder = $this->extend_holeorder($groupid, $firstHoleindex);
         $this->insertOrupdateHoleOrder($gameid, $groupid, $holeorder);
 
         $ret['error_code']  = 1;
@@ -1081,16 +1081,16 @@ class Gamble extends CI_Controller {
 
 
     public function getfirsthole($groupid) {
-        $sql = "select firstholeindex from   t_game_group  where   groupid=$groupid  ";
+        $sql = "select firstHoleindex from   t_game_group  where   groupid=$groupid  ";
 
 
         $rows = $this->db->query($sql)->result_array();
         if (count($rows) == 1) {
-            $firstholeindex = $rows[0]['firstholeindex'];
+            $firstHoleindex = $rows[0]['firstHoleindex'];
         } else {
-            $firstholeindex = 1;
+            $firstHoleindex = 1;
         }
-        return $firstholeindex;
+        return $firstHoleindex;
     }
 
 
