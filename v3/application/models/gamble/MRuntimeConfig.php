@@ -177,4 +177,24 @@ class MRuntimeConfig extends CI_Model {
         $config = $this->getGambleConfig($gambleid);
         return $config['duty_config'];
     }
+
+    /**
+     * 获取第一个洞的索引
+     * @param int $gambleid 赌球ID
+     * @return int 第一个洞的索引
+     */
+    public function getFirstHoleindex($gambleid) {
+        $config = $this->getGambleConfig($gambleid);
+        return $config['firstHoleindex'];
+    }
+
+    /**
+     * 获取最后一个洞的索引
+     * @param int $gambleid 赌球ID
+     * @return int 最后一个洞的索引
+     */
+    public function getLastHoleindex($gambleid) {
+        $config = $this->getGambleConfig($gambleid);
+        return $config['lastHoleindex'];
+    }
 }

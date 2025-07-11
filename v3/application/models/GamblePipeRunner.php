@@ -8,7 +8,6 @@ use League\Pipeline\StageInterface;
 
 class GamblePipeRunner   extends CI_Model implements StageInterface {
     public  $payload = [];
-    public  $config = [];
 
     // 常量定义 (根据业务逻辑，所有参与用户都在出发顺序中，无需默认值)
 
@@ -33,6 +32,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     // 以下为结果
     private $useful_holes;
+
     public function __invoke($cfg) {
     }
 
@@ -43,15 +43,15 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     // 初始化信息,包括分组方法,kpi名称,让杆配置
     public function initGamble($config) {
 
-        $this->config = $config;
+
         $this->gambleSysName = $config['gambleSysName'];
         $this->gameid = $config['gameid'];
         $this->gambleid = $config['gambleid'];
         $this->groupid = $config['groupid'];
         $this->userid = $config['userid'];
 
-        $this->firstHoleindex = 1;
-        $this->lastholeindex =  18;
+        $this->firstHoleindex = $this->MRuntimeConfig->getFirstHoleindex($this->gambleid);
+        $this->lastholeindex = $this->MRuntimeConfig->getLastHoleindex($this->gambleid);
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gambleid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->firstHoleindex, $this->lastholeindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
