@@ -190,10 +190,24 @@ class MRuntimeConfig extends CI_Model {
     // 4人分组方式
     public function get4playersRedBlueConfig($gambleid, $attender_number) {
         if ($gambleid == 679528) {
-            // return "4_乱拉";  //  (1,4 名 ) vs (2,3名),第一洞为 1,4 名,第二洞为 2,3名
-            return "4_固拉"; //  确定后不改变
+            return "4_乱拉";  //  (1,4 名 ) vs (2,3名),第一洞为 1,4 名,第二洞为 2,3名
+            // return "4_固拉"; //  确定后不改变
             // return "4_高手不见面";  // (A组 第1名+B组第2名) vs (B组第1+A组第2),防止一方实力太强
         }
+    }
+
+    public function get4RankingTieResolveConfig($gambleid) {
+
+        //         // A类排序（按成绩）
+        // "score.reverse"                    // A.1: 按成绩排序，冲突时回溯成绩
+        // "score.win_loss.reverse_win"       // A.2.1: 按成绩排序，按输赢，回溯输赢
+        "score.win_loss.reverse_score"     // A.2.2: 按成绩排序，按输赢，回溯成绩
+
+        // // B类排序（按得分）
+        // "indicator.reverse"                // B.1: 按得分排序，冲突时回溯得分
+        // "indicator.win_loss.reverse_win"   // B.2.1: 按得分排序，按输赢，回溯输赢
+        // "indicator.win_loss.reverse_indicator" // B.2.2: 按得分排序，按输赢，回溯得分
+
     }
 
 

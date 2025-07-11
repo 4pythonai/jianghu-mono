@@ -13,24 +13,24 @@ class MRedBlue extends CI_Model {
      * @param GambleContext $context 赌球上下文对象
      * @param array $liveUsefulHoles 实时的 usefulHoles 数据（可选）
      */
-    public function setRedBlueWithContext($index, &$hole, $context, $liveUsefulHoles = null) {
+    public function setRedBlueWithContext($index, &$hole, $context) {
         $attenderCount = count($context->attenders);
 
         if ($attenderCount == 2) {
-            $this->set2RedBlue($index, $hole, $context);
+            $this->set2RedBlue($hole, $context);
         }
         if ($attenderCount == 3) {
             $this->set3RedBlue($index, $hole, $context);
         }
         if ($attenderCount == 4) {
-            $this->set4RedBlue($index, $hole, $context, $liveUsefulHoles);
+            $this->set4RedBlue($index, $hole, $context);
         }
     }
 
     /**
      * 2人红蓝分组,一人一边
      */
-    public function set2RedBlue($index, &$hole, $context) {
+    public function set2RedBlue(&$hole, $context) {
         $hole['blue'] = $context->attenders[0];
         $hole['red'] = $context->attenders[1];
     }
@@ -52,8 +52,9 @@ class MRedBlue extends CI_Model {
      * 
      */
 
-    public function set4RedBlue($index, &$hole, $context, $liveUsefulHoles = null) {
+    public function set4RedBlue($index, &$hole, $context) {
         if ($index == 0) {
+            //  乱拉 1,4名 vs 2,3名
             if ($context->redBlueConfig == "4_乱拉") {
                 $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[3]];
                 $hole['red'] = [$context->bootStrapOrder[1], $context->bootStrapOrder[2]];
@@ -73,31 +74,22 @@ class MRedBlue extends CI_Model {
             }
         }
         if ($index >= 1) {
-            $humanIndex   = $index + 1;
-            debug("第{$humanIndex}个洞,红蓝分组:{$context->redBlueConfig}");
+            $humanReabableIndex   = $index + 1;
+            debug("第{$humanReabableIndex}个洞,红蓝分组:{$context->redBlueConfig}");
 
 
             if ($context->redBlueConfig == "4_固拉") {
-                $preHoleIndex = $index - 1;
                 // 使用实时的 usefulHoles 数据，如果没有则回退到 context 中的数据
-                $usefulHoles = $liveUsefulHoles !== null ? $liveUsefulHoles : $context->usefulHoles;
-                $preHole = $usefulHoles[$preHoleIndex];
-
-                // debug("上一个洞");
-                // debug($preHole);
-                // debug("上一个洞是否有ranking：" . (isset($preHole['ranking']) ? "有" : "没有"));
-
-                // $preRank = $preHole['ranking'];
-                // // 由于排名格式是 [rank => userid]，可以直接通过排名获取用户ID
-                // $hole['blue'] = [$preRank[1], $preRank[4]];  // 第1名和第4名
-                // $hole['red'] = [$preRank[2], $preRank[3]];   // 第2名和第3名
-
                 $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[1]];
                 $hole['red'] = [$context->bootStrapOrder[2], $context->bootStrapOrder[3]];
+                $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组 ";
+            }
 
-
-
-                $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanIndex}洞分组, 采用上一洞{$preHoleIndex}分组";
+            if ($context->redBlueConfig == "4_乱拉") {
+                // 使用实时的 usefulHoles 数据，如果没有则回退到 context 中的数据
+                $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[1]];
+                $hole['red'] = [$context->bootStrapOrder[2], $context->bootStrapOrder[3]];
+                $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组,排序后 ";
             }
         }
     }
