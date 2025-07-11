@@ -1,5 +1,6 @@
 import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 import { reaction } from 'mobx-miniprogram'
+const app = getApp()
 
 Page({
   // 存储reaction清理函数
@@ -88,21 +89,30 @@ Page({
     // 输出完整Store数据用于调试
     const allData = G_4P_8421_Store.debugAllRulesData();
 
-    wx.showToast({
-      title: '已添加至我的规则',
-      icon: 'success',
-      duration: 1500,
-      success: () => {
-        // Toast显示完成后跳转到规则页面
-        setTimeout(() => {
-          wx.navigateTo({
-            url: '/pages/rules/rules'
-          });
-        }, 1000);
-      }
-    });
+    app.api.gamble.addGambleRule(allData).then(res => {
+      console.log('添加规则成功:', res);
+      wx.showToast({
+        title: '已添加至我的规则',
+        icon: 'success',
+        duration: 1500,
+        success: () => {
+          // Toast显示完成后跳转到规则页面
+          setTimeout(() => {
+            wx.navigateTo({
+              url: '/pages/rules/rules'
+            });
+          }, 1000);
+        }
+      });
 
-    console.log('完整规则配置数据:', allData);
+    }).catch(err => {
+      console.error('添加规则失败:', err);
+      wx.showToast({
+        title: '添加规则失败',
+        icon: 'none',
+        duration: 1500
+      });
+    });
   },
 
   // 更新扣分规则显示值

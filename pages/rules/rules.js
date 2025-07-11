@@ -13,7 +13,15 @@ Page({
 
     // 页面显示
     onShow() {
-        // 页面显示时的逻辑
+        console.log('📋 [Rules] 页面显示');
+
+        // 刷新我的规则列表，确保显示最新数据
+        if (this.data.activeTab === 0) {
+            const myRulesComponent = this.selectComponent('#myRulesComponent');
+            if (myRulesComponent) {
+                myRulesComponent.refreshRules();
+            }
+        }
     },
 
     // Tab切换方法

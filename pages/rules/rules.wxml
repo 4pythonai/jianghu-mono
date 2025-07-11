@@ -26,13 +26,13 @@
     <!-- Tab内容区域 -->
     <view class="tab-content">
         <!-- 我的规则组件 -->
-        <my-rules 
+        <MyRules 
             id="myRulesComponent"
             show="{{ activeTab == 0 }}"
             bind:editRule="onEditRule"
             bind:ruleDeleted="onRuleDeleted"
             bind:pullDownComplete="onPullDownComplete"
-        ></my-rules>
+        ></MyRules>
 
         <!-- 添加规则组件 -->
         <add-rule 

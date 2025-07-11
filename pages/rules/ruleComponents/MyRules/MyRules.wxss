@@ -1,5 +1,5 @@
 /* 我的规则组件样式 */
-.my-rules-container {
+.myrules-container {
 	min-height: 300px;
 }
 
@@ -13,6 +13,38 @@
 .loading-text {
 	color: #999;
 	font-size: 14px;
+}
+
+/* 规则内容容器 */
+.rules-content {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+/* 统计信息样式 */
+.rules-summary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px;
+	background-color: #fff;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.summary-title {
+	font-size: 18px;
+	font-weight: 600;
+	color: #333;
+}
+
+.summary-count {
+	font-size: 14px;
+	color: #666;
+	background-color: #f5f5f5;
+	padding: 4px 12px;
+	border-radius: 20px;
 }
 
 /* 空状态样式 */
@@ -36,23 +68,64 @@
 	color: #999;
 }
 
-/* 规则列表样式 */
-.rules-list {
+/* 分组容器样式 */
+.rules-groups {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 20px;
 }
 
-.rule-item {
+.rules-group {
 	background-color: #fff;
 	border-radius: 12px;
-	padding: 16px;
+	overflow: hidden;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-	transition: transform 0.2s ease;
+}
+
+/* 分组标题样式 */
+.group-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px;
+	background-color: #f8f9fa;
+	border-bottom: 1px solid #e9ecef;
+}
+
+.group-title {
+	font-size: 16px;
+	font-weight: 600;
+	color: #333;
+}
+
+.group-count {
+	font-size: 12px;
+	color: #666;
+	background-color: #025028;
+	color: #fff;
+	padding: 2px 8px;
+	border-radius: 10px;
+}
+
+/* 分组列表样式 */
+.group-list {
+	display: flex;
+	flex-direction: column;
+}
+
+/* 规则列表样式 */
+.rule-item {
+	padding: 16px;
+	border-bottom: 1px solid #f0f0f0;
+	transition: background-color 0.2s ease;
+}
+
+.rule-item:last-child {
+	border-bottom: none;
 }
 
 .rule-item:active {
-	transform: scale(0.98);
+	background-color: #f8f9fa;
 }
 
 .rule-header {
@@ -75,16 +148,8 @@
 	border-radius: 4px;
 	font-size: 12px;
 	white-space: nowrap;
-}
-
-.rule-type.system {
-	background-color: #e3f2fd;
-	color: #1976d2;
-}
-
-.rule-type.custom {
-	background-color: #f3e5f5;
-	color: #7b1fa2;
+	background-color: #e8f5e8;
+	color: #025028;
 }
 
 .rule-description {
