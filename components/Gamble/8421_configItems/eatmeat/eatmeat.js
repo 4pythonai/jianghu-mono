@@ -12,7 +12,7 @@ Component({
       { label: '鸟', value: 1 },
       { label: '鸟以下', value: 1 }
     ],
-    scoreOptions: [
+    meatValueOptions: [
       '肉算1分', '分值翻倍', '分值连续翻倍'
     ],
     scoreSelected: 0,
@@ -39,23 +39,23 @@ Component({
       const data = this.data;
 
       // 解析配置数据
-      const scorePair = data.eatList; // 吃肉得分配对
-      const meatValue = data.scoreOptions[data.scoreSelected]; // 肉分值计算方式
-      const fengding = data.topOptions[data.topSelected]; // 吃肉封顶
+      const eatingRange = data.eatList; // 吃肉得分配对
+      const meatValueConfigString = data.meatValueOptions[data.scoreSelected]; // 肉分值计算方式
+      const meatMaxValue = data.topOptions[data.topSelected]; // 吃肉封顶
 
       // 调用store的action更新数据
-      G_4P_8421_Store.updateEatmeatRule(scorePair, meatValue, fengding);
+      G_4P_8421_Store.updateEatmeatRule(eatingRange, meatValueConfigString, meatMaxValue);
 
       console.log('吃肉组件已更新store:', {
-        scorePair,
-        meatValue,
-        fengding
+        eatingRange,
+        meatValueConfigString,
+        meatMaxValue
       });
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
         value: data,
-        parsedData: { scorePair, meatValue, fengding }
+        parsedData: { eatingRange, meatValueConfigString, meatMaxValue }
       });
     }
   }

@@ -12,7 +12,7 @@ Page({
     dingdongValue: '',
     eatmeatValue: '',
     user_rulename: '',
-    dingdong: null,
+    draw8421Config: null,
     noKoufen: false,
     koufenDisplayValue: '请配置扣分规则',
     dingdongDisplayValue: '请配置顶洞规则',
@@ -52,7 +52,7 @@ Page({
     const detail = e.detail;
     this.setData({
       dingdongValue: detail.value,
-      dingdong: detail.value,
+      draw8421Config: detail.value,
       showDingdong: false
     });
 
@@ -117,8 +117,8 @@ Page({
 
     // 格式化封顶值
     let fengdingText = '';
-    if (store.koufen_fengding) {
-      switch (store.koufen_fengding) {
+    if (store.max8421_sub_value) {
+      switch (store.max8421_sub_value) {
         case '不封顶':
           fengdingText = '不封顶';
           break;
@@ -126,7 +126,7 @@ Page({
           fengdingText = '扣2分封顶';
           break;
         default:
-          fengdingText = store.koufen_fengding;
+          fengdingText = store.max8421_sub_value;
       }
     }
 
@@ -151,7 +151,7 @@ Page({
   // 更新顶洞规则显示值
   updateDingdongDisplayValue() {
     const store = G_4P_8421_Store;
-    let displayValue = store.dingdong || '请配置顶洞规则';
+    let displayValue = store.draw8421Config || '请配置顶洞规则';
 
     this.setData({
       dingdongDisplayValue: displayValue
@@ -166,16 +166,16 @@ Page({
     let displayValue = '';
 
     // 格式化吃肉规则显示
-    let meatValue = store.meat_value || '';
-    let fengding = store.meat_fengding || '';
+    let meatValueConfigString = store.meat_value || '';
+    let meatMaxValue = store.meatMaxValue || '';
 
     // 简化显示，只显示主要的肉分值计算方式
-    if (meatValue && fengding) {
-      displayValue = `${meatValue}/${fengding}`;
-    } else if (meatValue) {
-      displayValue = meatValue;
-    } else if (fengding) {
-      displayValue = fengding;
+    if (meatValueConfigString && meatMaxValue) {
+      displayValue = `${meatValueConfigString}/${meatMaxValue}`;
+    } else if (meatValueConfigString) {
+      displayValue = meatValueConfigString;
+    } else if (meatMaxValue) {
+      displayValue = meatMaxValue;
     } else {
       displayValue = '请配置吃肉规则';
     }

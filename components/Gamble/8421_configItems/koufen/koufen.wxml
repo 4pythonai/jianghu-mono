@@ -3,20 +3,47 @@
   <view class="modal-content" catchtap>
     <view class="modal-title">扣分规则</view>
     <view class="modal-list">
-      <block wx:for="{{groups}}" wx:key="groupIdx" wx:for-index="groupIdx">
-        <view wx:if="{{groupIdx > 0}}" class="modal-divider"></view>
-        <block wx:for="{{item.options}}" wx:key="index">
-          <view class="modal-item {{groupIdx > 0 && groups[0].selected === 2 ? 'disabled-item' : ''}}" 
-                bindtap="{{groupIdx > 0 && groups[0].selected === 2 ? '' : 'onSelectGroup'}}" 
-                data-group="{{groupIdx}}" 
-                data-index="{{index}}">
-            <view class="radio-outer {{groups[groupIdx].selected === index ? 'checked' : ''}}">
-              <view class="radio-inner" wx:if="{{groups[groupIdx].selected === index}}"></view>
-            </view>
-            <text>{{item}}</text>
+      
+      <!-- 扣分开始条件 -->
+      <block wx:for="{{Sub8421ConfigString}}" wx:key="index">
+        <view class="modal-item" bindtap="onSelectStart" data-index="{{index}}">
+          <view class="radio-outer {{selectedStart === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{selectedStart === index}}"></view>
           </view>
-        </block>
+          <text>{{item}}</text>
+        </view>
       </block>
+      
+      <!-- 分割线 -->
+      <view class="modal-divider"></view>
+      
+      <!-- 扣分封顶 -->
+      <block wx:for="{{maxOptions}}" wx:key="index">
+        <view class="modal-item {{selectedStart === 2 ? 'disabled-item' : ''}}" 
+              bindtap="{{selectedStart === 2 ? '' : 'onSelectMax'}}" 
+              data-index="{{index}}">
+          <view class="radio-outer {{selectedMax === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{selectedMax === index}}"></view>
+          </view>
+          <text>{{item}}</text>
+        </view>
+      </block>
+      
+      <!-- 分割线 -->
+      <view class="modal-divider"></view>
+      
+      <!-- 同伴惩罚 -->
+      <block wx:for="{{dutyOptions}}" wx:key="index">
+        <view class="modal-item {{selectedStart === 2 ? 'disabled-item' : ''}}" 
+              bindtap="{{selectedStart === 2 ? '' : 'onSelectDuty'}}" 
+              data-index="{{index}}">
+          <view class="radio-outer {{selectedDuty === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{selectedDuty === index}}"></view>
+          </view>
+          <text>{{item}}</text>
+        </view>
+      </block>
+      
     </view>
     <view class="modal-actions">
       <button class="modal-btn cancel" bindtap="onCancel">取消</button>

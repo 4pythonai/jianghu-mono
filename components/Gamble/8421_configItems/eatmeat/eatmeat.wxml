@@ -18,7 +18,7 @@
       </block>
       <view class="modal-divider"></view>
       <view class="eat-row">肉的分值</view>
-      <block wx:for="{{scoreOptions}}" wx:key="index">
+      <block wx:for="{{meatValueOptions}}" wx:key="index">
         <view class="modal-item {{noKoufen ? 'disabled' : ''}}" bindtap="{{noKoufen ? '' : 'onScoreSelect'}}" data-index="{{index}}">
           <view class="radio-outer {{scoreSelected === index ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{scoreSelected === index}}"></view>

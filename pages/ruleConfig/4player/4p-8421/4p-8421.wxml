@@ -22,8 +22,8 @@
 
     <!-- 吃肉规则 -->
     <view class="form-label">吃肉规则</view>
-    <view class="form-select" bindtap="{{noKoufen || dingdong === '无顶洞' ? '' : 'onShowEatmeat'}}">
-      <input class="form-input {{noKoufen || dingdong === '无顶洞' ? 'conditionally-disabled' : ''}}" value="{{eatmeatDisplayValue}}" disabled="{{noKoufen || dingdong === '无顶洞'}}" />
+    <view class="form-select" bindtap="{{noKoufen || draw8421Config === '无顶洞' ? '' : 'onShowEatmeat'}}">
+      <input class="form-input {{noKoufen || draw8421Config === '无顶洞' ? 'conditionally-disabled' : ''}}" value="{{eatmeatDisplayValue}}" disabled="{{noKoufen || draw8421Config === '无顶洞'}}" />
       <view class="select-arrow"><text class="arrow-circle">▼</text></view>
     </view>
 
@@ -33,6 +33,6 @@
 
   <!-- 弹窗组件 -->
   <koufen visible="{{showKoufen}}" bind:cancel="onCloseKoufen" bind:confirm="onKoufenConfirm" />
-  <dingdong visible="{{showDingdong}}" no-koufen="{{noKoufen}}" bind:cancel="onCloseDingdong" bind:confirm="onDingdongConfirm" />
+  <draw8421Config visible="{{showDingdong}}" no-koufen="{{noKoufen}}" bind:cancel="onCloseDingdong" bind:confirm="onDingdongConfirm" />
   <eatmeat visible="{{showEatmeat}}" no-koufen="{{noKoufen}}" bind:cancel="onCloseEatmeat" bind:confirm="onEatmeatConfirm" />
 </view>
