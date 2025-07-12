@@ -28,7 +28,7 @@
     <!-- 玩家列表 -->
     <view class="players-order-list">
       <view class="player-order-item" wx:for="{{playersOrder}}" wx:key="userid">
-        <text class="order-number">{{index + 1}}:</text>
+        <text class="order-number">#{{index + 1}}</text>
         <image 
           class="player-avatar" 
           src="{{item.avatar || '/images/default-avatar.png'}}"
