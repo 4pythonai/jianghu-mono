@@ -70,8 +70,7 @@
 }
 
 /* 统一图标样式 */
-.star-icon,
-.gamble-icon {
+.star-icon {
 	width: 36rpx;
 	height: 36rpx;
 	display: flex;
@@ -108,9 +107,9 @@
 	font-size: 24rpx;
 }
 
-/* 第4行：时间人数 + gamble */
+/* 第4行：时间人数 */
 .meta-row {
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: center; /* 确保垂直居中 */
 }
 
@@ -129,12 +128,4 @@
 .watchers {
 	font-size: 22rpx;
 	color: var(--title-h2);
-}
-
-.gamble-icon {
-	margin-left: 0rpx;
-	border-radius: 50%;
-	font-size: 32rpx;
-	color: #000;
-	z-index: 10;
 }

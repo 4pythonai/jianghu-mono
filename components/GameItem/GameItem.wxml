@@ -21,16 +21,13 @@
       <view class="iconfont icon-location" style="color: var(--theme-color);"></view>
       <text class="course">{{course}}</text>
     </view>
-    <!-- 第4行：时间人数 + gamble -->
+    <!-- 第4行：时间人数 -->
     <view class="row meta-row">
       <view class="time-watchers">
         <view class="iconfont icon-clock" style="color: var(--theme-color);"></view>
         <text class="start-time" style="margin-right: 20rpx;">{{gameStart}}</text>
         <view class="iconfont icon-location" style="color: var(--theme-color);"></view>
         <text class="watchers">{{watchersNumber}}人围观</text>
-      </view>
-      <view class="gamble-icon" wx:if="{{have_gamble}}">
-        <view class="iconfont icon-a-shaizitianchong1" style="color: var(--theme-color);" />
       </view>
     </view>
   </view>

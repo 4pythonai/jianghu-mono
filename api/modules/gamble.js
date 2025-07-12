@@ -23,6 +23,10 @@ const gamble = {
     // deleteRuntimeConfig
     deleteRuntimeConfig: (data, options) => request('/Gamble/deleteRuntimeConfig', data, options),
 
+    // listRuntimeConfig
+    listRuntimeConfig: (data, options) => request('/Gamble/listRuntimeConfig', data, options),
+
+
 }
 
 export default gamble

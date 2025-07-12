@@ -1,5 +1,4 @@
 const app = getApp();
-// 赌博游戏运行时配置页面
 Page({
     data: {
         // 传递的数据
@@ -10,7 +9,6 @@ Page({
         gameData: null,
         userRule: null, // 用户规则数据
 
-        // 运行时配置数据
         runtimeConfig: {
             // 起点洞与终点洞配置
             firstHoleindex: 1,
@@ -384,14 +382,12 @@ Page({
         return true;
     },
 
-    // 保存运行时配置
     saveRuntimeConfig() {
         const { runtimeConfig, ruleType, gameId } = this.data;
 
         console.log('[GambleRuntimeConfig] 最终配置:', JSON.stringify(runtimeConfig, null, 2));
 
         this.setData({ loading: true });
-        //  保存配置
         app.api.gamble.addRuntimeConfig(runtimeConfig).then(res => {
             console.log('[GambleRuntimeConfig] 保存配置成功:', res);
 

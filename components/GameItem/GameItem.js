@@ -11,10 +11,6 @@ Component({
             type: String,
             value: 'gray' // gray或yellow
         },
-        have_gamble: {
-            type: Boolean,
-            value: false
-        },
         gameId: {
             type: String,
             value: ''

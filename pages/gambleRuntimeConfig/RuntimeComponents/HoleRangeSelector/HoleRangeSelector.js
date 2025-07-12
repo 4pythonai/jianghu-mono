@@ -46,19 +46,17 @@ Component({
         // 初始化洞范围选择器
         initializeHoleRanges(firstHoleindex, lastHoleindex, holeList) {
             // 如果没有传入参数，则从properties获取
-            if (firstHoleindex === undefined || lastHoleindex === undefined || holeList === undefined) {
-                firstHoleindex = this.properties.firstHoleindex;
-                lastHoleindex = this.properties.lastHoleindex;
-                holeList = this.properties.holeList;
-            }
+            const actualFirstHole = firstHoleindex !== undefined ? firstHoleindex : this.properties.firstHoleindex;
+            const actualLastHole = lastHoleindex !== undefined ? lastHoleindex : this.properties.lastHoleindex;
+            const actualHoleList = holeList !== undefined ? holeList : this.properties.holeList;
 
             // 确保数据类型正确
-            firstHoleindex = Number.parseInt(firstHoleindex) || 1;
-            lastHoleindex = Number.parseInt(lastHoleindex) || 18;
-            holeList = holeList || [];
+            const validFirstHole = Number.parseInt(actualFirstHole) || 1;
+            const validLastHole = Number.parseInt(actualLastHole) || 18;
+            const validHoleList = actualHoleList || [];
 
             // 如果holeList为空，使用默认值
-            if (holeList.length === 0) {
+            if (validHoleList.length === 0) {
                 RuntimeComponentsUtils.logger.log('HOLE_RANGE', 'holeList为空，使用默认值');
                 const startHoleRange = ['第1洞'];
                 const endHoleRange = ['第1洞'];
@@ -72,15 +70,15 @@ Component({
             }
 
             // 使用holeList生成选择器选项
-            const startHoleRange = holeList.map(hole => `第${hole.holeno}洞 (${hole.holename})`);
-            const endHoleRange = holeList.map(hole => `第${hole.holeno}洞 (${hole.holename})`);
+            const startHoleRange = validHoleList.map(hole => `第${hole.holeno}洞 (${hole.holename})`);
+            const endHoleRange = validHoleList.map(hole => `第${hole.holeno}洞 (${hole.holename})`);
 
             // 找到对应的索引
             const startHoleIndex = Math.max(0,
-                holeList.findIndex(hole => hole.holeno === firstHoleindex)
+                validHoleList.findIndex(hole => hole.holeno === validFirstHole)
             );
             const endHoleIndex = Math.max(0,
-                holeList.findIndex(hole => hole.holeno === lastHoleindex)
+                validHoleList.findIndex(hole => hole.holeno === validLastHole)
             );
 
             this.setData({
@@ -91,9 +89,9 @@ Component({
             });
 
             RuntimeComponentsUtils.logger.log('HOLE_RANGE', '初始化洞范围', {
-                firstHoleindex,
-                lastHoleindex,
-                holeListLength: holeList.length,
+                firstHoleindex: validFirstHole,
+                lastHoleindex: validLastHole,
+                holeListLength: validHoleList.length,
                 startHoleIndex: this.data.startHoleIndex,
                 endHoleIndex: this.data.endHoleIndex
             });
@@ -166,9 +164,8 @@ Component({
 
             if (firstHoleindex === lastHoleindex) {
                 return `第${firstHoleindex}洞`;
-            } else {
-                return `第${firstHoleindex}洞 - 第${lastHoleindex}洞`;
             }
+            return `第${firstHoleindex}洞 - 第${lastHoleindex}洞`;
         }
     }
 }); 

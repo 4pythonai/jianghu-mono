@@ -16,19 +16,16 @@ Page({
         // ** 核心：创建 Store 和 Page 的绑定 **
         this.storeBindings = createStoreBindings(this, {
             store: gameStore, // 需要绑定的 store
-            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes', 'currentTab'], // 添加 currentTab
-            actions: ['fetchGameDetail', 'setCurrentTab'], // 添加 setCurrentTab
+            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes', 'currentTab'],
+            actions: ['fetchGameDetail', 'setCurrentTab'],
         });
 
         const gameId = options?.gameId;
         const groupId = options?.groupId; // 新增：获取 groupId 参数
 
-        // 存储到页面数据中，供重试时使用
         this.setData({ gameId, groupId });
 
         if (gameId) {
-            // 直接调用从 store 映射来的 action 来获取数据
-            // 如果有 groupId，一并传递
             if (groupId) {
                 console.log('🎯 加载指定分组的比赛详情', { gameId, groupId });
                 this.fetchGameDetail(gameId, groupId);
@@ -54,7 +51,6 @@ Page({
     retryLoad() {
         if (this.data.loading) return;
 
-        console.log('🔄 重试加载比赛详情');
         const { gameId, groupId } = this.data;
 
         if (gameId) {
@@ -69,9 +65,6 @@ Page({
     // 切换tab页方法
     switchTab: function (e) {
         const newTab = Number.parseInt(e.currentTarget.dataset.tab, 10);
-        console.log('📑 切换到Tab:', newTab);
-
-        // 使用 store 的 action 来管理状态
         this.setCurrentTab(newTab);
     },
 
@@ -90,6 +83,7 @@ Page({
                 }
             }
         }
+
     },
 
     onCellClick(e) {
@@ -102,7 +96,6 @@ Page({
         }
     },
 
-    // OperationBar 显示添加球员面板事件
     onShowAddPlayer(e) {
         console.log('📊 [GameDetail] 显示添加球员面板');
         const addPlayerHubPanel = this.selectComponent('#addPlayerHubPanel');
@@ -115,10 +108,8 @@ Page({
         }
     },
 
-    // 添加球员确认事件
     onAddPlayerConfirm(e) {
         console.log('📊 [GameDetail] 添加球员确认', e.detail);
-        // TODO: 处理添加球员的确认逻辑
         wx.showToast({
             title: '添加球员成功',
             icon: 'success'
@@ -126,8 +117,6 @@ Page({
     },
 
 
-
-    // OperationBar 显示游戏操作面板事件
     onShowGameOperation(e) {
         console.log('📊 [GameDetail] 显示游戏操作面板');
         const gameOperationPanel = this.selectComponent('#gameOperationPanel');

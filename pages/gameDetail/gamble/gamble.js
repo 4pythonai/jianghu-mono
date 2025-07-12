@@ -7,7 +7,7 @@ Component({
 
     storeBindings: {
         store: gameStore,
-        fields: ['gameid', 'loading', 'error', 'have_gamble'],
+        fields: ['gameid', 'loading', 'error', 'runtimeConfigs', 'loadingRuntimeConfig', 'runtimeConfigError'],
     },
 
     properties: {
@@ -27,30 +27,31 @@ Component({
         loading: false
     },
 
+    // 计算属性
+    computed: {
+        // 是否有游戏配置
+        hasGameConfigs() {
+            return this.data.runtimeConfigs && this.data.runtimeConfigs.length > 0;
+        }
+    },
+
     methods: {
         // 模块方法
         initGame() {
             // 初始化游戏
             this.setData({ loading: true });
-            console.log('初始化游戏，比赛ID:', this.properties.gameId);
-            console.log('参赛球员:', this.properties.players);
-            console.log('gameStore中的gameid:', gameStore.gameid);
-            console.log('gameStore中的have_gamble:', gameStore.have_gamble);
+            console.log('🎮 初始化游戏，比赛ID:', this.properties.gameId);
+            console.log('🎮 参赛球员:', this.properties.players);
+            console.log('🎮 gameStore中的gameid:', gameStore.gameid);
+            console.log('🎮 gameStore中的runtimeConfigs:', gameStore.runtimeConfigs);
             // TODO: 实际游戏初始化逻辑
             setTimeout(() => {
                 this.setData({ loading: false });
             }, 1500);
         },
 
-        // 测试方法：切换游戏状态
-        toggleGambleStatus() {
-            gameStore.have_gamble = !gameStore.have_gamble;
-            console.log('🎮 切换游戏状态为:', gameStore.have_gamble);
-        },
-
         // 添加游戏按钮点击事件
         handleAddGame() {
-
             // 跳转到游戏规则页面
             wx.navigateTo({
                 url: '/pages/rules/rules',
@@ -65,6 +66,13 @@ Component({
                     });
                 }
             });
+        },
+
+        // 重试加载运行时配置
+        retryLoadRuntimeConfig() {
+            if (gameStore.gameid) {
+                gameStore.fetchRuntimeConfigs(gameStore.gameid);
+            }
         }
     },
 
