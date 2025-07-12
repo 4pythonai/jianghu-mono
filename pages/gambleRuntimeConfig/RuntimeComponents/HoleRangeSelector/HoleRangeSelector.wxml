@@ -2,7 +2,6 @@
 <view class="hole-range-selector">
   <!-- 当前选择显示 -->
   <view class="current-range">
-    <text class="range-label">当前选择:</text>
     <text class="range-value">{{getHoleRangeDescription()}}</text>
   </view>
   
@@ -24,10 +23,6 @@
       </picker>
     </view>
     
-    <!-- 分隔符 -->
-    <view class="separator">
-      <text class="separator-text">至</text>
-    </view>
     
     <!-- 结束洞选择 -->
     <view class="selector-group">
