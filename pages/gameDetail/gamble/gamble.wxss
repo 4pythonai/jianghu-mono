@@ -100,7 +100,6 @@
 
 /* 配置列表样式 */
 .config-list {
-	padding: 15px;
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
@@ -194,7 +193,7 @@
 	height: 50px;
 	background: linear-gradient(135deg, #4caf50, #45a049);
 	border: none;
-	border-radius: 25px;
+	border-radius: 10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -222,61 +221,46 @@
 	font-weight: 600;
 }
 
-/* 配置列表样式 */
-.config-list {
+/* 添加更多游戏按钮样式 */
+.add-more-container {
 	display: flex;
-	flex-direction: column;
-	gap: 15px;
+	justify-content: center;
+	margin-top: 20px;
+	padding-bottom: 10px;
 }
 
-.config-item {
-	background-color: white;
-	border-radius: 8px;
-	padding: 15px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.config-header {
+.add-more-button {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 10px;
-	padding-bottom: 8px;
-	border-bottom: 1px solid #e0e0e0;
-}
-
-.config-title {
-	font-size: 16px;
-	font-weight: bold;
-	color: #333;
-}
-
-.config-time {
-	font-size: 12px;
-	color: #999;
-}
-
-.config-details {
-	display: flex;
-	flex-direction: column;
+	justify-content: center;
 	gap: 8px;
-}
-
-.config-row {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.config-label {
+	padding: 10px 20px;
+	background: linear-gradient(135deg, #4caf50, #45a049);
+	border: none;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(76, 175, 80, 0.25);
+	transition: all 0.3s ease;
 	font-size: 14px;
-	color: #666;
-	min-width: 80px;
 }
 
-.config-value {
+.add-more-button::after {
+	border: none;
+}
+
+.add-more-button:active {
+	transform: translateY(1px) scale(0.98);
+	box-shadow: 0 1px 4px rgba(76, 175, 80, 0.4);
+}
+
+.add-more-icon {
+	font-size: 18px;
+	color: white;
+	font-weight: bold;
+	line-height: 1;
+}
+
+.add-more-text {
 	font-size: 14px;
-	color: #333;
-	text-align: right;
-	flex: 1;
+	color: white;
+	font-weight: 500;
 }

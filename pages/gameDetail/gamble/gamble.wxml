@@ -1,8 +1,5 @@
 <!-- 游戏(Gamble)模块 -->
 <view class="gamble-container">
-    <view class="gamble-header">
-        <text>游戏竞猜</text>
-    </view>
     
     <!-- 加载中状态 -->
     <view wx:if="{{ loadingRuntimeConfig }}" class="loading-container">
@@ -17,35 +14,43 @@
         <button class="retry-button" bindtap="retryLoadRuntimeConfig">重试</button>
     </view>
     
-    <!-- 有游戏配置 -->
-    <view wx:elif="{{ runtimeConfigs && runtimeConfigs.length > 0 }}" class="gamble-content config-list">
-        <view wx:for="{{ runtimeConfigs }}" wx:key="unique" class="config-item">
-            <view class="config-header">
-                <text class="config-title">游戏配置 #{{ index + 1 }}</text>
-                <text class="config-time">{{ item.create_time || '未知时间' }}</text>
-            </view>
-            <view class="config-details">
-                <view class="config-row">
-                    <text class="config-label">规则类型:</text>
-                    <text class="config-value">{{ item.gambleUserName || item.gambleSysName || '未知规则' }}</text>
+    <view wx:elif="{{ runtimeConfigs && runtimeConfigs.length > 0 }}" class="gamble-content">
+        <view class="config-list">
+            <view wx:for="{{ runtimeConfigs }}" wx:key="unique" class="config-item">
+                <view class="config-header">
+                    <text class="config-title">游戏配置 #{{ index + 1 }}</text>
+                    <text class="config-time">{{ item.create_time || '未知时间' }}</text>
                 </view>
-                <view class="config-row" wx:if="{{ item.hole_range_display }}">
-                    <text class="config-label">洞数范围:</text>
-                    <text class="config-value">{{ item.hole_range_display }}</text>
-                </view>
-                <view class="config-row" wx:if="{{ item.ranking_display }}">
-                    <text class="config-label">排名规则:</text>
-                    <text class="config-value">{{ item.ranking_display }}</text>
-                </view>
-                <view class="config-row" wx:if="{{ item.player8421Count }}">
-                    <text class="config-label">参与人数:</text>
-                    <text class="config-value">{{ item.player8421Count }}人</text>
+                <view class="config-details">
+                    <view class="config-row">
+                        <text class="config-label">规则类型:</text>
+                        <text class="config-value">{{ item.gambleUserName || item.gambleSysName || '未知规则' }}</text>
+                    </view>
+                    <view class="config-row" wx:if="{{ item.hole_range_display }}">
+                        <text class="config-label">洞数范围:</text>
+                        <text class="config-value">{{ item.hole_range_display }}</text>
+                    </view>
+                    <view class="config-row" wx:if="{{ item.ranking_display }}">
+                        <text class="config-label">排名规则:</text>
+                        <text class="config-value">{{ item.ranking_display }}</text>
+                    </view>
+                    <view class="config-row" wx:if="{{ item.player8421Count }}">
+                        <text class="config-label">参与人数:</text>
+                        <text class="config-value">{{ item.player8421Count }}人</text>
+                    </view>
                 </view>
             </view>
         </view>
+        
+        <!-- 添加更多游戏按钮 -->
+        <view class="add-more-container">
+            <button class="add-more-button" bindtap="handleAddGame">
+                <text class="add-more-icon">+</text>
+                <text class="add-more-text">添加更多游戏</text>
+            </button>
+        </view>
     </view>
     
-    <!-- 无游戏配置 -->
     <view wx:else class="gamble-content">
         <view class="no-gamble-container">
             <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>

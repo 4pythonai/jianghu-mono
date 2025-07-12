@@ -7,7 +7,7 @@ Component({
 
     storeBindings: {
         store: gameStore,
-        fields: ['gameid', 'loading', 'error', 'runtimeConfigs', 'loadingRuntimeConfig', 'runtimeConfigError'],
+        fields: ['gameid', 'loading', 'error', 'runtimeConfigs', 'loadingRuntimeConfig', 'runtimeConfigError', 'currentTab'],
     },
 
     properties: {
@@ -24,14 +24,25 @@ Component({
 
     data: {
         // 模块内部数据
-        loading: false
+        loading: false,
+        lastRefreshTime: 0 // 记录上次刷新时间，避免频繁刷新
     },
 
     // 计算属性
     computed: {
-        // 是否有游戏配置
         hasGameConfigs() {
             return this.data.runtimeConfigs && this.data.runtimeConfigs.length > 0;
+        }
+    },
+
+    // 观察者
+    observers: {
+        'currentTab': function (newTab) {
+            // 当切换到游戏选项卡时，刷新运行时配置
+            if (newTab === 2) {
+                console.log('🎮 切换到游戏选项卡，刷新运行时配置');
+                this.refreshRuntimeConfigWithThrottle();
+            }
         }
     },
 
@@ -73,6 +84,30 @@ Component({
             if (gameStore.gameid) {
                 gameStore.fetchRuntimeConfigs(gameStore.gameid);
             }
+        },
+
+        // 刷新运行时配置
+        refreshRuntimeConfig() {
+            const gameId = this.properties.gameId || gameStore.gameid;
+            if (gameId) {
+                console.log('🎮 刷新运行时配置，gameId:', gameId);
+                gameStore.fetchRuntimeConfigs(gameId);
+            }
+        },
+
+        // 带防抖的刷新运行时配置
+        refreshRuntimeConfigWithThrottle() {
+            const now = Date.now();
+            const lastRefreshTime = this.data.lastRefreshTime;
+
+            // 如果距离上次刷新不足3秒，跳过此次刷新
+            if (now - lastRefreshTime < 3000) {
+                console.log('🎮 刷新过于频繁，跳过此次刷新');
+                return;
+            }
+
+            this.setData({ lastRefreshTime: now });
+            this.refreshRuntimeConfig();
         }
     },
 
@@ -80,6 +115,19 @@ Component({
     lifetimes: {
         attached() {
             this.initGame();
+        }
+    },
+
+    // 页面生命周期
+    pageLifetimes: {
+        show() {
+            // 页面显示时刷新运行时配置，但只有在当前选项卡是"游戏"时才刷新
+            if (this.data.currentTab === 2) {
+                console.log('🎮 页面显示且在游戏选项卡，刷新运行时配置');
+                this.refreshRuntimeConfigWithThrottle();
+            } else {
+                console.log('🎮 页面显示，但不在游戏选项卡，跳过刷新');
+            }
         }
     }
 });
