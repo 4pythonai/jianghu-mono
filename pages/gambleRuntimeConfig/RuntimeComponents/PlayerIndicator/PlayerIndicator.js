@@ -107,7 +107,7 @@ Component({
         stringToConfig(str) {
             if (!str || str.length < 4) return this.getDefaultConfig();
 
-            const digits = str.split('').map(d => parseInt(d));
+            const digits = str.split('').map(d => Number.parseInt(d));
 
             if (digits.length === 4) {
                 return {
@@ -116,7 +116,9 @@ Component({
                     "Par+1": digits[2],
                     "Par+2": digits[3]
                 };
-            } else if (digits.length === 5) {
+            }
+
+            if (digits.length === 5) {
                 return {
                     "Birdie": digits[0],
                     "Par": digits[1],
@@ -131,12 +133,19 @@ Component({
 
         // 获取球员头像URL
         getPlayerAvatarUrl(player) {
-            if (player.avatar_url) {
+            // 优先检查 avatar 字段（这是最常用的字段）
+            if (player.avatar && player.avatar.trim() !== '') {
+                return player.avatar;
+            }
+            // 其次检查 avatar_url 字段
+            if (player.avatar_url && player.avatar_url.trim() !== '') {
                 return player.avatar_url;
             }
-            if (player.avatarUrl) {
+            // 最后检查 avatarUrl 字段
+            if (player.avatarUrl && player.avatarUrl.trim() !== '') {
                 return player.avatarUrl;
             }
+            // 如果都没有，返回默认头像
             return '/images/default-avatar.png';
         },
 
@@ -237,6 +246,17 @@ Component({
         // 阻止弹框关闭
         preventClose() {
             // 空函数，阻止事件冒泡
+        },
+
+        // 头像加载失败处理
+        onAvatarError(e) {
+            const index = e.currentTarget.dataset.index;
+            console.log('🎯 [PlayerIndicator] 头像加载失败，索引:', index);
+
+            // 更新失败的头像为默认头像
+            this.setData({
+                [`playersWithConfig[${index}].avatarUrl`]: '/images/default-avatar.png'
+            });
         }
     }
 }); 

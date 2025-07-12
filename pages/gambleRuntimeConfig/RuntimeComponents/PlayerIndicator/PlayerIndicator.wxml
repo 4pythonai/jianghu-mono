@@ -20,6 +20,9 @@
         class="player-avatar" 
         src="{{player.avatarUrl}}" 
         mode="aspectFill"
+        lazy-load="true"
+        binderror="onAvatarError"
+        data-index="{{index}}"
       />
       
       <!-- 球员昵称 -->
