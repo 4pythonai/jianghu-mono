@@ -1,3 +1,4 @@
+const app = getApp();
 // 赌博游戏运行时配置页面
 Page({
     data: {
@@ -20,7 +21,14 @@ Page({
             bootstrap_order: [],
 
             // 排名配置
-            ranking_tie_resolve_config: 'score_based' // 可选: 'score_based', 'handicap_based', 'random'
+            ranking_tie_resolve_config: 'score_based', // 可选: 'score_based', 'handicap_based', 'random'
+
+            // 新增字段
+            gameid: null,           // 游戏ID
+            groupid: null,          // 分组ID
+            userRuleId: null,       // 用户规则ID（仅用户规则时有值）
+            gambleSysName: null,    // 游戏系统名称（如：8421、gross、hole等）
+            gambleUserName: null    // 用户规则名称（如：规则_4721）
         },
 
         // 页面状态
@@ -88,6 +96,21 @@ Page({
                     initialLastHole = holes[holes.length - 1].holeno || 18;
                 }
 
+                // 从gameStore获取游戏相关数据
+                const { gameStore } = require('../../stores/gameStore');
+
+                // 设置新增字段
+                let gambleSysName = null;
+                let userRuleId = null;
+                let gambleUserName = null;
+
+                if (decodedData.fromUserRule && userRule) {
+                    // 从用户规则进入，直接从userRule获取
+                    gambleSysName = userRule.gambleSysName;
+                    userRuleId = userRule.userRuleId;
+                    gambleUserName = userRule.gambleUserName;
+                }
+
                 this.setData({
                     ruleType: decodedData.ruleType || '',
                     gameId: decodedData.gameId || null,
@@ -96,7 +119,21 @@ Page({
                     gameData: gameData,
                     userRule: userRule,
                     'runtimeConfig.firstHoleindex': initialFirstHole,
-                    'runtimeConfig.lastHoleindex': initialLastHole
+                    'runtimeConfig.lastHoleindex': initialLastHole,
+                    'runtimeConfig.gameid': gameStore.gameid,
+                    'runtimeConfig.groupid': gameStore.groupId,
+                    'runtimeConfig.userRuleId': userRuleId,
+                    'runtimeConfig.gambleSysName': gambleSysName,
+                    'runtimeConfig.gambleUserName': gambleUserName
+                });
+
+                console.log('[GambleRuntimeConfig] 运行时配置字段设置:', {
+                    gameid: gameStore.gameid,
+                    groupid: gameStore.groupId,
+                    userRuleId: userRuleId,
+                    gambleSysName: gambleSysName,
+                    gambleUserName: gambleUserName,
+                    fromUserRule: decodedData.fromUserRule
                 });
 
                 // 初始化分组配置
@@ -119,6 +156,7 @@ Page({
             app.globalData.currentGameData = undefined;
         }
     },
+
 
     // 初始化分组配置
     initializeGroupingConfig() {
@@ -209,17 +247,6 @@ Page({
     onConfirmConfig() {
         const { runtimeConfig, ruleType, gameId, players } = this.data;
 
-        // console.log('[GambleRuntimeConfig] 确认配置:', {
-        //     ruleType,
-        //     gameId,
-        //     runtimeConfig,
-        //     players
-        // });
-
-
-
-
-
         // 验证配置
         if (!this.validateConfig()) {
             return;
@@ -287,26 +314,37 @@ Page({
         console.log('[GambleRuntimeConfig] 最终配置:', JSON.stringify(runtimeConfig, null, 2));
 
         this.setData({ loading: true });
+        //  保存配置
+        app.api.gamble.addRuntimeConfig(runtimeConfig).then(res => {
+            console.log('[GambleRuntimeConfig] 保存配置成功:', res);
 
-        // TODO: 调用API保存配置
-        console.log('[GambleRuntimeConfig] 保存配置到服务器...');
-
-        // 模拟API调用
-        setTimeout(() => {
-            this.setData({ loading: false });
-
-            wx.showToast({
-                title: '配置保存成功',
-                icon: 'success'
-            });
-
-            // 返回到游戏详情页面
-            setTimeout(() => {
-                wx.navigateBack({
-                    delta: 2 // 返回两层，跳过rules页面
+            if (res.code === 200) {
+                wx.showToast({
+                    title: '配置保存成功',
+                    icon: 'success'
                 });
-            }, 1500);
-        }, 1000);
+
+                // 返回到游戏详情页面
+                setTimeout(() => {
+                    wx.navigateBack({
+                        delta: 2 // 返回两层，跳过rules页面
+                    });
+                }, 1500);
+            } else {
+                wx.showToast({
+                    title: res.msg || '保存失败',
+                    icon: 'none'
+                });
+            }
+        }).catch(err => {
+            console.error('[GambleRuntimeConfig] 保存配置失败:', err);
+            wx.showToast({
+                title: '网络错误，请重试',
+                icon: 'none'
+            });
+        }).finally(() => {
+            this.setData({ loading: false });
+        });
     },
 
     // 取消配置

@@ -14,7 +14,14 @@ const gamble = {
     // 获取用户游戏规则
     getUserGambleRules: (data, options) => request('/Gamble/getUserGambleRules', data, options),
 
+    // addRuntimeConfig
+    addRuntimeConfig: (data, options) => request('/Gamble/addRuntimeConfig', data, options),
 
+    // updateRuntimeConfig
+    updateRuntimeConfig: (data, options) => request('/Gamble/updateRuntimeConfig', data, options),
+
+    // deleteRuntimeConfig
+    deleteRuntimeConfig: (data, options) => request('/Gamble/deleteRuntimeConfig', data, options),
 
 }
 

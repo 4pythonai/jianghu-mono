@@ -8,11 +8,7 @@
     <!-- 规则内容 -->
     <view wx:else class="rules-content">
         <!-- 统计信息 -->
-        <view class="rules-summary">
-            <text class="summary-title">我的规则</text>
-            <text class="summary-count">共 {{ total.overall }} 条规则</text>
-        </view>
-        
+         
         <!-- 空状态 -->
         <view wx:if="{{ total.overall === 0 }}" class="empty-state">
             <text class="empty-text">暂无规则</text>
@@ -25,7 +21,6 @@
             <view wx:if="{{ total.twoPlayers > 0 }}" class="rules-group">
                 <view class="group-header">
                     <text class="group-title">2人游戏</text>
-                    <text class="group-count">{{ total.twoPlayers }} 条</text>
                 </view>
                 <view class="group-list">
                     <view 
@@ -74,7 +69,6 @@
             <view wx:if="{{ total.threePlayers > 0 }}" class="rules-group">
                 <view class="group-header">
                     <text class="group-title">3人游戏</text>
-                    <text class="group-count">{{ total.threePlayers }} 条</text>
                 </view>
                 <view class="group-list">
                     <view 
@@ -123,7 +117,6 @@
             <view wx:if="{{ total.fourPlayers > 0 }}" class="rules-group">
                 <view class="group-header">
                     <text class="group-title">4人游戏</text>
-                    <text class="group-count">{{ total.fourPlayers }} 条</text>
                 </view>
                 <view class="group-list">
                     <view 

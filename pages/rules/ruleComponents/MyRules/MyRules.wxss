@@ -1,7 +1,6 @@
 /* 我的规则组件样式 */
 .myrules-container {
 	min-height: 100vh;
-	background-color: #efede8;
 	padding-bottom: 30rpx;
 }
 
@@ -20,7 +19,6 @@
 /* 规则内容容器 - 使用分组滚动区域样式 */
 .rules-content {
 	height: 100vh;
-	padding: 0 32rpx 32rpx 32rpx;
 	box-sizing: border-box;
 }
 
