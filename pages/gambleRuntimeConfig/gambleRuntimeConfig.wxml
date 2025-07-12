@@ -31,7 +31,7 @@
     
     <!-- 红蓝分组配置 -->
     <view class="section" wx:if="{{runtimeConfig.red_blue_config.enable}}">
-      <view class="section-title">红蓝分组</view>
+      <view class="section-title">请选择分组方式</view>
       <RedBlueConfig 
         players="{{players}}"
         redTeam="{{runtimeConfig.red_blue_config.redTeam}}"

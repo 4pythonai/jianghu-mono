@@ -33,8 +33,4 @@
     </picker>
   </view>
   
-  <!-- 提示信息 -->
-  <view class="hint-text">
-    <text>提示：选择游戏进行的洞数范围</text>
-  </view>
 </view> 
