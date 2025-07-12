@@ -17,7 +17,7 @@ class MRuntimeConfig extends CI_Model {
         // 从数据库获取
         $this->db->where('id', $gambleid);
         debug(" **************** 数据库操作");
-        $GambleConfigRow = $this->db->get('t_game_gambles')->row_array();
+        $GambleConfigRow = $this->db->get('t_gamble_rule_user')->row_array();
 
         // 缓存结果
         $this->_gambleConfigCache[$gambleid] = $GambleConfigRow;

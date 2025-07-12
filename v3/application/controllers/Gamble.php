@@ -49,7 +49,7 @@ class Gamble extends MY_Controller {
             ];
 
             // 插入数据
-            $this->db->insert('t_game_gambles', $insert_data);
+            $this->db->insert('t_gamble_rule_user', $insert_data);
             $insert_id = $this->db->insert_id();
 
             if ($insert_id) {
@@ -90,7 +90,7 @@ class Gamble extends MY_Controller {
         try {
             // 查询用户创建的所有赌球规则，只获取需要的字段
             $query = "SELECT id as userRuleId, gambleSysName, gambleUserName, playersNumber 
-                     FROM t_game_gambles 
+                     FROM t_gamble_rule_user 
                      WHERE creator_id = ? 
                      ORDER BY create_time DESC";
 
@@ -145,9 +145,11 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $userRuleId = $json_paras['userRuleId'];
-        $this->db->delete('t_game_gambles', ['id' => $userRuleId, 'creator_id' => $userid]);
+        $this->db->delete('t_gamble_rule_user', ['id' => $userRuleId, 'creator_id' => $userid]);
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
+
+
 
 
 
@@ -170,8 +172,12 @@ class Gamble extends MY_Controller {
 
             // 准备插入数据
             $insert_data = [
+                'creator_id' => $userid,
+                'firstHoleindex' => intval($json_paras['firstHoleindex']),
+                'lastHoleindex' => intval($json_paras['lastHoleindex']),
                 'gameid' => $gameid,
                 'groupid' => $json_paras['groupid'] ?? 1,
+                'val8421_config' => isset($json_paras['val8421_config']) ? json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE) : null,
                 'userRuleId' => $userRuleId,
                 'gambleSysName' => $json_paras['gambleSysName'] ?? null,
                 'gambleUserName' => $json_paras['gambleUserName'] ?? null,
@@ -179,7 +185,7 @@ class Gamble extends MY_Controller {
                 'red_blue_config' => $json_paras['red_blue_config'] ?? null,
                 'all_players' => isset($json_paras['all_players']) ? json_encode($json_paras['all_players'], JSON_UNESCAPED_UNICODE) : null,
                 'bootstrap_order' => isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
-                'attenders' => isset($json_paras['attenders']) ? json_encode($json_paras['attenders'], JSON_UNESCAPED_UNICODE) : null,
+                'attenders' =>   isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
                 'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score'
             ];
 
@@ -191,16 +197,6 @@ class Gamble extends MY_Controller {
                 $ret = [];
                 $ret['code'] = 200;
                 $ret['message'] = '运行时配置创建成功';
-                $ret['data'] = [
-                    'runtime_id' => $insert_id,
-                    'gameid' => $gameid,
-                    'userRuleId' => $userRuleId,
-                    'gambleSysName' => $json_paras['gambleSysName'] ?? null,
-                    'gambleUserName' => $json_paras['gambleUserName'] ?? null,
-                    'playersNumber' => $json_paras['playersNumber'] ?? 4,
-                    'groupid' => $json_paras['groupid'] ?? 1
-                ];
-
                 echo json_encode($ret, JSON_UNESCAPED_UNICODE);
             } else {
                 echo json_encode([
