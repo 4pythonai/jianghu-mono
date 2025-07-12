@@ -29,7 +29,7 @@
     <view class="players-order-list">
       <view 
         class="player-order-item {{dragState.dragIndex === index ? 'dragging' : ''}}"
-        wx:for="{{playersOrder}}" 
+        wx:for="{{bootstrap_order}}" 
         wx:key="userid"
         data-index="{{index}}"
         bindtouchstart="onTouchStart"

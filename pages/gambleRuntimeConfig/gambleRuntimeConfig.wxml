@@ -22,15 +22,15 @@
     <view class="section">
       <view class="section-title">选择洞范围</view>
       <HoleRangeSelector 
-        startHole="{{runtimeConfig.startHole}}"
-        endHole="{{runtimeConfig.endHole}}"
-        totalHoles="{{holes.length}}"
+        firstHoleindex="{{runtimeConfig.firstHoleindex}}"
+        lastHoleindex="{{runtimeConfig.lastHoleindex}}"
+        holeList="{{holes}}"
         bind:change="onHoleRangeChange"
       />
     </view>
     
     <!-- 分组配置 -->
-    <view class="section" wx:if="{{runtimeConfig.grouping_config.enable}}">
+    <view class="section">
       <RedBlueConfig 
         players="{{players}}"
         bind:change="onGroupingConfigChange"

@@ -13,7 +13,7 @@ Component({
         red_blue_config: '4_固拉',
 
         // 玩家出发顺序
-        playersOrder: [],
+        bootstrap_order: [],
 
         // 拖拽状态
         dragState: {
@@ -43,13 +43,18 @@ Component({
             const { players } = this.data;
 
             // 复制玩家数组作为初始顺序
-            const playersOrder = [...players];
+            const bootstrap_order = [...players];
 
             this.setData({
-                playersOrder
+                bootstrap_order
             });
 
-            console.log('🎯 [RedBlueConfig] 初始化玩家顺序:', playersOrder);
+            console.log('🎯 [RedBlueConfig] 初始化玩家顺序:', bootstrap_order);
+        },
+
+        // 转换玩家对象数组为用户ID数组
+        convertToUserIds(playersArray) {
+            return playersArray.map(player => parseInt(player.user_id || player.userid));
         },
 
         // 分组方式选择变更
@@ -62,28 +67,27 @@ Component({
 
             console.log('🎯 [RedBlueConfig] 分组方式变更:', red_blue_config);
 
-            // 触发变更事件
+            // 触发变更事件，传递用户ID数组
             this.triggerEvent('change', {
                 red_blue_config,
-                playersOrder: this.data.playersOrder
+                bootstrap_order: this.convertToUserIds(this.data.bootstrap_order)
             });
         },
 
         randomOrder() {
-            const { playersOrder } = this.data;
+            const { bootstrap_order } = this.data;
 
             // 随机打乱玩家顺序
-            const shuffled = [...playersOrder].sort(() => Math.random() - 0.5);
+            const shuffled = [...bootstrap_order].sort(() => Math.random() - 0.5);
 
             this.setData({
-                playersOrder: shuffled
+                bootstrap_order: shuffled
             });
 
-
-            // 触发变更事件
+            // 触发变更事件，传递用户ID数组
             this.triggerEvent('change', {
                 red_blue_config: this.data.red_blue_config,
-                playersOrder: shuffled
+                bootstrap_order: this.convertToUserIds(shuffled)
             });
 
             // 显示提示
@@ -95,25 +99,25 @@ Component({
 
         // 差点排序（按差点从低到高排序）
         handicapOrder() {
-            const { playersOrder } = this.data;
+            const { bootstrap_order } = this.data;
 
             // 按差点排序，差点低的在前
-            const sorted = [...playersOrder].sort((a, b) => {
+            const sorted = [...bootstrap_order].sort((a, b) => {
                 const handicapA = Number(a.handicap) || 0;
                 const handicapB = Number(b.handicap) || 0;
                 return handicapA - handicapB;
             });
 
             this.setData({
-                playersOrder: sorted
+                bootstrap_order: sorted
             });
 
             console.log('🎯 [RedBlueConfig] 差点排序:', sorted);
 
-            // 触发变更事件
+            // 触发变更事件，传递用户ID数组
             this.triggerEvent('change', {
                 red_blue_config: this.data.red_blue_config,
-                playersOrder: sorted
+                bootstrap_order: this.convertToUserIds(sorted)
             });
 
             // 显示提示
@@ -155,7 +159,7 @@ Component({
             let targetIndex = -1;
             if (steps > 0) {
                 targetIndex = dragState.dragIndex + (direction * steps);
-                targetIndex = Math.max(0, Math.min(this.data.playersOrder.length - 1, targetIndex));
+                targetIndex = Math.max(0, Math.min(this.data.bootstrap_order.length - 1, targetIndex));
 
                 // 如果目标索引和当前索引相同，不显示目标位置
                 if (targetIndex === dragState.dragIndex) {
@@ -172,7 +176,7 @@ Component({
 
         // 拖拽结束
         onTouchEnd(e) {
-            const { dragState, playersOrder } = this.data;
+            const { dragState, bootstrap_order } = this.data;
             if (dragState.dragIndex === -1) return;
 
             const dragIndex = dragState.dragIndex;
@@ -180,7 +184,7 @@ Component({
 
             // 如果有有效的目标位置，执行位置交换
             if (targetIndex !== -1 && targetIndex !== dragIndex) {
-                const newPlayersOrder = [...playersOrder];
+                const newPlayersOrder = [...bootstrap_order];
                 const dragItem = newPlayersOrder[dragIndex];
 
                 // 移除拖拽项
@@ -189,15 +193,15 @@ Component({
                 newPlayersOrder.splice(targetIndex, 0, dragItem);
 
                 this.setData({
-                    playersOrder: newPlayersOrder
+                    bootstrap_order: newPlayersOrder
                 });
 
                 console.log('🎯 [RedBlueConfig] 拖拽完成，新顺序:', newPlayersOrder);
 
-                // 触发变更事件
+                // 触发变更事件，传递用户ID数组
                 this.triggerEvent('change', {
                     red_blue_config: this.data.red_blue_config,
-                    playersOrder: newPlayersOrder
+                    bootstrap_order: this.convertToUserIds(newPlayersOrder)
                 });
 
                 // 显示提示

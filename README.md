@@ -1,3 +1,44 @@
+# 高尔夫赌博游戏小程序
+
+## 运行时配置数据结构
+
+### 简化后的数据格式
+
+运行时配置的数据结构已经简化，去掉了不必要的嵌套层级：
+
+```javascript
+// 修改后的数据格式
+{
+  "firstHoleindex": 1,
+  "lastHoleindex": 9,
+  "enable": true,
+  "red_blue_config": "4_固拉",
+  "bootstrap_order": [837590, 14, 59, 122],
+  "ranking_tie_resolve_config": "indicator.win_loss.reverse_win"
+}
+```
+
+### 数据字段说明
+
+- `firstHoleindex`: 起始洞号
+- `lastHoleindex`: 结束洞号  
+- `enable`: 是否启用分组功能
+- `red_blue_config`: 分组方式（"4_固拉"、"4_乱拉"、"4_高手不见面"）
+- `bootstrap_order`: 玩家出发顺序（用户ID数组）
+- `ranking_tie_resolve_config`: 排名平局解决方案
+
+### 主要改进
+
+1. **去除嵌套层级**：将 `grouping_config` 下的配置直接提升到顶层
+2. **简化数据格式**：`bootstrap_order` 从对象数组简化为用户ID数组
+3. **统一命名**：洞配置使用 `firstHoleindex` 和 `lastHoleindex`
+
+### 组件内部处理
+
+- RedBlueConfig 组件内部仍使用完整的玩家对象数组进行显示
+- 向父组件传递数据时自动转换为用户ID数组
+- 确保UI显示完整性的同时满足数据格式要求
+
 # 高尔夫小程序项目
 
 这是一个微信小程序，关于高尔夫运动的，包括计费、游戏、群组等功能。

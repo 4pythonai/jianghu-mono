@@ -2,19 +2,19 @@
 Component({
     properties: {
         // 起始洞
-        startHole: {
+        firstHoleindex: {
             type: Number,
             value: 1
         },
         // 结束洞
-        endHole: {
+        lastHoleindex: {
             type: Number,
             value: 18
         },
-        // 总洞数
-        totalHoles: {
-            type: Number,
-            value: 18
+        // 洞列表数据
+        holeList: {
+            type: Array,
+            value: []
         }
     },
 
@@ -35,39 +35,63 @@ Component({
     },
 
     observers: {
-        'startHole, endHole, totalHoles': function (startHole, endHole, totalHoles) {
-            this.initializeHoleRanges();
+        'firstHoleindex, lastHoleindex, holeList': function (firstHoleindex, lastHoleindex, holeList) {
+            this.initializeHoleRanges(firstHoleindex, lastHoleindex, holeList);
         }
     },
 
     methods: {
         // 初始化洞范围选择器
-        initializeHoleRanges() {
-            const { startHole, endHole, totalHoles } = this.data;
-
-            // 生成起始洞范围 (1到totalHoles)
-            const startHoleRange = [];
-            for (let i = 1; i <= totalHoles; i++) {
-                startHoleRange.push(`第${i}洞`);
+        initializeHoleRanges(firstHoleindex, lastHoleindex, holeList) {
+            // 如果没有传入参数，则从properties获取
+            if (firstHoleindex === undefined || lastHoleindex === undefined || holeList === undefined) {
+                firstHoleindex = this.properties.firstHoleindex;
+                lastHoleindex = this.properties.lastHoleindex;
+                holeList = this.properties.holeList;
             }
 
-            // 生成结束洞范围 (1到totalHoles)
-            const endHoleRange = [];
-            for (let i = 1; i <= totalHoles; i++) {
-                endHoleRange.push(`第${i}洞`);
+            // 确保数据类型正确
+            firstHoleindex = Number.parseInt(firstHoleindex) || 1;
+            lastHoleindex = Number.parseInt(lastHoleindex) || 18;
+            holeList = holeList || [];
+
+            // 如果holeList为空，使用默认值
+            if (holeList.length === 0) {
+                console.log('🕳️ [HoleRangeSelector] holeList为空，使用默认值');
+                const startHoleRange = ['第1洞'];
+                const endHoleRange = ['第1洞'];
+                this.setData({
+                    startHoleRange,
+                    endHoleRange,
+                    startHoleIndex: 0,
+                    endHoleIndex: 0
+                });
+                return;
             }
+
+            // 使用holeList生成选择器选项
+            const startHoleRange = holeList.map(hole => `第${hole.holeno}洞 (${hole.holename})`);
+            const endHoleRange = holeList.map(hole => `第${hole.holeno}洞 (${hole.holename})`);
+
+            // 找到对应的索引
+            const startHoleIndex = Math.max(0,
+                holeList.findIndex(hole => hole.holeno === firstHoleindex)
+            );
+            const endHoleIndex = Math.max(0,
+                holeList.findIndex(hole => hole.holeno === lastHoleindex)
+            );
 
             this.setData({
                 startHoleRange,
                 endHoleRange,
-                startHoleIndex: Math.max(0, startHole - 1),
-                endHoleIndex: Math.max(0, endHole - 1)
+                startHoleIndex,
+                endHoleIndex
             });
 
             console.log('🕳️ [HoleRangeSelector] 初始化洞范围:', {
-                startHole,
-                endHole,
-                totalHoles,
+                firstHoleindex,
+                lastHoleindex,
+                holeListLength: holeList.length,
                 startHoleIndex: this.data.startHoleIndex,
                 endHoleIndex: this.data.endHoleIndex
             });
@@ -76,50 +100,72 @@ Component({
         // 起始洞选择改变
         onStartHoleChange(e) {
             const startHoleIndex = e.detail.value;
-            const startHole = startHoleIndex + 1;
+            const holeList = this.properties.holeList;
+
+            if (!holeList || holeList.length === 0) {
+                console.log('🕳️ [HoleRangeSelector] holeList为空，无法处理选择');
+                return;
+            }
+
+            // 从holeList中获取对应的洞号
+            const selectedHole = holeList[startHoleIndex];
+            const firstHoleindex = selectedHole ? selectedHole.holeno : 1;
 
             this.setData({
                 startHoleIndex: startHoleIndex
             });
 
-            console.log('🕳️ [HoleRangeSelector] 起始洞变更:', startHole);
+            console.log('🕳️ [HoleRangeSelector] 起始洞变更:', firstHoleindex);
 
-            // 触发变更事件
-            this.triggerChangeEvent(startHole, this.data.endHoleIndex + 1);
+            // 触发变更事件，保持当前的结束洞不变
+            this.triggerChangeEvent(firstHoleindex, this.properties.lastHoleindex);
         },
 
         // 结束洞选择改变
         onEndHoleChange(e) {
             const endHoleIndex = e.detail.value;
-            const endHole = endHoleIndex + 1;
+            const holeList = this.properties.holeList;
+
+            if (!holeList || holeList.length === 0) {
+                console.log('🕳️ [HoleRangeSelector] holeList为空，无法处理选择');
+                return;
+            }
+
+            // 从holeList中获取对应的洞号
+            const selectedHole = holeList[endHoleIndex];
+            const lastHoleindex = selectedHole ? selectedHole.holeno : 18;
 
             this.setData({
                 endHoleIndex: endHoleIndex
             });
 
-            console.log('🕳️ [HoleRangeSelector] 结束洞变更:', endHole);
+            console.log('🕳️ [HoleRangeSelector] 结束洞变更:', lastHoleindex);
 
-            // 触发变更事件
-            this.triggerChangeEvent(this.data.startHoleIndex + 1, endHole);
+            // 触发变更事件，保持当前的起始洞不变
+            this.triggerChangeEvent(this.properties.firstHoleindex, lastHoleindex);
         },
 
         // 触发变更事件
-        triggerChangeEvent(startHole, endHole) {
+        triggerChangeEvent(firstHoleindex, lastHoleindex) {
+            // 确保传递的是数字类型
+            const firstHole = Number.parseInt(firstHoleindex) || 1;
+            const lastHole = Number.parseInt(lastHoleindex) || 18;
+
             this.triggerEvent('change', {
-                startHole,
-                endHole
+                firstHoleindex: firstHole,
+                lastHoleindex: lastHole
             });
         },
 
         // 获取当前选择的洞范围描述
         getHoleRangeDescription() {
-            const startHole = this.data.startHoleIndex + 1;
-            const endHole = this.data.endHoleIndex + 1;
+            const firstHoleindex = this.data.startHoleIndex + 1;
+            const lastHoleindex = this.data.endHoleIndex + 1;
 
-            if (startHole === endHole) {
-                return `第${startHole}洞`;
+            if (firstHoleindex === lastHoleindex) {
+                return `第${firstHoleindex}洞`;
             } else {
-                return `第${startHole}洞 - 第${endHole}洞`;
+                return `第${firstHoleindex}洞 - 第${lastHoleindex}洞`;
             }
         }
     }
