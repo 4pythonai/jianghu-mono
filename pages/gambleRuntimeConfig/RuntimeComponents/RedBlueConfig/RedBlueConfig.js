@@ -1,4 +1,6 @@
 // RedBlueConfig组件 - 分组配置
+const RuntimeComponentsUtils = require('../common-utils.js');
+
 Component({
     properties: {
         // 所有玩家
@@ -49,12 +51,12 @@ Component({
                 bootstrap_order
             });
 
-            console.log('🎯 [RedBlueConfig] 初始化玩家顺序:', bootstrap_order);
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '初始化玩家顺序', bootstrap_order);
         },
 
         // 转换玩家对象数组为用户ID数组
         convertToUserIds(playersArray) {
-            return playersArray.map(player => parseInt(player.user_id || player.userid));
+            return RuntimeComponentsUtils.data.convertPlayersToUserIds(playersArray);
         },
 
         // 分组方式选择变更
@@ -65,7 +67,7 @@ Component({
                 red_blue_config
             });
 
-            console.log('🎯 [RedBlueConfig] 分组方式变更:', red_blue_config);
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '分组方式变更', red_blue_config);
 
             // 触发变更事件，传递用户ID数组
             this.triggerEvent('change', {
@@ -78,7 +80,7 @@ Component({
             const { bootstrap_order } = this.data;
 
             // 随机打乱玩家顺序
-            const shuffled = [...bootstrap_order].sort(() => Math.random() - 0.5);
+            const shuffled = RuntimeComponentsUtils.array.shuffle(bootstrap_order);
 
             this.setData({
                 bootstrap_order: shuffled
@@ -112,7 +114,7 @@ Component({
                 bootstrap_order: sorted
             });
 
-            console.log('🎯 [RedBlueConfig] 差点排序:', sorted);
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '差点排序', sorted);
 
             // 触发变更事件，传递用户ID数组
             this.triggerEvent('change', {
@@ -139,7 +141,7 @@ Component({
                 'dragState.targetIndex': -1
             });
 
-            console.log('🎯 [RedBlueConfig] 开始拖拽:', index);
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '开始拖拽', index);
         },
 
         // 拖拽移动
@@ -184,19 +186,13 @@ Component({
 
             // 如果有有效的目标位置，执行位置交换
             if (targetIndex !== -1 && targetIndex !== dragIndex) {
-                const newPlayersOrder = [...bootstrap_order];
-                const dragItem = newPlayersOrder[dragIndex];
-
-                // 移除拖拽项
-                newPlayersOrder.splice(dragIndex, 1);
-                // 插入到目标位置
-                newPlayersOrder.splice(targetIndex, 0, dragItem);
+                const newPlayersOrder = RuntimeComponentsUtils.array.moveElement(bootstrap_order, dragIndex, targetIndex);
 
                 this.setData({
                     bootstrap_order: newPlayersOrder
                 });
 
-                console.log('🎯 [RedBlueConfig] 拖拽完成，新顺序:', newPlayersOrder);
+                RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '拖拽完成，新顺序', newPlayersOrder);
 
                 // 触发变更事件，传递用户ID数组
                 this.triggerEvent('change', {

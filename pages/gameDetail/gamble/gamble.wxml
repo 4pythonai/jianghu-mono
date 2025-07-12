@@ -13,7 +13,7 @@
     <view class="gamble-content">
         <view wx:if="{{ !have_gamble }}" class="no-gamble-container">
             <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
-            <text class="empty-hint">暂无游戏竞猜</text>
+            <text class="empty-hint">暂无游戏</text>
         </view>
         <view wx:else class="has-gamble-container">
             <text class="has-gamble-text">已经有游戏</text>

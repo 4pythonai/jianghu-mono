@@ -1,4 +1,6 @@
 // HoleRangeSelector组件 - 起点洞与终点洞选择器
+const RuntimeComponentsUtils = require('../common-utils.js');
+
 Component({
     properties: {
         // 起始洞
@@ -57,7 +59,7 @@ Component({
 
             // 如果holeList为空，使用默认值
             if (holeList.length === 0) {
-                console.log('🕳️ [HoleRangeSelector] holeList为空，使用默认值');
+                RuntimeComponentsUtils.logger.log('HOLE_RANGE', 'holeList为空，使用默认值');
                 const startHoleRange = ['第1洞'];
                 const endHoleRange = ['第1洞'];
                 this.setData({
@@ -88,7 +90,7 @@ Component({
                 endHoleIndex
             });
 
-            console.log('🕳️ [HoleRangeSelector] 初始化洞范围:', {
+            RuntimeComponentsUtils.logger.log('HOLE_RANGE', '初始化洞范围', {
                 firstHoleindex,
                 lastHoleindex,
                 holeListLength: holeList.length,
@@ -103,7 +105,7 @@ Component({
             const holeList = this.properties.holeList;
 
             if (!holeList || holeList.length === 0) {
-                console.log('🕳️ [HoleRangeSelector] holeList为空，无法处理选择');
+                RuntimeComponentsUtils.logger.log('HOLE_RANGE', 'holeList为空，无法处理选择');
                 return;
             }
 
@@ -115,7 +117,7 @@ Component({
                 startHoleIndex: startHoleIndex
             });
 
-            console.log('🕳️ [HoleRangeSelector] 起始洞变更:', firstHoleindex);
+            RuntimeComponentsUtils.logger.log('HOLE_RANGE', '起始洞变更', firstHoleindex);
 
             // 触发变更事件，保持当前的结束洞不变
             this.triggerChangeEvent(firstHoleindex, this.properties.lastHoleindex);
@@ -127,7 +129,7 @@ Component({
             const holeList = this.properties.holeList;
 
             if (!holeList || holeList.length === 0) {
-                console.log('🕳️ [HoleRangeSelector] holeList为空，无法处理选择');
+                RuntimeComponentsUtils.logger.log('HOLE_RANGE', 'holeList为空，无法处理选择');
                 return;
             }
 
@@ -139,7 +141,7 @@ Component({
                 endHoleIndex: endHoleIndex
             });
 
-            console.log('🕳️ [HoleRangeSelector] 结束洞变更:', lastHoleindex);
+            RuntimeComponentsUtils.logger.log('HOLE_RANGE', '结束洞变更', lastHoleindex);
 
             // 触发变更事件，保持当前的起始洞不变
             this.triggerChangeEvent(this.properties.firstHoleindex, lastHoleindex);

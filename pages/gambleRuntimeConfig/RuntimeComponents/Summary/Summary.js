@@ -1,4 +1,6 @@
 // Summary组件 - 显示游戏规则摘要和参与人员
+const RuntimeComponentsUtils = require('../common-utils.js');
+
 Component({
     properties: {
         // 规则类型
@@ -48,7 +50,7 @@ Component({
     // 监听属性变化
     observers: {
         'ruleType, userRule': function (ruleType, userRule) {
-            console.log('📋 [Summary] 规则属性变化:', {
+            RuntimeComponentsUtils.logger.log('SUMMARY', '规则属性变化', {
                 ruleType: ruleType,
                 userRule: userRule?.gambleUserName || userRule?.user_rulename
             });
@@ -57,7 +59,7 @@ Component({
             this.updateDisplayRuleName();
         },
         'players': function (players) {
-            console.log('📋 [Summary] 玩家属性变化:', {
+            RuntimeComponentsUtils.logger.log('SUMMARY', '玩家属性变化', {
                 playersCount: players?.length || 0,
                 players: players
             });
@@ -69,7 +71,7 @@ Component({
 
     // 组件生命周期 - 组件实例进入页面节点树时执行
     attached() {
-        console.log('📋 [Summary] 组件attached，初始化数据');
+        RuntimeComponentsUtils.logger.log('SUMMARY', '组件attached，初始化数据');
         this.updateDisplayRuleName();
         this.updatePlayersWithAvatar();
     },
@@ -79,7 +81,7 @@ Component({
         updateDisplayRuleName() {
             let displayName = '未知规则';
 
-            console.log('📋 [Summary] 更新显示名称:', {
+            RuntimeComponentsUtils.logger.log('SUMMARY', '更新显示名称', {
                 ruleType: this.data.ruleType,
                 userRule: this.data.userRule,
                 properties: this.properties
@@ -91,11 +93,11 @@ Component({
                     this.data.userRule.user_rulename ||
                     this.data.userRule.title ||
                     '用户自定义规则';
-                console.log('📋 [Summary] 使用用户规则名称:', displayName);
+                RuntimeComponentsUtils.logger.log('SUMMARY', '使用用户规则名称', displayName);
             } else if (this.data.ruleType) {
                 // 否则显示系统规则名称
                 displayName = this.data.ruleTypeMap[this.data.ruleType] || this.data.ruleType;
-                console.log('📋 [Summary] 使用系统规则名称:', displayName);
+                RuntimeComponentsUtils.logger.log('SUMMARY', '使用系统规则名称', displayName);
             }
 
             // 更新data中的displayRuleName
@@ -103,20 +105,15 @@ Component({
                 displayRuleName: displayName
             });
 
-            console.log('📋 [Summary] 最终显示名称:', displayName);
+            RuntimeComponentsUtils.logger.log('SUMMARY', '最终显示名称', displayName);
         },
 
         // 更新带头像的玩家数据
         updatePlayersWithAvatar() {
             const players = this.data.players || [];
-            const playersWithAvatar = players.map(player => {
-                const avatarUrl = this.getPlayerAvatar(player.avatar);
-                return Object.assign({}, player, {
-                    avatarUrl: avatarUrl
-                });
-            });
+            const playersWithAvatar = RuntimeComponentsUtils.avatar.batchProcessPlayerAvatars(players);
 
-            console.log('📋 [Summary] 更新玩家头像:', {
+            RuntimeComponentsUtils.logger.log('SUMMARY', '更新玩家头像', {
                 原始玩家数: players.length,
                 处理后玩家数: playersWithAvatar.length,
                 玩家头像信息: playersWithAvatar.map(p => ({
@@ -133,13 +130,13 @@ Component({
 
         // 点击重新选择规则
         onReSelectRule() {
-            console.log('📋 [Summary] 重新选择规则');
+            RuntimeComponentsUtils.logger.log('SUMMARY', '重新选择规则');
             this.triggerEvent('reselect');
         },
 
         // 获取规则显示名称 (保留此方法作为备用)
         getRuleDisplayName() {
-            console.log('📋 [Summary] 获取规则显示名称:', {
+            RuntimeComponentsUtils.logger.log('SUMMARY', '获取规则显示名称', {
                 ruleType: this.data.ruleType,
                 userRule: this.data.userRule,
                 ruleTypeMap: this.data.ruleTypeMap
@@ -151,52 +148,25 @@ Component({
                     this.data.userRule.user_rulename ||
                     this.data.userRule.title ||
                     '用户自定义规则';
-                console.log('📋 [Summary] 返回用户规则名称:', userRuleName);
+                RuntimeComponentsUtils.logger.log('SUMMARY', '返回用户规则名称', userRuleName);
                 return userRuleName;
             }
 
             // 否则显示系统规则名称
             const systemRuleName = this.data.ruleTypeMap[this.data.ruleType] || this.data.ruleType || '未知规则';
-            console.log('📋 [Summary] 返回系统规则名称:', systemRuleName);
+            RuntimeComponentsUtils.logger.log('SUMMARY', '返回系统规则名称', systemRuleName);
             return systemRuleName;
         },
 
         // 头像加载失败处理
         onAvatarError(e) {
             const index = e.currentTarget.dataset.index;
-            console.log('📋 [Summary] 头像加载失败，索引:', index);
+            RuntimeComponentsUtils.logger.log('SUMMARY', '头像加载失败', { index });
 
             // 更新失败的头像为默认头像
             this.setData({
-                [`playersWithAvatar[${index}].avatarUrl`]: '/images/default-avatar.png'
+                [`playersWithAvatar[${index}].avatarUrl`]: RuntimeComponentsUtils.CONSTANTS.DEFAULT_AVATAR
             });
-        },
-
-        // 获取玩家头像，如果没有则返回默认头像
-        getPlayerAvatar(avatar) {
-            console.log('📋 [Summary] 处理头像:', avatar);
-
-            // 如果有头像且不为空字符串
-            if (avatar && avatar.trim() !== '') {
-                // 如果是完整的URL（包含http或https）
-                if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
-                    console.log('📋 [Summary] 使用网络头像:', avatar);
-                    return avatar;
-                }
-                // 如果是相对路径，直接返回
-                if (avatar.startsWith('/')) {
-                    console.log('📋 [Summary] 使用相对路径头像:', avatar);
-                    return avatar;
-                }
-                // 其他情况，假设是相对路径，添加前缀
-                const fullPath = `/${avatar}`;
-                console.log('📋 [Summary] 添加前缀头像:', fullPath);
-                return fullPath;
-            }
-
-            // 没有头像或头像为空，返回默认头像
-            console.log('📋 [Summary] 使用默认头像: /images/default-avatar.png');
-            return '/images/default-avatar.png';
         }
     }
 }); 

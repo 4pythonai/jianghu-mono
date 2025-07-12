@@ -1,4 +1,6 @@
 // RankingSelector组件 - 排名规则选择器
+const RuntimeComponentsUtils = require('../common-utils.js');
+
 Component({
     properties: {
         // 当前选中的配置
@@ -63,7 +65,7 @@ Component({
                 selectedIndex: Math.max(0, selectedIndex)
             });
 
-            console.log('🏆 [RankingSelector] 更新选中配置:', {
+            RuntimeComponentsUtils.logger.log('RANKING_SELECTOR', '更新选中配置', {
                 selectedConfig,
                 selectedIndex: this.data.selectedIndex
             });
@@ -76,7 +78,7 @@ Component({
             const selectedOption = this.data.rankingOptions[selectedIndex];
 
             if (!selectedOption) {
-                console.error('🏆 [RankingSelector] 无效的选项索引:', selectedIndex);
+                RuntimeComponentsUtils.logger.error('RANKING_SELECTOR', '无效的选项索引', selectedIndex);
                 return;
             }
 
@@ -84,7 +86,7 @@ Component({
                 selectedIndex
             });
 
-            console.log('🏆 [RankingSelector] 选择排名配置:', selectedOption);
+            RuntimeComponentsUtils.logger.log('RANKING_SELECTOR', '选择排名配置', selectedOption);
 
             // 触发变更事件
             this.triggerEvent('change', {
