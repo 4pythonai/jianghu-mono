@@ -21,27 +21,36 @@
 
 /* 单选按钮组 - 水平排列 */
 radio-group {
-	display: flex;
-	flex-direction: row;
+	display: flex !important;
+	flex-direction: row !important;
 	justify-content: space-around;
 	gap: 20rpx;
+	width: 100%;
+	margin: 10rpx 0;
 }
 
 .radio-item {
-	display: flex;
+	display: flex !important;
 	align-items: center;
 	justify-content: center;
 	padding: 12rpx 20rpx;
 	gap: 8rpx;
 	flex: 1;
 	background-color: #fff;
-	border-radius: 25rpx;
+	border-radius: 12rpx;
 	border: 2rpx solid #e0e0e0;
 	transition: all 0.3s;
+	min-height: 60rpx;
+	box-sizing: border-box;
 }
 
 .radio-item:active {
 	transform: scale(0.98);
+}
+
+/* 确保radio元素可见 */
+radio {
+	margin-right: 8rpx;
 }
 
 .radio-label {
@@ -110,6 +119,15 @@ radio-group {
 	min-width: 60rpx;
 }
 
+.player-avatar {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	background-color: #f0f0f0;
+	border: 2rpx solid #e0e0e0;
+	flex-shrink: 0;
+}
+
 .player-name {
 	font-size: 30rpx;
 	color: #333;
@@ -130,11 +148,17 @@ radio-group {
 
 	radio-group {
 		gap: 15rpx;
+		margin: 8rpx 0;
 	}
 
 	.radio-item {
 		padding: 10rpx 15rpx;
 		gap: 6rpx;
+		min-height: 50rpx;
+	}
+
+	radio {
+		margin-right: 6rpx;
 	}
 
 	.radio-label {
@@ -158,6 +182,11 @@ radio-group {
 	.order-number {
 		font-size: 28rpx;
 		min-width: 50rpx;
+	}
+
+	.player-avatar {
+		width: 50rpx;
+		height: 50rpx;
 	}
 
 	.player-name {

@@ -29,6 +29,12 @@
     <view class="players-order-list">
       <view class="player-order-item" wx:for="{{playersOrder}}" wx:key="userid">
         <text class="order-number">{{index + 1}}:</text>
+        <image 
+          class="player-avatar" 
+          src="{{item.avatar || '/images/default-avatar.png'}}"
+          lazy-load="true"
+          mode="aspectFill"
+        />
         <text class="player-name">{{item.nickname || item.wx_nickname || '未知玩家'}}</text>
       </view>
     </view>
