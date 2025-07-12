@@ -1,192 +1,117 @@
-// RedBlueConfig组件 - 红蓝分组配置
+// RedBlueConfig组件 - 分组配置
 Component({
     properties: {
         // 所有玩家
         players: {
             type: Array,
             value: []
-        },
-        // 红队玩家
-        redTeam: {
-            type: Array,
-            value: []
-        },
-        // 蓝队玩家
-        blueTeam: {
-            type: Array,
-            value: []
         }
     },
 
     data: {
-        // 拖拽相关
-        draggedPlayer: null,
-        draggedFromTeam: null,
+        // 分组方式：固拉、乱拉、高手不见面
+        groupingMethod: '固拉',
 
-        // 未分组玩家列表
-        unassignedPlayers: []
+        // 玩家出发顺序
+        playersOrder: []
     },
 
     lifetimes: {
         attached() {
-            this.updateUnassignedPlayers();
+            this.initializePlayersOrder();
         }
     },
 
     observers: {
-        'players, redTeam, blueTeam': function (players, redTeam, blueTeam) {
-            this.updateUnassignedPlayers();
+        'players': function (players) {
+            this.initializePlayersOrder();
         }
     },
 
     methods: {
-        // 更新未分组玩家列表
-        updateUnassignedPlayers() {
-            const { players, redTeam, blueTeam } = this.data;
+        // 初始化玩家顺序
+        initializePlayersOrder() {
+            const { players } = this.data;
 
-            // 获取已分组玩家的ID
-            const assignedIds = [
-                ...redTeam.map(player => player.userid),
-                ...blueTeam.map(player => player.userid)
-            ];
-
-            // 过滤出未分组的玩家
-            const unassignedPlayers = players.filter(player =>
-                !assignedIds.includes(player.userid)
-            );
+            // 复制玩家数组作为初始顺序
+            const playersOrder = [...players];
 
             this.setData({
-                unassignedPlayers
+                playersOrder
             });
 
-            console.log('🔴🔵 [RedBlueConfig] 未分组玩家更新:', unassignedPlayers);
+            console.log('🎯 [RedBlueConfig] 初始化玩家顺序:', playersOrder);
         },
 
-        // 玩家分配到红队
-        assignToRedTeam(e) {
-            const { player } = e.currentTarget.dataset;
-            const playerData = typeof player === 'string' ? JSON.parse(player) : player;
-
-            this.movePlayerToTeam(playerData, 'red');
-        },
-
-        // 玩家分配到蓝队
-        assignToBlueTeam(e) {
-            const { player } = e.currentTarget.dataset;
-            const playerData = typeof player === 'string' ? JSON.parse(player) : player;
-
-            this.movePlayerToTeam(playerData, 'blue');
-        },
-
-        // 从红队移除玩家
-        removeFromRedTeam(e) {
-            const { player } = e.currentTarget.dataset;
-            const playerData = typeof player === 'string' ? JSON.parse(player) : player;
-
-            this.movePlayerToTeam(playerData, 'unassigned');
-        },
-
-        // 从蓝队移除玩家
-        removeFromBlueTeam(e) {
-            const { player } = e.currentTarget.dataset;
-            const playerData = typeof player === 'string' ? JSON.parse(player) : player;
-
-            this.movePlayerToTeam(playerData, 'unassigned');
-        },
-
-        // 移动玩家到指定队伍
-        movePlayerToTeam(player, targetTeam) {
-            let { redTeam, blueTeam } = this.data;
-
-            // 从当前队伍中移除玩家
-            redTeam = redTeam.filter(p => p.userid !== player.userid);
-            blueTeam = blueTeam.filter(p => p.userid !== player.userid);
-
-            // 添加到目标队伍
-            if (targetTeam === 'red') {
-                redTeam.push(player);
-            } else if (targetTeam === 'blue') {
-                blueTeam.push(player);
-            }
-            // 如果是 'unassigned'，则什么都不做，玩家会回到未分组列表
+        // 分组方式选择变更
+        onGroupingMethodChange(e) {
+            const groupingMethod = e.detail.value;
 
             this.setData({
-                redTeam,
-                blueTeam
+                groupingMethod
             });
 
-            console.log('🔴🔵 [RedBlueConfig] 玩家移动:', {
-                player: player.nickname,
-                targetTeam,
-                redTeam,
-                blueTeam
-            });
+            console.log('🎯 [RedBlueConfig] 分组方式变更:', groupingMethod);
 
             // 触发变更事件
             this.triggerEvent('change', {
-                redTeam,
-                blueTeam
+                groupingMethod,
+                playersOrder: this.data.playersOrder
             });
         },
 
-        // 自动分组
-        autoAssign() {
-            const { unassignedPlayers } = this.data;
+        randomOrder() {
+            const { playersOrder } = this.data;
 
-            if (unassignedPlayers.length === 0) {
-                wx.showToast({
-                    title: '没有未分组的玩家',
-                    icon: 'none'
-                });
-                return;
-            }
-
-            // 随机分配
-            const shuffled = [...unassignedPlayers].sort(() => Math.random() - 0.5);
-            const redTeam = [];
-            const blueTeam = [];
-
-            shuffled.forEach((player, index) => {
-                if (index % 2 === 0) {
-                    redTeam.push(player);
-                } else {
-                    blueTeam.push(player);
-                }
-            });
+            // 随机打乱玩家顺序
+            const shuffled = [...playersOrder].sort(() => Math.random() - 0.5);
 
             this.setData({
-                redTeam,
-                blueTeam
+                playersOrder: shuffled
             });
 
-            console.log('🔴🔵 [RedBlueConfig] 自动分组:', { redTeam, blueTeam });
 
             // 触发变更事件
             this.triggerEvent('change', {
-                redTeam,
-                blueTeam
+                groupingMethod: this.data.groupingMethod,
+                playersOrder: shuffled
+            });
+
+            // 显示提示
+            wx.showToast({
+                title: '抽签排序完成',
+                icon: 'success'
             });
         },
 
-        // 重置分组
-        resetTeams() {
-            this.setData({
-                redTeam: [],
-                blueTeam: []
+        // 差点排序（按差点从低到高排序）
+        handicapOrder() {
+            const { playersOrder } = this.data;
+
+            // 按差点排序，差点低的在前
+            const sorted = [...playersOrder].sort((a, b) => {
+                const handicapA = Number(a.handicap) || 0;
+                const handicapB = Number(b.handicap) || 0;
+                return handicapA - handicapB;
             });
 
-            console.log('🔴🔵 [RedBlueConfig] 重置分组');
+            this.setData({
+                playersOrder: sorted
+            });
+
+            console.log('🎯 [RedBlueConfig] 差点排序:', sorted);
 
             // 触发变更事件
             this.triggerEvent('change', {
-                redTeam: [],
-                blueTeam: []
+                groupingMethod: this.data.groupingMethod,
+                playersOrder: sorted
             });
-        },
 
-        // 获取玩家头像
-        getPlayerAvatar(avatar) {
-            return avatar || '/images/default-avatar.png';
+            // 显示提示
+            wx.showToast({
+                title: '差点排序完成',
+                icon: 'success'
+            });
         }
     }
 }); 

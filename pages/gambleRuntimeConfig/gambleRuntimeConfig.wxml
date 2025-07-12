@@ -20,7 +20,7 @@
     
     <!-- 洞范围选择 -->
     <view class="section">
-      <view class="section-title">选择本游戏的起始洞与终止洞</view>
+      <view class="section-title">选择洞范围</view>
       <HoleRangeSelector 
         startHole="{{runtimeConfig.startHole}}"
         endHole="{{runtimeConfig.endHole}}"
@@ -29,14 +29,11 @@
       />
     </view>
     
-    <!-- 红蓝分组配置 -->
-    <view class="section" wx:if="{{runtimeConfig.red_blue_config.enable}}">
-      <view class="section-title">请选择分组方式</view>
+    <!-- 分组配置 -->
+    <view class="section" wx:if="{{runtimeConfig.grouping_config.enable}}">
       <RedBlueConfig 
         players="{{players}}"
-        redTeam="{{runtimeConfig.red_blue_config.redTeam}}"
-        blueTeam="{{runtimeConfig.red_blue_config.blueTeam}}"
-        bind:change="onRedBlueConfigChange"
+        bind:change="onGroupingConfigChange"
       />
     </view>
     

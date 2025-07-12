@@ -15,11 +15,11 @@ Page({
             startHole: 1,
             endHole: 18,
 
-            // 红蓝分组配置
-            red_blue_config: {
+            // 分组配置
+            grouping_config: {
                 enable: false,
-                redTeam: [],
-                blueTeam: []
+                groupingMethod: '固拉',
+                playersOrder: []
             },
 
             // 排名配置
@@ -90,8 +90,8 @@ Page({
                     'runtimeConfig.endHole': holes?.length || decodedData.holeCount || 18
                 });
 
-                // 初始化红蓝分组
-                this.initializeRedBlueConfig();
+                // 初始化分组配置
+                this.initializeGroupingConfig();
             }
         } catch (error) {
             console.error('🎮 [GambleRuntimeConfig] 数据解析失败:', error);
@@ -111,8 +111,8 @@ Page({
         }
     },
 
-    // 初始化红蓝分组配置
-    initializeRedBlueConfig() {
+    // 初始化分组配置
+    initializeGroupingConfig() {
         const { players, ruleType } = this.data;
 
         // 检查是否需要分组（3人或4人游戏）
@@ -122,9 +122,14 @@ Page({
 
         if (needGrouping) {
             this.setData({
-                'runtimeConfig.red_blue_config.enable': true,
-                'runtimeConfig.red_blue_config.redTeam': [],
-                'runtimeConfig.red_blue_config.blueTeam': []
+                'runtimeConfig.grouping_config.enable': true,
+                'runtimeConfig.grouping_config.groupingMethod': '固拉',
+                'runtimeConfig.grouping_config.playersOrder': [...players]
+            });
+        } else {
+            this.setData({
+                'runtimeConfig.grouping_config.enable': false,
+                'runtimeConfig.grouping_config.playersOrder': [...players]
             });
         }
 
@@ -161,14 +166,14 @@ Page({
         });
     },
 
-    // 红蓝分组配置事件
-    onRedBlueConfigChange(e) {
-        const { redTeam, blueTeam } = e.detail;
-        console.log('🎮 [GambleRuntimeConfig] 红蓝分组变更:', { redTeam, blueTeam });
+    // 分组配置事件
+    onGroupingConfigChange(e) {
+        const { groupingMethod, playersOrder } = e.detail;
+        console.log('🎮 [GambleRuntimeConfig] 分组配置变更:', { groupingMethod, playersOrder });
 
         this.setData({
-            'runtimeConfig.red_blue_config.redTeam': redTeam,
-            'runtimeConfig.red_blue_config.blueTeam': blueTeam
+            'runtimeConfig.grouping_config.groupingMethod': groupingMethod,
+            'runtimeConfig.grouping_config.playersOrder': playersOrder
         });
     },
 
@@ -215,22 +220,21 @@ Page({
             return false;
         }
 
-        // 验证红蓝分组
-        if (runtimeConfig.red_blue_config.enable) {
-            const redCount = runtimeConfig.red_blue_config.redTeam.length;
-            const blueCount = runtimeConfig.red_blue_config.blueTeam.length;
+        // 验证分组配置
+        if (runtimeConfig.grouping_config.enable) {
+            const playersOrderCount = runtimeConfig.grouping_config.playersOrder.length;
 
-            if (redCount === 0 || blueCount === 0) {
+            if (playersOrderCount !== players.length) {
                 wx.showToast({
-                    title: '请完成红蓝分组配置',
+                    title: '玩家顺序数量与总人数不符',
                     icon: 'none'
                 });
                 return false;
             }
 
-            if (redCount + blueCount !== players.length) {
+            if (!runtimeConfig.grouping_config.groupingMethod) {
                 wx.showToast({
-                    title: '分组人数与总人数不符',
+                    title: '请选择分组方式',
                     icon: 'none'
                 });
                 return false;

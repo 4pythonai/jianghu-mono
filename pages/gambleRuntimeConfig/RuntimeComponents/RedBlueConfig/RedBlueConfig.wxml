@@ -1,104 +1,36 @@
-<!-- RedBlueConfig组件 - 红蓝分组配置 -->
 <view class="red-blue-config">
-  <!-- 操作按钮 -->
-  <view class="action-buttons">
-    <button class="auto-assign-btn" bindtap="autoAssign">自动分组</button>
-    <button class="reset-btn" bindtap="resetTeams">重置</button>
+  <view class="grouping-method">
+    <view class="section-title">请选择分组方式</view>
+    <radio-group bindchange="onGroupingMethodChange">
+      <label class="radio-item">
+        <radio value="固拉" checked="{{groupingMethod === '固拉'}}"/>
+        <text class="radio-label">固拉</text>
+      </label>
+      <label class="radio-item">
+        <radio value="乱拉" checked="{{groupingMethod === '乱拉'}}"/>
+        <text class="radio-label">乱拉</text>
+      </label>
+      <label class="radio-item">
+        <radio value="高手不见面" checked="{{groupingMethod === '高手不见面'}}"/>
+        <text class="radio-label">高手不见面</text>
+      </label>
+    </radio-group>
   </view>
   
-  <!-- 未分组玩家 -->
-  <view class="unassigned-section" wx:if="{{unassignedPlayers.length > 0}}">
-    <view class="section-title">未分组玩家</view>
-    <view class="players-list">
-      <view class="player-item unassigned" wx:for="{{unassignedPlayers}}" wx:key="userid">
-        <image 
-          class="player-avatar" 
-          src="{{getPlayerAvatar(item.avatar)}}"
-          lazy-load="true"
-          mode="aspectFill"
-        />
-        <text class="player-name">{{item.nickname || item.wx_nickname || '未知玩家'}}</text>
-        <view class="assign-buttons">
-          <button 
-            class="assign-red-btn" 
-            bindtap="assignToRedTeam"
-            data-player="{{item}}"
-          >
-            红队
-          </button>
-          <button 
-            class="assign-blue-btn" 
-            bindtap="assignToBlueTeam"
-            data-player="{{item}}"
-          >
-            蓝队
-          </button>
-        </view>
-      </view>
-    </view>
-  </view>
-  
-  <!-- 队伍分组 -->
-  <view class="teams-section">
-    <!-- 红队 -->
-    <view class="team-group red-team">
-      <view class="team-header">
-        <text class="team-title">🔴 红队 ({{redTeam.length}}人)</text>
-      </view>
-      <view class="team-players">
-        <view class="player-item assigned" wx:for="{{redTeam}}" wx:key="userid">
-          <image 
-            class="player-avatar" 
-            src="{{getPlayerAvatar(item.avatar)}}"
-            lazy-load="true"
-            mode="aspectFill"
-          />
-          <text class="player-name">{{item.nickname || item.wx_nickname || '未知玩家'}}</text>
-          <button 
-            class="remove-btn" 
-            bindtap="removeFromRedTeam"
-            data-player="{{item}}"
-          >
-            ✕
-          </button>
-        </view>
-        <view class="empty-team" wx:if="{{redTeam.length === 0}}">
-          <text class="empty-text">点击上方按钮添加玩家</text>
-        </view>
-      </view>
+  <!-- 出发顺序 -->
+  <view class="departure-order">
+    <view class="section-title">出发顺序</view>
+    <view class="order-controls">
+      <button class="order-btn" bindtap="randomOrder">抽签排序</button>
+      <button class="order-btn" bindtap="handicapOrder">差点排序</button>
     </view>
     
-    <!-- 蓝队 -->
-    <view class="team-group blue-team">
-      <view class="team-header">
-        <text class="team-title">🔵 蓝队 ({{blueTeam.length}}人)</text>
-      </view>
-      <view class="team-players">
-        <view class="player-item assigned" wx:for="{{blueTeam}}" wx:key="userid">
-          <image 
-            class="player-avatar" 
-            src="{{getPlayerAvatar(item.avatar)}}"
-            lazy-load="true"
-            mode="aspectFill"
-          />
-          <text class="player-name">{{item.nickname || item.wx_nickname || '未知玩家'}}</text>
-          <button 
-            class="remove-btn" 
-            bindtap="removeFromBlueTeam"
-            data-player="{{item}}"
-          >
-            ✕
-          </button>
-        </view>
-        <view class="empty-team" wx:if="{{blueTeam.length === 0}}">
-          <text class="empty-text">点击上方按钮添加玩家</text>
-        </view>
+    <!-- 玩家列表 -->
+    <view class="players-order-list">
+      <view class="player-order-item" wx:for="{{playersOrder}}" wx:key="userid">
+        <text class="order-number">{{index + 1}}:</text>
+        <text class="player-name">{{item.nickname || item.wx_nickname || '未知玩家'}}</text>
       </view>
     </view>
-  </view>
-  
-  <!-- 提示信息 -->
-  <view class="hint-text">
-    <text>提示：将玩家分配到红队或蓝队，用于对抗游戏</text>
   </view>
 </view> 
