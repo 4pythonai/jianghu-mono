@@ -77,10 +77,9 @@
 }
 
 .option-label {
-	font-size: 30rpx;
-	font-weight: bold;
+	font-size: 26rpx;
 	color: #333;
-	line-height: 1.2;
+	line-height: 1.0;
 }
 
 .option-description {

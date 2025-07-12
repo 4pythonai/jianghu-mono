@@ -1,6 +1,6 @@
 <view class="red-blue-config">
   <view class="grouping-method">
-    <view class="section-title">请选择分组方式</view>
+    <view class="section-label">请选择分组方式</view>
     <radio-group bindchange="onGroupingMethodChange">
       <label class="radio-item">
         <radio value="4_固拉" checked="{{red_blue_config === '4_固拉'}}"/>
@@ -19,7 +19,7 @@
   
   <!-- 出发顺序 -->
   <view class="departure-order">
-    <view class="section-title">出发顺序</view>
+    <view class="section-label">出发顺序</view>
     <view class="order-controls">
       <button class="order-btn" bindtap="randomOrder">抽签排序</button>
       <button class="order-btn" bindtap="handicapOrder">差点排序</button>

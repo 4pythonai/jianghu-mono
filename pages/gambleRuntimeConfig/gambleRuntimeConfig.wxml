@@ -20,7 +20,7 @@
     
     <!-- 洞范围选择 -->
     <view class="section">
-      <view class="section-title">选择洞范围</view>
+      <view class="section-label">选择洞范围</view>
       <HoleRangeSelector 
         firstHoleindex="{{runtimeConfig.firstHoleindex}}"
         lastHoleindex="{{runtimeConfig.lastHoleindex}}"
@@ -29,6 +29,18 @@
       />
     </view>
     
+      <!-- 8421球员配置 -->
+    <view class="section" wx:if="{{ruleType.indexOf('8421') !== -1}}">
+      <view class="section-label">球员指标配置</view>
+      <PlayerIndicator 
+        players="{{players}}"
+        val8421Config="{{runtimeConfig.val8421_config}}"
+        bind:change="onVal8421ConfigChange"
+      />
+    </view>
+  </view>
+
+  
     <!-- 分组配置 -->
     <view class="section">
       <RedBlueConfig 
@@ -39,13 +51,14 @@
     
     <!-- 排名配置 -->
     <view class="section">
-      <view class="section-title">排名规则</view>
+      <view class="section-label">排名规则</view>
       <RankingSelector 
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
         bind:change="onRankingConfigChange"
       />
     </view>
-  </view>
+
+  
   
   <!-- 底部按钮 -->
   <view class="bottom-buttons">

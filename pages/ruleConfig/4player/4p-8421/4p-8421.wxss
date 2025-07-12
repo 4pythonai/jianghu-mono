@@ -41,7 +41,7 @@
 .section-label {
 	font-size: 24rpx;
 	color: #388e3c;
-	margin: 18rpx 0 8rpx 0;
+	margin: 18rpx 10rpx 10rpx 0;
 	font-weight: 500;
 }
 

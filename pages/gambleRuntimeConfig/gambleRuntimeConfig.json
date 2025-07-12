@@ -4,6 +4,7 @@
         "Summary": "./RuntimeComponents/Summary/Summary",
         "HoleRangeSelector": "./RuntimeComponents/HoleRangeSelector/HoleRangeSelector",
         "RedBlueConfig": "./RuntimeComponents/RedBlueConfig/RedBlueConfig",
-        "RankingSelector": "./RuntimeComponents/RankingSelector/RankingSelector"
+        "RankingSelector": "./RuntimeComponents/RankingSelector/RankingSelector",
+        "PlayerIndicator": "./RuntimeComponents/PlayerIndicator/PlayerIndicator"
     }
 }

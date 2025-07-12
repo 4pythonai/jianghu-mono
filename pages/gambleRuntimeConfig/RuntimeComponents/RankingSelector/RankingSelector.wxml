@@ -25,6 +25,6 @@
   
   <!-- 提示信息 -->
   <view class="hint-text">
-    <text>   </text>
+    <text></text>
   </view>
 </view> 

@@ -28,7 +28,8 @@ Page({
             groupid: null,          // 分组ID
             userRuleId: null,       // 用户规则ID（仅用户规则时有值）
             gambleSysName: null,    // 游戏系统名称（如：8421、gross、hole等）
-            gambleUserName: null    // 用户规则名称（如：规则_4721）
+            gambleUserName: null,   // 用户规则名称（如：规则_4721）
+            val8421_config: {}      // 球员8421指标配置
         },
 
         // 页面状态
@@ -138,6 +139,9 @@ Page({
 
                 // 初始化分组配置
                 this.initializeGroupingConfig();
+
+                // 初始化8421配置（仅在8421游戏时）
+                this.initialize8421Config();
             }
         } catch (error) {
             console.error('[GambleRuntimeConfig] 数据解析失败:', error);
@@ -187,6 +191,40 @@ Page({
             ruleType,
             playerIds
         });
+    },
+
+    // 初始化8421配置
+    initialize8421Config() {
+        const { players, ruleType } = this.data;
+
+        // 检查是否是8421游戏
+        const is8421Game = ruleType.includes('8421');
+
+        if (is8421Game && players.length > 0) {
+            // 为每个球员设置默认8421配置
+            const defaultConfig = {
+                "Birdie": 8,
+                "Par": 4,
+                "Par+1": 2,
+                "Par+2": 1
+            };
+
+            const val8421Config = {};
+            for (const player of players) {
+                const userid = String(player.userid || player.user_id);
+                val8421Config[userid] = { ...defaultConfig };
+            }
+
+            this.setData({
+                'runtimeConfig.val8421_config': val8421Config
+            });
+
+            console.log('[GambleRuntimeConfig] 8421配置初始化:', {
+                is8421Game,
+                playerCount: players.length,
+                val8421Config
+            });
+        }
     },
 
     // 重新选择赌博规则
@@ -243,6 +281,16 @@ Page({
         });
     },
 
+    // 8421配置事件
+    onVal8421ConfigChange(e) {
+        const { val8421Config } = e.detail;
+        console.log('[GambleRuntimeConfig] 8421配置变更:', val8421Config);
+
+        this.setData({
+            'runtimeConfig.val8421_config': val8421Config
+        });
+    },
+
     // 确认配置
     onConfirmConfig() {
         const { runtimeConfig, ruleType, gameId, players } = this.data;
@@ -258,7 +306,7 @@ Page({
 
     // 验证配置
     validateConfig() {
-        const { runtimeConfig, players } = this.data;
+        const { runtimeConfig, players, ruleType } = this.data;
 
         // 验证洞范围
         if (runtimeConfig.firstHoleindex > runtimeConfig.lastHoleindex) {
@@ -298,6 +346,35 @@ Page({
             if (!allPlayersIncluded) {
                 wx.showToast({
                     title: '玩家顺序配置有误',
+                    icon: 'none'
+                });
+                return false;
+            }
+        }
+
+        // 验证8421配置（仅在8421游戏时）
+        if (ruleType.includes('8421')) {
+            const val8421Config = runtimeConfig.val8421_config;
+
+            if (!val8421Config || Object.keys(val8421Config).length === 0) {
+                wx.showToast({
+                    title: '请配置球员指标',
+                    icon: 'none'
+                });
+                return false;
+            }
+
+            // 验证所有球员都有配置
+            const playerIds = players.map(p => String(p.userid || p.user_id));
+            const configPlayerIds = Object.keys(val8421Config);
+
+            const allPlayersConfigured = playerIds.every(id =>
+                configPlayerIds.includes(id)
+            );
+
+            if (!allPlayersConfigured) {
+                wx.showToast({
+                    title: '部分球员未配置指标',
                     icon: 'none'
                 });
                 return false;
