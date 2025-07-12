@@ -58,7 +58,6 @@ class MDetailGame  extends CI_Model {
             'game_start' => $game_info['game_start'] ?: $game_info['create_time'],
             'completed_holes' => $game_stats['completed_holes'],
             'holes' => $game_stats['total_holes'],
-            'have_gamble' => $gamble_info['have_gamble'],
             'star_type' => $gamble_info['star_type'],
             'courseinfo' => [
                 'courseid' => $course_info['courseid'],
@@ -219,17 +218,7 @@ class MDetailGame  extends CI_Model {
         ";
         $gamble_result = $this->db->query($gamble_query, [$game_id]);
         $gamble = $gamble_result->row_array();
-        if ($gamble) {
-            return [
-                'have_gamble' => true,
-                'star_type' => $gamble['star_type']
-            ];
-        } else {
-            return [
-                'have_gamble' => false,
-                'star_type' => 'green'
-            ];
-        }
+        return $gamble;
     }
 
     /**

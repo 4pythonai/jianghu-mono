@@ -150,9 +150,6 @@ class Gamble extends MY_Controller {
     }
 
 
-
-
-
     public function addRuntimeConfig() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
@@ -210,5 +207,35 @@ class Gamble extends MY_Controller {
                 'message' => '服务器内部错误：' . $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    public function listRuntimeConfig() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = $json_paras['gameid'];
+        $this->db->select('*');
+        $this->db->from('t_gamble_runtime');
+        $this->db->where('gameid', $gameid);
+        $gambles = $this->db->get()->result_array();
+        foreach ($gambles as &$gamble) {
+            $gamble['attenders'] = $this->setGambleAttenders($gamble);
+        }
+
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '获取成功';
+        $ret['gambles'] = $gambles;
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+    private function setGambleAttenders($gamble) {
+        $attenders = json_decode($gamble['attenders'], true);
+        $attenders_info = [];
+        foreach ($attenders as $attender) {
+            $attender_info = $this->MUser->getPlayerInfo($attender);
+            $attenders_info[] = $attender_info;
+        }
+        $gamble['all_players'] = $attenders_info;
+        return $gamble;
     }
 }

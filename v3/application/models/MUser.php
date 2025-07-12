@@ -173,4 +173,19 @@ class MUser  extends CI_Model {
     $this->db->where('id', $user_id);
     $this->db->update('t_user', ['avatar' => $fileName]);
   }
+
+
+  public function getPlayerInfo($userid) {
+    $web_url = config_item('web_url');
+    $players_query = "
+        SELECT 
+            u.id as user_id,
+            u.wx_nickname as wx_nickname,
+            concat('$web_url', u.avatar) as avatar
+        FROM t_user u
+        WHERE id = ? ";
+
+    $user = $this->db->query($players_query, [$userid])->row_array();
+    return $user;
+  }
 }
