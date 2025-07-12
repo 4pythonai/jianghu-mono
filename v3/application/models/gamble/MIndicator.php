@@ -168,6 +168,11 @@ class MIndicator extends CI_Model {
             return false;
         }
 
+        // 默认情况：完全相等才算顶洞
+        if ($drawConfig == "DrawEqual") {
+            return $indicatorBlue == $indicatorRed;
+        }
+
         // 检查是否为 "Diff_x" 格式
         if (preg_match('/^Diff_(\d+)$/', $drawConfig, $matches)) {
             $allowedDiff = (int)$matches[1];
@@ -176,8 +181,5 @@ class MIndicator extends CI_Model {
             // 差值在允许范围内算顶洞
             return $actualDiff <= $allowedDiff;
         }
-
-        // 默认情况：完全相等才算顶洞
-        return $indicatorBlue == $indicatorRed;
     }
 }

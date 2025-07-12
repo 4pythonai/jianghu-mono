@@ -41,8 +41,6 @@ class Game extends MY_Controller {
 
     public function getPlayerCombination() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        // $user_id = $json_paras['user_id'];
-        // 837590
 
         $user1 = ['userid' => 837590, 'nickname' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 0];
         $user2 = ['userid' => 14, 'nickname' => 'awen', 'avatar' => 'https://qiaoyincapital.com//avatar/14.png', 'handicap' => 0];
