@@ -110,6 +110,16 @@
 	border-radius: 8px;
 	padding: 15px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+	border: 1px solid transparent;
+}
+
+.config-item-hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	border-color: #4caf50;
 }
 
 .config-header {
@@ -155,6 +165,41 @@
 	color: #333;
 	text-align: right;
 	flex: 1;
+}
+
+/* 点击提示样式 */
+.config-click-hint {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	margin-top: 10px;
+	padding-top: 8px;
+	border-top: 1px solid #f0f0f0;
+	opacity: 0.7;
+	transition: opacity 0.3s ease;
+}
+
+.config-item:hover .config-click-hint {
+	opacity: 1;
+}
+
+.click-hint-text {
+	font-size: 12px;
+	color: #4caf50;
+	font-weight: 500;
+}
+
+.click-hint-arrow {
+	font-size: 14px;
+	color: #4caf50;
+	font-weight: bold;
+	transform: translateX(0);
+	transition: transform 0.3s ease;
+}
+
+.config-item:hover .click-hint-arrow {
+	transform: translateX(3px);
 }
 
 /* 无游戏状态样式 */

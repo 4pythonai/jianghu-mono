@@ -16,7 +16,7 @@
     
     <view wx:elif="{{ runtimeConfigs && runtimeConfigs.length > 0 }}" class="gamble-content">
         <view class="config-list">
-            <view wx:for="{{ runtimeConfigs }}" wx:key="unique" class="config-item">
+            <view wx:for="{{ runtimeConfigs }}" wx:key="unique" class="config-item" hover-class="config-item-hover" bindtap="handleConfigClick" data-config="{{ item }}" data-index="{{ index }}">
                 <view class="config-header">
                     <text class="config-title">游戏配置 #{{ index + 1 }}</text>
                     <text class="config-time">{{ item.create_time || '未知时间' }}</text>
@@ -38,6 +38,11 @@
                         <text class="config-label">参与人数:</text>
                         <text class="config-value">{{ item.player8421Count }}人</text>
                     </view>
+                </view>
+                <!-- 点击提示 -->
+                <view class="config-click-hint">
+                    <text class="click-hint-text">点击查看结果</text>
+                    <text class="click-hint-arrow">→</text>
                 </view>
             </view>
         </view>

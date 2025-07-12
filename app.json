@@ -26,6 +26,7 @@
 		"pages/gameOperation/socreStyle/socreStyle",
 		"pages/rules/rules",
 		"pages/gambleRuntimeConfig/gambleRuntimeConfig",
+		"pages/gambleResult/gambleResult",
 		"pages/ruleConfig/2player/2p-gross/2p-gross",
 		"pages/ruleConfig/2player/2p-hole/2p-hole",
 		"pages/ruleConfig/2player/2p-8421/2p-8421",

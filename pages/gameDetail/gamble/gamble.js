@@ -108,6 +108,56 @@ Component({
 
             this.setData({ lastRefreshTime: now });
             this.refreshRuntimeConfig();
+        },
+
+        // 处理配置项点击事件
+        handleConfigClick(e) {
+            const { config, index } = e.currentTarget.dataset;
+            const gameId = this.properties.gameId || gameStore.gameid;
+
+            console.log('🎮 点击配置项:', { config, index, gameId });
+
+            if (!config) {
+                console.error('🎮 配置数据为空');
+                wx.showToast({
+                    title: '配置数据错误',
+                    icon: 'none'
+                });
+                return;
+            }
+
+            // 构建跳转参数
+            const params = {
+                gameId: gameId,
+                configId: config.id || config.unique || index,
+                ruleType: config.gambleSysName || '',
+                userRuleName: config.gambleUserName || '',
+                firstHole: config.firstHoleindex || 1,
+                lastHole: config.lastHoleindex || 18,
+                playerCount: config.player8421Count || 0
+            };
+
+            // 将参数编码为URL
+            const queryString = Object.keys(params)
+                .map(key => `${key}=${encodeURIComponent(params[key])}`)
+                .join('&');
+
+            console.log('🎮 跳转到赌球结果页面，参数:', params);
+
+            // 跳转到赌球结果页面
+            wx.navigateTo({
+                url: `/pages/gambleResult/gambleResult?${queryString}`,
+                success: () => {
+                    console.log('🎮 成功跳转到赌球结果页面');
+                },
+                fail: (err) => {
+                    console.error('🎮 跳转到赌球结果页面失败:', err);
+                    wx.showToast({
+                        title: '页面跳转失败',
+                        icon: 'none'
+                    });
+                }
+            });
         }
     },
 
