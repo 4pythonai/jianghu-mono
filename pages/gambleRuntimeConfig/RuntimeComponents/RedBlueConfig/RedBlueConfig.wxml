@@ -3,15 +3,15 @@
     <view class="section-title">请选择分组方式</view>
     <radio-group bindchange="onGroupingMethodChange">
       <label class="radio-item">
-        <radio value="固拉" checked="{{groupingMethod === '固拉'}}"/>
+        <radio value="4_固拉" checked="{{red_blue_config === '4_固拉'}}"/>
         <text class="radio-label">固拉</text>
       </label>
       <label class="radio-item">
-        <radio value="乱拉" checked="{{groupingMethod === '乱拉'}}"/>
+        <radio value="4_乱拉" checked="{{red_blue_config === '4_乱拉'}}"/>
         <text class="radio-label">乱拉</text>
       </label>
       <label class="radio-item">
-        <radio value="高手不见面" checked="{{groupingMethod === '高手不见面'}}"/>
+        <radio value="4_高手不见面" checked="{{red_blue_config === '4_高手不见面'}}"/>
         <text class="radio-label">高手不见面</text>
       </label>
     </radio-group>
@@ -27,7 +27,19 @@
     
     <!-- 玩家列表 -->
     <view class="players-order-list">
-      <view class="player-order-item" wx:for="{{playersOrder}}" wx:key="userid">
+      <view 
+        class="player-order-item {{dragState.dragIndex === index ? 'dragging' : ''}}"
+        wx:for="{{playersOrder}}" 
+        wx:key="userid"
+        data-index="{{index}}"
+        bindtouchstart="onTouchStart"
+        bindtouchmove="onTouchMove"
+        bindtouchend="onTouchEnd"
+        style="{{dragState.dragIndex === index ? 'transform: translateY(' + dragState.offsetY + 'rpx); z-index: 999;' : (dragState.targetIndex === index ? 'transform: translateY(' + (dragState.direction > 0 ? '-100' : '100') + 'rpx);' : '')}}"
+      >
+        <view class="drag-handle">
+          <text class="drag-icon">⋮⋮</text>
+        </view>
         <text class="order-number">#{{index + 1}}</text>
         <image 
           class="player-avatar" 

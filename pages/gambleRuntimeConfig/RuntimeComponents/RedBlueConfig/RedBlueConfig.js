@@ -9,11 +9,20 @@ Component({
     },
 
     data: {
-        // 分组方式：固拉、乱拉、高手不见面
-        groupingMethod: '固拉',
+        // 分组方式：固拉、4_乱拉、4_高手不见面
+        red_blue_config: '4_固拉',
 
         // 玩家出发顺序
-        playersOrder: []
+        playersOrder: [],
+
+        // 拖拽状态
+        dragState: {
+            dragIndex: -1,      // 当前拖拽的元素索引
+            targetIndex: -1,    // 目标位置索引
+            startY: 0,          // 开始触摸的Y坐标
+            offsetY: 0,         // Y轴偏移量
+            direction: 0        // 拖拽方向: 1向下, -1向上
+        }
     },
 
     lifetimes: {
@@ -45,17 +54,17 @@ Component({
 
         // 分组方式选择变更
         onGroupingMethodChange(e) {
-            const groupingMethod = e.detail.value;
+            const red_blue_config = e.detail.value;
 
             this.setData({
-                groupingMethod
+                red_blue_config
             });
 
-            console.log('🎯 [RedBlueConfig] 分组方式变更:', groupingMethod);
+            console.log('🎯 [RedBlueConfig] 分组方式变更:', red_blue_config);
 
             // 触发变更事件
             this.triggerEvent('change', {
-                groupingMethod,
+                red_blue_config,
                 playersOrder: this.data.playersOrder
             });
         },
@@ -73,7 +82,7 @@ Component({
 
             // 触发变更事件
             this.triggerEvent('change', {
-                groupingMethod: this.data.groupingMethod,
+                red_blue_config: this.data.red_blue_config,
                 playersOrder: shuffled
             });
 
@@ -103,7 +112,7 @@ Component({
 
             // 触发变更事件
             this.triggerEvent('change', {
-                groupingMethod: this.data.groupingMethod,
+                red_blue_config: this.data.red_blue_config,
                 playersOrder: sorted
             });
 
@@ -111,6 +120,100 @@ Component({
             wx.showToast({
                 title: '差点排序完成',
                 icon: 'success'
+            });
+        },
+
+        // 拖拽开始
+        onTouchStart(e) {
+            const index = parseInt(e.currentTarget.dataset.index);
+            const startY = e.touches[0].clientY;
+
+            this.setData({
+                'dragState.dragIndex': index,
+                'dragState.startY': startY,
+                'dragState.offsetY': 0,
+                'dragState.targetIndex': -1
+            });
+
+            console.log('🎯 [RedBlueConfig] 开始拖拽:', index);
+        },
+
+        // 拖拽移动
+        onTouchMove(e) {
+            const { dragState } = this.data;
+            if (dragState.dragIndex === -1) return;
+
+            const currentY = e.touches[0].clientY;
+            const offsetY = (currentY - dragState.startY) * 2; // 放大移动距离的转换比例
+
+            // 计算目标索引
+            const itemHeight = 100; // 每个列表项的大概高度(rpx)
+            const moveDistance = Math.abs(offsetY);
+            const steps = Math.floor(moveDistance / itemHeight);
+            const direction = offsetY > 0 ? 1 : -1;
+
+            let targetIndex = -1;
+            if (steps > 0) {
+                targetIndex = dragState.dragIndex + (direction * steps);
+                targetIndex = Math.max(0, Math.min(this.data.playersOrder.length - 1, targetIndex));
+
+                // 如果目标索引和当前索引相同，不显示目标位置
+                if (targetIndex === dragState.dragIndex) {
+                    targetIndex = -1;
+                }
+            }
+
+            this.setData({
+                'dragState.offsetY': offsetY,
+                'dragState.targetIndex': targetIndex,
+                'dragState.direction': direction
+            });
+        },
+
+        // 拖拽结束
+        onTouchEnd(e) {
+            const { dragState, playersOrder } = this.data;
+            if (dragState.dragIndex === -1) return;
+
+            const dragIndex = dragState.dragIndex;
+            const targetIndex = dragState.targetIndex;
+
+            // 如果有有效的目标位置，执行位置交换
+            if (targetIndex !== -1 && targetIndex !== dragIndex) {
+                const newPlayersOrder = [...playersOrder];
+                const dragItem = newPlayersOrder[dragIndex];
+
+                // 移除拖拽项
+                newPlayersOrder.splice(dragIndex, 1);
+                // 插入到目标位置
+                newPlayersOrder.splice(targetIndex, 0, dragItem);
+
+                this.setData({
+                    playersOrder: newPlayersOrder
+                });
+
+                console.log('🎯 [RedBlueConfig] 拖拽完成，新顺序:', newPlayersOrder);
+
+                // 触发变更事件
+                this.triggerEvent('change', {
+                    red_blue_config: this.data.red_blue_config,
+                    playersOrder: newPlayersOrder
+                });
+
+                // 显示提示
+                wx.showToast({
+                    title: '顺序调整完成',
+                    icon: 'success',
+                    duration: 1000
+                });
+            }
+
+            // 重置拖拽状态
+            this.setData({
+                'dragState.dragIndex': -1,
+                'dragState.targetIndex': -1,
+                'dragState.offsetY': 0,
+                'dragState.direction': 0
             });
         }
     }

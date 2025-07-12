@@ -22,14 +22,9 @@
     </view>
   </view>
   
-  <!-- 当前选择显示 -->
-  <view class="current-selection">
-    <view class="selection-label">当前选择：</view>
-    <view class="selection-value">{{rankingOptions[selectedIndex].label}}</view>
-  </view>
   
   <!-- 提示信息 -->
   <view class="hint-text">
-    <text>提示：选择用于确定玩家排名的规则，影响红蓝分组的分配</text>
+    <text>   </text>
   </view>
 </view> 

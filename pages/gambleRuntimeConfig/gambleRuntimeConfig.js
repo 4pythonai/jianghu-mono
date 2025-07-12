@@ -18,7 +18,7 @@ Page({
             // 分组配置
             grouping_config: {
                 enable: false,
-                groupingMethod: '固拉',
+                red_blue_config: '4_固拉',
                 playersOrder: []
             },
 
@@ -123,7 +123,7 @@ Page({
         if (needGrouping) {
             this.setData({
                 'runtimeConfig.grouping_config.enable': true,
-                'runtimeConfig.grouping_config.groupingMethod': '固拉',
+                'runtimeConfig.grouping_config.red_blue_config': '4_固拉',
                 'runtimeConfig.grouping_config.playersOrder': [...players]
             });
         } else {
@@ -168,11 +168,11 @@ Page({
 
     // 分组配置事件
     onGroupingConfigChange(e) {
-        const { groupingMethod, playersOrder } = e.detail;
-        console.log('🎮 [GambleRuntimeConfig] 分组配置变更:', { groupingMethod, playersOrder });
+        const { red_blue_config, playersOrder } = e.detail;
+        console.log('🎮 [GambleRuntimeConfig] 分组配置变更:', { red_blue_config, playersOrder });
 
         this.setData({
-            'runtimeConfig.grouping_config.groupingMethod': groupingMethod,
+            'runtimeConfig.grouping_config.red_blue_config': red_blue_config,
             'runtimeConfig.grouping_config.playersOrder': playersOrder
         });
     },
@@ -197,6 +197,10 @@ Page({
             runtimeConfig,
             players
         });
+
+
+
+
 
         // 验证配置
         if (!this.validateConfig()) {
@@ -232,7 +236,7 @@ Page({
                 return false;
             }
 
-            if (!runtimeConfig.grouping_config.groupingMethod) {
+            if (!runtimeConfig.grouping_config.red_blue_config) {
                 wx.showToast({
                     title: '请选择分组方式',
                     icon: 'none'
@@ -247,6 +251,11 @@ Page({
     // 保存运行时配置
     saveRuntimeConfig() {
         const { runtimeConfig, ruleType, gameId } = this.data;
+
+        console.log(JSON.stringify(this.data, null, 2));
+
+
+        return;
 
         this.setData({ loading: true });
 

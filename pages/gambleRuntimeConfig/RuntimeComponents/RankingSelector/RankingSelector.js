@@ -12,24 +12,28 @@ Component({
         // 排名配置选项
         rankingOptions: [
             {
-                value: 'score_based',
-                label: '基于得分排名',
-                description: '根据玩家当前得分进行排名，得分低的排名靠前'
+                value: 'score.reverse',
+                label: '按成绩排序，冲突时回溯成绩',
             },
             {
-                value: 'handicap_based',
-                label: '基于差点排名',
-                description: '根据玩家差点进行排名，差点高的排名靠前'
+                value: 'score.win_loss.reverse_win',
+                label: '按成绩排序，按输赢，回溯输赢',
             },
             {
-                value: 'random',
-                label: '随机排名',
-                description: '完全随机分配排名，不考虑得分或差点'
+                value: 'score.win_loss.reverse_score',
+                label: '按成绩排序，按输赢，回溯成绩',
             },
             {
-                value: 'previous_hole_based',
-                label: '基于上一洞表现',
-                description: '根据玩家上一洞的表现进行排名'
+                value: 'indicator.reverse',
+                label: '按得分排序，冲突时回溯得分',
+            },
+            {
+                value: 'indicator.win_loss.reverse_win',
+                label: '按得分排序，按输赢，回溯输赢',
+            },
+            {
+                value: 'indicator.win_loss.reverse_indicator',
+                label: '按得分排序，按输赢，回溯得分',
             }
         ],
 
@@ -68,7 +72,7 @@ Component({
         // 选择排名配置
         onSelectRanking(e) {
             const { index } = e.currentTarget.dataset;
-            const selectedIndex = parseInt(index);
+            const selectedIndex = Number.parseInt(index);
             const selectedOption = this.data.rankingOptions[selectedIndex];
 
             if (!selectedOption) {
