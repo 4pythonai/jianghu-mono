@@ -5,94 +5,50 @@
 	gap: 20rpx;
 }
 
-/* 当前选择显示 */
-.current-range {
-	display: flex;
-	align-items: center;
-	padding: 15rpx 20rpx;
-	background-color: #f8f8f8;
-	border-radius: 15rpx;
-	gap: 10rpx;
-}
-
-.range-label {
-	font-size: 28rpx;
-	color: #666;
-	font-weight: 500;
-}
-
-.range-value {
-	font-size: 30rpx;
-	color: #333;
-	font-weight: bold;
-}
-
-/* 选择器区域 */
+/* 选择器区域 - 单行布局 */
 .selector-area {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 20rpx;
+	padding: 30rpx 40rpx;
+	background-color: #f8f8f8;
+	border-radius: 15rpx;
 }
 
-.selector-group {
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	gap: 10rpx;
-}
-
+/* 标签样式 */
 .selector-label {
 	font-size: 28rpx;
-	color: #666;
-	text-align: center;
-	font-weight: 500;
-}
-
-.selector-display {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 15rpx 20rpx;
-	background-color: #fff;
-	border: 2rpx solid #e0e0e0;
-	border-radius: 15rpx;
-	transition: all 0.3s;
-}
-
-.selector-display:active {
-	border-color: #4caf50;
-	transform: scale(0.98);
-}
-
-.selector-text {
-	font-size: 30rpx;
 	color: #333;
-	font-weight: bold;
+	font-weight: 500;
+	white-space: nowrap;
+	text-align: center;
+	min-width: 80rpx;
 }
 
-.selector-arrow {
-	font-size: 24rpx;
-	color: #999;
-	transition: transform 0.3s;
-}
-
-/* 分隔符 */
-.separator {
+/* 圆形洞数字样式 */
+.hole-circle {
+	width: 80rpx;
+	height: 80rpx;
+	background-color: #4caf50;
+	border-radius: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 60rpx;
-	height: 60rpx;
-	background-color: #4caf50;
-	border-radius: 50%;
-	flex-shrink: 0;
+	transition: all 0.3s;
+	box-shadow: 0 4rpx 8rpx rgba(76, 175, 80, 0.3);
 }
 
-.separator-text {
-	font-size: 24rpx;
+.hole-circle:active {
+	transform: scale(0.95);
+	box-shadow: 0 2rpx 4rpx rgba(76, 175, 80, 0.5);
+}
+
+.hole-number {
+	font-size: 36rpx;
 	color: #fff;
 	font-weight: bold;
+	line-height: 1;
 }
 
 /* 提示信息 */
@@ -109,35 +65,25 @@
 /* 响应式设计 */
 @media (max-width: 600rpx) {
 	.selector-area {
-		flex-direction: column;
 		gap: 15rpx;
+		padding: 25rpx 20rpx;
 	}
 
-	.selector-group {
-		width: 100%;
-	}
-
-	.separator {
-		width: 100%;
-		height: 40rpx;
-		border-radius: 20rpx;
-	}
-
-	.separator-text {
-		font-size: 22rpx;
-	}
-
-	.current-range {
-		padding: 12rpx 15rpx;
-	}
-
-	.range-label,
 	.selector-label {
-		font-size: 26rpx;
+		font-size: 24rpx;
+		min-width: 70rpx;
 	}
 
-	.range-value,
-	.selector-text {
-		font-size: 28rpx;
+	.hole-circle {
+		width: 70rpx;
+		height: 70rpx;
+	}
+
+	.hole-number {
+		font-size: 32rpx;
+	}
+
+	.hint-text text {
+		font-size: 22rpx;
 	}
 }

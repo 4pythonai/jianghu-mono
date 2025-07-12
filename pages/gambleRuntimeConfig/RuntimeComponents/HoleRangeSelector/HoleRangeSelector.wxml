@@ -1,44 +1,36 @@
 <!-- HoleRangeSelector组件 - 起点洞与终点洞选择器 -->
 <view class="hole-range-selector">
-  <!-- 当前选择显示 -->
-  <view class="current-range">
-    <text class="range-value">{{getHoleRangeDescription()}}</text>
-  </view>
-  
-  <!-- 选择器区域 -->
+  <!-- 选择器区域 - 单行布局 -->
   <view class="selector-area">
+    <!-- 起始洞标签 -->
+    <view class="selector-label">起始洞</view>
+    
     <!-- 起始洞选择 -->
-    <view class="selector-group">
-      <view class="selector-label">起始洞</view>
-      <picker 
-        mode="selector" 
-        range="{{startHoleRange}}" 
-        value="{{startHoleIndex}}"
-        bindchange="onStartHoleChange"
-      >
-        <view class="selector-display">
-          <text class="selector-text">{{startHoleRange[startHoleIndex]}}</text>
-          <text class="selector-arrow">▼</text>
-        </view>
-      </picker>
-    </view>
+    <picker 
+      mode="selector" 
+      range="{{startHoleRange}}" 
+      value="{{startHoleIndex}}"
+      bindchange="onStartHoleChange"
+    >
+      <view class="hole-circle">
+        <text class="hole-number">{{startHoleIndex + 1}}</text>
+      </view>
+    </picker>
     
+    <!-- 终止洞标签 -->
+    <view class="selector-label">终止洞</view>
     
-    <!-- 结束洞选择 -->
-    <view class="selector-group">
-      <view class="selector-label">结束洞</view>
-      <picker 
-        mode="selector" 
-        range="{{endHoleRange}}" 
-        value="{{endHoleIndex}}"
-        bindchange="onEndHoleChange"
-      >
-        <view class="selector-display">
-          <text class="selector-text">{{endHoleRange[endHoleIndex]}}</text>
-          <text class="selector-arrow">▼</text>
-        </view>
-      </picker>
-    </view>
+    <!-- 终止洞选择 -->
+    <picker 
+      mode="selector" 
+      range="{{endHoleRange}}" 
+      value="{{endHoleIndex}}"
+      bindchange="onEndHoleChange"
+    >
+      <view class="hole-circle">
+        <text class="hole-number">{{endHoleIndex + 1}}</text>
+      </view>
+    </picker>
   </view>
   
   <!-- 提示信息 -->
