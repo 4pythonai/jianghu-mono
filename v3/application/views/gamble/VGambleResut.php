@@ -154,6 +154,38 @@
             color: #000;
         }
 
+        /* 二维码样式 */
+        .qrcode-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .qrcode-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .qrcode-wrapper {
+            display: inline-block;
+            padding: 10px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .qrcode-image {
+            display: block;
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+        }
+
         /* 平板设备优化 */
         @media (max-width: 1024px) {
             .container {
@@ -162,6 +194,20 @@
 
             .header h1 {
                 font-size: 20px;
+            }
+
+            .qrcode-container {
+                margin: 15px 0;
+                padding: 15px;
+            }
+
+            .qrcode-title {
+                font-size: 15px;
+            }
+
+            .qrcode-image {
+                width: 130px;
+                height: 130px;
             }
 
             .result-table {
@@ -201,6 +247,25 @@
 
             .header h1 {
                 font-size: 18px;
+            }
+
+            .qrcode-container {
+                margin: 10px 0;
+                padding: 12px;
+            }
+
+            .qrcode-title {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+
+            .qrcode-wrapper {
+                padding: 8px;
+            }
+
+            .qrcode-image {
+                width: 120px;
+                height: 120px;
             }
 
             .table-container {
@@ -268,6 +333,25 @@
                 font-size: 16px;
             }
 
+            .qrcode-container {
+                margin: 8px 0;
+                padding: 10px;
+            }
+
+            .qrcode-title {
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+
+            .qrcode-wrapper {
+                padding: 6px;
+            }
+
+            .qrcode-image {
+                width: 100px;
+                height: 100px;
+            }
+
             .table-container {
                 margin: 10px 0;
                 overflow-x: visible;
@@ -324,6 +408,25 @@
                 height: 45px;
             }
 
+            .qrcode-container {
+                margin: 5px 0;
+                padding: 8px;
+            }
+
+            .qrcode-title {
+                font-size: 11px;
+                margin-bottom: 6px;
+            }
+
+            .qrcode-wrapper {
+                padding: 4px;
+            }
+
+            .qrcode-image {
+                width: 90px;
+                height: 90px;
+            }
+
             .player-avatar {
                 width: 22px;
                 height: 22px;
@@ -348,6 +451,25 @@
 
             .header h1 {
                 font-size: 32px;
+            }
+
+            .qrcode-container {
+                margin: 25px 0;
+                padding: 25px;
+            }
+
+            .qrcode-title {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+
+            .qrcode-wrapper {
+                padding: 12px;
+            }
+
+            .qrcode-image {
+                width: 180px;
+                height: 180px;
             }
 
             .result-table {
@@ -408,6 +530,15 @@
         <div class="header">
             <h1>高尔夫赌球结果</h1>
         </div>
+
+        <?php if (isset($qrcode_url) && !empty($qrcode_url)): ?>
+            <div class="qrcode-container">
+                <div class="qrcode-title">扫码查看详情</div>
+                <div class="qrcode-wrapper">
+                    <img src="<?php echo $qrcode_url; ?>" alt="二维码" class="qrcode-image">
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="table-container">
             <table class="result-table" id="resultTable">
