@@ -127,10 +127,10 @@ Component({
             }
 
             // 构建跳转参数 - 使用运行时配置的ID作为gambleid
-            const configId = config.id || config.gambleid || config.unique || index;
+            const gambleid = config.id
             const params = {
                 gameId: gameId,
-                configId: configId,
+                gambleid: gambleid,
                 ruleType: config.gambleSysName || '',
                 userRuleName: config.gambleUserName || '',
                 firstHole: config.firstHoleindex || 1,
@@ -138,8 +138,6 @@ Component({
                 playerCount: config.player8421Count || 0
             };
 
-            console.log('🎮 配置对象详情:', config);
-            console.log('🎮 使用的configId:', configId);
 
             // 将参数编码为URL
             const queryString = Object.keys(params)

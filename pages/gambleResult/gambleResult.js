@@ -2,7 +2,7 @@ Page({
     data: {
         // 页面参数
         gameId: '',
-        configId: '',
+        gambleid: '',
         ruleType: '',
         userRuleName: '',
         firstHole: 1,
@@ -20,15 +20,15 @@ Page({
     onLoad(options) {
         console.log('🎯 [GambleResult] 页面加载，参数:', options);
 
-        const configId = options.configId || '';
+        const gambleid = options.gambleid;
 
         // 构建webview URL
-        const webviewUrl = `https://qiaoyincapital.com/v3/index.php/Audit/index?gambleid=${configId}`;
+        const webviewUrl = `https://qiaoyincapital.com/v3/index.php/Audit/index?gambleid=${gambleid}`;
 
         // 解析页面参数
         this.setData({
             gameId: options.gameId || '',
-            configId: configId,
+            gambleid: gambleid,
             ruleType: options.ruleType || '',
             userRuleName: options.userRuleName || '',
             firstHole: Number.parseInt(options.firstHole) || 1,
