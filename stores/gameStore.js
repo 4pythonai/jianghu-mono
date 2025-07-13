@@ -170,7 +170,7 @@ export const gameStore = observable({
                 this._processGameData(res.game_detail, groupId);
 
                 // ** 获取运行时配置 **
-                this.fetchRuntimeConfigs(gameId);
+                this.fetchRuntimeConfigs(gameId, groupId);
             } else {
                 throw new Error(res?.msg || '获取比赛详情失败');
             }
@@ -184,17 +184,23 @@ export const gameStore = observable({
     }),
 
     // 获取运行时配置
-    fetchRuntimeConfigs: action(async function (gameId) {
+    fetchRuntimeConfigs: action(async function (gameId, groupId = null) {
         if (this.loadingRuntimeConfig) return; // 防止重复加载
 
-        console.log('🎮 [Store] 开始获取运行时配置:', { gameId });
+        // 优先使用传入的 groupId，否则使用 store 中的 groupId
+        const currentGroupId = groupId || this.groupId;
+
+        console.log('🎮 [Store] 开始获取运行时配置:', { gameId, groupId: currentGroupId });
         this.loadingRuntimeConfig = true;
         this.runtimeConfigError = null;
 
         try {
-            const res = await gambleApi.listRuntimeConfig({
-                gameid: gameId
-            }, {
+            // 构建请求参数 - 使用 groupId 而不是 gameId
+            const params = currentGroupId ? { groupId: currentGroupId } : { gameid: gameId };
+
+            console.log('🎮 [Store] 调用 listRuntimeConfig 参数:', params);
+
+            const res = await gambleApi.listRuntimeConfig(params, {
                 loadingTitle: '加载游戏配置...',
                 loadingMask: false // 不显示遮罩，避免影响用户体验
             });

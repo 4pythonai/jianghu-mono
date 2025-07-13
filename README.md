@@ -110,6 +110,21 @@
 
 ## 最近更新
 
+### 2024-12-19 - 游戏运行时配置API调用优化
+- **API调用改进**: 将 `listRuntimeConfig` 的调用方式从使用 `gameId` 改为使用 `groupId`
+- **业务流程优化**:
+  - 在 `pages/live/live` 页面获取比赛列表时，每个比赛包含一个或多个分组
+  - 点击比赛后跳转到 `pages/gameDetail/gameDetail` 页面，并传递 `groupId` 参数
+  - 在游戏详情页面第3个tab（游戏tab）中，使用 `groupId` 而不是 `gameId` 调用 `listRuntimeConfig`
+- **代码修改**:
+  - 修改 `stores/gameStore.js` 中的 `fetchRuntimeConfigs` 方法，支持 `groupId` 参数
+  - 更新 `pages/gameDetail/gamble/gamble.js` 中的调用方式，确保传递正确的 `groupId`
+  - 优化API请求参数构建逻辑，优先使用 `groupId` 作为查询条件
+- **技术改进**:
+  - 增强了数据获取的准确性，确保运行时配置与特定分组相关联
+  - 改进了调试日志，便于追踪API调用过程
+  - 保持了向后兼容性，在没有 `groupId` 时仍使用 `gameId` 作为降级方案
+
 ### 2024-12-19 - 赌博游戏运行时配置功能实现
 - **新增页面**: 创建了完整的赌博游戏运行时配置页面 (`pages/gambleRuntimeConfig/`)
 - **运行时配置组件**: 

@@ -81,17 +81,20 @@ Component({
 
         // 重试加载运行时配置
         retryLoadRuntimeConfig() {
-            if (gameStore.gameid) {
-                gameStore.fetchRuntimeConfigs(gameStore.gameid);
+            const gameId = this.properties.gameId || gameStore.gameid;
+            const groupId = gameStore.groupId;
+            if (gameId) {
+                gameStore.fetchRuntimeConfigs(gameId, groupId);
             }
         },
 
         // 刷新运行时配置
         refreshRuntimeConfig() {
             const gameId = this.properties.gameId || gameStore.gameid;
+            const groupId = gameStore.groupId;
             if (gameId) {
-                console.log('🎮 刷新运行时配置，gameId:', gameId);
-                gameStore.fetchRuntimeConfigs(gameId);
+                console.log('🎮 刷新运行时配置，gameId:', gameId, 'groupId:', groupId);
+                gameStore.fetchRuntimeConfigs(gameId, groupId);
             }
         },
 
