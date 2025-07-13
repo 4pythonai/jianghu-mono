@@ -56,6 +56,8 @@ class Audit extends CI_Controller {
         ];
 
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
+        // debug($final_result);
+        // die;
 
         // debug("赌球结果>>>>>>>>>>>>>>>>>>>>>>>");
         // debug($final_result);

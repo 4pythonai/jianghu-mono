@@ -174,7 +174,7 @@ class MGambleDataFactory extends CI_Model {
 
     $web_url = config_item('web_url');
     $sql_group_user = "";
-    $sql_group_user = "select  userid,nickname as username,nickname, ";
+    $sql_group_user = "select  userid,wx_nickname as username,wx_nickname as nickname, ";
     $sql_group_user .= "concat('$web_url',t_user.avatar) as cover  ";
     $sql_group_user .= " from t_game_group_user,t_user";
     $sql_group_user .= " where  t_game_group_user.groupid=$groupid";
