@@ -40,6 +40,7 @@
         <view class="drag-handle">
           <text class="drag-icon">⋮⋮</text>
         </view>
+        <text class="group-dot">{{red_blue_config === '4_固拉' ? (index < 2 ? '🔵' : '🔴') : (index === 0 || index === 3 ? '🔵' : '🔴')}}</text>
         <text class="order-number">#{{index + 1}}</text>
         <image 
           class="player-avatar" 
