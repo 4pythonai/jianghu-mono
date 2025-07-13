@@ -122,34 +122,30 @@ class MMeat extends CI_Model {
             return 0;
         }
 
-        debug("calculateMeatMoney:  {$holename} 吃了 {$eaten_count} 块肉，配置: {$meat_value_config}");
+        // debug("calculateMeatMoney:  {$holename} 吃了 {$eaten_count} 块肉，配置: {$meat_value_config}");
 
         if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
-            debug("AAAAAAAAAAAAAAAA");
             // MEAT_AS_X 模式：每块肉固定价值
             $meat_value = $this->parseMeatAsX($meat_value_config);
             $total_meat_money = $eaten_count * $meat_value;
             // MEAT_AS_ 模式,不考虑封顶.
             $final_money = $total_meat_money;
-            debug("calculateMeatMoney: MEAT_AS模式，每块肉 {$meat_value} 分，总计 {$total_meat_money}，无需考虑封顶: {$final_money}");
             return $final_money;
         } elseif ($meat_value_config === 'SINGLE_DOUBLE') {
             // 分值翻倍模式：本洞赢 8 分, 吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分)
             $multiplier = $eaten_count; // 1个肉2倍，2个肉3倍，3个肉4倍
             $meat_money = $points * $multiplier;
             $final_money = min($meat_money,  $meat_max_value);
-            debug("calculateMeatMoney:模式[SINGLE_DOUBLE] , 封顶为: {$meat_max_value} , 倍数 {$multiplier}，肉为 {$meat_money}，封顶后 {$final_money}");
+            // debug("calculateMeatMoney:模式[SINGLE_DOUBLE] , 封顶为: {$meat_max_value} , 倍数 {$multiplier}，肉为 {$meat_money}，封顶后 {$final_money}");
             return $final_money;
         } elseif ($meat_value_config === 'CONTINUE_DOUBLE') {
             // 连续翻倍模式：1个肉乘以2,2个肉乘以4,3个肉乘以8
             $multiplier = pow(2, $eaten_count); // 2^eaten_count
             $meat_money = $points * ($multiplier - 1); // 减去原本的base_score，只返回额外部分
             $final_money = min($meat_money,  $meat_max_value);
-            debug("calculateMeatMoney: [CONTINUE_DOUBLE模式], {$holename} 吃了 {$eaten_count} 块肉, 倍数 {$multiplier}，肉为 {$meat_money}，封顶后 {$final_money}");
             return $final_money;
         }
 
-        debug("calculateMeatMoney: 未匹配到配置模式，返回 0");
         return 0;
     }
 

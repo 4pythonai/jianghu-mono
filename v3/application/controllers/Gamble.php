@@ -33,8 +33,6 @@ class Gamble extends MY_Controller {
             // 准备插入数据
             $insert_data = [
                 'creator_id' => $userid,
-                'firstHoleindex' => $json_paras['firstHoleindex'] ?? 1,
-                'lastHoleindex' => $json_paras['lastHoleindex'] ?? 18,
                 'gambleSysName' => $gamblesysname,
                 'gambleUserName' => $json_paras['gambleUserName'] ?? $json_paras['user_rulename'] ?? null,
                 'playersNumber' => $json_paras['playersNumber'] ?? 4,
@@ -44,7 +42,6 @@ class Gamble extends MY_Controller {
                 'eating_range' => isset($json_paras['eating_range']) ? json_encode($json_paras['eating_range'], JSON_UNESCAPED_UNICODE) : null,
                 'meat_value_config_string' => $json_paras['meat_value_config_string'] ?? 'MEAT_AS_2',
                 'meat_max_value' => $json_paras['meat_max_value'] ?? 1000000,
-                'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score',
                 'duty_config' => $json_paras['duty_config'] ?? 'DUTY_CODITIONAL'
             ];
 
