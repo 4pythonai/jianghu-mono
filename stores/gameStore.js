@@ -14,11 +14,6 @@ export const gameStore = observable({
     gameid: null,        // 当前游戏ID
     groupId: null,       // 当前分组ID
 
-    // ---- 运行时配置相关状态 ----
-    runtimeConfigs: [],  // 运行时配置列表
-    loadingRuntimeConfig: false,  // 加载运行时配置状态
-    runtimeConfigError: null,     // 运行时配置错误信息
-
     // ---- 私有方法 (数据处理) ----
 
     // 标准化玩家数据
@@ -84,7 +79,7 @@ export const gameStore = observable({
     // 根据 groupId 过滤玩家
     _filterPlayersByGroup: action((players, groupId) => {
         if (!groupId) {
-            console.log('📦 [Store] 无 groupId，返回所有玩家');
+            console.log('�� [Store] 无 groupId，返回所有玩家');
             return players;
         }
 
@@ -96,8 +91,6 @@ export const gameStore = observable({
 
         return filteredPlayers;
     }),
-
-
 
     _processGameData: action(function (gameData, groupId = null) {
         // 标准化所有玩家数据
@@ -168,9 +161,6 @@ export const gameStore = observable({
             if (res?.code === 200 && res.game_detail) {
                 // ** 调用私有方法处理数据 **
                 this._processGameData(res.game_detail, groupId);
-
-                // ** 获取运行时配置 **
-                this.fetchRuntimeConfigs(gameId, groupId);
             } else {
                 throw new Error(res?.msg || '获取比赛详情失败');
             }
@@ -179,104 +169,7 @@ export const gameStore = observable({
             this.error = err.message || '获取数据失败';
         } finally {
             this.loading = false;
-            console.log('📦 [Store] 获取流程结束');
-        }
-    }),
-
-    // 获取运行时配置
-    fetchRuntimeConfigs: action(async function (gameId, groupId = null) {
-        if (this.loadingRuntimeConfig) return; // 防止重复加载
-
-        // 优先使用传入的 groupId，否则使用 store 中的 groupId
-        const currentGroupId = groupId || this.groupId;
-
-        console.log('🎮 [Store] 开始获取运行时配置:', { gameId, groupId: currentGroupId });
-        this.loadingRuntimeConfig = true;
-        this.runtimeConfigError = null;
-
-        try {
-            // 构建请求参数 - 使用 groupId 而不是 gameId
-            const params = currentGroupId ? { groupId: currentGroupId } : { gameid: gameId };
-
-            console.log('🎮 [Store] 调用 listRuntimeConfig 参数:', params);
-
-            const res = await gambleApi.listRuntimeConfig(params, {
-                loadingTitle: '加载游戏配置...',
-                loadingMask: false // 不显示遮罩，避免影响用户体验
-            });
-
-            console.log('🎮 [Store] 运行时配置 API 响应:', res);
-            if (res?.code === 200) {
-                const rawConfigs = res.gambles || [];
-
-                // 直接在这里处理配置数据，避免 this 上下文问题
-                this.runtimeConfigs = rawConfigs.map(config => {
-                    try {
-                        const processedConfig = { ...config };
-
-                        // 解析 val8421_config JSON 字符串
-                        if (config.val8421_config && typeof config.val8421_config === 'string') {
-                            try {
-                                processedConfig.val8421_config_parsed = JSON.parse(config.val8421_config);
-                                processedConfig.player8421Count = Object.keys(processedConfig.val8421_config_parsed).length;
-                            } catch (e) {
-                                console.warn('🎮 [Store] 解析 val8421_config 失败:', e);
-                                processedConfig.val8421_config_parsed = {};
-                                processedConfig.player8421Count = 0;
-                            }
-                        }
-
-                        // 解析 bootstrap_order JSON 字符串
-                        if (config.bootstrap_order && typeof config.bootstrap_order === 'string') {
-                            try {
-                                processedConfig.bootstrap_order_parsed = JSON.parse(config.bootstrap_order);
-                            } catch (e) {
-                                console.warn('🎮 [Store] 解析 bootstrap_order 失败:', e);
-                                processedConfig.bootstrap_order_parsed = [];
-                            }
-                        }
-
-                        // 格式化排名规则显示文本
-                        if (config.ranking_tie_resolve_config) {
-                            const rankingMap = {
-                                'score.reverse': '按成绩排序，冲突时回溯成绩',
-                                'score.win_loss.reverse_win': '按成绩排序，按输赢，回溯输赢',
-                                'score.win_loss.reverse_score': '按成绩排序，按输赢，回溯成绩',
-                                'indicator.reverse': '按得分排序，冲突时回溯得分',
-                                'indicator.win_loss.reverse_win': '按得分排序，按输赢，回溯输赢',
-                                'indicator.win_loss.reverse_indicator': '按得分排序，按输赢，回溯得分'
-                            };
-                            processedConfig.ranking_display = rankingMap[config.ranking_tie_resolve_config] || config.ranking_tie_resolve_config || '未知排名规则';
-                        }
-
-                        // 格式化洞数范围
-                        const firstHole = config.firstHoleindex || 1;
-                        const lastHole = config.lastHoleindex || 18;
-                        processedConfig.hole_range_display = firstHole === lastHole ?
-                            `第${firstHole}洞` :
-                            `第${firstHole}洞 - 第${lastHole}洞`;
-
-                        return processedConfig;
-                    } catch (e) {
-                        console.error('🎮 [Store] 处理运行时配置数据失败:', e, config);
-                        return config;
-                    }
-                });
-
-                console.log('🎮 [Store] 运行时配置加载成功，共', this.runtimeConfigs.length, '条配置');
-                console.log('🎮 [Store] 运行时配置详情:', this.runtimeConfigs);
-            } else {
-                console.warn('⚠️ [Store] 运行时配置加载失败:', res?.message || res?.msg || '未知错误');
-                this.runtimeConfigError = res?.message || res?.msg || '获取运行时配置失败';
-                this.runtimeConfigs = [];
-            }
-        } catch (err) {
-            console.error('❌ [Store] 获取运行时配置失败:', err);
-            this.runtimeConfigError = err.message || '获取运行时配置失败';
-            this.runtimeConfigs = [];
-        } finally {
-            this.loadingRuntimeConfig = false;
-            console.log('🎮 [Store] 运行时配置获取流程结束');
+            console.log('�� [Store] 获取流程结束');
         }
     }),
 
@@ -326,7 +219,7 @@ export const gameStore = observable({
             return playerScores;
         });
 
-        // 🎯 关键：完全替换scores数组，强制触发响应式更新
+        // �� 关键：完全替换scores数组，强制触发响应式更新
         this.scores = newScores;
 
         // 🧪 测试：强制更新一个简单字段来测试MobX响应式是否正常工作
@@ -387,7 +280,6 @@ export const gameStore = observable({
         if (diff === 0) return '0';
         return diff > 0 ? `+${diff}` : diff.toString();
     }),
-
 
     // 计算分数样式类
     getScoreClass: action((diff) => {

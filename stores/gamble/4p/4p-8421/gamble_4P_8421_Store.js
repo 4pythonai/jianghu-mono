@@ -84,18 +84,6 @@ export const G_4P_8421_Store = observable({
 
     // 获取所有规则数据的action
     debugAllRulesData: action(function () {
-        console.log('=== 完整Store数据 ===');
-        console.log('=== 4P-8421 规则配置数据 ===');
-        console.log('游戏ID:', gameStore.gameid);
-        console.log('规则名称:', this.user_rulename);
-        console.log('封顶配置:', this.max8421_sub_value);
-        console.log('扣分开始值:', this.sub8421_config_string);
-        console.log('同伴惩罚配置:', this.duty_config);
-        console.log('顶洞规则:', this.draw8421_config);
-        console.log('吃肉得分配对:', this.eating_range);
-        console.log('肉分值计算:', this.meat_value_config_string);
-        console.log('吃肉封顶:', this.meat_max_value);
-        console.log(JSON.stringify(this, null, 2));
         const gambleConfig = {
             gameid: gameStore.gameid,
             user_rulename: this.user_rulename,

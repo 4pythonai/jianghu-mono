@@ -1,15 +1,9 @@
 // 游戏(Gamble)模块逻辑
 import { gameStore } from '../../../stores/gameStore'
-import { storeBindingsBehavior } from 'mobx-miniprogram-bindings'
+import { runtimeStore } from '../../../stores/runtimeStore'
+import { createStoreBindings } from 'mobx-miniprogram-bindings'
 
 Component({
-    behaviors: [storeBindingsBehavior],
-
-    storeBindings: {
-        store: gameStore,
-        fields: ['gameid', 'loading', 'error', 'runtimeConfigs', 'loadingRuntimeConfig', 'runtimeConfigError', 'currentTab'],
-    },
-
     properties: {
         // 可接收的参数
         gameId: {
@@ -25,7 +19,7 @@ Component({
     data: {
         // 模块内部数据
         loading: false,
-        lastRefreshTime: 0 // 记录上次刷新时间，避免频繁刷新
+        lastRefreshTime: 0, // 记录上次刷新时间，避免频繁刷新
     },
 
     // 计算属性
@@ -54,7 +48,7 @@ Component({
             console.log('🎮 初始化游戏，比赛ID:', this.properties.gameId);
             console.log('🎮 参赛球员:', this.properties.players);
             console.log('🎮 gameStore中的gameid:', gameStore.gameid);
-            console.log('🎮 gameStore中的runtimeConfigs:', gameStore.runtimeConfigs);
+            console.log('🎮 runtimeStore中的runtimeConfigs:', runtimeStore.runtimeConfigs);
             // TODO: 实际游戏初始化逻辑
             setTimeout(() => {
                 this.setData({ loading: false });
@@ -84,7 +78,7 @@ Component({
             const gameId = this.properties.gameId || gameStore.gameid;
             const groupId = gameStore.groupId;
             if (gameId) {
-                gameStore.fetchRuntimeConfigs(gameId, groupId);
+                runtimeStore.fetchRuntimeConfigs(gameId, groupId);
             }
         },
 
@@ -94,7 +88,7 @@ Component({
             const groupId = gameStore.groupId;
             if (gameId) {
                 console.log('🎮 刷新运行时配置，gameId:', gameId, 'groupId:', groupId);
-                gameStore.fetchRuntimeConfigs(gameId, groupId);
+                runtimeStore.fetchRuntimeConfigs(gameId, groupId);
             }
         },
 
@@ -169,7 +163,32 @@ Component({
     // 生命周期
     lifetimes: {
         attached() {
+            // 创建多个store绑定
+            this.gameStoreBindings = createStoreBindings(this, {
+                store: gameStore,
+                fields: ['gameid', 'loading', 'error', 'currentTab'],
+                actions: [],
+            });
+
+            this.runtimeStoreBindings = createStoreBindings(this, {
+                store: runtimeStore,
+                fields: ['runtimeConfigs', 'loadingRuntimeConfig', 'runtimeConfigError'],
+                actions: ['fetchRuntimeConfigs'],
+            });
+
             this.initGame();
+            console.log('🎮 [Gamble] 组件已附加，多store绑定已创建');
+        },
+
+        detached() {
+            // 清理所有store绑定
+            if (this.gameStoreBindings) {
+                this.gameStoreBindings.destroyStoreBindings();
+            }
+            if (this.runtimeStoreBindings) {
+                this.runtimeStoreBindings.destroyStoreBindings();
+            }
+            console.log('🎮 [Gamble] 组件已分离，多store绑定已清理');
         }
     },
 
