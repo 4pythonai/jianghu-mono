@@ -100,8 +100,6 @@ radio {
 	overflow: hidden;
 }
 
-}
-
 .player-order-item {
 	display: flex;
 	align-items: center;
