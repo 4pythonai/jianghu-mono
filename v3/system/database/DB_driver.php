@@ -641,16 +641,22 @@ abstract class CI_DB_driver {
                     $duplicateValue = $matches[1];
                     $errorMessage =   "有重复数据: " . $duplicateValue;
                 }
-                // debug(strlen($sql));
+
+                // 简化调用栈信息，避免JSON双重编码
                 $trace = debug_backtrace();
                 $callTree = [];
                 foreach ($trace as $i => $t) {
-                    $callTree[] = $t['file'] . ':' . $t['line'] . ' ' . $t['function'];
+                    if ($i < 3) { // 只显示前3级调用栈
+                        $callTree[] = basename($t['file']) . ':' . $t['line'] . '(' . $t['function'] . ')';
+                    }
                 }
-                // 倒序 callTree
-                $callTree = array_reverse($callTree);
-                // 打印调用树,不用转义
-                throw new Exception('数据库错误:' . $errorMessage . " DEBUGSQL=" . $sql . " DEBUGTRACE=" . json_encode($callTree, JSON_UNESCAPED_UNICODE));
+                $callTreeStr = implode(' -> ', array_reverse($callTree));
+
+                // 记录详细错误日志
+                log_message('error', '数据库错误详情: ' . $errorMessage . ' | SQL: ' . $sql . ' | 调用栈: ' . $callTreeStr);
+
+                // 抛出简化的异常信息
+                throw new Exception('数据库错误: ' . $errorMessage . ' | SQL: ' . $sql . ' | 调用: ' . $callTreeStr);
             }
 
             log_message('error', 'Query error: ' . $error['message'] . ' - Invalid query: ' . $sql);

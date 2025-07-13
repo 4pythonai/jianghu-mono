@@ -4,7 +4,6 @@ class MUser  extends CI_Model {
 
   public function __construct() {
     parent::__construct();
-    $this->jhdb = $this->load->database('jh_db', TRUE);
   }
 
 

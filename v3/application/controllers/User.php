@@ -7,10 +7,6 @@ if (!defined('BASEPATH')) {
 }
 
 
-// 原 APP 头像地址
-// http://s1.golf-brother.com/data/attach
-///user/2017/04/30/074cfec13bb719376c0ee86c7def6d66.jpg
-// 目录 /opt/space/webroot/ugf/data/attach/user
 
 class User extends MY_Controller {
 

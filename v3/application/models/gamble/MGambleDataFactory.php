@@ -7,8 +7,8 @@ class MGambleDataFactory extends CI_Model {
 
   public function __construct() {
     $this->load->model('gamble/MGame');
-    $jh_db = $this->load->database('jh_db', true);
-    $this->db = $jh_db;
+    // $jh_db = $this->load->database('jh_db', true);
+    // $this->db = $jh_db;
   }
 
   public function getGameHoles($gameid) {
@@ -18,6 +18,7 @@ class MGambleDataFactory extends CI_Model {
     $sql .= "WHERE t_game_court.courtid = t_court_hole.courtid AND t_game_court.gameid = $gameid ";
     $sql .= "ORDER BY court_key, t_court_hole.courtid, holename LIMIT 18";
     $holes = $this->db->query($sql)->result_array();
+
 
     $index = 1;
     foreach (array_keys($holes) as $key) {
@@ -55,6 +56,14 @@ class MGambleDataFactory extends CI_Model {
       $this->db->insert('t_gamble_game_holeorder', array('gameid' => $gameid, 'groupid' => $groupid, 'holeorder' => $holeorderString));
     }
   }
+
+
+  public function getGameid($groupid) {
+    $sql = "select gameid from t_game_group where groupid=$groupid";
+    $row = $this->db->query($sql)->row_array();
+    return $row['gameid'];
+  }
+
 
 
 
@@ -97,13 +106,12 @@ class MGambleDataFactory extends CI_Model {
       $court_key                  = $one_hole['court_key'];
       $holeid                     = $one_hole['holeid'];
 
-      $sql = "select court_key,userid,gross from t_game_score  where gameid=$gameid  and court_key=$court_key and holeid=$holeid  ";
-      // echo $sql;
+      $sql = "select court_key,userid,score from t_game_score  where gameid=$gameid  and court_key=$court_key and hole_id=$holeid  ";
       $scores         = $this->db->query($sql)->result_array();
       $raw_holedatas = array();
       foreach ($scores as $one_value) {
         $userid              = $one_value['userid'];
-        $raw_holedatas[$userid] = $one_value['gross'];
+        $raw_holedatas[$userid] = $one_value['score'];
       }
       $holedata[$index]['raw_scores'] = $raw_holedatas;
       $index++;
@@ -164,10 +172,10 @@ class MGambleDataFactory extends CI_Model {
 
   public function m_get_group_info($gameid, $groupid) {
 
-    $sys_path  = "'http://s1.golf-brother.com/data/attach/'";
+    $web_url = config_item('web_url');
     $sql_group_user = "";
     $sql_group_user = "select  userid,nickname as username,nickname, ";
-    $sql_group_user .= "concat($sys_path,t_user.coverpath,'/c240_',t_user.covername) as cover  ";
+    $sql_group_user .= "concat('$web_url',t_user.avatar) as cover  ";
     $sql_group_user .= " from t_game_group_user,t_user";
     $sql_group_user .= " where  t_game_group_user.groupid=$groupid";
     $sql_group_user .= "   and t_user.id=t_game_group_user.userid";
@@ -177,7 +185,8 @@ class MGambleDataFactory extends CI_Model {
 
   public function getUsefulHoles($holes, $scores) {
 
-
+    debug("所有洞的成绩");
+    debug($scores);
     $useful_holes = [];
 
     // 循环所有的洞
@@ -198,19 +207,9 @@ class MGambleDataFactory extends CI_Model {
         continue;
       }
 
-      // 检查 computedScores 是否有任何一个为0（表示记分未完成）
-      $hasUnfinishedScore = false;
-
-      foreach ($correspondingScore['computedScores'] as  $realScore) {
-        if ((float)$realScore == 0) {
-          $hasUnfinishedScore = true;
-          break;
-        }
-      }
-
-      // 如果发现未完成记分，退出循环
-      if ($hasUnfinishedScore) {
-        break;
+      // 检查 raw_scores 是否为空数组（表示记分未完成）
+      if (empty($correspondingScore['raw_scores'])) {
+        break; // 如果原始成绩为空，退出循环
       }
 
       // 组装 hole 和 score 的组合
@@ -219,6 +218,7 @@ class MGambleDataFactory extends CI_Model {
       $oneHoleMeta['raw_scores'] = $correspondingScore['raw_scores'];
       $useful_holes[] = $oneHoleMeta;
     }
+
 
     return $useful_holes;
   }

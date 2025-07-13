@@ -42,13 +42,25 @@ class Audit extends CI_Controller {
 
 
 
-    //  update t_game set gamestate=3 where gameid=1344463
 
     public function index() {
-        $cfg = ['gambleSysName' => '8421',  'gameid' => 1344463, 'gambleid' => 679528, 'groupid' => 2742243, 'userid' => 185];
+
+        $paras = $_GET;
+        $gambleid = $paras['gambleid'];
+        $row = $this->db->get_where('t_gamble_runtime', ['id' => $gambleid])->row_array();
+        $cfg = [
+            'gambleSysName' => '8421',
+            'userRuleId' => $row['userRuleId'],
+            'gameid' => $row['gameid'],
+            'runtimeid' => $gambleid,
+            'groupid' => $row['groupid'],
+            'userid' => $row['creator_id']
+        ];
 
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
-        debug($final_result['useful_holes']);
+
+        debug("赌球结果>>>>>>>>>>>>>>>>>>>>>>>");
+        debug($final_result);
         // debug("Final Result>>>>>>>>>>>>>>>>>>>>>>>");
         $this->printResult($final_result);
     }

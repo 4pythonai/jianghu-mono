@@ -46,13 +46,13 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
         $this->gambleSysName = $config['gambleSysName'];
         $this->gameid = $config['gameid'];
-        $this->gambleid = $config['gambleid'];
+        $this->gambleid = $config['runtimeid'];
         $this->groupid = $config['groupid'];
         $this->userid = $config['userid'];
 
         $this->firstHoleindex = $this->MRuntimeConfig->getFirstHoleindex($this->gambleid);
         $this->lastholeindex = $this->MRuntimeConfig->getLastHoleindex($this->gambleid);
-        $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gambleid);
+        $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gameid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->firstHoleindex, $this->lastholeindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
         $this->players =  $this->MRuntimeConfig->getAllPlayers($this->gambleid);
@@ -117,8 +117,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         } else {
             debug("8421配置", "当前不是8421游戏系统");
         }
-
-        debug("-------------++++++++++++++++++++++++++++++++++---------");
     }
 
 

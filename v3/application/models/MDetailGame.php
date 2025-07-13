@@ -22,8 +22,6 @@ class MDetailGame  extends CI_Model {
         // 获取游戏统计信息
         $game_stats = $this->getGameStats($game_id);
 
-        // 获取赌球信息
-        $gamble_info = $this->getGambleInfo($game_id);
 
         // 获取玩家信息
         $players = $this->getPlayers($game_id);
@@ -58,7 +56,6 @@ class MDetailGame  extends CI_Model {
             'game_start' => $game_info['game_start'] ?: $game_info['create_time'],
             'completed_holes' => $game_stats['completed_holes'],
             'holes' => $game_stats['total_holes'],
-            'star_type' => $gamble_info['star_type'],
             'courseinfo' => [
                 'courseid' => $course_info['courseid'],
                 'coursename' => $course_info['coursename'],
@@ -76,7 +73,7 @@ class MDetailGame  extends CI_Model {
 
     public function getScoreInfo($game_id) {
         $score_query = "
-            SELECT * FROM t_game_score WHERE game_id = ?
+            SELECT * FROM t_game_score WHERE gameid = ?
         ";
         $score_result = $this->db->query($score_query, [$game_id]);
         $scores = $score_result->result_array();
@@ -164,7 +161,7 @@ class MDetailGame  extends CI_Model {
             FROM (
                 SELECT hole_id
                 FROM t_game_score gs
-                WHERE gs.game_id = ? AND gs.score IS NOT NULL
+                WHERE gs.gameid = ? AND gs.score IS NOT NULL
                 GROUP BY hole_id
                 HAVING COUNT(*) = (
                     SELECT COUNT(*) 
@@ -207,19 +204,7 @@ class MDetailGame  extends CI_Model {
         ];
     }
 
-    /**
-     * 获取赌球信息
-     * @param int $game_id 游戏ID
-     * @return array 赌球信息
-     */
-    public function getGambleInfo($game_id) {
-        $gamble_query = "
-            SELECT * FROM t_gamble_game_alpha WHERE gameid = ?
-        ";
-        $gamble_result = $this->db->query($gamble_query, [$game_id]);
-        $gamble = $gamble_result->row_array();
-        return $gamble;
-    }
+
 
     /**
      * 获取玩家列表

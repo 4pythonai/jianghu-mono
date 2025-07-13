@@ -9,19 +9,25 @@ class MRuntimeConfig extends CI_Model {
     private $_gambleConfigCache = [];
 
     public function getGambleConfig($gambleid) {
-        // 如果缓存中有，直接返回
-        if (isset($this->_gambleConfigCache[$gambleid])) {
-            return $this->_gambleConfigCache[$gambleid];
-        }
+        $sql = "select * from t_gamble_runtime where id=$gambleid";
+        $RunTimeConfigRow = $this->db->query($sql)->row_array();
+        $userRuleId = $RunTimeConfigRow['userRuleId'];
+        $sql = "select * from t_gamble_rule_user where id=$userRuleId";
+        $GambleConfigRow = $this->db->query($sql)->row_array();
+        $RunTimeConfigRow['sub8421_config_string'] = $GambleConfigRow['sub8421_config_string'];
+        $RunTimeConfigRow['max8421_sub_value'] = $GambleConfigRow['max8421_sub_value'];
+        $RunTimeConfigRow['draw8421_config'] = $GambleConfigRow['draw8421_config'];
+        $RunTimeConfigRow['eating_range'] = $GambleConfigRow['eating_range'];
+        $RunTimeConfigRow['meat_value_config_string'] = $GambleConfigRow['meat_value_config_string'];
+        $RunTimeConfigRow['meat_max_value'] = $GambleConfigRow['meat_max_value'];
+        $RunTimeConfigRow['duty_config'] = $GambleConfigRow['duty_config'];
 
-        // 从数据库获取
-        $this->db->where('id', $gambleid);
-        debug(" **************** 数据库操作");
-        $GambleConfigRow = $this->db->get('t_gamble_rule_user')->row_array();
+        // debug($RunTimeConfigRow);
+
 
         // 缓存结果
-        $this->_gambleConfigCache[$gambleid] = $GambleConfigRow;
-        return $GambleConfigRow;
+        $this->_gambleConfigCache[$gambleid] = $RunTimeConfigRow;
+        return $RunTimeConfigRow;
     }
 
     // 8421 配置缓存
@@ -162,7 +168,12 @@ class MRuntimeConfig extends CI_Model {
     }
 
     public function getAttenders($gambleid) {
+
+        debug("gambleid: " . $gambleid);
+
         $config = $this->getGambleConfig($gambleid);
+
+        debug($config);
         if (isset($config['attenders']) && !empty($config['attenders'])) {
             return json_decode($config['attenders'], true);
         }
