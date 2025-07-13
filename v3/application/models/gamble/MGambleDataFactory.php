@@ -185,8 +185,6 @@ class MGambleDataFactory extends CI_Model {
 
   public function getUsefulHoles($holes, $scores) {
 
-    debug("所有洞的成绩");
-    debug($scores);
     $useful_holes = [];
 
     // 循环所有的洞

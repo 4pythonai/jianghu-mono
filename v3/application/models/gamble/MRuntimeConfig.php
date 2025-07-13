@@ -22,9 +22,6 @@ class MRuntimeConfig extends CI_Model {
         $RunTimeConfigRow['meat_max_value'] = $GambleConfigRow['meat_max_value'];
         $RunTimeConfigRow['duty_config'] = $GambleConfigRow['duty_config'];
 
-        // debug($RunTimeConfigRow);
-
-
         // 缓存结果
         $this->_gambleConfigCache[$gambleid] = $RunTimeConfigRow;
         return $RunTimeConfigRow;
@@ -168,12 +165,7 @@ class MRuntimeConfig extends CI_Model {
     }
 
     public function getAttenders($gambleid) {
-
-        debug("gambleid: " . $gambleid);
-
         $config = $this->getGambleConfig($gambleid);
-
-        debug($config);
         if (isset($config['attenders']) && !empty($config['attenders'])) {
             return json_decode($config['attenders'], true);
         }

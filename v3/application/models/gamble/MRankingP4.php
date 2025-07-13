@@ -30,13 +30,12 @@ class MRankingP4 extends CI_Model {
      * @return array 排名结果 [rank => userid]
      */
     public function rankAttenders($holeIndex, &$hole, $context) {
-        debug($context->gambleSysName . "/" . $context->redBlueConfig . " 开始4人排名计算");
 
         if ($context->redBlueConfig == "4_乱拉") {
             $tieResolveConfig = $context->ranking4TieResolveConfig;
             $bootStrapOrder = $context->bootStrapOrder;
 
-            debug("使用排序规则: " . $tieResolveConfig);
+            // debug("使用排序规则: " . $tieResolveConfig);
 
             switch ($tieResolveConfig) {
                 case 'score.reverse':

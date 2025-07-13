@@ -75,7 +75,7 @@ class MRedBlue extends CI_Model {
         }
         if ($index >= 1) {
             $humanReabableIndex   = $index + 1;
-            debug("第{$humanReabableIndex}个洞,红蓝分组:{$context->redBlueConfig}");
+            // debug("第{$humanReabableIndex}个洞,红蓝分组:{$context->redBlueConfig}");
 
 
             if ($context->redBlueConfig == "4_固拉") {

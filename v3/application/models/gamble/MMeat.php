@@ -70,16 +70,13 @@ class MMeat extends CI_Model {
      */
     public function eatMeat($holename, $eating_count, $points, $configs, &$context) {
         if ($eating_count <= 0) {
-            debug("eatMeat: 吃肉数量 <= 0，返回 0");
             return 0;
         }
 
         if (empty($context->meat_pool)) {
-            debug("eatMeat: 肉池为空，返回 0");
             return 0;
         }
 
-        debug("eatMeat: 尝试吃 {$eating_count} 块肉，基础分数: {$points}");
 
         // 找出可以吃的肉（按顺序，先产生的先吃）
         $available_meat = [];
@@ -87,15 +84,15 @@ class MMeat extends CI_Model {
             if (!$meat['is_eaten'] && count($available_meat) < $eating_count) {
                 $available_meat[] = $index;
                 $meat['is_eaten'] = true; // 标记为已吃
-                debug("eatMeat: 吃掉第 {$index} 块肉");
+                // debug("eatMeat: 吃掉第 {$index} 块肉");
             }
         }
 
         $actual_eaten_count = count($available_meat);
-        debug("eatMeat: 实际吃到 {$actual_eaten_count} 块肉");
+        // debug("eatMeat: 实际吃到 {$actual_eaten_count} 块肉");
 
         if ($actual_eaten_count == 0) {
-            debug("eatMeat: 实际吃到的肉数量为 0，返回 0");
+            // debug("eatMeat: 实际吃到的肉数量为 0，返回 0");
             return 0;
         }
 
@@ -103,10 +100,10 @@ class MMeat extends CI_Model {
         $meat_value_config = $configs['meatValueConfigString'] ?? 'MEAT_AS_1';
         $meat_max_value = $configs['meatMaxValue'];
 
-        debug("eatMeat: 肉价值配置: {$meat_value_config}, 封顶: {$meat_max_value}");
+        // debug("eatMeat: 肉价值配置: {$meat_value_config}, 封顶: {$meat_max_value}");
 
         $result = $this->calculateMeatMoney($holename, $actual_eaten_count, $points, $meat_value_config, $meat_max_value);
-        debug("eatMeat: 计算结果: {$result}");
+        // debug("eatMeat: 计算结果: {$result}");
 
         return $result;
     }

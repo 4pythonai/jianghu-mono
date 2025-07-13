@@ -37,7 +37,6 @@ class MIndicator8421 extends CI_Model {
 
         // 情况1: 配置中有直接映射
         if (isset($userConfig[$configKey])) {
-            debug("找到配置键 {$configKey}，分值：{$userConfig[$configKey]}");
             return $userConfig[$configKey];
         }
 
@@ -46,18 +45,18 @@ class MIndicator8421 extends CI_Model {
             $betterThanBirdie = abs($diffFromPar + 1); // 比Birdie好多少杆
             $birdieScore = $userConfig['Birdie'] ?? 8; // 获取Birdie的配置分值，默认8
             $result = $birdieScore * pow(2, $betterThanBirdie);
-            debug("比Birdie好{$betterThanBirdie}杆，基于Birdie分值{$birdieScore}，计算结果：{$result}");
+            // debug("比Birdie好{$betterThanBirdie}杆，基于Birdie分值{$birdieScore}，计算结果：{$result}");
             return $result;
         }
 
         // 情况3: 比配置中最差成绩更差的情况
         if ($diffFromPar > 2) {
-            debug("成绩太差(Par+{$diffFromPar})，返回0分");
+            // debug("成绩太差(Par+{$diffFromPar})，返回0分");
             return 0; // 太差了，没有分值
         }
 
         // 兜底情况，理论上不应该到达这里
-        debug("未找到匹配的配置，返回0分");
+        // debug("未找到匹配的配置，返回0分");
         return 0;
     }
 

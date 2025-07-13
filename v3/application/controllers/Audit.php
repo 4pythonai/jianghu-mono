@@ -7,8 +7,6 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-// http://127.0.0.1:7880/Gamble/alpha_summary/?single=1&  gambleid=679528& 
-// groupid=2689120&userid=185&debug=1
 
 
 
@@ -59,8 +57,8 @@ class Audit extends CI_Controller {
 
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
 
-        debug("赌球结果>>>>>>>>>>>>>>>>>>>>>>>");
-        debug($final_result);
+        // debug("赌球结果>>>>>>>>>>>>>>>>>>>>>>>");
+        // debug($final_result);
         // debug("Final Result>>>>>>>>>>>>>>>>>>>>>>>");
         $this->printResult($final_result);
     }

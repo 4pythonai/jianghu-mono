@@ -35,8 +35,6 @@ class MRanking extends CI_Model {
      */
     public function rankAttendersWithContext($holeIndex, &$hole, $context) {
 
-        debug("开始排名+++++BBBBBBBBBBBBBBBB+++++++++++++");
-        debug($context->attenders);
 
         if (count($context->attenders) == 2) {
             $hole['ranking'] = $this->MRankingP2->rankAttenders($context);
