@@ -91,6 +91,13 @@ class MRedBlue extends CI_Model {
                 $hole['red'] = [$context->bootStrapOrder[2], $context->bootStrapOrder[3]];
                 $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组,排序后 ";
             }
+
+            if ($context->redBlueConfig == "4_高手不见面") {
+                // 使用实时的 usefulHoles 数据，如果没有则回退到 context 中的数据
+                $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[1]];
+                $hole['red'] = [$context->bootStrapOrder[2], $context->bootStrapOrder[3]];
+                $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组,排序后 ";
+            }
         }
     }
 }

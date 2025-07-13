@@ -45,7 +45,8 @@ class MRanking extends CI_Model {
         }
 
         if (count($context->attenders) == 4) {
-            $hole['ranking'] = $this->MRankingP4->rankAttenders($holeIndex, $hole, $context);
+            $tmp_rank = $this->MRankingP4->rankAttenders($holeIndex, $hole, $context);
+            $hole['ranking'] = $tmp_rank;
         }
     }
 }

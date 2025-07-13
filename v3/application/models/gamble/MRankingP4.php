@@ -30,31 +30,29 @@ class MRankingP4 extends CI_Model {
      * @return array 排名结果 [rank => userid]
      */
     public function rankAttenders($holeIndex, &$hole, $context) {
+        $tieResolveConfig = $context->ranking4TieResolveConfig;
+        $bootStrapOrder = $context->bootStrapOrder;
 
-        if ($context->redBlueConfig == "4_乱拉") {
-            $tieResolveConfig = $context->ranking4TieResolveConfig;
-            $bootStrapOrder = $context->bootStrapOrder;
+        // debug("使用排序规则: " . $tieResolveConfig);
 
-            // debug("使用排序规则: " . $tieResolveConfig);
-
-            switch ($tieResolveConfig) {
-                case 'score.reverse':
-                    return $this->rankByScoreReverse($holeIndex, $hole, $context, $bootStrapOrder);
-                case 'score.win_loss.reverse_win':
-                    return $this->rankByScoreWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder);
-                case 'score.win_loss.reverse_score':
-                    return $this->rankByScoreWinLossReverseScore($holeIndex, $hole, $context, $bootStrapOrder);
-                case 'indicator.reverse':
-                    return $this->rankByIndicatorReverse($holeIndex, $hole, $context, $bootStrapOrder);
-                case 'indicator.win_loss.reverse_win':
-                    return $this->rankByIndicatorWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder);
-                case 'indicator.win_loss.reverse_indicator':
-                    return $this->rankByIndicatorWinLossReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder);
-                default:
-                    debug("未知的排序规则: " . $tieResolveConfig);
-                    return [];
-            }
+        switch ($tieResolveConfig) {
+            case 'score.reverse':
+                return $this->rankByScoreReverse($holeIndex, $hole, $context, $bootStrapOrder);
+            case 'score.win_loss.reverse_win':
+                return $this->rankByScoreWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder);
+            case 'score.win_loss.reverse_score':
+                return $this->rankByScoreWinLossReverseScore($holeIndex, $hole, $context, $bootStrapOrder);
+            case 'indicator.reverse':
+                return $this->rankByIndicatorReverse($holeIndex, $hole, $context, $bootStrapOrder);
+            case 'indicator.win_loss.reverse_win':
+                return $this->rankByIndicatorWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder);
+            case 'indicator.win_loss.reverse_indicator':
+                return $this->rankByIndicatorWinLossReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder);
+            default:
+                debug("未知的排序规则: " . $tieResolveConfig);
+                return [];
         }
+
 
         return [];
     }
@@ -113,6 +111,8 @@ class MRankingP4 extends CI_Model {
      * A.2.2: 按成绩排序，按输赢，回溯成绩
      */
     private function rankByScoreWinLossReverseScore($holeIndex, $hole, $context, $bootStrapOrder) {
+
+        // debug("A.2.2: 按成绩排序，按输赢，回溯成绩");
         $users = $bootStrapOrder;
 
         // 按成绩排序

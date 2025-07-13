@@ -208,7 +208,7 @@ class Gamble extends MY_Controller {
 
     public function listRuntimeConfig() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $groupid = $json_paras['groupid'];
+        $groupid = $json_paras['groupId'];
         $this->db->select('*');
         $this->db->from('t_gamble_runtime');
         $this->db->where('groupid', $groupid);
