@@ -133,17 +133,6 @@ export const gameStore = observable({
         this.holes = holes;
         this.scores = scores;    // 注意：这里是过滤后玩家的分数矩阵
         this.groupId = groupId;  // 存储当前分组ID
-
-        // 打印调试信息，确认 unique_key 类型
-        console.log('📦 [Store] 处理后的洞数据 unique_key 类型检查:');
-        holes.forEach((hole, index) => {
-            const uniqueKeyType = typeof hole.unique_key;
-            const uniqueKeyValue = hole.unique_key;
-            console.log(`洞 ${index + 1}: unique_key = "${uniqueKeyValue}" (类型: ${uniqueKeyType})`);
-            if (uniqueKeyType !== 'string') {
-                console.warn(`⚠️ 洞 ${index + 1} 的 unique_key 不是字符串类型!`);
-            }
-        });
     }),
 
     // ---- Actions (修改状态的动作) ----

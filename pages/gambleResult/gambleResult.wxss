@@ -116,183 +116,52 @@
 	border: none;
 }
 
-/* 结果区域 */
-.result-section {
-	display: flex;
-	flex-direction: column;
-	gap: 20rpx;
-}
-
-/* 汇总区域 */
-.summary-section {
+/* webview区域 */
+.webview-section {
+	flex: 1;
+	height: ~"calc(100vh - 200rpx)";
 	background-color: white;
 	border-radius: 12rpx;
-	padding: 30rpx;
+	overflow: hidden;
 	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
 }
 
-.summary-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-bottom: 20rpx;
-	border-bottom: 1rpx solid #f0f0f0;
-	padding-bottom: 20rpx;
+.webview-section web-view {
+	width: 100%;
+	height: 100%;
 }
 
-.summary-title {
-	font-size: 32rpx;
-	font-weight: bold;
-	color: #333;
-}
-
-.update-time {
-	font-size: 24rpx;
-	color: #999;
-}
-
-.summary-stats {
-	display: flex;
-	gap: 40rpx;
-}
-
-.stat-item {
+/* 错误状态 */
+.no-url-error {
 	display: flex;
 	flex-direction: column;
-	gap: 8rpx;
-}
-
-.stat-label {
-	font-size: 24rpx;
-	color: #999;
-}
-
-.stat-value {
-	font-size: 28rpx;
-	font-weight: bold;
-	color: #333;
-}
-
-.status-completed {
-	color: #4caf50 !important;
-}
-
-.status-ongoing {
-	color: #ff9800 !important;
-}
-
-/* 排名区域 */
-.ranking-section {
-	background-color: white;
-	border-radius: 12rpx;
-	padding: 30rpx;
-	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
-}
-
-.ranking-header {
-	border-bottom: 1rpx solid #f0f0f0;
-	padding-bottom: 20rpx;
-	margin-bottom: 20rpx;
-}
-
-.ranking-title {
-	font-size: 32rpx;
-	font-weight: bold;
-	color: #333;
-}
-
-.ranking-list {
-	display: flex;
-	flex-direction: column;
-	gap: 16rpx;
-}
-
-.ranking-item {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 20rpx;
-	background-color: #f8f9fa;
-	border-radius: 8rpx;
-	transition: all 0.3s ease;
-}
-
-.ranking-item.winner {
-	background: linear-gradient(135deg, #fff3e0, #ffecb3);
-	border: 2rpx solid #ffc107;
-}
-
-.ranking-info {
-	display: flex;
-	align-items: center;
-	gap: 20rpx;
-}
-
-.rank-badge {
-	width: 50rpx;
-	height: 50rpx;
-	border-radius: 50%;
-	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 24rpx;
-	font-weight: bold;
+	height: 100%;
+	padding: 40rpx;
+}
+
+.no-url-error .error-text {
+	font-size: 28rpx;
+	color: #e53e3e;
+	margin-bottom: 30rpx;
+	text-align: center;
+}
+
+.back-button {
+	padding: 16rpx 40rpx;
+	background-color: #4caf50;
 	color: white;
-}
-
-.rank-1 {
-	background: linear-gradient(135deg, #ffd700, #ffb300);
-}
-
-.rank-2 {
-	background: linear-gradient(135deg, #c0c0c0, #999999);
-}
-
-.rank-3 {
-	background: linear-gradient(135deg, #cd7f32, #a0522d);
-}
-
-.rank-badge:not(.rank-1):not(.rank-2):not(.rank-3) {
-	background: linear-gradient(135deg, #666, #888);
-}
-
-.player-info {
-	display: flex;
-	flex-direction: column;
-	gap: 4rpx;
-}
-
-.player-name {
+	border: none;
+	border-radius: 8rpx;
 	font-size: 28rpx;
-	font-weight: bold;
-	color: #333;
 }
 
-.player-score {
-	font-size: 24rpx;
-	color: #666;
+.back-button::after {
+	border: none;
 }
 
-.win-amount {
-	text-align: right;
-}
 
-.amount-text {
-	font-size: 28rpx;
-	font-weight: bold;
-}
-
-.win-amount.positive .amount-text {
-	color: #4caf50;
-}
-
-.win-amount.negative .amount-text {
-	color: #f44336;
-}
-
-.win-amount.neutral .amount-text {
-	color: #666;
-}
 
 /* 操作按钮区域 */
 .action-section {

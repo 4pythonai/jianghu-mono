@@ -25,7 +25,7 @@
             gameStart="{{item.game_start}}" 
             completedHoles="{{item.completed_holes}}" 
             holes="{{item.holes}}" 
-            starType="{{item.star_type}}" 
+            starType="yellow"
             gameId="{{item.game_id}}"
             groups="{{item.groups}}"
             groupid="{{item.groupid || ''}}"

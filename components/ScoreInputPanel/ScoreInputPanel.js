@@ -188,15 +188,12 @@ Component({
                     scores: this.data.localScores,
                 };
 
-                console.log('📡 [ScoreInputPanel] 发送API请求:', apiData);
-                console.log('📡 [ScoreInputPanel] API调用前检查Loading状态');
 
                 // 🔧 禁用API自带的Loading，使用组件自己的isSaving状态管理
                 const result = await app.api.game.saveGameScore(apiData, {
                     showLoading: false // 禁用API自带的Loading
                 });
 
-                console.log('✅ [ScoreInputPanel] API调用成功，返回结果:', result);
                 wx.showToast({ title: result.message, icon: 'success', duration: 1500 });
                 return true; // 返回true表示保存成功
 
