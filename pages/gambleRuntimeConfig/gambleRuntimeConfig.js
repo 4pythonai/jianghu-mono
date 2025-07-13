@@ -85,14 +85,13 @@ Page({
                 }
 
                 // 根据holeList设置初始洞范围
-                let initialFirstHole = 1;
-                let initialLastHole = 18;
+                let initialFirstHole = 0;
+                let initialLastHole = 0;
 
                 if (holes && holes.length > 0) {
-                    // 使用第一个洞的holeno作为起始洞
-                    initialFirstHole = holes[0].holeno || 1;
-                    // 使用最后一个洞的holeno作为结束洞
-                    initialLastHole = holes[holes.length - 1].holeno || 18;
+                    // 用index初始化
+                    initialFirstHole = 0;
+                    initialLastHole = holes.length - 1;
                 }
 
                 // 从gameStore获取游戏相关数据
@@ -242,16 +241,16 @@ Page({
 
     // 洞范围选择事件
     onHoleRangeChange(e) {
-        const { firstHoleindex, lastHoleindex } = e.detail;
+        let { firstHoleindex, lastHoleindex } = e.detail;
+        // 自动转换为数字，保证类型一致
+        firstHoleindex = Number(firstHoleindex);
+        lastHoleindex = Number(lastHoleindex);
         console.log('[GambleRuntimeConfig] 洞范围变更:', { firstHoleindex, lastHoleindex });
 
-        // 确保数据类型正确
-        const firstHole = Number.parseInt(firstHoleindex) || 1;
-        const lastHole = Number.parseInt(lastHoleindex) || 18;
-
+        // 直接用 unique_key，不要转数字
         this.setData({
-            'runtimeConfig.firstHoleindex': firstHole,
-            'runtimeConfig.lastHoleindex': lastHole
+            'runtimeConfig.firstHoleindex': firstHoleindex,
+            'runtimeConfig.lastHoleindex': lastHoleindex
         });
     },
 

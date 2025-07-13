@@ -13,7 +13,7 @@
       bindchange="onStartHoleChange"
     >
       <view class="hole-circle">
-        <text class="hole-number">{{startHoleIndex + 1}}</text>
+        <text class="hole-number">{{startHoleRange[startHoleIndex]}}</text>
       </view>
     </picker>
     
@@ -28,7 +28,7 @@
       bindchange="onEndHoleChange"
     >
       <view class="hole-circle">
-        <text class="hole-number">{{endHoleIndex + 1}}</text>
+        <text class="hole-number">{{endHoleRange[endHoleIndex]}}</text>
       </view>
     </picker>
   </view>
