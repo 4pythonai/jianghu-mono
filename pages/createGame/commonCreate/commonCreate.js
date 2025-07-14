@@ -463,9 +463,11 @@ Page({
     generateCourtDisplayName(selectionData) {
         if (selectionData.gameType === 'full') {
             return `${selectionData.frontNine?.courtname || '前九洞'} + ${selectionData.backNine?.courtname || '后九洞'}`;
-        } else if (selectionData.gameType === 'front_nine') {
+        }
+        if (selectionData.gameType === 'front_nine') {
             return selectionData.frontNine?.courtname || '前九洞';
-        } else if (selectionData.gameType === 'back_nine') {
+        }
+        if (selectionData.gameType === 'back_nine') {
             return selectionData.backNine?.courtname || '后九洞';
         }
         return '未知半场';
@@ -617,12 +619,13 @@ Page({
             })
 
             if (result?.code === 200) {
+                const gameId = result.data?.game_id || result.game_id || null;
                 this.setData({
                     gameCreated: true,
-                    gameId: result.data?.gameid || null // 保存服务器返回的gameid
+                    gameId
                 })
                 console.log('✅ 空白游戏创建成功:', result)
-                console.log('📝 服务器返回的gameid:', result.data?.gameid)
+                console.log('📝 服务器返回的gameid:', gameId)
             } else {
                 console.error('❌ 空白游戏创建失败:', result)
             }
