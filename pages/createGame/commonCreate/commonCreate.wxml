@@ -152,7 +152,7 @@
 					</view>
 				</view>
 			</view>
-			<button class="create-btn">开始计分</button>
+			<button class="create-btn" bindtap="onStartScoring">开始计分</button>
 		</view>
 	</view>
 </view>

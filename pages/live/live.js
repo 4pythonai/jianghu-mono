@@ -72,10 +72,8 @@ Page({
     onShow() {
         // 页面显示时执行
         console.log('👁️ Live页面显示')
-        // 如果数据为空且不在加载中，重新加载
-        if (this.data.games.length === 0 && !this.data.loading) {
-            this.loadGames()
-        }
+        // 每次页面显示都自动刷新
+        this.loadGames()
     },
 
     async onPullDownRefresh() {

@@ -588,6 +588,19 @@ Page({
     },
 
     /**
+     * 点击“开始计分”按钮，跳转到 gameDetail 记分界面
+     */
+    onStartScoring() {
+        if (!this.data.gameId) {
+            wx.showToast({ title: '请先创建比赛', icon: 'none' });
+            return;
+        }
+        wx.navigateTo({
+            url: `/pages/gameDetail/gameDetail?gameId=${this.data.gameId}`
+        });
+    },
+
+    /**
      * 生命周期函数--监听页面加载
      */
     async onLoad(options) {
