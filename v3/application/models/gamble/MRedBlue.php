@@ -68,14 +68,21 @@ class MRedBlue extends CI_Model {
             }
 
             if ($context->redBlueConfig == "4_高手不见面") {
-                $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[2]];
-                $hole['red'] = [$context->bootStrapOrder[1], $context->bootStrapOrder[3]];
+                $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[3]];
+                $hole['red'] = [$context->bootStrapOrder[1], $context->bootStrapOrder[2]];
                 $hole['debug'][] = "分组:{$context->redBlueConfig},第一洞分组,采用出发设置";
             }
         }
         if ($index >= 1) {
             $humanReabableIndex   = $index + 1;
+            $preHoleIndex = $index - 1;
+            $preHole = $context->usefulHoles[$preHoleIndex];
             // debug("第{$humanReabableIndex}个洞,红蓝分组:{$context->redBlueConfig}");
+            // debug("上一洞名次");
+            $preRanking = $preHole['ranking'];
+            // debug($preRanking);
+            // debug("出发顺序");
+            // debug($context->bootStrapOrder);
 
 
             if ($context->redBlueConfig == "4_固拉") {
@@ -87,16 +94,37 @@ class MRedBlue extends CI_Model {
 
             if ($context->redBlueConfig == "4_乱拉") {
                 // 使用实时的 usefulHoles 数据，如果没有则回退到 context 中的数据
-                $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[1]];
-                $hole['red'] = [$context->bootStrapOrder[2], $context->bootStrapOrder[3]];
+                $hole['blue'] = [$preRanking[1], $preRanking[4]];
+                $hole['red'] = [$preRanking[2], $preRanking[3]];
                 $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组,排序后 ";
             }
 
             if ($context->redBlueConfig == "4_高手不见面") {
-                // 使用实时的 usefulHoles 数据，如果没有则回退到 context 中的数据
-                $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[1]];
-                $hole['red'] = [$context->bootStrapOrder[2], $context->bootStrapOrder[3]];
-                $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组,排序后 ";
+                $bootStrapOrder = $context->bootStrapOrder;
+                $id0 = $bootStrapOrder[0];
+                $id1 = $bootStrapOrder[1];
+
+                $preRanking = $context->usefulHoles[$index - 1]['ranking']; // 假设是 [1=>126, 2=>837590, 3=>245, 4=>246]
+                // 去掉出发顺序前两位
+                $filtered = [];
+                foreach ($preRanking as $rank => $pid) {
+                    if ($pid != $id0 && $pid != $id1) {
+                        $filtered[] = $pid;
+                    }
+                }
+                // 取最后一个
+                $pairId = end($filtered);
+
+                // 蓝组
+                $hole['blue'] = [$id0, $pairId];
+                // 红组
+                $hole['red'] = [];
+                foreach ($bootStrapOrder as $pid) {
+                    if (!in_array($pid, $hole['blue'])) {
+                        $hole['red'][] = $pid;
+                    }
+                }
+                $hole['debug'][] = "分组:{$context->redBlueConfig},第" . ($index + 1) . "洞分组, 0号和上一洞剩余名次最后一名一组";
             }
         }
     }

@@ -124,7 +124,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     // 得到需要计算的洞
     public function setUsefulHoles() {
         $this->useful_holes = $this->MGambleDataFactory->getUsefulHoles($this->holes, $this->scores);
-        // gambleSysName 给每个洞加上 输赢点数
         foreach ($this->useful_holes as &$hole) {
             $hole['gambleSysName'] = $this->gambleSysName;
         }
@@ -134,13 +133,16 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         // 创建上下文对象，避免重复创建
         $context = GambleContext::fromGamblePipeRunner($this);
 
+
+        $context->usefulHoles = &$this->useful_holes;
+
         // 获取8421配置 （如果需要）
         $configs = null;
         if ($this->gambleSysName == '8421') {
             $configs = $this->MRuntimeConfig->get8421AllConfigs($this->gambleid);
         }
 
-        foreach ($this->useful_holes as  $index => &$hole) {
+        foreach ($this->useful_holes    as  $index => &$hole) {
             $hole['debug'] = [];
             $hole['indicators'] = [];
 
@@ -168,6 +170,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
                 $this->MMeat->processEating($hole, $configs, $context);
             }
             // debug($hole);
+            // debug("+++++++++++++++++++++++++++++");
+            // debug($hole);
+            // debug($context->usefulHoles[$index]);
+            // debug("+++++++++++++++++++++++++++++");
         }
     }
 

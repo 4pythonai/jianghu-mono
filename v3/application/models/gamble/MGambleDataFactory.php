@@ -210,13 +210,24 @@ class MGambleDataFactory extends CI_Model {
         break; // 如果原始成绩为空，退出循环
       }
 
+      // 新增：检查是否有球手积分为0（使用intval）
+      $hasInvalidScore = false;
+      foreach ($correspondingScore['raw_scores'] as $score) {
+        if (intval($score) === 0) {
+          $hasInvalidScore = true;
+          break;
+        }
+      }
+      if ($hasInvalidScore) {
+        break; // 有球手未记分，退出循环
+      }
+
       // 组装 hole 和 score 的组合
       $oneHoleMeta =  $hole;
       $oneHoleMeta['computedScores'] = $correspondingScore['computedScores'];
       $oneHoleMeta['raw_scores'] = $correspondingScore['raw_scores'];
       $useful_holes[] = $oneHoleMeta;
     }
-
 
     return $useful_holes;
   }

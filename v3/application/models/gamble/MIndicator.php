@@ -20,7 +20,7 @@ class MIndicator extends CI_Model {
      */
     public function computeIndicators($index, &$hole, $configs = null, $context) {
         if ($context->gambleSysName == '8421') {
-            $this->calculate8421Indicators($index, $hole, $configs);
+            $this->calculate8421Indicators($index, $hole, $configs, $context);
         }
     }
 
