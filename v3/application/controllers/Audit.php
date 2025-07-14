@@ -85,6 +85,13 @@ class Audit extends CI_Controller {
      * 优化后的赌球结果页面（生成二维码图片）
      */
     public function index() {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        if (strpos($userAgent, 'miniProgram') !== false) {
+            $debugMode = false; // 小程序
+        } else {
+            $debugMode = true; // 浏览器
+        }
+
         $paras = $_GET;
         $gambleid = $paras['gambleid'];
         $row = $this->db->get_where('t_gamble_runtime', ['id' => $gambleid])->row_array();
@@ -104,35 +111,11 @@ class Audit extends CI_Controller {
         $qrcode_url = $this->generateQRCode($detail_url, "gamble_result_{$gambleid}.png");
 
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
+        if ($debugMode) {
+            debug($final_result);
+        }
+
         $final_result['qrcode_url'] = $qrcode_url;
-
-        $this->printResult($final_result);
-    }
-
-
-    public function index2() {
-
-        $paras = $_GET;
-        $gambleid = $paras['gambleid'];
-        $row = $this->db->get_where('t_gamble_runtime', ['id' => $gambleid])->row_array();
-        $cfg = [
-            'gambleSysName' => '8421',
-            'userRuleId' => $row['userRuleId'],
-            'gameid' => $row['gameid'],
-            'runtimeid' => $gambleid,
-            'groupid' => $row['groupid'],
-            'userid' => $row['creator_id']
-        ];
-
-        //  调试二维码 = `https://qiaoyincapital.com/v3/index.php/Audit/index?gambleid=${gambleid}`;
-
-        $qrcode_url = "https://qiaoyincapital.com/v3/index.php/Audit/index?gambleid={$gambleid}";
-        $final_result = $this->GamblePipe->GetGambleResult($cfg);
-        $final_result['qrcode_url'] = $qrcode_url;
-
-        // debug("赌球结果>>>>>>>>>>>>>>>>>>>>>>>");
-        // debug($final_result);
-        // debug("Final Result>>>>>>>>>>>>>>>>>>>>>>>");
         $this->printResult($final_result);
     }
 }
