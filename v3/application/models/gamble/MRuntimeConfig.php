@@ -149,12 +149,7 @@ class MRuntimeConfig extends CI_Model {
         return $config['ranking_tie_resolve_config'];
     }
 
-    public function getAllPlayers($gambleid) {
-        $config = $this->getGambleConfig($gambleid);
-        if (isset($config['all_players']) && !empty($config['all_players'])) {
-            return json_decode($config['all_players'], true);
-        }
-    }
+
 
     // 获取出发顺序  
     public function getBootStrapOrder($gambleid) {

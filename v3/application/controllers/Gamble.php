@@ -235,4 +235,10 @@ class Gamble extends MY_Controller {
         $gamble['all_players'] = $attenders_info;
         return $gamble;
     }
+
+
+    // {"14":{"Birdie":8,"Par":4,"Par+1":2,"Par+2":1},"59":{"Birdie":8,"Par":4,"Par+1":2,"Par+2":1},"122":{"Birdie":8,"Par":4,"Par+1":2,"Par+2":1},"837590":{"Birdie":8,"Par":4,"Par+1":2,"Par+2":1}}
+
+    public function  updateGambleRuntime() {
+    }
 }

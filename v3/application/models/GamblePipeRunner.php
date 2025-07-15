@@ -55,7 +55,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gameid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->firstHoleindex, $this->lastholeindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
-        $this->players =  $this->MRuntimeConfig->getAllPlayers($this->gambleid);
         $this->attenders = $this->MRuntimeConfig->getAttenders($this->gambleid);
         $this->bootStrapOrder = $this->MRuntimeConfig->getBootStrapOrder($this->gambleid);
         $this->redBlueConfig = $this->MRuntimeConfig->getRedBlueConfig($this->gambleid, count($this->attenders));

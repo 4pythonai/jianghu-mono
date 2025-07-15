@@ -112,7 +112,9 @@ class Audit extends CI_Controller {
 
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
         if ($debugMode) {
-            debug($final_result);
+            $simple = $final_result;
+            unset($simple['holes']);
+            debug($simple);
         }
 
         $final_result['qrcode_url'] = $qrcode_url;
