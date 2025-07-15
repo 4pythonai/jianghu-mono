@@ -19,14 +19,14 @@ Page({
             bootstrap_order: [],
 
             // 排名配置
-            ranking_tie_resolve_config: 'score_based', // 可选: 'score_based', 'handicap_based', 'random'
+            ranking_tie_resolve_config: 'score.reverse',
 
             // 新增字段
             gameid: null,           // 游戏ID
             groupid: null,          // 分组ID
-            userRuleId: null,       // 用户规则ID（仅用户规则时有值）
-            gambleSysName: null,    // 游戏系统名称（如：8421、gross、hole等）
-            gambleUserName: null,   // 用户规则名称（如：规则_4721）
+            userRuleId: null,       // 用户规则ID(仅用户规则时有值)
+            gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
+            gambleUserName: null,   // 用户规则名称(如:规则_4721)
             val8421_config: {}      // 球员8421指标配置
         },
 
@@ -137,7 +137,7 @@ Page({
                 // 初始化分组配置
                 this.initializeGroupingConfig();
 
-                // 初始化8421配置（仅在8421游戏时）
+                // 初始化8421配置(仅在8421游戏时)
                 this.initialize8421Config();
             }
         } catch (error) {
@@ -163,7 +163,7 @@ Page({
     initializeGroupingConfig() {
         const { players, ruleType } = this.data;
 
-        // 检查是否需要分组（3人或4人游戏）
+        // 检查是否需要分组(3人或4人游戏)
         const playerCount = players.length;
         const needGrouping = (playerCount === 3 || playerCount === 4) &&
             (ruleType.includes('3p-') || ruleType.includes('4p-'));
@@ -349,7 +349,7 @@ Page({
             }
         }
 
-        // 验证8421配置（仅在8421游戏时）
+        // 验证8421配置(仅在8421游戏时)
         if (ruleType.includes('8421')) {
             const val8421Config = runtimeConfig.val8421_config;
 

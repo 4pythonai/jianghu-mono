@@ -3,15 +3,15 @@
 		<view class="top-circle"></view>
 		<view class="card-content">
 			<view class="search-box">
-				<!-- UUID 显示区域（调试用） -->
+				<!-- UUID 显示区域(调试用) -->
 				<view class="uuid-section">
-					<view class="form-label">游戏UUID（调试）</view>
+					<view class="form-label">游戏UUID(调试)</view>
 					<view class="uuid-display">
 						<text class="uuid-text">{{uuid}}</text>
 					</view>
 				</view>
 				<view class="uuid-section">
-					<view class="form-label">gameid（调试）</view>
+					<view class="form-label">gameid(调试)</view>
 					<view class="uuid-display">
 						<text class="uuid-text">{{gameId}}</text>
 					</view>
@@ -87,7 +87,7 @@
 					<view class="groups-container">
 						<view wx:for="{{ formData.gameGroups }}" wx:key="index" class="group-item">
 							<PlayerSelector groupIndex="{{ index }}" players="{{ item.players }}" maxPlayers="4" bind:playersChange="onPlayersChange" />
-							<!-- 删除组按钮（当组数大于1时显示） -->
+							<!-- 删除组按钮(当组数大于1时显示) -->
 							<view wx:if="{{ formData.gameGroups.length > 1 }}" class="delete-group-btn" bindtap="deleteGroup" data-index="{{ index }}">
 								<image src="/assets/icons/close.svg" mode="aspectFit"></image>
 							</view>
@@ -144,7 +144,7 @@
 							<text class="switch-text">是否为秘密比赛</text>
 							<switch checked="{{ formData.isPrivate }}" bindchange="onPrivateChange" color="#4CAF50" />
 						</view>
-						<!-- 密码输入（仅在秘密比赛时显示） -->
+						<!-- 密码输入(仅在秘密比赛时显示) -->
 						<view wx:if="{{ formData.isPrivate }}" class="password-input">
 							<input
 								class="form-input"

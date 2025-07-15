@@ -83,7 +83,7 @@ Page({
             prevPage.setCourtSelection(selectionData)
         }
 
-        // 返回到创建比赛页面（跳过球场选择页面）
+        // 返回到创建比赛页面(跳过球场选择页面)
         wx.navigateBack({
             delta: 2 // 返回两级页面
         })
@@ -185,7 +185,7 @@ Page({
 
         // 将选择结果传递给commonCreate页面
         const pages = getCurrentPages()
-        const commonCreatePage = pages[pages.length - 3] // 获取commonCreate页面（跳过course-select页面）
+        const commonCreatePage = pages[pages.length - 3] // 获取commonCreate页面(跳过course-select页面)
 
         console.log('=== 页面栈调试信息 ===')
         console.log('当前页面栈:', pages.map(p => p.route))
@@ -215,7 +215,7 @@ Page({
             console.log('数据已存储到本地缓存')
         }
 
-        // 返回到创建比赛页面（跳过球场选择页面）
+        // 返回到创建比赛页面(跳过球场选择页面)
         wx.navigateBack({
             delta: 2 // 返回两级页面
         })

@@ -93,7 +93,7 @@ Page({
 ### 最新版本数据格式 (v2.2)
 - **max8421_sub_value**: 纯数字类型
   - 具体数字：表示封顶分数，如 `2` 表示扣2分封顶
-  - `10000000`：表示不封顶（统一使用大数值，避免null）
+  - `10000000`：表示不封顶(统一使用大数值，避免null)
 - **sub8421_config_string**: 字符串格式
   - `"NoSub"` - 不扣分
   - `"Par+4"` - 从帕+4开始扣分
@@ -115,7 +115,7 @@ Page({
 
 ## 数据示例对比
 
-### v2.2格式（当前）
+### v2.2格式(当前)
 ```javascript
 // 有封顶的情况
 {
@@ -126,22 +126,22 @@ Page({
 
 // 不封顶的情况
 {
-  max8421SubValue: 10000000,    // 不封顶（大数值表示）
+  max8421SubValue: 10000000,    // 不封顶(大数值表示)
   sub8421ConfigString: "NoSub", // 不扣分
   duty_config: "DUTY_NEGATIVE"   // 包负分
 }
 ```
 
-### v2.1格式（已废弃）
+### v2.1格式(已废弃)
 ```javascript
 {
-  max8421SubValue: null,        // 不封顶（null表示）
+  max8421SubValue: null,        // 不封顶(null表示)
   sub8421ConfigString: "Par+4",
   duty_config: "不包负分"        // 中文字符串
 }
 ```
 
-### v1.0格式（已废弃）
+### v1.0格式(已废弃)
 ```javascript
 {
   max8421SubValue: "扣2分封顶",

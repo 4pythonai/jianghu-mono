@@ -330,7 +330,7 @@ Component({
         },
 
         /**
-         * 设置选中的半场（外部调用）
+         * 设置选中的半场(外部调用)
          */
         setSelection(value) {
             this.setData({
@@ -374,7 +374,7 @@ Component({
         },
 
         /**
-         * 更新球场信息（外部调用）
+         * 更新球场信息(外部调用)
          */
         updateCourseInfo(courseInfo) {
             this.setData({
@@ -383,7 +383,7 @@ Component({
         },
 
         /**
-         * 刷新数据（外部调用）
+         * 刷新数据(外部调用)
          */
         refreshData() {
             const { courseid, courseInfo } = this.properties

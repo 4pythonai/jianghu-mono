@@ -26,7 +26,7 @@ export const getApiBaseUrl = () => {
  * @returns {string} 返回标准格式的UUID字符串
  */
 export const uuid = () => {
-    // 使用 crypto API（如果可用）或回退到 Math.random()
+    // 使用 crypto API(如果可用)或回退到 Math.random()
     let d = new Date().getTime();
     let d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0;
 
@@ -44,7 +44,7 @@ export const uuid = () => {
 };
 
 /**
- * 生成简化的 UUID（去掉连字符）
+ * 生成简化的 UUID(去掉连字符)
  * @returns {string} 返回不带连字符的UUID字符串
  */
 export const simpleUuid = () => {
@@ -52,7 +52,7 @@ export const simpleUuid = () => {
 };
 
 /**
- * 生成短 UUID（8位）
+ * 生成短 UUID(8位)
  * 适用于临时标识符，不保证全局唯一性
  * @returns {string} 返回8位随机字符串
  */

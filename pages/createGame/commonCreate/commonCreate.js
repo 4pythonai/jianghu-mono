@@ -1,5 +1,4 @@
-import { createWxPageHandler, findUserInGroups, handleAppendPlayersToGroup } from '../../../utils/gameGroupUtils'
-import { validateForm } from '../../../utils/gameValidate'
+import { findUserInGroups, handleAppendPlayersToGroup } from '../../../utils/gameGroupUtils'
 import { uuid } from '../../../utils/tool'
 
 const app = getApp()
@@ -8,7 +7,7 @@ const app = getApp()
 Page({
     // 重写玩家添加处理函数，使用我们的统一更新方法
     handleAppendPlayersToGroup(players, groupIndex, sourceType) {
-        console.log(`🎯 handleAppendPlayersToGroup 被调用:`, { players, groupIndex, sourceType });
+        console.log('🎯 handleAppendPlayersToGroup 被调用:', { players, groupIndex, sourceType });
 
         // 获取当前页面的游戏组数据
         const gameGroups = this.data.formData.gameGroups;
@@ -22,7 +21,7 @@ Page({
             { dataPath: 'formData.gameGroups' }
         );
 
-        console.log(`🎯 handleAppendPlayersToGroup 处理结果:`, result);
+        console.log('🎯 handleAppendPlayersToGroup 处理结果:', result);
 
         // 如果成功，使用我们的统一更新方法而不是直接 setData
         if (result.success && result.gameGroups) {
@@ -30,7 +29,7 @@ Page({
         }
 
         // 显示 Toast
-        if (result.uiActions && result.uiActions.showToast && wx.showToast) {
+        if (result.uiActions?.showToast && wx.showToast) {
             wx.showToast(result.uiActions.showToast);
         }
 
@@ -80,7 +79,7 @@ Page({
     },
 
     data: {
-        uuid: '', // 游戏唯一标识符（调试用）
+        uuid: '', // 游戏唯一标识符(调试用)
         gameId: null, // 服务端返回的游戏ID
         gameCreated: false, // 标记游戏是否已创建
         selectedCourse: null, // 选中的球场信息
@@ -91,7 +90,7 @@ Page({
             gameName: '',       // 比赛名称
             openTime: '',       // 开球时间
             ScoringType: 'hole',   // 赛制：hole-按洞赛, oneball-比杆赛
-            gameGroups: [       // 参赛组别（至少一组） { players: [] }
+            gameGroups: [       // 参赛组别(至少一组) { players: [] }
                 { players: [] }     // 默认创建第一组
             ],
             isPrivate: false,   // 是否秘密比赛
@@ -113,7 +112,7 @@ Page({
             return result
         } catch (error) {
             console.error(`❌ ${description}更新失败:`, error)
-            console.error(`❌ 错误详情:`, error.message || error);
+            console.error('❌ 错误详情:', error.message || error);
             // 不显示错误提示，避免影响用户体验
             return null
         }
@@ -139,7 +138,7 @@ Page({
             'formData.gameName': gameName
         })
 
-        // 实时更新游戏名称（防抖500ms）
+        // 实时更新游戏名称(防抖500ms)
         if (this.data.gameCreated) {
             this.debounce('gameName', () => {
                 this.callUpdateAPI('updateGameName', {
@@ -347,7 +346,7 @@ Page({
             'formData.password': password
         });
 
-        // 实时更新密码（防抖500ms）
+        // 实时更新密码(防抖500ms)
         if (this.data.gameCreated && this.data.formData.isPrivate) {
             this.debounce('password', () => {
                 this.callUpdateAPI('updateGamepPivacyPassword', {
@@ -384,7 +383,7 @@ Page({
             icon: 'success'
         });
 
-        // 实时更新球场ID（只有球场ID，没有半场信息）
+        // 实时更新球场ID(只有球场ID，没有半场信息)
         if (this.data.gameCreated) {
             const apiData = {
                 uuid: this.data.uuid,
@@ -430,7 +429,7 @@ Page({
             duration: 2000
         });
 
-        // 实时更新球场ID（发送球场ID、前9、后9的courtid）
+        // 实时更新球场ID(发送球场ID、前9、后9的courtid)
         if (this.data.gameCreated && selectionData.course) {
             // 直接从 selectionData 中提取前9和后9的courtid
             const frontNineCourtId = selectionData.frontNine?.courtid || '';
@@ -529,19 +528,16 @@ Page({
         // 更新formData中的玩家T台信息
         const updatedGameGroups = [...this.data.formData.gameGroups];
 
-        updatedPlayers.forEach(player => {
+        for (const player of updatedPlayers) {
             const { groupIndex, playerIndex, tee } = player;
 
-            if (updatedGameGroups[groupIndex] &&
-                updatedGameGroups[groupIndex].players &&
-                updatedGameGroups[groupIndex].players[playerIndex]) {
-
+            if (updatedGameGroups?.[groupIndex]?.players?.[playerIndex]) {
                 // 更新对应位置玩家的T台信息
                 updatedGameGroups[groupIndex].players[playerIndex].tee = tee;
 
                 console.log(`🏌️ 更新第${groupIndex + 1}组玩家${playerIndex + 1}: ${player.wx_nickname} -> T台: ${tee}`);
             }
-        });
+        }
 
         // 更新数据
         this.setData({
@@ -568,10 +564,10 @@ Page({
      */
     calculateTeeStatistics(players) {
         const stats = {};
-        players.forEach(player => {
+        for (const player of players) {
             const tee = player.tee || 'blue';
             stats[tee] = (stats[tee] || 0) + 1;
-        });
+        }
         return stats;
     },
 
@@ -640,7 +636,7 @@ Page({
      */
     onShow() {
         console.log('commonCreate页面显示，当前数据:', this.data);
-        // 检查本地缓存中是否有选择的半场数据（备用方案）
+        // 检查本地缓存中是否有选择的半场数据(备用方案)
         try {
             const cachedCourtData = wx.getStorageSync('selectedCourtData')
             if (cachedCourtData) {

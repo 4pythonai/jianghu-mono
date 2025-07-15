@@ -19,7 +19,7 @@ class StorageManager {
      * 通用存储方法
      * @param {string} key - 存储键
      * @param {any} value - 存储值
-     * @param {boolean} encrypt - 是否加密（预留）
+     * @param {boolean} encrypt - 是否加密(预留)
      */
     set(key, value, encrypt = false) {
         try {
@@ -37,7 +37,7 @@ class StorageManager {
      * 通用读取方法
      * @param {string} key - 存储键
      * @param {any} defaultValue - 默认值
-     * @param {boolean} decrypt - 是否解密（预留）
+     * @param {boolean} decrypt - 是否解密(预留)
      */
     get(key, defaultValue = null, decrypt = false) {
         try {
@@ -132,7 +132,7 @@ class StorageManager {
     }
 
     /**
-     * 存储tokens（批量）
+     * 存储tokens(批量)
      */
     setTokens({ token, refreshToken }) {
         const results = []
@@ -269,7 +269,7 @@ class StorageManager {
     }
 
     /**
-     * 数据迁移（用于版本升级）
+     * 数据迁移(用于版本升级)
      */
     migrate() {
         try {
@@ -289,7 +289,7 @@ class StorageManager {
     // ==================== 工具方法 ====================
 
     /**
-     * 加密数据（预留接口）
+     * 加密数据(预留接口)
      */
     encrypt(data) {
         // TODO: 实现加密逻辑
@@ -297,7 +297,7 @@ class StorageManager {
     }
 
     /**
-     * 解密数据（预留接口）
+     * 解密数据(预留接口)
      */
     decrypt(data) {
         // TODO: 实现解密逻辑
@@ -305,7 +305,7 @@ class StorageManager {
     }
 
     /**
-     * 获取存储大小（格式化）
+     * 获取存储大小(格式化)
      */
     getStorageSize() {
         const info = this.getInfo()

@@ -13,7 +13,7 @@ Component({
             type: Array,
             value: []
         },
-        // 用户规则数据（如果是从我的规则进入的）
+        // 用户规则数据(如果是从我的规则进入的)
         userRule: {
             type: Object,
             value: null

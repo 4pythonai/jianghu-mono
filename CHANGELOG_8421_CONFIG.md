@@ -23,7 +23,7 @@
 - 格式示例：`"从双帕+0开始扣分"`, `"从帕+4开始扣分"`, `"不扣分"`
 
 **修改后:**
-- 数据类型：字符串（简化格式）
+- 数据类型：字符串(简化格式)
 - 格式示例：`"DoublePar+0"`, `"Par+4"`, `"NoSub"`
 
 ### 3. meat_value_config_string (肉分值配置)
@@ -32,7 +32,7 @@
 - 格式示例：`"肉算1分"`, `"分值翻倍"`, `"分值连续翻倍"`
 
 **修改后:**
-- 数据类型：字符串（枚举格式）
+- 数据类型：字符串(枚举格式)
 - 格式示例：`"MEAT_AS_1"`, `"SINGLE_DOUBLE"`, `"CONTINUE_DOUBLE"`
 
 ### 4. meat_max_value	 (吃肉封顶配置)
@@ -52,7 +52,7 @@
 
 **修改后:**
 - 字段名：`duty_config`
-- 数据类型：字符串（枚举格式）
+- 数据类型：字符串(枚举格式)
 - 格式示例：`"NODUTY"`, `"DUTY_CODITIONAL"`, `"DUTY_NEGATIVE"`
 
 ## ⭐ 重要更新：统一数据类型
@@ -60,7 +60,7 @@
 ### 6. 不封顶值的处理 (v2.1 更新)
 **修改前:**
 - 使用 `null` 表示不封顶
-- 数据类型混合（数字和null）
+- 数据类型混合(数字和null)
 
 **修改后:**
 - 使用 `10000000` 表示不封顶
@@ -97,14 +97,14 @@
 
 2. `components/Gamble/8421_configItems/koufen/koufen.js`
    - 修改扣分组件的数据处理逻辑
-   - 适配新的max8421_sub_value格式（10000000表示不封顶）
+   - 适配新的max8421_sub_value格式(10000000表示不封顶)
    - 更新parseStoredConfig和onConfirm方法
    - **适配新的dutyconfig枚举格式**
    - **添加中文到英文枚举的转换逻辑**
 
 3. `components/Gamble/8421_configItems/eatmeat/eatmeat.js`
    - 修改吃肉组件的数据处理逻辑
-   - 适配新的meatMaxValue格式（10000000表示不封顶）
+   - 适配新的meatMaxValue格式(10000000表示不封顶)
    - 更新parseStoredConfig和onConfirm方法
 
 4. `pages/ruleConfig/4player/4p-8421/4p-8421.js`
@@ -219,7 +219,7 @@
 
 ### 1. 单元测试
 - 测试新格式数据的解析和生成
-- 测试各种边界情况（10000000值、最大最小值等）
+- 测试各种边界情况(10000000值、最大最小值等)
 - **重点测试10000000的处理逻辑**
 - **测试dutyconfig枚举转换逻辑**
 

@@ -229,7 +229,7 @@ Component({
                     wx.hideLoading();
                     console.log('🔧 [ScoreInputPanel] finally块中强制隐藏Loading完成');
                 } catch (e) {
-                    console.log('🔧 [ScoreInputPanel] finally块中强制隐藏Loading失败（可能本来就没有Loading）:', e.message);
+                    console.log('🔧 [ScoreInputPanel] finally块中强制隐藏Loading失败(可能本来就没有Loading):', e.message);
                 }
 
                 // 8. 额外保险：延迟再次检查并隐藏Loading

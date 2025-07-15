@@ -1,34 +1,6 @@
 <!-- 赌球结果页面 -->
 <view class="result-container">
-    <!-- 配置信息区域 -->
-    <view class="config-section">
-        <view class="config-header">
-            <text class="config-title">游戏配置</text>
-        </view>
-        <view class="config-details">
-            <view class="config-item">
-                <text class="label">规则类型:</text>
-                <text class="value">{{ ruleType || '未知规则' }}</text>
-            </view>
-            <view class="config-item" wx:if="{{ userRuleName }}">
-                <text class="label">自定义规则:</text>
-                <text class="value">{{ userRuleName }}</text>
-            </view>
-            <view class="config-item">
-                <text class="label">洞数范围:</text>
-                <text class="value">第{{ firstHole }}洞 - 第{{ lastHole }}洞</text>
-            </view>
-            <view class="config-item">
-                <text class="label">参与人数:</text>
-                <text class="value">{{ playerCount }}人</text>
-            </view>
-        </view>
-    </view>
-
- 
- 
     <!-- 结果内容 -->
-
        <!-- 结果webview -->
     <view class="webview-section">
         <web-view wx:if="{{ webviewUrl }}" src="{{ webviewUrl }}"></web-view>
@@ -36,15 +8,5 @@
             <text class="error-text">配置ID不存在，无法加载结果页面</text>
             <button class="back-button" bindtap="onBackToGame">返回比赛</button>
         </view>
-    </view>
-
-    <!-- 操作按钮区域 -->
-    <view class="action-section">
-        <button class="action-button secondary" bindtap="onBackToGame">
-            <text class="button-text">返回比赛</text>
-        </button>
-        <button class="action-button primary" bindtap="onShareResult">
-            <text class="button-text">分享结果</text>
-        </button>
     </view>
 </view> 

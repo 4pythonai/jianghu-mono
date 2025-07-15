@@ -96,12 +96,12 @@ Page({
 
 ### 最新版本数据格式 (v2.1)
 - **meat_value_config_string**: 字符串格式
-  - `"MEAT_AS_1"` - 肉算1分（可扩展为MEAT_AS_X）
+  - `"MEAT_AS_1"` - 肉算1分(可扩展为MEAT_AS_X)
   - `"SINGLE_DOUBLE"` - 分值翻倍
   - `"CONTINUE_DOUBLE"` - 分值连续翻倍
 - **meat_max_value	**: 纯数字类型
   - 具体数字：表示封顶分数，如 `3` 表示3分封顶
-  - `10000000`：表示不封顶（统一使用大数值，避免null）
+  - `10000000`：表示不封顶(统一使用大数值，避免null)
 
 ### 版本 v2.0 数据格式 - 已废弃
 - **meat_value_config_string**: 同v2.1
@@ -113,7 +113,7 @@ Page({
 
 ## 数据示例对比
 
-### v2.1格式（当前）
+### v2.1格式(当前)
 ```javascript
 // 有封顶的情况
 {
@@ -131,16 +131,16 @@ Page({
 {
   eating_range: [...],
   meatValueConfig: "MEAT_AS_1",     // 肉算1分
-  meat_max_value	: 10000000            // 不封顶（大数值表示）
+  meat_max_value	: 10000000            // 不封顶(大数值表示)
 }
 ```
 
-### v2.0格式（已废弃）
+### v2.0格式(已废弃)
 ```javascript
 {
   eating_range: [...],
   meatValueConfig: "MEAT_AS_1",
-  meat_max_value	: null                // 不封顶（null表示）
+  meat_max_value	: null                // 不封顶(null表示)
 }
 ```
 

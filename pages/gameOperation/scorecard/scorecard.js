@@ -8,25 +8,25 @@ Page({
     onLoad(options) {
         const gameId = options?.gameId;
         console.log('📊 [Scorecard] 页面加载', { gameId });
-        
+
         // 动态构建webview URL
         const finalWebviewUrl = `${this.data.webviewUrl}${gameId || ''}`;
-        
+
         this.setData({
             gameId: gameId || '未获取到gameId',
             webviewUrl: finalWebviewUrl
         });
-        
+
         console.log('📊 [Scorecard] 最终WebView URL:', finalWebviewUrl);
-        
+
         // 监听屏幕旋转变化
         wx.onDeviceMotionChange(this.onDeviceMotionChange);
     },
 
     onShow() {
         console.log('📊 [Scorecard] 页面显示');
-        
-        // 强制设置为横屏（检查API是否存在以兼容开发者工具）
+
+        // 强制设置为横屏(检查API是否存在以兼容开发者工具)
         if (wx.setDeviceOrientation) {
             wx.setDeviceOrientation({
                 orientation: 'landscape',
@@ -38,7 +38,7 @@ Page({
                 }
             });
         } else {
-            console.warn('⚠️ [Scorecard] wx.setDeviceOrientation API 在当前环境不可用（可能是在开发者工具中）');
+            console.warn('⚠️ [Scorecard] wx.setDeviceOrientation API 在当前环境不可用(可能是在开发者工具中)');
         }
     },
 
@@ -76,7 +76,7 @@ Page({
             icon: 'error',
             duration: 3000
         });
-        
+
         // 如果加载失败，隐藏WebView
         this.setData({
             showWebView: false

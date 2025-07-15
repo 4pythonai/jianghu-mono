@@ -18,7 +18,7 @@ Component({
     },
 
     data: {
-        // 玩家列表（支持空位）- 每个玩家对象现在包含 join_type 字段
+        // 玩家列表(支持空位)- 每个玩家对象现在包含 join_type 字段
         playerSlots: [null, null, null, null], // null 表示空位，对象表示已选择的玩家
         // 有效玩家数量
         validPlayerCount: 0,
@@ -84,7 +84,7 @@ Component({
         },
 
         /**
-         * 选择玩家（点击空位时调用）
+         * 选择玩家(点击空位时调用)
          */
         onSelectPlayer(e) {
             const slotIndex = e.currentTarget.dataset.index;
@@ -111,7 +111,7 @@ Component({
         },
 
         /**
-         * 将玩家添加到指定位置（由玩家选择页面回调）
+         * 将玩家添加到指定位置(由玩家选择页面回调)
          */
         addPlayerToSlot(slotIndex, player, join_type = 'unknown') {
             console.log('PlayerSelector addPlayerToSlot 被调用:', { slotIndex, player, join_type });
@@ -143,7 +143,7 @@ Component({
             // 显示添加成功提示，包含来源信息
             const joinTypeText = this.data.joinTypeMap[join_type] || '未知来源';
             wx.showToast({
-                title: `已添加 ${player.wx_nickname}（${joinTypeText}）`,
+                title: `已添加 ${player.wx_nickname}(${joinTypeText})`,
                 icon: 'success'
             });
         },
@@ -177,7 +177,7 @@ Component({
             // 显示移除成功提示，包含来源信息
             const joinTypeText = this.data.joinTypeMap[removedPlayer.join_type] || '未知来源';
             wx.showToast({
-                title: `已移除 ${removedPlayer.wx_nickname}（${joinTypeText}）`,
+                title: `已移除 ${removedPlayer.wx_nickname}(${joinTypeText})`,
                 icon: 'success'
             });
         }
@@ -188,7 +188,7 @@ Component({
             // 组件实例进入页面节点树时执行
             console.log('PlayerSelector 组件已挂载, groupIndex:', this.properties.groupIndex);
 
-            // 初始化玩家位置（如果有传入的玩家数据）
+            // 初始化玩家位置(如果有传入的玩家数据)
             if (this.properties.players && this.properties.players.length > 0) {
                 this.updatePlayerSlots(this.properties.players);
             } else {

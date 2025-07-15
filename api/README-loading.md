@@ -20,7 +20,7 @@ HttpClient现在支持统一的loading管理，为所有API请求提供智能的
 
 ## 📖 使用方法
 
-### 1. 默认使用（推荐）
+### 1. 默认使用(推荐)
 
 ```javascript
 // 自动显示 "加载中..." loading
@@ -120,7 +120,7 @@ console.log(status)
 ```
 
 #### `forceHideLoading()`
-强制隐藏loading（用于异常情况）
+强制隐藏loading(用于异常情况)
 
 ```javascript
 app.http.forceHideLoading()
@@ -233,7 +233,7 @@ const [userInfo, favorites, gameList] = await Promise.all([
 
 ### 防闪烁优化
 
-- 快速请求（<300ms）不会显示loading
+- 快速请求(<300ms)不会显示loading
 - 显示的loading至少显示500ms，避免闪烁
 - 可通过`setLoadingConfig`调整这些参数
 

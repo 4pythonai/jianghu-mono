@@ -22,7 +22,7 @@ Component({
             type: Boolean,
             value: false
         },
-        // 日期范围天数（从今天开始）
+        // 日期范围天数(从今天开始)
         dayRange: {
             type: Number,
             value: 30

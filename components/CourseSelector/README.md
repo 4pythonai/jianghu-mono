@@ -130,7 +130,7 @@ courseSelector.refreshFavorites()
 组件使用了独立的样式作用域，如需自定义样式，可以通过以下方式：
 
 1. 修改组件内部的 WXSS 文件
-2. 使用外部样式类（需要在组件中添加 `externalClasses` 支持）
+2. 使用外部样式类(需要在组件中添加 `externalClasses` 支持)
 
 ## 依赖说明
 

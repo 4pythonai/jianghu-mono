@@ -96,7 +96,7 @@ export const gameStore = observable({
         // 标准化所有玩家数据
         const allPlayers = (gameData.players || []).map(p => this._normalizePlayer(p));
 
-        // 根据 groupId 过滤玩家（如果提供了 groupId）
+        // 根据 groupId 过滤玩家(如果提供了 groupId)
         const players = this._filterPlayersByGroup(allPlayers, groupId);
 
         const holes = (gameData.holeList || []).map(h => this._normalizeHole(h));

@@ -119,7 +119,7 @@ Page({
         // 获取当前页面栈
         const pages = getCurrentPages();
 
-        // 查找最终的目标页面（commonCreate）
+        // 查找最终的目标页面(commonCreate)
         let targetPage = null;
         for (let i = pages.length - 1; i >= 0; i--) {
             const page = pages[i];

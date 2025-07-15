@@ -77,7 +77,7 @@ class AuthManager {
         try {
             console.log('🔑 验证token有效性')
 
-            // 调用需要认证的API来验证token - 禁用loading（静默验证）
+            // 调用需要认证的API来验证token - 禁用loading(静默验证)
             const response = await api.user.getUserInfo({}, {
                 showLoading: false
             })
@@ -107,7 +107,7 @@ class AuthManager {
     }
 
     /**
-     * 静默登录（用于HTTP客户端的自动重试）
+     * 静默登录(用于HTTP客户端的自动重试)
      */
     async silentLogin() {
         // 如果已经有静默登录在进行中，返回同一个Promise
@@ -141,7 +141,7 @@ class AuthManager {
             // 获取微信登录code
             const code = await this.getWxLoginCode()
 
-            // 调用后端登录接口 - 禁用loading（静默登录）
+            // 调用后端登录接口 - 禁用loading(静默登录)
             const response = await api.user.wxLogin({ code }, {
                 showLoading: false
             })
@@ -152,7 +152,7 @@ class AuthManager {
                 // 存储新的token和用户信息
                 await this.storeAuthData(response)
 
-                // 不通知app（静默登录）
+                // 不通知app(静默登录)
                 return { success: true, user: response }
             }
 

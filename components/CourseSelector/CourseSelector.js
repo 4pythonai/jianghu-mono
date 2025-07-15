@@ -207,7 +207,7 @@ Component({
         },
 
         /**
-         * 设置搜索值（外部调用）
+         * 设置搜索值(外部调用)
          */
         setSearchValue(value) {
             this.setData({
@@ -219,7 +219,7 @@ Component({
         },
 
         /**
-         * 刷新收藏列表（外部调用）
+         * 刷新收藏列表(外部调用)
          */
         refreshFavorites() {
             if (this.properties.showFavorites) {

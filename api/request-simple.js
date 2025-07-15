@@ -13,7 +13,7 @@ import storage from '../utils/storage'
  * 
  * 使用方式：
  * 
- * // 默认使用（自动显示loading）
+ * // 默认使用(自动显示loading)
  * await app.api.user.createAndSelect(userData)
  * 
  * // 自定义loading文案
@@ -55,7 +55,7 @@ class HttpClient {
         this.loadingHideTimer = null // loading延迟隐藏定时器
         this.loadingConfig = {
             delay: 300, // loading显示延迟时间(ms)，避免快速请求的闪烁
-            minDuration: 200, // loading最小显示时间(ms)，避免闪烁（从500ms减少到200ms）
+            minDuration: 200, // loading最小显示时间(ms)，避免闪烁(从500ms减少到200ms)
             defaultTitle: 'APILoading...',
             defaultMask: true
         }
@@ -126,7 +126,7 @@ class HttpClient {
             if (this.loadingTimer) {
                 clearTimeout(this.loadingTimer)
                 this.loadingTimer = null
-                // console.log('⏹️ 取消Loading显示（请求太快）')
+                // console.log('⏹️ 取消Loading显示(请求太快)')
                 // 注意：这里不return，因为loading可能已经显示了
             }
 
@@ -139,7 +139,7 @@ class HttpClient {
                 if (remainingTime > 0) {
                     // console.log(`⏱️ Loading最小显示时间未到，延迟${remainingTime}ms隐藏`)
 
-                    // 清除之前的隐藏定时器（如果存在）
+                    // 清除之前的隐藏定时器(如果存在)
                     if (this.loadingHideTimer) {
                         clearTimeout(this.loadingHideTimer)
                         this.loadingHideTimer = null
@@ -149,7 +149,7 @@ class HttpClient {
                         // 简化条件检查：只要loadingCount为0就隐藏
                         if (this.loadingCount === 0) {
                             wx.hideLoading()
-                            // console.log('📱 系统Loading已隐藏（延迟）')
+                            // console.log('📱 系统Loading已隐藏(延迟)')
                             this.loadingStartTime = null
                         } else {
                             // console.log('⚠️ 延迟隐藏时发现有新请求，保持loading显示')
@@ -333,7 +333,7 @@ class HttpClient {
         } catch (error) {
             console.error('❌ 静默重新登录失败:', error)
 
-            // 处理队列中的请求（全部失败）
+            // 处理队列中的请求(全部失败)
             this.processFailedQueue(error)
 
             // 通知认证层处理登录失败
@@ -351,7 +351,7 @@ class HttpClient {
     async retryOriginalRequest(requestConfig) {
         console.log('🔄 重试原始请求:', requestConfig._originalUrl)
 
-        // 重新构建请求配置（获取新的token）
+        // 重新构建请求配置(获取新的token)
         const newRequestConfig = this.buildRequestConfig(
             requestConfig._originalUrl,
             requestConfig._originalData,
@@ -361,7 +361,7 @@ class HttpClient {
         // 发送请求
         const response = await this.wxRequest(newRequestConfig)
 
-        // 处理响应（不再处理401，避免无限循环）
+        // 处理响应(不再处理401，避免无限循环)
         if (response.statusCode === 401) {
             throw new Error('重试后仍然401，认证失败')
         }
@@ -495,7 +495,7 @@ class HttpClient {
     }
 
     /**
-     * 重试请求（由认证层在token刷新后调用）
+     * 重试请求(由认证层在token刷新后调用)
      */
     async retryRequest(url, data, options) {
         console.log('🔄 重试请求:', url)
@@ -621,7 +621,7 @@ const httpClient = new HttpClient()
 // 导出HTTP客户端实例
 export { httpClient }
 
-// 导出请求方法（保持向后兼容）
+// 导出请求方法(保持向后兼容)
 export default (endpoint, data = {}, options = {}) => {
     return httpClient.request(endpoint, data, options)
 } 

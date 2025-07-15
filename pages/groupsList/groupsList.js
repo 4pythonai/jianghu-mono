@@ -86,7 +86,7 @@ Page({
         });
     },
 
-    // 重试加载（返回上一页重新选择）
+    // 重试加载(返回上一页重新选择)
     retryLoad() {
         if (this.data.loading) return;
 
@@ -100,7 +100,7 @@ Page({
         }, 1500);
     },
 
-    // 下拉刷新（返回上一页重新选择）
+    // 下拉刷新(返回上一页重新选择)
     async onPullDownRefresh() {
         wx.stopPullDownRefresh();
         wx.showToast({

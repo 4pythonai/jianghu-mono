@@ -108,10 +108,10 @@ App({
         wx.getSystemInfo({
             success: (res) => {
                 this.globalData.systemInfo = res
-                console.log('📱 系统信息获取成功（降级模式）')
+                console.log('📱 系统信息获取成功(降级模式)')
             },
             fail: (err) => {
-                console.error('❌ 获取系统信息失败（降级模式）:', err)
+                console.error('❌ 获取系统信息失败(降级模式):', err)
             }
         })
     },

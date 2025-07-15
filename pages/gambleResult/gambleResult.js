@@ -41,20 +41,7 @@ Page({
         console.log('🎯 [GambleResult] webview URL:', webviewUrl);
     },
 
-    onShow() {
-        console.log('🎯 [GambleResult] 页面显示');
-    },
 
-
-
-    // 分享结果
-    onShareResult() {
-        console.log('🎯 [GambleResult] 分享结果');
-        wx.showToast({
-            title: '分享功能开发中',
-            icon: 'none'
-        });
-    },
 
     // 返回游戏详情
     onBackToGame() {

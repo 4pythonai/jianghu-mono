@@ -16,7 +16,7 @@ export const runtimeStore = observable({
     /**
      * 获取运行时配置
      * @param {string} gameId - 游戏ID
-     * @param {string} groupId - 分组ID（可选）
+     * @param {string} groupId - 分组ID(可选)
      */
     fetchRuntimeConfigs: action(async function (gameId, groupId = null) {
         if (this.loadingRuntimeConfig) return; // 防止重复加载

@@ -7,7 +7,7 @@ Page({
     data: {
         uuid: '',           // 游戏UUID，用于标识数据来源
         players: [],        // 玩家列表
-        originalPlayers: [] // 原始玩家数据（用于取消时恢复）
+        originalPlayers: [] // 原始玩家数据(用于取消时恢复)
     },
 
     /**
@@ -148,7 +148,7 @@ Page({
     },
 
     /**
-     * 快速设置所有玩家为同一T台（可选功能）
+     * 快速设置所有玩家为同一T台(可选功能)
      */
     setAllPlayersToSameTee(teeColor) {
         const players = this.data.players.map(player => ({

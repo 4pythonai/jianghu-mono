@@ -99,7 +99,7 @@ Component({
             });
         },
 
-        // 差点排序（按差点从低到高排序）
+        // 差点排序(按差点从低到高排序)
         handicapOrder() {
             const { bootstrap_order } = this.data;
 

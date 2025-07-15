@@ -6,7 +6,7 @@ Component({
             type: Boolean,
             value: false
         },
-        // 编辑的规则数据（如果是编辑模式）
+        // 编辑的规则数据(如果是编辑模式)
         editRule: {
             type: Object,
             value: null
@@ -208,7 +208,7 @@ Component({
             // 导入gameStore来获取游戏数据
             const { gameStore } = require('../../../../stores/gameStore');
 
-            // 准备传递给运行时配置页面的数据（简化版）
+            // 准备传递给运行时配置页面的数据(简化版)
             const runtimeConfigData = {
                 ruleType: title,
                 gameId: gameStore.gameid || null,
@@ -217,7 +217,7 @@ Component({
                 fromUserRule: false // 标识这是从系统规则进入的
             };
 
-            // 将完整数据暂存到全局（为了保持一致性）
+            // 将完整数据暂存到全局(为了保持一致性)
             const app = getApp();
             app.globalData = app.globalData || {};
             app.globalData.currentGameData = {

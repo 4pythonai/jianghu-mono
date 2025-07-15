@@ -1,6 +1,6 @@
-<!-- 添加规则组件（重写，参考图片） -->
+<!-- 添加规则组件(重写，参考图片) -->
 <view wx:if="{{ show }}" class="add-rule-container">
-    <!-- Tab栏（与页面保持一致，仅展示，不负责切换）-->
+    <!-- Tab栏(与页面保持一致，仅展示，不负责切换)-->
 
     <!-- 内容区域 -->
     <scroll-view scroll-y class="rules-group-scroll">

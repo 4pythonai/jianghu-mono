@@ -51,7 +51,7 @@ Page({
     app.on('needBindPhone', this.handleNeedBindPhone)
   },
 
-  // 选择头像（增强版）
+  // 选择头像(增强版)
   onChooseAvatar(e) {
     console.log('📸 选择头像:', e.detail)
 
@@ -113,7 +113,7 @@ Page({
     })
   },
 
-  // 上传头像到服务器（新版本）
+  // 上传头像到服务器(新版本)
   uploadAvatarToServer(tempFilePath) {
     console.log('🚀 开始上传头像到服务器:', tempFilePath)
 
@@ -159,7 +159,7 @@ Page({
     })
   },
 
-  // 降级方案：保存到本地（当服务器上传失败时）
+  // 降级方案：保存到本地(当服务器上传失败时)
   saveAvatarLocally(tempFilePath) {
     console.log('💾 降级到本地保存头像')
 
@@ -173,12 +173,12 @@ Page({
       success: (res) => {
         console.log('✅ 头像本地保存成功:', res.savedFilePath)
 
-        // 更新用户头像（本地路径）
+        // 更新用户头像(本地路径)
         this.updateUserAvatar(res.savedFilePath, false) // false表示是本地路径
 
         wx.hideLoading()
         wx.showToast({
-          title: '头像已保存（本地）',
+          title: '头像已保存(本地)',
           icon: 'success'
         })
       },
@@ -197,7 +197,7 @@ Page({
     })
   },
 
-  // 更新用户头像（增强版）
+  // 更新用户头像(增强版)
   updateUserAvatar(avatarUrl, isServerUrl = false) {
     console.log('🖼️ 更新用户头像:', { avatarUrl, isServerUrl })
 
@@ -247,7 +247,7 @@ Page({
     })
   },
 
-  // 确认用户信息（优化版）
+  // 确认用户信息(优化版)
   confirmUserInfo() {
     const { tempNickname } = this.data
     // 安全获取当前用户信息，提供默认值
@@ -332,7 +332,7 @@ Page({
       app.emit('loginSuccess', updatedUserInfo)
 
       wx.showToast({
-        title: '信息已保存（本地）',
+        title: '信息已保存(本地)',
         icon: 'success'
       })
     })

@@ -208,7 +208,7 @@ Component({
                 return;
             }
 
-            // 准备传递给运行时配置页面的数据（简化版，减少URL长度）
+            // 准备传递给运行时配置页面的数据(简化版，减少URL长度)
             const runtimeConfigData = {
                 ruleType: ruleType,
                 gameId: gameStore.gameid || null,

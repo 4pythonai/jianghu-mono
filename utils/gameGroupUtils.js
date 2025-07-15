@@ -44,7 +44,7 @@ export const getUserGroupMap = (gameGroups) => {
             group.players.filter(player => player !== null).forEach(player => {
                 const userId = player.userid.toString();
                 allUserIds.push(userId);
-                userGroupMap[userId] = index + 1; // 记录用户在第几组（从1开始）
+                userGroupMap[userId] = index + 1; // 记录用户在第几组(从1开始)
             });
         }
     });
@@ -92,7 +92,7 @@ export const filterDuplicateUsers = (players, gameGroups, targetGroupIndex) => {
  * 通用的追加玩家到组的方法
  * @param {Array} players - 待添加的玩家列表
  * @param {number} groupIndex - 目标组索引
- * @param {string} sourceType - 来源类型（如：'好友'、'手工添加用户'等）
+ * @param {string} sourceType - 来源类型(如：'好友'、'手工添加用户'等)
  * @param {Array} gameGroups - 当前游戏组数据
  * @param {number} maxPlayers - 每组最大玩家数，默认4
  * @returns {Object} 返回更新结果和统计信息
@@ -136,14 +136,14 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
         };
     }
 
-    // 计算可以添加的玩家数量（每组最多指定数量）
+    // 计算可以添加的玩家数量(每组最多指定数量)
     const availableSlots = maxPlayers - currentPlayers.length;
     console.log(`🎯 第${groupIndex + 1}组还可以添加 ${availableSlots} 名玩家`);
 
     if (availableSlots <= 0) {
         return {
             success: false,
-            message: `第${groupIndex + 1}组已满（最多${maxPlayers}人）`,
+            message: `第${groupIndex + 1}组已满(最多${maxPlayers}人)`,
             gameGroups: gameGroups, // 返回原数据，无变化
             statistics: {
                 added: 0,
@@ -154,7 +154,7 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
         };
     }
 
-    // 取要添加的玩家（如果超过可用位置，只取前面的）
+    // 取要添加的玩家(如果超过可用位置，只取前面的)
     const playersToAdd = newPlayers.slice(0, availableSlots);
     const capacitySkippedCount = newPlayers.length - playersToAdd.length;
 
@@ -177,7 +177,7 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
         if (capacitySkippedCount > 0) {
             skipReasons.push(`${capacitySkippedCount}人因组已满`);
         }
-        message += `（${skipReasons.join('，')}被跳过）`;
+        message += `(${skipReasons.join('，')}被跳过)`;
     }
 
     console.log(`🎉 第${groupIndex + 1}组更新完成，当前${updatedPlayers.length}/${maxPlayers}人`);
@@ -198,7 +198,7 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
 };
 
 /**
- * 处理玩家添加到组的完整流程（通用版本）
+ * 处理玩家添加到组的完整流程(通用版本)
  * 包含数据处理和UI操作指令，适用于任何框架环境
  * @param {Array} players - 待添加的玩家列表
  * @param {number} groupIndex - 目标组索引
@@ -234,7 +234,7 @@ export const handleAppendPlayersToGroup = (players, groupIndex, sourceType, game
         // 是否需要页面更新
         shouldUpdatePage: result.success,
 
-        // 操作类型（用于不同框架的适配）
+        // 操作类型(用于不同框架的适配)
         actionType: result.success ? 'UPDATE_SUCCESS' : 'UPDATE_FAILED'
     };
 
