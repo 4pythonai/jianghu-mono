@@ -33,6 +33,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $dutyConfig;  // 包洞配置
     private $ranking4TieResolveConfig;  // 排名解决平局配置
 
+    private $rangedHoles;
+
+    public $context; // 新增：全局上下文对象
+
     public function __invoke($cfg) {
     }
 
@@ -54,38 +58,52 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->endHoleindex = $this->MRuntimeConfig->getEndHoleindex($this->gambleid);
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gameid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->startHoleindex, $this->endHoleindex);
-        $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
+        $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->groupid);
         $this->attenders = $this->MRuntimeConfig->getAttenders($this->gambleid);
         $this->bootStrapOrder = $this->MRuntimeConfig->getBootStrapOrder($this->gambleid);
         $this->redBlueConfig = $this->MRuntimeConfig->getRedBlueConfig($this->gambleid, count($this->attenders));
         $this->dutyConfig = $this->MRuntimeConfig->getDutyConfig($this->gambleid);
         $this->ranking4TieResolveConfig = $this->MRuntimeConfig->getRanking4TieResolveConfig($this->gambleid);
+
+        // 新增：初始化全局上下文对象
+        $this->context = GambleContext::fromGamblePipeRunner($this);
     }
 
     // 处理让杆
     public function StrokingScores() {
-        $stroking_config = $this->MRuntimeConfig->getStrokingConfig($this->gambleid, $this->userid);
-        $this->scores = $this->MStroking->processStroking($this->scores, $stroking_config);
+        $stroking_config = $this->MRuntimeConfig->getStrokingConfig($this->context->gambleid, $this->context->userid);
+        $this->context->scores = $this->MStroking->processStroking($this->context->scores, $stroking_config);
     }
+
+    // 得到起始-终止范围内的所有洞
+    public function setRangedHoles() {
+        $rangedHoles = $this->MGambleDataFactory->getRangedHoles($this->context->holes, $this->context->startHoleindex, $this->context->endHoleindex);
+        $this->context->rangedHoles = $rangedHoles;
+    }
+
 
 
     // 得到需要计算的洞
-    public function setUsefulHoles() {
-        $this->useful_holes = $this->MGambleDataFactory->grabUsefulHoles($this->holes, $this->scores);
+    public function setFinishedHolesInRange() {
+        $tmp = $this->MGambleDataFactory->getFinishedHoles($this->context->rangedHoles, $this->context->scores);
+        $this->context->usefulHoles = $tmp;
+        // $this->context->rangedHoles = $tmp;
     }
 
+
+
+
     public function processHoles() {
-        // 创建上下文对象，避免重复创建
-        $context = GambleContext::fromGamblePipeRunner($this);
-        $context->usefulHoles = &$this->useful_holes;
+        // 直接使用全局 context
+        $context = $this->context;
 
         // 获取8421配置 （如果需要）
         $configs = null;
-        if ($this->gambleSysName == '8421') {
-            $configs = $this->MRuntimeConfig->get8421AllConfigs($this->gambleid);
+        if ($context->gambleSysName == '8421') {
+            $configs = $this->MRuntimeConfig->get8421AllConfigs($context->gambleid);
         }
 
-        foreach ($this->useful_holes    as  $index => &$hole) {
+        foreach ($context->usefulHoles as $index => &$hole) {
             $hole['debug'] = [];
             $hole['indicators'] = [];
 
@@ -106,17 +124,12 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $this->MMeat->addMeatIfDraw($hole, $context);
 
             // 设置双方金额（这会设置 winner_detail）
-            $this->MMoney->setHoleMoneyDetail($hole, $this->dutyConfig);
+            $this->MMoney->setHoleMoneyDetail($hole, $context->dutyConfig);
 
             // 处理吃肉逻辑（在 winner_detail 设置之后）
-            if ($this->gambleSysName == '8421' && $configs) {
+            if ($context->gambleSysName == '8421' && $configs) {
                 $this->MMeat->processEating($hole, $configs, $context);
             }
-            // debug($hole);
-            // debug("+++++++++++++++++++++++++++++");
-            // debug($hole);
-            // debug($context->usefulHoles[$index]);
-            // debug("+++++++++++++++++++++++++++++");
         }
     }
 
@@ -130,23 +143,25 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
     public function getter() {
-        return  [
-            'gameid' => $this->gameid,
-            'gambleid' => $this->gambleid,
-            'groupid' => $this->groupid,
-            'userid' => $this->userid,
-            'gambleSysName' => $this->gambleSysName,
-            'redBlueConfig' => $this->redBlueConfig,
-            'ranking4TieResolveConfig' => $this->ranking4TieResolveConfig,
-            'holes' => $this->holes,
-            'startHoleindex' => $this->startHoleindex,
-            'endHoleindex' => $this->endHoleindex,
-            'scores' => $this->scores,
-            'group_info' => $this->group_info,
-            'attenders' => $this->attenders,
-            'bootStrapOrder' => $this->bootStrapOrder,
-            'dutyConfig' => $this->dutyConfig,
-            'useful_holes' => $this->useful_holes, // 实际的计算结果
+        // 返回 context 里的所有数据
+        return [
+            'gameid' => $this->context->gameid,
+            'gambleid' => $this->context->gambleid,
+            'groupid' => $this->context->groupid,
+            'userid' => $this->context->userid,
+            'gambleSysName' => $this->context->gambleSysName,
+            'redBlueConfig' => $this->context->redBlueConfig,
+            'ranking4TieResolveConfig' => $this->context->ranking4TieResolveConfig,
+            'holes' => $this->context->holes,
+            'startHoleindex' => $this->context->startHoleindex,
+            'endHoleindex' => $this->context->endHoleindex,
+            'scores' => $this->context->scores,
+            'group_info' => $this->context->group_info,
+            'attenders' => $this->context->attenders,
+            'bootStrapOrder' => $this->context->bootStrapOrder,
+            'dutyConfig' => $this->context->dutyConfig,
+            'useful_holes' => $this->context->usefulHoles, // 实际的计算结果,
+            'rangedHoles' => $this->context->rangedHoles, // 实际的计算结果,
         ];
     }
 
@@ -221,5 +236,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getRanking4TieResolveConfig() {
         return $this->ranking4TieResolveConfig;
+    }
+
+    public function getRangedHoles() {
+        return $this->rangedHoles;
     }
 }

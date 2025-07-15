@@ -69,7 +69,7 @@ class Audit extends CI_Controller {
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
         if ($debugMode) {
             $simple = $final_result;
-            unset($simple['holes']);
+            // unset($simple['holes']);
             debug($simple);
         }
 

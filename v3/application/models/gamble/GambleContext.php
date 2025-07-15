@@ -56,6 +56,7 @@ class GambleContext extends CI_Model {
         'redBlueConfig' => 'getRedBlueConfig',
         'dutyConfig' => 'getDutyConfig',
         'ranking4TieResolveConfig' => 'getRanking4TieResolveConfig',
+        'rangedHoles' => 'getRangedHoles',
     ];
 
     /**

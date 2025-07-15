@@ -24,6 +24,10 @@ class GamblePipe extends CI_Model {
             })
 
 
+            ->pipe(function () {
+                $this->GamblePipeRunner->setRangedHoles();
+            })
+
             // 处理让杆
             ->pipe(function () {
                 $this->GamblePipeRunner->StrokingScores();
@@ -31,7 +35,7 @@ class GamblePipe extends CI_Model {
 
 
             ->pipe(function () {
-                $this->GamblePipeRunner->setUsefulHoles();
+                $this->GamblePipeRunner->setFinishedHolesInRange();
             })
 
 

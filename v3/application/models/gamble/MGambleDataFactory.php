@@ -170,7 +170,7 @@ class MGambleDataFactory extends CI_Model {
     return $ret;
   }
 
-  public function m_get_group_info($gameid, $groupid) {
+  public function m_get_group_info($groupid) {
 
     $web_url = config_item('web_url');
     $sql_group_user = "";
@@ -183,7 +183,9 @@ class MGambleDataFactory extends CI_Model {
     return $group_user;
   }
 
-  public function grabUsefulHoles($holes, $scores) {
+
+  // 获取已经完全记分的球洞
+  public function getFinishedHoles($holes, $scores) {
 
     $useful_holes = [];
 
@@ -230,5 +232,16 @@ class MGambleDataFactory extends CI_Model {
     }
 
     return $useful_holes;
+  }
+
+  public function getRangedHoles($holes, $startHoleindex, $endHoleindex) {
+    $ranged = [];
+    foreach ($holes as $hole) {
+      // hindex 是数字，startHoleindex/endHoleindex 也是数字
+      if ($hole['hindex'] >= $startHoleindex && $hole['hindex'] <= $endHoleindex) {
+        $ranged[] = $hole;
+      }
+    }
+    return $ranged;
   }
 }
