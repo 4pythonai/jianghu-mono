@@ -53,7 +53,7 @@ export const simpleUuid = () => {
 
 /**
  * 生成短 UUID(8位)
- * 适用于临时标识符，不保证全局唯一性
+ * 适用于临时标识符, 不保证全局唯一性
  * @returns {string} 返回8位随机字符串
  */
 export const shortUuid = () => {
@@ -62,7 +62,7 @@ export const shortUuid = () => {
 
 /**
  * 生成带时间戳的 UUID
- * 在标准UUID前添加时间戳，便于排序和调试
+ * 在标准UUID前添加时间戳, 便于排序和调试
  * @returns {string} 返回带时间戳前缀的UUID
  */
 export const timestampUuid = () => {

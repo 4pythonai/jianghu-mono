@@ -76,7 +76,7 @@ App({
             const windowInfo = wx.getWindowInfo()
             const appBaseInfo = wx.getAppBaseInfo()
 
-            // 合并系统信息，保持与旧 API 的兼容性
+            // 合并系统信息, 保持与旧 API 的兼容性
             this.globalData.systemInfo = {
                 ...deviceInfo,
                 ...windowInfo,
@@ -96,7 +96,7 @@ App({
             console.log('📱 系统信息获取成功:', this.globalData.systemInfo)
         } catch (error) {
             console.error('❌ 获取系统信息失败:', error)
-            // 降级处理:如果新 API 不可用，尝试使用旧 API
+            // 降级处理:如果新 API 不可用, 尝试使用旧 API
             this.fallbackGetSystemInfo()
         }
     },
@@ -241,7 +241,7 @@ App({
      */
     onShow() {
         console.log('👁️ 应用显示')
-        // 应用切换到前台时，可以检查认证状态
+        // 应用切换到前台时, 可以检查认证状态
         if (this.globalData.isInitialized) {
             this.emit('appShow')
         }

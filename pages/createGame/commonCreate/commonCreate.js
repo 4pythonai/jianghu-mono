@@ -5,7 +5,7 @@ const app = getApp()
 
 
 Page({
-    // 重写玩家添加处理函数，使用我们的统一更新方法
+    // 重写玩家添加处理函数, 使用我们的统一更新方法
     handleAppendPlayersToGroup(players, groupIndex, sourceType) {
         console.log('🎯 handleAppendPlayersToGroup 被调用:', { players, groupIndex, sourceType });
 
@@ -23,7 +23,7 @@ Page({
 
         console.log('🎯 handleAppendPlayersToGroup 处理结果:', result);
 
-        // 如果成功，使用我们的统一更新方法而不是直接 setData
+        // 如果成功, 使用我们的统一更新方法而不是直接 setData
         if (result.success && result.gameGroups) {
             this.updateGameGroups(result.gameGroups, `${sourceType}添加`);
         }
@@ -36,7 +36,7 @@ Page({
         return result;
     },
 
-    // 统一的 setData 方法，自动触发 API 同步
+    // 统一的 setData 方法, 自动触发 API 同步
     updateGameGroups(newGameGroups, description = '组数据更新') {
         console.log('🌺 updateGameGroups 被调用:', newGameGroups);
         console.log('🔍 当前 gameCreated 状态:', this.data.gameCreated);
@@ -50,10 +50,10 @@ Page({
 
         // 确保游戏已创建且数据有效
         if (this.data.gameCreated && newGameGroups && Array.isArray(newGameGroups)) {
-            console.log('✅ 条件满足，开始防抖调用');
-            // 使用较短的防抖时间，因为这是统一的变化监听
+            console.log('✅ 条件满足, 开始防抖调用');
+            // 使用较短的防抖时间, 因为这是统一的变化监听
             this.debounce('gameGroupsObserver', () => {
-                console.log('🚀 防抖结束，开始调用 updateGameGroupAndPlayers API');
+                console.log('🚀 防抖结束, 开始调用 updateGameGroupAndPlayers API');
                 const apiData = {
                     uuid: this.data.uuid,
                     groups: newGameGroups.map((group, index) => ({
@@ -65,7 +65,7 @@ Page({
                 this.callUpdateAPI('updateGameGroupAndPlayers', apiData, `组数据同步-${description}`)
             }, 300) // 较短的防抖时间
         } else {
-            console.log('❌ 条件不满足，跳过 API 调用');
+            console.log('❌ 条件不满足, 跳过 API 调用');
             if (!this.data.gameCreated) {
                 console.log('   原因: gameCreated = false');
             }
@@ -113,7 +113,7 @@ Page({
         } catch (error) {
             console.error(`❌ ${description}更新失败:`, error)
             console.error('❌ 错误详情:', error.message || error);
-            // 不显示错误提示，避免影响用户体验
+            // 不显示错误提示, 避免影响用户体验
             return null
         }
     },
@@ -125,7 +125,7 @@ Page({
         console.log(`⏱️ debounce 被调用, key: ${key}, delay: ${delay}ms`);
         clearTimeout(this.debounceTimers[key])
         this.debounceTimers[key] = setTimeout(() => {
-            console.log(`⏰ debounce 时间到，执行函数 key: ${key}`);
+            console.log(`⏰ debounce 时间到, 执行函数 key: ${key}`);
             fn()
         }, delay)
     },
@@ -208,7 +208,7 @@ Page({
             return;
         }
 
-        // 转换组合数据格式，适配PlayerSelector组件的格式
+        // 转换组合数据格式, 适配PlayerSelector组件的格式
         const players = combination.map(member => ({
             userid: member.userid,
             wx_nickname: member.nickname || '未知玩家',
@@ -216,7 +216,7 @@ Page({
             avatar: member.avatar || '/images/default-avatar.png',
             handicap: member.handicap || 0,
             join_type: 'combineSelect',  // 添加来源字段
-            tee: member.tee || 'blue'  // 添加T台字段，默认蓝T
+            tee: member.tee || 'blue'  // 添加T台字段, 默认蓝T
         }));
 
         // 使用追加模式添加老牌组合到组中
@@ -238,7 +238,7 @@ Page({
             return;
         }
 
-        // 转换好友数据格式，适配PlayerSelector组件的格式
+        // 转换好友数据格式, 适配PlayerSelector组件的格式
         const players = selectedFriends.map(friend => ({
             userid: friend.userid,
             wx_nickname: friend.nickname || friend.wx_nickname || '未知好友',
@@ -246,7 +246,7 @@ Page({
             avatar: friend.avatar || friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
             join_type: 'friendSelect',  // 添加来源字段
-            tee: friend.tee || 'blue'  // 添加T台字段，默认蓝T
+            tee: friend.tee || 'blue'  // 添加T台字段, 默认蓝T
         }));
 
         // 使用追加模式添加好友到组中
@@ -277,7 +277,7 @@ Page({
             handicap: createdUser.handicap || 0,
             mobile: createdUser.mobile || '',
             join_type: 'manualAdd',  // 添加来源字段
-            tee: createdUser.tee || 'blue'  // 添加T台字段，默认蓝T
+            tee: createdUser.tee || 'blue'  // 添加T台字段, 默认蓝T
         };
 
         // 使用通用追加方法添加手工创建的用户
@@ -327,7 +327,7 @@ Page({
 
         this.setData({
             'formData.isPrivate': isPrivate,
-            // 如果取消私密，清空密码
+            // 如果取消私密, 清空密码
             'formData.password': isPrivate ? this.data.formData.password : ''
         });
 
@@ -383,7 +383,7 @@ Page({
             icon: 'success'
         });
 
-        // 实时更新球场ID(只有球场ID，没有半场信息)
+        // 实时更新球场ID(只有球场ID, 没有半场信息)
         if (this.data.gameCreated) {
             const apiData = {
                 uuid: this.data.uuid,
@@ -510,9 +510,9 @@ Page({
             return;
         }
 
-        console.log('🏌️ 跳转到T台选择页面，当前球员:', allPlayers);
+        console.log('🏌️ 跳转到T台选择页面, 当前球员:', allPlayers);
 
-        // 跳转到T台选择页面，传递UUID用于回传数据
+        // 跳转到T台选择页面, 传递UUID用于回传数据
         wx.navigateTo({
             url: `/pages/tland-select/tland-select?uuid=${this.data.uuid}`
         });
@@ -523,7 +523,7 @@ Page({
      * 从 tland-select 页面返回时调用
      */
     onTeeSelectionComplete(updatedPlayers) {
-        console.log('🏌️ T台选择完成，接收到更新的玩家数据:', updatedPlayers);
+        console.log('🏌️ T台选择完成, 接收到更新的玩家数据:', updatedPlayers);
 
         // 更新formData中的玩家T台信息
         const updatedGameGroups = [...this.data.formData.gameGroups];
@@ -544,13 +544,13 @@ Page({
             'formData.gameGroups': updatedGameGroups
         });
 
-        console.log('🏌️ T台信息更新完成，当前gameGroups:', updatedGameGroups);
+        console.log('🏌️ T台信息更新完成, 当前gameGroups:', updatedGameGroups);
 
         // 显示统计信息
         const teeStats = this.calculateTeeStatistics(updatedPlayers);
         const statsText = Object.entries(teeStats).map(([tee, count]) =>
             `${this.getTeeDisplayName(tee)}: ${count}人`
-        ).join('，');
+        ).join(', ');
 
         wx.showToast({
             title: `T台分配完成 - ${statsText}`,
@@ -586,7 +586,7 @@ Page({
     },
 
     /**
-     * 点击“开始计分”按钮，跳转到 gameDetail 记分界面
+     * 点击“开始计分”按钮, 跳转到 gameDetail 记分界面
      */
     onStartScoring() {
         if (!this.data.gameId) {
@@ -609,7 +609,7 @@ Page({
 
         // 立即创建空白游戏
         try {
-            console.log('🎮 开始创建空白游戏，UUID:', gameUuid)
+            console.log('🎮 开始创建空白游戏, UUID:', gameUuid)
             const result = await app.api.game.createBlankGame({
                 uuid: gameUuid
             })
@@ -635,14 +635,14 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
-        console.log('commonCreate页面显示，当前数据:', this.data);
+        console.log('commonCreate页面显示, 当前数据:', this.data);
         // 检查本地缓存中是否有选择的半场数据(备用方案)
         try {
             const cachedCourtData = wx.getStorageSync('selectedCourtData')
             if (cachedCourtData) {
                 console.log('从缓存中读取到半场选择数据:', cachedCourtData)
                 this.setCourtSelection(cachedCourtData)
-                // 清除缓存，避免重复使用
+                // 清除缓存, 避免重复使用
                 wx.removeStorageSync('selectedCourtData')
             }
         } catch (error) {

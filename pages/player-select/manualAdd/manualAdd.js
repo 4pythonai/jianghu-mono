@@ -12,7 +12,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('manualAdd页面加载，参数:', options);
+        console.log('manualAdd页面加载, 参数:', options);
         console.log('📊 初始页面数据:', this.data);
 
         if (options.groupIndex !== undefined) {
@@ -66,7 +66,7 @@ Page({
         const { remarkName, mobile } = this.data
         console.log('🔍 表单验证 - remarkName:', remarkName, ', mobile:', mobile)
 
-        // 昵称长度至少2位，手机号11位数字
+        // 昵称长度至少2位, 手机号11位数字
         const isNicknameValid = remarkName.length >= 2
         console.log('✅ 昵称验证结果:', isNicknameValid, '(长度:', remarkName.length, ')')
 
@@ -127,13 +127,13 @@ Page({
 
     /**
      * 处理用户创建成功后的回调
-     * 将创建的用户添加到组中，类似好友选择的处理方式
+     * 将创建的用户添加到组中, 类似好友选择的处理方式
      */
     handleUserCreated(user) {
         console.log('🎯 handleUserCreated 被调用, 接收用户数据:', user);
         console.log('📍 当前页面参数:', { groupIndex: this.data.groupIndex, slotIndex: this.data.slotIndex });
 
-        // 转换用户数据格式，适配PlayerSelector组件的格式
+        // 转换用户数据格式, 适配PlayerSelector组件的格式
         const createdUser = {
             userid: user.id || user.userid, // API返回的是 user.id
             wx_nickname: user.wx_nickname || user.nickname || this.data.remarkName,
@@ -141,7 +141,7 @@ Page({
             avatar: user.avatar || '/images/default-avatar.png',
             handicap: user.handicap || 0,
             mobile: user.mobile || this.data.mobile || '',
-            tee: user.tee || 'blue'  // 添加T台字段，默认蓝T
+            tee: user.tee || 'blue'  // 添加T台字段, 默认蓝T
         };
 
         console.log('🔄 转换后的用户数据:', createdUser);

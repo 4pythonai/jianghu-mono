@@ -7,7 +7,7 @@
  * 检查用户是否已存在于任何组中
  * @param {string|number} userid - 用户ID
  * @param {Array} gameGroups - 游戏组数据
- * @returns {Object|null} 返回用户所在的组信息，如果不存在返回null
+ * @returns {Object|null} 返回用户所在的组信息, 如果不存在返回null
  */
 export const findUserInGroups = (userid, gameGroups) => {
     const userIdStr = userid.toString();
@@ -75,7 +75,7 @@ export const filterDuplicateUsers = (players, gameGroups, targetGroupIndex) => {
                 type: duplicateType
             });
 
-            console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${existingGroupIndex}组中，跳过`);
+            console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${existingGroupIndex}组中, 跳过`);
             return false;
         }
         return true;
@@ -94,7 +94,7 @@ export const filterDuplicateUsers = (players, gameGroups, targetGroupIndex) => {
  * @param {number} groupIndex - 目标组索引
  * @param {string} sourceType - 来源类型(如:'好友'、'手工添加用户'等)
  * @param {Array} gameGroups - 当前游戏组数据
- * @param {number} maxPlayers - 每组最大玩家数，默认4
+ * @param {number} maxPlayers - 每组最大玩家数, 默认4
  * @returns {Object} 返回更新结果和统计信息
  */
 export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups, maxPlayers = 4) => {
@@ -108,25 +108,25 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
         updatedGameGroups[groupIndex] = { players: [] };
     }
 
-    // 过滤掉null值，获取当前已有的真实玩家
+    // 过滤掉null值, 获取当前已有的真实玩家
     const currentPlayers = updatedGameGroups[groupIndex].players.filter(player => player !== null);
     console.log(`📊 第${groupIndex + 1}组当前已有 ${currentPlayers.length} 名玩家:`, currentPlayers);
 
     // 过滤重复用户
     const { newPlayers, duplicateCount, duplicateInfo } = filterDuplicateUsers(players, updatedGameGroups, groupIndex);
 
-    console.log(`🔄 过滤重复用户后，${newPlayers.length} 名用户待添加，${duplicateCount} 名重复用户被跳过`);
+    console.log(`🔄 过滤重复用户后, ${newPlayers.length} 名用户待添加, ${duplicateCount} 名重复用户被跳过`);
 
     // 如果没有新用户需要添加
     if (newPlayers.length === 0) {
         const message = duplicateCount > 0
-            ? `所有${sourceType}已在其他组中，无法重复添加`
+            ? `所有${sourceType}已在其他组中, 无法重复添加`
             : `没有${sourceType}需要添加`;
 
         return {
             success: false,
             message,
-            gameGroups: gameGroups, // 返回原数据，无变化
+            gameGroups: gameGroups, // 返回原数据, 无变化
             statistics: {
                 added: 0,
                 duplicateSkipped: duplicateCount,
@@ -144,7 +144,7 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
         return {
             success: false,
             message: `第${groupIndex + 1}组已满(最多${maxPlayers}人)`,
-            gameGroups: gameGroups, // 返回原数据，无变化
+            gameGroups: gameGroups, // 返回原数据, 无变化
             statistics: {
                 added: 0,
                 duplicateSkipped: duplicateCount,
@@ -154,7 +154,7 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
         };
     }
 
-    // 取要添加的玩家(如果超过可用位置，只取前面的)
+    // 取要添加的玩家(如果超过可用位置, 只取前面的)
     const playersToAdd = newPlayers.slice(0, availableSlots);
     const capacitySkippedCount = newPlayers.length - playersToAdd.length;
 
@@ -177,11 +177,11 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
         if (capacitySkippedCount > 0) {
             skipReasons.push(`${capacitySkippedCount}人因组已满`);
         }
-        message += `(${skipReasons.join('，')}被跳过)`;
+        message += `(${skipReasons.join(', ')}被跳过)`;
     }
 
-    console.log(`🎉 第${groupIndex + 1}组更新完成，当前${updatedPlayers.length}/${maxPlayers}人`);
-    console.log(`📈 统计:添加${playersToAdd.length}人，重复跨组跳过${duplicateCount}人，容量跳过${capacitySkippedCount}人`);
+    console.log(`🎉 第${groupIndex + 1}组更新完成, 当前${updatedPlayers.length}/${maxPlayers}人`);
+    console.log(`📈 统计:添加${playersToAdd.length}人, 重复跨组跳过${duplicateCount}人, 容量跳过${capacitySkippedCount}人`);
 
     return {
         success: true,
@@ -199,7 +199,7 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
 
 /**
  * 处理玩家添加到组的完整流程(通用版本)
- * 包含数据处理和UI操作指令，适用于任何框架环境
+ * 包含数据处理和UI操作指令, 适用于任何框架环境
  * @param {Array} players - 待添加的玩家列表
  * @param {number} groupIndex - 目标组索引
  * @param {string} sourceType - 来源类型
@@ -210,7 +210,7 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
 export const handleAppendPlayersToGroup = (players, groupIndex, sourceType, gameGroups, options = {}) => {
     const {
         maxPlayers = 4,
-        dataPath = 'formData.gameGroups', // 数据路径，用于setData
+        dataPath = 'formData.gameGroups', // 数据路径, 用于setData
         toastDuration = 2500
     } = options;
 

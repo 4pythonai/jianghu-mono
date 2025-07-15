@@ -44,7 +44,7 @@ class HttpClient {
         this.baseURL = baseURL
         this.timeout = config.timeout
         this.header = config.header
-        this.app = null // App实例，用于事件通信
+        this.app = null // App实例, 用于事件通信
         this.authManager = null // 认证管理器实例
         this.isRefreshing = false // 是否正在刷新token
         this.failedQueue = [] // 失败请求队列
@@ -54,15 +54,15 @@ class HttpClient {
         this.loadingTimer = null // loading延迟显示定时器
         this.loadingHideTimer = null // loading延迟隐藏定时器
         this.loadingConfig = {
-            delay: 300, // loading显示延迟时间(ms)，避免快速请求的闪烁
-            minDuration: 200, // loading最小显示时间(ms)，避免闪烁(从500ms减少到200ms)
+            delay: 300, // loading显示延迟时间(ms), 避免快速请求的闪烁
+            minDuration: 200, // loading最小显示时间(ms), 避免闪烁(从500ms减少到200ms)
             defaultTitle: 'APILoading...',
             defaultMask: true
         }
     }
 
     /**
-     * 设置App实例，用于事件通信
+     * 设置App实例, 用于事件通信
      */
     setApp(app) {
         this.app = app
@@ -91,7 +91,7 @@ class HttpClient {
         this.loadingCount++
 
 
-        // 如果是第一个请求，显示loading
+        // 如果是第一个请求, 显示loading
         if (this.loadingCount === 1) {
             // 清除之前的定时器
             if (this.loadingTimer) {
@@ -99,7 +99,7 @@ class HttpClient {
                 this.loadingTimer = null
             }
 
-            // 延迟显示loading，避免快速请求的闪烁
+            // 延迟显示loading, 避免快速请求的闪烁
             this.loadingTimer = setTimeout(() => {
                 wx.showLoading(config)
                 this.loadingStartTime = Date.now()
@@ -120,24 +120,24 @@ class HttpClient {
         //     timestamp: new Date().toISOString()
         // })
 
-        // 如果没有pending的请求了，隐藏loading
+        // 如果没有pending的请求了, 隐藏loading
         if (this.loadingCount === 0) {
             // 检查是否有延迟显示的定时器
             if (this.loadingTimer) {
                 clearTimeout(this.loadingTimer)
                 this.loadingTimer = null
                 // console.log('⏹️ 取消Loading显示(请求太快)')
-                // 注意:这里不return，因为loading可能已经显示了
+                // 注意:这里不return, 因为loading可能已经显示了
             }
 
             // 检查loading是否已经显示
             if (this.loadingStartTime) {
-                // loading已经显示，需要隐藏
+                // loading已经显示, 需要隐藏
                 const showDuration = Date.now() - this.loadingStartTime
                 const remainingTime = Math.max(0, this.loadingConfig.minDuration - showDuration)
 
                 if (remainingTime > 0) {
-                    // console.log(`⏱️ Loading最小显示时间未到，延迟${remainingTime}ms隐藏`)
+                    // console.log(`⏱️ Loading最小显示时间未到, 延迟${remainingTime}ms隐藏`)
 
                     // 清除之前的隐藏定时器(如果存在)
                     if (this.loadingHideTimer) {
@@ -152,13 +152,13 @@ class HttpClient {
                             // console.log('📱 系统Loading已隐藏(延迟)')
                             this.loadingStartTime = null
                         } else {
-                            // console.log('⚠️ 延迟隐藏时发现有新请求，保持loading显示')
+                            // console.log('⚠️ 延迟隐藏时发现有新请求, 保持loading显示')
                         }
                         // 清理定时器引用
                         this.loadingHideTimer = null
                     }, remainingTime)
 
-                    // 保存定时器引用，以便在forceHideLoading时清理
+                    // 保存定时器引用, 以便在forceHideLoading时清理
                     this.loadingHideTimer = hideTimer
                 } else {
                     // 立即隐藏loading
@@ -167,8 +167,8 @@ class HttpClient {
                     this.loadingStartTime = null
                 }
             } else {
-                // loading从未显示过，无需隐藏
-                // console.log('📱 Loading从未显示，无需隐藏')
+                // loading从未显示过, 无需隐藏
+                // console.log('📱 Loading从未显示, 无需隐藏')
             }
         }
     }
@@ -266,7 +266,7 @@ class HttpClient {
             data,
             header,
             timeout: options.timeout || this.timeout,
-            // 保存原始请求信息，用于重试
+            // 保存原始请求信息, 用于重试
             _originalUrl: url,
             _originalData: data,
             _originalOptions: options
@@ -279,14 +279,14 @@ class HttpClient {
     async handleResponse(response, requestConfig) {
         // 检查HTTP状态码
         if (response.statusCode === 401) {
-            console.log('🔑 收到401响应，尝试静默重新登录')
+            console.log('🔑 收到401响应, 尝试静默重新登录')
             console.log('🔍 401错误时loading状态:', this.getLoadingStatus())
             return await this.handleAuthError(requestConfig)
         }
 
         // 检查业务状态码
         if (response.data?.code === ErrorCode.TOKEN_INVALID) {
-            console.log('🔑 业务层token失效，尝试静默重新登录')
+            console.log('🔑 业务层token失效, 尝试静默重新登录')
             console.log('🔍 token失效时loading状态:', this.getLoadingStatus())
             return await this.handleAuthError(requestConfig)
         }
@@ -298,12 +298,12 @@ class HttpClient {
     }
 
     /**
-     * 处理认证错误，静默重新登录并重试请求
+     * 处理认证错误, 静默重新登录并重试请求
      */
     async handleAuthError(requestConfig) {
-        // 如果正在刷新token，将请求加入队列
+        // 如果正在刷新token, 将请求加入队列
         if (this.isRefreshing) {
-            console.log('⏳ 正在刷新token，请求加入等待队列')
+            console.log('⏳ 正在刷新token, 请求加入等待队列')
             return new Promise((resolve, reject) => {
                 this.failedQueue.push({ resolve, reject, requestConfig })
             })
@@ -320,9 +320,9 @@ class HttpClient {
             }
 
             await this.authManager.silentLogin()
-            console.log('✅ 静默重新登录成功，开始重试请求')
+            console.log('✅ 静默重新登录成功, 开始重试请求')
 
-            // 重试原始请求 - 注意:这里不需要额外的loading管理，因为原始请求的finally会处理
+            // 重试原始请求 - 注意:这里不需要额外的loading管理, 因为原始请求的finally会处理
             const retryResult = await this.retryOriginalRequest(requestConfig)
 
             // 处理队列中的请求
@@ -361,9 +361,9 @@ class HttpClient {
         // 发送请求
         const response = await this.wxRequest(newRequestConfig)
 
-        // 处理响应(不再处理401，避免无限循环)
+        // 处理响应(不再处理401, 避免无限循环)
         if (response.statusCode === 401) {
-            throw new Error('重试后仍然401，认证失败')
+            throw new Error('重试后仍然401, 认证失败')
         }
 
         this.logResponse(response, newRequestConfig)
@@ -397,7 +397,7 @@ class HttpClient {
 
         // 检查是否是认证相关错误
         if (this.isAuthError(error)) {
-            console.log('🔑 认证错误，尝试静默重新登录')
+            console.log('🔑 认证错误, 尝试静默重新登录')
             return this.handleAuthError(requestConfig)
         }
 
@@ -429,7 +429,7 @@ class HttpClient {
         if (this.app) {
             this.app.emit('tokenExpired')
         } else {
-            console.warn('⚠️ App实例未设置，无法通知token过期')
+            console.warn('⚠️ App实例未设置, 无法通知token过期')
         }
     }
 

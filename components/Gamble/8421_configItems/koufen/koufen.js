@@ -11,9 +11,9 @@ Component({
     selectedStart: 0,
 
     // 可编辑的数字变量
-    paScore: 4, // 帕的分数，默认4
-    doubleParScore: 0, // 双帕的分数，默认0
-    maxSubScore: 2, // 封顶分数，默认2
+    paScore: 4, // 帕的分数, 默认4
+    doubleParScore: 0, // 双帕的分数, 默认0
+    maxSubScore: 2, // 封顶分数, 默认2
 
     // 数字选择器范围
     paScoreRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
@@ -89,7 +89,7 @@ Component({
         }
       }
 
-      // 解析封顶配置 - 新格式:数字，10000000表示不封顶
+      // 解析封顶配置 - 新格式:数字, 10000000表示不封顶
       if (max8421SubValue === 10000000) {
         this.setData({ selectedMax: 0 });
       } else if (typeof max8421SubValue === 'number' && max8421SubValue < 10000000) {
@@ -167,7 +167,7 @@ Component({
           break;
       }
 
-      // 封顶配置改为数字格式，10000000表示不封顶
+      // 封顶配置改为数字格式, 10000000表示不封顶
       const max8421SubValue = selectedMax === 0 ? 10000000 : maxSubScore;
 
       // 同伴惩罚配置改为枚举格式

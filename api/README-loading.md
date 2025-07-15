@@ -2,7 +2,7 @@
 
 ## 📋 功能概述
 
-HttpClient现在支持统一的loading管理，为所有API请求提供智能的加载提示功能。
+HttpClient现在支持统一的loading管理, 为所有API请求提供智能的加载提示功能。
 
 ### ✨ 主要特性
 
@@ -14,9 +14,9 @@ HttpClient现在支持统一的loading管理，为所有API请求提供智能的
 
 ### 🚀 防闪烁机制
 
-- **延迟显示**:请求开始后300ms才显示loading，避免快速请求的闪烁
-- **最小显示时间**:loading至少显示500ms，避免一闪而过
-- **并发管理**:多个请求时只显示一个loading，最后一个请求完成才隐藏
+- **延迟显示**:请求开始后300ms才显示loading, 避免快速请求的闪烁
+- **最小显示时间**:loading至少显示500ms, 避免一闪而过
+- **并发管理**:多个请求时只显示一个loading, 最后一个请求完成才隐藏
 
 ## 📖 使用方法
 
@@ -49,7 +49,7 @@ const uploadResult = await app.http.uploadFile('/upload', filePath, {
 ### 3. 禁用loading
 
 ```javascript
-// 静默请求，不显示loading
+// 静默请求, 不显示loading
 const userInfo = await app.api.user.getUserInfo({}, {
     showLoading: false
 })
@@ -66,7 +66,7 @@ const status = await app.api.game.getGameStatus(gameId, {
 // 设置loading遮罩
 const result = await app.api.course.getFavorites({}, {
     loadingTitle: '获取收藏中...',
-    loadingMask: false  // 不显示遮罩，用户可以继续操作
+    loadingMask: false  // 不显示遮罩, 用户可以继续操作
 })
 ```
 
@@ -168,7 +168,7 @@ await app.http.uploadFile('/game/data', filePath, {
 
 ## 🧪 测试loading功能
 
-项目中提供了测试工具，可以验证loading功能:
+项目中提供了测试工具, 可以验证loading功能:
 
 ```javascript
 import { runAllLoadingTests, testBasicLoading, getLoadingStatus } from '../utils/test-loading'
@@ -190,7 +190,7 @@ getLoadingStatus()
 ✅ **无需修改** - 所有现有的API调用都会自动获得loading功能:
 
 ```javascript
-// 这些代码无需任何修改，会自动显示loading
+// 这些代码无需任何修改, 会自动显示loading
 await app.api.user.createAndSelect(userData)
 await app.api.course.searchCourse(keyword)
 await app.api.game.getGameDetail(gameId)
@@ -219,10 +219,10 @@ const result = await app.api.user.getUserInfo()
 
 ### 并发请求优化
 
-当同时发起多个请求时，loading会智能管理:
+当同时发起多个请求时, loading会智能管理:
 
 ```javascript
-// 同时发起3个请求，只显示一个loading
+// 同时发起3个请求, 只显示一个loading
 const [userInfo, favorites, gameList] = await Promise.all([
     app.api.user.getUserInfo(),
     app.api.course.getFavorites(), 
@@ -234,7 +234,7 @@ const [userInfo, favorites, gameList] = await Promise.all([
 ### 防闪烁优化
 
 - 快速请求(<300ms)不会显示loading
-- 显示的loading至少显示500ms，避免闪烁
+- 显示的loading至少显示500ms, 避免闪烁
 - 可通过`setLoadingConfig`调整这些参数
 
 ## ❓ 常见问题
@@ -243,10 +243,10 @@ const [userInfo, favorites, gameList] = await Promise.all([
 A: 在页面`onHide`或`onUnload`时调用`forceHideLoading()`
 
 ### Q: 如何在组件中使用？
-A: 组件中同样可以使用`getApp().api`调用，loading会正常工作
+A: 组件中同样可以使用`getApp().api`调用, loading会正常工作
 
 ### Q: 如何自定义loading样式？
-A: 目前使用微信小程序的系统loading，如需自定义可以禁用loading后使用自己的组件
+A: 目前使用微信小程序的系统loading, 如需自定义可以禁用loading后使用自己的组件
 
 ### Q: loading计数异常怎么办？
-A: 可以调用`forceHideLoading()`重置，或查看`getLoadingStatus()`诊断问题 
+A: 可以调用`forceHideLoading()`重置, 或查看`getLoadingStatus()`诊断问题 

@@ -11,7 +11,7 @@
 	box-shadow: none;
 }
 
-/* 移除loading相关样式，因为API统一管理 */
+/* 移除loading相关样式, 因为API统一管理 */
 
 /* 组合列表 */
 .combinations-list {

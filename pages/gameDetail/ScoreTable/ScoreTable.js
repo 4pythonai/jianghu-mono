@@ -22,7 +22,7 @@ Component({
                     // 使用 store 中的计算属性获取总分
                     playerTotals: 'playerTotalScores',
                 },
-                actions: [], // 此组件不需要调用 action，只负责展示
+                actions: [], // 此组件不需要调用 action, 只负责展示
             });
 
             // 数据加载后滚动到最左侧
@@ -41,7 +41,7 @@ Component({
 
             // 详细检查变化内容
             if (newScores && newScores.length > 0) {
-                // 检查是否有非零分数，表示真正的数据更新
+                // 检查是否有非零分数, 表示真正的数据更新
                 let hasRealData = false;
                 const changedCells = [];
 
@@ -56,7 +56,7 @@ Component({
                 }
 
                 if (hasRealData) {
-                    console.log('📊 [ScoreTable] 检测到分数数据更新，界面应该同步');
+                    console.log('📊 [ScoreTable] 检测到分数数据更新, 界面应该同步');
                     console.log('📊 [ScoreTable] 变化的格子:', changedCells.slice(0, 5)); // 只显示前5个
                 } else {
                     console.log('📊 [ScoreTable] 监听到变化但都是初始数据(0分)');
@@ -64,7 +64,7 @@ Component({
             }
         },
 
-        // 添加对其他字段的监听，测试MobX绑定是否正常
+        // 添加对其他字段的监听, 测试MobX绑定是否正常
         'players': (newPlayers) => {
             console.log('📊 [ScoreTable] players变化检测:', newPlayers?.length);
         },
@@ -122,7 +122,7 @@ Component({
             });
         },
 
-        // 作为一个中继，把事件继续往父组件传递
+        // 作为一个中继, 把事件继续往父组件传递
         onCellClick: function (e) {
             console.log('📊 [ScoreTable] 转发cellclick事件:', e.detail);
             this.triggerEvent('cellclick', e.detail);

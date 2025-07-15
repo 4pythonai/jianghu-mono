@@ -5,7 +5,7 @@ Page({
      * 页面的初始数据
      */
     data: {
-        uuid: '',           // 游戏UUID，用于标识数据来源
+        uuid: '',           // 游戏UUID, 用于标识数据来源
         players: [],        // 玩家列表
         originalPlayers: [] // 原始玩家数据(用于取消时恢复)
     },
@@ -16,7 +16,7 @@ Page({
     onTeeSelect(e) {
         const { playerIndex, tee } = e.currentTarget.dataset;
 
-        // 只更新特定玩家的T台，避免整个数组重新渲染
+        // 只更新特定玩家的T台, 避免整个数组重新渲染
         if (this.data.players[playerIndex]) {
             this.setData({
                 [`players[${playerIndex}].tee`]: tee
@@ -167,7 +167,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-        console.log('🏌️ T台选择页面加载，参数:', options);
+        console.log('🏌️ T台选择页面加载, 参数:', options);
 
         if (options.uuid) {
             this.setData({
@@ -189,7 +189,7 @@ Page({
             console.error('❌ 无法加载玩家数据');
             wx.showModal({
                 title: '数据加载失败',
-                content: '无法获取玩家信息，请返回重试',
+                content: '无法获取玩家信息, 请返回重试',
                 showCancel: false,
                 success: () => {
                     wx.navigateBack();

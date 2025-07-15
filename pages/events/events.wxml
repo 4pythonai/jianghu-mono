@@ -1,6 +1,6 @@
 <view class="container">
 	<view class="page-title">球队</view>
-	<view class="page-desc">这里是球队功能，管理高尔夫球队</view>
+	<view class="page-desc">这里是球队功能, 管理高尔夫球队</view>
 	<view class="location-section">
 		<button class="location-btn" bindtap="getLocation" loading="{{ locationLoading }}" disabled="{{ locationLoading }}">{{locationLoading ? '获取位置中...' : '获取当前位置'}}</button>
 		<view class="location-info" wx:if="{{ location }}">

@@ -1,6 +1,6 @@
 # CourtSelector 半场选择组件
 
-一个用于微信小程序的半场选择组件，支持前九洞和后九洞的独立选择，并显示选中半场的洞信息。
+一个用于微信小程序的半场选择组件, 支持前九洞和后九洞的独立选择, 并显示选中半场的洞信息。
 
 ## 功能特性
 
@@ -45,7 +45,7 @@
 
 | 属性名 | 类型 | 默认值 | 必填 | 说明 |
 |--------|------|--------|------|------|
-| courseid | String | '' | 是 | 球场ID，用于调用API获取详细信息 |
+| courseid | String | '' | 是 | 球场ID, 用于调用API获取详细信息 |
 | courseInfo | Object | null | 否 | 球场基本信息对象 |
 | showCourseInfo | Boolean | true | 否 | 是否显示球场信息卡片 |
 | title | String | '选择半场' | 否 | 组件标题 |
@@ -127,7 +127,7 @@ onError(e) {
 组件依赖以下 API 接口:
 
 ### getCourseDetail
-获取球场详细信息，包括半场和洞信息
+获取球场详细信息, 包括半场和洞信息
 
 ```javascript
 // 调用方式
@@ -225,7 +225,7 @@ const selection = this.selectComponent('#courtSelector').getSelection()
 
 ## 样式定制
 
-组件使用标准的 WXSS 样式，支持以下主要样式类:
+组件使用标准的 WXSS 样式, 支持以下主要样式类:
 
 - `.court-selector` - 组件根容器
 - `.court-columns` - 两列布局容器
@@ -239,16 +239,16 @@ const selection = this.selectComponent('#courtSelector').getSelection()
 1. **必须提供 courseid**:组件需要 courseid 参数来调用 API 获取数据
 2. **API 格式要求**:确保 `getCourseDetail` API 返回正确的数据格式
 3. **错误处理**:建议监听 error 事件来处理各种错误情况
-4. **性能考虑**:组件会在初始化时自动调用 API，避免重复调用
+4. **性能考虑**:组件会在初始化时自动调用 API, 避免重复调用
 
 ## 更新日志
 
 ### v2.0.0
-- 重构组件架构，支持 API 集成
+- 重构组件架构, 支持 API 集成
 - 新增前九洞和后九洞独立选择
 - 新增洞信息显示功能
 - 优化 UI 设计和用户体验
 - 完善错误处理和加载状态
 
 ### v1.0.0
-- 初始版本，基础半场选择功能 
+- 初始版本, 基础半场选择功能 

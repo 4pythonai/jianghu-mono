@@ -51,7 +51,7 @@ Page({
                     app.globalData.currentGameGroups = null;
                 }
             } else {
-                throw new Error('未找到分组数据，请重新进入');
+                throw new Error('未找到分组数据, 请重新进入');
             }
 
         } catch (error) {
@@ -60,7 +60,7 @@ Page({
                 error: error.message || '加载失败'
             });
             wx.showToast({
-                title: error.message || '加载失败，请重试',
+                title: error.message || '加载失败, 请重试',
                 icon: 'none',
                 duration: 2000
             });
@@ -74,7 +74,7 @@ Page({
         }
     },
 
-    // 点击分组，进入计分页面
+    // 点击分组, 进入计分页面
     onGroupTap(e) {
         const { groupId, groupName } = e.currentTarget.dataset;
         const { gameId } = this.data;

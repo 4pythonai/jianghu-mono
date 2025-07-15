@@ -233,7 +233,7 @@ Component({
             wx.navigateTo({
                 url: `/pages/gambleRuntimeConfig/gambleRuntimeConfig?data=${encodedData}`,
                 success: () => {
-                    console.log('🎮 成功跳转到运行时配置页面，规则类型:', title);
+                    console.log('🎮 成功跳转到运行时配置页面, 规则类型:', title);
                 },
                 fail: (err) => {
                     console.error('🎮 跳转失败:', err);
@@ -273,7 +273,7 @@ Component({
                 wx.navigateTo({ url: map[title] });
             } else {
                 wx.showToast({
-                    title: '暂未开放，敬请期待',
+                    title: '暂未开放, 敬请期待',
                     icon: 'none'
                 });
             }

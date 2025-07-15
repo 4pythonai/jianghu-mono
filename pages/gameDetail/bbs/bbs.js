@@ -18,7 +18,7 @@ Component({
         loadData() {
             // 加载互动数据
             this.setData({ loading: true });
-            console.log('加载互动数据，比赛ID:', this.properties.gameId);
+            console.log('加载互动数据, 比赛ID:', this.properties.gameId);
             // TODO: 实际数据加载逻辑
             setTimeout(() => {
                 this.setData({ loading: false });

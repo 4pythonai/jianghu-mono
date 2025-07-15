@@ -66,7 +66,7 @@
         <input 
           class="custom-input" 
           type="number"
-          placeholder="输入4-5位数字，如8421"
+          placeholder="输入4-5位数字, 如8421"
           value="{{customInput}}"
           bindinput="onCustomInput"
           maxlength="5"

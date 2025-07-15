@@ -22,7 +22,7 @@ Component({
     selectedDiffScore: 1
   },
   attached() {
-    // 组件初始化时，根据store中的值设置选中状态
+    // 组件初始化时, 根据store中的值设置选中状态
     this.syncSelectedFromStore();
     // 更新显示选项
     this.updateDisplayOptions();

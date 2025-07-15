@@ -15,7 +15,7 @@ Component({
             twoPlayers: [],
             threePlayers: [],
             fourPlayers: []
-        }, // 我的规则列表，按人数分组
+        }, // 我的规则列表, 按人数分组
         total: {
             twoPlayers: 0,
             threePlayers: 0,
@@ -77,7 +77,7 @@ Component({
                 }
             }).catch(err => {
                 console.error('📋 [MyRules] 获取用户规则失败:', err);
-                this.handleLoadError('网络错误，请重试');
+                this.handleLoadError('网络错误, 请重试');
             });
         },
 
@@ -116,7 +116,7 @@ Component({
 
             if (!id || !group) {
                 wx.showToast({
-                    title: '操作失败，参数错误',
+                    title: '操作失败, 参数错误',
                     icon: 'none'
                 });
                 return;
@@ -127,7 +127,7 @@ Component({
 
             if (!rule) {
                 wx.showToast({
-                    title: '操作失败，规则不存在',
+                    title: '操作失败, 规则不存在',
                     icon: 'none'
                 });
                 return;
@@ -174,7 +174,7 @@ Component({
             }).catch(err => {
                 console.error('📋 [MyRules] 删除规则API失败:', err);
                 wx.showToast({
-                    title: '删除失败，请重试',
+                    title: '删除失败, 请重试',
                     icon: 'none'
                 });
             });
@@ -208,7 +208,7 @@ Component({
                 return;
             }
 
-            // 准备传递给运行时配置页面的数据(简化版，减少URL长度)
+            // 准备传递给运行时配置页面的数据(简化版, 减少URL长度)
             const runtimeConfigData = {
                 ruleType: ruleType,
                 gameId: gameStore.gameid || null,
@@ -236,7 +236,7 @@ Component({
             wx.navigateTo({
                 url: `/pages/gambleRuntimeConfig/gambleRuntimeConfig?data=${encodedData}`,
                 success: () => {
-                    console.log('🎮 成功跳转到运行时配置页面，用户规则:', item.gambleUserName || item.user_rulename);
+                    console.log('🎮 成功跳转到运行时配置页面, 用户规则:', item.gambleUserName || item.user_rulename);
                 },
                 fail: (err) => {
                     console.error('🎮 跳转失败:', err);
@@ -279,7 +279,7 @@ Component({
                 return ruleTypeMap[group][gamblesysname];
             }
 
-            // 如果精确匹配失败，根据规则名称进行模糊匹配
+            // 如果精确匹配失败, 根据规则名称进行模糊匹配
             const ruleName = (userRule.gambleUserName || userRule.user_rulename || '').toLowerCase();
 
             if (ruleName.includes('8421')) {

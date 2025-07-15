@@ -11,7 +11,7 @@ class AuthManager {
         this.isRefreshing = false
         this.retryCount = 0
         this.maxRetries = 3
-        this.silentLoginPromise = null // 静默登录的Promise，避免重复调用
+        this.silentLoginPromise = null // 静默登录的Promise, 避免重复调用
     }
 
     /**
@@ -56,12 +56,12 @@ class AuthManager {
 
             // 检查本地是否有token
             if (!storage.hasToken()) {
-                console.log('❌ 本地无token，开始微信登录')
+                console.log('❌ 本地无token, 开始微信登录')
                 return await this.startWxLogin()
             }
 
             // 验证token有效性
-            console.log('✅ 本地有token，开始验证')
+            console.log('✅ 本地有token, 开始验证')
             return await this.verifyToken()
 
         } catch (error) {
@@ -110,9 +110,9 @@ class AuthManager {
      * 静默登录(用于HTTP客户端的自动重试)
      */
     async silentLogin() {
-        // 如果已经有静默登录在进行中，返回同一个Promise
+        // 如果已经有静默登录在进行中, 返回同一个Promise
         if (this.silentLoginPromise) {
-            console.log('⏳ 静默登录已在进行中，等待完成')
+            console.log('⏳ 静默登录已在进行中, 等待完成')
             return await this.silentLoginPromise
         }
 
@@ -169,7 +169,7 @@ class AuthManager {
      */
     async startWxLogin() {
         try {
-            console.log('🚀 开始微信登录流程，重试次数:', this.retryCount)
+            console.log('🚀 开始微信登录流程, 重试次数:', this.retryCount)
 
             // 重置重试计数
             this.retryCount = 0
@@ -187,7 +187,7 @@ class AuthManager {
             console.log('📨 后端登录接口响应:', response)
 
             if (response?.token) {
-                console.log('✅ 微信登录成功，token:', response.token?.substring(0, 10) + '...')
+                console.log('✅ 微信登录成功, token:', response.token?.substring(0, 10) + '...')
 
                 // 存储token和用户信息
                 await this.storeAuthData(response)
@@ -198,7 +198,7 @@ class AuthManager {
                 return { success: true, user: response }
             }
 
-            console.error('❌ 登录响应无效，response:', response)
+            console.error('❌ 登录响应无效, response:', response)
             throw new Error('登录响应无效')
 
         } catch (error) {
@@ -214,8 +214,8 @@ class AuthManager {
                 return await this.startWxLogin()
             }
 
-            // 重试次数耗尽，通知app登录失败
-            console.error('❌ 登录重试次数耗尽，通知app登录失败')
+            // 重试次数耗尽, 通知app登录失败
+            console.error('❌ 登录重试次数耗尽, 通知app登录失败')
             this.app.handleLoginFailure(error)
             throw error
         }
@@ -249,13 +249,13 @@ class AuthManager {
      */
     async handleTokenExpired() {
         if (this.isRefreshing) {
-            console.log('⏳ token刷新中，跳过重复处理')
+            console.log('⏳ token刷新中, 跳过重复处理')
             return
         }
 
         try {
             this.isRefreshing = true
-            console.log('🔄 处理token过期，开始重新登录')
+            console.log('🔄 处理token过期, 开始重新登录')
 
             // 清除过期的认证数据
             this.clearAuthData()
@@ -341,7 +341,7 @@ class AuthManager {
      * 判断是否应该重试登录
      */
     shouldRetryLogin(error) {
-        // 如果是网络错误或401认证错误，需要重新登录
+        // 如果是网络错误或401认证错误, 需要重新登录
         return error.statusCode === 401 ||
             error.message?.includes('需要重新登录') ||
             error.message?.includes('token')

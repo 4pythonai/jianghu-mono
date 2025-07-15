@@ -33,7 +33,7 @@ export const runtimeStore = observable({
 
             const res = await gambleApi.listRuntimeConfig(params, {
                 loadingTitle: '加载游戏配置...',
-                loadingMask: false // 不显示遮罩，避免影响用户体验
+                loadingMask: false // 不显示遮罩, 避免影响用户体验
             });
 
             console.log('�� [RuntimeStore] 运行时配置 API 响应:', res);
@@ -70,19 +70,19 @@ export const runtimeStore = observable({
                         // 格式化排名规则显示文本
                         if (config.ranking_tie_resolve_config) {
                             const rankingMap = {
-                                'score.reverse': '按成绩排序，冲突时回溯成绩',
-                                'score.win_loss.reverse_win': '按成绩排序，按输赢，回溯输赢',
-                                'score.win_loss.reverse_score': '按成绩排序，按输赢，回溯成绩',
-                                'indicator.reverse': '按得分排序，冲突时回溯得分',
-                                'indicator.win_loss.reverse_win': '按得分排序，按输赢，回溯输赢',
-                                'indicator.win_loss.reverse_indicator': '按得分排序，按输赢，回溯得分'
+                                'score.reverse': '按成绩排序, 冲突时回溯成绩',
+                                'score.win_loss.reverse_win': '按成绩排序, 按输赢, 回溯输赢',
+                                'score.win_loss.reverse_score': '按成绩排序, 按输赢, 回溯成绩',
+                                'indicator.reverse': '按得分排序, 冲突时回溯得分',
+                                'indicator.win_loss.reverse_win': '按得分排序, 按输赢, 回溯输赢',
+                                'indicator.win_loss.reverse_indicator': '按得分排序, 按输赢, 回溯得分'
                             };
                             processedConfig.ranking_display = rankingMap[config.ranking_tie_resolve_config] || config.ranking_tie_resolve_config || '未知排名规则';
                         }
 
                         // 格式化洞数范围
-                        const firstHole = config.firstHoleindex || 1;
-                        const lastHole = config.lastHoleindex || 18;
+                        const firstHole = config.startHoleindex || 1;
+                        const lastHole = config.endHoleindex || 18;
                         processedConfig.hole_range_display = firstHole === lastHole ?
                             `第${firstHole}洞` :
                             `第${firstHole}洞 - 第${lastHole}洞`;
@@ -94,7 +94,7 @@ export const runtimeStore = observable({
                     }
                 });
 
-                console.log('�� [RuntimeStore] 运行时配置加载成功，共', this.runtimeConfigs.length, '条配置');
+                console.log('�� [RuntimeStore] 运行时配置加载成功, 共', this.runtimeConfigs.length, '条配置');
                 console.log('�� [RuntimeStore] 运行时配置详情:', this.runtimeConfigs);
             } else {
                 console.warn('⚠️ [RuntimeStore] 运行时配置加载失败:', res?.message || res?.msg || '未知错误');

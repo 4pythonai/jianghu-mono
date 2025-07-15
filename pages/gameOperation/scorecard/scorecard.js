@@ -77,7 +77,7 @@ Page({
             duration: 3000
         });
 
-        // 如果加载失败，隐藏WebView
+        // 如果加载失败, 隐藏WebView
         this.setData({
             showWebView: false
         });

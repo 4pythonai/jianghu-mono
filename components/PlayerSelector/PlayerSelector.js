@@ -19,7 +19,7 @@ Component({
 
     data: {
         // 玩家列表(支持空位)- 每个玩家对象现在包含 join_type 字段
-        playerSlots: [null, null, null, null], // null 表示空位，对象表示已选择的玩家
+        playerSlots: [null, null, null, null], // null 表示空位, 对象表示已选择的玩家
         // 有效玩家数量
         validPlayerCount: 0,
         // 玩家来源映射
@@ -45,7 +45,7 @@ Component({
          */
         updatePlayerSlots(players) {
             if (!Array.isArray(players)) {
-                console.log('PlayerSelector: players 不是数组，忽略更新');
+                console.log('PlayerSelector: players 不是数组, 忽略更新');
                 return;
             }
 
@@ -57,8 +57,8 @@ Component({
                     // 确保每个玩家对象都有必要字段
                     playerSlots[index] = {
                         ...player,
-                        join_type: player.join_type || 'unknown',  // 如果没有 join_type 字段，设置为 unknown
-                        tee: player.tee || 'blue'  // 如果没有 tee 字段，设置为默认蓝T
+                        join_type: player.join_type || 'unknown',  // 如果没有 join_type 字段, 设置为 unknown
+                        tee: player.tee || 'blue'  // 如果没有 tee 字段, 设置为默认蓝T
                     };
                 }
             });
@@ -104,7 +104,7 @@ Component({
             // 获取 UUID
             const uuid = commonCreatePage?.data?.uuid || '';
 
-            // 跳转到玩家选择页面，传递组索引、位置索引和 UUID
+            // 跳转到玩家选择页面, 传递组索引、位置索引和 UUID
             wx.navigateTo({
                 url: `/pages/player-select/player-select?groupIndex=${this.properties.groupIndex}&slotIndex=${slotIndex}&uuid=${uuid}`
             });
@@ -131,7 +131,7 @@ Component({
             // 更新有效玩家数量
             this.updateValidPlayerCount();
 
-            // 过滤掉空位，获取有效玩家列表
+            // 过滤掉空位, 获取有效玩家列表
             const validPlayers = playerSlots.filter(player => player !== null);
 
             // 触发父组件事件
@@ -140,7 +140,7 @@ Component({
                 players: validPlayers
             });
 
-            // 显示添加成功提示，包含来源信息
+            // 显示添加成功提示, 包含来源信息
             const joinTypeText = this.data.joinTypeMap[join_type] || '未知来源';
             wx.showToast({
                 title: `已添加 ${player.wx_nickname}(${joinTypeText})`,
@@ -165,7 +165,7 @@ Component({
             // 更新有效玩家数量
             this.updateValidPlayerCount();
 
-            // 过滤掉空位，获取有效玩家列表
+            // 过滤掉空位, 获取有效玩家列表
             const validPlayers = playerSlots.filter(player => player !== null);
 
             // 触发父组件事件
@@ -174,7 +174,7 @@ Component({
                 players: validPlayers
             });
 
-            // 显示移除成功提示，包含来源信息
+            // 显示移除成功提示, 包含来源信息
             const joinTypeText = this.data.joinTypeMap[removedPlayer.join_type] || '未知来源';
             wx.showToast({
                 title: `已移除 ${removedPlayer.wx_nickname}(${joinTypeText})`,

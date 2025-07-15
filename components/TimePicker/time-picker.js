@@ -52,7 +52,7 @@ Component({
             const dates = [];
             const today = new Date();
 
-            // 从过去30天开始，到未来30天结束
+            // 从过去30天开始, 到未来30天结束
             const startOffset = -30; // 过去30天
             const endOffset = 30;    // 未来30天
 
@@ -85,7 +85,7 @@ Component({
          */
         generateTimeRange() {
             const times = [];
-            // 生成从06:00到18:00的时间选项，间隔30分钟
+            // 生成从06:00到18:00的时间选项, 间隔30分钟
             for (let hour = 6; hour <= 18; hour++) {
                 for (let minute = 0; minute < 60; minute += 30) {
                     const timeStr = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
@@ -145,7 +145,7 @@ Component({
 
             // 找到今天的索引作为默认选择
             const todayIndex = dateRange.findIndex(item => item.isToday);
-            const defaultDateIndex = todayIndex !== -1 ? todayIndex : 30; // 如果找不到今天，默认选择中间位置
+            const defaultDateIndex = todayIndex !== -1 ? todayIndex : 30; // 如果找不到今天, 默认选择中间位置
 
             this.setData({
                 'timePickerRange[0]': dateRange,
@@ -224,7 +224,7 @@ Component({
             // 初始化时间选择器数据
             this.initTimePickerData();
 
-            // 如果有初始值，解析并设置
+            // 如果有初始值, 解析并设置
             if (this.properties.value) {
                 this.parseAndSetValue(this.properties.value);
             }

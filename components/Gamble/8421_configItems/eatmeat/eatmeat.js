@@ -28,16 +28,16 @@ Component({
     ],
     scoreSelected: 0,
 
-    // 修改封顶选项，支持可编辑数字
+    // 修改封顶选项, 支持可编辑数字
     topOptions: ['不封顶', 'X分封顶'],
     topSelected: 0,
 
     // 新增可编辑变量
-    topScoreLimit: 3, // 封顶分数，默认3
+    topScoreLimit: 3, // 封顶分数, 默认3
 
     // 数字选择器范围
-    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20，吃肉数量范围
-    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20，封顶分数范围
+    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20, 吃肉数量范围
+    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20, 封顶分数范围
   },
   // 组件生命周期
   lifetimes: {
@@ -95,7 +95,7 @@ Component({
         this.setData({ scoreSelected });
       }
 
-      // 解析封顶配置 - 新格式:数字，10000000表示不封顶
+      // 解析封顶配置 - 新格式:数字, 10000000表示不封顶
       if (meat_max_value === 10000000) {
         this.setData({ topSelected: 0 });
       } else if (typeof meat_max_value === 'number' && meat_max_value < 10000000) {
@@ -133,13 +133,13 @@ Component({
       const data = this.data;
 
       // 解析配置数据 - 使用新的JSON格式
-      const eating_range = data.eating_range; // 吃肉得分配对，JSON格式
+      const eating_range = data.eating_range; // 吃肉得分配对, JSON格式
 
       // 肉分值计算方式改为新格式
       let meatValueConfig = null;
       switch (data.scoreSelected) {
         case 0:
-          meatValueConfig = 'MEAT_AS_1'; // 固定为MEAT_AS_1，如需要其他数值可以再扩展
+          meatValueConfig = 'MEAT_AS_1'; // 固定为MEAT_AS_1, 如需要其他数值可以再扩展
           break;
         case 1:
           meatValueConfig = 'SINGLE_DOUBLE';
@@ -149,7 +149,7 @@ Component({
           break;
       }
 
-      // 吃肉封顶改为数字格式，10000000表示不封顶
+      // 吃肉封顶改为数字格式, 10000000表示不封顶
       const meat_max_value = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
 
       // 调用store的action更新数据

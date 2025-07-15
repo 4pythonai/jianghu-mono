@@ -42,7 +42,7 @@
 
 .content-column {
 	margin-left: 20rpx;
-	width: calc(100% - 140rpx); /* 调整宽度计算，为边框留出空间 */
+	width: calc(100% - 140rpx); /* 调整宽度计算, 为边框留出空间 */
 	display: flex;
 	flex-direction: column;
 }
@@ -54,7 +54,7 @@
 	margin-bottom: 12rpx;
 }
 
-/* 第1行：比赛名称 + star */
+/* 第1行:比赛名称 + star */
 .name-row {
 	justify-content: space-between;
 }
@@ -91,7 +91,7 @@
 	width: 100%;
 }
 
-/* 第3行：地点 */
+/* 第3行:地点 */
 .course-row {
 	align-items: center;
 }
@@ -107,7 +107,7 @@
 	font-size: 24rpx;
 }
 
-/* 第4行：时间人数 */
+/* 第4行:时间人数 */
 .meta-row {
 	justify-content: flex-start;
 	align-items: center; /* 确保垂直居中 */

@@ -17,10 +17,17 @@
     <view wx:elif="{{ runtimeConfigs && runtimeConfigs.length > 0 }}" class="gamble-content">
         <view class="config-list">
             <view wx:for="{{ runtimeConfigs }}" wx:key="unique" class="config-item" hover-class="config-item-hover" bindtap="handleConfigClick" data-config="{{ item }}" data-index="{{ index }}">
-                <view class="config-header">
+                 <view class="config-header">
                     <text class="config-title">游戏配置 #{{ index + 1 }}</text>
                     <text class="config-time">{{ item.create_time || '未知时间' }}</text>
-                </view>
+                  <text 
+                    class="delete-btn" 
+                    data-id="{{ item.id }}" 
+                    bindtap="onDeleteConfig"
+                    >✖</text>
+                    </view>
+
+
                 <view class="config-details">
                     <view class="config-row">
                         <text class="config-label">规则类型:</text>
@@ -41,9 +48,8 @@
                 </view>
                 <!-- 点击提示 -->
                 <view class="config-click-hint">
-                    <text class="click-hint-text">点击查看结果</text>
-                    <text class="click-hint-arrow">→</text>
-                </view>
+                        <button class="detail-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="onDetailClick">详情</button>
+                        <button class="result-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="onResultClick">结果</button>                </view>
             </view>
         </view>
         

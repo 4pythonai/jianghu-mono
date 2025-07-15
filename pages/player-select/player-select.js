@@ -13,7 +13,7 @@ Page({
         const method = e.currentTarget.dataset.method;
         let url = `${method.url}?groupIndex=${this.data.groupIndex}&slotIndex=${this.data.slotIndex}`;
 
-        // 如果是微信分享页面，添加 uuid 参数
+        // 如果是微信分享页面, 添加 uuid 参数
         if (method.id === 'wxshare' && this.data.uuid) {
             url += `&uuid=${this.data.uuid}`;
         }
@@ -27,7 +27,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-        console.log('player-select页面加载，参数:', options);
+        console.log('player-select页面加载, 参数:', options);
 
         if (options.groupIndex !== undefined) {
             this.setData({

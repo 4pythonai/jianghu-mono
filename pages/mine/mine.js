@@ -10,7 +10,7 @@ Page({
   },
 
   onLoad() {
-    // 获取用户信息，确保总是有一个默认对象
+    // 获取用户信息, 确保总是有一个默认对象
     const initUserInfo = app.globalData.userInfo || {}
 
     // 使用Storage层获取头像
@@ -25,7 +25,7 @@ Page({
         avatarUrl = savedAvatarPath
         console.log('📸 加载本地头像:', savedAvatarPath)
       } catch (error) {
-        console.log('🖼️ 本地头像文件不存在，使用默认头像')
+        console.log('🖼️ 本地头像文件不存在, 使用默认头像')
         // 清除无效的存储
         app.storage.clearUserAvatar()
       }
@@ -59,15 +59,15 @@ Page({
     if (e.detail.errMsg && e.detail.errMsg !== 'chooseAvatar:ok') {
       console.error('❌ 选择头像失败:', e.detail.errMsg)
 
-      // 如果是开发工具的tmp目录问题，尝试备用方案
+      // 如果是开发工具的tmp目录问题, 尝试备用方案
       if (e.detail.errMsg.includes('ENOENT') || e.detail.errMsg.includes('tmp')) {
-        console.log('🔧 检测到开发工具bug，尝试备用方案')
+        console.log('🔧 检测到开发工具bug, 尝试备用方案')
         this.chooseAvatarFallback()
         return
       }
 
       wx.showToast({
-        title: '头像选择失败，请重试',
+        title: '头像选择失败, 请重试',
         icon: 'none'
       })
       return
@@ -79,7 +79,7 @@ Page({
     if (!avatarUrl) {
       console.error('❌ 未获取到头像地址')
       wx.showToast({
-        title: '头像获取失败，请重试',
+        title: '头像获取失败, 请重试',
         icon: 'none'
       })
       return
@@ -117,12 +117,12 @@ Page({
   uploadAvatarToServer(tempFilePath) {
     console.log('🚀 开始上传头像到服务器:', tempFilePath)
 
-    // 移除手动loading，使用HTTP客户端自动管理的loading
+    // 移除手动loading, 使用HTTP客户端自动管理的loading
     // wx.showLoading({
     //   title: '上传头像中...'
     // })
 
-    // 使用HTTP客户端的uploadFile方法，自定义loading文案
+    // 使用HTTP客户端的uploadFile方法, 自定义loading文案
     app.http.uploadFile('/User/uploadAvatar', tempFilePath, {
       name: 'avatar', // 后台接收的字段名
       formData: {
@@ -140,7 +140,7 @@ Page({
         // 更新用户头像
         this.updateUserAvatar(avatarUrl, true) // true表示是服务器URL
 
-        // 移除手动hideLoading，HTTP客户端会自动处理
+        // 移除手动hideLoading, HTTP客户端会自动处理
         // wx.hideLoading()
         wx.showToast({
           title: '头像上传成功',
@@ -154,7 +154,7 @@ Page({
       console.error('❌ 头像上传失败:', error)
 
       // 降级处理:保存到本地
-      console.log('🔄 上传失败，降级到本地保存')
+      console.log('🔄 上传失败, 降级到本地保存')
       this.saveAvatarLocally(tempFilePath)
     })
   },
@@ -222,12 +222,12 @@ Page({
     app.globalData.userInfo = updatedUserInfo
     app.storage.setUserInfo(updatedUserInfo)
 
-    // 如果是服务器URL，清除本地头像缓存
+    // 如果是服务器URL, 清除本地头像缓存
     if (isServerUrl) {
       app.storage.clearUserAvatar()
-      console.log('🗑️ 清除本地头像缓存，使用服务器头像')
+      console.log('🗑️ 清除本地头像缓存, 使用服务器头像')
     } else {
-      // 如果是本地路径，保存到Storage
+      // 如果是本地路径, 保存到Storage
       app.storage.setUserAvatar(avatarUrl)
       console.log('💾 保存本地头像路径')
     }
@@ -250,7 +250,7 @@ Page({
   // 确认用户信息(优化版)
   confirmUserInfo() {
     const { tempNickname } = this.data
-    // 安全获取当前用户信息，提供默认值
+    // 安全获取当前用户信息, 提供默认值
     const currentUserInfo = this.data.userInfo || {}
     const { avatarUrl } = currentUserInfo
 
@@ -273,7 +273,7 @@ Page({
       return
     }
 
-    // 调用API更新昵称，使用自定义loading文案
+    // 调用API更新昵称, 使用自定义loading文案
     app.api.user.updateNickName({
       nickName: trimmedNickname
     }, {
@@ -310,7 +310,7 @@ Page({
       console.error('❌ 昵称更新失败:', error)
 
       // 降级处理:只保存到本地
-      console.log('🔄 API失败，降级到本地保存')
+      console.log('🔄 API失败, 降级到本地保存')
 
       const updatedUserInfo = {
         ...currentUserInfo,
@@ -370,7 +370,7 @@ Page({
   // 获取手机号码
   getPhoneNumber(e) {
     if (e.detail.errMsg === 'getPhoneNumber:ok') {
-      // 用户同意授权，获取到加密数据
+      // 用户同意授权, 获取到加密数据
       wx.login({
         success: (res) => {
           if (res.code) {
@@ -396,7 +396,7 @@ Page({
             }).catch(err => {
               console.error('绑定手机号失败:', err)
               wx.showToast({
-                title: '绑定失败，请重试',
+                title: '绑定失败, 请重试',
                 icon: 'none'
               })
             })

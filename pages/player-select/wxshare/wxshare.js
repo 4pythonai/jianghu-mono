@@ -6,7 +6,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('wxshare页面加载，参数:', options);
+        console.log('wxshare页面加载, 参数:', options);
 
         if (options.groupIndex !== undefined) {
             this.setData({
@@ -32,11 +32,11 @@ Page({
     },
 
     onReady() {
-        console.log('页面准备就绪，当前 UUID:', this.data.uuid);
+        console.log('页面准备就绪, 当前 UUID:', this.data.uuid);
     },
 
     onShow() {
-        console.log('页面显示，当前 UUID:', this.data.uuid);
+        console.log('页面显示, 当前 UUID:', this.data.uuid);
     },
 
     onHide() {

@@ -18,7 +18,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('🎯 [GambleResult] 页面加载，参数:', options);
+        console.log('🎯 [GambleResult] 页面加载, 参数:', options);
 
         const gambleid = options.gambleid;
 

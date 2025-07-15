@@ -70,9 +70,9 @@ Page({
 
     // 页面显示时检查数据
     onShow() {
-        // 如果没有数据、不在加载中且有错误，可以尝试重新加载
+        // 如果没有数据、不在加载中且有错误, 可以尝试重新加载
         if (!this.data.gameData && !this.data.loading && this.data.error) {
-            console.log('📝 页面显示，检测到错误状态，自动重试加载');
+            console.log('📝 页面显示, 检测到错误状态, 自动重试加载');
             const { gameId, groupId } = this.data;
 
             if (gameId) {
@@ -115,6 +115,8 @@ Page({
             icon: 'success'
         });
     },
+
+
 
 
     onShowGameOperation(e) {

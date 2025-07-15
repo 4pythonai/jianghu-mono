@@ -50,7 +50,7 @@ Page({
         } catch (error) {
             console.error('❌ 加载动态数据失败:', error)
             wx.showToast({
-                title: '加载失败，请重试',
+                title: '加载失败, 请重试',
                 icon: 'none',
                 duration: 2000
             })

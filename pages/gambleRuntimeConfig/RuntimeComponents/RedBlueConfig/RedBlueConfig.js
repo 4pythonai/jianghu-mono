@@ -69,7 +69,7 @@ Component({
 
             RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '分组方式变更', red_blue_config);
 
-            // 触发变更事件，传递用户ID数组
+            // 触发变更事件, 传递用户ID数组
             this.triggerEvent('change', {
                 red_blue_config,
                 bootstrap_order: this.convertToUserIds(this.data.bootstrap_order)
@@ -86,7 +86,7 @@ Component({
                 bootstrap_order: shuffled
             });
 
-            // 触发变更事件，传递用户ID数组
+            // 触发变更事件, 传递用户ID数组
             this.triggerEvent('change', {
                 red_blue_config: this.data.red_blue_config,
                 bootstrap_order: this.convertToUserIds(shuffled)
@@ -103,7 +103,7 @@ Component({
         handicapOrder() {
             const { bootstrap_order } = this.data;
 
-            // 按差点排序，差点低的在前
+            // 按差点排序, 差点低的在前
             const sorted = [...bootstrap_order].sort((a, b) => {
                 const handicapA = Number(a.handicap) || 0;
                 const handicapB = Number(b.handicap) || 0;
@@ -116,7 +116,7 @@ Component({
 
             RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '差点排序', sorted);
 
-            // 触发变更事件，传递用户ID数组
+            // 触发变更事件, 传递用户ID数组
             this.triggerEvent('change', {
                 red_blue_config: this.data.red_blue_config,
                 bootstrap_order: this.convertToUserIds(sorted)
@@ -163,7 +163,7 @@ Component({
                 targetIndex = dragState.dragIndex + (direction * steps);
                 targetIndex = Math.max(0, Math.min(this.data.bootstrap_order.length - 1, targetIndex));
 
-                // 如果目标索引和当前索引相同，不显示目标位置
+                // 如果目标索引和当前索引相同, 不显示目标位置
                 if (targetIndex === dragState.dragIndex) {
                     targetIndex = -1;
                 }
@@ -184,7 +184,7 @@ Component({
             const dragIndex = dragState.dragIndex;
             const targetIndex = dragState.targetIndex;
 
-            // 如果有有效的目标位置，执行位置交换
+            // 如果有有效的目标位置, 执行位置交换
             if (targetIndex !== -1 && targetIndex !== dragIndex) {
                 const newPlayersOrder = RuntimeComponentsUtils.array.moveElement(bootstrap_order, dragIndex, targetIndex);
 
@@ -192,9 +192,9 @@ Component({
                     bootstrap_order: newPlayersOrder
                 });
 
-                RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '拖拽完成，新顺序', newPlayersOrder);
+                RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '拖拽完成, 新顺序', newPlayersOrder);
 
-                // 触发变更事件，传递用户ID数组
+                // 触发变更事件, 传递用户ID数组
                 this.triggerEvent('change', {
                     red_blue_config: this.data.red_blue_config,
                     bootstrap_order: this.convertToUserIds(newPlayersOrder)

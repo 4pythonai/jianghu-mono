@@ -67,7 +67,7 @@ export const gameStore = observable({
                 for (const hole of card.scores) {
                     // 确保 par 是数字
                     hole.par = Number(hole.par) || 0;
-                    // 确保 unique_key 是字符串，处理 null/undefined 情况
+                    // 确保 unique_key 是字符串, 处理 null/undefined 情况
                     hole.unique_key = hole.unique_key != null ? String(hole.unique_key) : '';
                     // 确保 holeid 是字符串
                     hole.holeid = hole.holeid != null ? String(hole.holeid) : '';
@@ -79,7 +79,7 @@ export const gameStore = observable({
     // 根据 groupId 过滤玩家
     _filterPlayersByGroup: action((players, groupId) => {
         if (!groupId) {
-            console.log('�� [Store] 无 groupId，返回所有玩家');
+            console.log('�� [Store] 无 groupId, 返回所有玩家');
             return players;
         }
 
@@ -186,10 +186,10 @@ export const gameStore = observable({
         // 创建新的scores数组副本
         const newScores = this.scores.map((playerScores, pIndex) => {
             if (pIndex === playerIndex) {
-                // 对于目标玩家，创建新的洞分数数组
+                // 对于目标玩家, 创建新的洞分数数组
                 return playerScores.map((holeScore, hIndex) => {
                     if (hIndex === holeIndex) {
-                        // 对于目标洞，创建新的分数对象
+                        // 对于目标洞, 创建新的分数对象
                         const newScoreObj = { ...holeScore };
 
                         if (score !== undefined) {
@@ -219,7 +219,7 @@ export const gameStore = observable({
             return playerScores;
         });
 
-        // �� 关键:完全替换scores数组，强制触发响应式更新
+        // �� 关键:完全替换scores数组, 强制触发响应式更新
         this.scores = newScores;
 
         // 🧪 测试:强制更新一个简单字段来测试MobX响应式是否正常工作

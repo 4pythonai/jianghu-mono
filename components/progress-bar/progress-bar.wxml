@@ -3,7 +3,7 @@
     <view class="progress-completed" style="width: {{(completedHoles/holes)*100}}%"></view>
     <view class="progress-remaining"></view>
   </view>
-  <!-- 特殊处理0和F的位置，使球体与容器边缘对齐 -->
+  <!-- 特殊处理0和F的位置, 使球体与容器边缘对齐 -->
   <view class="progress-ball" style="left: {{completedHoles == 0 ? '16rpx' : (completedHoles == holes ? 'calc(100% - 16rpx)' : (completedHoles/holes)*100 + '%')}};transform: translate(-50%, -50%)">
     {{completedHoles == holes ? 'F' : completedHoles}}
   </view>

@@ -125,7 +125,7 @@ Component({
                     courseid,
                     courseInfo
                 })
-                // 不报错，等待 observers 监听到数据变化
+                // 不报错, 等待 observers 监听到数据变化
             }
         },
 

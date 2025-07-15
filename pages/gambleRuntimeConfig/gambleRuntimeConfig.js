@@ -11,8 +11,8 @@ Page({
 
         runtimeConfig: {
             // 起点洞与终点洞配置
-            firstHoleindex: 1,
-            lastHoleindex: 18,
+            startHoleindex: 1,
+            endHoleindex: 18,
 
             // 分组配置 - 直接在顶层
             red_blue_config: '4_固拉',
@@ -36,7 +36,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('[GambleRuntimeConfig] 页面加载，参数:', options);
+        console.log('[GambleRuntimeConfig] 页面加载, 参数:', options);
 
         try {
             // 解析传递的数据
@@ -55,7 +55,7 @@ Page({
 
                 // 检查是否有全局数据
                 if (!globalData.currentGameData) {
-                    console.warn('[GambleRuntimeConfig] 全局数据为空，使用默认值');
+                    console.warn('[GambleRuntimeConfig] 全局数据为空, 使用默认值');
                     players = [];
                     holes = [];
                     gameData = null;
@@ -69,7 +69,7 @@ Page({
                 if (decodedData.fromUserRule) {
                     userRule = globalData.currentUserRule || null;
 
-                    console.log('[GambleRuntimeConfig] 从用户规则进入，全局数据:', {
+                    console.log('[GambleRuntimeConfig] 从用户规则进入, 全局数据:', {
                         players: players.length,
                         holes: holes.length,
                         userRule: userRule?.gambleUserName
@@ -77,7 +77,7 @@ Page({
                 } else {
                     userRule = null;
 
-                    console.log('[GambleRuntimeConfig] 从系统规则进入，全局数据:', {
+                    console.log('[GambleRuntimeConfig] 从系统规则进入, 全局数据:', {
                         players: players.length,
                         holes: holes.length,
                         ruleType: decodedData.ruleType
@@ -103,7 +103,7 @@ Page({
                 let gambleUserName = null;
 
                 if (decodedData.fromUserRule && userRule) {
-                    // 从用户规则进入，直接从userRule获取
+                    // 从用户规则进入, 直接从userRule获取
                     gambleSysName = userRule.gambleSysName;
                     userRuleId = userRule.userRuleId;
                     gambleUserName = userRule.gambleUserName;
@@ -116,8 +116,8 @@ Page({
                     holes: holes,
                     gameData: gameData,
                     userRule: userRule,
-                    'runtimeConfig.firstHoleindex': initialFirstHole,
-                    'runtimeConfig.lastHoleindex': initialLastHole,
+                    'runtimeConfig.startHoleindex': initialFirstHole,
+                    'runtimeConfig.endHoleindex': initialLastHole,
                     'runtimeConfig.gameid': gameStore.gameid,
                     'runtimeConfig.groupid': gameStore.groupId,
                     'runtimeConfig.userRuleId': userRuleId,
@@ -150,7 +150,7 @@ Page({
 
     // 页面销毁时清理全局数据
     onUnload() {
-        console.log('[GambleRuntimeConfig] 页面销毁，清理全局数据');
+        console.log('[GambleRuntimeConfig] 页面销毁, 清理全局数据');
         const app = getApp();
         if (app.globalData) {
             app.globalData.currentUserRule = undefined;
@@ -241,16 +241,16 @@ Page({
 
     // 洞范围选择事件
     onHoleRangeChange(e) {
-        let { firstHoleindex, lastHoleindex } = e.detail;
-        // 自动转换为数字，保证类型一致
-        firstHoleindex = Number(firstHoleindex);
-        lastHoleindex = Number(lastHoleindex);
-        console.log('[GambleRuntimeConfig] 洞范围变更:', { firstHoleindex, lastHoleindex });
+        let { startHoleindex, endHoleindex } = e.detail;
+        // 自动转换为数字, 保证类型一致
+        startHoleindex = Number(startHoleindex);
+        endHoleindex = Number(endHoleindex);
+        console.log('[GambleRuntimeConfig] 洞范围变更:', { startHoleindex, endHoleindex });
 
-        // 直接用 unique_key，不要转数字
+        // 直接用 unique_key, 不要转数字
         this.setData({
-            'runtimeConfig.firstHoleindex': firstHoleindex,
-            'runtimeConfig.lastHoleindex': lastHoleindex
+            'runtimeConfig.startHoleindex': startHoleindex,
+            'runtimeConfig.endHoleindex': endHoleindex
         });
     },
 
@@ -306,7 +306,7 @@ Page({
         const { runtimeConfig, players, ruleType } = this.data;
 
         // 验证洞范围
-        if (runtimeConfig.firstHoleindex > runtimeConfig.lastHoleindex) {
+        if (runtimeConfig.startHoleindex > runtimeConfig.endHoleindex) {
             wx.showToast({
                 title: '起始洞不能大于结束洞',
                 icon: 'none'
@@ -382,7 +382,7 @@ Page({
     },
 
     saveRuntimeConfig() {
-        const { runtimeConfig, ruleType, gameId } = this.data;
+        const { runtimeConfig } = this.data;
 
         console.log('[GambleRuntimeConfig] 最终配置:', JSON.stringify(runtimeConfig, null, 2));
 
@@ -399,7 +399,7 @@ Page({
                 // 返回到游戏详情页面
                 setTimeout(() => {
                     wx.navigateBack({
-                        delta: 2 // 返回两层，跳过rules页面
+                        delta: 2 // 返回两层, 跳过rules页面
                     });
                 }, 1500);
             } else {
@@ -411,7 +411,7 @@ Page({
         }).catch(err => {
             console.error('[GambleRuntimeConfig] 保存配置失败:', err);
             wx.showToast({
-                title: '网络错误，请重试',
+                title: '网络错误, 请重试',
                 icon: 'none'
             });
         }).finally(() => {

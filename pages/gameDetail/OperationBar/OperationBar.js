@@ -31,15 +31,15 @@ Component({
     },
 
     observers: {
-        'gameData': function(newGameData) {
+        'gameData': function (newGameData) {
             if (newGameData) {
                 console.log('📊 [OperationBar] 接收到gameData:', newGameData);
                 console.log('📊 [OperationBar] 可用字段:', Object.keys(newGameData));
-                
+
                 // 格式化开球时间为欧洲格式
                 const rawTeeTime = newGameData.teeTime || newGameData.tee_time || newGameData.start_time || '2024-01-15 09:00';
                 const formattedTime = this.formatEuropeanDate(rawTeeTime);
-                
+
                 this.setData({
                     formattedTeeTime: formattedTime
                 });
@@ -54,19 +54,19 @@ Component({
         // 格式化时间为欧洲格式 DD-MM-YYYY
         formatEuropeanDate(dateString) {
             if (!dateString) return '';
-            
+
             try {
                 const date = new Date(dateString);
                 if (isNaN(date.getTime())) {
-                    return dateString; // 如果无法解析，返回原始字符串
+                    return dateString; // 如果无法解析, 返回原始字符串
                 }
-                
+
                 const day = String(date.getDate()).padStart(2, '0');
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const year = date.getFullYear();
                 const hours = String(date.getHours()).padStart(2, '0');
                 const minutes = String(date.getMinutes()).padStart(2, '0');
-                
+
                 return `${day}-${month}-${year} ${hours}:${minutes}`;
             } catch (error) {
                 console.error('时间格式化错误:', error);

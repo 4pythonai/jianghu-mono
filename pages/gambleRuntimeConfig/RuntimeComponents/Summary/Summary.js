@@ -71,7 +71,7 @@ Component({
 
     // 组件生命周期 - 组件实例进入页面节点树时执行
     attached() {
-        RuntimeComponentsUtils.logger.log('SUMMARY', '组件attached，初始化数据');
+        RuntimeComponentsUtils.logger.log('SUMMARY', '组件attached, 初始化数据');
         this.updateDisplayRuleName();
         this.updatePlayersWithAvatar();
     },
@@ -87,7 +87,7 @@ Component({
                 properties: this.properties
             });
 
-            // 如果有用户规则，优先显示用户规则名称
+            // 如果有用户规则, 优先显示用户规则名称
             if (this.data.userRule) {
                 displayName = this.data.userRule.gambleUserName ||
                     this.data.userRule.user_rulename ||
@@ -142,7 +142,7 @@ Component({
                 ruleTypeMap: this.data.ruleTypeMap
             });
 
-            // 如果有用户规则，优先显示用户规则名称
+            // 如果有用户规则, 优先显示用户规则名称
             if (this.data.userRule) {
                 const userRuleName = this.data.userRule.gambleUserName ||
                     this.data.userRule.user_rulename ||

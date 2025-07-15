@@ -1,7 +1,7 @@
 // 游戏规则页面
 Page({
     data: {
-        activeTab: 0, // 当前激活的tab，0为"我的规则"，1为"添加规则"
+        activeTab: 0, // 当前激活的tab, 0为"我的规则", 1为"添加规则"
         editRule: null // 编辑的规则数据
     },
 
@@ -15,7 +15,7 @@ Page({
     onShow() {
         console.log('📋 [Rules] 页面显示');
 
-        // 刷新我的规则列表，确保显示最新数据
+        // 刷新我的规则列表, 确保显示最新数据
         if (this.data.activeTab === 0) {
             const myRulesComponent = this.selectComponent('#myRulesComponent');
             if (myRulesComponent) {
@@ -34,7 +34,7 @@ Page({
             activeTab: tabIndex
         });
 
-        // 切换到添加规则tab时，清除编辑状态
+        // 切换到添加规则tab时, 清除编辑状态
         if (tabIndex === 1) {
             this.setData({ editRule: null });
         }

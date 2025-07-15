@@ -14,7 +14,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-        console.log('选择半场页面加载，参数:', options)
+        console.log('选择半场页面加载, 参数:', options)
 
         // 从页面参数中获取球场信息
         if (options.courseData) {
@@ -79,7 +79,7 @@ Page({
         const prevPage = pages[pages.length - 2] // 获取上一个页面
 
         if (prevPage?.setCourtSelection) {
-            // 如果上一个页面有处理方法，调用它
+            // 如果上一个页面有处理方法, 调用它
             prevPage.setCourtSelection(selectionData)
         }
 
@@ -165,7 +165,7 @@ Page({
         const { selectionData } = e.detail
         console.log('📍 court-select页面接收到确认选择:', selectionData)
 
-        // 直接传递 selectionData，不需要重新组合
+        // 直接传递 selectionData, 不需要重新组合
         // selectionData 已经包含了所有需要的数据:
         // - frontNine, backNine (可能为null)
         // - gameType, totalHoles
@@ -237,7 +237,7 @@ Page({
         console.error('CourtSelector错误:', type, message)
 
         wx.showToast({
-            title: message || '操作失败，请重试',
+            title: message || '操作失败, 请重试',
             icon: 'none'
         })
     },

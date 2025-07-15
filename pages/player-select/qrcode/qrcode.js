@@ -5,7 +5,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('qrcode页面加载，参数:', options);
+        console.log('qrcode页面加载, 参数:', options);
 
         if (options.groupIndex !== undefined) {
             this.setData({

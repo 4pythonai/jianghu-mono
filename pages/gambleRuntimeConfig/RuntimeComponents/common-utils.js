@@ -21,7 +21,7 @@ const RuntimeComponentsUtils = {
     // 头像处理工具
     avatar: {
         /**
-         * 获取玩家头像URL，统一处理各种头像字段
+         * 获取玩家头像URL, 统一处理各种头像字段
          * @param {Object} player - 玩家对象
          * @returns {string} 头像URL
          */

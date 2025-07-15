@@ -15,27 +15,27 @@ Component({
         rankingOptions: [
             {
                 value: 'score.reverse',
-                label: '按成绩排序，冲突时回溯成绩',
+                label: '按成绩排序, 冲突时回溯成绩',
             },
             {
                 value: 'score.win_loss.reverse_win',
-                label: '按成绩排序，按输赢，回溯输赢',
+                label: '按成绩排序, 按输赢, 回溯输赢',
             },
             {
                 value: 'score.win_loss.reverse_score',
-                label: '按成绩排序，按输赢，回溯成绩',
+                label: '按成绩排序, 按输赢, 回溯成绩',
             },
             {
                 value: 'indicator.reverse',
-                label: '按得分排序，冲突时回溯得分',
+                label: '按得分排序, 冲突时回溯得分',
             },
             {
                 value: 'indicator.win_loss.reverse_win',
-                label: '按得分排序，按输赢，回溯输赢',
+                label: '按得分排序, 按输赢, 回溯输赢',
             },
             {
                 value: 'indicator.win_loss.reverse_indicator',
-                label: '按得分排序，按输赢，回溯得分',
+                label: '按得分排序, 按输赢, 回溯得分',
             }
         ],
 

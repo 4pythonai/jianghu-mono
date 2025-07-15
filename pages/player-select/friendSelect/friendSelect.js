@@ -10,7 +10,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('friendSelect页面加载，参数:', options);
+        console.log('friendSelect页面加载, 参数:', options);
 
         if (options.groupIndex !== undefined) {
             this.setData({
@@ -33,7 +33,7 @@ Page({
      */
     async loadFriends() {
         try {
-            // 移除手动loading管理，使用API自动管理
+            // 移除手动loading管理, 使用API自动管理
             const result = await api.user.getFriendList({}, {
                 loadingTitle: '加载好友中...'
             });
@@ -129,7 +129,7 @@ Page({
             }
         }
 
-        // 如果找到了最终目标页面，直接调用它的方法
+        // 如果找到了最终目标页面, 直接调用它的方法
         if (targetPage && typeof targetPage.onFriendsSelected === 'function') {
             targetPage.onFriendsSelected(this.data.selectedFriends, this.data.groupIndex, this.data.slotIndex);
             // 计算需要返回的层级
@@ -138,7 +138,7 @@ Page({
             return;
         }
 
-        // 如果没有找到最终目标页面，尝试调用 PlayerSelector 组件的方法
+        // 如果没有找到最终目标页面, 尝试调用 PlayerSelector 组件的方法
         const playerSelector = this.selectComponent('/components/PlayerSelector/PlayerSelector');
         if (playerSelector) {
             playerSelector.addPlayerToSlot(this.data.slotIndex, this.data.selectedFriends[0], 'friendSelect');
@@ -146,7 +146,7 @@ Page({
             return;
         }
 
-        // 如果都不成功，显示错误提示
+        // 如果都不成功, 显示错误提示
         wx.showToast({
             title: '无法添加好友',
             icon: 'none'
@@ -160,7 +160,7 @@ Page({
         const keyword = e.detail.value.trim().toLowerCase();
 
         if (!keyword) {
-            // 如果搜索关键词为空，重新加载所有好友
+            // 如果搜索关键词为空, 重新加载所有好友
             this.loadFriends();
             return;
         }

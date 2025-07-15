@@ -31,17 +31,17 @@ Page({
         wx.getSetting({
             success: (res) => {
                 if (!res.authSetting['scope.userLocation']) {
-                    // 如果没有权限，请求授权
+                    // 如果没有权限, 请求授权
                     wx.authorize({
                         scope: 'scope.userLocation',
                         success: () => {
                             this.startLocationRequest()
                         },
                         fail: () => {
-                            // 用户拒绝授权，显示打开设置页面的对话框
+                            // 用户拒绝授权, 显示打开设置页面的对话框
                             wx.showModal({
                                 title: '需要位置权限',
-                                content: '请授权访问您的位置信息，以便获取当前位置',
+                                content: '请授权访问您的位置信息, 以便获取当前位置',
                                 confirmText: '去设置',
                                 success: (modalRes) => {
                                     if (modalRes.confirm) {
@@ -55,7 +55,7 @@ Page({
                         }
                     })
                 } else {
-                    // 已有权限，直接获取位置
+                    // 已有权限, 直接获取位置
                     this.startLocationRequest()
                 }
             },

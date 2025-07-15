@@ -1,7 +1,7 @@
 {
   "name": "miniprogram",
   "version": "1.0.0",
-  "description": "这是一个微信小程序，关于高尔夫运动的，包括计费、游戏、群组等功能。",
+  "description": "这是一个微信小程序, 关于高尔夫运动的, 包括计费、游戏、群组等功能。",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

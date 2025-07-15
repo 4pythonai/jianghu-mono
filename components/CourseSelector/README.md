@@ -1,6 +1,6 @@
 # CourseSelector 球场选择组件
 
-一个功能完整的球场搜索和选择组件，支持搜索球场、显示收藏球场列表等功能。
+一个功能完整的球场搜索和选择组件, 支持搜索球场、显示收藏球场列表等功能。
 
 ## 功能特性
 
@@ -55,7 +55,7 @@ Page({
     const { type, error } = e.detail
     console.error('组件错误:', type, error)
     
-    let message = '操作失败，请重试'
+    let message = '操作失败, 请重试'
     if (type === 'getFavorites') {
       message = '获取收藏球场失败'
     } else if (type === 'search') {
@@ -127,7 +127,7 @@ courseSelector.refreshFavorites()
 
 ## 样式自定义
 
-组件使用了独立的样式作用域，如需自定义样式，可以通过以下方式:
+组件使用了独立的样式作用域, 如需自定义样式, 可以通过以下方式:
 
 1. 修改组件内部的 WXSS 文件
 2. 使用外部样式类(需要在组件中添加 `externalClasses` 支持)
@@ -141,7 +141,7 @@ courseSelector.refreshFavorites()
 
 ## 注意事项
 
-1. 组件内部不会显示 Toast 提示，错误信息通过 `error` 事件传递给父组件处理
-2. 球场选择后会通过 `select` 事件传递给父组件，不会自动处理页面跳转
-3. 组件支持调试模式，可以显示搜索值的详细信息
-4. 搜索功能使用防抖处理，避免频繁请求API 
+1. 组件内部不会显示 Toast 提示, 错误信息通过 `error` 事件传递给父组件处理
+2. 球场选择后会通过 `select` 事件传递给父组件, 不会自动处理页面跳转
+3. 组件支持调试模式, 可以显示搜索值的详细信息
+4. 搜索功能使用防抖处理, 避免频繁请求API 

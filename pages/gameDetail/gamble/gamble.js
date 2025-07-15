@@ -19,8 +19,10 @@ Component({
     data: {
         // 模块内部数据
         loading: false,
-        lastRefreshTime: 0, // 记录上次刷新时间，避免频繁刷新
+        lastRefreshTime: 0, // 记录上次刷新时间, 避免频繁刷新
     },
+
+
 
     // 计算属性
     computed: {
@@ -32,9 +34,9 @@ Component({
     // 观察者
     observers: {
         'currentTab': function (newTab) {
-            // 当切换到游戏选项卡时，刷新运行时配置
+            // 当切换到游戏选项卡时, 刷新运行时配置
             if (newTab === 2) {
-                console.log('🎮 切换到游戏选项卡，刷新运行时配置');
+                console.log('🎮 切换到游戏选项卡, 刷新运行时配置');
                 this.refreshRuntimeConfigWithThrottle();
             }
         }
@@ -45,7 +47,7 @@ Component({
         initGame() {
             // 初始化游戏
             this.setData({ loading: true });
-            console.log('🎮 初始化游戏，比赛ID:', this.properties.gameId);
+            console.log('🎮 初始化游戏, 比赛ID:', this.properties.gameId);
             console.log('🎮 参赛球员:', this.properties.players);
             console.log('🎮 gameStore中的gameid:', gameStore.gameid);
             console.log('🎮 runtimeStore中的runtimeConfigs:', runtimeStore.runtimeConfigs);
@@ -54,6 +56,13 @@ Component({
                 this.setData({ loading: false });
             }, 1500);
         },
+
+        onDeleteConfig(e) {
+            const id = e.currentTarget.dataset.id;
+            console.log('删除配置 id:', id);
+            // 这里后续可以加删除逻辑
+        },
+
 
         // 添加游戏按钮点击事件
         handleAddGame() {
@@ -87,7 +96,7 @@ Component({
             const gameId = this.properties.gameId || gameStore.gameid;
             const groupId = gameStore.groupId;
             if (gameId) {
-                console.log('🎮 刷新运行时配置，gameId:', gameId, 'groupId:', groupId);
+                console.log('🎮 刷新运行时配置, gameId:', gameId, 'groupId:', groupId);
                 runtimeStore.fetchRuntimeConfigs(gameId, groupId);
             }
         },
@@ -97,9 +106,9 @@ Component({
             const now = Date.now();
             const lastRefreshTime = this.data.lastRefreshTime;
 
-            // 如果距离上次刷新不足3秒，跳过此次刷新
+            // 如果距离上次刷新不足3秒, 跳过此次刷新
             if (now - lastRefreshTime < 3000) {
-                console.log('🎮 刷新过于频繁，跳过此次刷新');
+                console.log('🎮 刷新过于频繁, 跳过此次刷新');
                 return;
             }
 
@@ -130,8 +139,8 @@ Component({
                 gambleid: gambleid,
                 ruleType: config.gambleSysName || '',
                 userRuleName: config.gambleUserName || '',
-                firstHole: config.firstHoleindex || 1,
-                lastHole: config.lastHoleindex || 18,
+                firstHole: config.startHoleindex || 1,
+                lastHole: config.endHoleindex || 18,
                 playerCount: config.player8421Count || 0
             };
 
@@ -141,7 +150,7 @@ Component({
                 .map(key => `${key}=${encodeURIComponent(params[key])}`)
                 .join('&');
 
-            console.log('🎮 跳转到赌球结果页面，参数:', params);
+            console.log('🎮 跳转到赌球结果页面, 参数:', params);
 
             // 跳转到赌球结果页面
             wx.navigateTo({
@@ -177,7 +186,7 @@ Component({
             });
 
             this.initGame();
-            console.log('🎮 [Gamble] 组件已附加，多store绑定已创建');
+            console.log('🎮 [Gamble] 组件已附加, 多store绑定已创建');
         },
 
         detached() {
@@ -188,19 +197,19 @@ Component({
             if (this.runtimeStoreBindings) {
                 this.runtimeStoreBindings.destroyStoreBindings();
             }
-            console.log('🎮 [Gamble] 组件已分离，多store绑定已清理');
+            console.log('🎮 [Gamble] 组件已分离, 多store绑定已清理');
         }
     },
 
     // 页面生命周期
     pageLifetimes: {
         show() {
-            // 页面显示时刷新运行时配置，但只有在当前选项卡是"游戏"时才刷新
+            // 页面显示时刷新运行时配置, 但只有在当前选项卡是"游戏"时才刷新
             if (this.data.currentTab === 2) {
-                console.log('🎮 页面显示且在游戏选项卡，刷新运行时配置');
+                console.log('🎮 页面显示且在游戏选项卡, 刷新运行时配置');
                 this.refreshRuntimeConfigWithThrottle();
             } else {
-                console.log('🎮 页面显示，但不在游戏选项卡，跳过刷新');
+                console.log('🎮 页面显示, 但不在游戏选项卡, 跳过刷新');
             }
         }
     }

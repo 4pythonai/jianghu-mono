@@ -11,7 +11,7 @@
 
     <!-- 面板内容区域 -->
     <view class="panel-content">
-      <!-- 这里先留空，后续添加具体内容 -->
+      <!-- 这里先留空, 后续添加具体内容 -->
       <view class="content-placeholder">
         <text class="placeholder-text">添加球员功能开发中...</text>
       </view>

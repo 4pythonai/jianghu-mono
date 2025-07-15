@@ -9,7 +9,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('combineSelect页面加载，参数:', options);
+        console.log('combineSelect页面加载, 参数:', options);
 
         if (options.groupIndex !== undefined) {
             this.setData({
@@ -109,7 +109,7 @@ Page({
             }
         }
 
-        // 如果找到了最终目标页面，直接调用它的方法
+        // 如果找到了最终目标页面, 直接调用它的方法
         if (targetPage && typeof targetPage.onCombinationSelected === 'function') {
             targetPage.onCombinationSelected(combination, this.data.groupIndex, this.data.slotIndex);
             // 计算需要返回的层级
@@ -118,7 +118,7 @@ Page({
             return;
         }
 
-        // 如果没有找到最终目标页面，尝试调用 PlayerSelector 组件的方法
+        // 如果没有找到最终目标页面, 尝试调用 PlayerSelector 组件的方法
         const playerSelector = this.selectComponent('/components/PlayerSelector/PlayerSelector');
         if (playerSelector) {
             playerSelector.addPlayerToSlot(this.data.slotIndex, combination[0], 'combineSelect');
@@ -126,7 +126,7 @@ Page({
             return;
         }
 
-        // 如果都不成功，显示错误提示
+        // 如果都不成功, 显示错误提示
         wx.showToast({
             title: '无法添加玩家',
             icon: 'none'

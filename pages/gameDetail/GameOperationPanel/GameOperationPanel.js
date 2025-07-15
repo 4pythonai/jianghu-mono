@@ -33,7 +33,7 @@ Component({
 
         // 阻止冒泡
         stopPropagation() {
-            // 空函数，用于阻止点击面板内容时关闭弹窗
+            // 空函数, 用于阻止点击面板内容时关闭弹窗
         },
 
         // 功能选项点击
@@ -73,7 +73,7 @@ Component({
                             } catch (error) {
                                 console.error('❌ 取消比赛失败:', error);
                                 wx.showToast({
-                                    title: '取消失败，请重试',
+                                    title: '取消失败, 请重试',
                                     icon: 'error'
                                 });
                             }
@@ -115,7 +115,7 @@ Component({
                             } catch (error) {
                                 console.error('❌ 结束比赛失败:', error);
                                 wx.showToast({
-                                    title: '结束失败，请重试',
+                                    title: '结束失败, 请重试',
                                     icon: 'error'
                                 });
                             }
@@ -158,7 +158,7 @@ Component({
             // 隐藏面板
             this.hide();
 
-            // 触发自定义事件，传递选项类型
+            // 触发自定义事件, 传递选项类型
             this.triggerEvent('optionclick', { option });
 
             // 显示其他功能开发中提示

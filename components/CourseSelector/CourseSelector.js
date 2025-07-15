@@ -133,7 +133,7 @@ Component({
                 searchValue: value
             })
 
-            // 触发输入事件，通知父组件
+            // 触发输入事件, 通知父组件
             this.triggerEvent('input', {
                 value: value
             })
@@ -190,7 +190,7 @@ Component({
          */
         onSelectCourse(e) {
             const course = e.currentTarget.dataset.course
-            // 触发选择事件，通知父组件
+            // 触发选择事件, 通知父组件
             this.triggerEvent('select', {
                 course: course
             })

@@ -102,7 +102,7 @@ Component({
             console.log('📊 处理后的分组数据:', processedGroups);
 
             if (!processedGroups || processedGroups.length === 0) {
-                console.warn('⚠️ 游戏没有分组数据，直接进入游戏详情');
+                console.warn('⚠️ 游戏没有分组数据, 直接进入游戏详情');
                 wx.navigateTo({
                     url: `/pages/gameDetail/gameDetail?gameId=${gameId}`
                 });
@@ -111,12 +111,12 @@ Component({
 
             if (processedGroups.length === 1) {
                 const groupId = processedGroups[0]?.groupId;
-                console.log('📍 单组游戏，直接进入详情页面', { gameId, groupId });
+                console.log('📍 单组游戏, 直接进入详情页面', { gameId, groupId });
                 wx.navigateTo({
                     url: `/pages/gameDetail/gameDetail?gameId=${gameId}&groupId=${groupId}`
                 });
             } else {
-                console.log('📋 多组游戏，进入分组列表页面', { gameId, groupsCount: processedGroups.length });
+                console.log('📋 多组游戏, 进入分组列表页面', { gameId, groupsCount: processedGroups.length });
 
                 const app = getApp();
                 app.globalData = app.globalData || {};

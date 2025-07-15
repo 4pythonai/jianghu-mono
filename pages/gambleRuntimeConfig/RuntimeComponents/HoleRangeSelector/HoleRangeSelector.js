@@ -4,12 +4,12 @@ const RuntimeComponentsUtils = require('../common-utils.js');
 Component({
     properties: {
         // 起始洞
-        firstHoleindex: {
+        startHoleindex: {
             type: Number,
             value: 0
         },
         // 结束洞
-        lastHoleindex: {
+        endHoleindex: {
             type: Number,
             value: 17
         },
@@ -37,16 +37,16 @@ Component({
     },
 
     observers: {
-        'firstHoleindex, lastHoleindex, holeList': function (firstHoleindex, lastHoleindex, holeList) {
-            this.initializeHoleRanges(firstHoleindex, lastHoleindex, holeList);
+        'startHoleindex, endHoleindex, holeList': function (startHoleindex, endHoleindex, holeList) {
+            this.initializeHoleRanges(startHoleindex, endHoleindex, holeList);
         }
     },
 
     methods: {
         // 初始化洞范围选择器
-        initializeHoleRanges(firstHoleindex, lastHoleindex, holeList) {
-            const actualFirstHole = firstHoleindex !== undefined ? firstHoleindex : this.properties.firstHoleindex;
-            const actualLastHole = lastHoleindex !== undefined ? lastHoleindex : this.properties.lastHoleindex;
+        initializeHoleRanges(startHoleindex, endHoleindex, holeList) {
+            const actualFirstHole = startHoleindex !== undefined ? startHoleindex : this.properties.startHoleindex;
+            const actualLastHole = endHoleindex !== undefined ? endHoleindex : this.properties.endHoleindex;
             const actualHoleList = holeList !== undefined ? holeList : this.properties.holeList;
 
             const validHoleList = (actualHoleList || []).map(hole => ({
@@ -96,22 +96,22 @@ Component({
         },
 
         // 触发变更事件
-        triggerChangeEvent(firstHoleindex, lastHoleindex) {
+        triggerChangeEvent(startHoleindex, endHoleindex) {
             this.triggerEvent('change', {
-                firstHoleindex,
-                lastHoleindex
+                startHoleindex,
+                endHoleindex
             });
         },
 
         // 获取当前选择的洞范围描述
         getHoleRangeDescription() {
-            const firstHoleindex = this.data.startHoleIndex + 1;
-            const lastHoleindex = this.data.endHoleIndex + 1;
+            const startHoleindex = this.data.startHoleIndex + 1;
+            const endHoleindex = this.data.endHoleIndex + 1;
 
-            if (firstHoleindex === lastHoleindex) {
-                return `第${firstHoleindex}洞`;
+            if (startHoleindex === endHoleindex) {
+                return `第${startHoleindex}洞`;
             }
-            return `第${firstHoleindex}洞 - 第${lastHoleindex}洞`;
+            return `第${startHoleindex}洞 - 第${endHoleindex}洞`;
         }
     }
 }); 

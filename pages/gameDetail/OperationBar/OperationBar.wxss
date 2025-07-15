@@ -3,7 +3,7 @@
 	align-items: center;
 	justify-content: space-between;
 	padding: 24rpx 0;
-	margin: 20rpx 32rpx 20rpx 0; /* 左边与ScoreTable对齐，右边留边距 */
+	margin: 20rpx 32rpx 20rpx 0; /* 左边与ScoreTable对齐, 右边留边距 */
 }
 
 .game-info {

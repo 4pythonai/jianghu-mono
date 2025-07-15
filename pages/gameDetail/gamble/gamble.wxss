@@ -309,3 +309,53 @@
 	color: white;
 	font-weight: 500;
 }
+
+.config-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: relative;
+}
+
+.delete-btn {
+	color: #ff4d4f;
+	font-size: 32rpx;
+	font-weight: bold;
+	margin-left: 20rpx;
+}
+
+.detail-btn,
+.result-btn {
+	margin-right: 16rpx;
+	padding: 8rpx 24rpx;
+	font-size: 24rpx;
+	border-radius: 8rpx;
+}
+
+.detail-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 10px 20px;
+	background: linear-gradient(135deg, #4caf50, #45a049);
+	border: none;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(76, 175, 80, 0.25);
+	transition: all 0.3s ease;
+	font-size: 14px;
+}
+
+.result-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 10px 20px;
+	background: linear-gradient(135deg, #4caf50, #45a049);
+	border: none;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(76, 175, 80, 0.25);
+	transition: all 0.3s ease;
+	font-size: 14px;
+}

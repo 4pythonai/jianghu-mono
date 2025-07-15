@@ -13,19 +13,19 @@ export const G_4P_8421_Store = observable({
     user_rulename: '8421',
     creator_id: null,
 
-    // 封顶配置: 数字类型，如 2 表示扣2分封顶，10000000 表示不封顶
+    // 封顶配置: 数字类型, 如 2 表示扣2分封顶, 10000000 表示不封顶
     max8421_sub_value: 10000000,
 
-    // 扣分开始的值: NoSub, Par+X, DoublePar+X (X为数字) - 默认：Par+4
+    // 扣分开始的值: NoSub, Par+X, DoublePar+X (X为数字) - 默认:Par+4
     sub8421_config_string: 'Par+4',
 
-    // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL - 默认：NODUTY
+    // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL - 默认:NODUTY
     duty_config: 'NODUTY',
 
-    // 顶洞规则: NoDraw(无顶洞), Diff_X(得分X分以内), DrawEqual(得分打平) - 默认：DrawEqual
+    // 顶洞规则: NoDraw(无顶洞), Diff_X(得分X分以内), DrawEqual(得分打平) - 默认:DrawEqual
     draw8421_config: 'DrawEqual',
 
-    // 吃肉规则：默认配置
+    // 吃肉规则:默认配置
     eating_range: {
         "BetterThanBirdie": 2,
         "Birdie": 2,
@@ -33,10 +33,10 @@ export const G_4P_8421_Store = observable({
         "WorseThanPar": 0
     },
 
-    // meat option: MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE - 默认：MEAT_AS_1
+    // meat option: MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE - 默认:MEAT_AS_1
     meat_value_config_string: 'MEAT_AS_1',
 
-    // 吃肉封顶：  数字类型，如 3 表示3分封顶，10000000 表示不封顶
+    // 吃肉封顶:  数字类型, 如 3 表示3分封顶, 10000000 表示不封顶
     meat_max_value: 10000000,
 
     // 更新扣分规则的action

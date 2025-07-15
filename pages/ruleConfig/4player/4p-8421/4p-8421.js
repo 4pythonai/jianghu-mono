@@ -44,7 +44,7 @@ Page({
     // 更新显示值
     this.updateKoufenDisplayValue();
 
-    // 组件已经更新了store，这里只需要更新UI显示
+    // 组件已经更新了store, 这里只需要更新UI显示
     console.log('页面收到扣分规则更新:', detail.parsedData);
   },
   onShowDingdong() {
@@ -63,7 +63,7 @@ Page({
     // 更新显示值
     this.updateDingdongDisplayValue();
 
-    // 组件已经更新了store，这里只需要更新UI显示
+    // 组件已经更新了store, 这里只需要更新UI显示
     console.log('页面收到顶洞规则更新:', detail.value);
   },
   onShowEatmeat() {
@@ -82,7 +82,7 @@ Page({
     // 更新显示值
     this.updateEatmeatDisplayValue();
 
-    // 组件已经更新了store，这里只需要更新UI显示
+    // 组件已经更新了store, 这里只需要更新UI显示
     console.log('页面收到吃肉规则更新:', detail.parsedData);
   },
   onAddToMyRules() {
@@ -136,7 +136,7 @@ Page({
       }
     }
 
-    // 格式化封顶值 - 适配新格式:数字，10000000表示不封顶
+    // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
     let fengdingText = '';
     if (store.max8421_sub_value === 10000000) {
       fengdingText = '不封顶';
@@ -219,7 +219,7 @@ Page({
       }
     }
 
-    // 格式化封顶值 - 适配新格式:数字，10000000表示不封顶
+    // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
     let meatMaxText = '';
     if (store.meat_max_value === 10000000) {
       meatMaxText = '不封顶';
@@ -227,7 +227,7 @@ Page({
       meatMaxText = `${store.meat_max_value}分封顶`;
     }
 
-    // 简化显示，只显示主要的肉分值计算方式
+    // 简化显示, 只显示主要的肉分值计算方式
     if (meatValueText && meatMaxText) {
       displayValue = `${meatValueText}/${meatMaxText}`;
     } else if (meatValueText) {
@@ -246,7 +246,7 @@ Page({
   },
 
   onLoad() {
-    // 4人8421规则配置页，后续补充
+    // 4人8421规则配置页, 后续补充
     console.log('4P-8421 规则配置页面加载完成');
 
     // 初始化显示值
