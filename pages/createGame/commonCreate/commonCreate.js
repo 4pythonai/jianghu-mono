@@ -89,7 +89,7 @@ Page({
         formData: {
             gameName: '',       // 比赛名称
             openTime: '',       // 开球时间
-            ScoringType: 'hole',   // 赛制：hole-按洞赛, oneball-比杆赛
+            ScoringType: 'hole',   // 赛制:hole-按洞赛, oneball-比杆赛
             gameGroups: [       // 参赛组别(至少一组) { players: [] }
                 { players: [] }     // 默认创建第一组
             ],

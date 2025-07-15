@@ -153,13 +153,13 @@ Page({
     }).catch(error => {
       console.error('❌ 头像上传失败:', error)
 
-      // 降级处理：保存到本地
+      // 降级处理:保存到本地
       console.log('🔄 上传失败，降级到本地保存')
       this.saveAvatarLocally(tempFilePath)
     })
   },
 
-  // 降级方案：保存到本地(当服务器上传失败时)
+  // 降级方案:保存到本地(当服务器上传失败时)
   saveAvatarLocally(tempFilePath) {
     console.log('💾 降级到本地保存头像')
 
@@ -185,7 +185,7 @@ Page({
       fail: (err) => {
         console.error('❌ 本地保存也失败:', err)
 
-        // 最后的降级：直接使用临时路径
+        // 最后的降级:直接使用临时路径
         this.updateUserAvatar(tempFilePath, false)
 
         wx.hideLoading()
@@ -309,7 +309,7 @@ Page({
     }).catch(error => {
       console.error('❌ 昵称更新失败:', error)
 
-      // 降级处理：只保存到本地
+      // 降级处理:只保存到本地
       console.log('🔄 API失败，降级到本地保存')
 
       const updatedUserInfo = {
@@ -394,7 +394,7 @@ Page({
                 icon: 'success'
               })
             }).catch(err => {
-              console.error('绑定手机号失败：', err)
+              console.error('绑定手机号失败:', err)
               wx.showToast({
                 title: '绑定失败，请重试',
                 icon: 'none'

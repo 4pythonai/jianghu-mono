@@ -14,9 +14,9 @@ HttpClient现在支持统一的loading管理，为所有API请求提供智能的
 
 ### 🚀 防闪烁机制
 
-- **延迟显示**：请求开始后300ms才显示loading，避免快速请求的闪烁
-- **最小显示时间**：loading至少显示500ms，避免一闪而过
-- **并发管理**：多个请求时只显示一个loading，最后一个请求完成才隐藏
+- **延迟显示**:请求开始后300ms才显示loading，避免快速请求的闪烁
+- **最小显示时间**:loading至少显示500ms，避免一闪而过
+- **并发管理**:多个请求时只显示一个loading，最后一个请求完成才隐藏
 
 ## 📖 使用方法
 
@@ -168,7 +168,7 @@ await app.http.uploadFile('/game/data', filePath, {
 
 ## 🧪 测试loading功能
 
-项目中提供了测试工具，可以验证loading功能：
+项目中提供了测试工具，可以验证loading功能:
 
 ```javascript
 import { runAllLoadingTests, testBasicLoading, getLoadingStatus } from '../utils/test-loading'
@@ -187,7 +187,7 @@ getLoadingStatus()
 
 ### 现有代码自动升级
 
-✅ **无需修改** - 所有现有的API调用都会自动获得loading功能：
+✅ **无需修改** - 所有现有的API调用都会自动获得loading功能:
 
 ```javascript
 // 这些代码无需任何修改，会自动显示loading
@@ -198,7 +198,7 @@ await app.api.game.getGameDetail(gameId)
 
 ### 移除手动loading代码
 
-🔧 **可以移除** - 现在可以移除页面中的手动loading代码：
+🔧 **可以移除** - 现在可以移除页面中的手动loading代码:
 
 ```javascript
 // ❌ 旧代码 - 可以移除
@@ -219,7 +219,7 @@ const result = await app.api.user.getUserInfo()
 
 ### 并发请求优化
 
-当同时发起多个请求时，loading会智能管理：
+当同时发起多个请求时，loading会智能管理:
 
 ```javascript
 // 同时发起3个请求，只显示一个loading

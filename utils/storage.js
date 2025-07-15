@@ -1,6 +1,6 @@
 /**
  * 存储管理器
- * 职责：统一管理本地存储、错误处理、数据清理
+ * 职责:统一管理本地存储、错误处理、数据清理
  */
 class StorageManager {
     constructor() {
@@ -276,7 +276,7 @@ class StorageManager {
             console.log('🔄 开始数据迁移检查')
 
             // 这里可以添加版本升级时的数据迁移逻辑
-            // 例如：修改存储结构、清理废弃数据等
+            // 例如:修改存储结构、清理废弃数据等
 
             console.log('✅ 数据迁移检查完成')
             return true
@@ -331,7 +331,7 @@ class StorageManager {
     }
 
     /**
-     * 调试：打印所有存储内容
+     * 调试:打印所有存储内容
      */
     debug() {
         const info = this.getInfo()

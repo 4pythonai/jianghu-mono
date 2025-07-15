@@ -120,7 +120,7 @@ Page({
     const store = G_4P_8421_Store;
     let displayValue = '';
 
-    // 格式化扣分开始值 - 适配新格式：NoSub, Par+X, DoublePar+X
+    // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
     let startText = '';
     if (store.sub8421_config_string) {
       if (store.sub8421_config_string === 'NoSub') {
@@ -136,7 +136,7 @@ Page({
       }
     }
 
-    // 格式化封顶值 - 适配新格式：数字，10000000表示不封顶
+    // 格式化封顶值 - 适配新格式:数字，10000000表示不封顶
     let fengdingText = '';
     if (store.max8421_sub_value === 10000000) {
       fengdingText = '不封顶';
@@ -219,7 +219,7 @@ Page({
       }
     }
 
-    // 格式化封顶值 - 适配新格式：数字，10000000表示不封顶
+    // 格式化封顶值 - 适配新格式:数字，10000000表示不封顶
     let meatMaxText = '';
     if (store.meat_max_value === 10000000) {
       meatMaxText = '不封顶';

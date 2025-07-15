@@ -3,7 +3,7 @@ import storage from './storage'
 
 /**
  * 认证管理器
- * 职责：微信登录、token验证、登录状态管理、静默重新登录
+ * 职责:微信登录、token验证、登录状态管理、静默重新登录
  */
 class AuthManager {
     constructor() {

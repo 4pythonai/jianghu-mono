@@ -10,7 +10,7 @@ Component({
 
     lifetimes: {
         attached() {
-            // ** 核心：创建 Store 和 Component 的绑定 **
+            // ** 核心:创建 Store 和 Component 的绑定 **
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore, // 需要绑定的 store
                 fields: {
@@ -30,7 +30,7 @@ Component({
             this.scrollToLeft();
         },
         detached() {
-            // ** 关键：在组件销毁时清理绑定 **
+            // ** 关键:在组件销毁时清理绑定 **
             this.storeBindings.destroyStoreBindings();
         }
     },

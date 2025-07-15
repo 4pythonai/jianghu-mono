@@ -5,15 +5,15 @@
 		<button class="location-btn" bindtap="getLocation" loading="{{ locationLoading }}" disabled="{{ locationLoading }}">{{locationLoading ? '获取位置中...' : '获取当前位置'}}</button>
 		<view class="location-info" wx:if="{{ location }}">
 			<view class="location-item">
-				<text class="label">经度：</text>
+				<text class="label">经度:</text>
 				<text class="value">{{location.longitude}}</text>
 			</view>
 			<view class="location-item">
-				<text class="label">纬度：</text>
+				<text class="label">纬度:</text>
 				<text class="value">{{location.latitude}}</text>
 			</view>
 			<view class="update-time" wx:if="{{ location.updateTime }}">
-				<text>更新时间：{{location.updateTime}}</text>
+				<text>更新时间:{{location.updateTime}}</text>
 			</view>
 			<button class="get-courses-btn" bindtap="getNearestCourses" loading="{{ courseLoading }}">获取附近球场</button>
 		</view>

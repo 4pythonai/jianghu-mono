@@ -77,12 +77,12 @@ Component({
       const { eating_range, meatValue, meat_max_value } = config;
       console.log('从store加载吃肉配置:', config);
 
-      // 解析吃肉数量配置 - 新格式：JSON对象
+      // 解析吃肉数量配置 - 新格式:JSON对象
       if (eating_range && typeof eating_range === 'object' && !Array.isArray(eating_range)) {
         this.setData({ eating_range });
       }
 
-      // 解析肉分值计算方式 - 新格式：MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
+      // 解析肉分值计算方式 - 新格式:MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
       if (meatValue) {
         let scoreSelected = 0;
         if (meatValue?.startsWith('MEAT_AS_')) {
@@ -95,7 +95,7 @@ Component({
         this.setData({ scoreSelected });
       }
 
-      // 解析封顶配置 - 新格式：数字，10000000表示不封顶
+      // 解析封顶配置 - 新格式:数字，10000000表示不封顶
       if (meat_max_value === 10000000) {
         this.setData({ topSelected: 0 });
       } else if (typeof meat_max_value === 'number' && meat_max_value < 10000000) {

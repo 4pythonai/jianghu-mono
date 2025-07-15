@@ -187,7 +187,7 @@ Page({
 
         // 延迟返回到创建游戏页面
         setTimeout(() => {
-            // 手工添加的页面导航路径：commonCreate -> player-select -> manualAdd
+            // 手工添加的页面导航路径:commonCreate -> player-select -> manualAdd
             // 所以应该返回 2 层到 commonCreate 页面
             const targetDelta = 2;
 

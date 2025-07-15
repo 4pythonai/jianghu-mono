@@ -3,15 +3,15 @@ import storage from '../utils/storage'
 
 /**
  * HTTP请求封装
- * 职责：网络请求、自动添加token、处理401响应、通知认证层、自动重试、统一loading管理
+ * 职责:网络请求、自动添加token、处理401响应、通知认证层、自动重试、统一loading管理
  * 
- * Loading功能特性：
+ * Loading功能特性:
  * 1. 自动loading管理 - 默认所有请求都显示loading
  * 2. 智能防闪烁 - 延迟显示和最小显示时间
  * 3. 并发请求支持 - 多个请求共享一个loading状态
  * 4. 灵活配置 - 支持自定义loading文案、遮罩等
  * 
- * 使用方式：
+ * 使用方式:
  * 
  * // 默认使用(自动显示loading)
  * await app.api.user.createAndSelect(userData)
@@ -127,7 +127,7 @@ class HttpClient {
                 clearTimeout(this.loadingTimer)
                 this.loadingTimer = null
                 // console.log('⏹️ 取消Loading显示(请求太快)')
-                // 注意：这里不return，因为loading可能已经显示了
+                // 注意:这里不return，因为loading可能已经显示了
             }
 
             // 检查loading是否已经显示
@@ -146,7 +146,7 @@ class HttpClient {
                     }
 
                     const hideTimer = setTimeout(() => {
-                        // 简化条件检查：只要loadingCount为0就隐藏
+                        // 简化条件检查:只要loadingCount为0就隐藏
                         if (this.loadingCount === 0) {
                             wx.hideLoading()
                             // console.log('📱 系统Loading已隐藏(延迟)')
@@ -322,7 +322,7 @@ class HttpClient {
             await this.authManager.silentLogin()
             console.log('✅ 静默重新登录成功，开始重试请求')
 
-            // 重试原始请求 - 注意：这里不需要额外的loading管理，因为原始请求的finally会处理
+            // 重试原始请求 - 注意:这里不需要额外的loading管理，因为原始请求的finally会处理
             const retryResult = await this.retryOriginalRequest(requestConfig)
 
             // 处理队列中的请求

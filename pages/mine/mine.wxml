@@ -20,7 +20,7 @@
 			</button>
 			<!-- 获取昵称输入框 -->
 			<view class="nickname-input-wrapper">
-				<text class="input-label">昵称：</text>
+				<text class="input-label">昵称:</text>
 				<input
 					class="nickname-input"
 					type="nickname"

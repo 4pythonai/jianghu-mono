@@ -224,7 +224,7 @@ Component({
                 this.setSaving(false);
                 console.log('💾 [ScoreInputPanel] 保存流程结束，isSaving 已重置为 false');
 
-                // 7. 多重保险：强制隐藏可能残留的Loading
+                // 7. 多重保险:强制隐藏可能残留的Loading
                 try {
                     wx.hideLoading();
                     console.log('🔧 [ScoreInputPanel] finally块中强制隐藏Loading完成');
@@ -232,7 +232,7 @@ Component({
                     console.log('🔧 [ScoreInputPanel] finally块中强制隐藏Loading失败(可能本来就没有Loading):', e.message);
                 }
 
-                // 8. 额外保险：延迟再次检查并隐藏Loading
+                // 8. 额外保险:延迟再次检查并隐藏Loading
                 setTimeout(() => {
                     try {
                         wx.hideLoading();
@@ -251,7 +251,7 @@ Component({
         async handleConfirm() {
             console.log('🎯 handleConfirm 开始，当前 isSaving:', this.data.isSaving);
 
-            // 🔧 防止重复点击：如果正在保存，直接返回
+            // 🔧 防止重复点击:如果正在保存，直接返回
             if (this.data.isSaving) {
                 console.log('⚠️ [ScoreInputPanel] 正在保存中，忽略重复点击');
                 return;

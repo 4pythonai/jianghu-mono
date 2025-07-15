@@ -92,7 +92,7 @@ export const filterDuplicateUsers = (players, gameGroups, targetGroupIndex) => {
  * 通用的追加玩家到组的方法
  * @param {Array} players - 待添加的玩家列表
  * @param {number} groupIndex - 目标组索引
- * @param {string} sourceType - 来源类型(如：'好友'、'手工添加用户'等)
+ * @param {string} sourceType - 来源类型(如:'好友'、'手工添加用户'等)
  * @param {Array} gameGroups - 当前游戏组数据
  * @param {number} maxPlayers - 每组最大玩家数，默认4
  * @returns {Object} 返回更新结果和统计信息
@@ -181,7 +181,7 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
     }
 
     console.log(`🎉 第${groupIndex + 1}组更新完成，当前${updatedPlayers.length}/${maxPlayers}人`);
-    console.log(`📈 统计：添加${playersToAdd.length}人，重复跨组跳过${duplicateCount}人，容量跳过${capacitySkippedCount}人`);
+    console.log(`📈 统计:添加${playersToAdd.length}人，重复跨组跳过${duplicateCount}人，容量跳过${capacitySkippedCount}人`);
 
     return {
         success: true,
@@ -242,7 +242,7 @@ export const handleAppendPlayersToGroup = (players, groupIndex, sourceType, game
         ...result, // 包含原有的业务结果
         uiActions,  // 新增UI操作指令
 
-        // 便捷方法：直接执行微信小程序的UI操作
+        // 便捷方法:直接执行微信小程序的UI操作
         executeWxActions: function (pageInstance) {
             if (this.uiActions.setData && pageInstance.setData) {
                 pageInstance.setData(this.uiActions.setData);

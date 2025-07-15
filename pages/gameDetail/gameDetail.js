@@ -13,7 +13,7 @@ Page({
     },
 
     onLoad(options) {
-        // ** 核心：创建 Store 和 Page 的绑定 **
+        // ** 核心:创建 Store 和 Page 的绑定 **
         this.storeBindings = createStoreBindings(this, {
             store: gameStore, // 需要绑定的 store
             fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes', 'currentTab'],
@@ -21,7 +21,7 @@ Page({
         });
 
         const gameId = options?.gameId;
-        const groupId = options?.groupId; // 新增：获取 groupId 参数
+        const groupId = options?.groupId; // 新增:获取 groupId 参数
 
         this.setData({ gameId, groupId });
 
@@ -43,7 +43,7 @@ Page({
     },
 
     onUnload() {
-        // ** 关键：在页面销毁时清理绑定 **
+        // ** 关键:在页面销毁时清理绑定 **
         this.storeBindings.destroyStoreBindings();
     },
 

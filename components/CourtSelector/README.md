@@ -62,7 +62,7 @@
 onCourtConfirm(e) {
   const { selectionData } = e.detail
   console.log('选择结果:', selectionData)
-  // selectionData 包含：
+  // selectionData 包含:
   // - course: 球场详细信息
   // - frontNine: 前九洞半场信息
   // - backNine: 后九洞半场信息
@@ -124,7 +124,7 @@ onError(e) {
 
 ## API 依赖
 
-组件依赖以下 API 接口：
+组件依赖以下 API 接口:
 
 ### getCourseDetail
 获取球场详细信息，包括半场和洞信息
@@ -161,7 +161,7 @@ app.api.course.getCourseDetail({ courseid })
 
 ## 外部方法
 
-组件提供以下外部调用方法：
+组件提供以下外部调用方法:
 
 ### clearSelection()
 清空当前选择
@@ -225,7 +225,7 @@ const selection = this.selectComponent('#courtSelector').getSelection()
 
 ## 样式定制
 
-组件使用标准的 WXSS 样式，支持以下主要样式类：
+组件使用标准的 WXSS 样式，支持以下主要样式类:
 
 - `.court-selector` - 组件根容器
 - `.court-columns` - 两列布局容器
@@ -236,10 +236,10 @@ const selection = this.selectComponent('#courtSelector').getSelection()
 
 ## 注意事项
 
-1. **必须提供 courseid**：组件需要 courseid 参数来调用 API 获取数据
-2. **API 格式要求**：确保 `getCourseDetail` API 返回正确的数据格式
-3. **错误处理**：建议监听 error 事件来处理各种错误情况
-4. **性能考虑**：组件会在初始化时自动调用 API，避免重复调用
+1. **必须提供 courseid**:组件需要 courseid 参数来调用 API 获取数据
+2. **API 格式要求**:确保 `getCourseDetail` API 返回正确的数据格式
+3. **错误处理**:建议监听 error 事件来处理各种错误情况
+4. **性能考虑**:组件会在初始化时自动调用 API，避免重复调用
 
 ## 更新日志
 

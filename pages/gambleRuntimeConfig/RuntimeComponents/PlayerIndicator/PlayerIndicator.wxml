@@ -71,8 +71,8 @@
           bindinput="onCustomInput"
           maxlength="5"
         />
-        <text class="input-hint">4位数字对应：老鹰-标准杆-柏忌-双柏忌</text>
-        <text class="input-hint">5位数字对应：老鹰-标准杆-柏忌-双柏忌-三柏忌</text>
+        <text class="input-hint">4位数字对应:老鹰-标准杆-柏忌-双柏忌</text>
+        <text class="input-hint">5位数字对应:老鹰-标准杆-柏忌-双柏忌-三柏忌</text>
       </view>
       
       <!-- 按钮区域 -->

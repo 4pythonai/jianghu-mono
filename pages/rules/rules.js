@@ -109,7 +109,7 @@ Page({
         wx.stopPullDownRefresh();
     },
 
-    // Debug方法：手动切换tab
+    // Debug方法:手动切换tab
     debugToggleTab() {
         const newTab = this.data.activeTab === 0 ? 1 : 0;
         console.log('📋 [Rules] Debug切换tab:', this.data.activeTab, '->', newTab);

@@ -5,23 +5,23 @@
   </view>
   <!-- 右侧内容区 -->
   <view class="content-column">
-    <!-- 第1行：比赛名称 + star -->
+    <!-- 第1行:比赛名称 + star -->
     <view class="row name-row">
       <text class="game-name">{{gameName}}</text>
       <view class="star-icon">
         <view class="iconfont icon-score2" />
       </view>
     </view>
-    <!-- 第2行：进度条 -->
+    <!-- 第2行:进度条 -->
     <view class="row progress-row">
       <progress-bar completedHoles="{{completedHoles}}" holes="{{holes}}" />
     </view>
-    <!-- 第3行：地点 -->
+    <!-- 第3行:地点 -->
     <view class="row course-row">
       <view class="iconfont icon-location" style="color: var(--theme-color);"></view>
       <text class="course">{{course}}</text>
     </view>
-    <!-- 第4行：时间人数 -->
+    <!-- 第4行:时间人数 -->
     <view class="row meta-row">
       <view class="time-watchers">
         <view class="iconfont icon-clock" style="color: var(--theme-color);"></view>

@@ -66,7 +66,7 @@ Component({
       const { max8421SubValue, koufenStart, partnerPunishment } = config;
       console.log('从store加载配置:', config);
 
-      // 解析扣分开始条件 - 新格式：NoSub, Par+X, DoublePar+X
+      // 解析扣分开始条件 - 新格式:NoSub, Par+X, DoublePar+X
       if (koufenStart) {
         if (koufenStart === 'NoSub') {
           this.setData({ selectedStart: 2 });
@@ -89,7 +89,7 @@ Component({
         }
       }
 
-      // 解析封顶配置 - 新格式：数字，10000000表示不封顶
+      // 解析封顶配置 - 新格式:数字，10000000表示不封顶
       if (max8421SubValue === 10000000) {
         this.setData({ selectedMax: 0 });
       } else if (typeof max8421SubValue === 'number' && max8421SubValue < 10000000) {
@@ -99,7 +99,7 @@ Component({
         });
       }
 
-      // 解析同伴惩罚配置 - 新格式：NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL
+      // 解析同伴惩罚配置 - 新格式:NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL
       if (partnerPunishment) {
         let selectedDuty = 0;
         switch (partnerPunishment) {

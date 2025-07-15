@@ -96,13 +96,13 @@ App({
             console.log('📱 系统信息获取成功:', this.globalData.systemInfo)
         } catch (error) {
             console.error('❌ 获取系统信息失败:', error)
-            // 降级处理：如果新 API 不可用，尝试使用旧 API
+            // 降级处理:如果新 API 不可用，尝试使用旧 API
             this.fallbackGetSystemInfo()
         }
     },
 
     /**
-     * 降级处理：使用旧的系统信息 API
+     * 降级处理:使用旧的系统信息 API
      */
     fallbackGetSystemInfo() {
         wx.getSystemInfo({
@@ -280,11 +280,11 @@ App({
 
         // 检查是否有异常状态
         if (status.isLoading && status.loadingCount === 0) {
-            console.warn('⚠️ 异常：isLoading为true但loadingCount为0')
+            console.warn('⚠️ 异常:isLoading为true但loadingCount为0')
         }
 
         if (status.hasShowTimer && status.hasHideTimer) {
-            console.warn('⚠️ 异常：同时存在显示和隐藏定时器')
+            console.warn('⚠️ 异常:同时存在显示和隐藏定时器')
         }
 
         return status
@@ -294,12 +294,12 @@ App({
     fixLoading() {
         console.log('🚨 强制修复loading')
 
-        // 方法1：通过HttpClient
+        // 方法1:通过HttpClient
         if (this.http) {
             console.log('1️⃣ 通过HttpClient清理')
         }
 
-        // 方法2：直接调用微信API
+        // 方法2:直接调用微信API
         console.log('2️⃣ 直接调用wx.hideLoading')
         try {
             wx.hideLoading()
@@ -307,7 +307,7 @@ App({
             console.error('❌ wx.hideLoading失败:', error)
         }
 
-        // 方法3：多次调用确保清理
+        // 方法3:多次调用确保清理
         console.log('3️⃣ 延迟再次清理')
         setTimeout(() => {
             try {

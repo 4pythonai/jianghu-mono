@@ -166,7 +166,7 @@ Page({
         console.log('📍 court-select页面接收到确认选择:', selectionData)
 
         // 直接传递 selectionData，不需要重新组合
-        // selectionData 已经包含了所有需要的数据：
+        // selectionData 已经包含了所有需要的数据:
         // - frontNine, backNine (可能为null)
         // - gameType, totalHoles
         // - frontNineHoles, backNineHoles
@@ -208,7 +208,7 @@ Page({
         } else {
             console.error('commonCreate页面没有setCourtSelection方法或页面不存在')
 
-            // 备用方案：尝试通过事件总线或者其他方式传递数据
+            // 备用方案:尝试通过事件总线或者其他方式传递数据
             console.log('尝试备用方案...')
             // 可以尝试使用 wx.setStorageSync 临时存储数据
             wx.setStorageSync('selectedCourtData', formattedData)

@@ -97,7 +97,7 @@ Page({
                 })
             },
             fail: (err) => {
-                console.error('获取位置失败：', err)
+                console.error('获取位置失败:', err)
                 this.handleLocationError('获取位置失败')
             },
             complete: () => {
@@ -164,8 +164,8 @@ Page({
                 icon: 'success'
             })
         } catch (error) {
-            console.error('获取球场失败：', error)
-            console.error('错误详情：', {
+            console.error('获取球场失败:', error)
+            console.error('错误详情:', {
                 message: error.message,
                 stack: error.stack,
                 errMsg: error.errMsg

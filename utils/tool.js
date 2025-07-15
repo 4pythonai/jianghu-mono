@@ -22,7 +22,7 @@ export const getApiBaseUrl = () => {
 
 /**
  * 生成 UUID v4 (随机UUID)
- * 符合 RFC 4122 标准的 UUID 格式：xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+ * 符合 RFC 4122 标准的 UUID 格式:xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
  * @returns {string} 返回标准格式的UUID字符串
  */
 export const uuid = () => {

@@ -122,9 +122,9 @@ export const gameStore = observable({
 
         // 用清洗过的数据更新状态
         this.gameData = gameData;
-        this.players = players;  // 注意：这里是过滤后的玩家
+        this.players = players;  // 注意:这里是过滤后的玩家
         this.holes = holes;
-        this.scores = scores;    // 注意：这里是过滤后玩家的分数矩阵
+        this.scores = scores;    // 注意:这里是过滤后玩家的分数矩阵
         this.groupId = groupId;  // 存储当前分组ID
     }),
 
@@ -182,7 +182,7 @@ export const gameStore = observable({
         if (!scoreObj) { return; }
 
 
-        // 🔧 更激进的修复：完全替换整个scores数组来强制触发响应式更新
+        // 🔧 更激进的修复:完全替换整个scores数组来强制触发响应式更新
         // 创建新的scores数组副本
         const newScores = this.scores.map((playerScores, pIndex) => {
             if (pIndex === playerIndex) {
@@ -219,10 +219,10 @@ export const gameStore = observable({
             return playerScores;
         });
 
-        // �� 关键：完全替换scores数组，强制触发响应式更新
+        // �� 关键:完全替换scores数组，强制触发响应式更新
         this.scores = newScores;
 
-        // 🧪 测试：强制更新一个简单字段来测试MobX响应式是否正常工作
+        // 🧪 测试:强制更新一个简单字段来测试MobX响应式是否正常工作
         this.isSaving = !this.isSaving;
         setTimeout(() => {
             this.isSaving = !this.isSaving;

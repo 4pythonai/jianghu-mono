@@ -87,7 +87,7 @@ Page({
     onWebViewMessage(e) {
         console.log('📊 [Scorecard] 收到WebView消息', e);
         const messages = e.detail?.data || [];
-        // 修复linter错误：使用for...of替代forEach
+        // 修复linter错误:使用for...of替代forEach
         for (const msg of messages) {
             console.log('📊 [Scorecard] WebView消息内容', msg);
         }

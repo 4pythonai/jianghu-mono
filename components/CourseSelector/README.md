@@ -109,7 +109,7 @@ Page({
 
 ## 外部方法
 
-可以通过组件实例调用以下方法：
+可以通过组件实例调用以下方法:
 
 ```javascript
 // 获取组件实例
@@ -127,7 +127,7 @@ courseSelector.refreshFavorites()
 
 ## 样式自定义
 
-组件使用了独立的样式作用域，如需自定义样式，可以通过以下方式：
+组件使用了独立的样式作用域，如需自定义样式，可以通过以下方式:
 
 1. 修改组件内部的 WXSS 文件
 2. 使用外部样式类(需要在组件中添加 `externalClasses` 支持)
@@ -136,8 +136,8 @@ courseSelector.refreshFavorites()
 
 - 需要 `app.api.course.searchCourse()` API 支持搜索功能
 - 需要 `app.api.course.getFavorites()` API 支持获取收藏列表
-- 需要搜索图标资源：`/assets/icons/search.png`
-- 需要箭头图标资源：`/assets/icons/arrow-right.svg`
+- 需要搜索图标资源:`/assets/icons/search.png`
+- 需要箭头图标资源:`/assets/icons/arrow-right.svg`
 
 ## 注意事项
 
