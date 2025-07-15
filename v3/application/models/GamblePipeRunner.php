@@ -11,6 +11,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     // 常量定义 (根据业务逻辑，所有参与用户都在出发顺序中，无需默认值)
 
+    public $context; //全局上下文对象
 
 
     // private 参数
@@ -21,7 +22,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $userid;
     private $group_info;       // group信息,所有人
 
-    private $useful_holes;
 
     private $holes;
     private $bootStrapOrder; //出发顺序,即参与赌球的人员的初始排名,因为没有比赛成绩,所以要硬性规定下
@@ -29,13 +29,13 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $endHoleindex;    // 最后一个参与计算的洞的index,因为要支持从某个洞开始赌球
     private $scores;           // 记分
     private $attenders;  // 参与赌球的人员
-    private $redBlueConfig;
+    private $redBlueConfig;  // 分组配置
     private $dutyConfig;  // 包洞配置
     private $ranking4TieResolveConfig;  // 排名解决平局配置
 
-    private $rangedHoles;
+    private $rangedHoles; // 参与计算的球洞范围
+    private $useful_holes; // 参与计算的球洞范围内已经记分完毕的
 
-    public $context; // 新增：全局上下文对象
 
     public function __invoke($cfg) {
     }
@@ -87,7 +87,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     public function setFinishedHolesInRange() {
         $tmp = $this->MGambleDataFactory->getFinishedHoles($this->context->rangedHoles, $this->context->scores);
         $this->context->usefulHoles = $tmp;
-        // $this->context->rangedHoles = $tmp;
     }
 
 
@@ -168,9 +167,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
 
-    private function addDebugLog(&$hole, $msg) {
-        $hole['debug'][] = $msg;
-    }
+
 
 
     // Getter 方法用于上下文对象
