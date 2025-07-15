@@ -15,8 +15,8 @@ class GambleContext extends CI_Model {
     public $groupid;
     public $userid;
     public $holes;
-    public $firstHoleindex;
-    public $lastHoleindex;
+    public $startHoleindex;
+    public $endHoleindex;
     public $scores;
     public $group_info;
     public $usefulHoles;
@@ -46,8 +46,8 @@ class GambleContext extends CI_Model {
         'groupid' => 'getGroupid',
         'userid' => 'getUserid',
         'holes' => 'getHoles',
-        'firstHoleindex' => 'getFirstHoleindex',
-        'lastHoleindex' => 'getLastHoleindex',
+        'startHoleindex' => 'getStartHoleindex',
+        'endHoleindex' => 'getEndHoleindex',
         'scores' => 'getScores',
         'group_info' => 'getGroupInfo',
         'usefulHoles' => 'getUsefulHoles',

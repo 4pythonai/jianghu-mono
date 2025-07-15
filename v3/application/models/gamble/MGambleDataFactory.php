@@ -30,9 +30,9 @@ class MGambleDataFactory extends CI_Model {
   }
 
 
-  public function getOneGambleHoleData($gameid, $groupid, $firstHoleindex, $lastholeindex) {
+  public function getOneGambleHoleData($gameid, $groupid, $startHoleindex, $endHoleindex) {
     $public_hole_data = $this->get_public_holedata($gameid, $groupid);
-    $realused_holes = $this->choose($public_hole_data, $firstHoleindex, $lastholeindex);
+    $realused_holes = $this->choose($public_hole_data, $startHoleindex, $endHoleindex);
     return $realused_holes;
   }
 
@@ -131,11 +131,11 @@ class MGambleDataFactory extends CI_Model {
   }
 
 
-  public function choose($public_hole_data, $firstHoleindex, $lastholeindex) {
+  public function choose($public_hole_data, $startHoleindex, $endHoleindex) {
     $real_holes = array();
     foreach ($public_hole_data as $array_pointer => $one_hole) {
       $hole_pointer = $array_pointer + 1;
-      if (($hole_pointer >= $firstHoleindex) && ($hole_pointer <= $lastholeindex)) {
+      if (($hole_pointer >= $startHoleindex) && ($hole_pointer <= $endHoleindex)) {
         $one_hole['selected'] = 'y';
       } else {
         $one_hole['selected'] = 'n';

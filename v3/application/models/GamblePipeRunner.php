@@ -21,8 +21,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $userid;
     private $holes;
     private $bootStrapOrder; //出发顺序,即参与赌球的人员的初始排名,因为没有比赛成绩,所以要硬性规定下
-    private $firstHoleindex;   // 第一个参与计算的洞的index,因为要支持从某个洞开始赌球
-    private $lastholeindex;    // 最后一个参与计算的洞的index,因为要支持从某个洞开始赌球
+    private $startHoleindex;   // 第一个参与计算的洞的index,因为要支持从某个洞开始赌球
+    private $endHoleindex;    // 最后一个参与计算的洞的index,因为要支持从某个洞开始赌球
     private $scores;           // 记分
     private $group_info;       // group信息,所有人
     private $attenders;  // 参与赌球的人员
@@ -50,10 +50,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->groupid = $config['groupid'];
         $this->userid = $config['userid'];
 
-        $this->firstHoleindex = $this->MRuntimeConfig->getFirstHoleindex($this->gambleid);
-        $this->lastholeindex = $this->MRuntimeConfig->getLastHoleindex($this->gambleid);
+        $this->startHoleindex = $this->MRuntimeConfig->getStartHoleindex($this->gambleid);
+        $this->endHoleindex = $this->MRuntimeConfig->getEndHoleindex($this->gambleid);
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gameid);
-        $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->firstHoleindex, $this->lastholeindex);
+        $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->startHoleindex, $this->endHoleindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->gameid, $this->groupid);
         $this->attenders = $this->MRuntimeConfig->getAttenders($this->gambleid);
         $this->bootStrapOrder = $this->MRuntimeConfig->getBootStrapOrder($this->gambleid);
@@ -195,8 +195,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'redBlueConfig' => $this->redBlueConfig,
             'ranking4TieResolveConfig' => $this->ranking4TieResolveConfig,
             'holes' => $this->holes,
-            'firstHoleindex' => $this->firstHoleindex,
-            'lastholeindex' => $this->lastholeindex,
+            'startHoleindex' => $this->startHoleindex,
+            'endHoleindex' => $this->endHoleindex,
             'scores' => $this->scores,
             'group_info' => $this->group_info,
             'attenders' => $this->attenders,
@@ -239,12 +239,12 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         return $this->holes;
     }
 
-    public function getFirstHoleindex() {
-        return $this->firstHoleindex;
+    public function getStartHoleindex() {
+        return $this->startHoleindex;
     }
 
-    public function getLastHoleindex() {
-        return $this->lastholeindex;
+    public function getEndHoleindex() {
+        return $this->endHoleindex;
     }
 
     public function getScores() {
