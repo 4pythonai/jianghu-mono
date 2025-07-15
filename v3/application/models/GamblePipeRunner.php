@@ -19,19 +19,19 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $gambleid;
     private $groupid;
     private $userid;
+    private $group_info;       // group信息,所有人
+
+    private $useful_holes;
+
     private $holes;
     private $bootStrapOrder; //出发顺序,即参与赌球的人员的初始排名,因为没有比赛成绩,所以要硬性规定下
     private $startHoleindex;   // 第一个参与计算的洞的index,因为要支持从某个洞开始赌球
     private $endHoleindex;    // 最后一个参与计算的洞的index,因为要支持从某个洞开始赌球
     private $scores;           // 记分
-    private $group_info;       // group信息,所有人
     private $attenders;  // 参与赌球的人员
     private $redBlueConfig;
     private $dutyConfig;  // 包洞配置
     private $ranking4TieResolveConfig;  // 排名解决平局配置
-
-    // 以下为结果
-    private $useful_holes;
 
     public function __invoke($cfg) {
     }
@@ -69,70 +69,14 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     }
 
 
-    public function printGambleConfig() {
-        debug("游戏名称", $this->gambleSysName);
-        debug("游戏id", $this->gameid);
-        debug("赌球id", $this->gambleid);
-        debug("分组id", $this->groupid);
-        debug("用户id", $this->userid);
-        debug(["93:A为峰_a2", "185:A图图手机", "67:不发力", "160:A高攀_a1"]);
-        $dutyConfigMeaning = [
-            '1' => '不包负分 (NODUTY)',
-            '2' => '包负分 (DUTY_NEGATIVE)',
-            '3' => '同伴顶头保负分 (DUTY_CODITIONAL)',
-            'NODUTY' => '不包负分',
-            'DUTY_NEGATIVE' => '包负分',
-            'DUTY_CODITIONAL' => '同伴顶头保负分'
-        ];
-
-        $meaningText = isset($dutyConfigMeaning[$this->dutyConfig]) ? $dutyConfigMeaning[$this->dutyConfig] : '未知配置';
-        debug("负分配置", $this->dutyConfig . " => " . $meaningText);
-
-        debug("分组方式", $this->redBlueConfig);
-        debug("排名解决平局配置", $this->ranking4TieResolveConfig);
-        debug("出发顺序", $this->bootStrapOrder);
-
-        // 打印8421系统配置
-        debug("=== 8421系统配置 ===");
-        if ($this->gambleSysName == '8421') {
-            $configs = $this->MRuntimeConfig->get8421AllConfigs($this->gambleid);
-            if ($configs) {
-                debug("8421用户添加值对配置", $configs['val8421_config'] ?? '未设置');
-                debug("8421 扣分的配置", $configs['sub8421ConfigString'] ?? '未设置');
-                debug("8421 扣分封顶", $configs['max8421SubValue'] ?? '未设置');
-                debug("8421 顶洞配置", $configs['draw8421Config'] ?? '未设置');
-                debug("8421 吃肉范围配置", $configs['eatingRange'] ?? '未设置');
-                debug("8421 肉值配置字符串");
-                debug([
-                    "MEAT_AS_3" => "每块肉3分，吃肉数量由上面表格(get8421EatingRange)决定,考虑封顶",
-                    "SINGLE_DOUBLE" => "分值翻倍翻倍,比如:本洞赢 8 分,  吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分).此时如果有封顶 如 3,则为 8+N*3",
-                    "CONTINUE_DOUBLE" => "连续翻倍,不遗留任何肉,无需考虑封顶,无需考虑 get8421EatingRange"
-                ]);
-                debug("8421 肉值配置字符串", $configs['meatValueConfigString'] ?? '未设置');
-                debug("8421 肉最大值", $configs['meatMaxValue'] ?? '未设置');
-            } else {
-                debug("8421配置", "未找到gambleid=" . $this->gambleid . "的配置");
-            }
-        } else {
-            debug("8421配置", "当前不是8421游戏系统");
-        }
-    }
-
-
-
     // 得到需要计算的洞
     public function setUsefulHoles() {
-        $this->useful_holes = $this->MGambleDataFactory->getUsefulHoles($this->holes, $this->scores);
-        foreach ($this->useful_holes as &$hole) {
-            $hole['gambleSysName'] = $this->gambleSysName;
-        }
+        $this->useful_holes = $this->MGambleDataFactory->grabUsefulHoles($this->holes, $this->scores);
     }
 
     public function processHoles() {
         // 创建上下文对象，避免重复创建
         $context = GambleContext::fromGamblePipeRunner($this);
-
-
         $context->usefulHoles = &$this->useful_holes;
 
         // 获取8421配置 （如果需要）

@@ -26,8 +26,6 @@ class MGamePipe extends CI_Model implements StageInterface {
         $this->payload['star_friends'] =  $rows;
     }
 
-
-
     public function getStarGames() {
         $_tmpuserid = $this->payload['userid'];
         $sql = "SELECT * FROM t_my_stared_games WHERE userid = $_tmpuserid ";
@@ -41,8 +39,6 @@ class MGamePipe extends CI_Model implements StageInterface {
     }
 
 
-
-
     public function getMyGames() {
         $sql = "SELECT * FROM t_game  where  courseid is not null   order by id   desc limit 100";
         $rows = $this->db->query($sql)->result_array();
@@ -53,16 +49,10 @@ class MGamePipe extends CI_Model implements StageInterface {
         $this->payload['realgames']  = $this->payload['allgames'];
     }
 
-
-
-
     public function debug() {
         header('Content-Type: application/json');
         echo json_encode($this->payload, JSON_PRETTY_PRINT);
     }
-
-
-
 
 
     public function getter() {

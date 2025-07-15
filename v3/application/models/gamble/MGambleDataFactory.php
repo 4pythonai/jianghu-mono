@@ -183,7 +183,7 @@ class MGambleDataFactory extends CI_Model {
     return $group_user;
   }
 
-  public function getUsefulHoles($holes, $scores) {
+  public function grabUsefulHoles($holes, $scores) {
 
     $useful_holes = [];
 
