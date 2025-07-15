@@ -5,26 +5,35 @@ ini_set('display_startup_errors', 1);
 error_reporting(-1);
 defined('BASEPATH') or exit('No direct script access allowed');
 
-register_shutdown_function('my_shutdownHandler');
+// register_shutdown_function('my_shutdownHandler');
 set_error_handler('my_errorHandler');
 set_exception_handler('my_exceptionHandler');
 
 
 function my_errorHandler($errno, $errstr, $errfile, $errline) {
   if (strlen($errstr) > 0) {
-    logtext("错误代码:" . $errno . ",错误信息:" . $errstr . " in $errfile line $errline <br/>");
-    response500("错误代码:" . $errno . ",错误信息:" . $errfile . ' ' . $errline . ' ' . $errstr);
+    $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+    response500([
+      "code" => $errno,
+      "message" => "ErrorCode:" . $errno . ",Errmessage:" . $errfile . ' ' . $errline . ' ' . $errstr,
+      "trace" => $trace
+    ]);
   }
   return true;
 }
 
 function  my_exceptionHandler(Throwable $exception) {
+
+  // debug($exception->getMessage());
+  print_r($exception->getTraceAsString());
+  die;
   my_errorHandler('Exception', $exception->getMessage(),  $exception->getFile(), $exception->getLine());
 };
 
 
 function  my_shutdownHandler() {
   $last_error = error_get_last();
+  debug($last_error);
   my_errorHandler($last_error['type'], $last_error['message'], $last_error['file'], $last_error['line']);
 };
 

@@ -54,7 +54,7 @@ class Audit extends CI_Controller {
             'gambleSysName' => $row['gambleSysName'],
             'userRuleId' => $row['userRuleId'],
             'gameid' => $row['gameid'],
-            'runtimeid' => $gambleid,
+            'gambleid' => $gambleid,
             'groupid' => $row['groupid'],
             'userid' => $row['creator_id']
         ];

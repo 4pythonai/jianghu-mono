@@ -35,8 +35,9 @@ class MMeat extends CI_Model {
      * 'Par' => 1,                  // 标准杆
      * 'WorseThanPar' => 0,         // Bogey及以上（比Par更差的成绩）
      */
-    public function getEatingCount($winner_performance, $configs) {
-        $eating_range = $configs['eatingRange'] ?? [];
+    public function getEatingCount($winner_performance, $eating_range) {
+
+
 
         // 根据表现决定能吃几块肉
         if (strpos($winner_performance, 'Par+') === 0) {
@@ -68,7 +69,7 @@ class MMeat extends CI_Model {
      * @param GambleContext $context 上下文数据（通过引用传递）
      * @return int 吃肉获得的金额
      */
-    public function eatMeat($holename, $eating_count, $points, $configs, &$context) {
+    public function eatMeat($holename, $eating_count, $points, &$context) {
         if ($eating_count <= 0) {
             return 0;
         }
@@ -97,8 +98,8 @@ class MMeat extends CI_Model {
         }
 
         // 根据配置计算吃肉金额
-        $meat_value_config = $configs['meatValueConfigString'] ?? 'MEAT_AS_1';
-        $meat_max_value = $configs['meatMaxValue'];
+        $meat_value_config = $context->meat_value_config_string ?? 'MEAT_AS_1';
+        $meat_max_value = $context->meat_max_value;
 
         // debug("eatMeat: 肉价值配置: {$meat_value_config}, 封顶: {$meat_max_value}");
 
@@ -168,7 +169,9 @@ class MMeat extends CI_Model {
      * @param GambleContext $context 上下文数据（通过引用传递）
      * @return void
      */
-    public function processEating(&$hole, $configs, &$context) {
+    public function processEating(&$hole,  &$context) {
+
+        $eating_range = $context->eating_range;
         // 只有有输赢的洞才能吃肉
         if (!isset($hole['draw']) || $hole['draw'] == 'y') {
             $hole['debug'][] = "吃肉检查: 顶洞或无输赢，不能吃肉";
@@ -206,19 +209,19 @@ class MMeat extends CI_Model {
         $hole['debug'][] = "肉池状态: 总共 {$meat_pool_count} 块肉，可用 {$available_meat_count} 块肉";
 
         // 根据配置决定能吃几块肉
-        $meat_value_config = $configs['meatValueConfigString'] ?? 'MEAT_AS_1';
+        $meat_value_config = $context->meat_value_config_string ?? 'MEAT_AS_1';
         if ($meat_value_config === 'CONTINUE_DOUBLE') {
             // CONTINUE_DOUBLE模式：直接吃掉所有可用的肉
             $eating_count = $available_meat_count;
             $hole['debug'][] = "吃肉分析: CONTINUE_DOUBLE模式，直接吃掉所有 {$eating_count} 块可用肉";
         } else {
             // 其他模式：根据表现决定能吃几块肉
-            $eating_count = $this->getEatingCount($winner_performance, $configs);
+            $eating_count = $this->getEatingCount($winner_performance, $eating_range);
             $hole['debug'][] = "吃肉分析: 根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉";
         }
 
         // 执行吃肉，获得金额
-        $meatMoney = $this->eatMeat($hole['holename'],  $eating_count, $ponits, $configs, $context);
+        $meatMoney = $this->eatMeat($hole['holename'],  $eating_count, $ponits, $context);
         $hole['debug'][] = "吃肉结果: 获得金额 {$meatMoney}";
 
         // 将吃肉金额添加到每个赢家的详细信息中

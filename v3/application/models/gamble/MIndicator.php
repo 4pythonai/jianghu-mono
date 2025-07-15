@@ -18,9 +18,9 @@ class MIndicator extends CI_Model {
      * @param array $configs 8421配置（可选，用于避免重复获取）
      * @param GambleContext $context 赌球上下文对象
      */
-    public function computeIndicators($index, &$hole, $configs = null, $context) {
+    public function computeIndicators($index, &$hole,  $context) {
         if ($context->gambleSysName == '8421') {
-            $this->calculate8421Indicators($index, $hole, $configs, $context);
+            $this->calculate8421Indicators($index, $hole, $context);
         }
     }
 
@@ -30,14 +30,16 @@ class MIndicator extends CI_Model {
      * @param array $hole 洞数据（引用传递）
      * @param array $configs 8421配置
      */
-    private function calculate8421Indicators($index, &$hole, $configs) {
+    private function calculate8421Indicators($index, &$hole, $context) {
         // debug($hole);
-        $val8421_config = $configs['val8421_config'];
-        $sub8421ConfigString = $configs['sub8421ConfigString'];
-        $max8421SubValue = $configs['max8421SubValue'];
+        $val8421_config = $context->val8421_config;
+        $sub8421ConfigString =  $context->sub8421_config_string;
+        $max8421SubValue = $context->max8421_sub_value;
 
         $indicatorBlue = 0;
         $indicatorRed = 0;
+
+        debug($val8421_config);
 
         // 处理红队
         foreach ($hole['red'] as $userid) {
@@ -121,7 +123,7 @@ class MIndicator extends CI_Model {
         $indicatorRed = $hole['indicatorRed'];
 
         // 获取顶洞配置
-        $drawConfig = $this->MRuntimeConfig->get8421DrawConfig($context->gambleid);
+        $drawConfig = $context->draw8421_config;
 
         // 判断是否为顶洞
         $isDraw = $this->checkDraw($indicatorBlue, $indicatorRed, $drawConfig);

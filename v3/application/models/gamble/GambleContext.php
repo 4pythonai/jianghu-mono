@@ -25,7 +25,15 @@ class GambleContext extends CI_Model {
     public $redBlueConfig;
     public $dutyConfig;
     public $ranking4TieResolveConfig;
+    public $draw8421_config;
     public $meat_pool = []; // 肉池管理
+    public $val8421_config;
+    public $sub8421_config_string;
+    public $max8421_sub_value;
+    public $eating_range;
+    public $stroking_config;
+    public $meat_value_config_string;
+    public $meat_max_value;
 
     public function __construct($data = []) {
         parent::__construct();
@@ -57,6 +65,14 @@ class GambleContext extends CI_Model {
         'dutyConfig' => 'getDutyConfig',
         'ranking4TieResolveConfig' => 'getRanking4TieResolveConfig',
         'rangedHoles' => 'getRangedHoles',
+        'draw8421_config' => 'getDraw8421Config',
+        'val8421_config' => 'getVal8421Config',
+        'sub8421_config_string' => 'getSub8421ConfigString',
+        'max8421_sub_value' => 'getMax8421SubValue',
+        'eating_range' => 'getEatingRange',
+        'stroking_config' => 'getStrokingConfig',
+        'meat_value_config_string' => 'getMeatValueConfigString',
+        'meat_max_value' => 'getMeatMaxValue',
     ];
 
     /**

@@ -35,6 +35,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     private $rangedHoles; // 参与计算的球洞范围
     private $useful_holes; // 参与计算的球洞范围内已经记分完毕的
+    private $eating_range; // 吃肉范围
+    private $stroking_config; // 让杆配置
+    private $meat_value_config_string; // 吃肉配置
+    private $meat_max_value; // 吃肉封顶
 
 
     public function __invoke($cfg) {
@@ -50,20 +54,38 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
         $this->gambleSysName = $config['gambleSysName'];
         $this->gameid = $config['gameid'];
-        $this->gambleid = $config['runtimeid'];
+        $this->gambleid = $config['gambleid'];
         $this->groupid = $config['groupid'];
         $this->userid = $config['userid'];
 
-        $this->startHoleindex = $this->MRuntimeConfig->getStartHoleindex($this->gambleid);
-        $this->endHoleindex = $this->MRuntimeConfig->getEndHoleindex($this->gambleid);
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gameid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->startHoleindex, $this->endHoleindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->groupid);
-        $this->attenders = $this->MRuntimeConfig->getAttenders($this->gambleid);
-        $this->bootStrapOrder = $this->MRuntimeConfig->getBootStrapOrder($this->gambleid);
-        $this->redBlueConfig = $this->MRuntimeConfig->getRedBlueConfig($this->gambleid, count($this->attenders));
-        $this->dutyConfig = $this->MRuntimeConfig->getDutyConfig($this->gambleid);
-        $this->ranking4TieResolveConfig = $this->MRuntimeConfig->getRanking4TieResolveConfig($this->gambleid);
+
+
+        // 运行时配置
+
+        $_config_row = $this->MRuntimeConfig->getGambleConfig($this->gambleid);
+
+        debug($_config_row);
+
+        $this->attenders = json_decode($_config_row['attenders'], true);
+        $this->bootStrapOrder = json_decode($_config_row['bootstrap_order'], true);
+        $this->dutyConfig = $_config_row['duty_config'];
+        $this->ranking4TieResolveConfig = $_config_row['ranking_tie_resolve_config'];
+
+        $this->draw8421_config = $_config_row['draw8421_config'];
+        $this->val8421_config = json_decode($_config_row['val8421_config'], true);
+        $this->sub8421_config_string = $_config_row['sub8421_config_string'];
+        $this->max8421_sub_value = $_config_row['max8421_sub_value'];
+        $this->eating_range = json_decode($_config_row['eating_range'], true);
+        $this->stroking_config =  json_decode($_config_row['stroking_config'], true);
+        $this->meat_value_config_string = $_config_row['meat_value_config_string'];
+        $this->meat_max_value = $_config_row['meat_max_value'];
+
+        $this->startHoleindex = $_config_row['startHoleindex'];
+        $this->endHoleindex = $_config_row['endHoleindex'];
+        $this->redBlueConfig = $_config_row['red_blue_config'];
 
         // 新增：初始化全局上下文对象
         $this->context = GambleContext::fromGamblePipeRunner($this);
@@ -71,8 +93,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     // 处理让杆
     public function StrokingScores() {
-        $stroking_config = $this->MRuntimeConfig->getStrokingConfig($this->context->gambleid, $this->context->userid);
-        $this->context->scores = $this->MStroking->processStroking($this->context->scores, $stroking_config);
+        $this->context->scores = $this->MStroking->processStroking($this->context->scores, $this->stroking_config);
     }
 
     // 得到起始-终止范围内的所有洞
@@ -96,11 +117,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         // 直接使用全局 context
         $context = $this->context;
 
-        // 获取8421配置 （如果需要）
-        $configs = null;
-        if ($context->gambleSysName == '8421') {
-            $configs = $this->MRuntimeConfig->get8421AllConfigs($context->gambleid);
-        }
 
         foreach ($context->usefulHoles as $index => &$hole) {
             $hole['debug'] = [];
@@ -111,7 +127,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $this->MRedBlue->setRedBlueWithContext($index, $hole, $context);
 
             // 计算指标
-            $this->MIndicator->computeIndicators($index, $hole, $configs, $context);
+            $this->MIndicator->computeIndicators($index, $hole, $context);
 
             // 判断输赢
             $this->MIndicator->judgeWinner($hole, $context);
@@ -126,9 +142,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $this->MMoney->setHoleMoneyDetail($hole, $context->dutyConfig);
 
             // 处理吃肉逻辑（在 winner_detail 设置之后）
-            if ($context->gambleSysName == '8421' && $configs) {
-                $this->MMeat->processEating($hole, $configs, $context);
-            }
+
+            $this->MMeat->processEating($hole, $context);
         }
     }
 
@@ -161,6 +176,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'dutyConfig' => $this->context->dutyConfig,
             'useful_holes' => $this->context->usefulHoles, // 实际的计算结果,
             'rangedHoles' => $this->context->rangedHoles, // 实际的计算结果,
+            'eating_range' => $this->context->eating_range,
         ];
     }
 
@@ -237,5 +253,33 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getRangedHoles() {
         return $this->rangedHoles;
+    }
+
+    public function getDraw8421Config() {
+        return $this->draw8421_config;
+    }
+
+    public function getVal8421Config() {
+        return $this->val8421_config;
+    }
+
+    public function getSub8421ConfigString() {
+        return $this->sub8421_config_string;
+    }
+
+    public function getMax8421SubValue() {
+        return $this->max8421_sub_value;
+    }
+
+    public function getEatingRange() {
+        return $this->eating_range;
+    }
+
+    public function getMeatValueConfigString() {
+        return $this->meat_value_config_string;
+    }
+
+    public function getMeatMaxValue() {
+        return $this->meat_max_value;
     }
 }
