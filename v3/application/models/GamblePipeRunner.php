@@ -57,7 +57,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->gambleid = $config['gambleid'];
         $this->groupid = $config['groupid'];
         $this->userid = $config['userid'];
-
         $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gameid);
         $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->startHoleindex, $this->endHoleindex);
         $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->groupid);
@@ -67,13 +66,11 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
         $_config_row = $this->MRuntimeConfig->getGambleConfig($this->gambleid);
 
-        debug($_config_row);
 
         $this->attenders = json_decode($_config_row['attenders'], true);
         $this->bootStrapOrder = json_decode($_config_row['bootstrap_order'], true);
         $this->dutyConfig = $_config_row['duty_config'];
         $this->ranking4TieResolveConfig = $_config_row['ranking_tie_resolve_config'];
-
         $this->draw8421_config = $_config_row['draw8421_config'];
         $this->val8421_config = json_decode($_config_row['val8421_config'], true);
         $this->sub8421_config_string = $_config_row['sub8421_config_string'];
@@ -82,7 +79,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->stroking_config =  json_decode($_config_row['stroking_config'], true);
         $this->meat_value_config_string = $_config_row['meat_value_config_string'];
         $this->meat_max_value = $_config_row['meat_max_value'];
-
         $this->startHoleindex = $_config_row['startHoleindex'];
         $this->endHoleindex = $_config_row['endHoleindex'];
         $this->redBlueConfig = $_config_row['red_blue_config'];

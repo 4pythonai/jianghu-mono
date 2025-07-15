@@ -20,7 +20,7 @@ class MIndicator extends CI_Model {
      */
     public function computeIndicators($index, &$hole,  $context) {
         if ($context->gambleSysName == '8421') {
-            $this->calculate8421Indicators($index, $hole, $context);
+            $this->calculate8421Indicators($hole, $context);
         }
     }
 
@@ -30,7 +30,7 @@ class MIndicator extends CI_Model {
      * @param array $hole 洞数据（引用传递）
      * @param array $configs 8421配置
      */
-    private function calculate8421Indicators($index, &$hole, $context) {
+    private function calculate8421Indicators(&$hole, $context) {
         // debug($hole);
         $val8421_config = $context->val8421_config;
         $sub8421ConfigString =  $context->sub8421_config_string;
@@ -39,7 +39,6 @@ class MIndicator extends CI_Model {
         $indicatorBlue = 0;
         $indicatorRed = 0;
 
-        debug($val8421_config);
 
         // 处理红队
         foreach ($hole['red'] as $userid) {
