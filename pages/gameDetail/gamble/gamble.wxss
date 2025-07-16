@@ -111,13 +111,11 @@
 	padding: 15px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	cursor: pointer;
-	transition: all 0.3s ease;
 	position: relative;
 	border: 1px solid transparent;
 }
 
 .config-item-hover {
-	transform: translateY(-2px);
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	border-color: #4caf50;
 }
@@ -318,10 +316,19 @@
 }
 
 .delete-btn {
-	color: #ff4d4f;
-	font-size: 32rpx;
-	font-weight: bold;
-	margin-left: 20rpx;
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 48rpx;
+	height: 48rpx;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.12);
+	z-index: 10;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .detail-btn,

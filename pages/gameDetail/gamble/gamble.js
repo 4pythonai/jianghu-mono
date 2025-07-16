@@ -3,6 +3,9 @@ import { gameStore } from '../../../stores/gameStore'
 import { runtimeStore } from '../../../stores/runtimeStore'
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 
+
+const app = getApp();
+
 Component({
     properties: {
         // 可接收的参数
@@ -60,7 +63,10 @@ Component({
         onDeleteConfig(e) {
             const id = e.currentTarget.dataset.id;
             console.log('删除配置 id:', id);
-            // 这里后续可以加删除逻辑
+            app.api.gamble.deleteRuntimeConfig({ id: id }).then(res => {
+                console.log('删除配置成功:', res);
+                this.refreshRuntimeConfig();
+            });
         },
 
 
@@ -117,7 +123,7 @@ Component({
         },
 
         // 处理配置项点击事件
-        handleConfigClick(e) {
+        handleGotoResult(e) {
             const { config, index } = e.currentTarget.dataset;
             const gameId = this.properties.gameId || gameStore.gameid;
 
