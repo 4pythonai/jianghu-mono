@@ -1,4 +1,4 @@
-const { gameStore } = require('../../stores/gameStore');
+import { gameStore } from '../../stores/gameStore';
 
 
 const app = getApp();

@@ -1,5 +1,5 @@
-// HoleRangeSelector组件 - 起点洞与终点洞选择器
-const RuntimeComponentsUtils = require('../common-utils.js');
+// HoleRangeSelector 组件 - 起点洞与终点洞选择器
+import RuntimeComponentsUtils from '../common-utils.js';
 
 Component({
     properties: {
