@@ -1,17 +1,17 @@
 <view class="red-blue-config">
   <view class="grouping-method">
     <view class="section-label">请选择分组方式</view>
-    <radio-group bindchange="onGroupingMethodChange">
+    <radio-group class="my-radio-group" bindchange="onGroupingMethodChange">
       <label class="radio-item">
-        <radio value="4_固拉" checked="{{red_blue_config === '4_固拉'}}"/>
+        <radio class="my-radio" value="4_固拉" checked="{{red_blue_config === '4_固拉'}}"/>
         <text class="radio-label">固拉</text>
       </label>
       <label class="radio-item">
-        <radio value="4_乱拉" checked="{{red_blue_config === '4_乱拉'}}"/>
+        <radio class="my-radio" value="4_乱拉" checked="{{red_blue_config === '4_乱拉'}}"/>
         <text class="radio-label">乱拉</text>
       </label>
       <label class="radio-item">
-        <radio value="4_高手不见面" checked="{{red_blue_config === '4_高手不见面'}}"/>
+        <radio class="my-radio" value="4_高手不见面" checked="{{red_blue_config === '4_高手不见面'}}"/>
         <text class="radio-label">高手不见面</text>
       </label>
     </radio-group>

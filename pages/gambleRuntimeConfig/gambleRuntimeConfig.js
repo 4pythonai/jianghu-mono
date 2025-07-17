@@ -36,8 +36,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('[GambleRuntimeConfig] 页面加载, 参数:', options);
-
+        console.log('[GambleRuntimeConfig] 页面加载, 参数::', JSON.parse(decodeURIComponent(options.data)));
         try {
             // 解析传递的数据
             if (options.data) {
@@ -383,6 +382,11 @@ Page({
 
     saveRuntimeConfig() {
         const { runtimeConfig, holes } = this.data;
+
+        // 新增调试日志，打印holeList、gameid、groupid
+        console.log('[GambleRuntimeConfig] 调试: holeList:', holes);
+        console.log('[GambleRuntimeConfig] 调试: gameid:', runtimeConfig?.gameid);
+        console.log('[GambleRuntimeConfig] 调试: groupid:', runtimeConfig?.groupid);
 
         console.log('[GambleRuntimeConfig] 最终配置:', JSON.stringify(runtimeConfig, null, 2));
 

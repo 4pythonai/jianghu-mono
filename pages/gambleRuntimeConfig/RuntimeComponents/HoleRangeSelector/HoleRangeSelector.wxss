@@ -57,7 +57,7 @@
 	padding: 10rpx;
 }
 
-.hint-text text {
+.hint-text-inner {
 	font-size: 24rpx;
 	color: #999;
 }
@@ -83,7 +83,7 @@
 		font-size: 32rpx;
 	}
 
-	.hint-text text {
+	.hint-text-inner {
 		font-size: 22rpx;
 	}
 }

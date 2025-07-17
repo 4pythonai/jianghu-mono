@@ -166,13 +166,13 @@ const RuntimeComponentsUtils = {
          * @param {*} data - 数据对象
          */
         log(component, message, data = null) {
-            const prefix = RuntimeComponentsUtils.CONSTANTS.LOG_PREFIXES[component] || `[${component}]`;
+            // const prefix = RuntimeComponentsUtils.CONSTANTS.LOG_PREFIXES[component] || `[${component}]`;
 
-            if (data !== null) {
-                console.log(`${prefix} ${message}:`, data);
-            } else {
-                console.log(`${prefix} ${message}`);
-            }
+            // if (data !== null) {
+            //     console.log(`${prefix} ${message}:`, data);
+            // } else {
+            //     console.log(`${prefix} ${message}`);
+            // }
         },
 
         /**

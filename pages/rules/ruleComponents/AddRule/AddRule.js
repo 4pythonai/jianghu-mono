@@ -207,6 +207,7 @@ Component({
 
             // 导入gameStore来获取游戏数据
             const { gameStore } = require('../../../../stores/gameStore');
+            console.log('[AddRule] 游戏数据:', gameStore);
 
             // 准备传递给运行时配置页面的数据(简化版)
             const runtimeConfigData = {
@@ -214,7 +215,8 @@ Component({
                 gameId: gameStore.gameid || null,
                 playerCount: gameStore.players?.length || 0,
                 holeCount: gameStore.holes?.length || 18,
-                fromUserRule: false // 标识这是从系统规则进入的
+                fromUserRule: false, // 标识这是从系统规则进入的,
+                holeList: gameStore.holes || []
             };
 
             // 将完整数据暂存到全局(为了保持一致性)
