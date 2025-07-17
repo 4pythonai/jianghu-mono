@@ -5,15 +5,15 @@
     <!-- 起始洞标签 -->
     <view class="selector-label">起始洞</view>
     <view class="hole-circle">
-      <text class="hole-number" bindtap="onShowModal" data-type="start">
+      <view class="hole-number" bindtap="onShowModal" data-type="start">
         {{holePlayList[0].holename}}
-      </text>
+      </view>
     </view>
     <view class="selector-label">终止洞</view>
     <view class="hole-circle">
-      <text class="hole-number" bindtap="onShowModal" data-type="end">
+      <view class="hole-number" bindtap="onShowModal" data-type="end">
         {{holePlayList[holePlayList.length-1].holename }}
-      </text>
+      </view>
     </view>
   </view>
 
