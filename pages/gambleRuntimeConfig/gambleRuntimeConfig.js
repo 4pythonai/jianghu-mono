@@ -234,7 +234,9 @@ Page({
     },
 
     // 洞范围选择事件
-    onHoleRangeChange(e) {
+    onHoleOrderChange(e) {
+        gameStore.changeHolePlayList(this.data.holePlayList);
+        // onHoleRangeChange
     },
 
     // 分组配置事件

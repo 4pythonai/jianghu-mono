@@ -18,7 +18,7 @@
   </view>
 
   <!-- 弹出自定义球洞选择器组件 -->
-  <real-hole-play-list-setter
+  <RealHolePlayListSetter
     wx:if="{{ifShowModal}}"
     ifShowModal="{{ifShowModal}}"
     holeList="{{holeList}}"

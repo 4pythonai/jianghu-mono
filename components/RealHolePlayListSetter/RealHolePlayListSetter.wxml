@@ -1,3 +1,6 @@
+
+<!-- RealHolePlayListSetter -->
+
 <view wx:if="{{ifShowModal}}">
   <view class="modal-mask" bindtap="onHideModal"></view>
   <view class="modal-content">
@@ -11,7 +14,7 @@
     </view>
     <view class="modal-btns">
       <button class="btn-cancel" bindtap="onCancel">取消</button>
-      <button class="btn-confirm" bindtap="onConfirm">确定</button>
+      <button class="btn-confirm" bindtap="onConfirmHoleOrder">确定</button>
     </view>
   </view>
 </view> 

@@ -296,6 +296,13 @@ export const gameStore = observable({
         return 'score-par';
     }),
 
+
+    changeHolePlayList: action(function (holePlayList) {
+
+        console.log(' 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴changeHolePlayList+++++++++++++++', holePlayList);
+        this.holePlayList = holePlayList;
+    }),
+
     // Tab 状态管理
     currentTab: 0,
     setCurrentTab: action(function (tabIndex) {

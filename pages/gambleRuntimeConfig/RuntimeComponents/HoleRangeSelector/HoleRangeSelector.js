@@ -1,5 +1,3 @@
-// HoleRangeSelector组件 - 起点洞与终点洞选择器
-const RuntimeComponentsUtils = require('../common-utils.js');
 
 Component({
     properties: {
@@ -16,10 +14,6 @@ Component({
     },
 
     data: {
-        // 球洞列表数据
-        holeList: [],
-        holePlayList: [],
-        // 弹框显示状态
         ifShowModal: false,
     },
 
@@ -32,16 +26,6 @@ Component({
         },
 
 
-
-
-
-        // 触发变更事件
-        triggerChangeEvent() {
-            // 直接触发 holePlayList 的变更事件
-            this.triggerEvent('change', {
-                holePlayList: this.data.holePlayList
-            });
-        },
 
         // 统一弹框显示入口
         onShowModal(e) {
@@ -56,9 +40,6 @@ Component({
         },
 
 
-        onModalChange(e) {
-            console.log('onModalChange+++++++++++++++', e);
-            this.setData({ ifShowModal: false });
-        },
+
     }
 }); 

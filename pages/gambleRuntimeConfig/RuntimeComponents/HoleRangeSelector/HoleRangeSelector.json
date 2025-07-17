@@ -1,6 +1,6 @@
 {
     "component": true,
     "usingComponents": {
-        "real-hole-play-list-setter": "/components/RealHolePlayListSetter/RealHolePlayListSetter"
+        "RealHolePlayListSetter": "/components/RealHolePlayListSetter/RealHolePlayListSetter"
     }
 }

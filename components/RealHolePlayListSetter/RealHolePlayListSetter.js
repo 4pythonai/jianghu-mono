@@ -48,8 +48,10 @@ Component({
             console.log('[onSelectHole] 新holePlayList:', newHolePlayList);
         },
 
-        onConfirm() {
+        onConfirmHoleOrder() {
             console.log('确定:::');
+            //  000000000000000000000
+
         },
 
         onCancel() {
