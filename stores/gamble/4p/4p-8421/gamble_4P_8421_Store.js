@@ -1,5 +1,4 @@
 import { observable, action } from 'mobx-miniprogram'
-import gameApi from '../../../../api/modules/game' // 导入整个默认导出的对象
 import { gameStore } from '../../../gameStore' // 导入 gameStore 来获取 gameid
 
 export const G_4P_8421_Store = observable({
@@ -9,7 +8,6 @@ export const G_4P_8421_Store = observable({
     },
 
     gamblesysname: '8421',
-    sysruleid: 17,
     user_rulename: '8421',
     creator_id: null,
 
@@ -87,7 +85,6 @@ export const G_4P_8421_Store = observable({
         const gambleConfig = {
             gameid: gameStore.gameid,
             user_rulename: this.user_rulename,
-            sysruleid: this.sysruleid,
             gamblesysname: this.gamblesysname,
             creator_id: this.creator_id,
             max8421_sub_value: this.max8421_sub_value,

@@ -7,26 +7,21 @@ Page({
         players: [],
         holeList: [],
         gameData: null,
-        userRule: null, // 用户规则数据
+        userRule: null,
 
         runtimeConfig: {
-            // 起点洞与终点洞配置
-            startHoleindex: 1,
-            endHoleindex: 18,
-
-            // 分组配置 - 直接在顶层
-            red_blue_config: '4_固拉',
-            bootstrap_order: [],
-
-            // 排名配置
-            ranking_tie_resolve_config: 'score.reverse',
-
-            // 新增字段
             gameid: null,           // 游戏ID
             groupid: null,          // 分组ID
             userRuleId: null,       // 用户规则ID(仅用户规则时有值)
             gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
             gambleUserName: null,   // 用户规则名称(如:规则_4721)
+
+            startHoleindex: 1,
+            endHoleindex: 18,
+
+            red_blue_config: '4_固拉',
+            bootstrap_order: [],
+            ranking_tie_resolve_config: 'score.reverse',
             val8421_config: {}      // 球员8421指标配置
         },
 
@@ -124,14 +119,7 @@ Page({
                     'runtimeConfig.gambleUserName': gambleUserName
                 });
 
-                console.log('[GambleRuntimeConfig] 运行时配置字段设置:', {
-                    gameid: gameStore.gameid,
-                    groupid: gameStore.groupId,
-                    userRuleId: userRuleId,
-                    gambleSysName: gambleSysName,
-                    gambleUserName: gambleUserName,
-                    fromUserRule: decodedData.fromUserRule
-                });
+
 
                 // 初始化分组配置
                 this.initializeGroupingConfig();
@@ -363,7 +351,6 @@ Page({
             // 验证所有球员都有配置
             const playerIds = players.map(p => String(p.userid || p.user_id));
             const configPlayerIds = Object.keys(val8421Config);
-
             const allPlayersConfigured = playerIds.every(id =>
                 configPlayerIds.includes(id)
             );
@@ -383,12 +370,6 @@ Page({
     saveRuntimeConfig() {
         const { runtimeConfig, holeList } = this.data;
 
-        // 新增调试日志，打印holeList、gameid、groupid
-        console.log('[GambleRuntimeConfig] 调试: holeList:', holeList);
-        console.log('[GambleRuntimeConfig] 调试: gameid:', runtimeConfig?.gameid);
-        console.log('[GambleRuntimeConfig] 调试: groupid:', runtimeConfig?.groupid);
-
-        console.log('[GambleRuntimeConfig] 最终配置:', JSON.stringify(runtimeConfig, null, 2));
 
         // 添加 holeList 参数
         const configWithHoleList = {
