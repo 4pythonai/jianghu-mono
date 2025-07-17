@@ -91,7 +91,6 @@ Page({
                     ruleType: decodedData.ruleType || '',
                     gameId: decodedData.gameId || null,
                     players: players,
-                    holeList: holeList,
                     holePlayList: gameStore.holePlayList,
                     gameData: gameData,
                     userRule: userRule,

@@ -8,7 +8,7 @@
     <view class="hole-list">
       <block wx:for="{{holePlayList}}" wx:key="index">
         <view class="hole-item {{index === 0 ? 'active' : ''}}" bindtap="onSelectHole" data-index="{{index}}" data-hindex="{{item.hindex}}">
-          <text class="hole-item-text">{{item.holename || item}}</text>
+          <text class="hole-item-text">{{item.holename}}</text>
         </view>
       </block>
     </view>

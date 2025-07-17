@@ -7,11 +7,6 @@ Component({
     },
 
     properties: {
-        holeList: {
-            type: Array,
-            value: []
-        },
-
         ifShowModal: {
             type: Boolean,
             value: false,
@@ -35,8 +30,8 @@ Component({
 
         onSelectHole(e) {
             const hindex = Number(e.currentTarget.dataset.hindex);
-            const { holeList } = this.properties;
-
+            const holeList = gameStore.holeList;
+            console.log('holeList 🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺++++++++++', holeList);
             // 1. 先按 hindex 升序排列
             const sortedList = [...holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
             // 2. 找到点击的 hindex 在排序后数组中的下标
@@ -47,17 +42,11 @@ Component({
             this.setData({
                 holePlayList: newHolePlayList
             });
-
-            gameStore.changeHolePlayList(newHolePlayList);
-
-            console.log('[onSelectHole] 新holePlayList:', newHolePlayList);
         },
 
         onConfirmHoleOrder() {
             console.log('确定:::');
-
-            gameStore.changeHolePlayList(this.data.holePlayList);
-
+            gameStore.updateHolePlayList(this.data.holePlayList);
             this.setData({ ifShowModal: false });
 
         },

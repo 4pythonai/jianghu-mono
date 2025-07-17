@@ -127,7 +127,7 @@ export const gameStore = observable({
         this.gameData = gameData;
         this.players = players;  // 注意:这里是过滤后的玩家
         this.holeList = holeList;
-        this.holePlayList = holeList;
+        this.holePlayList = JSON.parse(JSON.stringify(holeList));
         this.scores = scores;    // 注意:这里是过滤后玩家的分数矩阵
         this.groupId = groupId;  // 存储当前分组ID
     }),
@@ -297,10 +297,10 @@ export const gameStore = observable({
     }),
 
 
-    changeHolePlayList: action(function (holePlayList) {
+    updateHolePlayList: action(function (holePlayList) {
 
-        // console.log(' 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴changeHolePlayList+++++++++++++++', holePlayList);
-        // this.holePlayList = holePlayList;
+        console.log(' 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴 🔴updateHolePlayList+++++++++++++++', holePlayList);
+        this.holePlayList = JSON.parse(JSON.stringify(holePlayList));
     }),
 
     // Tab 状态管理
