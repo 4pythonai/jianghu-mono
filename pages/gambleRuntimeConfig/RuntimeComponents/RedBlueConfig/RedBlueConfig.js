@@ -131,7 +131,7 @@ Component({
 
         // 拖拽开始
         onTouchStart(e) {
-            const index = parseInt(e.currentTarget.dataset.index);
+            const index = Number.parseInt(e.currentTarget.dataset.index);
             const startY = e.touches[0].clientY;
 
             this.setData({
@@ -141,7 +141,6 @@ Component({
                 'dragState.targetIndex': -1
             });
 
-            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '开始拖拽', index);
         },
 
         // 拖拽移动
