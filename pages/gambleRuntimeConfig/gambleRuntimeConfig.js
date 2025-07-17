@@ -382,12 +382,18 @@ Page({
     },
 
     saveRuntimeConfig() {
-        const { runtimeConfig } = this.data;
+        const { runtimeConfig, holes } = this.data;
 
         console.log('[GambleRuntimeConfig] 最终配置:', JSON.stringify(runtimeConfig, null, 2));
 
+        // 添加 holeList 参数
+        const configWithHoleList = {
+            ...runtimeConfig,
+            holeList: holes
+        };
+
         this.setData({ loading: true });
-        app.api.gamble.addRuntimeConfig(runtimeConfig).then(res => {
+        app.api.gamble.addRuntimeConfig(configWithHoleList).then(res => {
             console.log('[GambleRuntimeConfig] 保存配置成功:', res);
 
             if (res.code === 200) {
