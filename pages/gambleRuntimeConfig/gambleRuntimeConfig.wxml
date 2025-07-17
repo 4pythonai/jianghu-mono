@@ -23,7 +23,6 @@
       <HoleRangeSelector 
         holeList="{{holeList}}"
         holePlayList="{{holePlayList}}"
-        bind:change="onHoleOrderChange"
       />
     </view>
     

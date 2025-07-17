@@ -68,33 +68,11 @@ Page({
                 if (decodedData.fromUserRule) {
                     // 注意：跳转到本页面时，需在 options.data 里传递 userRule 对象
                     userRule = decodedData.userRule || null;
-
-                    console.log('[GambleRuntimeConfig] 从用户规则进入, 参数数据:', {
-                        players: players,
-                        holeList: holeList,
-                        holePlayList: holePlayList,
-                        userRule: userRule?.gambleUserName
-                    });
                 } else {
                     userRule = null;
 
-                    console.log('[GambleRuntimeConfig] 从系统规则进入, 参数数据:', {
-                        players: players,
-                        holeList: holeList,
-                        holePlayList: holePlayList,
-                        ruleType: decodedData.ruleType
-                    });
                 }
 
-                // 根据holeList设置初始洞范围
-                let initialFirstHole = 0;
-                let initialLastHole = 0;
-
-                if (holeList && holeList.length > 0) {
-                    // 用index初始化
-                    initialFirstHole = 0;
-                    initialLastHole = holeList.length - 1;
-                }
 
 
                 // 设置新增字段
@@ -114,10 +92,9 @@ Page({
                     gameId: decodedData.gameId || null,
                     players: players,
                     holeList: holeList,
-                    holePlayList: holePlayList,
+                    holePlayList: gameStore.holePlayList,
                     gameData: gameData,
                     userRule: userRule,
-                    'runtimeConfig.endHoleindex': initialLastHole,
                     'runtimeConfig.gameid': gameStore.gameid,
                     'runtimeConfig.groupid': gameStore.groupId,
                     'runtimeConfig.userRuleId': userRuleId,
@@ -231,11 +208,7 @@ Page({
         });
     },
 
-    // 洞范围选择事件
-    onHoleOrderChange(e) {
-        gameStore.changeHolePlayList(this.data.holePlayList);
-        // onHoleRangeChange
-    },
+
 
     // 分组配置事件
     onGroupingConfigChange(e) {
@@ -363,7 +336,7 @@ Page({
         const configWithHoleList = {
             ...runtimeConfig,
             holeList: holeList,
-            holePlayList: holePlayList
+            holePlayList: gameStore.holePlayList
         };
 
         this.setData({ loading: true });

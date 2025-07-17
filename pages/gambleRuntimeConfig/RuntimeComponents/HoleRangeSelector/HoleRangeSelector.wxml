@@ -1,4 +1,4 @@
-<!-- HoleRangeSelector组件 - 起点洞与终点洞选择器 -->
+<!-- HoleRangeSelector 组件 - 起点洞与终点洞选择器 -->
 <view class="hole-range-selector">
   <!-- 选择器区域 - 单行布局 -->
   <view class="selector-area">
