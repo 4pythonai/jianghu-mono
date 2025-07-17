@@ -23,28 +23,8 @@ Component({
         ifShowModal: false,
     },
 
-    lifetimes: {
-        attached() {
-            this.initializeHoleRanges();
-        }
-    },
-
-    observers: {
-        'holeList': function (holeList) {
-            this.initializeHoleRanges(holeList);
-        }
-    },
 
     methods: {
-        // 初始化洞范围选择器
-        initializeHoleRanges(holeList) {
-
-
-
-
-            // 默认生成完整的 holePlayList
-
-        },
 
         // 显示起始洞选择弹框
         showModal() {
@@ -79,10 +59,6 @@ Component({
         onModalChange(e) {
             console.log('onModalChange+++++++++++++++', e);
             this.setData({ ifShowModal: false });
-            // this.setData({ ifShowModal: false });
         },
-
-
-
     }
 }); 
