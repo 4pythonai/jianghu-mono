@@ -5,11 +5,15 @@
     <!-- 起始洞标签 -->
     <view class="selector-label">起始洞</view>
     <view class="hole-circle">
-      <text class="hole-number" bindtap="onShowModal" data-type="start">{{startHoleRange[startHoleIndex]}}</text>
+      <text class="hole-number" bindtap="onShowModal" data-type="start">
+        {{holePlayList[0].holename || holePlayList[0].hindex}}
+      </text>
     </view>
     <view class="selector-label">终止洞</view>
     <view class="hole-circle">
-      <text class="hole-number" bindtap="onShowModal" data-type="end">{{endHoleRange[endHoleIndex]}}</text>
+      <text class="hole-number" bindtap="onShowModal" data-type="end">
+        {{holePlayList[holePlayList.length-1].holename || holePlayList[holePlayList.length-1].hindex}}
+      </text>
     </view>
   </view>
 
@@ -19,8 +23,8 @@
     showModal="{{showModal}}"
     modalType="{{modalType}}"
     holeList="{{holeList}}"
-    holePlayList="{{holeList}}"
-    selectedIndex="{{modalType === 'start' ? startHoleIndex : endHoleIndex}}"
+    holePlayList="{{holePlayList}}"
+    selectedIndex="{{modalType === 'start' ? holePlayList[0].hindex : holePlayList[holePlayList.length-1].hindex}}"
     bind:change="onModalChange"
     bind:cancel="onModalCancel"
   />
