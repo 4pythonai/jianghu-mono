@@ -216,17 +216,8 @@ Component({
                 holeCount: gameStore.holeList?.length || 18,
                 userRuleId: item.userRuleId || null,
                 userRuleName: item.gambleUserName || item.user_rulename || item.title,
-                fromUserRule: true // 标识这是从用户规则进入的
-            };
-
-            // 将完整的用户规则数据暂存到全局
-            const app = getApp();
-            app.globalData = app.globalData || {};
-            app.globalData.currentUserRule = item;
-            app.globalData.currentGameData = {
-                players: gameStore.players || [],
-                holeList: gameStore.holeList || [],
-                gameData: gameStore.gameData || null
+                fromUserRule: true, // 标识这是从用户规则进入的
+                userRule: item // 传递完整的用户规则对象
             };
 
             // 编码传递的数据

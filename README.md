@@ -279,56 +279,42 @@
 
 ## 技术特性
 
-### 头像存储机制
-```javascript
-// 头像文件存储路径
-USER_DATA_PATH/avatar_[timestamp].jpg
+本项目所有页面的“当前游戏数据”（如 players、holeList、gameData）统一通过 `stores/gameStore.js` 管理，**不再使用 `app.globalData.currentGameData`**。
 
-// 存储流程
-1. 用户选择头像 → 微信提供临时文件路径
-2. 使用 fs.saveFile() 保存到本地永久存储
-3. 将文件路径保存到 localStorage
-4. 页面重新加载时自动恢复用户头像
+### 推荐用法
+
+```js
+// 在页面/组件中引入 gameStore
+const { gameStore } = require('../../stores/gameStore');
+
+// 读取当前玩家列表
+const players = gameStore.players;
+
+// 读取当前洞信息
+const holeList = gameStore.holeList;
+
+// 读取当前游戏原始数据
+const gameData = gameStore.gameData;
+
+// 更新数据时直接赋值
+// gameStore.players = [...];
+// gameStore.holeList = [...];
+// gameStore.gameData = {...};
 ```
 
-### 容错机制
-- **文件系统错误**: 自动降级使用临时路径
-- **文件丢失**: 自动清理无效缓存, 使用默认头像
-- **存储失败**: 提供友好的用户提示, 不影响基本功能
+> 这样做的好处：
+> - 数据响应式，页面自动刷新
+> - 代码更规范，易维护
+> - 集中管理，方便团队协作
 
-## 开发说明
+如需清空当前游戏数据，直接：
+```js
+gameStore.players = [];
+gameStore.holeList = [];
+gameStore.gameData = null;
+```
 
-### 技术栈
-- 微信小程序原生框架
-- JavaScript ES6+
-- WXSS样式
-- 微信小程序API
-- 小程序文件系统 API
+## 技术特性
 
-### 项目结构
-- `pages/mine/` - 个人中心页面
-- `api/` - API接口管理
-- `components/` - 自定义组件
-- `utils/` - 工具函数
-- `images/` - 图片资源
-  - `default-avatar.png` - 默认用户头像
-
-## 注意事项
-
-1. **用户信息获取**: 现已使用微信官方推荐的新方式获取用户头像和昵称
-2. **头像存储**: 实现了本地永久存储, 避免临时文件丢失问题
-3. **兼容性**: 确保小程序基础库版本支持新的API
-4. **开发者工具**: chooseAvatar 在开发者工具中可能有文件系统问题, 真机测试正常
-5. **用户体验**: 提供清晰的授权引导和信息完善流程
-
-## Eslint
-- 尽量使用arrow function
-- 尽量使用 template literals
-
-字体文件:
-
-
-/opt/space/webroot/ugf/web/DouyinSansBold.otf
-
-https://web.golf-brother.com/DouyinSansBold.otf
-
+### 头像存储机制
+```

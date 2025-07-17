@@ -222,11 +222,6 @@ Component({
             // 将完整数据暂存到全局(为了保持一致性)
             const app = getApp();
             app.globalData = app.globalData || {};
-            app.globalData.currentGameData = {
-                players: gameStore.players || [],
-                holeList: gameStore.holeList || [],
-                gameData: gameStore.gameData || null
-            };
 
             // 编码传递的数据
             const encodedData = encodeURIComponent(JSON.stringify(runtimeConfigData));

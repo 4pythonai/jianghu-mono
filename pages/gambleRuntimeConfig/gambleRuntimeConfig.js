@@ -1,3 +1,6 @@
+const { gameStore } = require('../../stores/gameStore');
+
+
 const app = getApp();
 Page({
     data: {
@@ -44,26 +47,24 @@ Page({
                 let userRule = null;
 
                 // 统一从全局数据获取完整信息
-                const app = getApp();
-                const globalData = app.globalData || {};
-
-                // 检查是否有全局数据
-                if (!globalData.currentGameData) {
-                    console.warn('[GambleRuntimeConfig] 全局数据为空, 使用默认值');
+                if (!gameStore.players?.length) {
+                    console.warn('[GambleRuntimeConfig] gameStore.players 为空, 使用默认值');
                     players = [];
                     holeList = [];
                     gameData = null;
                 } else {
-                    players = globalData.currentGameData.players || [];
-                    holeList = globalData.currentGameData.holeList || [];
-                    gameData = globalData.currentGameData.gameData || null;
+                    players = gameStore.players || [];
+                    holeList = gameStore.holeList || [];
+                    gameData = gameStore.gameData || null;
                 }
 
                 // 只有从用户规则进入时才有用户规则数据
+                // 方案2：直接通过页面参数传递 userRule
                 if (decodedData.fromUserRule) {
-                    userRule = globalData.currentUserRule || null;
+                    // 注意：跳转到本页面时，需在 options.data 里传递 userRule 对象
+                    userRule = decodedData.userRule || null;
 
-                    console.log('[GambleRuntimeConfig] 从用户规则进入, 全局数据:', {
+                    console.log('[GambleRuntimeConfig] 从用户规则进入, 参数数据:', {
                         players: players.length,
                         holeList: holeList.length,
                         userRule: userRule?.gambleUserName
@@ -71,7 +72,7 @@ Page({
                 } else {
                     userRule = null;
 
-                    console.log('[GambleRuntimeConfig] 从系统规则进入, 全局数据:', {
+                    console.log('[GambleRuntimeConfig] 从系统规则进入, 参数数据:', {
                         players: players.length,
                         holeList: holeList.length,
                         ruleType: decodedData.ruleType
@@ -89,7 +90,7 @@ Page({
                 }
 
                 // 从gameStore获取游戏相关数据
-                const { gameStore } = require('../../stores/gameStore');
+                // const { gameStore } = require('../../stores/gameStore');
 
                 // 设置新增字段
                 let gambleSysName = null;
@@ -138,11 +139,10 @@ Page({
     // 页面销毁时清理全局数据
     onUnload() {
         console.log('[GambleRuntimeConfig] 页面销毁, 清理全局数据');
-        const app = getApp();
-        if (app.globalData) {
-            app.globalData.currentUserRule = undefined;
-            app.globalData.currentGameData = undefined;
-        }
+        const { gameStore } = require('../../stores/gameStore');
+        gameStore.players = [];
+        gameStore.holeList = [];
+        gameStore.gameData = null;
     },
 
 

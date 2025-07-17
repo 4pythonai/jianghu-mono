@@ -2,9 +2,11 @@ import { observable, action } from 'mobx-miniprogram'
 import gameApi from '../api/modules/game' // 导入整个默认导出的对象
 import gambleApi from '../api/modules/gamble' // 导入 gamble API
 
+
 export const gameStore = observable({
-    // ---- 状态数据 ----
+
     gameData: null,      // 原始游戏数据
+
     players: [],         // 玩家列表
     holeList: [],           // 洞信息列表
     scores: [],          // 分数矩阵 [playerIndex][holeIndex]
