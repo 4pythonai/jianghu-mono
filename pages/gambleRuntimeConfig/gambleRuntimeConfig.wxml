@@ -23,7 +23,7 @@
       <HoleRangeSelector 
         startHoleindex="{{runtimeConfig.startHoleindex}}"
         endHoleindex="{{runtimeConfig.endHoleindex}}"
-        holeList="{{holes}}"
+        holeList="{{holeList}}"
         bind:change="onHoleRangeChange"
       />
     </view>

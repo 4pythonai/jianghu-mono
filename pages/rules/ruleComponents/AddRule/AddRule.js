@@ -214,9 +214,9 @@ Component({
                 ruleType: title,
                 gameId: gameStore.gameid || null,
                 playerCount: gameStore.players?.length || 0,
-                holeCount: gameStore.holes?.length || 18,
+                holeCount: gameStore.holeList?.length || 18,
                 fromUserRule: false, // 标识这是从系统规则进入的,
-                holeList: gameStore.holes || []
+                holeList: gameStore.holeList || []
             };
 
             // 将完整数据暂存到全局(为了保持一致性)
@@ -224,7 +224,7 @@ Component({
             app.globalData = app.globalData || {};
             app.globalData.currentGameData = {
                 players: gameStore.players || [],
-                holes: gameStore.holes || [],
+                holeList: gameStore.holeList || [],
                 gameData: gameStore.gameData || null
             };
 

@@ -3,7 +3,6 @@ import { gameStore } from '../../../stores/gameStore'
 
 Component({
     data: {
-        // playerScores, players, holeList, playerTotals 将从 store 映射过来
         scrollSync: true, // 是否同步滚动
         scrollTop: 0,     // 当前滚动位置
     },
@@ -14,12 +13,9 @@ Component({
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore, // 需要绑定的 store
                 fields: {
-                    // players, holes, scores 是 store 中的字段名
-                    // this.data.players, this.data.holeList, this.data.playerScores 是组件中的字段名
                     players: 'players',
-                    holeList: 'holes',
+                    holeList: 'holeList',
                     playerScores: 'scores',
-                    // 使用 store 中的计算属性获取总分
                     playerTotals: 'playerTotalScores',
                 },
                 actions: [], // 此组件不需要调用 action, 只负责展示

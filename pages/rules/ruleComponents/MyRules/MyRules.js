@@ -213,7 +213,7 @@ Component({
                 ruleType: ruleType,
                 gameId: gameStore.gameid || null,
                 playerCount: gameStore.players?.length || 0,
-                holeCount: gameStore.holes?.length || 18,
+                holeCount: gameStore.holeList?.length || 18,
                 userRuleId: item.userRuleId || null,
                 userRuleName: item.gambleUserName || item.user_rulename || item.title,
                 fromUserRule: true // 标识这是从用户规则进入的
@@ -225,7 +225,7 @@ Component({
             app.globalData.currentUserRule = item;
             app.globalData.currentGameData = {
                 players: gameStore.players || [],
-                holes: gameStore.holes || [],
+                holeList: gameStore.holeList || [],
                 gameData: gameStore.gameData || null
             };
 

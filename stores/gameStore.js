@@ -6,7 +6,7 @@ export const gameStore = observable({
     // ---- 状态数据 ----
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
-    holes: [],           // 洞信息列表
+    holeList: [],           // 洞信息列表
     scores: [],          // 分数矩阵 [playerIndex][holeIndex]
     loading: false,      // 加载状态
     error: null,         // 错误信息
@@ -56,8 +56,8 @@ export const gameStore = observable({
     }),
 
     // 为单个玩家初始化所有洞的分数
-    _initializePlayerScores: action(function (holes) {
-        return holes.map(() => this._createDefaultScore());
+    _initializePlayerScores: action(function (holeList) {
+        return holeList.map(() => this._createDefaultScore());
     }),
 
     // 标准化score_cards中的洞数据
@@ -99,7 +99,7 @@ export const gameStore = observable({
         // 根据 groupId 过滤玩家(如果提供了 groupId)
         const players = this._filterPlayersByGroup(allPlayers, groupId);
 
-        const holes = (gameData.holeList || []).map(h => this._normalizeHole(h));
+        const holeList = (gameData.holeList || []).map(h => this._normalizeHole(h));
 
         const scoreMap = new Map();
         for (const s of gameData.scores || []) {
@@ -109,7 +109,7 @@ export const gameStore = observable({
 
         // 只为当前分组的玩家创建分数矩阵
         const scores = players.map(player => {
-            return holes.map(hole => {
+            return holeList.map(hole => {
                 const key = `${player.userid}_${hole.holeid}`;
                 return scoreMap.get(key) || this._createDefaultScore();
             });
@@ -123,7 +123,7 @@ export const gameStore = observable({
         // 用清洗过的数据更新状态
         this.gameData = gameData;
         this.players = players;  // 注意:这里是过滤后的玩家
-        this.holes = holes;
+        this.holeList = holeList;
         this.scores = scores;    // 注意:这里是过滤后玩家的分数矩阵
         this.groupId = groupId;  // 存储当前分组ID
     }),
@@ -243,7 +243,7 @@ export const gameStore = observable({
     addPlayer: action(function (player) {
         this.players.push(player);
         // 同时需要为新玩家初始化一整行的分数
-        const newScoresRow = this._initializePlayerScores(this.holes);
+        const newScoresRow = this._initializePlayerScores(this.holeList);
         this.scores.push(newScoresRow);
     }),
 

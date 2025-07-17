@@ -5,7 +5,7 @@ Page({
         ruleType: '',
         gameId: null,
         players: [],
-        holes: [],
+        holeList: [],
         gameData: null,
         userRule: null, // 用户规则数据
 
@@ -44,7 +44,7 @@ Page({
                 console.log('[GambleRuntimeConfig] 解析数据:', decodedData);
 
                 let players = [];
-                let holes = [];
+                let holeList = [];
                 let gameData = null;
                 let userRule = null;
 
@@ -56,11 +56,11 @@ Page({
                 if (!globalData.currentGameData) {
                     console.warn('[GambleRuntimeConfig] 全局数据为空, 使用默认值');
                     players = [];
-                    holes = [];
+                    holeList = [];
                     gameData = null;
                 } else {
                     players = globalData.currentGameData.players || [];
-                    holes = globalData.currentGameData.holes || [];
+                    holeList = globalData.currentGameData.holeList || [];
                     gameData = globalData.currentGameData.gameData || null;
                 }
 
@@ -70,7 +70,7 @@ Page({
 
                     console.log('[GambleRuntimeConfig] 从用户规则进入, 全局数据:', {
                         players: players.length,
-                        holes: holes.length,
+                        holeList: holeList.length,
                         userRule: userRule?.gambleUserName
                     });
                 } else {
@@ -78,7 +78,7 @@ Page({
 
                     console.log('[GambleRuntimeConfig] 从系统规则进入, 全局数据:', {
                         players: players.length,
-                        holes: holes.length,
+                        holeList: holeList.length,
                         ruleType: decodedData.ruleType
                     });
                 }
@@ -87,10 +87,10 @@ Page({
                 let initialFirstHole = 0;
                 let initialLastHole = 0;
 
-                if (holes && holes.length > 0) {
+                if (holeList && holeList.length > 0) {
                     // 用index初始化
                     initialFirstHole = 0;
-                    initialLastHole = holes.length - 1;
+                    initialLastHole = holeList.length - 1;
                 }
 
                 // 从gameStore获取游戏相关数据
@@ -112,7 +112,7 @@ Page({
                     ruleType: decodedData.ruleType || '',
                     gameId: decodedData.gameId || null,
                     players: players,
-                    holes: holes,
+                    holeList: holeList,
                     gameData: gameData,
                     userRule: userRule,
                     'runtimeConfig.startHoleindex': initialFirstHole,
@@ -381,10 +381,10 @@ Page({
     },
 
     saveRuntimeConfig() {
-        const { runtimeConfig, holes } = this.data;
+        const { runtimeConfig, holeList } = this.data;
 
         // 新增调试日志，打印holeList、gameid、groupid
-        console.log('[GambleRuntimeConfig] 调试: holeList:', holes);
+        console.log('[GambleRuntimeConfig] 调试: holeList:', holeList);
         console.log('[GambleRuntimeConfig] 调试: gameid:', runtimeConfig?.gameid);
         console.log('[GambleRuntimeConfig] 调试: groupid:', runtimeConfig?.groupid);
 
@@ -393,7 +393,7 @@ Page({
         // 添加 holeList 参数
         const configWithHoleList = {
             ...runtimeConfig,
-            holeList: holes
+            holeList: holeList
         };
 
         this.setData({ loading: true });

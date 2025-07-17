@@ -24,7 +24,7 @@
             watchersNumber="{{item.watchers_number}}" 
             gameStart="{{item.game_start}}" 
             completedHoles="{{item.completed_holes}}" 
-            holes="{{item.holes}}" 
+            holeList="{{item.holeList}}" 
             starType="yellow"
             gameId="{{item.game_id}}"
             groups="{{item.groups}}"

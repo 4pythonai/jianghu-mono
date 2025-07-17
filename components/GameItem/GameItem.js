@@ -6,7 +6,6 @@ Component({
         watchersNumber: Number,
         gameStart: String,
         completedHoles: Number,
-        holes: Number,
         starType: {
             type: String,
             value: 'gray' // gray或yellow
