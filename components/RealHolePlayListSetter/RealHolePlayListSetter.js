@@ -22,8 +22,7 @@ Component({
     data: { holePlayList: [] },
     lifetimes: {
         attached() {
-            console.log('[RealHolePlayListSetter] attached', this.properties);
-            this.setData({ holePlayList: this.properties.holeList });
+            this.setData({ holePlayList: gameStore.holePlayList });
 
         }
     },
@@ -48,6 +47,8 @@ Component({
             this.setData({
                 holePlayList: newHolePlayList
             });
+
+            gameStore.changeHolePlayList(newHolePlayList);
 
             console.log('[onSelectHole] 新holePlayList:', newHolePlayList);
         },
