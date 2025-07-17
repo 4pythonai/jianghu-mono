@@ -1,4 +1,4 @@
-<view wx:if="{{showModal}}">
+<view wx:if="{{ifShowModal}}">
   <view class="modal-mask" bindtap="onHideModal"></view>
   <view class="modal-content">
     <view class="modal-title"> 设置洞序 </view>

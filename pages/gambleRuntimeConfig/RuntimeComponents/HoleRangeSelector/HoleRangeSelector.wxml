@@ -19,12 +19,10 @@
 
   <!-- 弹出自定义球洞选择器组件 -->
   <real-hole-play-list-setter
-    wx:if="{{showModal}}"
-    showModal="{{showModal}}"
-    modalType="{{modalType}}"
+    wx:if="{{ifShowModal}}"
+    ifShowModal="{{ifShowModal}}"
     holeList="{{holeList}}"
     holePlayList="{{holePlayList}}"
-    selectedIndex="{{modalType === 'start' ? holePlayList[0].hindex : holePlayList[holePlayList.length-1].hindex}}"
     bind:change="onModalChange"
     bind:cancel="onModalCancel"
   />

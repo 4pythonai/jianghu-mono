@@ -8,14 +8,11 @@ Component({
             type: Array,
             value: []
         },
-        showModal: {
+        ifShowModal: {
             type: Boolean,
             value: false,
         },
-        modalType: {
-            type: String,
-            value: 'start',
-        },
+
         selectedIndex: {
             type: Number,
             value: 0,
@@ -35,9 +32,6 @@ Component({
             // console.log('[RealHolePlayListSetter] showModal changed:', newVal);
         },
 
-        modalType(newVal) {
-            // console.log('[RealHolePlayListSetter] modalType changed:', newVal);
-        },
 
         selectedIndex(newVal) {
             // console.log('[RealHolePlayListSetter] selectedIndex changed:', newVal);
@@ -80,9 +74,8 @@ Component({
         },
 
         onConfirm() {
-            console.log('确定:::', this.properties.modalType, this.data.selectedIndex);
+            console.log('确定:::', this.data.selectedIndex);
             this.triggerEvent('change', {
-                modalType: this.properties.modalType,
                 selectedIndex: this.data.selectedIndex !== undefined ? this.data.selectedIndex : this.properties.selectedIndex
             });
         },

@@ -20,8 +20,7 @@ Component({
         holeList: [],
         holePlayList: [],
         // 弹框显示状态
-        showStartHoleModal: false,
-        showEndHoleModal: false
+        ifShowModal: false,
     },
 
     lifetimes: {
@@ -48,26 +47,12 @@ Component({
         },
 
         // 显示起始洞选择弹框
-        showStartHoleModal() {
-            this.setData({ showStartHoleModal: true });
-        },
-
-        // 隐藏起始洞选择弹框
-        hideStartHoleModal() {
-            this.setData({ showStartHoleModal: false });
+        showModal() {
+            this.setData({ ifShowModal: true });
         },
 
 
 
-        // 显示终止洞选择弹框
-        showEndHoleModal() {
-            this.setData({ showEndHoleModal: true });
-        },
-
-        // 隐藏终止洞选择弹框
-        hideEndHoleModal() {
-            this.setData({ showEndHoleModal: false });
-        },
 
 
         // 触发变更事件
@@ -80,13 +65,24 @@ Component({
 
         // 统一弹框显示入口
         onShowModal(e) {
-            const type = e.currentTarget.dataset.type;
-            if (type === 'start') {
-                this.showStartHoleModal();
-            } else if (type === 'end') {
-                this.showEndHoleModal();
-            }
+            // this.showModal();
+            this.setData({ ifShowModal: true });
+
         },
+
+
+        onModalCancel(e) {
+            this.setData({ ifShowModal: false });
+        },
+
+
+        onModalChange(e) {
+            console.log('onModalChange+++++++++++++++', e);
+            this.setData({ ifShowModal: false });
+            // this.setData({ ifShowModal: false });
+        },
+
+
 
     }
 }); 
