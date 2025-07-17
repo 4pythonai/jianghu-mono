@@ -127,6 +127,7 @@ export const gameStore = observable({
         this.gameData = gameData;
         this.players = players;  // 注意:这里是过滤后的玩家
         this.holeList = holeList;
+        this.holePlayList = holeList;
         this.scores = scores;    // 注意:这里是过滤后玩家的分数矩阵
         this.groupId = groupId;  // 存储当前分组ID
     }),

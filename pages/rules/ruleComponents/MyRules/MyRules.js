@@ -212,9 +212,11 @@ Component({
             const runtimeConfigData = {
                 ruleType: ruleType,
                 gameId: gameStore.gameid || null,
-                playerCount: gameStore.players?.length || 0,
-                holeCount: gameStore.holeList?.length || 18,
+                playerCount: gameStore.players?.length,
+                holeCount: gameStore.holeList?.length,
                 userRuleId: item.userRuleId || null,
+                holePlayList: gameStore.holePlayList || [],
+                holeList: gameStore.holeList || [],
                 userRuleName: item.gambleUserName || item.user_rulename || item.title,
                 fromUserRule: true, // 标识这是从用户规则进入的
                 userRule: item // 传递完整的用户规则对象

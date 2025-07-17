@@ -9,6 +9,7 @@ Page({
         gameId: null,
         players: [],
         holeList: [],
+        holePlayList: [],
         gameData: null,
         userRule: null,
 
@@ -41,6 +42,8 @@ Page({
 
                 let players = [];
                 let holeList = [];
+                let holePlayList = [];
+                // let holePlayList = [];   
                 let gameData = null;
                 let userRule = null;
 
@@ -49,15 +52,16 @@ Page({
                     console.warn('[GambleRuntimeConfig] gameStore.players 为空, 使用默认值');
                     players = [];
                     holeList = [];
+                    holePlayList = [];
                     gameData = null;
                 } else {
                     players = gameStore.players || [];
-                    holeList = gameStore.holeList || Array.from({ length: 18 }, (_, i) => ({ holeNumber: i + 1 })); // 默认生成18个洞
+                    holeList = gameStore.holeList;
+                    holePlayList = gameStore.holePlayList;
                     gameData = gameStore.gameData || null;
                 }
 
                 // 确保holePlayList有默认值
-                const holePlayList = gameStore.holePlayList || holeList.map(() => true); // 默认所有洞都可玩
 
                 // 只有从用户规则进入时才有用户规则数据
                 // 方案2：直接通过页面参数传递 userRule
@@ -68,7 +72,7 @@ Page({
                     console.log('[GambleRuntimeConfig] 从用户规则进入, 参数数据:', {
                         players: players,
                         holeList: holeList,
-
+                        holePlayList: holePlayList,
                         userRule: userRule?.gambleUserName
                     });
                 } else {
@@ -77,6 +81,7 @@ Page({
                     console.log('[GambleRuntimeConfig] 从系统规则进入, 参数数据:', {
                         players: players,
                         holeList: holeList,
+                        holePlayList: holePlayList,
                         ruleType: decodedData.ruleType
                     });
                 }
@@ -111,6 +116,7 @@ Page({
                     gameId: decodedData.gameId || null,
                     players: players,
                     holeList: holeList,
+                    holePlayList: holePlayList,
                     gameData: gameData,
                     userRule: userRule,
                     'runtimeConfig.endHoleindex': initialLastHole,
@@ -142,6 +148,7 @@ Page({
         const { gameStore } = require('../../stores/gameStore');
         gameStore.players = [];
         gameStore.holeList = [];
+        gameStore.holePlayList = [];
         gameStore.gameData = null;
     },
 

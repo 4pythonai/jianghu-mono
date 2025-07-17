@@ -40,6 +40,13 @@ Component({
         // 初始化洞范围选择器
         initializeHoleRanges(holeList) {
 
+
+
+            // // 默认生成完整的 holePlayList
+            // const holePlayList = validHoleList.map((_, index) => index + 1);
+            // this.setData({
+            //     holePlayList
+            // });
         },
 
         // 显示起始洞选择弹框
@@ -73,6 +80,10 @@ Component({
             });
         },
 
+        // 统一弹框显示入口
+        onShowModal() {
+            this.showStartHoleModal(); // 默认显示起始洞弹框
+        },
 
     }
 }); 
