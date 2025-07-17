@@ -17,6 +17,13 @@ export const gameStore = observable({
     gameid: null,        // 当前游戏ID
     groupId: null,       // 当前分组ID
 
+    getState() {
+        return {
+            holeList: this.holeList,
+            holePlayList: this.holePlayList
+        };
+    },
+
     // ---- 私有方法 (数据处理) ----
 
     // 标准化玩家数据

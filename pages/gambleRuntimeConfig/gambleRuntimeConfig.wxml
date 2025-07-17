@@ -20,10 +20,7 @@
     <!-- 洞范围选择 -->
     <view class="section">
       <view class="section-label">选择洞范围</view>
-      <HoleRangeSelector 
-        holeList="{{holeList}}"
-        holePlayList="{{holePlayList}}"
-      />
+      <HoleRangeSelector />
     </view>
     
       <!-- 8421球员配置 -->

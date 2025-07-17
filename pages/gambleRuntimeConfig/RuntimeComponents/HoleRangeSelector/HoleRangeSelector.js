@@ -1,19 +1,15 @@
 // HoleRangeSelector 组件 - 起点洞与终点洞选择器
 import RuntimeComponentsUtils from '../common-utils.js';
+import { gameStore } from '../../../../stores/gameStore';
 
 Component({
-    properties: {
-
-        // 洞列表数据
-        holeList: {
-            type: Array,
-            value: []
-        },
-        holePlayList: {
-            type: Array,
-            value: []
+    lifetimes: {
+        attached() {
+            const { holeList, holePlayList } = gameStore.getState();
+            this.setData({ holeList, holePlayList });
         }
     },
+    properties: {}, // 移除 holeList 和 holePlayList 属性
 
     data: {
         // 球洞列表数据
