@@ -1,4 +1,5 @@
-const { gameStore } = require('../../stores/gameStore');
+// RealHolePlayListSetter
+import { gameStore } from '../../stores/gameStore';
 
 
 Component({
@@ -14,13 +15,17 @@ Component({
 
     },
 
-    data: { holePlayList: [] },
+    data: { holeList: [], holePlayList: [] },
+
+
     lifetimes: {
         attached() {
-            this.setData({ holePlayList: gameStore.holePlayList });
-
+            const { holeList, holePlayList } = gameStore.getState();
+            this.setData({ holeList, holePlayList });
         }
     },
+
+
 
     methods: {
         onHideModal() {
@@ -30,10 +35,8 @@ Component({
 
         onSelectHole(e) {
             const hindex = Number(e.currentTarget.dataset.hindex);
-            const holeList = gameStore.holeList;
-            console.log('holeList 🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺++++++++++', holeList);
             // 1. 先按 hindex 升序排列
-            const sortedList = [...holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
+            const sortedList = [...this.data.holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
             // 2. 找到点击的 hindex 在排序后数组中的下标
             const startIdx = sortedList.findIndex(hole => Number(hole.hindex) === hindex);
             // 3. 用这个下标做环形切片
