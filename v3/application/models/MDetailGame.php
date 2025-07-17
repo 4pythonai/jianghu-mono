@@ -246,9 +246,10 @@ class MDetailGame  extends CI_Model {
         ";
 
         $courts_result = $this->db->query($courts_query, [$gameid]);
+        $hindex = 1;
+
         foreach ($courts_result->result_array() as $court) {
             $courtid = $court['courtid'];
-
             $court_key = $court['court_key'];
 
             // 获取该半场的所有球洞信息
@@ -272,13 +273,13 @@ class MDetailGame  extends CI_Model {
 
             $holes_result = $this->db->query($holes_query, [$courtid]);
 
-
             foreach ($holes_result->result_array() as $hole) {
                 $holeList[] = [
                     'unique_key' => $court_key . '_' . $hole['holeid'],
                     'court_key' => $court_key,
                     'holeid' => (int)$hole['holeid'],
                     'holeno' => (int)$hole['holeno'],
+                    'hindex' => $hindex,
                     'holename' => $hole['holename'] ?: '',
                     'par' => (int)$hole['par'],
                     'black' => (int)$hole['black'],
@@ -289,6 +290,7 @@ class MDetailGame  extends CI_Model {
                     'Tnum' => (int)$hole['Tnum'],
                     'diffindex' => (int)$hole['diffindex']
                 ];
+                $hindex++;
             }
         }
 

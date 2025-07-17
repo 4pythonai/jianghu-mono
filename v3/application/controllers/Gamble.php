@@ -167,8 +167,8 @@ class Gamble extends MY_Controller {
             // 准备插入数据
             $insert_data = [
                 'creator_id' => $userid,
-                'firstHoleindex' => intval($json_paras['firstHoleindex']),
-                'lastHoleindex' => intval($json_paras['lastHoleindex']),
+                'startHoleindex' =>  intval($json_paras['startHoleindex']) + 1,
+                'endHoleindex' => intval($json_paras['endHoleindex']) + 1,
                 'gameid' => $gameid,
                 'groupid' => $json_paras['groupid'] ?? 1,
                 'val8421_config' => isset($json_paras['val8421_config']) ? json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE) : null,
@@ -177,7 +177,6 @@ class Gamble extends MY_Controller {
                 'gambleUserName' => $json_paras['gambleUserName'] ?? null,
                 'playersNumber' => $json_paras['playersNumber'] ?? 4,
                 'red_blue_config' => $json_paras['red_blue_config'] ?? null,
-                'all_players' => isset($json_paras['all_players']) ? json_encode($json_paras['all_players'], JSON_UNESCAPED_UNICODE) : null,
                 'bootstrap_order' => isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
                 'attenders' =>   isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
                 'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score'
@@ -237,8 +236,14 @@ class Gamble extends MY_Controller {
     }
 
 
-    // {"14":{"Birdie":8,"Par":4,"Par+1":2,"Par+2":1},"59":{"Birdie":8,"Par":4,"Par+1":2,"Par+2":1},"122":{"Birdie":8,"Par":4,"Par+1":2,"Par+2":1},"837590":{"Birdie":8,"Par":4,"Par+1":2,"Par+2":1}}
 
     public function  updateGambleRuntime() {
+    }
+
+    public function deleteRuntimeConfig() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $id = $json_paras['id'];
+        $this->db->delete('t_gamble_runtime', ['id' => $id]);
+        echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
 }
