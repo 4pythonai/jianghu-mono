@@ -38,13 +38,6 @@
 	margin-bottom: 8rpx;
 }
 
-.section-label {
-	font-size: 24rpx;
-	color: #388e3c;
-	margin: 18rpx 10rpx 10rpx 0;
-	font-weight: 500;
-}
-
 .form-input {
 	width: 100%;
 	height: 64rpx;

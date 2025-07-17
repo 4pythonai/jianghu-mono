@@ -19,18 +19,9 @@
 	margin-bottom: 15rpx;
 }
 
-/* 单选按钮组 - 水平排列 */
-/* 删除以下标签选择器样式，改用类选择器 */
-/*
-radio-group {
-	display: flex !important;
-	flex-direction: row !important;
-	justify-content: space-around;
-	gap: 20rpx;
-	width: 100%;
-	margin: 10rpx 0;
+.section-label {
+	margin-bottom: 10rpx;
 }
-*/
 
 .radio-item {
 	display: flex !important;
@@ -51,14 +42,6 @@ radio-group {
 	transform: scale(0.98);
 }
 
-/* 确保radio元素可见 */
-/* 删除以下标签选择器样式，改用类选择器 */
-/*
-radio {
-	margin-right: 8rpx;
-}
-*/
-
 .radio-label {
 	font-size: 28rpx;
 	color: #333;
@@ -66,7 +49,6 @@ radio {
 	white-space: nowrap;
 }
 
-/* 出发顺序 */
 .departure-order {
 	background-color: #f8f8f8;
 	border-radius: 15rpx;
@@ -249,18 +231,11 @@ radio {
 	.drag-icon {
 		font-size: 20rpx;
 	}
-}
 
-/*
-【建议】
-1. 在 wxml 里给 radio-group 和 radio 加 class，例如：
-   <radio-group class="my-radio-group">
-     <radio class="my-radio" />
-   </radio-group>
-2. 在 wxss 里用类选择器写样式：
-   .my-radio-group { ... }
-   .my-radio { ... }
-*/
+	.section-label {
+		margin: 100rpx;
+	}
+}
 
 .my-radio-group {
 	display: flex;

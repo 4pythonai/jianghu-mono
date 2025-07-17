@@ -48,6 +48,10 @@
 	border-bottom: 2rpx solid #f0f0f0;
 }
 
+.section-label {
+	margin-bottom: 10rpx;
+}
+
 /* 底部按钮样式 */
 .bottom-buttons {
 	position: fixed;
