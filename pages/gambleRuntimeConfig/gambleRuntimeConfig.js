@@ -19,8 +19,6 @@ Page({
             gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
             gambleUserName: null,   // 用户规则名称(如:规则_4721)
 
-            startHoleindex: 1,
-            endHoleindex: 18,
 
             red_blue_config: '4_固拉',
             bootstrap_order: [],
@@ -111,7 +109,6 @@ Page({
                     holeList: holeList,
                     gameData: gameData,
                     userRule: userRule,
-                    'runtimeConfig.startHoleindex': initialFirstHole,
                     'runtimeConfig.endHoleindex': initialLastHole,
                     'runtimeConfig.gameid': gameStore.gameid,
                     'runtimeConfig.groupid': gameStore.groupId,
@@ -227,17 +224,6 @@ Page({
 
     // 洞范围选择事件
     onHoleRangeChange(e) {
-        let { startHoleindex, endHoleindex } = e.detail;
-        // 自动转换为数字, 保证类型一致
-        startHoleindex = Number(startHoleindex);
-        endHoleindex = Number(endHoleindex);
-        console.log('[GambleRuntimeConfig] 洞范围变更:', { startHoleindex, endHoleindex });
-
-        // 直接用 unique_key, 不要转数字
-        this.setData({
-            'runtimeConfig.startHoleindex': startHoleindex,
-            'runtimeConfig.endHoleindex': endHoleindex
-        });
     },
 
     // 分组配置事件
@@ -291,48 +277,40 @@ Page({
     validateConfig() {
         const { runtimeConfig, players, ruleType } = this.data;
 
-        // 验证洞范围
-        if (runtimeConfig.startHoleindex > runtimeConfig.endHoleindex) {
+
+        // 验证分组配置
+
+        const playersOrderCount = runtimeConfig.bootstrap_order.length;
+
+        if (playersOrderCount !== players.length) {
             wx.showToast({
-                title: '起始洞不能大于结束洞',
+                title: '玩家顺序数量与总人数不符',
                 icon: 'none'
             });
             return false;
         }
 
-        // 验证分组配置
-        {
-            const playersOrderCount = runtimeConfig.bootstrap_order.length;
+        if (!runtimeConfig.red_blue_config) {
+            wx.showToast({
+                title: '请选择分组方式',
+                icon: 'none'
+            });
+            return false;
+        }
 
-            if (playersOrderCount !== players.length) {
-                wx.showToast({
-                    title: '玩家顺序数量与总人数不符',
-                    icon: 'none'
-                });
-                return false;
-            }
+        // 验证所有玩家ID都存在
+        const playerIds = players.map(p => Number.parseInt(p.user_id || p.userid));
+        const allPlayersIncluded = runtimeConfig.bootstrap_order.every(id =>
+            playerIds.includes(Number.parseInt(id))
+        );
 
-            if (!runtimeConfig.red_blue_config) {
-                wx.showToast({
-                    title: '请选择分组方式',
-                    icon: 'none'
-                });
-                return false;
-            }
+        if (!allPlayersIncluded) {
+            wx.showToast({
+                title: '玩家顺序配置有误',
+                icon: 'none'
+            });
+            return false;
 
-            // 验证所有玩家ID都存在
-            const playerIds = players.map(p => Number.parseInt(p.user_id || p.userid));
-            const allPlayersIncluded = runtimeConfig.bootstrap_order.every(id =>
-                playerIds.includes(Number.parseInt(id))
-            );
-
-            if (!allPlayersIncluded) {
-                wx.showToast({
-                    title: '玩家顺序配置有误',
-                    icon: 'none'
-                });
-                return false;
-            }
         }
 
         // 验证8421配置(仅在8421游戏时)

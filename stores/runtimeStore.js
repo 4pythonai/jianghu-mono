@@ -80,12 +80,6 @@ export const runtimeStore = observable({
                             processedConfig.ranking_display = rankingMap[config.ranking_tie_resolve_config] || config.ranking_tie_resolve_config || '未知排名规则';
                         }
 
-                        // 格式化洞数范围
-                        const firstHole = config.startHoleindex || 1;
-                        const lastHole = config.endHoleindex || 18;
-                        processedConfig.hole_range_display = firstHole === lastHole ?
-                            `第${firstHole}洞` :
-                            `第${firstHole}洞 - 第${lastHole}洞`;
 
                         return processedConfig;
                     } catch (e) {

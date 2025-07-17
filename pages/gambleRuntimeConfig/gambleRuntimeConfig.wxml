@@ -21,8 +21,6 @@
     <view class="section">
       <view class="section-label">选择洞范围</view>
       <HoleRangeSelector 
-        startHoleindex="{{runtimeConfig.startHoleindex}}"
-        endHoleindex="{{runtimeConfig.endHoleindex}}"
         holeList="{{holeList}}"
         holePlayList="{{holePlayList}}"
         bind:change="onHoleRangeChange"

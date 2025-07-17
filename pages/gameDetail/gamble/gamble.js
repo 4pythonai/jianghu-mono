@@ -145,8 +145,7 @@ Component({
                 gambleid: gambleid,
                 ruleType: config.gambleSysName || '',
                 userRuleName: config.gambleUserName || '',
-                firstHole: config.startHoleindex || 1,
-                lastHole: config.endHoleindex || 18,
+                holePlayList: config.holePlayList || [],
                 playerCount: config.player8421Count || 0
             };
 
