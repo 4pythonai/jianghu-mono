@@ -299,8 +299,8 @@ export const gameStore = observable({
 
     changeHolePlayList: action(function (holePlayList) {
 
-        console.log(' 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴changeHolePlayList+++++++++++++++', holePlayList);
-        this.holePlayList = holePlayList;
+        // console.log(' 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴changeHolePlayList+++++++++++++++', holePlayList);
+        // this.holePlayList = holePlayList;
     }),
 
     // Tab 状态管理

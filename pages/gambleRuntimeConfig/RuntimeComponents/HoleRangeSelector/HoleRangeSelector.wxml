@@ -21,8 +21,6 @@
   <RealHolePlayListSetter
     wx:if="{{ifShowModal}}"
     ifShowModal="{{ifShowModal}}"
-    holeList="{{holeList}}"
-    holePlayList="{{holePlayList}}"
     bind:cancel="onModalCancel"
   />
 </view>
