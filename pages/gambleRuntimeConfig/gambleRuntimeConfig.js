@@ -138,7 +138,6 @@ Page({
 
     // 页面销毁时清理全局数据
     onUnload() {
-        console.log('[GambleRuntimeConfig] 页面销毁, 清理全局数据');
         const { gameStore } = require('../../stores/gameStore');
         gameStore.players = [];
         gameStore.holeList = [];

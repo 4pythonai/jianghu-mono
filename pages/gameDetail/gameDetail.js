@@ -70,20 +70,15 @@ Page({
 
     // 页面显示时检查数据
     onShow() {
-        // 如果没有数据、不在加载中且有错误, 可以尝试重新加载
-        if (!this.data.gameData && !this.data.loading && this.data.error) {
-            console.log('📝 页面显示, 检测到错误状态, 自动重试加载');
-            const { gameId, groupId } = this.data;
-
-            if (gameId) {
-                if (groupId) {
-                    this.fetchGameDetail(gameId, groupId);
-                } else {
-                    this.fetchGameDetail(gameId);
-                }
+        // 每次页面显示都强制刷新数据，确保记分tab有最新的球员和球洞
+        const { gameId, groupId } = this.data;
+        if (gameId) {
+            if (groupId) {
+                this.fetchGameDetail(gameId, groupId);
+            } else {
+                this.fetchGameDetail(gameId);
             }
         }
-
     },
 
     onCellClick(e) {
