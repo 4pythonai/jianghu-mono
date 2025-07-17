@@ -19,6 +19,7 @@
     showModal="{{showModal}}"
     modalType="{{modalType}}"
     holeList="{{holeList}}"
+    holePlayList="{{holeList}}"
     selectedIndex="{{modalType === 'start' ? startHoleIndex : endHoleIndex}}"
     bind:change="onModalChange"
     bind:cancel="onModalCancel"
