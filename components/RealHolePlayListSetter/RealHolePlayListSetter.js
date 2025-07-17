@@ -1,3 +1,6 @@
+const { gameStore } = require('../../stores/gameStore');
+
+
 Component({
     options: {
         styleIsolation: 'apply-shared',
@@ -8,6 +11,7 @@ Component({
             type: Array,
             value: []
         },
+
         ifShowModal: {
             type: Boolean,
             value: false,
@@ -50,7 +54,10 @@ Component({
 
         onConfirmHoleOrder() {
             console.log('确定:::');
-            //  000000000000000000000
+
+            gameStore.changeHolePlayList(this.data.holePlayList);
+
+            this.setData({ ifShowModal: false });
 
         },
 

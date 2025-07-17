@@ -23,7 +23,6 @@
     ifShowModal="{{ifShowModal}}"
     holeList="{{holeList}}"
     holePlayList="{{holePlayList}}"
-    bind:change="onModalChange"
     bind:cancel="onModalCancel"
   />
 </view>

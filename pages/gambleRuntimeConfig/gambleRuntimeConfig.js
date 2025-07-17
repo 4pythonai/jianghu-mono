@@ -96,8 +96,6 @@ Page({
                     initialLastHole = holeList.length - 1;
                 }
 
-                // 从gameStore获取游戏相关数据
-                // const { gameStore } = require('../../stores/gameStore');
 
                 // 设置新增字段
                 let gambleSysName = null;
