@@ -24,6 +24,7 @@
         startHoleindex="{{runtimeConfig.startHoleindex}}"
         endHoleindex="{{runtimeConfig.endHoleindex}}"
         holeList="{{holeList}}"
+        holePlayList="{{holePlayList}}"
         bind:change="onHoleRangeChange"
       />
     </view>
