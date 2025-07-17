@@ -235,13 +235,6 @@ Page({
 
     // 洞范围选择事件
     onHoleRangeChange(e) {
-        const { startHoleindex, endHoleindex } = e.detail;
-        console.log('[GambleRuntimeConfig] 洞范围变更:', { startHoleindex, endHoleindex });
-
-        this.setData({
-            'runtimeConfig.startHoleindex': startHoleindex,
-            'runtimeConfig.endHoleindex': endHoleindex
-        });
     },
 
     // 分组配置事件
@@ -363,13 +356,14 @@ Page({
     },
 
     saveRuntimeConfig() {
-        const { runtimeConfig, holeList } = this.data;
+        const { runtimeConfig, holeList, holePlayList } = this.data;
 
 
         // 添加 holeList 参数
         const configWithHoleList = {
             ...runtimeConfig,
-            holeList: holeList
+            holeList: holeList,
+            holePlayList: holePlayList
         };
 
         this.setData({ loading: true });

@@ -9,8 +9,6 @@
 ```javascript
 // 修改后的数据格式
 {
-  "startHoleindex": 1,
-  "endHoleindex": 9,
   "enable": true,
   "red_blue_config": "4_固拉",
   "bootstrap_order": [837590, 14, 59, 122],
@@ -29,10 +27,7 @@
 
 ### 主要改进
 
-1. **去除嵌套层级**:将 `grouping_config` 下的配置直接提升到顶层
-2. **简化数据格式**:`bootstrap_order` 从对象数组简化为用户ID数组
-3. **统一命名**:洞配置使用 `startHoleindex` 和 `endHoleindex`
-
+ 
 ### 组件内部处理
 
 - RedBlueConfig 组件内部仍使用完整的玩家对象数组进行显示
