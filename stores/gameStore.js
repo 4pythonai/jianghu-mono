@@ -9,6 +9,7 @@ export const gameStore = observable({
 
     players: [],         // 玩家列表
     holeList: [],           // 洞信息列表
+    holePlayList: [],
     scores: [],          // 分数矩阵 [playerIndex][holeIndex]
     loading: false,      // 加载状态
     error: null,         // 错误信息

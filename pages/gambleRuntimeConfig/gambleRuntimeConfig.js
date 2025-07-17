@@ -52,9 +52,12 @@ Page({
                     gameData = null;
                 } else {
                     players = gameStore.players || [];
-                    holeList = gameStore.holeList || [];
+                    holeList = gameStore.holeList || Array.from({ length: 18 }, (_, i) => ({ holeNumber: i + 1 })); // 默认生成18个洞
                     gameData = gameStore.gameData || null;
                 }
+
+                // 确保holePlayList有默认值
+                const holePlayList = gameStore.holePlayList || holeList.map(() => true); // 默认所有洞都可玩
 
                 // 只有从用户规则进入时才有用户规则数据
                 // 方案2：直接通过页面参数传递 userRule
@@ -63,16 +66,17 @@ Page({
                     userRule = decodedData.userRule || null;
 
                     console.log('[GambleRuntimeConfig] 从用户规则进入, 参数数据:', {
-                        players: players.length,
-                        holeList: holeList.length,
+                        players: players,
+                        holeList: holeList,
+
                         userRule: userRule?.gambleUserName
                     });
                 } else {
                     userRule = null;
 
                     console.log('[GambleRuntimeConfig] 从系统规则进入, 参数数据:', {
-                        players: players.length,
-                        holeList: holeList.length,
+                        players: players,
+                        holeList: holeList,
                         ruleType: decodedData.ruleType
                     });
                 }
@@ -224,6 +228,13 @@ Page({
 
     // 洞范围选择事件
     onHoleRangeChange(e) {
+        const { startHoleindex, endHoleindex } = e.detail;
+        console.log('[GambleRuntimeConfig] 洞范围变更:', { startHoleindex, endHoleindex });
+
+        this.setData({
+            'runtimeConfig.startHoleindex': startHoleindex,
+            'runtimeConfig.endHoleindex': endHoleindex
+        });
     },
 
     // 分组配置事件

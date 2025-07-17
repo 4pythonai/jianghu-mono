@@ -8,11 +8,16 @@ Component({
         holeList: {
             type: Array,
             value: []
+        },
+        holePlayList: {
+            type: Array,
+            value: []
         }
     },
 
     data: {
         // 球洞列表数据
+        holeList: [],
         holePlayList: [],
         // 弹框显示状态
         showStartHoleModal: false,
@@ -34,26 +39,7 @@ Component({
     methods: {
         // 初始化洞范围选择器
         initializeHoleRanges(holeList) {
-            const actualHoleList = holeList !== undefined ? holeList : this.properties.holeList;
 
-            const validHoleList = (actualHoleList || []).map(hole => ({
-                holeno: Number(hole.holeno) || 1,
-                holename: hole.holename || `${hole.court_key}${hole.holeno}`,
-                holeId: hole.unique_key || `${hole.court_key}_${hole.holeno}`
-            }));
-
-            if (validHoleList.length === 0) {
-                this.setData({
-                    holePlayList: []
-                });
-                return;
-            }
-
-            // 默认生成完整的 holePlayList
-            const holePlayList = validHoleList.map((_, index) => index + 1);
-            this.setData({
-                holePlayList
-            });
         },
 
         // 显示起始洞选择弹框
