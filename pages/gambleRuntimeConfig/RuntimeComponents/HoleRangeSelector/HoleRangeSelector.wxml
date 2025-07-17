@@ -4,33 +4,23 @@
   <view class="selector-area">
     <!-- 起始洞标签 -->
     <view class="selector-label">起始洞</view>
-    
-    <!-- 起始洞选择 -->
-    <picker 
-      mode="selector" 
-      range="{{startHoleRange}}" 
-      value="{{startHoleIndex}}"
-      bindchange="onStartHoleChange"
-    >
-      <view class="hole-circle">
-        <text class="hole-number">{{startHoleRange[startHoleIndex]}}</text>
-      </view>
-    </picker>
-    
-    <!-- 终止洞标签 -->
+    <view class="hole-circle">
+      <text class="hole-number" bindtap="onShowModal" data-type="start">{{startHoleRange[startHoleIndex]}}</text>
+    </view>
     <view class="selector-label">终止洞</view>
-    
-    <!-- 终止洞选择 -->
-    <picker 
-      mode="selector" 
-      range="{{endHoleRange}}" 
-      value="{{endHoleIndex}}"
-      bindchange="onEndHoleChange"
-    >
-      <view class="hole-circle">
-        <text class="hole-number">{{endHoleRange[endHoleIndex]}}</text>
-      </view>
-    </picker>
+    <view class="hole-circle">
+      <text class="hole-number" bindtap="onShowModal" data-type="end">{{endHoleRange[endHoleIndex]}}</text>
+    </view>
   </view>
-  
-</view> 
+
+  <!-- 弹出自定义球洞选择器组件 -->
+  <real-hole-play-list-setter
+    wx:if="{{showModal}}"
+    showModal="{{showModal}}"
+    modalType="{{modalType}}"
+    holeList="{{holeList}}"
+    selectedIndex="{{modalType === 'start' ? startHoleIndex : endHoleIndex}}"
+    bind:change="onModalChange"
+    bind:cancel="onModalCancel"
+  />
+</view>

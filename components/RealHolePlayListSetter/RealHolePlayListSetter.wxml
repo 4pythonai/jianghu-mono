@@ -1,0 +1,17 @@
+<view wx:if="{{showModal}}">
+  <view class="modal-mask" bindtap="onHideModal"></view>
+  <view class="modal-content">
+    <view class="modal-title">设置洞序{{modalType === 'start' ? '起始洞' : '终止洞'}}</view>
+    <view class="hole-list">
+      <block wx:for="{{holeList}}" wx:key="index">
+        <view class="hole-item {{selectedIndex === index ? 'active' : ''}}" bindtap="onSelectHole" data-index="{{index}}">
+          <text>{{item.holename || item}}</text>
+        </view>
+      </block>
+    </view>
+    <view class="modal-btns">
+      <button class="btn-cancel" bindtap="onCancel">取消</button>
+      <button class="btn-confirm" bindtap="onConfirm">确定</button>
+    </view>
+  </view>
+</view> 

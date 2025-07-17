@@ -21,13 +21,12 @@ Component({
     },
 
     data: {
-        // 起始洞选择器数据
         startHoleRange: [],
         startHoleIndex: 0,
-
-        // 结束洞选择器数据
         endHoleRange: [],
-        endHoleIndex: 17
+        endHoleIndex: 17,
+        showModal: false,
+        modalType: 'start', // 'start' or 'end'
     },
 
     lifetimes: {
@@ -81,20 +80,6 @@ Component({
             });
         },
 
-        // 起始洞选择改变
-        onStartHoleChange(e) {
-            const startHoleIndex = e.detail.value;
-            this.setData({ startHoleIndex });
-            this.triggerChangeEvent(startHoleIndex, this.data.endHoleIndex);
-        },
-
-        // 结束洞选择改变
-        onEndHoleChange(e) {
-            const endHoleIndex = e.detail.value;
-            this.setData({ endHoleIndex });
-            this.triggerChangeEvent(this.data.startHoleIndex, endHoleIndex);
-        },
-
         // 触发变更事件
         triggerChangeEvent(startHoleindex, endHoleindex) {
             this.triggerEvent('change', {
@@ -112,6 +97,27 @@ Component({
                 return `第${startHoleindex}洞`;
             }
             return `第${startHoleindex}洞 - 第${endHoleindex}洞`;
+        },
+
+        onShowModal(e) {
+            const type = e.currentTarget.dataset.type;
+            this.setData({
+                showModal: true,
+                modalType: type
+            });
+        },
+        onModalChange(e) {
+            const { modalType, selectedIndex } = e.detail;
+            if (modalType === 'start') {
+                this.setData({ startHoleIndex: selectedIndex });
+            } else {
+                this.setData({ endHoleIndex: selectedIndex });
+            }
+            this.setData({ showModal: false });
+            this.triggerChangeEvent(this.data.startHoleIndex, this.data.endHoleIndex);
+        },
+        onModalCancel() {
+            this.setData({ showModal: false });
         }
     }
 }); 

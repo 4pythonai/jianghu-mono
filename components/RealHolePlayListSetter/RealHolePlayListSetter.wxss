@@ -1,0 +1,103 @@
+.hole-range-selector {
+	padding: 24rpx;
+}
+.selector-area {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 32rpx;
+}
+.selector-label {
+	font-size: 28rpx;
+	color: #333;
+	margin-right: 12rpx;
+}
+.hole-circle {
+	width: 64rpx;
+	height: 64rpx;
+	border-radius: 50%;
+	background: #f5f5f5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 32rpx;
+	color: #007aff;
+	margin-right: 32rpx;
+	border: 2rpx solid #007aff;
+}
+
+/* 弹框相关 */
+.modal-mask {
+	position: fixed;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.3);
+	z-index: 1000;
+}
+.modal-content {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #fff;
+	border-top-left-radius: 24rpx;
+	border-top-right-radius: 24rpx;
+	padding: 32rpx 24rpx 24rpx 24rpx;
+	z-index: 1001;
+	animation: slideUp .3s;
+}
+@keyframes slideUp {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+.modal-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	margin-bottom: 24rpx;
+	text-align: center;
+}
+.hole-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16rpx;
+	margin-bottom: 32rpx;
+	justify-content: center;
+}
+.hole-item {
+	width: 64rpx;
+	height: 64rpx;
+	border-radius: 50%;
+	background: #f5f5f5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 28rpx;
+	color: #333;
+	border: 2rpx solid #eee;
+}
+.hole-item.active {
+	background: #007aff;
+	color: #fff;
+	border-color: #007aff;
+}
+.modal-btns {
+	display: flex;
+	justify-content: space-between;
+	gap: 32rpx;
+}
+.btn-cancel {
+	flex: 1;
+	background: #f5f5f5;
+	color: #666;
+}
+.btn-confirm {
+	flex: 1;
+	background: #007aff;
+	color: #fff;
+}
