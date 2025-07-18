@@ -23,6 +23,7 @@ export const gameStore = observable({
 
     holeList: [],           // 洞信息列表
     holePlayList: [],       // 洞顺序列表
+    rangeHolePlayList: [],  // 参与游戏的洞顺序列表
     startHoleindex: null,   // 参与游戏的第一个洞
     endHoleindex: null,     // 参与游戏的最后一个洞
 
@@ -80,6 +81,8 @@ export const gameStore = observable({
         this.players = players;  // 注意:这里是过滤后的玩家
         this.holeList = holeList;
         this.holePlayList = JSON.parse(JSON.stringify(holeList));
+        this.rangeHolePlayList = JSON.parse(JSON.stringify(holeList));
+
         this.groupId = groupId;  // 存储当前分组ID
         // 新增: 初始化并同步分数到 scoreStore
         scoreStore.initializeScores(players.length, holeList.length);
@@ -152,6 +155,7 @@ export const gameStore = observable({
         return {
             holeList: this.holeList,
             holePlayList: this.holePlayList,
+            rangeHolePlayList: this.rangeHolePlayList,
             players: this.players,
             scores: this.scores,
             gameData: this.gameData,

@@ -6,11 +6,11 @@ import { autorun } from 'mobx-miniprogram';
 Component({
     lifetimes: {
         attached() {
-            const { holeList, holePlayList } = gameStore.getState();
-            this.setData({ holeList, holePlayList });
+            const { holeList, holePlayList, rangeHolePlayList } = gameStore.getState();
+            this.setData({ holeList, holePlayList, rangeHolePlayList });
             this.disposer = autorun(() => {
-                const { holeList, holePlayList } = gameStore.getState();
-                this.setData({ holeList, holePlayList });
+                const { holeList, holePlayList, rangeHolePlayList } = gameStore.getState();
+                this.setData({ holeList, holePlayList, rangeHolePlayList });
             });
         },
         detached() {
@@ -20,6 +20,7 @@ Component({
     data: {
         holeList: [],
         holePlayList: [],
+        rangeHolePlayList: [],
         ifShowModal: false,
     },
     methods: {

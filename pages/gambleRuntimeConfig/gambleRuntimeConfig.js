@@ -41,7 +41,7 @@ Page({
                 let players = [];
                 let holeList = [];
                 let holePlayList = [];
-                // let holePlayList = [];   
+                let rangeHolePlayList = [];
                 let gameData = null;
                 let userRule = null;
 
@@ -51,11 +51,13 @@ Page({
                     players = [];
                     holeList = [];
                     holePlayList = [];
+                    rangeHolePlayList = [];
                     gameData = null;
                 } else {
                     players = gameStore.players || [];
                     holeList = gameStore.holeList;
                     holePlayList = gameStore.holePlayList;
+                    rangeHolePlayList = gameStore.rangeHolePlayList;
                     gameData = gameStore.gameData || null;
                 }
 
@@ -90,6 +92,7 @@ Page({
                     gameId: decodedData.gameId || null,
                     players: players,
                     holePlayList: gameStore.holePlayList,
+                    rangeHolePlayList: gameStore.rangeHolePlayList,
                     gameData: gameData,
                     userRule: userRule,
                     'runtimeConfig.gameid': gameStore.gameid,

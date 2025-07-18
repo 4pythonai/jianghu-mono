@@ -5,11 +5,11 @@ Component({
     options: {
         styleIsolation: 'apply-shared',
     },
-    data: { holeList: [], holePlayList: [], startHoleindex: null, endHoleindex: null },
+    data: { holeList: [], holePlayList: [], rangeHolePlayList: [], startHoleindex: null, endHoleindex: null },
     lifetimes: {
         attached() {
-            const { holeList, holePlayList, startHoleindex, endHoleindex } = gameStore.getState();
-            this.setData({ holeList, holePlayList, startHoleindex, endHoleindex });
+            const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = gameStore.getState();
+            this.setData({ holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex });
         },
     },
     methods: {
