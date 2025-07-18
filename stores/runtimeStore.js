@@ -11,26 +11,16 @@ export const runtimeStore = observable({
     loadingRuntimeConfig: false,  // 加载运行时配置状态
     runtimeConfigError: null,     // 运行时配置错误信息
 
-    // ---- Actions ----
 
-    /**
-     * 获取运行时配置
-     * @param {string} gameId - 游戏ID
-     * @param {string} groupId - 分组ID(可选)
-     */
-    fetchRuntimeConfigs: action(async function (gameId, groupId = null) {
+    fetchRuntimeConfigs: action(async function (groupId) {
         if (this.loadingRuntimeConfig) return; // 防止重复加载
 
-        console.log('🎮 [RuntimeStore] 开始获取运行时配置:', { gameId, groupId });
+        console.log('🎮 [RuntimeStore] 开始获取运行时配置:', { groupId });
         this.loadingRuntimeConfig = true;
         this.runtimeConfigError = null;
 
         try {
-            // 构建请求参数 - 使用 groupId 而不是 gameId
-            const params = groupId ? { groupId: groupId } : { gameid: gameId };
-
-            console.log('🎮 [RuntimeStore] 调用 listRuntimeConfig 参数:', params);
-
+            const params = { groupId: groupId };
             const res = await gambleApi.listRuntimeConfig(params, {
                 loadingTitle: '加载游戏配置...',
                 loadingMask: false // 不显示遮罩, 避免影响用户体验

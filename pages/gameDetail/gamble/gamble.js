@@ -88,14 +88,7 @@ Component({
             });
         },
 
-        // 重试加载运行时配置
-        retryLoadRuntimeConfig() {
-            const gameId = this.properties.gameId || gameStore.gameid;
-            const groupId = gameStore.groupId;
-            if (gameId) {
-                runtimeStore.fetchRuntimeConfigs(gameId, groupId);
-            }
-        },
+
 
         // 刷新运行时配置
         refreshRuntimeConfig() {
@@ -103,7 +96,7 @@ Component({
             const groupId = gameStore.groupId;
             if (gameId) {
                 console.log('🎮 刷新运行时配置, gameId:', gameId, 'groupId:', groupId);
-                runtimeStore.fetchRuntimeConfigs(gameId, groupId);
+                runtimeStore.fetchRuntimeConfigs(groupId);
             }
         },
 
