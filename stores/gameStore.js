@@ -1,6 +1,5 @@
 import { observable, action } from 'mobx-miniprogram'
 import gameApi from '../api/modules/game' // 导入整个默认导出的对象
-import gambleApi from '../api/modules/gamble' // 导入 gamble API
 
 
 export const gameStore = observable({
@@ -16,6 +15,8 @@ export const gameStore = observable({
     isSaving: false,     // 保存状态
     gameid: null,        // 当前游戏ID
     groupId: null,       // 当前分组ID
+    startHoleindex: null,
+    endHoleindex: null,
 
     getState() {
         return {
@@ -28,6 +29,8 @@ export const gameStore = observable({
             gameid: this.gameid,
             loading: this.loading,
             error: this.error,
+            startHoleindex: this.startHoleindex,
+            endHoleindex: this.endHoleindex,
         };
     },
 
@@ -257,15 +260,8 @@ export const gameStore = observable({
         }
     }),
 
-    // 添加新玩家
-    addPlayer: action(function (player) {
-        this.players.push(player);
-        // 同时需要为新玩家初始化一整行的分数
-        const newScoresRow = this._initializePlayerScores(this.holeList);
-        this.scores.push(newScoresRow);
-    }),
 
-    // ---- Computed (计算属性) ----
+
 
     // 计算每个玩家的总分
     get playerTotalScores() {

@@ -15,13 +15,13 @@ Component({
 
     },
 
-    data: { holeList: [], holePlayList: [] },
+    data: { holeList: [], holePlayList: [], startHoleindex: null, endHoleindex: null },
 
 
     lifetimes: {
         attached() {
-            const { holeList, holePlayList } = gameStore.getState();
-            this.setData({ holeList, holePlayList });
+            const { holeList, holePlayList, startHoleindex, endHoleindex } = gameStore.getState();
+            this.setData({ holeList, holePlayList, startHoleindex, endHoleindex });
         }
     },
 
