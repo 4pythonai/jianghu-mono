@@ -115,16 +115,6 @@ Page({
         }
     },
 
-    // 页面销毁时清理全局数据
-    onUnload() {
-        const { gameStore } = require('../../stores/gameStore');
-
-        // gameStore.players = [];
-        // gameStore.holeList = [];
-        // gameStore.holePlayList = [];
-        // gameStore.gameData = null;
-
-    },
 
 
     // 初始化分组配置
