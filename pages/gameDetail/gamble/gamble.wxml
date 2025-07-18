@@ -17,18 +17,25 @@
                     bindtap="onDeleteConfig" />
                 <view class="config-header">
                     <text class="config-title">游戏配置 #{{ index + 1 }}</text>
-                    <text class="config-time">{{ item.create_time || '未知时间' }}</text>
                 </view>
 
 
                 <view class="config-details">
                     <view class="config-row">
-                        <text class="config-label">规则类型:</text>
-                        <text class="config-value">{{ item.gambleUserName || item.gambleSysName || '未知规则' }}</text>
+                        <text class="config-label">创建时间:</text>
+                        <text class="config-value">{{ item.create_time }}</text>
                     </view>
-                    <view class="config-row" wx:if="{{ item.hole_range_display }}">
-                        <text class="config-label">洞数范围:</text>
-                        <text class="config-value">{{ item.hole_range_display }}</text>
+                    <view class="config-row">
+                        <text class="config-label">游戏类型:</text>
+                        <text class="config-value">{{ item.gambleSysName }}</text>
+                    </view>
+                    <view class="config-row">
+                        <text class="config-label">游戏名称:</text>
+                        <text class="config-value">{{ item.gambleUserName }}</text>
+                    </view>
+                    <view class="config-row" wx:if="{{ item.red_blue_config }}">
+                        <text class="config-label">分组方式:</text>
+                        <text class="config-value">{{ item.red_blue_config }}</text>
                     </view>
                     <view class="config-row" wx:if="{{ item.ranking_display }}">
                         <text class="config-label">排名规则:</text>
