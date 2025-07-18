@@ -1,7 +1,6 @@
 // RealHolePlayListSetter
 import { gameStore } from '../../stores/gameStore';
 
-
 Component({
     options: {
         styleIsolation: 'apply-shared',
@@ -16,13 +15,11 @@ Component({
     },
 
     data: { holeList: [], holePlayList: [], startHoleindex: null, endHoleindex: null },
-
-
     lifetimes: {
         attached() {
             const { holeList, holePlayList, startHoleindex, endHoleindex } = gameStore.getState();
             this.setData({ holeList, holePlayList, startHoleindex, endHoleindex });
-        }
+        },
     },
 
 
@@ -48,8 +45,7 @@ Component({
         },
 
         onConfirmHoleOrder() {
-            console.log('确定:::');
-            gameStore.updateHolePlayList(this.data.holePlayList);
+            gameStore.holePlayList = this.data.holePlayList
             this.setData({ ifShowModal: false });
 
         },

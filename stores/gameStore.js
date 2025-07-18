@@ -16,23 +16,18 @@ import { scoreStore } from './scoreStore'
 
 export const gameStore = observable({
 
+    gameid: null,
+    groupId: null,
     gameData: null,      // 原始游戏数据
-
     players: [],         // 玩家列表
     holeList: [],           // 洞信息列表
     holePlayList: [],
     loading: false,      // 加载状态
     error: null,         // 错误信息
     isSaving: false,     // 保存状态
-    gameid: null,        // 当前游戏ID
-    groupId: null,       // 当前分组ID
     startHoleindex: null,
     endHoleindex: null,
 
-    // 为单个玩家初始化所有洞的分数
-    _initializePlayerScores: action((holeList) => {
-        return holeList.map(() => createDefaultScore());
-    }),
 
 
     // 根据 groupId 过滤玩家
@@ -43,7 +38,7 @@ export const gameStore = observable({
         }
 
         const filteredPlayers = players.filter(player => {
-            const playerGroupId = String(player.groupid || player.group_id || '');
+            const playerGroupId = String(player.groupid);
             const targetGroupId = String(groupId);
             return playerGroupId === targetGroupId;
         });
@@ -51,14 +46,15 @@ export const gameStore = observable({
         return filteredPlayers;
     }),
 
-    _processGameData: action(function (gameData, groupId = null) {
 
-        const allPlayers = (gameData.players || []).map(p => normalizePlayer(p));
+    _processGameData: action(function (gameInfo, groupId = null) {
+
+        const allPlayers = (gameInfo.players || []).map(p => normalizePlayer(p));
         const players = this._filterPlayersByGroup(allPlayers, groupId);
-        const holeList = (gameData.holeList || []).map(h => normalizeHole(h));
+        const holeList = (gameInfo.holeList || []).map(h => normalizeHole(h));
 
         const scoreMap = new Map();
-        for (const s of gameData.scores || []) {
+        for (const s of gameInfo.scores || []) {
             const key = `${s.userid}_${s.holeid}`;
             scoreMap.set(key, normalizeScore(s));
         }
@@ -72,12 +68,12 @@ export const gameStore = observable({
         });
 
         // 标准化score_cards中的数据
-        if (gameData.score_cards) {
-            normalizeScoreCards(gameData.score_cards);
+        if (gameInfo.score_cards) {
+            normalizeScoreCards(gameInfo.score_cards);
         }
 
         // 用清洗过的数据更新状态
-        this.gameData = gameData;
+        this.gameData = gameInfo;
         this.players = players;  // 注意:这里是过滤后的玩家
         this.holeList = holeList;
         this.holePlayList = JSON.parse(JSON.stringify(holeList));
@@ -87,9 +83,7 @@ export const gameStore = observable({
         scoreStore.scores = scores;
     }),
 
-    // ---- Actions (修改状态的动作) ----
 
-    // 设置保存状态
     setSaving: action(function (status) {
         this.isSaving = status;
     }),
@@ -129,10 +123,6 @@ export const gameStore = observable({
         }
     }),
 
-    // 更新单个格子的分数 —— 已迁移到 scoreStore
-    // updateCellScore: action(function ({ playerIndex, holeIndex, score, putts, penalty_strokes, sand_save }) { ... }),
-    // 用于回滚的批量更新 —— 已迁移到 scoreStore
-    // batchUpdateScoresForHole: action(function ({ holeIndex, scoresToUpdate }) { ... }),
 
 
     // 格式化分数显示
@@ -155,14 +145,6 @@ export const gameStore = observable({
         return getScoreClass(diff);
     }),
 
-
-    updateHolePlayList: action(function (holePlayList) {
-
-        console.log(' 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴 🔴updateHolePlayList+++++++++++++++', holePlayList);
-        this.holePlayList = JSON.parse(JSON.stringify(holePlayList));
-    }),
-
-
     getState() {
         return {
             holeList: this.holeList,
@@ -179,26 +161,13 @@ export const gameStore = observable({
         };
     },
 
-    // 计算每个玩家的总分
-    get playerTotalScores() {
-        if (!this.players.length || !this.scores.length) return [];
-
-        return this.players.map((player, playerIndex) => {
-            const playerScores = this.scores[playerIndex] || [];
-            return playerScores.reduce((total, scoreData) => {
-                return total + (scoreData.score || 0);
-            }, 0);
-        });
-    },
 
     get getHoleList() {
         return this.holeList;
     },
+
     get getHolePlayList() {
         return this.holePlayList;
     },
-
-
-
 
 }); 

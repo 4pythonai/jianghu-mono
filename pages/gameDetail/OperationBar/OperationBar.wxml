@@ -1,7 +1,7 @@
 <view class="operation-bar">
   <!-- 比赛情况显示区域 -->
   <view class="game-info">
-    <text class="course-name">{{gameData.courseName || gameData.course_name || '北京清河湾乡村高尔夫俱乐部'}} {{gameData.gameStatus || 'A&B'}}</text>
+    <text class="course-name">{{  gameData.course }} {{gameData.gameStatus || 'A&B'}}</text>
     <!-- 下拉按钮 -->
     <view class="btn-dropdown" bindtap="onDropdownClick">
       <image class="dropdown-icon" src="{{isExpanded ? '/assets/icons/arrow-up.svg' : '/assets/icons/arrow-down.svg'}}" mode="aspectFit"></image>
@@ -46,7 +46,7 @@
   </view>
   <view class="detail-row">
     <text class="detail-label">球场:</text>
-    <text class="detail-value">{{gameData.courseName || gameData.course_name || '北京清河湾乡村高尔夫俱乐部'}}</text>
+    <text class="detail-value">{{gameData.course }}</text>
   </view>
   <view class="detail-row">
     <text class="detail-label">开球时间:</text>

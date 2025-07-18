@@ -17,8 +17,8 @@ Page({
         // ** 核心:创建 Store 和 Page 的绑定 **
         this.storeBindings = createStoreBindings(this, {
             store: gameStore, // 需要绑定的 store
-            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes'], // 移除 currentTab
-            actions: ['fetchGameDetail'], // 移除 setCurrentTab
+            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes'],
+            actions: ['fetchGameDetail'],
         });
 
         const gameId = options?.gameId;
