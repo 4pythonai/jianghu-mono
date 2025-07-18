@@ -99,7 +99,7 @@ Page({
                 gameId: this.data.gameId
             });
         } else {
-            console.error("无法找到 #addPlayerHubPanel 组件");
+            console.error("无法找到 # addPlayerHubPanel 组件");
         }
     },
 

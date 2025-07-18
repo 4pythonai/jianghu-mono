@@ -68,12 +68,9 @@ export const gameStore = observable({
     }),
 
     _processGameData: action(function (gameData, groupId = null) {
-        // 标准化所有玩家数据
+
         const allPlayers = (gameData.players || []).map(p => normalizePlayer(p));
-
-        // 根据 groupId 过滤玩家(如果提供了 groupId)
         const players = this._filterPlayersByGroup(allPlayers, groupId);
-
         const holeList = (gameData.holeList || []).map(h => normalizeHole(h));
 
         const scoreMap = new Map();
@@ -124,16 +121,13 @@ export const gameStore = observable({
         try {
             // 构建请求参数
             const params = { gameId };
-            if (groupId) {
-                params.groupId = groupId;
-            }
+            params.groupId = groupId;
 
             const res = await gameApi.getGameDetail(params, {
                 loadingTitle: '加载比赛详情...',
                 loadingMask: true
             });
 
-            console.log('📦 [Store] API 响应:', res);
             if (res?.code === 200 && res.game_detail) {
                 // ** 调用私有方法处理数据 **
                 this._processGameData(res.game_detail, groupId);
