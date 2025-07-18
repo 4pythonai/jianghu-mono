@@ -6,23 +6,15 @@ Component({
         styleIsolation: 'apply-shared',
     },
 
-    properties: {
-        ifShowModal: {
-            type: Boolean,
-            value: false,
-        },
-
-    },
 
     data: { holeList: [], holePlayList: [], startHoleindex: null, endHoleindex: null },
+
     lifetimes: {
         attached() {
             const { holeList, holePlayList, startHoleindex, endHoleindex } = gameStore.getState();
             this.setData({ holeList, holePlayList, startHoleindex, endHoleindex });
         },
     },
-
-
 
     methods: {
         onHideModal() {
@@ -46,7 +38,7 @@ Component({
 
         onConfirmHoleOrder() {
             gameStore.holePlayList = this.data.holePlayList
-            this.setData({ ifShowModal: false });
+            this.triggerEvent('cancel');
 
         },
 

@@ -20,7 +20,6 @@
   <!-- 弹出自定义球洞选择器组件 -->
   <RealHolePlayListSetter
     wx:if="{{ifShowModal}}"
-    ifShowModal="{{ifShowModal}}"
     bind:cancel="onModalCancel"
   />
 </view>
