@@ -252,6 +252,13 @@ export const gameStore = observable({
         });
     },
 
+    get getHoleList() {
+        return this.holeList;
+    },
+    get getHolePlayList() {
+        return this.holePlayList;
+    },
+
 
 
 

@@ -331,13 +331,10 @@ Page({
         const { runtimeConfig } = this.data;
 
 
-        // 添加 holeList 参数
-        const { holeList, holePlayList } = gameStore.getState();
-        const configWithHoleList = {
-            ...runtimeConfig,
-            holeList: holeList,
-            holePlayList: holePlayList
-        };
+        const holeList = gameStore.getHoleList;
+        const holePlayList = gameStore.getHolePlayList;
+
+
 
         this.setData({ loading: true });
         app.api.gamble.addRuntimeConfig(configWithHoleList).then(res => {
