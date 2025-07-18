@@ -10,7 +10,7 @@ Page({
     data: {
         gameId: '',
         groupId: '',
-        currentTab: 0, // 新增
+        currentTab: 0,
     },
 
     onLoad(options) {
@@ -65,8 +65,31 @@ Page({
 
     // 切换tab页方法
     switchTab: function (e) {
-        const newTab = Number.parseInt(e.currentTarget.dataset.tab, 10);
-        this.setData({ currentTab: newTab }); // 直接 setData
+        const tabValue = e.currentTarget.dataset.tab;
+        const newTab = Number.parseInt(tabValue, 10);
+
+        // 确保 newTab 是有效的数字
+        if (isNaN(newTab) || newTab < 0) {
+            console.warn('⚠️ 无效的tab值:', tabValue);
+            return;
+        }
+
+        console.log('📊 [GameDetail] 切换到tab:', newTab);
+        this.setData({ currentTab: newTab });
+
+        // 当切换到游戏tab时，通知gamble组件刷新数据
+        if (newTab === 2) {
+            this.refreshGambleData();
+        }
+    },
+
+    // 刷新游戏数据
+    refreshGambleData() {
+        console.log('📊 [GameDetail] 刷新游戏数据');
+        const gambleComponent = this.selectComponent('#gambleComponent');
+        if (gambleComponent && gambleComponent.refreshRuntimeConfig) {
+            gambleComponent.refreshRuntimeConfig();
+        }
     },
 
     // 页面显示时检查数据

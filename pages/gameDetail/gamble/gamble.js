@@ -34,15 +34,9 @@ Component({
         }
     },
 
-    // 观察者
+    // 观察者 - 移除对 currentTab 的监听，改为由父组件主动调用
     observers: {
-        'currentTab': function (newTab) {
-            // 当切换到游戏选项卡时, 刷新运行时配置
-            if (newTab === 2) {
-                console.log('🎮 切换到游戏选项卡, 刷新运行时配置');
-                this.refreshRuntimeConfigWithThrottle();
-            }
-        }
+        // 可以添加其他需要监听的属性
     },
 
     methods: {
@@ -92,6 +86,7 @@ Component({
 
         // 刷新运行时配置
         refreshRuntimeConfig() {
+            console.log('🎮 刷新运行时配置');
             const gameId = this.properties.gameId || gameStore.gameid;
             const groupId = gameStore.groupId;
             if (gameId) {
@@ -173,7 +168,7 @@ Component({
             // 创建多个store绑定
             this.gameStoreBindings = createStoreBindings(this, {
                 store: gameStore,
-                fields: ['gameid', 'loading', 'error', 'currentTab'],
+                fields: ['gameid', 'loading', 'error'],
                 actions: [],
             });
 
@@ -202,13 +197,9 @@ Component({
     // 页面生命周期
     pageLifetimes: {
         show() {
-            // 页面显示时刷新运行时配置, 但只有在当前选项卡是"游戏"时才刷新
-            if (this.data.currentTab === 2) {
-                console.log('🎮 页面显示且在游戏选项卡, 刷新运行时配置');
-                this.refreshRuntimeConfigWithThrottle();
-            } else {
-                console.log('🎮 页面显示, 但不在游戏选项卡, 跳过刷新');
-            }
+            // 页面显示时刷新运行时配置
+            console.log('🎮 页面显示, 刷新运行时配置');
+            this.refreshRuntimeConfigWithThrottle();
         }
     }
 });

@@ -1,7 +1,7 @@
 {
 	"navigationBarTitleText": "比赛详情",
 	"usingComponents": {
-		"gamble": "./gamble/gamble",
+		"Gamble": "./gamble/gamble",
 		"bbs": "./bbs/bbs",
 		"ScoreTable": "./ScoreTable/ScoreTable",
 		"OperationBar": "./OperationBar/OperationBar",
