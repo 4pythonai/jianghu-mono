@@ -127,8 +127,18 @@
 
 .btn-confirm {
 	flex: 1;
-	background: #007aff;
+	height: 88rpx;
+	background: linear-gradient(135deg, #4caf50, #45a049);
 	color: #fff;
+	border: none;
+	border-radius: 18rpx;
+	font-size: 32rpx;
+	font-weight: bold;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s;
+	box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.3);
 }
 
 .spliter {
