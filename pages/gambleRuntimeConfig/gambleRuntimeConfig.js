@@ -8,8 +8,6 @@ Page({
         ruleType: '',
         gameId: null,
         players: [],
-        holeList: [],
-        holePlayList: [],
         gameData: null,
         userRule: null,
 
@@ -120,10 +118,12 @@ Page({
     // 页面销毁时清理全局数据
     onUnload() {
         const { gameStore } = require('../../stores/gameStore');
-        gameStore.players = [];
-        gameStore.holeList = [];
-        gameStore.holePlayList = [];
-        gameStore.gameData = null;
+
+        // gameStore.players = [];
+        // gameStore.holeList = [];
+        // gameStore.holePlayList = [];
+        // gameStore.gameData = null;
+
     },
 
 
@@ -328,14 +328,15 @@ Page({
     },
 
     saveRuntimeConfig() {
-        const { runtimeConfig, holeList, holePlayList } = this.data;
+        const { runtimeConfig } = this.data;
 
 
         // 添加 holeList 参数
+        const { holeList, holePlayList } = gameStore.getState();
         const configWithHoleList = {
             ...runtimeConfig,
             holeList: holeList,
-            holePlayList: gameStore.holePlayList
+            holePlayList: holePlayList
         };
 
         this.setData({ loading: true });

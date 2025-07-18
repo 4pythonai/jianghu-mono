@@ -20,7 +20,14 @@ export const gameStore = observable({
     getState() {
         return {
             holeList: this.holeList,
-            holePlayList: this.holePlayList
+            holePlayList: this.holePlayList,
+            players: this.players,
+            scores: this.scores,
+            gameData: this.gameData,
+            groupId: this.groupId,
+            gameid: this.gameid,
+            loading: this.loading,
+            error: this.error,
         };
     },
 
