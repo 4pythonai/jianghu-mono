@@ -113,6 +113,17 @@
 	border-color: #007aff;
 }
 
+.hole-item.selected {
+	background: #27ae60;
+	color: #fff;
+	border: 2rpx solid #27ae60;
+}
+.hole-item.unselected {
+	background: #e0e0e0;
+	color: #bbb;
+	border: 2rpx solid #bbb;
+}
+
 .modal-btns {
 	display: flex;
 	justify-content: space-between;
