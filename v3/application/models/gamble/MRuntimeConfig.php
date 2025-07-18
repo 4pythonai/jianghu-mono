@@ -12,6 +12,9 @@ class MRuntimeConfig extends CI_Model {
         $userRuleId = $RunTimeConfigRow['userRuleId'];
         $sql = "select * from t_gamble_rule_user where id=$userRuleId";
         $GambleConfigRow = $this->db->query($sql)->row_array();
+
+
+
         $RunTimeConfigRow['sub8421_config_string'] = $GambleConfigRow['sub8421_config_string'];
         $RunTimeConfigRow['max8421_sub_value'] = $GambleConfigRow['max8421_sub_value'];
         $RunTimeConfigRow['draw8421_config'] = $GambleConfigRow['draw8421_config'];
@@ -19,6 +22,7 @@ class MRuntimeConfig extends CI_Model {
         $RunTimeConfigRow['meat_value_config_string'] = $GambleConfigRow['meat_value_config_string'];
         $RunTimeConfigRow['meat_max_value'] = $GambleConfigRow['meat_max_value'];
         $RunTimeConfigRow['duty_config'] = $GambleConfigRow['duty_config'];
+        // $RunTimeConfigRow['holePlayList'] = $GambleConfigRow['holePlayList'];
 
         // 缓存结果
         return $RunTimeConfigRow;

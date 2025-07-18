@@ -32,6 +32,10 @@ class MGambleDataFactory extends CI_Model {
 
   public function getOneGambleHoleData($gameid, $groupid, $startHoleindex, $endHoleindex) {
     $public_hole_data = $this->get_public_holedata($gameid, $groupid);
+
+    // debug($public_hole_data);
+    // die;
+
     $realused_holes = $this->choose($public_hole_data, $startHoleindex, $endHoleindex);
     return $realused_holes;
   }
@@ -43,7 +47,7 @@ class MGambleDataFactory extends CI_Model {
   public function fixHoleOrderString($groupid) {
 
     $holecounter = $this->game_9_or_18($groupid);
-    $sql = "select holeorder from t_gamble_game_holeorder  where groupid=$groupid ";
+    $sql = "select holePlayList from t_gamble_game_holeorder  where groupid=$groupid ";
     $row = $this->db->query($sql)->row_array();
     if (empty($row)) {
       if ($holecounter == 9) {
@@ -53,7 +57,7 @@ class MGambleDataFactory extends CI_Model {
       }
 
       $gameid = $this->getGameid($groupid);
-      $this->db->insert('t_gamble_game_holeorder', array('gameid' => $gameid, 'groupid' => $groupid, 'holeorder' => $holeorderString));
+      $this->db->insert('t_gamble_game_holeorder', array('gameid' => $gameid, 'groupid' => $groupid, 'holePlayList' => $holeorderString));
     }
   }
 
@@ -72,17 +76,17 @@ class MGambleDataFactory extends CI_Model {
     $this->fixHoleOrderString($groupid);
     $holeorder = $this->getHoleOrderString($groupid);
     $holderarr = explode(",", $holeorder);
-    $complex_holeorder = array();
+    $holeorder_array = [];
     foreach ($holderarr as $one_value) {
-      $complex_holeorder[] = array('hindex' => $one_value);
+      $holeorder_array[] = array('hindex' => $one_value);
     }
-    return $complex_holeorder;
+    return $holeorder_array;
   }
 
   public function getHoleOrderString($groupid) {
-    $sql = "select holeorder from t_gamble_game_holeorder  where groupid=$groupid ";
+    $sql = "select holePlayList from t_gamble_game_holeorder  where groupid=$groupid ";
     $row = $this->db->query($sql)->row_array();
-    $holeorder = $row['holeorder'];
+    $holeorder = $row['holePlayList'];
     return $holeorder;
   }
 
@@ -243,5 +247,51 @@ class MGambleDataFactory extends CI_Model {
       }
     }
     return $ranged;
+  }
+
+
+  // 根据实际打球顺序排序
+
+  public function getHoleOrderArrayByHolePlayList($gameid, $holePlayListString) {
+    $holes = $this->getGameHoles($gameid);
+    $hindexArray = explode(',', $holePlayListString);
+    $afterOrder = [];
+
+    // 根据 hindexArray 的顺序重排 holes
+    foreach ($hindexArray as $hindex) {
+      foreach ($holes as $hole) {
+        if ($hole['hindex'] == $hindex) {
+          $afterOrder[] = $hole;
+          break;
+        }
+      }
+    }
+
+    return $afterOrder;
+  }
+
+
+  public function getScoresOrderByHolePlayList($gameid, $groupid, $holePlayListString) {
+    $scores  = $this->getHoleScore($gameid);
+
+
+    // debug("scores", $scores);
+    // debug("holePlayListString", $holePlayListString);
+    // die;
+
+    $hindexArray = explode(',', $holePlayListString);
+    $afterOrder = [];
+
+    foreach ($hindexArray as $hindex) {
+      foreach ($scores as $score) {
+        if ($score['hindex'] == $hindex) {
+          $afterOrder[] = $score;
+          break;
+        }
+      }
+    }
+
+    debug($afterOrder);
+    return $afterOrder;
   }
 }

@@ -34,6 +34,7 @@ class GambleContext extends CI_Model {
     public $stroking_config;
     public $meat_value_config_string;
     public $meat_max_value;
+    public $holePlayList;
 
     public function __construct($data = []) {
         parent::__construct();
@@ -73,6 +74,7 @@ class GambleContext extends CI_Model {
         'stroking_config' => 'getStrokingConfig',
         'meat_value_config_string' => 'getMeatValueConfigString',
         'meat_max_value' => 'getMeatMaxValue',
+        'holePlayList' => 'getHolePlayList',
     ];
 
     /**

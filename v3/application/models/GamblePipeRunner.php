@@ -32,6 +32,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $redBlueConfig;  // 分组配置
     private $dutyConfig;  // 包洞配置
     private $ranking4TieResolveConfig;  // 排名解决平局配置
+    private $holePlayList; // 洞序配置
 
     private $rangedHoles; // 参与计算的球洞范围
     private $useful_holes; // 参与计算的球洞范围内已经记分完毕的
@@ -39,6 +40,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $stroking_config; // 让杆配置
     private $meat_value_config_string; // 吃肉配置
     private $meat_max_value; // 吃肉封顶
+
 
 
     public function __invoke($cfg) {
@@ -57,14 +59,19 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->gambleid = $config['gambleid'];
         $this->groupid = $config['groupid'];
         $this->userid = $config['userid'];
-        $this->holes =  $this->MGambleDataFactory->getGameHoles($this->gameid);
-        $this->scores = $this->MGambleDataFactory->getOneGambleHoleData($this->gameid, $this->groupid, $this->startHoleindex, $this->endHoleindex);
-        $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->groupid);
 
 
         // 运行时配置
-
         $_config_row = $this->MRuntimeConfig->getGambleConfig($this->gambleid);
+
+
+        $this->holes =  $this->MGambleDataFactory->getHoleOrderArrayByHolePlayList($this->gameid, $_config_row['holePlayList']);
+        $this->scores = $this->MGambleDataFactory->getScoresOrderByHolePlayList($this->gameid, $this->groupid, $_config_row['holePlayList']);
+        $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->groupid);
+
+
+
+
 
 
         $this->attenders = json_decode($_config_row['attenders'], true);
@@ -82,6 +89,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->startHoleindex = $_config_row['startHoleindex'];
         $this->endHoleindex = $_config_row['endHoleindex'];
         $this->redBlueConfig = $_config_row['red_blue_config'];
+
+        $this->holePlayList = $_config_row['holePlayList'];
 
         // 新增：初始化全局上下文对象
         $this->context = GambleContext::fromGamblePipeRunner($this);
@@ -277,5 +286,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getMeatMaxValue() {
         return $this->meat_max_value;
+    }
+
+    public function getHolePlayList() {
+        return $this->holePlayList;
     }
 }

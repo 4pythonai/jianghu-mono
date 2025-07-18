@@ -24,7 +24,6 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
 
-
         try {
             // 获取必需参数
             $gamblesysname = $json_paras['gamblesysname'] ?? null;
@@ -151,26 +150,35 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
 
+        $rangeHolePlayList = $json_paras['rangeHolePlayList'];
+        $startHoleindex = $rangeHolePlayList[0]['hindex'];
+        $endHoleindex = $rangeHolePlayList[count($rangeHolePlayList) - 1]['hindex'];
+
         try {
             // 获取必需参数
             $gameid = $json_paras['gameid'] ?? null;
+            $groupid = $json_paras['groupid'] ?? 1;
             $userRuleId = $json_paras['userRuleId'] ?? null;
 
             if (!$gameid || !$userRuleId) {
                 echo json_encode([
                     'code' => 400,
-                    'message' => '缺少必要参数：gameid和userRuleId'
+                    'message' => '缺少必要参数: gameid or  userRuleId'
                 ], JSON_UNESCAPED_UNICODE);
                 return;
             }
 
+            $holePlayList = $json_paras['holePlayList'];
+            $hindexArr = [];
+            foreach ($holePlayList as $hole) {
+                $hindexArr[] = $hole['hindex'];
+            }
+            $holePlayListString = implode(',', $hindexArr);
             // 准备插入数据
             $insert_data = [
                 'creator_id' => $userid,
-                'startHoleindex' =>  intval($json_paras['startHoleindex']) + 1,
-                'endHoleindex' => intval($json_paras['endHoleindex']) + 1,
                 'gameid' => $gameid,
-                'groupid' => $json_paras['groupid'] ?? 1,
+                'groupid' => $groupid,
                 'val8421_config' => isset($json_paras['val8421_config']) ? json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE) : null,
                 'userRuleId' => $userRuleId,
                 'gambleSysName' => $json_paras['gambleSysName'] ?? null,
@@ -179,12 +187,18 @@ class Gamble extends MY_Controller {
                 'red_blue_config' => $json_paras['red_blue_config'] ?? null,
                 'bootstrap_order' => isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
                 'attenders' =>   isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
-                'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score'
+                'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score',
+                'holePlayList' => $holePlayListString,
+                'startHoleindex' => $startHoleindex,
+                'endHoleindex' => $endHoleindex
             ];
 
             // 插入数据
+
             $this->db->insert('t_gamble_runtime', $insert_data);
             $insert_id = $this->db->insert_id();
+
+
 
             if ($insert_id) {
                 $ret = [];
