@@ -14,10 +14,10 @@
     </view>
     <view class="spliter"></view>
 
-    <view class="modal-title"> 选择起始/终点洞 </view>
+    <view class="modal-title"> 选择游戏的起洞/终点洞 </view>
     <view class="hole-list">
       <block wx:for="{{holePlayList}}" wx:key="index">
-        <view class="hole-item {{index === 0 ? 'active' : ''}}" bindtap="onSelectHole" data-index="{{index}}" data-hindex="{{item.hindex}}">
+        <view class="hole-item" bindtap="onSelectGambleRange" data-index="{{index}}" data-hindex="{{item.hindex}}">
           <text class="hole-item-text">{{item.holename}}</text>
         </view>
       </block>

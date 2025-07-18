@@ -25,6 +25,12 @@ Component({
                 holePlayList: newHolePlayList
             });
         },
+
+        onSelectGambleRange(e) {
+            const hindex = Number(e.currentTarget.dataset.hindex);
+            console.log(e.currentTarget)
+        },
+
         onConfirmHoleOrder() {
             gameStore.holePlayList = this.data.holePlayList;
             this.triggerEvent('cancel');

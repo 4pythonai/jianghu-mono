@@ -20,13 +20,16 @@ export const gameStore = observable({
     groupId: null,
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
+
     holeList: [],           // 洞信息列表
-    holePlayList: [],
+    holePlayList: [],       // 洞顺序列表
+    startHoleindex: null,   // 参与游戏的第一个洞
+    endHoleindex: null,     // 参与游戏的最后一个洞
+
+
     loading: false,      // 加载状态
     error: null,         // 错误信息
     isSaving: false,     // 保存状态
-    startHoleindex: null,
-    endHoleindex: null,
 
 
 
