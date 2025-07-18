@@ -9,15 +9,16 @@ Page({
     },
     data: {
         gameId: '',
-        groupId: ''
+        groupId: '',
+        currentTab: 0, // 新增
     },
 
     onLoad(options) {
         // ** 核心:创建 Store 和 Page 的绑定 **
         this.storeBindings = createStoreBindings(this, {
             store: gameStore, // 需要绑定的 store
-            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes', 'currentTab'],
-            actions: ['fetchGameDetail', 'setCurrentTab'],
+            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes'], // 移除 currentTab
+            actions: ['fetchGameDetail'], // 移除 setCurrentTab
         });
 
         const gameId = options?.gameId;
@@ -65,7 +66,7 @@ Page({
     // 切换tab页方法
     switchTab: function (e) {
         const newTab = Number.parseInt(e.currentTarget.dataset.tab, 10);
-        this.setCurrentTab(newTab);
+        this.setData({ currentTab: newTab }); // 直接 setData
     },
 
     // 页面显示时检查数据
