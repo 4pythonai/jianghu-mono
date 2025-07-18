@@ -324,10 +324,16 @@ Page({
         const { runtimeConfig } = this.data;
 
 
-        const holeList = gameStore.getHoleList;
-        const holePlayList = gameStore.getHolePlayList;
+        const holeList = gameStore.holeList;
+        const holePlayList = gameStore.holePlayList;
+        const rangeHolePlayList = gameStore.rangeHolePlayList;
 
-
+        const configWithHoleList = {
+            ...runtimeConfig,
+            holeList: holeList,
+            holePlayList: holePlayList,
+            rangeHolePlayList: rangeHolePlayList
+        }
 
         this.setData({ loading: true });
         app.api.gamble.addRuntimeConfig(configWithHoleList).then(res => {

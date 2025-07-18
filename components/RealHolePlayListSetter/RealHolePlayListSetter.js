@@ -5,6 +5,7 @@ Component({
     options: {
         styleIsolation: 'apply-shared',
     },
+
     data: {
         holeList: [],
         holePlayList: [],
@@ -14,6 +15,7 @@ Component({
         dragCurrentIndex: null,
         holeRects: []
     },
+
     lifetimes: {
         attached() {
             const { holeList, holePlayList } = gameStore.getState();
@@ -36,6 +38,7 @@ Component({
             this.getHoleRects();
         },
     },
+
     methods: {
         getHoleRects() {
             wx.createSelectorQuery().in(this)
@@ -46,6 +49,7 @@ Component({
                     }
                 }).exec();
         },
+
         onHoleTouchStart(e) {
             const index = Number(e.currentTarget.dataset.index);
             this.setData({
@@ -54,6 +58,7 @@ Component({
             });
             this.updateSelectedRange(index, index);
         },
+
         onHoleTouchMove(e) {
             const touch = e.touches[0];
             const { holeRects } = this.data;
@@ -77,10 +82,8 @@ Component({
             });
             this.updateSelectedRange(this.data.dragStartIndex, moveIndex);
         },
-        onHoleTouchEnd(e) {
-            // 拖动结束
-        },
-        // 更新选中区间
+
+
         updateSelectedRange(start, end) {
             const min = Math.min(start, end);
             const max = Math.max(start, end);
@@ -102,9 +105,11 @@ Component({
                 selectedMap
             });
         },
+
         onHideModal() {
             this.triggerEvent('cancel');
         },
+
         onSelectHole(e) {
             const hindex = Number(e.currentTarget.dataset.hindex);
             const sortedList = [...this.data.holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
@@ -114,14 +119,20 @@ Component({
                 holePlayList: newHolePlayList
             });
         },
+
         onConfirmHoleOrder() {
             // 只有点击确定时，才把结果传给父组件和gameStore
             gameStore.holePlayList = this.data.holePlayList;
-            gameStore.rangeHolePlayList = this.data.holePlayList.filter(hole =>
+
+            const tmpArray = this.data.holePlayList.filter(hole =>
                 this.data.selectedHindexArray.includes(hole.hindex)
             );
+            console.log(' ⭕️⭕️⭕️⭕️⭕️  onConfirmHoleOrder - tmpArray: ', tmpArray);
+            gameStore.rangeHolePlayList = tmpArray;
+
             this.triggerEvent('cancel');
         },
+
         onCancel() {
             this.triggerEvent('cancel');
         },

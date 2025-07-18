@@ -23,7 +23,6 @@
           data-hindex="{{item.hindex}}"
           bindtouchstart="onHoleTouchStart"
           bindtouchmove="onHoleTouchMove"
-          bindtouchend="onHoleTouchEnd"
         >
           <text class="hole-item-text">{{item.holename}}</text>
         </view>
