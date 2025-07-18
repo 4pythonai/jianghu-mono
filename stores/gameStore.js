@@ -29,22 +29,6 @@ export const gameStore = observable({
     startHoleindex: null,
     endHoleindex: null,
 
-    getState() {
-        return {
-            holeList: this.holeList,
-            holePlayList: this.holePlayList,
-            players: this.players,
-            scores: this.scores,
-            gameData: this.gameData,
-            groupId: this.groupId,
-            gameid: this.gameid,
-            loading: this.loading,
-            error: this.error,
-            startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex,
-        };
-    },
-
     // 为单个玩家初始化所有洞的分数
     _initializePlayerScores: action((holeList) => {
         return holeList.map(() => createDefaultScore());
@@ -212,18 +196,6 @@ export const gameStore = observable({
 
 
 
-    // 计算每个玩家的总分
-    get playerTotalScores() {
-        if (!this.players.length || !this.scores.length) return [];
-
-        return this.players.map((player, playerIndex) => {
-            const playerScores = this.scores[playerIndex] || [];
-            return playerScores.reduce((total, scoreData) => {
-                return total + (scoreData.score || 0);
-            }, 0);
-        });
-    },
-
     // 格式化分数显示
     formatScore: action((score, par) => {
         return formatScore(score, par);
@@ -250,4 +222,37 @@ export const gameStore = observable({
         console.log(' 🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴 🔴updateHolePlayList+++++++++++++++', holePlayList);
         this.holePlayList = JSON.parse(JSON.stringify(holePlayList));
     }),
+
+
+    getState() {
+        return {
+            holeList: this.holeList,
+            holePlayList: this.holePlayList,
+            players: this.players,
+            scores: this.scores,
+            gameData: this.gameData,
+            groupId: this.groupId,
+            gameid: this.gameid,
+            loading: this.loading,
+            error: this.error,
+            startHoleindex: this.startHoleindex,
+            endHoleindex: this.endHoleindex,
+        };
+    },
+
+    // 计算每个玩家的总分
+    get playerTotalScores() {
+        if (!this.players.length || !this.scores.length) return [];
+
+        return this.players.map((player, playerIndex) => {
+            const playerScores = this.scores[playerIndex] || [];
+            return playerScores.reduce((total, scoreData) => {
+                return total + (scoreData.score || 0);
+            }, 0);
+        });
+    },
+
+
+
+
 }); 
