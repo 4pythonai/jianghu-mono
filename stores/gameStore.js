@@ -11,6 +11,7 @@ import {
     formatDiff,
     getScoreClass
 } from '../utils/gameUtils'
+import { scoreStore } from './scoreStore'
 
 
 export const gameStore = observable({
@@ -20,7 +21,6 @@ export const gameStore = observable({
     players: [],         // 玩家列表
     holeList: [],           // 洞信息列表
     holePlayList: [],
-    scores: [],          // 分数矩阵 [playerIndex][holeIndex]
     loading: false,      // 加载状态
     error: null,         // 错误信息
     isSaving: false,     // 保存状态
@@ -81,8 +81,10 @@ export const gameStore = observable({
         this.players = players;  // 注意:这里是过滤后的玩家
         this.holeList = holeList;
         this.holePlayList = JSON.parse(JSON.stringify(holeList));
-        this.scores = scores;    // 注意:这里是过滤后玩家的分数矩阵
         this.groupId = groupId;  // 存储当前分组ID
+        // 新增: 初始化并同步分数到 scoreStore
+        scoreStore.initializeScores(players.length, holeList.length);
+        scoreStore.scores = scores;
     }),
 
     // ---- Actions (修改状态的动作) ----
@@ -127,73 +129,10 @@ export const gameStore = observable({
         }
     }),
 
-    // 更新单个格子的分数
-    updateCellScore: action(function ({ playerIndex, holeIndex, score, putts, penalty_strokes, sand_save }) {
-
-        // 使用可选链确保分数对象存在
-        const scoreObj = this.scores?.[playerIndex]?.[holeIndex];
-
-        if (!scoreObj) { return; }
-
-
-        // 🔧 更激进的修复:完全替换整个scores数组来强制触发响应式更新
-        // 创建新的scores数组副本
-        const newScores = this.scores.map((playerScores, pIndex) => {
-            if (pIndex === playerIndex) {
-                // 对于目标玩家, 创建新的洞分数数组
-                return playerScores.map((holeScore, hIndex) => {
-                    if (hIndex === holeIndex) {
-                        // 对于目标洞, 创建新的分数对象
-                        const newScoreObj = { ...holeScore };
-
-                        if (score !== undefined) {
-                            newScoreObj.score = score;
-                            console.log(`✅ [gameStore] 更新score: ${score}`);
-                        }
-                        if (putts !== undefined) {
-                            newScoreObj.putts = putts;
-                            console.log(`✅ [gameStore] 更新putts: ${putts}`);
-                        }
-                        if (penalty_strokes !== undefined) {
-                            newScoreObj.penalty_strokes = penalty_strokes;
-                            console.log(`✅ [gameStore] 更新penalty_strokes: ${penalty_strokes}`);
-                        }
-                        if (sand_save !== undefined) {
-                            newScoreObj.sand_save = sand_save;
-                            console.log(`✅ [gameStore] 更新sand_save: ${sand_save}`);
-                        }
-
-                        return newScoreObj;
-                    }
-                    // 其他洞保持不变
-                    return holeScore;
-                });
-            }
-            // 其他玩家保持不变
-            return playerScores;
-        });
-
-        // �� 关键:完全替换scores数组, 强制触发响应式更新
-        this.scores = newScores;
-
-        // 🧪 测试:强制更新一个简单字段来测试MobX响应式是否正常工作
-        this.isSaving = !this.isSaving;
-        setTimeout(() => {
-            this.isSaving = !this.isSaving;
-        }, 100);
-    }),
-
-    // 用于回滚的批量更新
-    batchUpdateScoresForHole: action(function ({ holeIndex, scoresToUpdate }) {
-        for (const [playerIndex, scoreData] of scoresToUpdate.entries()) {
-            const scoreObj = this.scores?.[playerIndex]?.[holeIndex];
-            if (scoreObj) {
-                this.scores[playerIndex][holeIndex] = scoreData;
-            }
-        }
-    }),
-
-
+    // 更新单个格子的分数 —— 已迁移到 scoreStore
+    // updateCellScore: action(function ({ playerIndex, holeIndex, score, putts, penalty_strokes, sand_save }) { ... }),
+    // 用于回滚的批量更新 —— 已迁移到 scoreStore
+    // batchUpdateScoresForHole: action(function ({ holeIndex, scoresToUpdate }) { ... }),
 
 
     // 格式化分数显示

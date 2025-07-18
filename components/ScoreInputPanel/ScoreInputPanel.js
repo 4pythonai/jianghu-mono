@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../stores/gameStore';
+import { scoreStore } from '../../stores/scoreStore';
 
 const app = getApp()
 Component({
@@ -26,12 +27,18 @@ Component({
         attached() {
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
-                fields: ['gameid', 'groupId', 'gameData', 'players', 'holeList', 'scores', 'isSaving'],
-                actions: ['updateCellScore', 'setSaving', 'batchUpdateScoresForHole'],
+                fields: ['gameid', 'groupId', 'gameData', 'players', 'holeList', 'isSaving'],
+                actions: ['setSaving'],
+            });
+            this.scoreStoreBindings = createStoreBindings(this, {
+                store: scoreStore,
+                fields: ['scores'],
+                actions: ['updateCellScore', 'batchUpdateScoresForHole'],
             });
         },
         detached() {
             this.storeBindings.destroyStoreBindings();
+            this.scoreStoreBindings.destroyStoreBindings();
         }
     },
 
@@ -146,7 +153,7 @@ Component({
             for (let i = 0; i < this.data.localScores.length; i++) {
                 const playerScore = this.data.localScores[i];
 
-                // 调用store的乐观更新
+                // 调用scoreStore的乐观更新
                 this.updateCellScore({
                     playerIndex: i,
                     holeIndex: holeIndexForStore,

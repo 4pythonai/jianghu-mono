@@ -26,20 +26,20 @@ Component({
             value: ''
         },
         putts: {
-            type: Number,
-            value: 0
+            type: null,
+            value: null
         },
         score: {
-            type: Number,
-            value: 0
+            type: null,
+            value: null
         },
         penalty_strokes: {
-            type: Number,
-            value: 0
+            type: null,
+            value: null
         },
         sand_save: {
-            type: Number,
-            value: 0
+            type: null,
+            value: null
         }
     },
 
@@ -53,7 +53,7 @@ Component({
 
     observers: {
         'score, par': function (score, par) {
-       
+
             if (score !== undefined && score !== null) {
                 const formattedScore = score.toString();
                 this.setData({
@@ -74,7 +74,7 @@ Component({
                 });
             }
         },
- 
+
     },
 
     lifetimes: {
@@ -90,10 +90,10 @@ Component({
             }
 
             // 初始化显示数据
-            const { putts = 0, score = 0 } = this.properties;
+            const { putts, score } = this.properties;
             this.setData({
-                formattedputts: putts !== 0 ? putts.toString() : '0',
-                formattedScore: score !== 0 ? score.toString() : '0'
+                formattedputts: (typeof putts === 'number' && !Number.isNaN(putts)) ? putts.toString() : '0',
+                formattedScore: (typeof score === 'number' && !Number.isNaN(score)) ? score.toString() : '0'
             });
 
             // 计算初始 diff

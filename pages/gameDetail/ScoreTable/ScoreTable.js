@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../../stores/gameStore'
+import { scoreStore } from '../../../stores/scoreStore'
 
 Component({
     data: {
@@ -11,23 +12,28 @@ Component({
         attached() {
             // ** 核心:创建 Store 和 Component 的绑定 **
             this.storeBindings = createStoreBindings(this, {
-                store: gameStore, // 需要绑定的 store
+                store: gameStore,
                 fields: {
                     players: 'players',
                     holeList: 'holeList',
+                },
+                actions: [],
+            });
+            this.scoreStoreBindings = createStoreBindings(this, {
+                store: scoreStore,
+                fields: {
                     playerScores: 'scores',
                     playerTotals: 'playerTotalScores',
                 },
-                actions: [], // 此组件不需要调用 action, 只负责展示
+                actions: [],
             });
-
             // 数据加载后滚动到最左侧
-            // 可以在 store 中增加一个加载完成的标记来触发
             this.scrollToLeft();
         },
         detached() {
             // ** 关键:在组件销毁时清理绑定 **
             this.storeBindings.destroyStoreBindings();
+            this.scoreStoreBindings.destroyStoreBindings();
         }
     },
 
