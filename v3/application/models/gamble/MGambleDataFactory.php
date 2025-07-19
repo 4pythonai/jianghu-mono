@@ -152,12 +152,25 @@ class MGambleDataFactory extends CI_Model {
 
   public function getRangedHoles($holes, $startHoleindex, $endHoleindex) {
     $ranged = [];
+    $started = false;
+
     foreach ($holes as $hole) {
-      // hindex 是数字，startHoleindex/endHoleindex 也是数字
-      if ($hole['hindex'] >= $startHoleindex && $hole['hindex'] <= $endHoleindex) {
+      // 找到起始球洞
+      if ($hole['hindex'] == $startHoleindex) {
+        $started = true;
+      }
+
+      // 如果已经开始收集，则添加到结果中
+      if ($started) {
         $ranged[] = $hole;
       }
+
+      // 找到结束球洞，停止收集
+      if ($started && $hole['hindex'] == $endHoleindex) {
+        break;
+      }
     }
+
     return $ranged;
   }
 }
