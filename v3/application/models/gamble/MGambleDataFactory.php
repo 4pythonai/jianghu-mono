@@ -39,7 +39,7 @@ class MGambleDataFactory extends CI_Model {
 
 
 
-  // //以 t_gamble_game_holeorder 里面的洞序为基准,如果没有,则补齐.
+  // //以 t_gamble_game_holeorder 里面的洞序为基准,如果没有,则补齐.,准备删除
   public function fixHoleOrderString($groupid) {
 
     $holecounter = $this->game_9_or_18($groupid);
