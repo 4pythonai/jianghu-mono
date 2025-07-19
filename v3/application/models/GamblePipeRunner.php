@@ -67,7 +67,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
         $this->holes =  $this->MGambleDataFactory->getHoleOrderArrayByHolePlayList($this->gameid, $_config_row['holePlayList']);
         $this->scores = $this->MGambleDataFactory->getScoresOrderByHolePlayList($this->gameid, $this->groupid, $_config_row['holePlayList']);
-        $this->group_info = $this->MGambleDataFactory->m_get_group_info($this->groupid);
+        $this->group_info = $this->MGame->m_get_group_info($this->groupid);
 
 
 

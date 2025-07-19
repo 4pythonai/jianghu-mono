@@ -133,4 +133,18 @@ class MGame  extends CI_Model {
     $this->db->where('id', $gameid)
       ->update('t_game', ['status' => 'finished']);
   }
+
+
+  public function m_get_group_info($groupid) {
+
+    $web_url = config_item('web_url');
+    $sql_group_user = "";
+    $sql_group_user = "select  userid,wx_nickname as username,wx_nickname as nickname, ";
+    $sql_group_user .= "concat('$web_url',t_user.avatar) as cover  ";
+    $sql_group_user .= " from t_game_group_user,t_user";
+    $sql_group_user .= " where  t_game_group_user.groupid=$groupid";
+    $sql_group_user .= "   and t_user.id=t_game_group_user.userid";
+    $group_user = $this->db->query($sql_group_user)->result_array();
+    return $group_user;
+  }
 }
