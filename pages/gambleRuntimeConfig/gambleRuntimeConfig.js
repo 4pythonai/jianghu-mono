@@ -35,7 +35,7 @@ Page({
         try {
             if (options.data) {
                 const decodedData = JSON.parse(decodeURIComponent(options.data));
-                console.log('[GambleRuntimeConfig] 解析数据:', decodedData);
+                console.log('[GambleRuntimeConfig] 解析数据:', decodedData.editConfig);
 
                 let players = [];
                 let holeList = [];

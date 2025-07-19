@@ -16,10 +16,10 @@
     bind:showgameoperation="onShowGameOperation" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 1}}">
-  <bbs gameId="{{gameData.gameid}}" />
+  <bbs gameId="{{gameData.gameid || ''}}" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 2}}">
-  <Gamble id="gambleComponent" gameId="{{gameData.gameid}}" players="{{gameData.players}}" />
+  <Gamble id="gambleComponent" gameId="{{gameData.gameid || ''}}" players="{{gameData.players || []}}" />
 </view>
 
 <!-- 记分面板 -->

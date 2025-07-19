@@ -18,7 +18,8 @@ Component({
 
     lifetimes: {
         attached() {
-            const { holeList, holePlayList } = gameStore.getState();
+            const { holeList, holePlayList, rangeHolePlayList } = gameStore.getState();
+            console.log(' ⭕️ rangeHolePlayList:', rangeHolePlayList);
             // 初始化时全选，把所有hindex都加入选中数组
             const selectedHindexArray = holePlayList ? holePlayList.map(hole => hole.hindex) : [];
             // 构建初始selectedMap
@@ -57,6 +58,7 @@ Component({
                 dragCurrentIndex: index
             });
             this.updateSelectedRange(index, index);
+            console.log(' ⭕️ gameStore:', gameStore);
         },
 
         onHoleTouchMove(e) {
