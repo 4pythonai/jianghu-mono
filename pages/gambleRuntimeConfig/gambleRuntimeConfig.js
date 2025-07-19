@@ -35,7 +35,7 @@ Page({
         try {
             if (options.data) {
                 const decodedData = JSON.parse(decodeURIComponent(options.data));
-                console.log('[GambleRuntimeConfig] 解析数据:', decodedData.editConfig);
+                console.log('⭕️⭕️⭕️ 解析数据:', decodedData.editConfig);
 
                 let players = [];
                 let holeList = [];
@@ -341,6 +341,21 @@ Page({
             }
         }
 
+        // 加载起始洞和结束洞索引配置
+        if (editConfig.startHoleindex !== undefined && editConfig.endHoleindex !== undefined) {
+            const startHoleindex = Number.parseInt(editConfig.startHoleindex);
+            const endHoleindex = Number.parseInt(editConfig.endHoleindex);
+
+            // 更新gameStore中的startHoleindex和endHoleindex
+            gameStore.startHoleindex = startHoleindex;
+            gameStore.endHoleindex = endHoleindex;
+
+            console.log('[GambleRuntimeConfig] 起始洞和结束洞索引配置加载成功:', {
+                startHoleindex,
+                endHoleindex
+            });
+        }
+
         console.log('[GambleRuntimeConfig] 编辑配置加载完成');
     },
 
@@ -480,12 +495,16 @@ Page({
         const holeList = gameStore.holeList;
         const holePlayList = gameStore.holePlayList;
         const rangeHolePlayList = gameStore.rangeHolePlayList;
+        const startHoleindex = gameStore.startHoleindex;
+        const endHoleindex = gameStore.endHoleindex;
 
         const configWithHoleList = {
             ...runtimeConfig,
             holeList: holeList,
             holePlayList: holePlayList,
-            rangeHolePlayList: rangeHolePlayList
+            rangeHolePlayList: rangeHolePlayList,
+            startHoleindex: startHoleindex,
+            endHoleindex: endHoleindex
         }
 
         this.setData({ loading: true });

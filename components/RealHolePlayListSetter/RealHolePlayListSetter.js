@@ -6,6 +6,18 @@ Component({
         styleIsolation: 'apply-shared',
     },
 
+    properties: {
+        // 新增属性：起始洞索引和结束洞索引
+        startHoleindex: {
+            type: Number,
+            value: null
+        },
+        endHoleindex: {
+            type: Number,
+            value: null
+        }
+    },
+
     data: {
         holeList: [],
         holePlayList: [],
@@ -20,13 +32,44 @@ Component({
         attached() {
             const { holeList, holePlayList, rangeHolePlayList } = gameStore.getState();
             console.log(' ⭕️ rangeHolePlayList:', rangeHolePlayList);
-            // 初始化时全选，把所有hindex都加入选中数组
-            const selectedHindexArray = holePlayList ? holePlayList.map(hole => hole.hindex) : [];
+
+            // 根据传入的startHoleindex和endHoleindex设置初始选中范围
+            let selectedHindexArray = [];
+
+            if (this.properties.startHoleindex !== null && this.properties.endHoleindex !== null) {
+                // 如果有传入起始和结束洞索引，根据这些参数设置选中范围
+                const startIndex = this.properties.startHoleindex;
+                const endIndex = this.properties.endHoleindex;
+
+                // 确保startIndex <= endIndex
+                const minIndex = Math.min(startIndex, endIndex);
+                const maxIndex = Math.max(startIndex, endIndex);
+
+                // 从holePlayList中找到对应hindex的洞
+                for (let i = minIndex; i <= maxIndex; i++) {
+                    const hole = holePlayList.find(h => h.hindex === i);
+                    if (hole) {
+                        selectedHindexArray.push(i);
+                    }
+                }
+
+                console.log(' ⭕️ 根据传入参数设置选中范围:', {
+                    startHoleindex: this.properties.startHoleindex,
+                    endHoleindex: this.properties.endHoleindex,
+                    selectedHindexArray
+                });
+            } else {
+                // 如果没有传入参数，使用原有的逻辑（全选）
+                selectedHindexArray = holePlayList ? holePlayList.map(hole => hole.hindex) : [];
+                console.log(' ⭕️ 使用默认全选逻辑:', selectedHindexArray);
+            }
+
             // 构建初始selectedMap
             const selectedMap = {};
             for (const hindex of selectedHindexArray) {
                 selectedMap[hindex] = true;
             }
+
             this.setData({
                 holeList,
                 holePlayList,
@@ -131,6 +174,16 @@ Component({
             );
             console.log(' ⭕️⭕️⭕️⭕️⭕️  onConfirmHoleOrder - tmpArray: ', tmpArray);
             gameStore.rangeHolePlayList = tmpArray;
+
+            // 更新gameStore中的startHoleindex和endHoleindex
+            if (tmpArray.length > 0) {
+                gameStore.startHoleindex = tmpArray[0].hindex;
+                gameStore.endHoleindex = tmpArray[tmpArray.length - 1].hindex;
+                console.log(' ⭕️⭕️⭕️⭕️⭕️  onConfirmHoleOrder - 更新洞范围索引:', {
+                    startHoleindex: gameStore.startHoleindex,
+                    endHoleindex: gameStore.endHoleindex
+                });
+            }
 
             this.triggerEvent('cancel');
         },
