@@ -7,6 +7,22 @@
 	padding-bottom: 140rpx; /* 为底部按钮留出空间 */
 }
 
+/* 调试信息样式 */
+.debug-info {
+	background-color: #fff;
+	border-radius: 10rpx;
+	padding: 20rpx;
+	margin-bottom: 20rpx;
+	border: 2rpx solid #ff6b6b;
+}
+
+.debug-info text {
+	display: block;
+	font-size: 24rpx;
+	color: #333;
+	margin-bottom: 10rpx;
+}
+
 /* 错误状态样式 */
 .error-container {
 	display: flex;

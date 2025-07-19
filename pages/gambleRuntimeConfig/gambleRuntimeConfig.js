@@ -1,12 +1,13 @@
 import { gameStore } from '../../stores/gameStore';
 
-
 const app = getApp();
+
 Page({
     data: {
         // 传递的数据
         ruleType: '',
         gameId: null,
+        configId: '',
         players: [],
         gameData: null,
         userRule: null,
@@ -17,8 +18,6 @@ Page({
             userRuleId: null,       // 用户规则ID(仅用户规则时有值)
             gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
             gambleUserName: null,   // 用户规则名称(如:规则_4721)
-
-
             red_blue_config: '4_固拉',
             bootstrap_order: [],
             ranking_tie_resolve_config: 'score.reverse',
@@ -31,9 +30,9 @@ Page({
     },
 
     onLoad(options) {
-        console.log('[GambleRuntimeConfig] 页面加载, 参数::', JSON.parse(decodeURIComponent(options.data)));
+        console.log('[GambleRuntimeConfig] 页面加载, 参数:', options);
+
         try {
-            // 解析传递的数据
             if (options.data) {
                 const decodedData = JSON.parse(decodeURIComponent(options.data));
                 console.log('[GambleRuntimeConfig] 解析数据:', decodedData);
@@ -61,37 +60,49 @@ Page({
                     gameData = gameStore.gameData || null;
                 }
 
-                // 确保holePlayList有默认值
-
-                // 只有从用户规则进入时才有用户规则数据
-                // 方案2：直接通过页面参数传递 userRule
-                if (decodedData.fromUserRule) {
-                    // 注意：跳转到本页面时，需在 options.data 里传递 userRule 对象
-                    userRule = decodedData.userRule || null;
-                } else {
-                    userRule = null;
-
-                }
-
-
-
                 // 设置新增字段
                 let gambleSysName = null;
                 let userRuleId = null;
                 let gambleUserName = null;
 
-                if (decodedData.fromUserRule && userRule) {
-                    // 从用户规则进入, 直接从userRule获取
-                    gambleSysName = userRule.gambleSysName;
-                    userRuleId = userRule.userRuleId;
-                    gambleUserName = userRule.gambleUserName;
+                if (decodedData.fromUserRule) {
+                    // 从用户规则进入
+                    gambleSysName = decodedData.ruleType || '';
+                    gambleUserName = decodedData.userRuleName || '';
+                    userRuleId = decodedData.userRuleId || null;
+                    userRule = decodedData.userRule || null;
+                } else if (decodedData.isEditMode && decodedData.editConfig) {
+                    // 编辑模式，从传递的配置中获取
+                    gambleSysName = decodedData.editConfig.gambleSysName;
+                    gambleUserName = decodedData.editConfig.gambleUserName;
+                    userRuleId = decodedData.editConfig.userRuleId;
+                } else {
+                    // 从系统规则进入（添加规则）
+                    gambleSysName = decodedData.ruleType || '';
+                    gambleUserName = decodedData.ruleType || ''; // 系统规则名称就是规则类型
+                    userRuleId = null; // 系统规则没有用户规则ID
                 }
 
-                this.setData({
+                // 处理holePlayList，如果从编辑配置中传递过来
+                if (decodedData.holePlayList) {
+                    if (typeof decodedData.holePlayList === 'string') {
+                        try {
+                            holePlayList = JSON.parse(decodedData.holePlayList);
+                        } catch (error) {
+                            console.error('[GambleRuntimeConfig] 解析holePlayList失败:', error);
+                            holePlayList = gameStore.holePlayList;
+                        }
+                    } else {
+                        holePlayList = decodedData.holePlayList;
+                    }
+                }
+
+                const setDataObj = {
                     ruleType: decodedData.ruleType || '',
                     gameId: decodedData.gameId || null,
+                    configId: decodedData.configId || '',
                     players: players,
-                    holePlayList: gameStore.holePlayList,
+                    holePlayList: holePlayList,
                     rangeHolePlayList: gameStore.rangeHolePlayList,
                     gameData: gameData,
                     userRule: userRule,
@@ -100,25 +111,39 @@ Page({
                     'runtimeConfig.userRuleId': userRuleId,
                     'runtimeConfig.gambleSysName': gambleSysName,
                     'runtimeConfig.gambleUserName': gambleUserName
-                });
+                };
 
+                console.log('[GambleRuntimeConfig] 设置页面数据:', setDataObj);
+                this.setData(setDataObj);
 
+                // 如果是编辑模式，加载现有配置
+                if (decodedData.isEditMode && decodedData.editConfig) {
+                    this.loadEditConfig(decodedData.editConfig);
+                } else {
+                    // 初始化分组配置
+                    this.initializeGroupingConfig();
 
-                // 初始化分组配置
-                this.initializeGroupingConfig();
-
-                // 初始化8421配置(仅在8421游戏时)
-                this.initialize8421Config();
+                    // 初始化8421配置(仅在8421游戏时)
+                    this.initialize8421Config();
+                }
             }
         } catch (error) {
             console.error('[GambleRuntimeConfig] 数据解析失败:', error);
             this.setData({
-                error: '数据解析失败'
+                error: `数据解析失败: ${error.message}`
+            });
+        }
+
+        // 如果没有数据，设置默认值
+        if (!this.data.ruleType) {
+            console.log('[GambleRuntimeConfig] 设置默认数据');
+            this.setData({
+                ruleType: '4p-8421',
+                players: [],
+                error: null
             });
         }
     },
-
-
 
     // 初始化分组配置
     initializeGroupingConfig() {
@@ -185,6 +210,124 @@ Page({
         }
     },
 
+    // 加载编辑模式的配置
+    loadEditConfig(editConfig) {
+        console.log('[GambleRuntimeConfig] 加载编辑配置:', editConfig);
+
+        // 加载分组配置
+        if (editConfig.red_blue_config) {
+            this.setData({
+                'runtimeConfig.red_blue_config': editConfig.red_blue_config
+            });
+        }
+
+        if (editConfig.bootstrap_order) {
+            let bootstrapOrder = editConfig.bootstrap_order;
+
+            // 如果bootstrap_order是字符串，需要解析为数组
+            if (typeof bootstrapOrder === 'string') {
+                try {
+                    bootstrapOrder = JSON.parse(bootstrapOrder);
+                } catch (error) {
+                    console.error('[GambleRuntimeConfig] 解析bootstrap_order失败:', error);
+                    bootstrapOrder = [];
+                }
+            }
+
+            if (Array.isArray(bootstrapOrder) && bootstrapOrder.length > 0) {
+                // 将用户ID数组转换为玩家对象数组
+                const playerObjects = bootstrapOrder.map(userId => {
+                    // 从gameStore.players中找到对应的玩家对象
+                    const player = gameStore.players.find(p =>
+                        String(p.userid || p.user_id) === String(userId)
+                    );
+                    return player || {
+                        userid: userId,
+                        nickname: `玩家${userId}`,
+                        avatar: '/images/default-avatar.png'
+                    };
+                });
+
+                this.setData({
+                    'runtimeConfig.bootstrap_order': playerObjects
+                });
+
+                console.log('[GambleRuntimeConfig] 玩家顺序配置加载成功:', {
+                    originalOrder: bootstrapOrder,
+                    playerObjects: playerObjects.map(p => ({ userid: p.userid, nickname: p.nickname }))
+                });
+            }
+        }
+
+        // 加载排名配置
+        if (editConfig.ranking_tie_resolve_config) {
+            this.setData({
+                'runtimeConfig.ranking_tie_resolve_config': editConfig.ranking_tie_resolve_config
+            });
+        }
+
+        // 加载8421配置
+        if (editConfig.val8421_config) {
+            let val8421Config = editConfig.val8421_config;
+
+            // 如果配置是字符串，需要解析为对象
+            if (typeof val8421Config === 'string') {
+                try {
+                    val8421Config = JSON.parse(val8421Config);
+                } catch (error) {
+                    console.error('[GambleRuntimeConfig] 解析8421配置失败:', error);
+                    val8421Config = {};
+                }
+            }
+
+            // 确保配置是对象且有内容
+            if (typeof val8421Config === 'object' && val8421Config !== null && Object.keys(val8421Config).length > 0) {
+                this.setData({
+                    'runtimeConfig.val8421_config': val8421Config
+                });
+                console.log('[GambleRuntimeConfig] 8421配置加载成功:', val8421Config);
+            }
+        }
+
+        // 加载洞范围配置
+        if (editConfig.holePlayList) {
+            let holePlayList = editConfig.holePlayList;
+
+            // 如果holePlayList是字符串，需要解析为数组
+            if (typeof holePlayList === 'string') {
+                try {
+                    // 如果是逗号分隔的字符串，先分割再转换为数字数组
+                    if (holePlayList.includes(',')) {
+                        const holeNumbers = holePlayList.split(',').map(num => parseInt(num.trim()));
+                        // 根据洞号构建洞对象数组
+                        holePlayList = holeNumbers.map(holeNumber => {
+                            // 从gameStore中找到对应的洞对象
+                            const holeObj = gameStore.holeList.find(hole => hole.holeid === holeNumber);
+                            return holeObj || { holeid: holeNumber, holename: `B${holeNumber}` };
+                        });
+                    } else {
+                        // 尝试解析为JSON
+                        holePlayList = JSON.parse(holePlayList);
+                    }
+                } catch (error) {
+                    console.error('[GambleRuntimeConfig] 解析holePlayList失败:', error);
+                    holePlayList = gameStore.holePlayList;
+                }
+            }
+
+            // 更新gameStore中的holePlayList
+            if (Array.isArray(holePlayList) && holePlayList.length > 0) {
+                gameStore.holePlayList = holePlayList;
+                this.setData({
+                    holePlayList: holePlayList
+                });
+                console.log('[GambleRuntimeConfig] 洞范围配置加载成功:', holePlayList);
+            }
+        }
+
+        console.log('[GambleRuntimeConfig] 编辑配置加载完成');
+    },
+
     // 重新选择赌博规则
     onReSelectRule() {
         console.log('[GambleRuntimeConfig] 重新选择规则');
@@ -199,8 +342,6 @@ Page({
             }
         });
     },
-
-
 
     // 分组配置事件
     onGroupingConfigChange(e) {
@@ -253,9 +394,7 @@ Page({
     validateConfig() {
         const { runtimeConfig, players, ruleType } = this.data;
 
-
         // 验证分组配置
-
         const playersOrderCount = runtimeConfig.bootstrap_order.length;
 
         if (playersOrderCount !== players.length) {
@@ -286,7 +425,6 @@ Page({
                 icon: 'none'
             });
             return false;
-
         }
 
         // 验证8421配置(仅在8421游戏时)
@@ -321,8 +459,7 @@ Page({
     },
 
     saveRuntimeConfig() {
-        const { runtimeConfig } = this.data;
-
+        const { runtimeConfig, gameId, configId } = this.data;
 
         const holeList = gameStore.holeList;
         const holePlayList = gameStore.holePlayList;
@@ -336,29 +473,41 @@ Page({
         }
 
         this.setData({ loading: true });
-        app.api.gamble.addRuntimeConfig(configWithHoleList).then(res => {
-            console.log('[GambleRuntimeConfig] 保存配置成功:', res);
+
+        // 判断是新增还是更新
+        const isEditMode = configId && configId !== '';
+        const apiMethod = isEditMode ? 'updateRuntimeConfig' : 'addRuntimeConfig';
+
+        // 如果是编辑模式，添加配置ID
+        if (isEditMode) {
+            configWithHoleList.id = configId;
+        }
+
+        console.log(`[GambleRuntimeConfig] ${isEditMode ? '更新' : '新增'}配置:`, configWithHoleList);
+
+        app.api.gamble[apiMethod](configWithHoleList).then(res => {
+            console.log(`[GambleRuntimeConfig] ${isEditMode ? '更新' : '新增'}配置成功:`, res);
 
             if (res.code === 200) {
                 wx.showToast({
-                    title: '配置保存成功',
+                    title: isEditMode ? '配置更新成功' : '配置保存成功',
                     icon: 'success'
                 });
 
                 // 返回到游戏详情页面
                 setTimeout(() => {
                     wx.navigateBack({
-                        delta: 2 // 返回两层, 跳过rules页面
+                        delta: isEditMode ? 1 : 2 // 编辑模式返回一层，新增模式返回两层
                     });
                 }, 1500);
             } else {
                 wx.showToast({
-                    title: res.msg || '保存失败',
+                    title: res.msg || (isEditMode ? '更新失败' : '保存失败'),
                     icon: 'none'
                 });
             }
         }).catch(err => {
-            console.error('[GambleRuntimeConfig] 保存配置失败:', err);
+            console.error(`[GambleRuntimeConfig] ${isEditMode ? '更新' : '新增'}配置失败:`, err);
             wx.showToast({
                 title: '网络错误, 请重试',
                 icon: 'none'
@@ -368,18 +517,8 @@ Page({
         });
     },
 
-    // 取消配置
     onCancelConfig() {
         console.log('[GambleRuntimeConfig] 取消配置');
-
-        wx.showModal({
-            title: '取消配置',
-            content: '确定要取消配置吗？当前配置将丢失。',
-            success: (res) => {
-                if (res.confirm) {
-                    wx.navigateBack();
-                }
-            }
-        });
+        wx.navigateBack();
     }
 }); 

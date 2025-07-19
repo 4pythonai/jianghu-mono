@@ -1,4 +1,13 @@
 <view class="runtime-config-container">
+  <!-- 调试信息 -->
+  <view class="debug-info">
+    <text>调试信息:</text>
+    <text>ruleType: {{ruleType}}</text>
+    <text>players: {{players.length}}人</text>
+    <text>error: {{error}}</text>
+    <text>loading: {{loading}}</text>
+  </view>
+
   <!-- 错误状态 -->
   <view class="error-container" wx:if="{{error}}">
     <text class="error-text">{{error}}</text>
@@ -23,7 +32,7 @@
       <HoleRangeSelector />
     </view>
     
-      <!-- 8421球员配置 -->
+    <!-- 8421球员配置 -->
     <view class="section" wx:if="{{ruleType.indexOf('8421') !== -1}}">
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator 
@@ -32,13 +41,13 @@
         bind:change="onVal8421ConfigChange"
       />
     </view>
-  </view>
-
-  
+    
     <!-- 分组配置 -->
     <view class="section">
       <RedBlueConfig 
         players="{{players}}"
+        initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+        initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
         bind:change="onGroupingConfigChange"
       />
     </view>
@@ -51,6 +60,7 @@
         bind:change="onRankingConfigChange"
       />
     </view>
+  </view>
 
   
   

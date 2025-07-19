@@ -159,6 +159,59 @@ Component({
                     });
                 }
             });
+        },
+
+        // 处理运行时配置项点击事件 - 跳转到配置页面
+        onRuntimeItemClick(e) {
+            const { config, index } = e.currentTarget.dataset;
+            const gameId = this.properties.gameId || gameStore.gameid;
+
+            console.log('🎮 点击配置详情按钮:', { config, index, gameId });
+
+            if (!config) {
+                console.error('🎮 配置数据为空');
+                wx.showToast({
+                    title: '配置数据错误',
+                    icon: 'none'
+                });
+                return;
+            }
+
+            // 构建跳转数据 - 按照目标页面的期望格式
+            const jumpData = {
+                ruleType: config.gambleSysName || '',
+                gameId: gameId,
+                configId: config.id,
+                fromUserRule: false, // 不是从用户规则进入
+                isEditMode: true, // 标记为编辑模式
+                editConfig: config, // 传递要编辑的配置
+                userRuleName: config.gambleUserName || '',
+                holePlayList: config.holePlayList || [],
+                playerCount: config.player8421Count || 0,
+                redBlueConfig: config.red_blue_config || '',
+                rankingDisplay: config.ranking_display || '',
+                createTime: config.create_time || ''
+            };
+
+            // 将数据编码为JSON字符串
+            const encodedData = encodeURIComponent(JSON.stringify(jumpData));
+
+            console.log('🎮 跳转到配置编辑页面, 数据:', jumpData);
+
+            // 跳转到配置编辑页面
+            wx.navigateTo({
+                url: `/pages/gambleRuntimeConfig/gambleRuntimeConfig?data=${encodedData}`,
+                success: () => {
+                    console.log('🎮 成功跳转到配置编辑页面');
+                },
+                fail: (err) => {
+                    console.error('🎮 跳转到配置编辑页面失败:', err);
+                    wx.showToast({
+                        title: '页面跳转失败',
+                        icon: 'none'
+                    });
+                }
+            });
         }
     },
 

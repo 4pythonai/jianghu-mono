@@ -7,6 +7,16 @@ Component({
         players: {
             type: Array,
             value: []
+        },
+        // 初始分组配置
+        initialRedBlueConfig: {
+            type: String,
+            value: '4_固拉'
+        },
+        // 初始玩家顺序
+        initialBootstrapOrder: {
+            type: Array,
+            value: []
         }
     },
 
@@ -29,29 +39,48 @@ Component({
 
     lifetimes: {
         attached() {
-            this.initializePlayersOrder();
+            this.initializeConfig();
         }
     },
 
     observers: {
-        'players': function (players) {
-            this.initializePlayersOrder();
+        'players, initialRedBlueConfig, initialBootstrapOrder': function (players, initialRedBlueConfig, initialBootstrapOrder) {
+            this.initializeConfig();
         }
     },
 
     methods: {
-        // 初始化玩家顺序
-        initializePlayersOrder() {
-            const { players } = this.data;
+        // 初始化配置
+        initializeConfig() {
+            const { players, initialRedBlueConfig, initialBootstrapOrder } = this.data;
 
-            // 复制玩家数组作为初始顺序
-            const bootstrap_order = [...players];
+            // 设置分组配置
+            const red_blue_config = initialRedBlueConfig || '4_固拉';
+
+            // 设置玩家顺序
+            let bootstrap_order = [];
+            if (initialBootstrapOrder && initialBootstrapOrder.length > 0) {
+                // 如果有初始顺序，使用初始顺序
+                bootstrap_order = [...initialBootstrapOrder];
+            } else {
+                // 否则使用玩家数组作为初始顺序
+                bootstrap_order = [...players];
+            }
 
             this.setData({
+                red_blue_config,
                 bootstrap_order
             });
 
-            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '初始化玩家顺序', bootstrap_order);
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '初始化配置', {
+                red_blue_config,
+                bootstrap_order: bootstrap_order.length
+            });
+        },
+
+        // 初始化玩家顺序（保留兼容性）
+        initializePlayersOrder() {
+            this.initializeConfig();
         },
 
         // 转换玩家对象数组为用户ID数组
