@@ -20,6 +20,149 @@ class Gamble extends MY_Controller {
 
 
 
+    public function addRuntimeConfig() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();
+
+        $rangeHolePlayList = $json_paras['rangeHolePlayList'];
+        $startHoleindex = $rangeHolePlayList[0]['hindex'];
+        $endHoleindex = $rangeHolePlayList[count($rangeHolePlayList) - 1]['hindex'];
+
+        try {
+            // 获取必需参数
+            $gameid = $json_paras['gameid'] ?? null;
+            $groupid = $json_paras['groupid'] ?? 1;
+            $userRuleId = $json_paras['userRuleId'] ?? null;
+
+            if (!$gameid || !$userRuleId) {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '缺少必要参数: gameid or  userRuleId'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $holePlayList = $json_paras['holePlayList'];
+            $hindexArr = [];
+            foreach ($holePlayList as $hole) {
+                $hindexArr[] = $hole['hindex'];
+            }
+            $holePlayListString = implode(',', $hindexArr);
+            // 准备插入数据
+            $insert_data = [
+                'creator_id' => $userid,
+                'gameid' => $gameid,
+                'groupid' => $groupid,
+                'val8421_config' => isset($json_paras['val8421_config']) ? json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE) : null,
+                'userRuleId' => $userRuleId,
+                'gambleSysName' => $json_paras['gambleSysName'] ?? null,
+                'gambleUserName' => $json_paras['gambleUserName'] ?? null,
+                'playersNumber' => $json_paras['playersNumber'] ?? 4,
+                'red_blue_config' => $json_paras['red_blue_config'] ?? null,
+                'bootstrap_order' => isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
+                'attenders' =>   isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
+                'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score',
+                'holePlayList' => $holePlayListString,
+                'startHoleindex' => $startHoleindex,
+                'endHoleindex' => $endHoleindex
+            ];
+
+            // 插入数据
+
+            $this->db->insert('t_gamble_runtime', $insert_data);
+            $insert_id = $this->db->insert_id();
+
+
+
+            if ($insert_id) {
+                $ret = [];
+                $ret['code'] = 200;
+                $ret['message'] = '运行时配置创建成功';
+                echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+            } else {
+                echo json_encode([
+                    'code' => 500,
+                    'message' => '数据库插入失败'
+                ], JSON_UNESCAPED_UNICODE);
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误：' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    public function updateRuntimeConfig() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();
+        unset($json_paras['holeList']);
+
+        if (isset($json_paras['bootstrap_order']) && is_array($json_paras['bootstrap_order'])) {
+            $bootstrap_order = '[' . implode(',', $json_paras['bootstrap_order']) . ']';
+        } else {
+            $bootstrap_order = $json_paras['bootstrap_order'] ?? null;
+        }
+        $json_paras['bootstrap_order'] = $bootstrap_order;
+        if (isset($json_paras['val8421_config']) && is_array($json_paras['val8421_config'])) {
+            $val8421_config = json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE);
+        } else {
+            $val8421_config = $json_paras['val8421_config'] ?? null;
+        }
+        $json_paras['val8421_config'] = $val8421_config;
+
+        $holePlayListString = implode(',', array_column($json_paras['holePlayList'], 'hindex'));
+        $json_paras['holePlayList'] = $holePlayListString;
+        $json_paras['bootstrap_order'] = $bootstrap_order;
+
+        $ristItemOfHolePlayList = $json_paras['rangeHolePlayList'][0];
+        $lastItemOfHolePlayList = $json_paras['rangeHolePlayList'][count($json_paras['rangeHolePlayList']) - 1];
+
+
+        $json_paras['startHoleindex'] = $ristItemOfHolePlayList['hindex'];
+        $json_paras['endHoleindex'] = $lastItemOfHolePlayList['hindex'];
+
+        $json_paras['creator_id'] = $userid;
+        unset($json_paras['rangeHolePlayList']);
+
+        // 准备更新数据
+        $update_data = [
+            'gameid' => $json_paras['gameid'],
+            'groupid' => $json_paras['groupid'],
+            'userRuleId' => $json_paras['userRuleId'],
+            'gambleSysName' => $json_paras['gambleSysName'],
+            'gambleUserName' => $json_paras['gambleUserName'],
+            'red_blue_config' => $json_paras['red_blue_config'],
+            'bootstrap_order' => $json_paras['bootstrap_order'],
+            'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'],
+            'val8421_config' => $json_paras['val8421_config'],
+            'holePlayList' => $json_paras['holePlayList'],
+            'startHoleindex' => $ristItemOfHolePlayList['hindex'],
+            'endHoleindex' => $lastItemOfHolePlayList['hindex'],
+            'creator_id' => $json_paras['creator_id']
+        ];
+
+        // debug('update_data', $update_data);
+        // exit;
+
+        // 更新数据库
+        $this->db->where('id', $json_paras['id']);
+        $result = $this->db->update('t_gamble_runtime', $update_data);
+
+        if ($result) {
+            $ret = [];
+            $ret['code'] = 200;
+            $ret['message'] = '运行时配置更新成功';
+            echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode([
+                'code' => 500,
+                'message' => '数据库更新失败'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
     public function addGambleRule() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
@@ -146,78 +289,7 @@ class Gamble extends MY_Controller {
     }
 
 
-    public function addRuntimeConfig() {
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
 
-        $rangeHolePlayList = $json_paras['rangeHolePlayList'];
-        $startHoleindex = $rangeHolePlayList[0]['hindex'];
-        $endHoleindex = $rangeHolePlayList[count($rangeHolePlayList) - 1]['hindex'];
-
-        try {
-            // 获取必需参数
-            $gameid = $json_paras['gameid'] ?? null;
-            $groupid = $json_paras['groupid'] ?? 1;
-            $userRuleId = $json_paras['userRuleId'] ?? null;
-
-            if (!$gameid || !$userRuleId) {
-                echo json_encode([
-                    'code' => 400,
-                    'message' => '缺少必要参数: gameid or  userRuleId'
-                ], JSON_UNESCAPED_UNICODE);
-                return;
-            }
-
-            $holePlayList = $json_paras['holePlayList'];
-            $hindexArr = [];
-            foreach ($holePlayList as $hole) {
-                $hindexArr[] = $hole['hindex'];
-            }
-            $holePlayListString = implode(',', $hindexArr);
-            // 准备插入数据
-            $insert_data = [
-                'creator_id' => $userid,
-                'gameid' => $gameid,
-                'groupid' => $groupid,
-                'val8421_config' => isset($json_paras['val8421_config']) ? json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE) : null,
-                'userRuleId' => $userRuleId,
-                'gambleSysName' => $json_paras['gambleSysName'] ?? null,
-                'gambleUserName' => $json_paras['gambleUserName'] ?? null,
-                'playersNumber' => $json_paras['playersNumber'] ?? 4,
-                'red_blue_config' => $json_paras['red_blue_config'] ?? null,
-                'bootstrap_order' => isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
-                'attenders' =>   isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
-                'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score',
-                'holePlayList' => $holePlayListString,
-                'startHoleindex' => $startHoleindex,
-                'endHoleindex' => $endHoleindex
-            ];
-
-            // 插入数据
-
-            $this->db->insert('t_gamble_runtime', $insert_data);
-            $insert_id = $this->db->insert_id();
-
-
-
-            if ($insert_id) {
-                $ret = [];
-                $ret['code'] = 200;
-                $ret['message'] = '运行时配置创建成功';
-                echo json_encode($ret, JSON_UNESCAPED_UNICODE);
-            } else {
-                echo json_encode([
-                    'code' => 500,
-                    'message' => '数据库插入失败'
-                ], JSON_UNESCAPED_UNICODE);
-            }
-        } catch (Exception $e) {
-            echo json_encode([
-                'code' => 500,
-                'message' => '服务器内部错误：' . $e->getMessage()
-            ], JSON_UNESCAPED_UNICODE);
-        }
-    }
 
     public function listRuntimeConfig() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
@@ -251,8 +323,7 @@ class Gamble extends MY_Controller {
 
 
 
-    public function  updateGambleRuntime() {
-    }
+
 
     public function deleteRuntimeConfig() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
