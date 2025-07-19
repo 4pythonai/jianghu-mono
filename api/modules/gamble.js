@@ -17,7 +17,6 @@ const gamble = {
 
     addRuntimeConfig: (data, options) => request('/Gamble/addRuntimeConfig', data, options),
 
-    // updateRuntimeConfig
     updateRuntimeConfig: (data, options) => request('/Gamble/updateRuntimeConfig', data, options),
 
     // deleteRuntimeConfig

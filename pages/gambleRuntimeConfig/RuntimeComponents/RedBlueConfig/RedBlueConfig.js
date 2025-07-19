@@ -60,8 +60,18 @@ Component({
             // 设置玩家顺序
             let bootstrap_order = [];
             if (initialBootstrapOrder && initialBootstrapOrder.length > 0) {
-                // 如果有初始顺序，使用初始顺序
-                bootstrap_order = [...initialBootstrapOrder];
+                // 如果有初始顺序，将用户ID数组转换为玩家对象数组
+                bootstrap_order = initialBootstrapOrder.map(userId => {
+                    // 从players中找到对应的玩家对象
+                    const player = players.find(p =>
+                        String(p.userid || p.user_id) === String(userId)
+                    );
+                    return player || {
+                        userid: userId,
+                        nickname: `玩家${userId}`,
+                        avatar: '/images/default-avatar.png'
+                    };
+                });
             } else {
                 // 否则使用玩家数组作为初始顺序
                 bootstrap_order = [...players];
@@ -74,7 +84,8 @@ Component({
 
             RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '初始化配置', {
                 red_blue_config,
-                bootstrap_order: bootstrap_order.length
+                bootstrap_order: bootstrap_order.length,
+                playerNames: bootstrap_order.map(p => p.nickname || p.wx_nickname)
             });
         },
 

@@ -235,26 +235,13 @@ Page({
             }
 
             if (Array.isArray(bootstrapOrder) && bootstrapOrder.length > 0) {
-                // 将用户ID数组转换为玩家对象数组
-                const playerObjects = bootstrapOrder.map(userId => {
-                    // 从gameStore.players中找到对应的玩家对象
-                    const player = gameStore.players.find(p =>
-                        String(p.userid || p.user_id) === String(userId)
-                    );
-                    return player || {
-                        userid: userId,
-                        nickname: `玩家${userId}`,
-                        avatar: '/images/default-avatar.png'
-                    };
-                });
-
+                // 确保bootstrap_order是用户ID数组（用于验证和保存）
                 this.setData({
-                    'runtimeConfig.bootstrap_order': playerObjects
+                    'runtimeConfig.bootstrap_order': bootstrapOrder
                 });
 
                 console.log('[GambleRuntimeConfig] 玩家顺序配置加载成功:', {
-                    originalOrder: bootstrapOrder,
-                    playerObjects: playerObjects.map(p => ({ userid: p.userid, nickname: p.nickname }))
+                    bootstrapOrder: bootstrapOrder
                 });
             }
         }
