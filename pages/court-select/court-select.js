@@ -14,7 +14,6 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-        console.log('选择半场页面加载, 参数:', options)
 
         // 从页面参数中获取球场信息
         if (options.courseData) {
@@ -23,18 +22,10 @@ Page({
                 this.setData({
                     selectedCourse: courseData
                 })
-                console.log('接收到的球场信息 ❤️❤️❤️:', courseData)
-                console.log('球场ID字段检查 ❤️❤️❤️:')
-                console.log('- courseData.id:', courseData.id)
-                console.log('- courseData.courseid:', courseData.courseid)
-                console.log('- courseData.course_id:', courseData.course_id)
-                console.log('- 所有字段:', Object.keys(courseData))
             } catch (error) {
-                console.error('解析球场数据失败:', error)
                 this.showErrorAndGoBack('球场信息获取失败')
             }
         } else {
-            console.error('未接收到球场信息')
             this.showErrorAndGoBack('球场信息缺失')
         }
     },

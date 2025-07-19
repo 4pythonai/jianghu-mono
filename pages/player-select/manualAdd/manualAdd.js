@@ -12,8 +12,6 @@ Page({
     },
 
     onLoad(options) {
-        console.log('manualAdd页面加载, 参数:', options);
-        console.log('📊 初始页面数据:', this.data);
 
         if (options.groupIndex !== undefined) {
             this.setData({
@@ -27,7 +25,6 @@ Page({
             });
         }
 
-        console.log('📊 参数处理后的页面数据:', this.data);
 
         // 执行一次初始验证
         this.validateForm();
@@ -64,13 +61,10 @@ Page({
      */
     validateForm() {
         const { remarkName, mobile } = this.data
-        console.log('🔍 表单验证 - remarkName:', remarkName, ', mobile:', mobile)
 
         // 昵称长度至少2位, 手机号11位数字
         const isNicknameValid = remarkName.length >= 2
-        console.log('✅ 昵称验证结果:', isNicknameValid, '(长度:', remarkName.length, ')')
 
-        // const isMobileValid = /^1[3-9]\d{9}$/.test(mobile)
 
         this.setData({
             isFormValid: isNicknameValid

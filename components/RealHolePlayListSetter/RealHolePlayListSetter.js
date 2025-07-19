@@ -37,7 +37,7 @@ Component({
             let selectedHindexArray = [];
 
             if (this.properties.startHoleindex !== null && this.properties.endHoleindex !== null) {
-                // 如果有传入起始和结束洞索引，根据这些参数设置选中范围
+                // 如果有传入起始和结束洞索引，根据这些参数设置选中范围（编辑模式）
                 const startIndex = this.properties.startHoleindex;
                 const endIndex = this.properties.endHoleindex;
 
@@ -53,15 +53,15 @@ Component({
                     }
                 }
 
-                console.log(' ⭕️ 根据传入参数设置选中范围:', {
+                console.log(' ⭕️ 编辑模式 - 根据传入参数设置选中范围:', {
                     startHoleindex: this.properties.startHoleindex,
                     endHoleindex: this.properties.endHoleindex,
                     selectedHindexArray
                 });
             } else {
-                // 如果没有传入参数，使用原有的逻辑（全选）
+                // 创建模式 - 默认全选所有洞
                 selectedHindexArray = holePlayList ? holePlayList.map(hole => hole.hindex) : [];
-                console.log(' ⭕️ 使用默认全选逻辑:', selectedHindexArray);
+                console.log(' ⭕️ 创建模式 - 默认全选所有洞:', selectedHindexArray);
             }
 
             // 构建初始selectedMap

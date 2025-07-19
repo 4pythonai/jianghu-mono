@@ -5,17 +5,16 @@ Page({
     },
 
     onLoad(options) {
-        console.log('qrcode页面加载, 参数:', options);
 
         if (options.groupIndex !== undefined) {
             this.setData({
-                groupIndex: parseInt(options.groupIndex)
+                groupIndex: Number.parseInt(options.groupIndex)
             });
         }
 
         if (options.slotIndex !== undefined) {
             this.setData({
-                slotIndex: parseInt(options.slotIndex)
+                slotIndex: Number.parseInt(options.slotIndex)
             });
         }
     },

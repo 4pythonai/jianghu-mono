@@ -148,6 +148,9 @@ Page({
                     // 初始化分组配置
                     this.initializeGroupingConfig();
 
+                    // 初始化洞范围配置
+                    this.initializeHoleRangeConfig();
+
                     // 初始化8421配置(仅在8421游戏时)
                     this.initialize8421Config();
                 }
@@ -199,6 +202,30 @@ Page({
             ruleType,
             playerIds
         });
+    },
+
+    // 初始化洞范围配置
+    initializeHoleRangeConfig() {
+        const { holePlayList } = gameStore.getState();
+
+        if (holePlayList && holePlayList.length > 0) {
+            // 设置默认的起始洞和结束洞索引（全选所有洞）
+            const startHoleindex = holePlayList[0].hindex;
+            const endHoleindex = holePlayList[holePlayList.length - 1].hindex;
+
+            // 更新gameStore中的startHoleindex和endHoleindex
+            gameStore.startHoleindex = startHoleindex;
+            gameStore.endHoleindex = endHoleindex;
+
+            // 设置默认的rangeHolePlayList（全选所有洞）
+            gameStore.rangeHolePlayList = [...holePlayList];
+
+            console.log('[GambleRuntimeConfig] 洞范围配置初始化:', {
+                startHoleindex,
+                endHoleindex,
+                holeCount: holePlayList.length
+            });
+        }
     },
 
     // 初始化8421配置
