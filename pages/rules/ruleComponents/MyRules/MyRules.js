@@ -57,6 +57,28 @@ Component({
                 console.log('📋 [MyRules] 获取用户规则成功:', res);
 
                 if (res.code === 200 && res.userRules) {
+                    // 添加调试信息，查看规则数据结构
+                    console.log('📋 [MyRules] 用户规则数据结构:', {
+                        twoPlayers: res.userRules.twoPlayers?.map(rule => ({
+                            userRuleId: rule.userRuleId,
+                            gamblesysname: rule.gamblesysname,
+                            gambleUserName: rule.gambleUserName,
+                            user_rulename: rule.user_rulename
+                        })),
+                        threePlayers: res.userRules.threePlayers?.map(rule => ({
+                            userRuleId: rule.userRuleId,
+                            gamblesysname: rule.gamblesysname,
+                            gambleUserName: rule.gambleUserName,
+                            user_rulename: rule.user_rulename
+                        })),
+                        fourPlayers: res.userRules.fourPlayers?.map(rule => ({
+                            userRuleId: rule.userRuleId,
+                            gamblesysname: rule.gamblesysname,
+                            gambleUserName: rule.gambleUserName,
+                            user_rulename: rule.user_rulename
+                        }))
+                    });
+
                     this.setData({
                         myRules: {
                             twoPlayers: res.userRules.twoPlayers || [],
@@ -193,6 +215,13 @@ Component({
         onViewRule(e) {
             const { item, group } = e.currentTarget.dataset;
             console.log('📋 [MyRules] 使用用户规则:', item, '分组:', group);
+            console.log('📋 [MyRules] 用户规则详情:', {
+                gamblesysname: item.gamblesysname,
+                gambleUserName: item.gambleUserName,
+                user_rulename: item.user_rulename,
+                title: item.title,
+                userRuleId: item.userRuleId
+            });
 
             // 导入gameStore来获取游戏数据
             const { gameStore } = require('../../../../stores/gameStore');
@@ -268,7 +297,7 @@ Component({
             };
 
             // 首先根据gamblesysname精确匹配
-            if (ruleTypeMap[group] && ruleTypeMap[group][gamblesysname]) {
+            if (ruleTypeMap[group]?.[gamblesysname]) {
                 return ruleTypeMap[group][gamblesysname];
             }
 
@@ -276,25 +305,32 @@ Component({
             const ruleName = (userRule.gambleUserName || userRule.user_rulename || '').toLowerCase();
 
             if (ruleName.includes('8421')) {
-                return ruleTypeMap[group]['8421'];
-            } else if (ruleName.includes('比杆') || ruleName.includes('gross')) {
-                return ruleTypeMap[group]['gross'];
-            } else if (ruleName.includes('比洞') || ruleName.includes('hole')) {
-                return ruleTypeMap[group]['hole'];
-            } else if (ruleName.includes('斗地主') || ruleName.includes('doudizhu')) {
-                return ruleTypeMap[group]['doudizhu'];
-            } else if (ruleName.includes('地主婆') || ruleName.includes('dizhupo')) {
-                return ruleTypeMap[group]['dizhupo'];
-            } else if (ruleName.includes('拉死') || ruleName.includes('lasi')) {
-                return ruleTypeMap[group]['lasi'];
-            } else if (ruleName.includes('3打1') || ruleName.includes('3da1')) {
-                return ruleTypeMap[group]['3da1'];
-            } else if (ruleName.includes('bestak')) {
-                return ruleTypeMap[group]['bestak'];
+                return ruleTypeMap[group]?.['8421'];
+            }
+            if (ruleName.includes('比杆') || ruleName.includes('gross')) {
+                return ruleTypeMap[group]?.gross;
+            }
+            if (ruleName.includes('比洞') || ruleName.includes('hole')) {
+                return ruleTypeMap[group]?.hole;
+            }
+            if (ruleName.includes('斗地主') || ruleName.includes('doudizhu')) {
+                return ruleTypeMap[group]?.doudizhu;
+            }
+            if (ruleName.includes('地主婆') || ruleName.includes('dizhupo')) {
+                return ruleTypeMap[group]?.dizhupo;
+            }
+            if (ruleName.includes('拉死') || ruleName.includes('lasi')) {
+                return ruleTypeMap[group]?.lasi;
+            }
+            if (ruleName.includes('3打1') || ruleName.includes('3da1')) {
+                return ruleTypeMap[group]?.['3da1'];
+            }
+            if (ruleName.includes('bestak')) {
+                return ruleTypeMap[group]?.bestak;
             }
 
             // 默认返回该组的8421规则
-            return ruleTypeMap[group]['8421'] || null;
+            return ruleTypeMap[group]?.['8421'] || null;
         },
 
         // 获取分组显示名称

@@ -67,10 +67,25 @@ Page({
 
                 if (decodedData.fromUserRule) {
                     // 从用户规则进入
-                    gambleSysName = decodedData.ruleType || '';
+                    // 使用用户规则的原始 gamblesysname，而不是映射后的 ruleType
+                    gambleSysName = decodedData.userRule?.gamblesysname || '';
+
+                    // 如果 gamblesysname 为空，尝试从 ruleType 中提取
+                    if (!gambleSysName && decodedData.ruleType) {
+                        gambleSysName = this.extractSysNameFromRuleType(decodedData.ruleType);
+                    }
+
                     gambleUserName = decodedData.userRuleName || '';
                     userRuleId = decodedData.userRuleId || null;
                     userRule = decodedData.userRule || null;
+
+                    console.log('[GambleRuntimeConfig] 用户规则进入:', {
+                        userRule: decodedData.userRule,
+                        gamblesysname: decodedData.userRule?.gamblesysname,
+                        ruleType: decodedData.ruleType,
+                        gambleSysName,
+                        gambleUserName
+                    });
                 } else if (decodedData.isEditMode && decodedData.editConfig) {
                     // 编辑模式，从传递的配置中获取
                     gambleSysName = decodedData.editConfig.gambleSysName;
@@ -78,16 +93,26 @@ Page({
                     userRuleId = decodedData.editConfig.userRuleId;
                 } else {
                     // 从系统规则进入（添加规则）
-                    gambleSysName = decodedData.ruleType || '';
+                    // 将完整的规则类型转换为简单的系统名称
+                    const ruleType = decodedData.ruleType || '';
+                    gambleSysName = this.extractSysNameFromRuleType(ruleType);
                     gambleUserName = decodedData.ruleType || ''; // 系统规则名称就是规则类型
                     userRuleId = null; // 系统规则没有用户规则ID
+
+                    console.log('[GambleRuntimeConfig] 系统规则进入:', {
+                        ruleType,
+                        gambleSysName,
+                        gambleUserName
+                    });
                 }
 
-                // 处理holePlayList，如果从编辑配置中传递过来
+                // 处理holePlayList, 如果从编辑配置中传递过来
                 if (decodedData.holePlayList) {
+                    console.log(" 🛑 🛑 🛑", decodedData)
+
                     if (typeof decodedData.holePlayList === 'string') {
                         try {
-                            holePlayList = JSON.parse(decodedData.holePlayList);
+                            holePlayList = JSON.parse(`[${decodedData.holePlayList}]`);
                         } catch (error) {
                             console.error('[GambleRuntimeConfig] 解析holePlayList失败:', error);
                             holePlayList = gameStore.holePlayList;
@@ -285,12 +310,16 @@ Page({
                 try {
                     // 如果是逗号分隔的字符串，先分割再转换为数字数组
                     if (holePlayList.includes(',')) {
-                        const holeNumbers = holePlayList.split(',').map(num => parseInt(num.trim()));
+                        const holeNumbers = holePlayList.split(',').map(num => Number.parseInt(num.trim()));
                         // 根据洞号构建洞对象数组
                         holePlayList = holeNumbers.map(holeNumber => {
                             // 从gameStore中找到对应的洞对象
                             const holeObj = gameStore.holeList.find(hole => hole.holeid === holeNumber);
-                            return holeObj || { holeid: holeNumber, holename: `B${holeNumber}` };
+                            return holeObj || {
+                                holeid: holeNumber,
+                                holename: `B${holeNumber}`,
+                                hindex: holeNumber // 使用洞号作为hindex
+                            };
                         });
                     } else {
                         // 尝试解析为JSON
@@ -507,5 +536,28 @@ Page({
     onCancelConfig() {
         console.log('[GambleRuntimeConfig] 取消配置');
         wx.navigateBack();
+    },
+
+    // 从规则类型中提取系统名称
+    extractSysNameFromRuleType(ruleType) {
+        console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 输入:', ruleType);
+
+        if (!ruleType) {
+            console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 返回空字符串');
+            return '';
+        }
+
+        // 规则类型格式: '2p-8421', '3p-doudizhu', '4p-3da1' 等
+        const parts = ruleType.split('-');
+        console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 分割结果:', parts);
+
+        if (parts.length === 2) {
+            const result = parts[1]; // 返回系统名称部分
+            console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 返回:', result);
+            return result;
+        }
+
+        console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 格式不正确，返回原值:', ruleType);
+        return ruleType; // 如果格式不正确，返回原值
     }
 }); 

@@ -55,7 +55,7 @@ export const gameStore = observable({
 
         const allPlayers = (gameInfo.players || []).map(p => normalizePlayer(p));
         const players = this._filterPlayersByGroup(allPlayers, groupId);
-        const holeList = (gameInfo.holeList || []).map(h => normalizeHole(h));
+        const holeList = (gameInfo.holeList || []).map((h, index) => normalizeHole(h, index + 1));
 
         const scoreMap = new Map();
         for (const s of gameInfo.scores || []) {

@@ -16,14 +16,16 @@ export function normalizePlayer(player) {
 /**
  * 标准化洞数据
  * @param {any} hole
+ * @param {number} index 洞在列表中的索引位置（从1开始）
  * @returns {object}
  */
-export function normalizeHole(hole) {
+export function normalizeHole(hole, index = null) {
     return {
         ...hole,
         holeid: hole.holeid != null ? String(hole.holeid) : '',
         unique_key: hole.unique_key != null ? String(hole.unique_key) : '',
-        par: Number(hole.par) || 0,
+        par: Number(hole.par),
+        hindex: index || hole.hindex, // 添加hindex字段
     };
 }
 
