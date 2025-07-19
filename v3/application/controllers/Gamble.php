@@ -142,7 +142,7 @@ class Gamble extends MY_Controller {
             'creator_id' => $json_paras['creator_id']
         ];
 
-        // debug('update_data', $update_data);
+        debug('update_data', $update_data);
         // exit;
 
         // 更新数据库

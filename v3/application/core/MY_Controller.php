@@ -26,7 +26,7 @@ function  my_exceptionHandler(Throwable $exception) {
 
   // debug($exception->getMessage());
   print_r($exception->getTraceAsString());
-  die;
+
   my_errorHandler('Exception', $exception->getMessage(),  $exception->getFile(), $exception->getLine());
 };
 

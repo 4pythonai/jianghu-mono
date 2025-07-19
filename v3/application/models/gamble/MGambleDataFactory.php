@@ -10,6 +10,8 @@ class MGambleDataFactory extends CI_Model {
 
   public function getHoleOrderArrayByHolePlayList($gameid, $holePlayListString) {
     $holes = $this->getGameHoles($gameid);
+
+
     $hindexArray = explode(',', $holePlayListString);
     $afterOrder = [];
 
@@ -22,6 +24,7 @@ class MGambleDataFactory extends CI_Model {
         }
       }
     }
+
     return $afterOrder;
   }
 

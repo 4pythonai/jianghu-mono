@@ -21,6 +21,9 @@ class MIndicator extends CI_Model {
     public function computeIndicators($index, &$hole,  $context) {
         if ($context->gambleSysName == '8421') {
             $this->calculate8421Indicators($hole, $context);
+        } else {
+
+            debug("gambleSysName", $context->gambleSysName);
         }
     }
 
@@ -118,6 +121,7 @@ class MIndicator extends CI_Model {
     }
 
     public function judgeWinner(&$hole, $context) {
+
         $indicatorBlue = $hole['indicatorBlue'];
         $indicatorRed = $hole['indicatorRed'];
 

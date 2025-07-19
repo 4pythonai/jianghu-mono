@@ -71,9 +71,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
 
-
-
-
         $this->attenders = json_decode($_config_row['attenders'], true);
         $this->bootStrapOrder = json_decode($_config_row['bootstrap_order'], true);
         $this->dutyConfig = $_config_row['duty_config'];
@@ -89,8 +86,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->startHoleindex = $_config_row['startHoleindex'];
         $this->endHoleindex = $_config_row['endHoleindex'];
         $this->redBlueConfig = $_config_row['red_blue_config'];
-
-        $this->holePlayList = $_config_row['holePlayList'];
 
         // 新增：初始化全局上下文对象
         $this->context = GambleContext::fromGamblePipeRunner($this);
