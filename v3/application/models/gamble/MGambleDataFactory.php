@@ -32,10 +32,6 @@ class MGambleDataFactory extends CI_Model {
 
   public function getOneGambleHoleData($gameid, $groupid, $startHoleindex, $endHoleindex) {
     $public_hole_data = $this->get_public_holedata($gameid, $groupid);
-
-    // debug($public_hole_data);
-    // die;
-
     $realused_holes = $this->choose($public_hole_data, $startHoleindex, $endHoleindex);
     return $realused_holes;
   }
@@ -273,15 +269,8 @@ class MGambleDataFactory extends CI_Model {
 
   public function getScoresOrderByHolePlayList($gameid, $groupid, $holePlayListString) {
     $scores  = $this->getHoleScore($gameid);
-
-
-    // debug("scores", $scores);
-    // debug("holePlayListString", $holePlayListString);
-    // die;
-
     $hindexArray = explode(',', $holePlayListString);
     $afterOrder = [];
-
     foreach ($hindexArray as $hindex) {
       foreach ($scores as $score) {
         if ($score['hindex'] == $hindex) {
@@ -290,8 +279,6 @@ class MGambleDataFactory extends CI_Model {
         }
       }
     }
-
-    debug($afterOrder);
     return $afterOrder;
   }
 }
