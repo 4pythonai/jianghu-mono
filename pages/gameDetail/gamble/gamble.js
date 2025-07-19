@@ -196,7 +196,6 @@ Component({
             // 将数据编码为JSON字符串
             const encodedData = encodeURIComponent(JSON.stringify(jumpData));
 
-            console.log('🎮 跳转到配置编辑页面, 数据:', jumpData);
 
             // 跳转到配置编辑页面
             wx.navigateTo({
