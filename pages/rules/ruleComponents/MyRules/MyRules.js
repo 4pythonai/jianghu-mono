@@ -57,27 +57,7 @@ Component({
                 console.log('📋 [MyRules] 获取用户规则成功:', res);
 
                 if (res.code === 200 && res.userRules) {
-                    // 添加调试信息，查看规则数据结构
-                    console.log('📋 [MyRules] 用户规则数据结构:', {
-                        twoPlayers: res.userRules.twoPlayers?.map(rule => ({
-                            userRuleId: rule.userRuleId,
-                            gamblesysname: rule.gamblesysname,
-                            gambleUserName: rule.gambleUserName,
-                            user_rulename: rule.user_rulename
-                        })),
-                        threePlayers: res.userRules.threePlayers?.map(rule => ({
-                            userRuleId: rule.userRuleId,
-                            gamblesysname: rule.gamblesysname,
-                            gambleUserName: rule.gambleUserName,
-                            user_rulename: rule.user_rulename
-                        })),
-                        fourPlayers: res.userRules.fourPlayers?.map(rule => ({
-                            userRuleId: rule.userRuleId,
-                            gamblesysname: rule.gamblesysname,
-                            gambleUserName: rule.gambleUserName,
-                            user_rulename: rule.user_rulename
-                        }))
-                    });
+
 
                     this.setData({
                         myRules: {
@@ -214,16 +194,6 @@ Component({
         // 查看规则详情 - 跳转到运行时配置页面
         onViewRule(e) {
             const { item, group } = e.currentTarget.dataset;
-            console.log('📋 [MyRules] 使用用户规则:', item, '分组:', group);
-            console.log('📋 [MyRules] 用户规则详情:', {
-                gamblesysname: item.gamblesysname,
-                gambleUserName: item.gambleUserName,
-                user_rulename: item.user_rulename,
-                title: item.title,
-                userRuleId: item.userRuleId
-            });
-
-            // 导入gameStore来获取游戏数据
             const { gameStore } = require('../../../../stores/gameStore');
 
             // 根据用户规则确定ruleType

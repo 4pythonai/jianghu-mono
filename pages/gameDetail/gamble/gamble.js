@@ -44,11 +44,6 @@ Component({
         initGame() {
             // 初始化游戏
             this.setData({ loading: true });
-            console.log('🎮 初始化游戏, 比赛ID:', this.properties.gameId);
-            console.log('🎮 参赛球员:', this.properties.players);
-            console.log('🎮 gameStore中的gameid:', gameStore.gameid);
-            console.log('🎮 runtimeStore中的runtimeConfigs:', runtimeStore.runtimeConfigs);
-            // TODO: 实际游戏初始化逻辑
             setTimeout(() => {
                 this.setData({ loading: false });
             }, 1500);
@@ -56,9 +51,7 @@ Component({
 
         onDeleteConfig(e) {
             const id = e.currentTarget.dataset.id;
-            console.log('删除配置 id:', id);
             app.api.gamble.deleteRuntimeConfig({ id: id }).then(res => {
-                console.log('删除配置成功:', res);
                 this.refreshRuntimeConfig();
             });
         },
@@ -71,13 +64,6 @@ Component({
                 url: '/pages/rules/rules',
                 success: () => {
                     console.log('🎮 成功跳转到游戏规则页面');
-                },
-                fail: (err) => {
-                    console.error('🎮 跳转失败:', err);
-                    wx.showToast({
-                        title: '页面跳转失败',
-                        icon: 'none'
-                    });
                 }
             });
         },
@@ -86,11 +72,9 @@ Component({
 
         // 刷新运行时配置
         refreshRuntimeConfig() {
-            console.log('🎮 刷新运行时配置');
             const gameId = this.properties.gameId || gameStore.gameid;
             const groupId = gameStore.groupId;
             if (gameId) {
-                console.log('🎮 刷新运行时配置, gameId:', gameId, 'groupId:', groupId);
                 runtimeStore.fetchRuntimeConfigs(groupId);
             }
         },
@@ -147,17 +131,7 @@ Component({
 
             // 跳转到赌球结果页面
             wx.navigateTo({
-                url: `/pages/gambleResult/gambleResult?${queryString}`,
-                success: () => {
-                    console.log('🎮 成功跳转到赌球结果页面');
-                },
-                fail: (err) => {
-                    console.error('🎮 跳转到赌球结果页面失败:', err);
-                    wx.showToast({
-                        title: '页面跳转失败',
-                        icon: 'none'
-                    });
-                }
+                url: `/pages/gambleResult/gambleResult?${queryString}`
             });
         },
 
