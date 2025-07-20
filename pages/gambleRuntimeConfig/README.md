@@ -22,7 +22,7 @@ pages/gambleRuntimeConfig/
 │   ├── Summary/
 │   ├── HoleRangeSelector/
 │   ├── RedBlueConfig/
-│   ├── RankingSelector/
+│   ├── RankConflictResolver/
 │   └── PlayerIndicator/
 ├── shared/                  # 共享逻辑
 │   ├── baseConfig.js        # 基础配置逻辑
@@ -152,7 +152,7 @@ wx.navigateTo({
 // 在 GAME_TYPES 中添加新类型
 '4p-newgame': {
   name: '4人新游戏',
-  components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
+  components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankConflictResolver'],
   hasPlayerConfig: false,
   hasGrouping: true
 }

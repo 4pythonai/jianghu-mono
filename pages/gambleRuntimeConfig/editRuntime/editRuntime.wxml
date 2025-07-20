@@ -56,7 +56,7 @@
     <!-- 排名配置 -->
     <view class="section">
       <view class="section-label">排名规则</view>
-      <RankingSelector 
+      <RankConflictResolver 
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
         bind:change="onRankingConfigChange"
       />

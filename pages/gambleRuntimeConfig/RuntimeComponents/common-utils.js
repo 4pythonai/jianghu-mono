@@ -12,7 +12,7 @@ const RuntimeComponentsUtils = {
         LOG_PREFIXES: {
             HOLE_RANGE: '🕳️ [HoleRangeSelector]',
             PLAYER_INDICATOR: '🎯 [PlayerIndicator]',
-            RANKING_SELECTOR: '🏆 [RankingSelector]',
+            RANKING_SELECTOR: '🏆 [RankConflictResolver]',
             RED_BLUE_CONFIG: '🔴🔵 [RedBlueConfig]',
             SUMMARY: '📋 [Summary]'
         }
