@@ -94,10 +94,6 @@ Component({
             });
         },
 
-        // 获取当前选中的配置信息
-        getCurrentConfig() {
-            const { selectedIndex, rankingOptions } = this.data;
-            return rankingOptions[selectedIndex] || rankingOptions[0];
-        }
+
     }
 }); 

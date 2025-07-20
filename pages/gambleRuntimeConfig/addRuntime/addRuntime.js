@@ -141,24 +141,5 @@ Page({
         BaseConfig.onCancelConfig(this);
     },
 
-    // 手动初始化8421配置（用于调试）
-    onManualInit8421() {
-        console.log('[AddRuntime] 手动初始化8421配置');
 
-        const { gambleSysName, players } = this.data;
-
-        if (!gambleSysName || !players.length) {
-            console.warn('[AddRuntime] 缺少必要数据，无法初始化');
-            return;
-        }
-
-        // 手动调用 GameTypeManager 生成默认配置
-        const defaultConfig = GameTypeManager.getDefaultConfig(gambleSysName, players);
-
-        this.setData({
-            'runtimeConfig.val8421_config': defaultConfig.val8421_config
-        });
-
-        console.log('[AddRuntime] 手动初始化完成:', defaultConfig.val8421_config);
-    }
 }); 

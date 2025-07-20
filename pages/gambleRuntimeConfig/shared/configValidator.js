@@ -172,20 +172,7 @@ const ConfigValidator = {
         return { valid: errors.length === 0, errors };
     },
 
-    /**
-     * 验证洞范围配置
-     * @param {Array} holePlayList 洞列表
-     * @returns {Object} 验证结果
-     */
-    validateHoleRangeConfig(holePlayList) {
-        const errors = [];
 
-        if (!holePlayList || !Array.isArray(holePlayList) || holePlayList.length === 0) {
-            errors.push('请选择洞范围');
-        }
-
-        return { valid: errors.length === 0, errors };
-    },
 
     /**
      * 显示验证错误

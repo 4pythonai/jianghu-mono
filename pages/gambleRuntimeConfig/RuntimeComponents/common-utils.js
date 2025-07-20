@@ -68,18 +68,7 @@ const RuntimeComponentsUtils = {
             });
         },
 
-        /**
-         * 数据验证 - 检查是否为有效的数字字符串
-         * @param {string} str - 待验证的字符串
-         * @param {number} minLength - 最小长度
-         * @param {number} maxLength - 最大长度
-         * @returns {boolean} 是否有效
-         */
-        validateNumericString(str, minLength = 4, maxLength = 5) {
-            if (!str) return false;
-            const regex = new RegExp(`^[0-9]{${minLength},${maxLength}}$`);
-            return regex.test(str);
-        }
+
     },
 
     // 8421配置工具
@@ -180,22 +169,7 @@ const RuntimeComponentsUtils = {
         }
     },
 
-    // 事件工具
-    event: {
-        /**
-         * 标准化事件数据结构
-         * @param {string} type - 事件类型
-         * @param {Object} data - 事件数据
-         * @returns {Object} 标准化的事件数据
-         */
-        standardizeEventData(type, data) {
-            return {
-                type,
-                timestamp: Date.now(),
-                ...data
-            };
-        }
-    },
+
 
     // 数组工具
     array: {

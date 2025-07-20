@@ -129,7 +129,8 @@ Component({
 
             const configString = customInput || selectedPreset;
 
-            if (!RuntimeComponentsUtils.data.validateNumericString(configString)) {
+            // 验证配置字符串格式
+            if (!configString || !/^[0-9]{4,5}$/.test(configString)) {
                 wx.showToast({
                     title: '配置格式错误',
                     icon: 'none'
@@ -170,10 +171,7 @@ Component({
 
 
 
-        // 阻止弹框关闭
-        preventClose() {
-            // 空函数, 阻止事件冒泡
-        },
+
 
         // 头像加载失败处理
         onAvatarError(e) {

@@ -134,29 +134,7 @@ Component({
             this.triggerEvent('reselect');
         },
 
-        // 获取规则显示名称 (保留此方法作为备用)
-        getRuleDisplayName() {
-            RuntimeComponentsUtils.logger.log('SUMMARY', '获取规则显示名称', {
-                gambleSysName: this.data.gambleSysName,
-                userRule: this.data.userRule,
-                ruleTypeMap: this.data.ruleTypeMap
-            });
 
-            // 如果有用户规则, 优先显示用户规则名称
-            if (this.data.userRule) {
-                const userRuleName = this.data.userRule.gambleUserName ||
-                    this.data.userRule.user_rulename ||
-                    this.data.userRule.title ||
-                    '用户自定义规则';
-                RuntimeComponentsUtils.logger.log('SUMMARY', '返回用户规则名称', userRuleName);
-                return userRuleName;
-            }
-
-            // 否则显示系统规则名称
-            const systemRuleName = this.data.ruleTypeMap[this.data.gambleSysName] || this.data.gambleSysName || '未知规则';
-            RuntimeComponentsUtils.logger.log('SUMMARY', '返回系统规则名称', systemRuleName);
-            return systemRuleName;
-        },
 
         // 头像加载失败处理
         onAvatarError(e) {

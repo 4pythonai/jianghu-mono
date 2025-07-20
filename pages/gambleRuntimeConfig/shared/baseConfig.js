@@ -292,26 +292,7 @@ const BaseConfig = {
         }
     },
 
-    /**
-     * 验证配置
-     * @param {Object} runtimeConfig 运行时配置
-     * @param {Array} players 玩家数组
-     * @param {string} gambleSysName 游戏类型
-     * @returns {boolean} 验证结果
-     */
-    validateConfig(runtimeConfig, players, gambleSysName) {
-        const validation = ConfigDataProcessor.validateConfig(runtimeConfig, players);
 
-        if (!validation.valid) {
-            wx.showToast({
-                title: validation.errors[0],
-                icon: 'none'
-            });
-            return false;
-        }
-
-        return true;
-    },
 
     /**
      * 保存配置

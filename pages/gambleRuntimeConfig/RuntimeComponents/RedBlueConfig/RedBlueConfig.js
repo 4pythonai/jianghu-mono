@@ -71,14 +71,13 @@ Component({
 
                     if (player) {
                         return player;
-                    } else {
-                        // 如果找不到对应玩家，创建一个默认玩家对象
-                        return {
-                            userid: userId,
-                            nickname: `玩家${userId}`,
-                            avatar: '/images/default-avatar.png'
-                        };
                     }
+                    // 如果找不到对应玩家，创建一个默认玩家对象
+                    return {
+                        userid: userId,
+                        nickname: `玩家${userId}`,
+                        avatar: '/images/default-avatar.png'
+                    };
                 });
             } else {
                 // 否则使用玩家数组作为初始顺序
@@ -105,10 +104,7 @@ Component({
             });
         },
 
-        // 初始化玩家顺序（保留兼容性）
-        initializePlayersOrder() {
-            this.initializeConfig();
-        },
+
 
         // 转换玩家对象数组为用户ID数组
         convertToUserIds(playersArray) {
