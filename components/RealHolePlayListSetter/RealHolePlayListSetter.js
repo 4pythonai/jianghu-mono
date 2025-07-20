@@ -1,5 +1,6 @@
 // RealHolePlayListSetter
 import { gameStore } from '../../stores/gameStore';
+import { toJS } from 'mobx-miniprogram';
 
 Component({
     options: {
@@ -31,9 +32,23 @@ Component({
     lifetimes: {
         attached() {
             const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = gameStore.getState();
-            console.log(' ⭕️ RealHolePlayListSetter attached - gameStore数据:',
+
+            // 使用 toJS 转换 observable 对象为普通对象
+            const plainHoleList = toJS(holeList);
+            const plainHolePlayList = toJS(holePlayList);
+            const plainRangeHolePlayList = toJS(rangeHolePlayList);
+
+            console.log(' ⭕️ RealHolePlayListSetter attached - gameStore数据 (observable):',
                 {
                     holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex,
+                });
+
+            console.log(' ⭕️ RealHolePlayListSetter attached - gameStore数据 (plain):',
+                {
+                    holeList: plainHoleList,
+                    holePlayList: plainHolePlayList,
+                    rangeHolePlayList: plainRangeHolePlayList,
+                    startHoleindex, endHoleindex,
                 });
 
             // 根据传入的startHoleindex和endHoleindex设置初始选中范围
@@ -48,9 +63,9 @@ Component({
                 const minIndex = Math.min(startIndex, endIndex);
                 const maxIndex = Math.max(startIndex, endIndex);
 
-                // 从holePlayList中找到对应hindex的洞
+                // 从plainHolePlayList中找到对应hindex的洞
                 for (let i = minIndex; i <= maxIndex; i++) {
-                    const hole = holePlayList.find(h => h.hindex === i);
+                    const hole = plainHolePlayList.find(h => h.hindex === i);
                     if (hole) {
                         selectedHindexArray.push(i);
                     }
@@ -60,11 +75,11 @@ Component({
                     startHoleindex: this.properties.startHoleindex,
                     endHoleindex: this.properties.endHoleindex,
                     selectedHindexArray,
-                    holePlayList: holePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
+                    holePlayList: plainHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
                 });
             } else {
                 // 创建模式 - 默认全选所有洞
-                selectedHindexArray = holePlayList ? holePlayList.map(hole => hole.hindex) : [];
+                selectedHindexArray = plainHolePlayList ? plainHolePlayList.map(hole => hole.hindex) : [];
                 console.log(' ⭕️ 创建模式 - 默认全选所有洞:', selectedHindexArray);
             }
 

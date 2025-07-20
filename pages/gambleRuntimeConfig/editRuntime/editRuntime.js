@@ -7,6 +7,7 @@ const ConfigValidator = require('../shared/configValidator');
 const GameTypeManager = require('../../../utils/gameTypeManager');
 const { runtimeStore } = require('../../../stores/runtimeStore');
 const { gameStore } = require('../../../stores/gameStore');
+const { toJS } = require('mobx-miniprogram');
 
 Page({
     data: {
@@ -105,18 +106,43 @@ Page({
                 // 根据 hindex 重新排序 holeList
                 const { holeList } = gameStore.getState();
                 if (holeList && holeList.length > 0) {
+                    // 使用 toJS 将 observable 对象转换为普通对象
+                    const plainHoleList = toJS(holeList);
                     const newHolePlayList = holeIndexes.map(hindex => {
-                        const hole = holeList.find(h => h.hindex === hindex);
+                        const hole = plainHoleList.find(h => h.hindex === hindex);
                         return hole || { hindex, holename: `B${hindex}` };
                     }).filter(hole => hole); // 过滤掉未找到的洞
-
-                    // 更新 gameStore 中的 holePlayList
                     gameStore.holePlayList = newHolePlayList;
-                    console.log('[EditRuntime] 重新设置 holePlayList:', {
-                        originalHoleList: holeList.map(h => ({ hindex: h.hindex, holename: h.holename })),
-                        newHolePlayList: newHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
-                    });
+
+                    // 根据 startHoleindex 和 endHoleindex 设置 rangeHolePlayList
+                    if (config.startHoleindex !== undefined && config.endHoleindex !== undefined) {
+                        const startIndex = Number.parseInt(config.startHoleindex);
+                        const endIndex = Number.parseInt(config.endHoleindex);
+
+                        // 确保 startIndex <= endIndex
+                        const minIndex = Math.min(startIndex, endIndex);
+                        const maxIndex = Math.max(startIndex, endIndex);
+
+                        // 从 newHolePlayList 中找到对应范围的洞
+                        const rangeHolePlayList = newHolePlayList.filter(hole => {
+                            const hindex = hole.hindex;
+                            return hindex >= minIndex && hindex <= maxIndex;
+                        });
+
+                        // 更新 gameStore 中的 rangeHolePlayList
+                        gameStore.rangeHolePlayList = rangeHolePlayList;
+
+                        console.log('🈴🈴🈴 设置 rangeHolePlayList:', {
+                            startHoleindex: startIndex,
+                            endHoleindex: endIndex,
+                            rangeHolePlayList: rangeHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
+                        });
+                    }
                 }
+
+
+
+
             } catch (error) {
                 console.error('[EditRuntime] 解析 holePlayListStr 失败:', error);
             }
