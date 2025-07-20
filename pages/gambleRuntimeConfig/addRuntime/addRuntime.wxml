@@ -1,0 +1,73 @@
+<view class="runtime-config-container">
+  <!-- 调试信息 -->
+  <view class="debug-info">
+    <text>调试信息:</text>
+    <text>gambleSysName: {{gambleSysName}}</text>
+    <text>players: {{players.length}}人</text>
+    <text>error: {{error}}</text>
+    <text>loading: {{loading}}</text>
+    <button size="mini" bindtap="onManualInit8421">手动初始化8421</button>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-container" wx:if="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+  
+  <!-- 主要内容 -->
+  <view class="main-content" wx:else>
+    <!-- 游戏规则摘要 -->
+    <view class="section">
+      <view class="section-title">游戏规则</view>
+      <Summary 
+        gambleSysName="{{gambleSysName}}"
+        players="{{players}}"
+        userRule="{{userRule}}"
+        bind:reselect="onReSelectRule"
+      />
+    </view>
+    
+    <!-- 洞范围选择 -->
+    <view class="section">
+      <view class="section-label">选择洞范围</view>
+      <HoleRangeSelector />
+    </view>
+    
+    <!-- 8421球员配置 -->
+    <view class="section" wx:if="{{gambleSysName.indexOf('8421') !== -1}}">
+      <view class="section-label">球员指标配置</view>
+      <PlayerIndicator 
+        players="{{players}}"
+        val8421Config="{{runtimeConfig.val8421_config}}"
+        bind:change="onVal8421ConfigChange"
+      />
+    </view>
+    
+    <!-- 分组配置 -->
+    <view class="section">
+      <RedBlueConfig 
+        players="{{players}}"
+        initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+        initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+        bind:change="onGroupingConfigChange"
+      />
+    </view>
+    
+    <!-- 排名配置 -->
+    <view class="section">
+      <view class="section-label">排名规则</view>
+      <RankingSelector 
+        selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        bind:change="onRankingConfigChange"
+      />
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-buttons">
+    <button class="cancel-btn" bindtap="onCancelConfig">取消</button>
+    <button class="confirm-btn" bindtap="onConfirmConfig" loading="{{loading}}">
+      {{loading ? '保存中...' : '确认配置'}}
+    </button>
+  </view>
+</view> 

@@ -91,17 +91,14 @@ export const gameStore = observable({
 
         console.log('🔄 [Store] 基础数据更新完成，开始初始化scoreStore...');
 
-        // 确保在下一个事件循环中更新scoreStore，避免时序问题
-        setTimeout(() => {
-            try {
-                scoreStore.initializeScores(players.length, holeList.length);
-                scoreStore.scores = scores;
-                scoreStore.getDataStatus();
-
-            } catch (error) {
-                console.error('❌ [Store] scoreStore更新失败:', error);
-            }
-        }, 0);
+        // 立即更新scoreStore，避免时序问题
+        try {
+            scoreStore.initializeScores(players.length, holeList.length);
+            scoreStore.scores = scores;
+            console.log('✅ [Store] scoreStore更新成功');
+        } catch (error) {
+            console.error('❌ [Store] scoreStore更新失败:', error);
+        }
 
     }),
 

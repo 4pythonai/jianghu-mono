@@ -1,0 +1,110 @@
+/* 新增配置页面样式 */
+.runtime-config-container {
+	padding: 20rpx;
+	background-color: #f5f5f5;
+	min-height: 100vh;
+}
+
+/* 调试信息 */
+.debug-info {
+	background-color: #fff3cd;
+	border: 1px solid #ffeaa7;
+	border-radius: 8rpx;
+	padding: 16rpx;
+	margin-bottom: 20rpx;
+	font-size: 24rpx;
+	color: #856404;
+}
+
+.debug-info text {
+	display: block;
+	margin-bottom: 8rpx;
+}
+
+/* 错误状态 */
+.error-container {
+	background-color: #f8d7da;
+	border: 1px solid #f5c6cb;
+	border-radius: 8rpx;
+	padding: 16rpx;
+	margin-bottom: 20rpx;
+}
+
+.error-text {
+	color: #721c24;
+	font-size: 28rpx;
+}
+
+/* 主要内容 */
+.main-content {
+	background-color: #fff;
+	border-radius: 12rpx;
+	padding: 20rpx;
+	margin-bottom: 20rpx;
+}
+
+/* 区块样式 */
+.section {
+	margin-bottom: 32rpx;
+	padding-bottom: 24rpx;
+	border-bottom: 1px solid #eee;
+}
+
+.section:last-child {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+
+.section-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 16rpx;
+}
+
+.section-label {
+	font-size: 28rpx;
+	color: #666;
+	margin-bottom: 16rpx;
+}
+
+/* 底部按钮 */
+.bottom-buttons {
+	display: flex;
+	gap: 20rpx;
+	padding: 20rpx 0;
+}
+
+.cancel-btn {
+	flex: 1;
+	height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #f8f9fa;
+	color: #6c757d;
+	border: 1px solid #dee2e6;
+	border-radius: 8rpx;
+	font-size: 28rpx;
+}
+
+.confirm-btn {
+	flex: 2;
+	height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 8rpx;
+	font-size: 28rpx;
+}
+
+.confirm-btn:active {
+	background-color: #0056b3;
+}
+
+.cancel-btn:active {
+	background-color: #e2e6ea;
+}

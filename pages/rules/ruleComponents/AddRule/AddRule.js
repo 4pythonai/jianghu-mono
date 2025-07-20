@@ -228,7 +228,7 @@ Component({
 
             // 跳转到运行时配置页面
             wx.navigateTo({
-                url: `/pages/gambleRuntimeConfig/gambleRuntimeConfig?data=${encodedData}`,
+                url: `/pages/gambleRuntimeConfig/addRuntime/addRuntime?data=${encodedData}`,
                 success: () => {
                     console.log('🎮 成功跳转到运行时配置页面, 规则类型:', title);
                 },

@@ -131,7 +131,9 @@
 .confirm-btn {
 	width: 100%;
 	height: 80rpx;
-	line-height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: #07c160;
 	color: #fff;
 	font-size: 32rpx;
@@ -146,7 +148,9 @@
 .auth-btn {
 	width: 90%;
 	height: 80rpx;
-	line-height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: #07c160;
 	color: #fff;
 	font-size: 32rpx;
@@ -158,7 +162,9 @@
 .phone-btn {
 	width: 90%;
 	height: 80rpx;
-	line-height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: #07c160;
 	color: #fff;
 	font-size: 32rpx;
@@ -195,7 +201,9 @@
 .login-btn {
 	width: 60%;
 	height: 80rpx;
-	line-height: 80rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background-color: #07c160;
 	color: #fff;
 	font-size: 32rpx;

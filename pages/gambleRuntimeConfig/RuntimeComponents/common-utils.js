@@ -21,20 +21,16 @@ const RuntimeComponentsUtils = {
     // 头像处理工具
     avatar: {
         /**
-         * 获取玩家头像URL, 统一处理各种头像字段
+         * 获取玩家头像URL
          * @param {Object} player - 玩家对象
          * @returns {string} 头像URL
          */
         getPlayerAvatarUrl(player) {
             if (!player) return this.CONSTANTS.DEFAULT_AVATAR;
 
-            // 按优先级检查头像字段
-            const avatarFields = ['avatar', 'avatar_url', 'avatarUrl'];
-
-            for (const field of avatarFields) {
-                if (player[field] && player[field].trim() !== '') {
-                    return player[field];
-                }
+            // 检查avatar字段
+            if (player.avatar && player.avatar.trim() !== '') {
+                return player.avatar;
             }
 
             return this.CONSTANTS.DEFAULT_AVATAR;
@@ -58,15 +54,6 @@ const RuntimeComponentsUtils = {
     // 数据处理工具
     data: {
         /**
-         * 统一用户ID处理
-         * @param {Object} player - 玩家对象
-         * @returns {string} 标准化的用户ID
-         */
-        normalizeUserId(player) {
-            return String(player.userid || player.user_id || '');
-        },
-
-        /**
          * 批量转换玩家对象为用户ID数组
          * @param {Array} players - 玩家数组
          * @returns {Array} 用户ID数组
@@ -75,8 +62,9 @@ const RuntimeComponentsUtils = {
             if (!Array.isArray(players)) return [];
 
             return players.map(player => {
-                const userid = this.normalizeUserId(player);
-                return parseInt(userid) || 0;
+                // 使用与 GameTypeManager 一致的字段名处理
+                const userid = player.userid || player.user_id;
+                return Number.parseInt(userid) || 0;
             });
         },
 
@@ -115,11 +103,11 @@ const RuntimeComponentsUtils = {
             const values = [];
             const keys = ['Birdie', 'Par', 'Par+1', 'Par+2', 'Par+3'];
 
-            keys.forEach(key => {
+            for (const key of keys) {
                 if (config[key] !== undefined) {
                     values.push(config[key]);
                 }
-            });
+            }
 
             return values.join('') || '8421';
         },

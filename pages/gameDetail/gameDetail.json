@@ -1,7 +1,7 @@
 {
 	"navigationBarTitleText": "比赛详情",
 	"usingComponents": {
-		"Gamble": "./gamble/gamble",
+		"RuntimConfigList": "./RuntimConfigList/RuntimConfigList",
 		"bbs": "./bbs/bbs",
 		"ScoreTable": "./ScoreTable/ScoreTable",
 		"OperationBar": "./OperationBar/OperationBar",

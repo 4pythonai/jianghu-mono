@@ -173,7 +173,7 @@ Component({
 
             // 跳转到配置编辑页面
             wx.navigateTo({
-                url: `/pages/gambleRuntimeConfig/gambleRuntimeConfig?data=${encodedData}`,
+                url: `/pages/gambleRuntimeConfig/editRuntime/editRuntime?data=${encodedData}`,
                 success: () => {
                     console.log('🎮 成功跳转到配置编辑页面');
                 },

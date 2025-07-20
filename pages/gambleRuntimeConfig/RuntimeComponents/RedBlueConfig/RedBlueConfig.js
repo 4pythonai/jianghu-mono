@@ -63,14 +63,22 @@ Component({
                 // 如果有初始顺序，将用户ID数组转换为玩家对象数组
                 bootstrap_order = initialBootstrapOrder.map(userId => {
                     // 从players中找到对应的玩家对象
-                    const player = players.find(p =>
-                        String(p.userid || p.user_id) === String(userId)
-                    );
-                    return player || {
-                        userid: userId,
-                        nickname: `玩家${userId}`,
-                        avatar: '/images/default-avatar.png'
-                    };
+                    const player = players.find(p => {
+                        // 使用与 GameTypeManager 一致的字段名处理
+                        const playerUserId = String(p.userid || p.user_id);
+                        return playerUserId === String(userId);
+                    });
+
+                    if (player) {
+                        return player;
+                    } else {
+                        // 如果找不到对应玩家，创建一个默认玩家对象
+                        return {
+                            userid: userId,
+                            nickname: `玩家${userId}`,
+                            avatar: '/images/default-avatar.png'
+                        };
+                    }
                 });
             } else {
                 // 否则使用玩家数组作为初始顺序
@@ -85,7 +93,15 @@ Component({
             RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '初始化配置', {
                 red_blue_config,
                 bootstrap_order: bootstrap_order.length,
-                playerNames: bootstrap_order.map(p => p.nickname || p.wx_nickname)
+                playerNames: bootstrap_order.map(p => p.nickname || p.wx_nickname || '未知玩家'),
+                players: players?.length || 0,
+                initialBootstrapOrder: initialBootstrapOrder?.length || 0,
+                playerDetails: bootstrap_order.map(p => ({
+                    userid: p.userid,
+                    user_id: p.user_id,
+                    nickname: p.nickname,
+                    wx_nickname: p.wx_nickname
+                }))
             });
         },
 
@@ -96,7 +112,13 @@ Component({
 
         // 转换玩家对象数组为用户ID数组
         convertToUserIds(playersArray) {
-            return RuntimeComponentsUtils.data.convertPlayersToUserIds(playersArray);
+            if (!Array.isArray(playersArray)) return [];
+
+            return playersArray.map(player => {
+                // 使用与 GameTypeManager 一致的字段名处理
+                const userid = player.userid || player.user_id;
+                return Number.parseInt(userid) || 0;
+            });
         },
 
         // 分组方式选择变更
@@ -107,7 +129,11 @@ Component({
                 red_blue_config
             });
 
-            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '分组方式变更', red_blue_config);
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '分组方式变更', {
+                red_blue_config,
+                currentBootstrapOrder: this.data.bootstrap_order,
+                playerNames: this.data.bootstrap_order.map(p => p.nickname || p.wx_nickname || '未知玩家')
+            });
 
             // 触发变更事件, 传递用户ID数组
             this.triggerEvent('change', {
