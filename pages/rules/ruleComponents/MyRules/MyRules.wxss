@@ -115,9 +115,7 @@
 
 /* 规则卡片样式 - 使用rule-card样式 */
 .rule-item {
-	width: 300rpx;
-	min-width: 300rpx;
-	max-width: 300rpx;
+	width: 700rpx;
 	min-height: 180rpx;
 	background: #4caf7a;
 	border-radius: 24rpx;

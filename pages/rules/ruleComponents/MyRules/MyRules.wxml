@@ -4,17 +4,14 @@
     <view wx:if="{{ loading }}" class="loading-container">
         <text class="loading-text">加载中...</text>
     </view>
-    
     <!-- 规则内容 -->
     <view wx:else class="rules-content">
         <!-- 统计信息 -->
-         
         <!-- 空状态 -->
         <view wx:if="{{ total.overall === 0 }}" class="empty-state">
             <text class="empty-text">暂无规则</text>
             <text class="empty-hint">点击"添加规则"创建您的第一条规则</text>
         </view>
-        
         <!-- 分组规则列表 -->
         <view wx:else class="rules-groups">
             <!-- 2人游戏规则 -->
@@ -23,40 +20,25 @@
                     <text class="group-title">2人游戏</text>
                 </view>
                 <view class="group-list">
-                    <view 
-                        wx:for="{{ myRules.twoPlayers }}" 
-                        wx:key="id" 
-                        class="rule-item"
-                        bindtap="onViewRule"
-                        bindlongpress="onLongPressRule"
-                        data-item="{{ item }}"
-                        data-group="twoPlayers"
-                        data-id="{{ item.userRuleId }}"
-                    >
+                    <view wx:for="{{ myRules.twoPlayers }}" wx:key="id" class="rule-item" bindtap="onViewRule" bindlongpress="onLongPressRule" data-item="{{ item }}" data-group="twoPlayers" data-id="{{ item.userRuleId }}">
                         <!-- 规则头部 -->
                         <view class="rule-header">
-                            <text class="rule-title">{{ item.gambleUserName || item.user_rulename || item.title }}</text>
+                            <text class="rule-title">
+                                {{ item.gambleUserName || item.user_rulename || item.title }}
+                            </text>
                             <view class="rule-type">
                                 <text>2人</text>
                             </view>
                         </view>
-                        
                         <!-- 规则描述 -->
                         <view wx:if="{{ item.description }}" class="rule-description">
                             <text>{{ item.description }}</text>
                         </view>
-                        
                         <!-- 规则底部 -->
                         <view class="rule-footer">
                             <text class="rule-time">{{ item.created_at || item.createTime }}</text>
                             <view class="rule-actions" catchtap="true">
-                                <text 
-                                    class="action-btn edit-btn" 
-                                    bindtap="onEditRule"
-                                    data-item="{{ item }}"
-                                    data-group="twoPlayers"
-                                    data-id="{{ item.userRuleId }}"
-                                >
+                                <text class="action-btn edit-btn" bindtap="onEditRule" data-item="{{ item }}" data-group="twoPlayers" data-id="{{ item.userRuleId }}">
                                     编辑
                                 </text>
                             </view>
@@ -64,47 +46,31 @@
                     </view>
                 </view>
             </view>
-            
             <!-- 3人游戏规则 -->
             <view wx:if="{{ total.threePlayers > 0 }}" class="rules-group">
                 <view class="group-header">
                     <text class="group-title">3人游戏</text>
                 </view>
                 <view class="group-list">
-                    <view 
-                        wx:for="{{ myRules.threePlayers }}" 
-                        wx:key="id" 
-                        class="rule-item"
-                        bindtap="onViewRule"
-                        bindlongpress="onLongPressRule"
-                        data-item="{{ item }}"
-                        data-group="threePlayers"
-                        data-id="{{ item.userRuleId }}"
-                    >
+                    <view wx:for="{{ myRules.threePlayers }}" wx:key="id" class="rule-item" bindtap="onViewRule" bindlongpress="onLongPressRule" data-item="{{ item }}" data-group="threePlayers" data-id="{{ item.userRuleId }}">
                         <!-- 规则头部 -->
                         <view class="rule-header">
-                            <text class="rule-title">{{ item.gambleUserName || item.user_rulename || item.title }}</text>
+                            <text class="rule-title">
+                                {{ item.gambleUserName || item.user_rulename || item.title }}
+                            </text>
                             <view class="rule-type">
                                 <text>3人</text>
                             </view>
                         </view>
-                        
                         <!-- 规则描述 -->
                         <view wx:if="{{ item.description }}" class="rule-description">
                             <text>{{ item.description }}</text>
                         </view>
-                        
                         <!-- 规则底部 -->
                         <view class="rule-footer">
                             <text class="rule-time">{{ item.created_at || item.createTime }}</text>
                             <view class="rule-actions" catchtap="true">
-                                <text 
-                                    class="action-btn edit-btn" 
-                                    bindtap="onEditRule"
-                                    data-item="{{ item }}"
-                                    data-group="threePlayers"
-                                    data-id="{{ item.userRuleId }}"
-                                >
+                                <text class="action-btn edit-btn" bindtap="onEditRule" data-item="{{ item }}" data-group="threePlayers" data-id="{{ item.userRuleId }}">
                                     编辑
                                 </text>
                             </view>
@@ -112,54 +78,15 @@
                     </view>
                 </view>
             </view>
-            
             <!-- 4人游戏规则 -->
             <view wx:if="{{ total.fourPlayers > 0 }}" class="rules-group">
                 <view class="group-header">
                     <text class="group-title">4人游戏</text>
                 </view>
                 <view class="group-list">
-                    <view 
-                        wx:for="{{ myRules.fourPlayers }}" 
-                        wx:key="id" 
-                        class="rule-item"
-                        bindtap="onViewRule"
-                        bindlongpress="onLongPressRule"
-                        data-item="{{ item }}"
-                        data-group="fourPlayers"
-                        data-id="{{ item.userRuleId }}"
-                    >
-                        <!-- 规则头部 -->
-                        <view class="rule-header">
-                            <text class="rule-title">{{ item.gambleUserName || item.user_rulename || item.title }}</text>
-                            <view class="rule-type">
-                                <text>4人</text>
-                            </view>
-                        </view>
-                        
-                        <!-- 规则描述 -->
-                        <view wx:if="{{ item.description }}" class="rule-description">
-                            <text>{{ item.description }}</text>
-                        </view>
-                        
-                        <!-- 规则底部 -->
-                        <view class="rule-footer">
-                            <text class="rule-time">{{ item.created_at || item.createTime }}</text>
-                            <view class="rule-actions" catchtap="true">
-                                <text 
-                                    class="action-btn edit-btn" 
-                                    bindtap="onEditRule"
-                                    data-item="{{ item }}"
-                                    data-group="fourPlayers"
-                                    data-id="{{ item.userRuleId }}"
-                                >
-                                    编辑
-                                </text>
-                            </view>
-                        </view>
-                    </view>
+                    <R4P8421 wx:for="{{ myRules.fourPlayers }}" wx:key="id" item="{{ item }}" bind:editRule="onEditRule" bind:viewRule="onViewRule" bind:longPressRule="onLongPressRule" />
                 </view>
             </view>
         </view>
     </view>
-</view> 
+</view>

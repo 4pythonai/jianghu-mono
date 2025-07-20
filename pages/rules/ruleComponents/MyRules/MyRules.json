@@ -1,4 +1,6 @@
 {
     "component": true,
-    "usingComponents": {}
+    "usingComponents": {
+        "R4P8421": "/components/RuleCard/4p/4p-8421/Rule4P8421"
+    }
 }

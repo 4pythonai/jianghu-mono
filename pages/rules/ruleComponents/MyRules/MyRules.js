@@ -114,7 +114,7 @@ Component({
 
         // 长按规则处理
         onLongPressRule(e) {
-            const { id, group, item } = e.currentTarget.dataset;
+            const { id, group, item } = e.detail || e.currentTarget.dataset;
 
             if (!id || !group) {
                 wx.showToast({
@@ -124,7 +124,10 @@ Component({
                 return;
             }
 
-            const rules = this.data.myRules[group] || [];
+            // 如果没有group参数，默认为fourPlayers
+            const targetGroup = group || 'fourPlayers';
+
+            const rules = this.data.myRules[targetGroup] || [];
             const rule = rules.find(r => r.userRuleId === id);
 
             if (!rule) {
@@ -140,7 +143,7 @@ Component({
                 content: `确定要删除规则"${rule.gambleUserName || rule.user_rulename || rule.title}"吗？`,
                 success: (res) => {
                     if (res.confirm) {
-                        this.deleteRule(id, group);
+                        this.deleteRule(id, targetGroup);
                     }
                 }
             });
@@ -184,21 +187,21 @@ Component({
 
         // 编辑规则
         onEditRule(e) {
-            const { item, group } = e.currentTarget.dataset;
+            const { item, group } = e.detail || e.currentTarget.dataset;
             console.log('📋 [MyRules] 编辑规则:', item, '分组:', group);
 
             // 通知父组件切换到编辑模式
-            this.triggerEvent('editRule', { rule: item, group });
+            this.triggerEvent('editRule', { rule: item, group: group || 'fourPlayers' });
         },
 
         // 查看规则详情 - 跳转到运行时配置页面
         onViewRule(e) {
-            const { item, group } = e.currentTarget.dataset;
+            const { item, group } = e.detail || e.currentTarget.dataset;
             const { gameStore } = require('../../../../stores/gameStore');
             const { holeRangeStore } = require('../../../../stores/holeRangeStore');
 
             // 根据用户规则确定ruleType
-            const gambleSysName = this.mapUserRuleToRuleType(item, group);
+            const gambleSysName = this.mapUserRuleToRuleType(item, group || 'fourPlayers');
 
             if (!gambleSysName) {
                 wx.showToast({
