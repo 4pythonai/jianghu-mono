@@ -192,9 +192,6 @@ const ConfigDataProcessor = {
         if (isEdit) {
             saveData.id = configId;
         }
-
-
-
         return saveData;
     }
 };

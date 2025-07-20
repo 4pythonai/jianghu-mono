@@ -43,25 +43,7 @@ Page({
             return;
         }
 
-        console.log('[AddRuntime] 页面初始化成功');
 
-        // 添加调试信息
-        console.log('[AddRuntime] 页面数据状态:', {
-            gambleSysName: this.data.gambleSysName,
-            playerCount: this.data.players?.length,
-            val8421Config: this.data.runtimeConfig.val8421_config,
-            val8421ConfigKeys: Object.keys(this.data.runtimeConfig.val8421_config || {})
-        });
-
-        // 延迟检查，确保数据已更新
-        setTimeout(() => {
-            console.log('[AddRuntime] 延迟检查页面数据:', {
-                gambleSysName: this.data.gambleSysName,
-                playerCount: this.data.players?.length,
-                val8421Config: this.data.runtimeConfig.val8421_config,
-                val8421ConfigKeys: Object.keys(this.data.runtimeConfig.val8421_config || {})
-            });
-        }, 100);
     },
 
     // 分组配置事件
@@ -81,7 +63,6 @@ Page({
     // 排名配置事件
     onRankingConfigChange(e) {
         const { ranking_tie_resolve_config } = e.detail;
-        console.log('[AddRuntime] 排名配置变更:', ranking_tie_resolve_config);
 
         this.setData({
             'runtimeConfig.ranking_tie_resolve_config': ranking_tie_resolve_config
@@ -91,8 +72,6 @@ Page({
     // 8421配置事件
     onVal8421ConfigChange(e) {
         const { val8421Config } = e.detail;
-        console.log('[AddRuntime] 8421配置变更:', val8421Config);
-
         this.setData({
             'runtimeConfig.val8421_config': val8421Config
         });
@@ -102,12 +81,6 @@ Page({
     onConfirmConfig() {
         const { runtimeConfig, gambleSysName, gameId, players } = this.data;
 
-        console.log('[AddRuntime] 确认配置:', {
-            runtimeConfig,
-            gambleSysName,
-            gameId,
-            playerCount: players.length
-        });
 
         // 验证配置
         if (!ConfigValidator.validateAndShow(runtimeConfig, players, gambleSysName)) {
