@@ -2,7 +2,7 @@
   <!-- 调试信息 -->
   <view class="debug-info">
     <text>调试信息:</text>
-    <text>ruleType: {{ruleType}}</text>
+    <text>gambleSysName: {{ruleType}}</text>
     <text>players: {{players.length}}人</text>
     <text>error: {{error}}</text>
     <text>loading: {{loading}}</text>

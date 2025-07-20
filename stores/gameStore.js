@@ -96,18 +96,13 @@ export const gameStore = observable({
             try {
                 scoreStore.initializeScores(players.length, holeList.length);
                 scoreStore.scores = scores;
-                console.log('✅ [Store] scoreStore数据更新完成');
-
-                // 验证数据是否正确传递
-                const scoreStatus = scoreStore.getDataStatus();
-                console.log('📊 [Store] scoreStore状态验证:', scoreStatus);
+                scoreStore.getDataStatus();
 
             } catch (error) {
                 console.error('❌ [Store] scoreStore更新失败:', error);
             }
         }, 0);
 
-        console.log('✅ [Store] 数据处理完成');
     }),
 
 
@@ -119,7 +114,6 @@ export const gameStore = observable({
     fetchGameDetail: action(async function (gameId, groupId = null) {
         if (this.loading) return; // 防止重复加载
 
-        console.log('📦 [Store] 开始获取比赛详情:', { gameId, groupId });
         this.loading = true;
         this.error = null;
         this.gameid = gameId;
