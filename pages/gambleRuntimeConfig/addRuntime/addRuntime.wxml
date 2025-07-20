@@ -28,7 +28,7 @@
     
     <!-- 洞范围选择 -->
     <view class="section">
-      <view class="section-label">选择洞范围</view>
+      <view class="section-label">选择球洞范围</view>
       <HoleRangeSelector />
     </view>
     
