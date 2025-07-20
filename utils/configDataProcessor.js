@@ -40,12 +40,7 @@ const ConfigDataProcessor = {
                 configId: decodedData.id || ''  // 从配置对象中获取 id
             };
 
-            console.log('[ConfigDataProcessor] 处理完成:', processedData);
-            console.log('[ConfigDataProcessor] configId 处理结果:', {
-                originalConfigId: decodedData.configId,
-                processedConfigId: processedData.configId,
-                isEditMode: processedData.isEditMode
-            });
+
             return processedData;
 
         } catch (error) {
@@ -61,29 +56,6 @@ const ConfigDataProcessor = {
     getBaseGameData() {
         const players = gameStore.players || [];
         const gameData = gameStore.gameData || null;
-
-        console.log('[ConfigDataProcessor] 获取基础游戏数据:', {
-            playerCount: players.length,
-            gameData: !!gameData,
-            gameId: gameStore.gameid,
-            groupId: gameStore.groupId
-        });
-
-        if (players.length > 0) {
-            console.log('[ConfigDataProcessor] 玩家数据详情:');
-            players.forEach((player, index) => {
-                console.log(`  玩家${index + 1}:`, {
-                    userid: player.userid,
-                    user_id: player.user_id,
-                    nickname: player.nickname,
-                    wx_nickname: player.wx_nickname,
-                    'userid || user_id': player.userid || player.user_id
-                });
-            });
-        } else {
-            console.warn('[ConfigDataProcessor] gameStore.players 为空');
-        }
-
         return {
             players,
             gameData,
@@ -186,25 +158,6 @@ const ConfigDataProcessor = {
             errors.push('请选择分组方式');
         }
 
-        // 验证8421配置
-        if (GameTypeManager.needsPlayerConfig(config.gambleSysName)) {
-            const val8421Config = config.val8421_config;
-
-            if (!val8421Config || Object.keys(val8421Config).length === 0) {
-                errors.push('请配置球员指标');
-            } else {
-                // 验证所有球员都有配置 - 使用与 normalizePlayer 一致的字段名处理
-                const playerIds = players.map(p => String(p.userid || p.user_id));
-                const configPlayerIds = Object.keys(val8421Config);
-                const allPlayersConfigured = playerIds.every(id =>
-                    configPlayerIds.includes(id)
-                );
-
-                if (!allPlayersConfigured) {
-                    errors.push('部分球员未配置指标');
-                }
-            }
-        }
 
         return {
             valid: errors.length === 0,
