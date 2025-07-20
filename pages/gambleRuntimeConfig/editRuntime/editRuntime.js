@@ -92,6 +92,36 @@ Page({
             });
         }
 
+        // 根据 holePlayListStr 重新设置 gameStore 中的 holePlayList
+        if (config.holePlayListStr) {
+            try {
+                // 解析 holePlayListStr，例如 "3,4,5,6,7,8,9,1,2"
+                const holeIndexes = config.holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
+                console.log('[EditRuntime] 解析 holePlayListStr:', {
+                    holePlayListStr: config.holePlayListStr,
+                    holeIndexes
+                });
+
+                // 根据 hindex 重新排序 holeList
+                const { holeList } = gameStore.getState();
+                if (holeList && holeList.length > 0) {
+                    const newHolePlayList = holeIndexes.map(hindex => {
+                        const hole = holeList.find(h => h.hindex === hindex);
+                        return hole || { hindex, holename: `B${hindex}` };
+                    }).filter(hole => hole); // 过滤掉未找到的洞
+
+                    // 更新 gameStore 中的 holePlayList
+                    gameStore.holePlayList = newHolePlayList;
+                    console.log('[EditRuntime] 重新设置 holePlayList:', {
+                        originalHoleList: holeList.map(h => ({ hindex: h.hindex, holename: h.holename })),
+                        newHolePlayList: newHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
+                    });
+                }
+            } catch (error) {
+                console.error('[EditRuntime] 解析 holePlayListStr 失败:', error);
+            }
+        }
+
         console.log('[EditRuntime] 页面初始化成功');
     },
 

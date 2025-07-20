@@ -31,13 +31,10 @@ Component({
     lifetimes: {
         attached() {
             const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = gameStore.getState();
-            console.log(' ⭕️ RealHolePlayListSetter attached - gameStore数据:', {
-                holeListLength: holeList?.length,
-                holePlayListLength: holePlayList?.length,
-                rangeHolePlayListLength: rangeHolePlayList?.length,
-                startHoleindex,
-                endHoleindex
-            });
+            console.log(' ⭕️ RealHolePlayListSetter attached - gameStore数据:',
+                {
+                    holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex,
+                });
 
             // 根据传入的startHoleindex和endHoleindex设置初始选中范围
             let selectedHindexArray = [];
