@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../stores/gameStore';
+import { holeRangeStore } from '../../stores/holeRangeStore';
 import { scoreStore } from '../../stores/scoreStore';
 
 const app = getApp()
@@ -27,8 +28,13 @@ Component({
         attached() {
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
-                fields: ['gameid', 'groupId', 'gameData', 'players', 'holeList', 'isSaving'],
+                fields: ['gameid', 'groupId', 'gameData', 'players', 'isSaving'],
                 actions: ['setSaving'],
+            });
+            this.holeRangeStoreBindings = createStoreBindings(this, {
+                store: holeRangeStore,
+                fields: ['holeList'],
+                actions: [],
             });
             this.scoreStoreBindings = createStoreBindings(this, {
                 store: scoreStore,
@@ -38,6 +44,7 @@ Component({
         },
         detached() {
             this.storeBindings.destroyStoreBindings();
+            this.holeRangeStoreBindings.destroyStoreBindings();
             this.scoreStoreBindings.destroyStoreBindings();
         }
     },

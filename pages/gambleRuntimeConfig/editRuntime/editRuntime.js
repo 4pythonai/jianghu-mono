@@ -7,6 +7,7 @@ const ConfigValidator = require('../shared/configValidator');
 const GameTypeManager = require('../../../utils/gameTypeManager');
 const { runtimeStore } = require('../../../stores/runtimeStore');
 const { gameStore } = require('../../../stores/gameStore');
+const { holeRangeStore } = require('../../../stores/holeRangeStore');
 const { toJS } = require('mobx-miniprogram');
 
 Page({
@@ -83,65 +84,27 @@ Page({
             'runtimeConfig.val8421_config': config.val8421_config_parsed || config.val8421_config || {}
         });
 
-        // 设置 gameStore 中的洞范围配置
+        // 设置 holeRangeStore 中的洞范围配置
         if (config.startHoleindex !== undefined && config.endHoleindex !== undefined) {
-            gameStore.startHoleindex = Number.parseInt(config.startHoleindex);
-            gameStore.endHoleindex = Number.parseInt(config.endHoleindex);
+            holeRangeStore.setHoleRange(
+                Number.parseInt(config.startHoleindex),
+                Number.parseInt(config.endHoleindex)
+            );
             console.log('[EditRuntime] 设置洞范围配置:', {
-                startHoleindex: gameStore.startHoleindex,
-                endHoleindex: gameStore.endHoleindex
+                startHoleindex: holeRangeStore.startHoleindex,
+                endHoleindex: holeRangeStore.endHoleindex
             });
         }
 
-        // 根据 holePlayListStr 重新设置 gameStore 中的 holePlayList
+        // 根据 holePlayListStr 重新设置 holeRangeStore 中的洞顺序
         if (config.holePlayListStr) {
             try {
-                // 解析 holePlayListStr，例如 "3,4,5,6,7,8,9,1,2"
-                const holeIndexes = config.holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
                 console.log('[EditRuntime] 解析 holePlayListStr:', {
-                    holePlayListStr: config.holePlayListStr,
-                    holeIndexes
+                    holePlayListStr: config.holePlayListStr
                 });
 
-                // 根据 hindex 重新排序 holeList
-                const { holeList } = gameStore.getState();
-                if (holeList && holeList.length > 0) {
-                    // 使用 toJS 将 observable 对象转换为普通对象
-                    const plainHoleList = toJS(holeList);
-                    const newHolePlayList = holeIndexes.map(hindex => {
-                        const hole = plainHoleList.find(h => h.hindex === hindex);
-                        return hole || { hindex, holename: `B${hindex}` };
-                    }).filter(hole => hole); // 过滤掉未找到的洞
-                    gameStore.holePlayList = newHolePlayList;
-
-                    // 根据 startHoleindex 和 endHoleindex 设置 rangeHolePlayList
-                    if (config.startHoleindex !== undefined && config.endHoleindex !== undefined) {
-                        const startIndex = Number.parseInt(config.startHoleindex);
-                        const endIndex = Number.parseInt(config.endHoleindex);
-
-                        // 确保 startIndex <= endIndex
-                        const minIndex = Math.min(startIndex, endIndex);
-                        const maxIndex = Math.max(startIndex, endIndex);
-
-                        // 从 newHolePlayList 中找到对应范围的洞
-                        const rangeHolePlayList = newHolePlayList.filter(hole => {
-                            const hindex = hole.hindex;
-                            return hindex >= minIndex && hindex <= maxIndex;
-                        });
-
-                        // 更新 gameStore 中的 rangeHolePlayList
-                        gameStore.rangeHolePlayList = rangeHolePlayList;
-
-                        console.log('🈴🈴🈴 设置 rangeHolePlayList:', {
-                            startHoleindex: startIndex,
-                            endHoleindex: endIndex,
-                            rangeHolePlayList: rangeHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
-                        });
-                    }
-                }
-
-
-
+                // 使用 holeRangeStore 设置洞顺序
+                holeRangeStore.setHolePlayListFromString(config.holePlayListStr);
 
             } catch (error) {
                 console.error('[EditRuntime] 解析 holePlayListStr 失败:', error);

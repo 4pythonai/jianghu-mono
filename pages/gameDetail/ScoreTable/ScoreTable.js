@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../../stores/gameStore'
+import { holeRangeStore } from '../../../stores/holeRangeStore'
 import { scoreStore } from '../../../stores/scoreStore'
 
 Component({
@@ -23,6 +24,13 @@ Component({
                     store: gameStore,
                     fields: {
                         players: 'players',
+                    },
+                    actions: [],
+                });
+
+                this.holeRangeStoreBindings = createStoreBindings(this, {
+                    store: holeRangeStore,
+                    fields: {
                         holeList: 'holeList',
                     },
                     actions: [],
@@ -49,6 +57,9 @@ Component({
                 // ** 关键:在组件销毁时清理绑定 **
                 if (this.storeBindings) {
                     this.storeBindings.destroyStoreBindings();
+                }
+                if (this.holeRangeStoreBindings) {
+                    this.holeRangeStoreBindings.destroyStoreBindings();
                 }
                 if (this.scoreStoreBindings) {
                     this.scoreStoreBindings.destroyStoreBindings();

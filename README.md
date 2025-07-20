@@ -1,8 +1,32 @@
 # 高尔夫赌博游戏小程序
 
-## 运行时配置数据结构
+## 项目架构
 
-### 简化后的数据格式
+### 状态管理
+
+项目使用 MobX 进行状态管理，主要包含以下 store：
+
+#### gameStore
+管理游戏核心数据：
+- `players`: 玩家列表
+- `gameid`: 游戏ID
+- `groupId`: 分组ID
+- `gameData`: 游戏数据
+
+#### holeRangeStore
+专门管理球洞相关数据：
+- `holeList`: 所有球洞列表
+- `holePlayList`: 实际打球顺序的球洞列表
+- `rangeHolePlayList`: 当前选择范围的球洞列表
+- `startHoleindex`: 起始洞号
+- `endHoleindex`: 结束洞号
+
+#### scoreStore
+管理分数相关数据：
+- `scores`: 玩家分数矩阵
+- `playerTotalScores`: 玩家总分
+
+### 运行时配置数据结构
 
 运行时配置的数据结构已经简化, 去掉了不必要的嵌套层级:
 
@@ -12,27 +36,36 @@
   "enable": true,
   "red_blue_config": "4_固拉",
   "bootstrap_order": [837590, 14, 59, 122],
-  "ranking_tie_resolve_config": "indicator.win_loss.reverse_win"
+  "ranking_tie_resolve_config": "indicator.win_loss.reverse_win",
+  "holePlayListStr": "3,4,5,6,7,8,9,1,2",
+  "startHoleindex": 3,
+  "endHoleindex": 9
 }
 ```
 
 ### 数据字段说明
 
-- `startHoleindex`: 起始洞号
-- `endHoleindex`: 结束洞号  
 - `enable`: 是否启用分组功能
 - `red_blue_config`: 分组方式("4_固拉"、"4_乱拉"、"4_高手不见面")
 - `bootstrap_order`: 玩家出发顺序(用户ID数组)
 - `ranking_tie_resolve_config`: 排名平局解决方案
+- `holePlayListStr`: 球洞打球顺序字符串
+- `startHoleindex`: 起始洞号
+- `endHoleindex`: 结束洞号
 
 ### 主要改进
 
- 
+1. **统一状态管理**: 创建了专门的 `holeRangeStore` 来管理所有洞相关数据
+2. **简化数据流**: 组件直接从 `holeRangeStore` 获取数据，减少数据传递层级
+3. **提高性能**: 使用 MobX 的响应式更新，避免不必要的重新渲染
+4. **更好的维护性**: 洞相关逻辑集中在 `holeRangeStore` 中，便于维护和扩展
+
 ### 组件内部处理
 
 - RedBlueConfig 组件内部仍使用完整的玩家对象数组进行显示
 - 向父组件传递数据时自动转换为用户ID数组
 - 确保UI显示完整性的同时满足数据格式要求
+- 洞相关组件统一使用 `holeRangeStore` 管理状态
 
 # 高尔夫小程序项目
 
@@ -104,4 +137,32 @@
 - 智能页面导航和数据传递机制
 
 ## 最近更新
+
+### 2024-12-19: 洞数据管理重构
+- ✅ 创建了专门的 `holeRangeStore` 来统一管理洞相关数据
+- ✅ 重构了所有使用洞数据的组件，统一使用 `holeRangeStore`
+- ✅ 简化了数据流，提高了性能和可维护性
+- ✅ 更新了相关文档和测试指南
+
+### 主要变更
+1. **新增文件**:
+   - `stores/holeRangeStore.js`: 洞数据管理 store
+   - `stores/holeRangeStore.md`: 测试文档
+
+2. **重构组件**:
+   - `RealHolePlayListSetter`: 使用 `holeRangeStore` 管理洞数据
+   - `HoleRangeSelector`: 使用 `holeRangeStore` 管理洞范围
+   - `ScoreTable`: 从 `holeRangeStore` 获取洞数据
+   - `ScoreInputPanel`: 从 `holeRangeStore` 获取洞数据
+
+3. **重构页面**:
+   - `editRuntime.js`: 使用 `holeRangeStore` 处理洞配置
+   - `baseConfig.js`: 使用 `holeRangeStore` 管理洞数据
+   - `configDataProcessor.js`: 从 `holeRangeStore` 获取洞数据
+   - `MyRules.js`: 从 `holeRangeStore` 获取洞数据
+   - `AddRule.js`: 从 `holeRangeStore` 获取洞数据
+
+4. **优化 gameStore**:
+   - 移除了洞相关属性，委托给 `holeRangeStore` 管理
+   - 添加了 getter 方法来代理洞数据访问
 

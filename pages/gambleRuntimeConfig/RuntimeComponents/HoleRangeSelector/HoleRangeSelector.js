@@ -1,15 +1,16 @@
 // HoleRangeSelector 组件 - 起点洞与终点洞选择器
 
 import { gameStore } from '../../../../stores/gameStore';
+import { holeRangeStore } from '../../../../stores/holeRangeStore';
 import { autorun } from 'mobx-miniprogram';
 
 Component({
     lifetimes: {
         attached() {
-            const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = gameStore.getState();
+            const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = holeRangeStore.getState();
             this.setData({ holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex });
             this.disposer = autorun(() => {
-                const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = gameStore.getState();
+                const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = holeRangeStore.getState();
                 this.setData({ holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex });
             });
         },
@@ -27,10 +28,10 @@ Component({
     },
     methods: {
         onShowModal(e) {
-            // 从gameStore获取当前的起始洞和结束洞索引
-            const { startHoleindex, endHoleindex } = gameStore.getState();
+            // 从holeRangeStore获取当前的起始洞和结束洞索引
+            const { startHoleindex, endHoleindex } = holeRangeStore.getState();
 
-            console.log(' ⭕️ HoleRangeSelector onShowModal - 从gameStore获取洞范围:', {
+            console.log(' ⭕️ HoleRangeSelector onShowModal - 从holeRangeStore获取洞范围:', {
                 startHoleindex,
                 endHoleindex
             });

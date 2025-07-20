@@ -3,6 +3,7 @@
  * 统一处理传入和传出的配置数据
  */
 const { gameStore } = require('../stores/gameStore');
+const { holeRangeStore } = require('../stores/holeRangeStore');
 const GameTypeManager = require('./gameTypeManager');
 
 const ConfigDataProcessor = {
@@ -114,15 +115,12 @@ const ConfigDataProcessor = {
      * @returns {Object} 洞范围数据
      */
     processHoleData(decodedData) {
-        let holePlayList = gameStore.holePlayList || [];
-
-        if (decodedData.holePlayList) {
-            holePlayList = decodedData.holePlayList;
-        }
+        // 从 holeRangeStore 获取洞数据
+        const { holePlayList, rangeHolePlayList } = holeRangeStore.getState();
 
         return {
             holePlayList,
-            rangeHolePlayList: gameStore.rangeHolePlayList || []
+            rangeHolePlayList
         };
     },
 
@@ -168,16 +166,13 @@ const ConfigDataProcessor = {
     /**
      * 准备保存的配置数据
      * @param {Object} runtimeConfig 运行时配置
-     * @param {string} gameId 游戏ID
+     * @param {boolean} isEdit 是否为编辑模式
      * @param {string} configId 配置ID（编辑模式）
      * @returns {Object} 准备保存的数据
      */
     prepareSaveData(runtimeConfig, isEdit, configId = '') {
-        const holeList = gameStore.holeList;
-        const holePlayList = gameStore.holePlayList;
-        const rangeHolePlayList = gameStore.rangeHolePlayList;
-        const startHoleindex = gameStore.startHoleindex;
-        const endHoleindex = gameStore.endHoleindex;
+        // 从 holeRangeStore 获取洞数据
+        const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = holeRangeStore.getState();
 
         const saveData = {
             ...runtimeConfig,

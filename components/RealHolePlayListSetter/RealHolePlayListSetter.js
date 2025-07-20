@@ -1,5 +1,6 @@
 // RealHolePlayListSetter
 import { gameStore } from '../../stores/gameStore';
+import { holeRangeStore } from '../../stores/holeRangeStore';
 import { toJS } from 'mobx-miniprogram';
 
 Component({
@@ -31,19 +32,20 @@ Component({
 
     lifetimes: {
         attached() {
-            const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = gameStore.getState();
+            // 从 holeRangeStore 获取洞数据
+            const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = holeRangeStore.getState();
 
             // 使用 toJS 转换 observable 对象为普通对象
             const plainHoleList = toJS(holeList);
             const plainHolePlayList = toJS(holePlayList);
             const plainRangeHolePlayList = toJS(rangeHolePlayList);
 
-            console.log(' ⭕️ RealHolePlayListSetter attached - gameStore数据 (observable):',
+            console.log(' ⭕️ RealHolePlayListSetter attached - holeRangeStore数据 (observable):',
                 {
                     holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex,
                 });
 
-            console.log(' ⭕️ RealHolePlayListSetter attached - gameStore数据 (plain):',
+            console.log(' ⭕️ RealHolePlayListSetter attached - holeRangeStore数据 (plain):',
                 {
                     holeList: plainHoleList,
                     holePlayList: plainHolePlayList,
@@ -198,24 +200,14 @@ Component({
         },
 
         onConfirmHoleOrder() {
-            // 只有点击确定时，才把结果传给父组件和gameStore
-            gameStore.holePlayList = this.data.holePlayList;
-
+            // 只有点击确定时，才把结果传给父组件和holeRangeStore
             const tmpArray = this.data.holePlayList.filter(hole =>
                 this.data.selectedHindexArray.includes(hole.hindex)
             );
             console.log(' ⭕️⭕️⭕️⭕️⭕️  onConfirmHoleOrder - tmpArray: ', tmpArray);
-            gameStore.rangeHolePlayList = tmpArray;
 
-            // 更新gameStore中的startHoleindex和endHoleindex
-            if (tmpArray.length > 0) {
-                gameStore.startHoleindex = tmpArray[0].hindex;
-                gameStore.endHoleindex = tmpArray[tmpArray.length - 1].hindex;
-                console.log(' ⭕️⭕️⭕️⭕️⭕️  onConfirmHoleOrder - 更新洞范围索引:', {
-                    startHoleindex: gameStore.startHoleindex,
-                    endHoleindex: gameStore.endHoleindex
-                });
-            }
+            // 使用 holeRangeStore 更新洞范围
+            holeRangeStore.setHoleRangeFromSelected(tmpArray);
 
             this.triggerEvent('cancel');
         },

@@ -195,6 +195,7 @@ Component({
         onViewRule(e) {
             const { item, group } = e.currentTarget.dataset;
             const { gameStore } = require('../../../../stores/gameStore');
+            const { holeRangeStore } = require('../../../../stores/holeRangeStore');
 
             // 根据用户规则确定ruleType
             const gambleSysName = this.mapUserRuleToRuleType(item, group);
@@ -207,15 +208,18 @@ Component({
                 return;
             }
 
+            // 从 holeRangeStore 获取洞数据
+            const { holeList, holePlayList } = holeRangeStore.getState();
+
             // 准备传递给运行时配置页面的数据(简化版, 减少URL长度)
             const runtimeConfigData = {
                 gambleSysName: gambleSysName,
                 gameId: gameStore.gameid || null,
                 playerCount: gameStore.players?.length,
-                holeCount: gameStore.holeList?.length,
+                holeCount: holeList?.length,
                 userRuleId: item.userRuleId || null,
-                holePlayList: gameStore.holePlayList || [],
-                holeList: gameStore.holeList || [],
+                holePlayList: holePlayList || [],
+                holeList: holeList || [],
                 userRuleName: item.gambleUserName || item.user_rulename || item.title,
                 fromUserRule: true, // 标识这是从用户规则进入的
                 userRule: item // 传递完整的用户规则对象

@@ -12,6 +12,7 @@ import {
     getScoreClass
 } from '../utils/gameUtils'
 import { scoreStore } from './scoreStore'
+import { holeRangeStore } from './holeRangeStore'
 
 
 export const gameStore = observable({
@@ -20,13 +21,6 @@ export const gameStore = observable({
     groupId: null,
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
-
-    holeList: [],           // 洞信息列表
-    holePlayList: [],       // 洞顺序列表
-    rangeHolePlayList: [],  // 参与游戏的洞顺序列表
-    startHoleindex: null,   // 参与游戏的第一个洞
-    endHoleindex: null,     // 参与游戏的最后一个洞
-
 
     loading: false,      // 加载状态
     error: null,         // 错误信息
@@ -84,10 +78,10 @@ export const gameStore = observable({
         // 先更新基础数据
         this.gameData = gameInfo;
         this.players = players;  // 注意:这里是过滤后的玩家
-        this.holeList = holeList;
-        this.holePlayList = JSON.parse(JSON.stringify(holeList));
-        this.rangeHolePlayList = JSON.parse(JSON.stringify(holeList));
         this.groupId = groupId;  // 存储当前分组ID
+
+        // 使用 holeRangeStore 管理洞数据
+        holeRangeStore.initializeHoles(holeList);
 
         console.log('🔄 [Store] 基础数据更新完成，开始初始化scoreStore...');
 
@@ -165,9 +159,6 @@ export const gameStore = observable({
 
     getState() {
         return {
-            holeList: this.holeList,
-            holePlayList: this.holePlayList,
-            rangeHolePlayList: this.rangeHolePlayList,
             players: this.players,
             scores: this.scores,
             gameData: this.gameData,
@@ -175,18 +166,19 @@ export const gameStore = observable({
             gameid: this.gameid,
             loading: this.loading,
             error: this.error,
-            startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex,
+            // 从 holeRangeStore 获取洞相关数据
+            ...holeRangeStore.getState()
         };
     },
 
 
+    // 洞相关的 getter 方法，从 holeRangeStore 获取
     get getHoleList() {
-        return this.holeList;
+        return holeRangeStore.holeList;
     },
 
     get getHolePlayList() {
-        return this.holePlayList;
+        return holeRangeStore.holePlayList;
     },
 
 }); 

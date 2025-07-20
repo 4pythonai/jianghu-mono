@@ -3,6 +3,7 @@
  * 包含新增和编辑模式的公共方法
  */
 const { gameStore } = require('../../../stores/gameStore');
+const { holeRangeStore } = require('../../../stores/holeRangeStore');
 const GameTypeManager = require('../../../utils/gameTypeManager');
 const ConfigDataProcessor = require('../../../utils/configDataProcessor');
 
@@ -26,8 +27,6 @@ const BaseConfig = {
                 gameId: processedData.gameId,
                 configId: processedData.configId || '',
                 players: processedData.players,
-                holePlayList: processedData.holePlayList,
-                rangeHolePlayList: processedData.rangeHolePlayList,
                 gameData: processedData.gameData,
                 userRule: processedData.userRule,
                 'runtimeConfig.gameid': processedData.gameId,
@@ -232,36 +231,9 @@ const BaseConfig = {
         });
 
         // 加载洞范围配置
-        if (editConfig.holePlayList) {
-            let holePlayList = editConfig.holePlayList;
-
-            if (typeof holePlayList === 'string') {
-                try {
-                    if (holePlayList.includes(',')) {
-                        const holeNumbers = holePlayList.split(',').map(num => Number.parseInt(num.trim()));
-                        holePlayList = holeNumbers.map(holeNumber => {
-                            const holeObj = gameStore.holeList.find(hole => hole.holeid === holeNumber);
-                            return holeObj || {
-                                holeid: holeNumber,
-                                holename: `B${holeNumber}`,
-                                hindex: holeNumber
-                            };
-                        });
-                    } else {
-                        holePlayList = JSON.parse(holePlayList);
-                    }
-                } catch (error) {
-                    console.error('[BaseConfig] 解析holePlayList失败:', error);
-                    holePlayList = gameStore.holePlayList;
-                }
-            }
-
-            if (Array.isArray(holePlayList) && holePlayList.length > 0) {
-                gameStore.holePlayList = holePlayList;
-                pageContext.setData({
-                    holePlayList: holePlayList
-                });
-            }
+        if (editConfig.holePlayListStr) {
+            // 使用 holeRangeStore 设置洞顺序
+            holeRangeStore.setHolePlayListFromString(editConfig.holePlayListStr);
         }
 
         // 加载起始洞和结束洞索引配置
@@ -269,8 +241,8 @@ const BaseConfig = {
             const startHoleindex = Number.parseInt(editConfig.startHoleindex);
             const endHoleindex = Number.parseInt(editConfig.endHoleindex);
 
-            gameStore.startHoleindex = startHoleindex;
-            gameStore.endHoleindex = endHoleindex;
+            // 使用 holeRangeStore 设置洞范围
+            holeRangeStore.setHoleRange(startHoleindex, endHoleindex);
         }
 
         console.log('[BaseConfig] 编辑配置加载完成');
@@ -281,22 +253,10 @@ const BaseConfig = {
      * @param {Object} pageContext 页面上下文
      */
     initializeHoleRangeConfig(pageContext) {
-        const { holePlayList } = gameStore.getState();
+        // 使用 holeRangeStore 重置洞范围到默认状态
+        holeRangeStore.resetHoleRange();
 
-        if (holePlayList && holePlayList.length > 0) {
-            const startHoleindex = holePlayList[0].hindex;
-            const endHoleindex = holePlayList[holePlayList.length - 1].hindex;
-
-            gameStore.startHoleindex = startHoleindex;
-            gameStore.endHoleindex = endHoleindex;
-            gameStore.rangeHolePlayList = [...holePlayList];
-
-            console.log('[BaseConfig] 洞范围配置初始化:', {
-                startHoleindex,
-                endHoleindex,
-                holeCount: holePlayList.length
-            });
-        }
+        console.log('[BaseConfig] 洞范围配置初始化完成');
     },
 
 

@@ -205,18 +205,22 @@ Component({
         onRunTimeConfig(e) {
             const { title } = e.currentTarget.dataset;
 
-            // 导入gameStore来获取游戏数据
+            // 导入store来获取游戏数据
             const { gameStore } = require('../../../../stores/gameStore');
+            const { holeRangeStore } = require('../../../../stores/holeRangeStore');
             console.log('[AddRule] 游戏数据:', gameStore);
+
+            // 从 holeRangeStore 获取洞数据
+            const { holeList } = holeRangeStore.getState();
 
             // 准备传递给运行时配置页面的数据(简化版)
             const runtimeConfigData = {
                 gambleSysName: title,
                 gameId: gameStore.gameid || null,
                 playerCount: gameStore.players?.length || 0,
-                holeCount: gameStore.holeList?.length || 18,
+                holeCount: holeList?.length || 18,
                 fromUserRule: false, // 标识这是从系统规则进入的,
-                holeList: gameStore.holeList || []
+                holeList: holeList || []
             };
 
             // 将完整数据暂存到全局(为了保持一致性)
