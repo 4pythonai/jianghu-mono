@@ -165,18 +165,8 @@ Component({
                 return;
             }
 
-            // 直接使用 processOneGamble 处理完的配置，添加必要的跳转标识
-            const jumpData = {
-                ...config,                    // 使用处理完的配置数据
-                configId: config.id,          // 明确设置 configId
-                gameId: gameId,               // 添加游戏ID
-                fromUserRule: false,          // 不是从用户规则进入
-                editConfig: config            // 传递要编辑的配置
-            };
-
-            // 将数据编码为JSON字符串
-            const encodedData = encodeURIComponent(JSON.stringify(jumpData));
-
+            // 直接使用 processOneGamble 处理完的配置数据
+            const encodedData = encodeURIComponent(JSON.stringify(config));
 
             // 跳转到配置编辑页面
             wx.navigateTo({

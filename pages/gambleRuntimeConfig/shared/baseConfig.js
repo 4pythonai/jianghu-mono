@@ -297,7 +297,7 @@ const BaseConfig = {
      * @returns {Promise} 保存结果
      */
     async saveConfig(runtimeConfig, gameId, configId, pageContext, isEdit = false) {
-        const saveData = ConfigDataProcessor.prepareSaveData(runtimeConfig, gameId, configId);
+        const saveData = ConfigDataProcessor.prepareSaveData(runtimeConfig, isEdit, configId);
 
         pageContext.setData({ loading: true });
 
