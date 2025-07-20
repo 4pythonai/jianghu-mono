@@ -132,8 +132,6 @@ const BaseConfig = {
 
         // 初始化洞范围配置
         BaseConfig.initializeHoleRangeConfig(pageContext);
-
-        console.log('[BaseConfig] 新配置初始化完成');
     },
 
     /**
@@ -142,8 +140,6 @@ const BaseConfig = {
      * @param {Object} pageContext 页面上下文
      */
     loadEditConfig(editConfig, pageContext) {
-        console.log('[BaseConfig] 加载编辑配置:', editConfig);
-
         // 加载分组配置
         if (editConfig.red_blue_config) {
             pageContext.setData({
@@ -159,7 +155,6 @@ const BaseConfig = {
                 try {
                     bootstrapOrder = JSON.parse(bootstrapOrder);
                 } catch (error) {
-                    console.error('[BaseConfig] 解析bootstrap_order失败:', error);
                     bootstrapOrder = [];
                 }
             }
@@ -214,8 +209,6 @@ const BaseConfig = {
                 // 使用 GameTypeManager 生成默认配置
                 const defaultConfig = GameTypeManager.getDefaultConfig(editConfig.gambleSysName, players);
                 val8421Config = defaultConfig.val8421_config;
-
-                console.log('[BaseConfig] 初始化默认8421配置:', val8421Config);
             }
         }
 
@@ -310,13 +303,7 @@ const BaseConfig = {
         try {
             const isEditMode = configId && configId !== '';
             const apiMethod = isEditMode ? 'updateRuntimeConfig' : 'addRuntimeConfig';
-
-            console.log(`[BaseConfig] ${isEditMode ? '更新' : '新增'}配置:`, saveData);
-
             const res = await app.api.gamble[apiMethod](saveData);
-
-            console.log(`[BaseConfig] ${isEditMode ? '更新' : '新增'}配置成功:`, res);
-
             if (res.code === 200) {
                 wx.showToast({
                     title: isEditMode ? '配置更新成功' : '配置保存成功',
@@ -330,16 +317,15 @@ const BaseConfig = {
                 }, 1500);
 
                 return { success: true };
-            } else {
-                wx.showToast({
-                    title: res.msg || (isEditMode ? '更新失败' : '保存失败'),
-                    icon: 'none'
-                });
-                return { success: false, error: res.msg };
             }
+            wx.showToast({
+                title: res.msg || (isEditMode ? '更新失败' : '保存失败'),
+                icon: 'none'
+            });
+            return { success: false, error: res.msg };
 
         } catch (err) {
-            console.error(`[BaseConfig] 保存配置失败:`, err);
+            console.error('[BaseConfig] 保存配置失败:', err);
             wx.showToast({
                 title: '网络错误, 请重试',
                 icon: 'none'
@@ -355,8 +341,6 @@ const BaseConfig = {
      * @param {Object} pageContext 页面上下文
      */
     onReSelectRule(pageContext) {
-        console.log('[BaseConfig] 重新选择规则');
-
         wx.showModal({
             title: '重新选择规则',
             content: '确定要重新选择赌博规则吗？当前配置将丢失。',
