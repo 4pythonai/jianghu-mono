@@ -5,6 +5,8 @@
 const BaseConfig = require('../shared/baseConfig');
 const ConfigValidator = require('../shared/configValidator');
 const GameTypeManager = require('../../../utils/gameTypeManager');
+const { runtimeStore } = require('../../../stores/runtimeStore');
+const { gameStore } = require('../../../stores/gameStore');
 
 Page({
     data: {
@@ -36,13 +38,49 @@ Page({
     onLoad(options) {
         console.log('[EditRuntime] 页面加载, 参数:', options);
 
-        // 使用基础配置逻辑初始化页面
-        const result = BaseConfig.initializePageData(options, this);
-
-        if (!result.success) {
-            console.error('[EditRuntime] 初始化失败:', result.error);
+        // 简化：直接从 runtimeStore 获取配置数据
+        const configId = options.configId;
+        if (!configId) {
+            this.setData({
+                error: '缺少配置ID'
+            });
             return;
         }
+
+        // 从 runtimeStore 中查找对应的配置
+        const config = runtimeStore.runtimeConfigs.find(c => c.id === configId);
+        if (!config) {
+            this.setData({
+                error: '未找到配置数据'
+            });
+            return;
+        }
+
+        console.log('[EditRuntime] 找到配置数据:', config);
+
+        // 从 gameStore 获取玩家数据
+        const players = gameStore.players || [];
+        console.log('[EditRuntime] 获取玩家数据:', {
+            playersCount: players.length,
+            players: players.map(p => ({ userid: p.userid, nickname: p.nickname }))
+        });
+
+        // 直接设置配置数据
+        this.setData({
+            configId: configId,
+            gambleSysName: config.gambleSysName,
+            gameId: config.gameid,
+            players: players,
+            'runtimeConfig.gameid': config.gameid,
+            'runtimeConfig.groupid': config.groupid,
+            'runtimeConfig.userRuleId': config.userRuleId,
+            'runtimeConfig.gambleSysName': config.gambleSysName,
+            'runtimeConfig.gambleUserName': config.gambleUserName,
+            'runtimeConfig.red_blue_config': config.red_blue_config || '4_固拉',
+            'runtimeConfig.bootstrap_order': config.bootstrap_order_parsed || config.bootstrap_order || [],
+            'runtimeConfig.ranking_tie_resolve_config': config.ranking_tie_resolve_config || 'score.reverse',
+            'runtimeConfig.val8421_config': config.val8421_config_parsed || config.val8421_config || {}
+        });
 
         console.log('[EditRuntime] 页面初始化成功');
     },

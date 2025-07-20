@@ -48,24 +48,8 @@ Component({
 
     observers: {
         'players, initialRedBlueConfig, initialBootstrapOrder': function (players, initialRedBlueConfig, initialBootstrapOrder) {
-            console.log('[RED_BLUE_CONFIG] observers 触发:', {
-                initialRedBlueConfig,
-                initialRedBlueConfigType: typeof initialRedBlueConfig,
-                initialBootstrapOrder,
-                playersCount: players?.length
-            });
-
-            // 在编辑模式下，如果已经有初始数据，不应该重新初始化
-            // 只有在新增模式下（没有初始数据）才需要重新初始化
-            if ((initialRedBlueConfig === undefined || initialRedBlueConfig === null || initialRedBlueConfig === '') &&
-                (!initialBootstrapOrder || initialBootstrapOrder.length === 0)) {
-                console.log('[RED_BLUE_CONFIG] 新增模式，执行完整初始化');
-                this.initializeConfig();
-            } else if (players && players.length > 0) {
-                // 编辑模式下，只在玩家数据变化时更新玩家顺序，但保持分组配置不变
-                console.log('[RED_BLUE_CONFIG] 编辑模式，只更新玩家数据');
-                this.updatePlayersOnly(players, initialBootstrapOrder);
-            }
+            // 简化：只在数据变化时重新初始化
+            this.initializeConfig();
         }
     },
 
@@ -74,25 +58,8 @@ Component({
         initializeConfig() {
             const { players, initialRedBlueConfig, initialBootstrapOrder, hasInitialized } = this.data;
 
-            console.log('[RED_BLUE_CONFIG] 初始化配置详情:', {
-                initialRedBlueConfig,
-                initialRedBlueConfigType: typeof initialRedBlueConfig,
-                initialRedBlueConfigLength: initialRedBlueConfig?.length,
-                initialBootstrapOrder,
-                hasInitialized,
-                playersCount: players?.length
-            });
-
-            // 设置分组配置 - 修复空字符串的处理
-            const red_blue_config = (initialRedBlueConfig !== undefined && initialRedBlueConfig !== null && initialRedBlueConfig !== '')
-                ? initialRedBlueConfig
-                : '4_固拉';
-
-            console.log('[RED_BLUE_CONFIG] 最终设置的分组配置:', {
-                initialRedBlueConfig,
-                finalRedBlueConfig: red_blue_config,
-                usedDefault: red_blue_config === '4_固拉'
-            });
+            // 设置分组配置
+            const red_blue_config = initialRedBlueConfig || '4_固拉';
 
             // 设置玩家顺序
             let bootstrap_order = [];
@@ -126,101 +93,19 @@ Component({
                 bootstrap_order
             });
 
-            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '初始化配置', {
-                red_blue_config,
-                bootstrap_order: bootstrap_order.length,
-                playerNames: bootstrap_order.map(p => p.nickname || p.wx_nickname || '未知玩家'),
-                players: players?.length || 0,
-                initialRedBlueConfig,
-                initialBootstrapOrder: initialBootstrapOrder?.length || 0,
-                hasInitialized,
-                playerDetails: bootstrap_order.map(p => ({
-                    userid: p.userid,
-                    user_id: p.user_id,
-                    nickname: p.nickname,
-                    wx_nickname: p.wx_nickname
-                }))
-            });
-
-            // 只在首次初始化且没有初始 bootstrap_order 时触发事件
+            // 只在新增模式下触发初始事件
             if (bootstrap_order.length > 0 && !hasInitialized && (!initialBootstrapOrder || initialBootstrapOrder.length === 0)) {
-                // 设置初始化标志位
                 this.setData({
                     hasInitialized: true
                 });
 
-                // 使用 nextTick 延迟触发变更事件，避免循环渲染
                 wx.nextTick(() => {
                     this.triggerEvent('change', {
                         red_blue_config,
                         bootstrap_order: this.convertToUserIds(bootstrap_order)
                     });
-
-                    RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '初始化时延迟触发变更事件', {
-                        red_blue_config,
-                        bootstrap_order: this.convertToUserIds(bootstrap_order)
-                    });
                 });
             }
-        },
-
-        // 编辑模式下只更新玩家数据，不改变分组配置
-        updatePlayersOnly(players, initialBootstrapOrder) {
-            const { initialRedBlueConfig } = this.data;
-
-            console.log('[RED_BLUE_CONFIG] 编辑模式更新玩家数据:', {
-                playersCount: players?.length,
-                hasInitialBootstrapOrder: !!initialBootstrapOrder,
-                initialRedBlueConfig
-            });
-
-            // 设置分组配置 - 使用传入的初始值
-            const red_blue_config = (initialRedBlueConfig !== undefined && initialRedBlueConfig !== null && initialRedBlueConfig !== '')
-                ? initialRedBlueConfig
-                : '4_固拉';
-
-            console.log('[RED_BLUE_CONFIG] 编辑模式设置分组配置:', {
-                initialRedBlueConfig,
-                finalRedBlueConfig: red_blue_config
-            });
-
-            // 设置玩家顺序
-            let bootstrap_order = [];
-            if (initialBootstrapOrder && initialBootstrapOrder.length > 0) {
-                // 如果有初始顺序，将用户ID数组转换为玩家对象数组
-                bootstrap_order = initialBootstrapOrder.map(userId => {
-                    // 从players中找到对应的玩家对象
-                    const player = players.find(p => {
-                        // 使用与 GameTypeManager 一致的字段名处理
-                        const playerUserId = String(p.userid || p.user_id);
-                        return playerUserId === String(userId);
-                    });
-
-                    if (player) {
-                        return player;
-                    }
-                    // 如果找不到对应玩家，创建一个默认玩家对象
-                    return {
-                        userid: userId,
-                        nickname: `玩家${userId}`,
-                        avatar: '/images/default-avatar.png'
-                    };
-                });
-            } else {
-                // 否则使用玩家数组作为初始顺序
-                bootstrap_order = [...players];
-            }
-
-            // 更新分组配置和玩家顺序
-            this.setData({
-                red_blue_config,
-                bootstrap_order
-            });
-
-            console.log('[RED_BLUE_CONFIG] 编辑模式数据更新完成:', {
-                redBlueConfig: red_blue_config,
-                bootstrapOrderLength: bootstrap_order.length
-            });
         },
 
         // 转换玩家对象数组为用户ID数组

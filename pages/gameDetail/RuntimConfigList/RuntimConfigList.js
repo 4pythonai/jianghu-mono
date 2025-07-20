@@ -165,12 +165,9 @@ Component({
                 return;
             }
 
-            // 直接使用 processOneGamble 处理完的配置数据
-            const encodedData = encodeURIComponent(JSON.stringify(config));
-
-            // 跳转到配置编辑页面
+            // 简化：只传递配置ID
             wx.navigateTo({
-                url: `/pages/gambleRuntimeConfig/editRuntime/editRuntime?data=${encodedData}`,
+                url: `/pages/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}`,
                 success: () => {
                     console.log('🎮 成功跳转到配置编辑页面');
                 },
