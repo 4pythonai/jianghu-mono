@@ -140,11 +140,23 @@ const BaseConfig = {
      * @param {Object} pageContext 页面上下文
      */
     loadEditConfig(editConfig, pageContext) {
+        console.log('[BaseConfig] 开始加载编辑配置:', editConfig);
+        console.log('[BaseConfig] 编辑配置字段详情:', {
+            hasRedBlueConfig: 'red_blue_config' in editConfig,
+            redBlueConfigValue: editConfig.red_blue_config,
+            redBlueConfigType: typeof editConfig.red_blue_config,
+            redBlueConfigLength: editConfig.red_blue_config?.length,
+            allKeys: Object.keys(editConfig)
+        });
+
         // 加载分组配置
-        if (editConfig.red_blue_config) {
+        if (editConfig.red_blue_config !== undefined && editConfig.red_blue_config !== null) {
             pageContext.setData({
                 'runtimeConfig.red_blue_config': editConfig.red_blue_config
             });
+            console.log('[BaseConfig] 分组配置加载:', editConfig.red_blue_config);
+        } else {
+            console.log('[BaseConfig] 分组配置为空或未定义');
         }
 
         // 加载玩家顺序配置
@@ -163,6 +175,7 @@ const BaseConfig = {
                 pageContext.setData({
                     'runtimeConfig.bootstrap_order': bootstrapOrder
                 });
+                console.log('[BaseConfig] 玩家顺序配置加载:', bootstrapOrder);
             }
         }
 
@@ -171,6 +184,7 @@ const BaseConfig = {
             pageContext.setData({
                 'runtimeConfig.ranking_tie_resolve_config': editConfig.ranking_tie_resolve_config
             });
+            console.log('[BaseConfig] 排名配置加载:', editConfig.ranking_tie_resolve_config);
         }
 
         // 加载8421配置
