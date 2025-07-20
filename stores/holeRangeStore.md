@@ -3,11 +3,21 @@
 ## 概述
 
 `holeRangeStore` 是一个专门管理高尔夫球洞相关状态的 MobX store，统一管理以下数据：
-- `holeList`: 所有球洞列表
-- `holePlayList`: 实际打球顺序的球洞列表
-- `rangeHolePlayList`: 当前选择范围的球洞列表
-- `startHoleindex`: 起始洞号
-- `endHoleindex`: 结束洞号
+- `holeList`: 所有球洞列表（原始数据，不变）
+- `holePlayList`: 实际打球顺序的球洞列表（完整的洞顺序，如 B1-B9）
+- `rangeHolePlayList`: 当前选择范围的球洞列表（选中的洞，如 B1-B4）
+- `startHoleindex`: 起始洞号（选中范围的起始洞）
+- `endHoleindex`: 结束洞号（选中范围的结束洞）
+
+## 数据关系
+
+```
+holeList: [B1, B2, B3, B4, B5, B6, B7, B8, B9]  // 原始洞数据
+holePlayList: [B1, B2, B3, B4, B5, B6, B7, B8, B9]  // 打球顺序（可拖拽排序）
+rangeHolePlayList: [B1, B2, B3, B4]  // 选中的洞范围
+startHoleindex: 1  // 起始洞索引
+endHoleindex: 4    // 结束洞索引
+```
 
 ## 主要方法
 
@@ -27,6 +37,9 @@ holeRangeStore.clearHoleData()
 ```javascript
 // 根据字符串设置洞顺序 (例如: "3,4,5,6,7,8,9,1,2")
 holeRangeStore.setHolePlayListFromString(holePlayListStr)
+
+// 更新洞顺序列表（用于拖拽排序后）
+holeRangeStore.updateHolePlayList(newHolePlayList)
 
 // 根据选中的洞设置洞范围
 holeRangeStore.setHoleRangeFromSelected(selectedHoles)
@@ -86,6 +99,14 @@ const rangeHoleCount = holeRangeStore.rangeHoleCount
 ### 3. 数据不同步
 **原因**: 组件没有正确绑定到 `holeRangeStore`
 **解决**: 确保组件正确导入了 `holeRangeStore` 并创建了绑定
+
+### 4. 拖选后洞范围错误
+**原因**: 混淆了 `holePlayList` 和 `rangeHolePlayList` 的概念
+**解决**: 
+- `holePlayList` 应该保持完整的洞顺序
+- `rangeHolePlayList` 应该是选中的洞范围
+- 使用 `updateHolePlayList()` 更新洞顺序
+- 使用 `setHoleRangeFromSelected()` 设置洞范围
 
 ## 性能优化
 

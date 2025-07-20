@@ -132,10 +132,7 @@ export const holeRangeStore = observable({
             return;
         }
 
-        // 更新 holePlayList
-        this.holePlayList = selectedHoles;
-
-        // 设置范围
+        // 设置范围（不修改 holePlayList，只修改范围相关的数据）
         if (selectedHoles.length > 0) {
             this.startHoleindex = selectedHoles[0].hindex;
             this.endHoleindex = selectedHoles[selectedHoles.length - 1].hindex;
@@ -145,6 +142,39 @@ export const holeRangeStore = observable({
         console.log('🕳️ [holeRangeStore] 根据选中洞设置范围完成:', {
             startHoleindex: this.startHoleindex,
             endHoleindex: this.endHoleindex,
+            rangeHolePlayListLength: this.rangeHolePlayList.length
+        });
+    }),
+
+    /**
+     * 更新洞顺序列表（用于拖拽排序后）
+     * @param {Array} newHolePlayList 新的洞顺序列表
+     */
+    updateHolePlayList: action(function (newHolePlayList) {
+        console.log('🕳️ [holeRangeStore] 更新洞顺序列表:', newHolePlayList);
+
+        if (!newHolePlayList || !Array.isArray(newHolePlayList)) {
+            console.warn('🕳️ [holeRangeStore] 无效的洞顺序列表');
+            return;
+        }
+
+        this.holePlayList = [...newHolePlayList];
+
+        // 重新计算 rangeHolePlayList（基于当前的 startHoleindex 和 endHoleindex）
+        if (this.startHoleindex !== null && this.endHoleindex !== null) {
+            const minIndex = Math.min(this.startHoleindex, this.endHoleindex);
+            const maxIndex = Math.max(this.startHoleindex, this.endHoleindex);
+
+            const rangeHolePlayList = this.holePlayList.filter(hole => {
+                const hindex = hole.hindex;
+                return hindex >= minIndex && hindex <= maxIndex;
+            });
+
+            this.rangeHolePlayList = rangeHolePlayList;
+        }
+
+        console.log('🕳️ [holeRangeStore] 洞顺序列表更新完成:', {
+            holePlayListLength: this.holePlayList.length,
             rangeHolePlayListLength: this.rangeHolePlayList.length
         });
     }),

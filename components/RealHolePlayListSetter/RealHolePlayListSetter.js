@@ -201,13 +201,18 @@ Component({
 
         onConfirmHoleOrder() {
             // 只有点击确定时，才把结果传给父组件和holeRangeStore
-            const tmpArray = this.data.holePlayList.filter(hole =>
+
+            // 1. 更新 holePlayList（保持完整的洞顺序）
+            holeRangeStore.updateHolePlayList(this.data.holePlayList);
+
+            // 2. 设置洞范围（选中的洞）
+            const selectedHoles = this.data.holePlayList.filter(hole =>
                 this.data.selectedHindexArray.includes(hole.hindex)
             );
-            console.log(' ⭕️⭕️⭕️⭕️⭕️  onConfirmHoleOrder - tmpArray: ', tmpArray);
+            console.log(' ⭕️⭕️⭕️⭕️⭕️  onConfirmHoleOrder - selectedHoles: ', selectedHoles);
 
             // 使用 holeRangeStore 更新洞范围
-            holeRangeStore.setHoleRangeFromSelected(tmpArray);
+            holeRangeStore.setHoleRangeFromSelected(selectedHoles);
 
             this.triggerEvent('cancel');
         },
