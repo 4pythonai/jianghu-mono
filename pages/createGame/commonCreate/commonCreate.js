@@ -436,7 +436,7 @@ Page({
             const backNineCourtId = selectionData.backNine?.courtid || '';
 
             console.log('🏌️ 提取的半场信息:');
-            console.log('  - 游戏类型:', selectionData.gameType);
+            console.log('  - 比赛类型:', selectionData.gameType);
             console.log('  - 总洞数:', selectionData.totalHoles);
             console.log('  - 前9 courtid:', frontNineCourtId);
             console.log('  - 后9 courtid:', backNineCourtId);

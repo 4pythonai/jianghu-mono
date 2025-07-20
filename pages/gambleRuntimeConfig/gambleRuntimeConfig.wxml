@@ -2,7 +2,7 @@
   <!-- 调试信息 -->
   <view class="debug-info">
     <text>调试信息:</text>
-    <text>gambleSysName: {{ruleType}}</text>
+    <text>gambleSysName: {{gambleSysName}}</text>
     <text>players: {{players.length}}人</text>
     <text>error: {{error}}</text>
     <text>loading: {{loading}}</text>
@@ -19,7 +19,7 @@
     <view class="section">
       <view class="section-title">游戏规则</view>
       <Summary 
-        ruleType="{{ruleType}}"
+        gambleSysName="{{gambleSysName}}"
         players="{{players}}"
         userRule="{{userRule}}"
         bind:reselect="onReSelectRule"
@@ -33,7 +33,7 @@
     </view>
     
     <!-- 8421球员配置 -->
-    <view class="section" wx:if="{{ruleType.indexOf('8421') !== -1}}">
+    <view class="section" wx:if="{{gambleSysName.indexOf('8421') !== -1}}">
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator 
         players="{{players}}"

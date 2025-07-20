@@ -26,11 +26,11 @@
                         <text class="config-value">{{ item.create_time }}</text>
                     </view>
                     <view class="config-row">
-                        <text class="config-label">游戏类型:</text>
+                        <text class="config-label">gambleSysName:</text>
                         <text class="config-value">{{ item.gambleSysName }}</text>
                     </view>
                     <view class="config-row">
-                        <text class="config-label">游戏名称:</text>
+                        <text class="config-label">gambleUserName:</text>
                         <text class="config-value">{{ item.gambleUserName }}</text>
                     </view>
                     <view class="config-row" wx:if="{{ item.red_blue_config }}">

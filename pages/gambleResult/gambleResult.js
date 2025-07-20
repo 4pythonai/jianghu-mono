@@ -3,7 +3,7 @@ Page({
         // 页面参数
         gameId: '',
         gambleid: '',
-        ruleType: '',
+        gambleSysName: '',
         userRuleName: '',
         firstHole: 1,
         lastHole: 18,
@@ -28,7 +28,7 @@ Page({
         this.setData({
             gameId: options.gameId || '',
             gambleid: gambleid,
-            ruleType: options.ruleType || '',
+            gambleSysName: options.gambleSysName || '',
             userRuleName: options.userRuleName || '',
             firstHole: Number.parseInt(options.firstHole) || 1,
             lastHole: Number.parseInt(options.lastHole) || 18,

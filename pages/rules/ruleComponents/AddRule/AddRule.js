@@ -211,7 +211,7 @@ Component({
 
             // 准备传递给运行时配置页面的数据(简化版)
             const runtimeConfigData = {
-                ruleType: title,
+                gambleSysName: title,
                 gameId: gameStore.gameid || null,
                 playerCount: gameStore.players?.length || 0,
                 holeCount: gameStore.holeList?.length || 18,

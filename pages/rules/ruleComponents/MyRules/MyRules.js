@@ -197,9 +197,9 @@ Component({
             const { gameStore } = require('../../../../stores/gameStore');
 
             // 根据用户规则确定ruleType
-            const ruleType = this.mapUserRuleToRuleType(item, group);
+            const gambleSysName = this.mapUserRuleToRuleType(item, group);
 
-            if (!ruleType) {
+            if (!gambleSysName) {
                 wx.showToast({
                     title: '无法识别规则类型',
                     icon: 'none'
@@ -209,7 +209,7 @@ Component({
 
             // 准备传递给运行时配置页面的数据(简化版, 减少URL长度)
             const runtimeConfigData = {
-                ruleType: ruleType,
+                gambleSysName: gambleSysName,
                 gameId: gameStore.gameid || null,
                 playerCount: gameStore.players?.length,
                 holeCount: gameStore.holeList?.length,

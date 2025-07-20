@@ -115,7 +115,7 @@ Component({
             const params = {
                 gameId: gameId,
                 gambleid: gambleid,
-                ruleType: config.gambleSysName || '',
+                gambleSysName: config.gambleSysName || '',
                 userRuleName: config.gambleUserName || '',
                 holePlayList: config.holePlayList || [],
                 playerCount: config.player8421Count || 0
@@ -153,7 +153,7 @@ Component({
 
             // 构建跳转数据 - 按照目标页面的期望格式
             const jumpData = {
-                ruleType: config.gambleSysName || '',
+                gambleSysName: config.gambleSysName || '',
                 gameId: gameId,
                 configId: config.id,
                 fromUserRule: false, // 不是从用户规则进入

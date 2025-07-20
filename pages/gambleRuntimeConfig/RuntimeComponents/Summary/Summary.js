@@ -4,7 +4,7 @@ const RuntimeComponentsUtils = require('../common-utils.js');
 Component({
     properties: {
         // 规则类型
-        ruleType: {
+        gambleSysName: {
             type: String,
             value: ''
         },
@@ -49,9 +49,9 @@ Component({
 
     // 监听属性变化
     observers: {
-        'ruleType, userRule': function (ruleType, userRule) {
+        'gambleSysName, userRule': function (gambleSysName, userRule) {
             RuntimeComponentsUtils.logger.log('SUMMARY', '规则属性变化', {
-                ruleType: ruleType,
+                gambleSysName: gambleSysName,
                 userRule: userRule?.gambleUserName || userRule?.user_rulename
             });
 
@@ -82,7 +82,7 @@ Component({
             let displayName = '未知规则';
 
             RuntimeComponentsUtils.logger.log('SUMMARY', '更新显示名称', {
-                ruleType: this.data.ruleType,
+                gambleSysName: this.data.gambleSysName,
                 userRule: this.data.userRule,
                 properties: this.properties
             });
@@ -94,9 +94,9 @@ Component({
                     this.data.userRule.title ||
                     '用户自定义规则';
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用用户规则名称', displayName);
-            } else if (this.data.ruleType) {
+            } else if (this.data.gambleSysName) {
                 // 否则显示系统规则名称
-                displayName = this.data.ruleTypeMap[this.data.ruleType] || this.data.ruleType;
+                displayName = this.data.ruleTypeMap[this.data.gambleSysName] || this.data.gambleSysName;
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用系统规则名称', displayName);
             }
 
@@ -137,7 +137,7 @@ Component({
         // 获取规则显示名称 (保留此方法作为备用)
         getRuleDisplayName() {
             RuntimeComponentsUtils.logger.log('SUMMARY', '获取规则显示名称', {
-                ruleType: this.data.ruleType,
+                gambleSysName: this.data.gambleSysName,
                 userRule: this.data.userRule,
                 ruleTypeMap: this.data.ruleTypeMap
             });
@@ -153,7 +153,7 @@ Component({
             }
 
             // 否则显示系统规则名称
-            const systemRuleName = this.data.ruleTypeMap[this.data.ruleType] || this.data.ruleType || '未知规则';
+            const systemRuleName = this.data.ruleTypeMap[this.data.gambleSysName] || this.data.gambleSysName || '未知规则';
             RuntimeComponentsUtils.logger.log('SUMMARY', '返回系统规则名称', systemRuleName);
             return systemRuleName;
         },

@@ -5,7 +5,7 @@ const app = getApp();
 Page({
     data: {
         // 传递的数据
-        ruleType: '',
+        gambleSysName: '',
         gameId: null,
         configId: '',
         players: [],
@@ -67,12 +67,12 @@ Page({
 
                 if (decodedData.fromUserRule) {
                     // 从用户规则进入
-                    // 使用用户规则的原始 gamblesysname，而不是映射后的 ruleType
+                    // 使用用户规则的原始 gamblesysname，而不是映射后的 gambleSysName
                     gambleSysName = decodedData.userRule?.gamblesysname || '';
 
-                    // 如果 gamblesysname 为空，尝试从 ruleType 中提取
-                    if (!gambleSysName && decodedData.ruleType) {
-                        gambleSysName = this.extractSysNameFromRuleType(decodedData.ruleType);
+                    // 如果 gamblesysname 为空，尝试从 gambleSysName 中提取
+                    if (!gambleSysName && decodedData.gambleSysName) {
+                        gambleSysName = this.extractSysNameFromRuleType(decodedData.gambleSysName);
                     }
 
                     gambleUserName = decodedData.userRuleName || '';
@@ -82,7 +82,7 @@ Page({
                     console.log('[GambleRuntimeConfig] 用户规则进入:', {
                         userRule: decodedData.userRule,
                         gamblesysname: decodedData.userRule?.gamblesysname,
-                        ruleType: decodedData.ruleType,
+                        gambleSysName: decodedData.gambleSysName,
                         gambleSysName,
                         gambleUserName
                     });
@@ -94,13 +94,13 @@ Page({
                 } else {
                     // 从系统规则进入（添加规则）
                     // 将完整的规则类型转换为简单的系统名称
-                    const ruleType = decodedData.ruleType || '';
-                    gambleSysName = this.extractSysNameFromRuleType(ruleType);
-                    gambleUserName = decodedData.ruleType || ''; // 系统规则名称就是规则类型
+                    const gambleSysName = decodedData.gambleSysName || '';
+                    gambleSysName = this.extractSysNameFromRuleType(gambleSysName);
+                    gambleUserName = decodedData.gambleSysName || ''; // 系统规则名称就是规则类型
                     userRuleId = null; // 系统规则没有用户规则ID
 
                     console.log('[GambleRuntimeConfig] 系统规则进入:', {
-                        ruleType,
+                        gambleSysName,
                         gambleSysName,
                         gambleUserName
                     });
@@ -123,7 +123,7 @@ Page({
                 }
 
                 const setDataObj = {
-                    ruleType: decodedData.ruleType || '',
+                    gambleSysName: decodedData.gambleSysName || '',
                     gameId: decodedData.gameId || null,
                     configId: decodedData.configId || '',
                     players: players,
@@ -163,10 +163,10 @@ Page({
         }
 
         // 如果没有数据，设置默认值
-        if (!this.data.ruleType) {
+        if (!this.data.gambleSysName) {
             console.log('[GambleRuntimeConfig] 设置默认数据');
             this.setData({
-                ruleType: '4p-8421',
+                gambleSysName: '4p-8421',
                 players: [],
                 error: null
             });
@@ -175,12 +175,12 @@ Page({
 
     // 初始化分组配置
     initializeGroupingConfig() {
-        const { players, ruleType } = this.data;
+        const { players, gambleSysName } = this.data;
 
         // 检查是否需要分组(3人或4人游戏)
         const playerCount = players.length;
         const needGrouping = (playerCount === 3 || playerCount === 4) &&
-            (ruleType.includes('3p-') || ruleType.includes('4p-'));
+            (gambleSysName.includes('3p-') || gambleSysName.includes('4p-'));
 
         // 将玩家对象转换为用户ID数组
         const playerIds = players.map(player => Number.parseInt(player.user_id || player.userid));
@@ -199,7 +199,7 @@ Page({
         console.log('[GambleRuntimeConfig] 分组配置初始化:', {
             needGrouping,
             playerCount,
-            ruleType,
+            gambleSysName,
             playerIds
         });
     },
@@ -230,10 +230,10 @@ Page({
 
     // 初始化8421配置
     initialize8421Config() {
-        const { players, ruleType } = this.data;
+        const { players, gambleSysName } = this.data;
 
         // 检查是否是8421游戏
-        const is8421Game = ruleType.includes('8421');
+        const is8421Game = gambleSysName.includes('8421');
 
         if (is8421Game && players.length > 0) {
             // 为每个球员设置默认8421配置
@@ -437,7 +437,7 @@ Page({
 
     // 确认配置
     onConfirmConfig() {
-        const { runtimeConfig, ruleType, gameId, players } = this.data;
+        const { runtimeConfig, gambleSysName, gameId, players } = this.data;
 
         // 验证配置
         if (!this.validateConfig()) {
@@ -450,7 +450,7 @@ Page({
 
     // 验证配置
     validateConfig() {
-        const { runtimeConfig, players, ruleType } = this.data;
+        const { runtimeConfig, players, gambleSysName } = this.data;
 
         // 验证分组配置
         const playersOrderCount = runtimeConfig.bootstrap_order.length;
@@ -486,7 +486,7 @@ Page({
         }
 
         // 验证8421配置(仅在8421游戏时)
-        if (ruleType.includes('8421')) {
+        if (gambleSysName.includes('8421')) {
             const val8421Config = runtimeConfig.val8421_config;
 
             if (!val8421Config || Object.keys(val8421Config).length === 0) {
@@ -585,16 +585,16 @@ Page({
     },
 
     // 从规则类型中提取系统名称
-    extractSysNameFromRuleType(ruleType) {
-        console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 输入:', ruleType);
+    extractSysNameFromRuleType(gambleSysName) {
+        console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 输入:', gambleSysName);
 
-        if (!ruleType) {
+        if (!gambleSysName) {
             console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 返回空字符串');
             return '';
         }
 
         // 规则类型格式: '2p-8421', '3p-doudizhu', '4p-3da1' 等
-        const parts = ruleType.split('-');
+        const parts = gambleSysName.split('-');
         console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 分割结果:', parts);
 
         if (parts.length === 2) {
@@ -603,7 +603,7 @@ Page({
             return result;
         }
 
-        console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 格式不正确，返回原值:', ruleType);
-        return ruleType; // 如果格式不正确，返回原值
+        console.log('[GambleRuntimeConfig] extractSysNameFromRuleType 格式不正确，返回原值:', gambleSysName);
+        return gambleSysName; // 如果格式不正确，返回原值
     }
 }); 
