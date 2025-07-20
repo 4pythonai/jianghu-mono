@@ -82,6 +82,16 @@ Page({
             'runtimeConfig.val8421_config': config.val8421_config_parsed || config.val8421_config || {}
         });
 
+        // 设置 gameStore 中的洞范围配置
+        if (config.startHoleindex !== undefined && config.endHoleindex !== undefined) {
+            gameStore.startHoleindex = Number.parseInt(config.startHoleindex);
+            gameStore.endHoleindex = Number.parseInt(config.endHoleindex);
+            console.log('[EditRuntime] 设置洞范围配置:', {
+                startHoleindex: gameStore.startHoleindex,
+                endHoleindex: gameStore.endHoleindex
+            });
+        }
+
         console.log('[EditRuntime] 页面初始化成功');
     },
 

@@ -41,6 +41,10 @@
                         <text class="config-label">参与人数:</text>
                         <text class="config-value">{{ item.player8421Count }}人</text>
                     </view>
+                    <view class="config-row" wx:if="{{ item.endHoleindex }}">
+                        <text class="config-label">起/终:</text>
+                        <text class="config-value">{{ item.startHoleindex }}/{{ item.endHoleindex }}</text>
+                    </view>
                 </view>
                 <!-- 点击提示 -->
                 <view class="config-click-hint">

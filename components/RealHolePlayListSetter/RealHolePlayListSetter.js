@@ -30,8 +30,14 @@ Component({
 
     lifetimes: {
         attached() {
-            const { holeList, holePlayList, rangeHolePlayList } = gameStore.getState();
-            console.log(' ⭕️ rangeHolePlayList:', rangeHolePlayList);
+            const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = gameStore.getState();
+            console.log(' ⭕️ RealHolePlayListSetter attached - gameStore数据:', {
+                holeListLength: holeList?.length,
+                holePlayListLength: holePlayList?.length,
+                rangeHolePlayListLength: rangeHolePlayList?.length,
+                startHoleindex,
+                endHoleindex
+            });
 
             // 根据传入的startHoleindex和endHoleindex设置初始选中范围
             let selectedHindexArray = [];
@@ -56,12 +62,26 @@ Component({
                 console.log(' ⭕️ 编辑模式 - 根据传入参数设置选中范围:', {
                     startHoleindex: this.properties.startHoleindex,
                     endHoleindex: this.properties.endHoleindex,
-                    selectedHindexArray
+                    selectedHindexArray,
+                    holePlayList: holePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
                 });
             } else {
                 // 创建模式 - 默认全选所有洞
                 selectedHindexArray = holePlayList ? holePlayList.map(hole => hole.hindex) : [];
                 console.log(' ⭕️ 创建模式 - 默认全选所有洞:', selectedHindexArray);
+            }
+
+            // 如果没有 holePlayList 数据，尝试从 holeList 生成
+            if (!holePlayList || holePlayList.length === 0) {
+                console.log(' ⭕️ holePlayList 为空，从 holeList 生成');
+                const generatedHolePlayList = holeList ? [...holeList] : [];
+                this.setData({
+                    holeList,
+                    holePlayList: generatedHolePlayList,
+                    selectedHindexArray,
+                    selectedMap: {}
+                });
+                return;
             }
 
             // 构建初始selectedMap

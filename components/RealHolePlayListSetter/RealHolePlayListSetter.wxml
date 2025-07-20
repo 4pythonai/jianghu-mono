@@ -14,7 +14,7 @@
     </view>
     <view class="spliter"></view>
 
-    <view class="modal-title"> 选择游戏的起洞/终点洞 </view>
+    <view class="modal-title"> 选择游戏的起点洞/终点洞 </view>
     <view class="hole-list">
       <block wx:for="{{holePlayList}}" wx:key="index">
         <view
