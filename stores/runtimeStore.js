@@ -1,3 +1,5 @@
+//  runtimeStore
+
 import { observable, action } from 'mobx-miniprogram'
 import gambleApi from '../api/modules/gamble'
 
@@ -11,6 +13,41 @@ export const runtimeStore = observable({
     loadingRuntimeConfig: false,  // 加载运行时配置状态
     runtimeConfigError: null,     // 运行时配置错误信息
 
+    /**
+     * 处理单个赌博配置
+     * @param {Object} config 原始配置数据
+     * @returns {Object} 处理后的配置数据
+     */
+    processOneGamble: action((config) => {
+        console.log('🎮 [runtimeStore] 处理单个赌博配置:🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸', config);
+        try {
+            const processedConfig = { ...config };
+
+            // 解析 val8421_config JSON 字符串
+            if (config.val8421_config && typeof config.val8421_config === 'string') {
+                try {
+                    processedConfig.val8421_config_parsed = JSON.parse(config.val8421_config);
+                    processedConfig.player8421Count = Object.keys(processedConfig.val8421_config_parsed).length;
+                } catch (e) {
+                    processedConfig.val8421_config_parsed = {};
+                    processedConfig.player8421Count = 0;
+                }
+            }
+
+            // 解析 bootstrap_order JSON 字符串
+            if (config.bootstrap_order && typeof config.bootstrap_order === 'string') {
+                try {
+                    processedConfig.bootstrap_order_parsed = JSON.parse(config.bootstrap_order);
+                } catch (e) {
+                    processedConfig.bootstrap_order_parsed = [];
+                }
+            }
+
+            return processedConfig;
+        } catch (e) {
+            return config;
+        }
+    }),
 
     fetchRuntimeConfigs: action(async function (groupId) {
         if (this.loadingRuntimeConfig) return; // 防止重复加载
@@ -28,36 +65,19 @@ export const runtimeStore = observable({
             if (res?.code === 200) {
                 const rawConfigs = res.gambles || [];
 
-                // 处理配置数据
-                this.runtimeConfigs = rawConfigs.map(config => {
-                    try {
-                        const processedConfig = { ...config };
+                // 处理配置数据 - 使用朴素的写法
+                const processedConfigs = [];
+                for (const config of rawConfigs) {
+                    const tmp = this.processOneGamble(config);
+                    processedConfigs.push(tmp);
+                }
+                this.runtimeConfigs = processedConfigs;
 
-                        // 解析 val8421_config JSON 字符串
-                        if (config.val8421_config && typeof config.val8421_config === 'string') {
-                            try {
-                                processedConfig.val8421_config_parsed = JSON.parse(config.val8421_config);
-                                processedConfig.player8421Count = Object.keys(processedConfig.val8421_config_parsed).length;
-                            } catch (e) {
-                                processedConfig.val8421_config_parsed = {};
-                                processedConfig.player8421Count = 0;
-                            }
-                        }
-
-                        // 解析 bootstrap_order JSON 字符串
-                        if (config.bootstrap_order && typeof config.bootstrap_order === 'string') {
-                            try {
-                                processedConfig.bootstrap_order_parsed = JSON.parse(config.bootstrap_order);
-                            } catch (e) {
-                                processedConfig.bootstrap_order_parsed = [];
-                            }
-                        }
-
-
-                        return processedConfig;
-                    } catch (e) {
-                        return config;
-                    }
+                // 调试信息
+                console.log('🎮 [runtimeStore] 处理完成:', {
+                    rawCount: rawConfigs.length,
+                    processedCount: processedConfigs.length,
+                    runtimeConfigsLength: this.runtimeConfigs.length
                 });
 
             }

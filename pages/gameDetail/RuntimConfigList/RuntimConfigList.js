@@ -37,6 +37,12 @@ Component({
     // 观察者 - 移除对 currentTab 的监听，改为由父组件主动调用
     observers: {
         // 可以添加其他需要监听的属性
+        'runtimeConfigs': (newConfigs) => {
+            console.log('🎮 [RuntimConfigList] runtimeConfigs 变化:', {
+                length: newConfigs?.length || 0,
+                configs: newConfigs
+            });
+        }
     },
 
     methods: {
@@ -92,6 +98,14 @@ Component({
 
             this.setData({ lastRefreshTime: now });
             this.refreshRuntimeConfig();
+        },
+
+        // 观察运行时配置数据
+        observeRuntimeConfigs() {
+            console.log('🎮 [RuntimConfigList] 当前 runtimeConfigs:', {
+                length: this.data.runtimeConfigs?.length || 0,
+                configs: this.data.runtimeConfigs
+            });
         },
 
         // 处理配置项点击事件
@@ -151,20 +165,13 @@ Component({
                 return;
             }
 
-            // 构建跳转数据 - 按照目标页面的期望格式
+            // 直接使用 processOneGamble 处理完的配置，添加必要的跳转标识
             const jumpData = {
-                gambleSysName: config.gambleSysName || '',
-                gameId: gameId,
-                configId: config.id,
-                fromUserRule: false, // 不是从用户规则进入
-                isEditMode: true, // 标记为编辑模式
-                editConfig: config, // 传递要编辑的配置
-                userRuleName: config.gambleUserName || '',
-                holePlayList: config.holePlayList || [],
-                playerCount: config.player8421Count || 0,
-                redBlueConfig: config.red_blue_config || '',
-                rankingDisplay: config.ranking_display || '',
-                createTime: config.create_time || ''
+                ...config,                    // 使用处理完的配置数据
+                gameId: gameId,               // 添加游戏ID
+                fromUserRule: false,          // 不是从用户规则进入
+                isEditMode: true,             // 标记为编辑模式
+                editConfig: config            // 传递要编辑的配置（保持兼容性）
             };
 
             // 将数据编码为JSON字符串
@@ -206,6 +213,9 @@ Component({
 
             this.initGame();
             console.log('🎮 [Gamble] 组件已附加, 多store绑定已创建');
+
+            // 添加数据监听
+            this.observeRuntimeConfigs();
         },
 
         detached() {
