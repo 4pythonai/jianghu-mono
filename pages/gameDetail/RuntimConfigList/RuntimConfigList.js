@@ -100,13 +100,6 @@ Component({
             this.refreshRuntimeConfig();
         },
 
-        // 观察运行时配置数据
-        observeRuntimeConfigs() {
-            console.log('🎮 [RuntimConfigList] 当前 runtimeConfigs:', {
-                length: this.data.runtimeConfigs?.length || 0,
-                configs: this.data.runtimeConfigs
-            });
-        },
 
         // 处理配置项点击事件
         handleGotoResult(e) {
@@ -202,7 +195,7 @@ Component({
             console.log('🎮 [Gamble] 组件已附加, 多store绑定已创建');
 
             // 添加数据监听
-            this.observeRuntimeConfigs();
+            // this.observeRuntimeConfigs();
         },
 
         detached() {

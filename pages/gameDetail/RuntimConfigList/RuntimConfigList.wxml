@@ -1,25 +1,17 @@
 <!-- 游戏(Gamble)模块 -->
 <view class="gamble-container">
-    
     <!-- 加载中状态 -->
     <view wx:if="{{ loadingRuntimeConfig }}" class="loading-container">
         <view class="loading-spinner"></view>
         <text class="loading-text">加载游戏配置中...</text>
     </view>
-    
     <view wx:elif="{{ runtimeConfigs && runtimeConfigs.length > 0 }}" class="gamble-content">
         <view class="config-list">
-            <view wx:for="{{ runtimeConfigs }}" wx:key="unique" class="config-item" hover-class="config-item-hover"  data-config="{{ item }}" data-index="{{ index }}">
-                <image 
-                    class="delete-btn" 
-                    src="/assets/icons/icons8-delete-48.png" 
-                    data-id="{{ item.id }}" 
-                    bindtap="onDeleteConfig" />
+            <view wx:for="{{ runtimeConfigs }}" wx:key="unique" class="config-item" hover-class="config-item-hover" data-config="{{ item }}" data-index="{{ index }}">
+                <image class="delete-btn" src="/assets/icons/icons8-delete-48.png" data-id="{{ item.id }}" bindtap="onDeleteConfig" />
                 <view class="config-header">
                     <text class="config-title">游戏配置 #{{ index + 1 }}</text>
                 </view>
-
-
                 <view class="config-details">
                     <view class="config-row">
                         <text class="config-label">ID:</text>
@@ -52,11 +44,15 @@
                 </view>
                 <!-- 点击提示 -->
                 <view class="config-click-hint">
-                        <button class="detail-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="onRuntimeItemClick">配置游戏</button>
-                        <button class="result-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="handleGotoResult">查看结果</button>                </view>
+                    <button class="detail-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="onRuntimeItemClick">
+                        配置游戏
+                    </button>
+                    <button class="result-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="handleGotoResult">
+                        查看结果
+                    </button>
                 </view>
+            </view>
         </view>
-        
         <!-- 添加更多游戏按钮 -->
         <view class="add-more-container">
             <button class="add-more-button" bindtap="handleAddGame">
@@ -65,13 +61,11 @@
             </button>
         </view>
     </view>
-    
     <view wx:else class="gamble-content">
         <view class="no-gamble-container">
             <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
             <text class="empty-hint">暂无游戏配置</text>
         </view>
-        
         <!-- 底部按钮区域 -->
         <view class="bottom-button-area">
             <button class="add-game-button" bindtap="handleAddGame">

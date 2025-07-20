@@ -28,9 +28,12 @@ export const runtimeStore = observable({
                 try {
                     processedConfig.val8421_config_parsed = JSON.parse(config.val8421_config);
                     processedConfig.player8421Count = Object.keys(processedConfig.val8421_config_parsed).length;
+                    // 添加格式化显示字段
+                    processedConfig.val8421_config_display = JSON.stringify(processedConfig.val8421_config_parsed, null, 2);
                 } catch (e) {
                     processedConfig.val8421_config_parsed = {};
                     processedConfig.player8421Count = 0;
+                    processedConfig.val8421_config_display = config.val8421_config; // 显示原始字符串
                 }
             }
 

@@ -69,7 +69,7 @@ Page({
         const newTab = Number.parseInt(tabValue, 10);
 
         // 确保 newTab 是有效的数字
-        if (isNaN(newTab) || newTab < 0) {
+        if (Number.isNaN(newTab) || newTab < 0) {
             console.warn('⚠️ 无效的tab值:', tabValue);
             return;
         }
@@ -87,9 +87,14 @@ Page({
     refreshGambleData() {
         console.log('📊 [GameDetail] 刷新游戏数据');
         const gambleComponent = this.selectComponent('#gambleComponent');
-        if (gambleComponent && gambleComponent.refreshRuntimeConfig) {
-            gambleComponent.refreshRuntimeConfig();
-        }
+        gambleComponent?.refreshRuntimeConfig?.();
+    },
+
+    // 刷新 runtime configs
+    refreshRuntimeConfigs() {
+        console.log('📊 [GameDetail] 刷新 runtime configs');
+        const gambleComponent = this.selectComponent('#gambleComponent');
+        gambleComponent?.refreshRuntimeConfig?.();
     },
 
     // 页面显示时检查数据
@@ -103,6 +108,9 @@ Page({
                 this.fetchGameDetail(gameId);
             }
         }
+
+        // 刷新 runtime configs，确保配置列表是最新的
+        this.refreshRuntimeConfigs();
     },
 
     onCellClick(e) {
