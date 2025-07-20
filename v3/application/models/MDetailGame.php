@@ -217,7 +217,7 @@ class MDetailGame  extends CI_Model {
             SELECT 
                 ggu.groupid,
                 ggu.tee,
-                u.id as user_id,
+                u.id as userid,
                 u.wx_nickname as wx_nickname,
                 concat('$web_url', u.avatar) as avatar
             FROM t_game_group_user ggu

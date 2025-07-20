@@ -142,8 +142,6 @@ class Gamble extends MY_Controller {
             'creator_id' => $json_paras['creator_id']
         ];
 
-        debug('update_data', $update_data);
-        // exit;
 
         // 更新数据库
         $this->db->where('id', $json_paras['id']);
@@ -300,6 +298,8 @@ class Gamble extends MY_Controller {
         $gambles = $this->db->get()->result_array();
         foreach ($gambles as &$gamble) {
             $gamble['attenders'] = $this->setGambleAttenders($gamble);
+            $gamble['holePlayListStr'] =  $gamble['holePlayList'];
+            unset($gamble['holePlayList']);
         }
 
 
