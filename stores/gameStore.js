@@ -52,10 +52,13 @@ export const gameStore = observable({
 
 
     _processGameData: action(function (gameInfo, groupId = null) {
+        console.log('🚀 [Store] 开始处理游戏数据');
 
         const allPlayers = (gameInfo.players || []).map(p => normalizePlayer(p));
         const players = this._filterPlayersByGroup(allPlayers, groupId);
         const holeList = (gameInfo.holeList || []).map((h, index) => normalizeHole(h, index + 1));
+
+        console.log(`📊 [Store] 数据处理: ${players.length}个玩家, ${holeList.length}个洞`);
 
         const scoreMap = new Map();
         for (const s of gameInfo.scores || []) {
@@ -76,17 +79,35 @@ export const gameStore = observable({
             normalizeScoreCards(gameInfo.score_cards);
         }
 
-        // 用清洗过的数据更新状态
+        console.log('🔄 [Store] 开始更新store数据...');
+
+        // 先更新基础数据
         this.gameData = gameInfo;
         this.players = players;  // 注意:这里是过滤后的玩家
         this.holeList = holeList;
         this.holePlayList = JSON.parse(JSON.stringify(holeList));
         this.rangeHolePlayList = JSON.parse(JSON.stringify(holeList));
-
         this.groupId = groupId;  // 存储当前分组ID
-        // 新增: 初始化并同步分数到 scoreStore
-        scoreStore.initializeScores(players.length, holeList.length);
-        scoreStore.scores = scores;
+
+        console.log('🔄 [Store] 基础数据更新完成，开始初始化scoreStore...');
+
+        // 确保在下一个事件循环中更新scoreStore，避免时序问题
+        setTimeout(() => {
+            try {
+                scoreStore.initializeScores(players.length, holeList.length);
+                scoreStore.scores = scores;
+                console.log('✅ [Store] scoreStore数据更新完成');
+
+                // 验证数据是否正确传递
+                const scoreStatus = scoreStore.getDataStatus();
+                console.log('📊 [Store] scoreStore状态验证:', scoreStatus);
+
+            } catch (error) {
+                console.error('❌ [Store] scoreStore更新失败:', error);
+            }
+        }, 0);
+
+        console.log('✅ [Store] 数据处理完成');
     }),
 
 
