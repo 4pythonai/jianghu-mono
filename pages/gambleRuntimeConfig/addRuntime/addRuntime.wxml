@@ -6,7 +6,6 @@
     <text>players: {{players.length}}人</text>
     <text>error: {{error}}</text>
     <text>loading: {{loading}}</text>
-    <button size="mini" bindtap="onManualInit8421">手动初始化8421</button>
   </view>
 
   <!-- 错误状态 -->
