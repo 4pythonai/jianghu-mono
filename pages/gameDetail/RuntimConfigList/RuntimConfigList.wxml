@@ -48,8 +48,8 @@
                 </view>
                 <!-- 点击提示 -->
                 <view class="config-click-hint">
-                        <button class="detail-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="onRuntimeItemClick">详情</button>
-                        <button class="result-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="handleGotoResult">结果</button>                </view>
+                        <button class="detail-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="onRuntimeItemClick">配置游戏</button>
+                        <button class="result-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="handleGotoResult">查看结果</button>                </view>
                 </view>
         </view>
         

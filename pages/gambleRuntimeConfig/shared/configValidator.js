@@ -5,13 +5,7 @@
 const GameTypeManager = require('../../../utils/gameTypeManager');
 
 const ConfigValidator = {
-    /**
-     * 验证完整配置
-     * @param {Object} runtimeConfig 运行时配置
-     * @param {Array} players 玩家数组
-     * @param {string} gambleSysName 游戏类型
-     * @returns {Object} 验证结果 {valid: boolean, errors: Array}
-     */
+
     validateFullConfig(runtimeConfig, players, gambleSysName) {
         const errors = [];
 

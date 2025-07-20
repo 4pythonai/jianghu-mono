@@ -303,6 +303,15 @@ const BaseConfig = {
         try {
             const isEditMode = configId && configId !== '';
             const apiMethod = isEditMode ? 'updateRuntimeConfig' : 'addRuntimeConfig';
+
+            console.log('[BaseConfig] 保存配置调试信息:', {
+                configId,
+                isEditMode,
+                apiMethod,
+                gameId,
+                saveDataKeys: Object.keys(saveData)
+            });
+
             const res = await app.api.gamble[apiMethod](saveData);
             if (res.code === 200) {
                 wx.showToast({

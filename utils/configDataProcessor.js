@@ -37,10 +37,16 @@ const ConfigDataProcessor = {
                 ...gameTypeData,
                 ...holeData,
                 isEditMode: decodedData.isEditMode || false,
-                editConfig: decodedData.editConfig || null
+                editConfig: decodedData.editConfig || null,
+                configId: decodedData.configId || ''
             };
 
             console.log('[ConfigDataProcessor] 处理完成:', processedData);
+            console.log('[ConfigDataProcessor] configId 处理结果:', {
+                originalConfigId: decodedData.configId,
+                processedConfigId: processedData.configId,
+                isEditMode: processedData.isEditMode
+            });
             return processedData;
 
         } catch (error) {
