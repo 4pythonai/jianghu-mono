@@ -36,7 +36,6 @@ const ConfigDataProcessor = {
                 ...baseData,
                 ...gameTypeData,
                 ...holeData,
-                isEditMode: decodedData.isEditMode || false,
                 editConfig: decodedData.editConfig || null,
                 configId: decodedData.configId || ''
             };
@@ -116,7 +115,7 @@ const ConfigDataProcessor = {
             userRuleId = decodedData.userRuleId || null;
             userRule = decodedData.userRule || null;
 
-        } else if (decodedData.isEditMode && decodedData.editConfig) {
+        } else if (decodedData.editConfig) {
             // 编辑模式
             gambleSysName = decodedData.editConfig.gambleSysName;
             gambleUserName = decodedData.editConfig.gambleUserName;
@@ -248,7 +247,17 @@ const ConfigDataProcessor = {
         // 如果是编辑模式，添加配置ID
         if (configId) {
             saveData.id = configId;
+            console.log('[ConfigDataProcessor] 编辑模式，添加ID:', configId);
+        } else {
+            console.log('[ConfigDataProcessor] 新增模式，无ID');
         }
+
+        console.log('[ConfigDataProcessor] 准备保存的数据:', {
+            hasId: !!saveData.id,
+            id: saveData.id,
+            configId: configId,
+            saveDataKeys: Object.keys(saveData)
+        });
 
         return saveData;
     }

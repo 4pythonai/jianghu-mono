@@ -22,6 +22,10 @@
 
                 <view class="config-details">
                     <view class="config-row">
+                        <text class="config-label">ID:</text>
+                        <text class="config-value">{{ item.id }}</text>
+                    </view>
+                    <view class="config-row">
                         <text class="config-label">创建时间:</text>
                         <text class="config-value">{{ item.create_time }}</text>
                     </view>

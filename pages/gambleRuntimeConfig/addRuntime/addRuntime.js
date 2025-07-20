@@ -122,7 +122,7 @@ Page({
     async saveConfig() {
         const { runtimeConfig, gameId } = this.data;
 
-        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, '', this);
+        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, '', this, false);
 
         if (result.success) {
             console.log('[AddRuntime] 配置保存成功');

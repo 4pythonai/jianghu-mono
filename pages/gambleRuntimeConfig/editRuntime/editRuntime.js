@@ -106,7 +106,15 @@ Page({
     async saveConfig() {
         const { runtimeConfig, gameId, configId } = this.data;
 
-        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, configId, this);
+        console.log('[EditRuntime] 保存配置，数据检查:', {
+            configId,
+            configIdType: typeof configId,
+            hasConfigId: !!configId,
+            gameId,
+            runtimeConfigKeys: Object.keys(runtimeConfig)
+        });
+
+        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, configId, this, true);
 
         if (result.success) {
             console.log('[EditRuntime] 配置更新成功');

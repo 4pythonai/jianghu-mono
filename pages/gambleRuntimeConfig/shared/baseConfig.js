@@ -39,8 +39,8 @@ const BaseConfig = {
 
             pageContext.setData(setDataObj);
 
-            // 根据模式进行不同的初始化
-            if (processedData.isEditMode && processedData.editConfig) {
+            // 根据是否有编辑配置来决定初始化方式
+            if (processedData.editConfig) {
                 BaseConfig.loadEditConfig(processedData.editConfig, pageContext);
             } else {
                 BaseConfig.initializeNewConfig(processedData, pageContext);
@@ -293,42 +293,45 @@ const BaseConfig = {
      * @param {string} gameId 游戏ID
      * @param {string} configId 配置ID
      * @param {Object} pageContext 页面上下文
+     * @param {boolean} isEdit 是否为编辑模式
      * @returns {Promise} 保存结果
      */
-    async saveConfig(runtimeConfig, gameId, configId, pageContext) {
+    async saveConfig(runtimeConfig, gameId, configId, pageContext, isEdit = false) {
         const saveData = ConfigDataProcessor.prepareSaveData(runtimeConfig, gameId, configId);
 
         pageContext.setData({ loading: true });
 
         try {
-            const isEditMode = configId && configId !== '';
-            const apiMethod = isEditMode ? 'updateRuntimeConfig' : 'addRuntimeConfig';
+            const apiMethod = isEdit ? 'updateRuntimeConfig' : 'addRuntimeConfig';
 
             console.log('[BaseConfig] 保存配置调试信息:', {
                 configId,
-                isEditMode,
+                configIdType: typeof configId,
+                isEdit,
                 apiMethod,
                 gameId,
-                saveDataKeys: Object.keys(saveData)
+                saveDataKeys: Object.keys(saveData),
+                hasId: !!saveData.id,
+                id: saveData.id
             });
 
             const res = await app.api.gamble[apiMethod](saveData);
             if (res.code === 200) {
                 wx.showToast({
-                    title: isEditMode ? '配置更新成功' : '配置保存成功',
+                    title: isEdit ? '配置更新成功' : '配置保存成功',
                     icon: 'success'
                 });
 
                 setTimeout(() => {
                     wx.navigateBack({
-                        delta: isEditMode ? 1 : 2
+                        delta: isEdit ? 1 : 2
                     });
                 }, 1500);
 
                 return { success: true };
             }
             wx.showToast({
-                title: res.msg || (isEditMode ? '更新失败' : '保存失败'),
+                title: res.msg || (isEdit ? '更新失败' : '保存失败'),
                 icon: 'none'
             });
             return { success: false, error: res.msg };

@@ -168,10 +168,10 @@ Component({
             // 直接使用 processOneGamble 处理完的配置，添加必要的跳转标识
             const jumpData = {
                 ...config,                    // 使用处理完的配置数据
+                configId: config.id,          // 明确设置 configId
                 gameId: gameId,               // 添加游戏ID
                 fromUserRule: false,          // 不是从用户规则进入
-                isEditMode: true,             // 标记为编辑模式
-                editConfig: config            // 传递要编辑的配置（保持兼容性）
+                editConfig: config            // 传递要编辑的配置
             };
 
             // 将数据编码为JSON字符串
