@@ -51,9 +51,6 @@ export const gameStore = observable({
         const allPlayers = (gameInfo.players || []).map(p => normalizePlayer(p));
         const players = this._filterPlayersByGroup(allPlayers, groupId);
         const holeList = (gameInfo.holeList || []).map((h, index) => normalizeHole(h, index + 1));
-
-        console.log(`📊 [Store] 数据处理: ${players.length}个玩家, ${holeList.length}个洞`);
-
         const scoreMap = new Map();
         for (const s of gameInfo.scores || []) {
             const key = `${s.userid}_${s.holeid}`;
@@ -73,7 +70,6 @@ export const gameStore = observable({
             normalizeScoreCards(gameInfo.score_cards);
         }
 
-        console.log('🔄 [Store] 开始更新store数据...');
 
         // 先更新基础数据
         this.gameData = gameInfo;
@@ -83,7 +79,6 @@ export const gameStore = observable({
         // 使用 holeRangeStore 管理洞数据
         holeRangeStore.initializeHoles(holeList);
 
-        console.log('🔄 [Store] 基础数据更新完成，开始初始化scoreStore...');
 
         // 立即更新scoreStore，避免时序问题
         try {

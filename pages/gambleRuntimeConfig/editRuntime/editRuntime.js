@@ -4,7 +4,6 @@
  */
 const BaseConfig = require('../shared/baseConfig');
 const ConfigValidator = require('../shared/configValidator');
-const GameTypeManager = require('../../../utils/gameTypeManager');
 const { runtimeStore } = require('../../../stores/runtimeStore');
 const { gameStore } = require('../../../stores/gameStore');
 const { holeRangeStore } = require('../../../stores/holeRangeStore');

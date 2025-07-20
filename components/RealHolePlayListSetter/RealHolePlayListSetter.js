@@ -40,18 +40,6 @@ Component({
             const plainHolePlayList = toJS(holePlayList);
             const plainRangeHolePlayList = toJS(rangeHolePlayList);
 
-            console.log(' ⭕️ RealHolePlayListSetter attached - holeRangeStore数据 (observable):',
-                {
-                    holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex,
-                });
-
-            console.log(' ⭕️ RealHolePlayListSetter attached - holeRangeStore数据 (plain):',
-                {
-                    holeList: plainHoleList,
-                    holePlayList: plainHolePlayList,
-                    rangeHolePlayList: plainRangeHolePlayList,
-                    startHoleindex, endHoleindex,
-                });
 
             // 根据传入的startHoleindex和endHoleindex设置初始选中范围
             let selectedHindexArray = [];
@@ -73,21 +61,13 @@ Component({
                     }
                 }
 
-                console.log(' ⭕️ 编辑模式 - 根据传入参数设置选中范围:', {
-                    startHoleindex: this.properties.startHoleindex,
-                    endHoleindex: this.properties.endHoleindex,
-                    selectedHindexArray,
-                    holePlayList: plainHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
-                });
             } else {
                 // 创建模式 - 默认全选所有洞
                 selectedHindexArray = plainHolePlayList ? plainHolePlayList.map(hole => hole.hindex) : [];
-                console.log(' ⭕️ 创建模式 - 默认全选所有洞:', selectedHindexArray);
             }
 
             // 如果没有 holePlayList 数据，尝试从 holeList 生成
             if (!holePlayList || holePlayList.length === 0) {
-                console.log(' ⭕️ holePlayList 为空，从 holeList 生成');
                 const generatedHolePlayList = holeList ? [...holeList] : [];
                 this.setData({
                     holeList,
