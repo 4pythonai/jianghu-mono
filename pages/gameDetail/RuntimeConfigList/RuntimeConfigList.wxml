@@ -149,4 +149,19 @@
     runtimeConfigs="{{runtimeConfigs}}"
     bind:close="onKickoffClose"
   />
+  <holejump
+    wx:if="{{isHolejumpVisible}}"
+    runtimeConfigs="{{runtimeConfigs}}"
+    bind:close="onHolejumpClose"
+  />
+  <starthole
+    wx:if="{{isStartholeVisible}}"
+    runtimeConfigs="{{runtimeConfigs}}"
+    bind:close="onStartholeClose"
+  />
+  <juanguo
+    wx:if="{{isJuanguoVisible}}"
+    runtimeConfigs="{{runtimeConfigs}}"
+    bind:close="onJuanguoClose"
+  />
 </view>

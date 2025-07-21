@@ -1,5 +1,8 @@
 {
 	"usingComponents": {
-		"kickoff": "./gamblOperationComponent/kickoff/kickoff"
+		"kickoff": "./gamblOperationComponent/kickoff/kickoff",
+		"holejump": "./gamblOperationComponent/holejump/holejump",
+		"juanguo": "./gamblOperationComponent/juanguo/juanguo",
+		"starthole": "./gamblOperationComponent/starthole/starthole"
 	}
 }

@@ -1,0 +1,44 @@
+.juanguo-popup {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	z-index: 9999;
+	background: rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+
+.juanguo-content {
+	width: 100vw;
+	min-height: 50vh;
+	background: #fff;
+	border-top-left-radius: 16rpx;
+	border-top-right-radius: 16rpx;
+	padding: 40rpx 32rpx 32rpx 32rpx;
+	box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
+	animation: slideUp 0.3s;
+	overflow: auto;
+}
+
+.extra-close-btn {
+	background: #42b883;
+	color: #fff;
+	border-radius: 24rpx;
+	border: none;
+	padding: 20rpx 0;
+	font-size: 32rpx;
+	width: 100%;
+	margin-top: 32rpx;
+}
+
+@keyframes slideUp {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}

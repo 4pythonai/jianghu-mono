@@ -1,0 +1,6 @@
+<view class="starthole-popup" bindtap="close">
+  <view class="starthole-content" catchtap="noop">
+    <view>starthole 功能开发中</view>
+    <button class="extra-close-btn" bindtap="close">关闭</button>
+  </view>
+</view>

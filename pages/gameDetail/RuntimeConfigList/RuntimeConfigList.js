@@ -55,6 +55,9 @@ Component({
             }
         ],
         isKickoffVisible: false,
+        isHolejumpVisible: false,
+        isStartholeVisible: false,
+        isJuanguoVisible: false,
     },
 
 
@@ -218,18 +221,19 @@ Component({
 
         onJuanguoClick() {
             console.log('🎮 点击捐锅设置');
-            wx.showToast({
-                title: '捐锅设置功能开发中',
-                icon: 'none'
-            });
+            this.setData({ isJuanguoVisible: true });
+        },
+        onJuanguoClose() {
+            this.setData({ isJuanguoVisible: false });
         },
 
         onHoleJumpClick() {
             console.log('🎮 点击跳洞设置');
-            wx.showToast({
-                title: '跳洞设置功能开发中',
-                icon: 'none'
-            });
+            this.setData({ isHolejumpVisible: true });
+        },
+
+        onHolejumpClose() {
+            this.setData({ isHolejumpVisible: false });
         },
 
         onStartHoleClick() {
@@ -238,6 +242,14 @@ Component({
                 title: '调整出发洞功能开发中',
                 icon: 'none'
             });
+        },
+
+        onStartholeClick() {
+            console.log('🎮 点击调整出发洞');
+            this.setData({ isStartholeVisible: true });
+        },
+        onStartholeClose() {
+            this.setData({ isStartholeVisible: false });
         },
 
         onKickClick() {
@@ -282,6 +294,12 @@ Component({
             console.log('🎮 点击游戏选项:', option);
             if (option.id === 'kick') {
                 this.onKickClick();
+            } else if (option.id === 'holejump') {
+                this.onHoleJumpClick();
+            } else if (option.id === 'starthole') {
+                this.onStartholeClick();
+            } else if (option.id === 'juanguo') {
+                this.onJuanguoClick();
             }
         }
     },
