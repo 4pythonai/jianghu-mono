@@ -2,6 +2,35 @@
   <view class="kickoff-content" catchtap="noop">
     <view>Kick组件</view>
     <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
+    <view>gameData: {{gameData }}</view>
     <view>runtimeConfigs: {{runtimeConfigs }}</view>
     <button class="extra-close-btn" bindtap="close">关闭</button>
   </view>
