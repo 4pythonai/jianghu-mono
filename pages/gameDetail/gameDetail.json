@@ -3,7 +3,7 @@
 	"usingComponents": {
 		"RuntimeConfigList": "./RuntimeConfigList/RuntimeConfigList",
 		"bbs": "/subpackages/bbs/bbs",
-		"ScoreTable": "/subpackages/game-manage/pages/gameDetail/ScoreTable/ScoreTable",
+		"ScoreTable": "/subpackages/game-manage/ScoreTable/ScoreTable",
 		"OperationBar": "./OperationBar/OperationBar",
 		"ScoreInputPanel": "/components/ScoreInputPanel/ScoreInputPanel",
 		"AddPlayerHubPanel": "./AddPlayerHubPanel/AddPlayerHubPanel",

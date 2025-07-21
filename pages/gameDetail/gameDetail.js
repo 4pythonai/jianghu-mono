@@ -5,7 +5,6 @@ Page({
     usingComponents: {
         'bbs': '/subpackages/bbs',
         'gamble': '/subpackages/gamble',
-        'ScoreTable': '/subpackages/game-manage/pages/gameDetail/ScoreTable'
     },
     data: {
         gameId: '',
