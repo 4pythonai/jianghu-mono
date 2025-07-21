@@ -17,12 +17,15 @@ Component({
             // 你也可以打印具体字段
             console.log('[kickoff] gameStore.gameData:', toJS(gameStore.gameData));
             console.log('[kickoff] gameStore.players:', toJS(gameStore.players));
+
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
-                fields: ['gameData', 'players', 'scores', 'holes', 'loading', 'error'],
+                fields: ['gameData', 'players'],
                 actions: [],
             });
+
         },
+
         detached() {
             this.storeBindings.destroyStoreBindings();
         }
