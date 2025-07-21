@@ -224,9 +224,23 @@ class Gamble extends MY_Controller {
     public function getUserGambleRules() {
         $userid = $this->getUser();
 
+
+
         try {
             // 查询用户创建的所有赌球规则，只获取需要的字段
-            $query = "SELECT id as userRuleId, gambleSysName, gambleUserName, playersNumber 
+            $query = "SELECT id as userRuleId, 
+                     create_time,
+                     draw8421_config,
+                     duty_config,
+                     eating_range,
+                     gambleSysName,
+                     gambleUserName,
+                     max8421_sub_value,
+                     meat_max_value,
+                     meat_value_config_string,
+                     playersNumber,
+                     sub8421_config_string,
+                     update_time
                      FROM t_gamble_rule_user 
                      WHERE creator_id = ? 
                      ORDER BY create_time DESC";
@@ -300,6 +314,9 @@ class Gamble extends MY_Controller {
             $gamble['attenders'] = $this->setGambleAttenders($gamble);
             $gamble['holePlayListStr'] =  $gamble['holePlayList'];
             unset($gamble['holePlayList']);
+            $userRuleId = $gamble['userRuleId'];
+            $specRow = $this->db->where('id', $userRuleId)->get('t_gamble_rule_user')->row_array();
+            $gamble['spec'] = $specRow;
         }
 
 
