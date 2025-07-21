@@ -1,0 +1,8 @@
+<view class="kickoff-popup" bindtap="close">
+  <view class="kickoff-content" catchtap="noop">
+    <view>Kick组件</view>
+    <view>gameData: {{gameData }}</view>
+    <view>runtimeConfigs: {{runtimeConfigs }}</view>
+    <button bindtap="close">关闭</button>
+  </view>
+</view>

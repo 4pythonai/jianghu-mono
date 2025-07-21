@@ -1,125 +1,152 @@
 <!-- 定义配置项模板 -->
 <template name="configItem">
-    <view class="config-item" hover-class="config-item-hover" data-config="{{ item }}" data-index="{{ index }}">
-        <image class="delete-btn" src="/assets/icons/icons8-delete-48.png" data-id="{{ item.id }}" bindtap="onDeleteConfig" />
-        <view class="config-header">
-            <text class="config-title">游戏配置 #{{ index + 1 }}</text>
-        </view>
-        <view class="config-details">
-            <view class="config-row">
-                <text class="config-label">ID:</text>
-                <text class="config-value">{{ item.id }}</text>
-            </view>
-            <view class="config-row">
-                <text class="config-label">创建时间:</text>
-                <text class="config-value">{{ item.create_time }}</text>
-            </view>
-            <view class="config-row">
-                <text class="config-label">gambleSysName:</text>
-                <text class="config-value">{{ item.gambleSysName }}</text>
-            </view>
-            <view class="config-row">
-                <text class="config-label">gambleUserName:</text>
-                <text class="config-value">{{ item.gambleUserName }}</text>
-            </view>
-            <view class="config-row" wx:if="{{ item.red_blue_config }}">
-                <text class="config-label">分组方式:</text>
-                <text class="config-value">{{ item.red_blue_config }}</text>
-            </view>
-            <view class="config-row" wx:if="{{ item.ranking_display }}">
-                <text class="config-label">排名规则:</text>
-                <text class="config-value">{{ item.ranking_display }}</text>
-            </view>
-            <view class="config-row" wx:if="{{ item.player8421Count }}">
-                <text class="config-label">参与人数:</text>
-                <text class="config-value">{{ item.player8421Count }}人</text>
-            </view>
-            <view class="config-row" wx:if="{{ item.endHoleindex }}">
-                <text class="config-label">起/终:</text>
-                <text class="config-value">{{ item.startHoleindex }}/{{ item.endHoleindex }}</text>
-            </view>
-        </view>
-        <view class="config-click-hint">
-            <button class="detail-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="onRuntimeItemClick">
-                配置游戏
-            </button>
-            <button class="result-btn" data-config="{{ item }}" data-index="{{ index }}" bindtap="handleGotoResult">
-                查看结果
-            </button>
-        </view>
+  <view
+    class="config-item"
+    hover-class="config-item-hover"
+    data-config="{{ item }}"
+    data-index="{{ index }}"
+  >
+    <image
+      class="delete-btn"
+      src="/assets/icons/icons8-delete-48.png"
+      data-id="{{ item.id }}"
+      bindtap="onDeleteConfig"
+    />
+    <view class="config-header">
+      <text class="config-title">游戏配置 #{{ index + 1 }}</text>
     </view>
+    <view class="config-details">
+      <view class="config-row">
+        <text class="config-label">ID:</text>
+        <text class="config-value">{{ item.id }}</text>
+      </view>
+      <view class="config-row">
+        <text class="config-label">创建时间:</text>
+        <text class="config-value">{{ item.create_time }}</text>
+      </view>
+      <view class="config-row">
+        <text class="config-label">gambleSysName:</text>
+        <text class="config-value">{{ item.gambleSysName }}</text>
+      </view>
+      <view class="config-row">
+        <text class="config-label">gambleUserName:</text>
+        <text class="config-value">{{ item.gambleUserName }}</text>
+      </view>
+      <view class="config-row" wx:if="{{ item.red_blue_config }}">
+        <text class="config-label">分组方式:</text>
+        <text class="config-value">{{ item.red_blue_config }}</text>
+      </view>
+      <view class="config-row" wx:if="{{ item.ranking_display }}">
+        <text class="config-label">排名规则:</text>
+        <text class="config-value">{{ item.ranking_display }}</text>
+      </view>
+      <view class="config-row" wx:if="{{ item.player8421Count }}">
+        <text class="config-label">参与人数:</text>
+        <text class="config-value">{{ item.player8421Count }}人</text>
+      </view>
+      <view class="config-row" wx:if="{{ item.endHoleindex }}">
+        <text class="config-label">起/终:</text>
+        <text class="config-value">{{ item.startHoleindex }}/{{ item.endHoleindex }}</text>
+      </view>
+    </view>
+    <view class="config-click-hint">
+      <button
+        class="detail-btn"
+        data-config="{{ item }}"
+        data-index="{{ index }}"
+        bindtap="onRuntimeItemClick"
+      >配置游戏</button>
+      <button
+        class="result-btn"
+        data-config="{{ item }}"
+        data-index="{{ index }}"
+        bindtap="handleGotoResult"
+      >查看结果</button>
+    </view>
+  </view>
 </template>
 <!-- 游戏(Gamble)模块 -->
 <view class="gamble-container">
-    <!-- 加载中状态 -->
-    <view wx:if="{{ loadingRuntimeConfig }}" class="loading-container">
-        <view class="loading-spinner"></view>
-        <text class="loading-text">加载游戏配置中...</text>
+  <!-- 加载中状态 -->
+  <view wx:if="{{ loadingRuntimeConfig }}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载游戏配置中...</text>
+  </view>
+  <view wx:elif="{{ runtimeConfigs && runtimeConfigs.length > 0 }}" class="gamble-content">
+    <!-- 游戏额外选项 -->
+    <view class="extra-options-container">
+      <view class="extra-options-title">游戏设置</view>
+      <view class="gambels-extra-opetion">
+        <view class="option-text">游戏是否公开</view>
+        <radio-group name="gamePublic" class="radio-group-row" bindchange="onGamePublicChange">
+          <label class="radio-label">
+            <radio value="public" checked="true" />公开
+          </label>
+          <label class="radio-label">
+            <radio value="private" />私密
+          </label>
+        </radio-group>
+      </view>
+      <view class="gambels-extra-opetion">
+        <view class="option-text">大风吹</view>
+        <radio-group name="bigWind" class="radio-group-row" bindchange="onBigWindChange">
+          <label class="radio-label">
+            <radio value="yes" />大风吹
+          </label>
+          <label class="radio-label">
+            <radio value="no" checked="true" />否
+          </label>
+        </radio-group>
+      </view>
+      <view
+        wx:for="{{ extraOptions }}"
+        wx:key="id"
+        class="gambels-extra-opetion"
+        bindtap="onExtraOptionClick"
+        data-option="{{ item }}"
+      >
+        <view class="option-content">
+          <image class="option-icon" src="{{ item.icon }}" mode="aspectFit"></image>
+          <text class="option-text">{{ item.title }}</text>
+        </view>
+        <view class="option-arrow">
+          <image
+            class="arrow-icon"
+            src="/assets/icons/icons8-right-button-50-2.png"
+            mode="aspectFit"
+          ></image>
+        </view>
+      </view>
     </view>
-    <view wx:elif="{{ runtimeConfigs && runtimeConfigs.length > 0 }}" class="gamble-content">
-        <!-- 游戏额外选项 -->
-        <view class="extra-options-container">
-            <view class="extra-options-title">游戏设置</view>
-            <view class="gambels-extra-opetion">
-                <view class="option-text">游戏是否公开</view>
-                <radio-group name="gamePublic" class="radio-group-row" bindchange="onGamePublicChange">
-                    <label class="radio-label">
-                        <radio value="public" checked="true" />
-                        公开
-                    </label>
-                    <label class="radio-label">
-                        <radio value="private" />
-                        私密
-                    </label>
-                </radio-group>
-            </view>
-            <view class="gambels-extra-opetion">
-                <view class="option-text">大风吹</view>
-                <radio-group name="bigWind" class="radio-group-row" bindchange="onBigWindChange">
-                    <label class="radio-label">
-                        <radio value="yes" />
-                        大风吹
-                    </label>
-                    <label class="radio-label">
-                        <radio value="no" checked="true" />
-                        否
-                    </label>
-                </radio-group>
-            </view>
-            <view wx:for="{{ extraOptions }}" wx:key="id" class="gambels-extra-opetion" bindtap="onExtraOptionClick" data-option="{{ item }}">
-                <view class="option-content">
-                    <image class="option-icon" src="{{ item.icon }}" mode="aspectFit"></image>
-                    <text class="option-text">{{ item.title }}</text>
-                </view>
-                <view class="option-arrow">
-                    <image class="arrow-icon" src="/assets/icons/icons8-right-button-50-2.png" mode="aspectFit"></image>
-                </view>
-            </view>
-        </view>
-        <view class="config-list">
-            <view wx:for="{{ runtimeConfigs }}" wx:key="unique">
-                <template is="configItem" data="{{ item, index }}" />
-            </view>
-        </view>
-        <!-- 添加更多游戏按钮 -->
-        <view class="add-more-container">
-            <button class="add-more-button" bindtap="handleAddGame">
-                <text class="add-more-icon">+</text>
-                <text class="add-more-text">添加更多游戏</text>
-            </button>
-        </view>
+    <view class="config-list">
+      <view wx:for="{{ runtimeConfigs }}" wx:key="unique">
+        <template is="configItem" data="{{ item, index }}" />
+      </view>
     </view>
-    <view wx:else class="gamble-content">
-        <view class="no-gamble-container">
-            <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
-            <text class="empty-hint">暂无游戏配置</text>
-        </view>
-        <!-- 底部按钮区域 -->
-        <view class="bottom-button-area">
-            <button class="add-game-button" bindtap="handleAddGame">
-                <text class="button-emoji">🎮</text>
-                <text class="button-text">添加游戏</text>
-            </button>
-        </view>
+    <!-- 添加更多游戏按钮 -->
+    <view class="add-more-container">
+      <button class="add-more-button" bindtap="handleAddGame">
+        <text class="add-more-icon">+</text>
+        <text class="add-more-text">添加更多游戏</text>
+      </button>
     </view>
+  </view>
+  <view wx:else class="gamble-content">
+    <view class="no-gamble-container">
+      <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
+      <text class="empty-hint">暂无游戏配置</text>
+    </view>
+    <!-- 底部按钮区域 -->
+    <view class="bottom-button-area">
+      <button class="add-game-button" bindtap="handleAddGame">
+        <text class="button-emoji">🎮</text>
+        <text class="button-text">添加游戏</text>
+      </button>
+    </view>
+  </view>
+  <kickoff
+    wx:if="{{isKickoffVisible}}"
+    runtimeConfigs="{{runtimeConfigs}}"
+    bind:close="onKickoffClose"
+  />
 </view>

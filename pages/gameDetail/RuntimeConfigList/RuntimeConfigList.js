@@ -50,7 +50,8 @@ Component({
                 icon: '/assets/icons/icons8-delete-50.png',
                 handler: 'onKickClick'
             }
-        ]
+        ],
+        isKickoffVisible: false,
     },
 
 
@@ -237,11 +238,14 @@ Component({
         },
 
         onKickClick() {
-            console.log('🎮 点击踢一脚');
-            wx.showToast({
-                title: '踢一脚功能开发中',
-                icon: 'none'
+            console.log('🎮 点击踢一脚 runtimeConfigs:', this.data.runtimeConfigs);
+            this.setData({ isKickoffVisible: true }, () => {
+                console.log('isKickoffVisible:', this.data.isKickoffVisible);
             });
+        },
+
+        onKickoffClose() {
+            this.setData({ isKickoffVisible: false });
         },
 
         onBigWindClick() {
@@ -275,50 +279,8 @@ Component({
         onExtraOptionClick(e) {
             const option = e.currentTarget.dataset.option;
             console.log('🎮 点击游戏选项:', option);
-
-            // 根据选项ID执行不同的处理逻辑
-            switch (option.id) {
-                case 'gamePublic':
-                    wx.showToast({
-                        title: '游戏公开设置功能开发中',
-                        icon: 'none'
-                    });
-                    break;
-                case 'donatePot':
-                    wx.showToast({
-                        title: '捐锅设置功能开发中',
-                        icon: 'none'
-                    });
-                    break;
-                case 'skipHole':
-                    wx.showToast({
-                        title: '跳洞设置功能开发中',
-                        icon: 'none'
-                    });
-                    break;
-                case 'adjustStartHole':
-                    wx.showToast({
-                        title: '调整出发洞功能开发中',
-                        icon: 'none'
-                    });
-                    break;
-                case 'kick':
-                    wx.showToast({
-                        title: '踢一脚功能开发中',
-                        icon: 'none'
-                    });
-                    break;
-                case 'bigWind':
-                    wx.showToast({
-                        title: '大风吹功能开发中',
-                        icon: 'none'
-                    });
-                    break;
-                default:
-                    wx.showToast({
-                        title: '功能开发中',
-                        icon: 'none'
-                    });
+            if (option.id === 'kick') {
+                this.onKickClick();
             }
         }
     },
@@ -326,10 +288,6 @@ Component({
     // 生命周期
     lifetimes: {
         attached() {
-            console.log('🎮 [RuntimeConfigList] 组件已挂载');
-
-            // 调试：检查extraOptions数据
-            console.log('🎮 [RuntimeConfigList] extraOptions数据:', this.data.extraOptions);
 
             // 创建多个store绑定
             this.gameStoreBindings = createStoreBindings(this, {
@@ -347,8 +305,7 @@ Component({
             this.initGame();
             console.log('🎮 [Gamble] 组件已附加, 多store绑定已创建');
 
-            // 添加数据监听
-            // this.observeRuntimeConfigs();
+
         },
 
         detached() {
