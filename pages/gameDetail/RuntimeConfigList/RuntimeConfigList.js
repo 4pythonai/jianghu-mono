@@ -25,24 +25,27 @@ Component({
         lastRefreshTime: 0, // 记录上次刷新时间, 避免频繁刷新
 
         // 游戏额外选项数据
+
+
+        // holejump  juanguo   kickoff   starthole
         extraOptions: [
             {
-                id: 'donatePot',
+                id: 'juanguo',
                 title: '捐锅设置',
                 icon: '/assets/icons/icons8-delete-50.png',
-                handler: 'onDonatePotClick'
+                handler: 'onJuanguoClick'
             },
             {
-                id: 'skipHole',
+                id: 'holejump',
                 title: '跳洞设置',
                 icon: '/assets/icons/icons8-delete-50.png',
-                handler: 'onSkipHoleClick'
+                handler: 'onHoleJumpClick'
             },
             {
-                id: 'adjustStartHole',
+                id: 'starthole',
                 title: '调整出发洞',
                 icon: '/assets/icons/icons8-delete-50.png',
-                handler: 'onAdjustStartHoleClick'
+                handler: 'onStartHoleClick'
             },
             {
                 id: 'kick',
@@ -213,7 +216,7 @@ Component({
             });
         },
 
-        onDonatePotClick() {
+        onJuanguoClick() {
             console.log('🎮 点击捐锅设置');
             wx.showToast({
                 title: '捐锅设置功能开发中',
@@ -221,7 +224,7 @@ Component({
             });
         },
 
-        onSkipHoleClick() {
+        onHoleJumpClick() {
             console.log('🎮 点击跳洞设置');
             wx.showToast({
                 title: '跳洞设置功能开发中',
@@ -229,7 +232,7 @@ Component({
             });
         },
 
-        onAdjustStartHoleClick() {
+        onStartHoleClick() {
             console.log('🎮 点击调整出发洞');
             wx.showToast({
                 title: '调整出发洞功能开发中',
