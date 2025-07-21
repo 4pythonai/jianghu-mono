@@ -434,7 +434,7 @@
 
 /* 选项文本 */
 .gambels-extra-opetion .option-text {
-	font-size: 30rpx;
+	font-size: 26rpx;
 	color: #333;
 	font-weight: 500;
 	line-height: 1.4;
@@ -503,4 +503,19 @@
 	display: block;
 	width: 100%;
 	position: relative;
+}
+
+.radio-group-row {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 32rpx;
+	margin-left: 32rpx;
+}
+.radio-label {
+	font-size: 24rpx;
+	color: #333;
+	margin-right: 24rpx;
+	display: flex;
+	align-items: center;
 }

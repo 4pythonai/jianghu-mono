@@ -60,8 +60,9 @@
         <!-- 游戏额外选项 -->
         <view class="extra-options-container">
             <view class="extra-options-title">游戏设置</view>
-            <view class="radio-group-container">
-                <radio-group name="gamePublic" bindchange="onGamePublicChange">
+            <view class="gambels-extra-opetion">
+                <view class="option-text">游戏是否公开</view>
+                <radio-group name="gamePublic" class="radio-group-row" bindchange="onGamePublicChange">
                     <label class="radio-label">
                         <radio value="public" checked="true" />
                         公开
@@ -71,7 +72,10 @@
                         私密
                     </label>
                 </radio-group>
-                <radio-group name="bigWind" bindchange="onBigWindChange">
+            </view>
+            <view class="gambels-extra-opetion">
+                <view class="option-text">大风吹</view>
+                <radio-group name="bigWind" class="radio-group-row" bindchange="onBigWindChange">
                     <label class="radio-label">
                         <radio value="yes" />
                         大风吹
