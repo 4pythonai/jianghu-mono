@@ -18,5 +18,20 @@
 		"titleBar.inactiveBackground": "#42b88399",
 		"titleBar.inactiveForeground": "#15202b99"
 	},
-	"peacock.color": "#42b883"
+	"peacock.color": "#42b883",
+	"[wxml]": {
+		"editor.defaultFormatter": "qiu8310.minapp-vscode",
+		"editor.formatOnSave": true
+	},
+	"minapp-vscode.wxmlFormatter": "prettyHtml", // 指定格式化工具
+	"minapp-vscode.prettyHtml": {
+		// prettyHtml 默认配置
+		"useTabs": false,
+		"tabWidth": 2,
+		"printWidth": 100,
+		"singleQuote": false,
+		"usePrettier": true,
+		"wrapAttributes": false, // 设置成 true 强制属性换行
+		"sortAttributes": false
+	}
 }
