@@ -9,19 +9,22 @@
     游戏
   </view>
 </view>
+<!-- 记分 -->
 <view class="tab-content" wx:if="{{currentTab === 0}}">
   <ScoreTable bind:cellclick="onCellClick" />
   <OperationBar bind:showaddplayer="onShowAddPlayer" bind:showgameoperation="onShowGameOperation" />
+  <!-- 记分面板 -->
+  <ScoreInputPanel id="scoreInputPanel" />
+  <!-- 添加球员面板 -->
+  <AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
+  <!-- 游戏操作面板 -->
+  <GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" />
 </view>
+<!-- 互动 -->
 <view class="tab-content" wx:if="{{currentTab === 1}}">
   <bbs gameId="{{gameData.gameid || ''}}" />
 </view>
+<!-- 赌博相关 -->
 <view class="tab-content" wx:if="{{currentTab === 2}}">
   <RuntimeConfigList id="gambleComponent" gameId="{{gameData.gameid || ''}}" players="{{gameData.players || []}}" />
 </view>
-<!-- 记分面板 -->
-<ScoreInputPanel id="scoreInputPanel" />
-<!-- 添加球员面板 -->
-<AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
-<!-- 游戏操作面板 -->
-<GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" />
