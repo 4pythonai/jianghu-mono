@@ -2,11 +2,15 @@
 	"navigationBarTitleText": "比赛详情",
 	"usingComponents": {
 		"RuntimeConfigList": "./RuntimeConfigList/RuntimeConfigList",
-		"bbs": "./bbs/bbs",
-		"ScoreTable": "./ScoreTable/ScoreTable",
+		"bbs": "/subpackages/bbs/bbs",
+		"ScoreTable": "/subpackages/game-manage/pages/gameDetail/ScoreTable/ScoreTable",
 		"OperationBar": "./OperationBar/OperationBar",
 		"ScoreInputPanel": "/components/ScoreInputPanel/ScoreInputPanel",
 		"AddPlayerHubPanel": "./AddPlayerHubPanel/AddPlayerHubPanel",
 		"GameOperationPanel": "./GameOperationPanel/GameOperationPanel"
+	},
+	"componentPlaceholder": {
+		"bbs": "view",
+		"ScoreTable": "view"
 	}
 }

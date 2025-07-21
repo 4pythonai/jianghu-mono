@@ -85,6 +85,27 @@
 			}
 		]
 	},
+	"subpackages": [
+		{
+			"root": "subpackages/game-manage",
+			"pages": [
+				"pages/gameDetail/game-manage",
+				"pages/gameDetail/ScoreTable"
+			]
+		},
+		{
+			"root": "subpackages/bbs",
+			"pages": [
+				"bbs"
+			]
+		},
+		{
+			"root": "subpackages/gamble",
+			"pages": [
+				"pages/gameDetail/gamble"
+			]
+		}
+	],
 	"permission": {
 		"scope.userLocation": {
 			"desc": "您的位置信息将用于显示当前位置"

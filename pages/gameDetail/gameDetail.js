@@ -3,9 +3,9 @@ import { gameStore } from '../../stores/gameStore'
 
 Page({
     usingComponents: {
-        'bbs': './bbs/bbs',
-        'gamble': './gamble/gamble',
-        'ScoreTable': './ScoreTable/ScoreTable'
+        'bbs': '/subpackages/bbs/pages/gameDetail/bbs',
+        'gamble': '/subpackages/gamble/pages/gameDetail/gamble',
+        'ScoreTable': '/subpackages/game-manage/pages/gameDetail/ScoreTable'
     },
     data: {
         gameId: '',
