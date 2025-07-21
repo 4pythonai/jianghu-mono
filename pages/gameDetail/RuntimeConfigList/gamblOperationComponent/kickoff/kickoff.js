@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../../../../stores/gameStore';
+import { holeRangeStore } from '../../../../../stores/holeRangeStore';
 import { toJS } from 'mobx-miniprogram';
 Component({
     properties: {
@@ -12,6 +13,7 @@ Component({
         attached() {
             console.log('[kickoff] 组件已挂载，runtimeConfigs:', this.data.runtimeConfigs);
             console.log('[kickoff] gameStore:', toJS(gameStore));
+            console.log('[kickoff] holeRangeStore:', toJS(holeRangeStore));
             // 你也可以打印具体字段
             console.log('[kickoff] gameStore.gameData:', toJS(gameStore.gameData));
             console.log('[kickoff] gameStore.players:', toJS(gameStore.players));

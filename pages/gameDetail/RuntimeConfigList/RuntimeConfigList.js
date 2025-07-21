@@ -271,8 +271,6 @@ Component({
             // 打印所有gamble id
             const ids = (this.data.runtimeConfigs || []).map(item => item.id);
             console.log('本页面所有的gamble id:', ids);
-            // 这里调用 setGamblesBigWind，暂时只打印log
-            // this.setGamblesBigWind(value);
         },
 
         // 通用选项点击处理方法
