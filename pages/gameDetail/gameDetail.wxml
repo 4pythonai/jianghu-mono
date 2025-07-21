@@ -10,12 +10,8 @@
   </view>
 </view>
 <!-- 记分 -->
-<view class="tab-content" wx:if="{{currentTab === 0}}">
-  <ScoreTable bind:cellclick="onCellClick" />
-  <OperationBar bind:showaddplayer="onShowAddPlayer" bind:showgameoperation="onShowGameOperation" />
-  <ScoreInputPanel id="scoreInputPanel" />
-  <AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
-  <GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" />
+<view wx:if="{{currentTab === 0}}">
+  <GameMagement id="gameMagement" bind:cellclick="onCellClick" bind:showaddplayer="onShowAddPlayer" bind:addplayerconfirm="onAddPlayerConfirm" bind:showgameoperation="onShowGameOperation" bind:optionclick="onOptionClick" />
 </view>
 <!-- 互动 -->
 <view class="tab-content" wx:if="{{currentTab === 1}}">

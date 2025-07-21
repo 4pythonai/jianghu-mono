@@ -112,23 +112,23 @@ Page({
 
     onCellClick(e) {
         const { holeIndex, playerIndex, unique_key } = e.detail;
-        const scoreInputPanel = this.selectComponent('#scoreInputPanel');
-        if (scoreInputPanel) {
-            scoreInputPanel.show({ holeIndex, playerIndex, unique_key });
+        const gameMagement = this.selectComponent('#gameMagement');
+        if (gameMagement) {
+            gameMagement.showScoreInputPanel({ holeIndex, playerIndex, unique_key });
         } else {
-            console.error("无法找到 #scoreInputPanel 组件");
+            console.error('无法找到 #gameMagement 组件');
         }
     },
 
     onShowAddPlayer(e) {
         console.log('📊 [GameDetail] 显示添加球员面板');
-        const addPlayerHubPanel = this.selectComponent('#addPlayerHubPanel');
-        if (addPlayerHubPanel) {
-            addPlayerHubPanel.show({
+        const gameMagement = this.selectComponent('#gameMagement');
+        if (gameMagement) {
+            gameMagement.showAddPlayerHubPanel({
                 gameId: this.data.gameId
             });
         } else {
-            console.error("无法找到 # addPlayerHubPanel 组件");
+            console.error('无法找到 #gameMagement 组件');
         }
     },
 
@@ -145,13 +145,13 @@ Page({
 
     onShowGameOperation(e) {
         console.log('📊 [GameDetail] 显示游戏操作面板');
-        const gameOperationPanel = this.selectComponent('#gameOperationPanel');
-        if (gameOperationPanel) {
-            gameOperationPanel.show({
+        const gameMagement = this.selectComponent('#gameMagement');
+        if (gameMagement) {
+            gameMagement.showGameOperationPanel({
                 gameId: this.data.gameId
             });
         } else {
-            console.error("无法找到 #gameOperationPanel 组件");
+            console.error('无法找到 #gameMagement 组件');
         }
     },
 
