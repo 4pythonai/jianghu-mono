@@ -2,8 +2,8 @@
 	"navigationBarTitleText": "比赛详情",
 	"usingComponents": {
 		"RuntimeConfigList": "./RuntimeConfigList/RuntimeConfigList",
-		"bbs": "/subpackages/bbs/bbs",
-		"ScoreTable": "/subpackages/game-manage/ScoreTable/ScoreTable",
+		"BBS": "./BBS/BBS",
+		"ScoreTable": "./ScoreTable/ScoreTable",
 		"OperationBar": "./OperationBar/OperationBar",
 		"ScoreInputPanel": "/components/ScoreInputPanel/ScoreInputPanel",
 		"AddPlayerHubPanel": "./AddPlayerHubPanel/AddPlayerHubPanel",

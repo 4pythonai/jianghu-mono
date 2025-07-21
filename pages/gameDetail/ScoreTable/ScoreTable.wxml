@@ -1,6 +1,5 @@
 <view class="score-container">
 				<!-- 左侧固定列 -->
-				<view>AAAAAAAAAAAAAAAAA</view>
 				<view class="fixed-column player-column">
 								<view class="tb-header tb-header-player">球员</view>
 								<scroll-view scroll-y class="table-body" id="playerTable" scroll-top="{{ scrollTop }}" bindscroll="onPlayerScroll">

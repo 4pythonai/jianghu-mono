@@ -2,10 +2,8 @@ import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../stores/gameStore'
 
 Page({
-    usingComponents: {
-        'bbs': '/subpackages/bbs',
-        'gamble': '/subpackages/gamble',
-    },
+
+
     data: {
         gameId: '',
         groupId: '',

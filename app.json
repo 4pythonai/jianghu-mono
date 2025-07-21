@@ -93,12 +93,6 @@
 			]
 		},
 		{
-			"root": "subpackages/bbs",
-			"pages": [
-				"bbs"
-			]
-		},
-		{
 			"root": "subpackages/gamble",
 			"pages": [
 				"gamble"
