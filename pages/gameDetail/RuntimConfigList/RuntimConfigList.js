@@ -23,6 +23,46 @@ Component({
         // 模块内部数据
         loading: false,
         lastRefreshTime: 0, // 记录上次刷新时间, 避免频繁刷新
+
+        // 游戏额外选项数据
+        extraOptions: [
+            {
+                id: 'gamePublic',
+                title: '游戏是否公开',
+                icon: '/assets/icons/icons8-delete-50.png',
+                handler: 'onGamePublicClick'
+            },
+            {
+                id: 'donatePot',
+                title: '捐锅设置',
+                icon: '/assets/icons/icons8-delete-50.png',
+                handler: 'onDonatePotClick'
+            },
+            {
+                id: 'skipHole',
+                title: '跳洞设置',
+                icon: '/assets/icons/icons8-delete-50.png',
+                handler: 'onSkipHoleClick'
+            },
+            {
+                id: 'adjustStartHole',
+                title: '调整出发洞',
+                icon: '/assets/icons/icons8-delete-50.png',
+                handler: 'onAdjustStartHoleClick'
+            },
+            {
+                id: 'kick',
+                title: '踢一脚',
+                icon: '/assets/icons/icons8-delete-50.png',
+                handler: 'onKickClick'
+            },
+            {
+                id: 'bigWind',
+                title: '大风吹',
+                icon: '/assets/icons/icons8-delete-50.png',
+                handler: 'onBigWindClick'
+            }
+        ]
     },
 
 
@@ -106,7 +146,6 @@ Component({
             const { config, index } = e.currentTarget.dataset;
             const gameId = this.properties.gameId || gameStore.gameid;
 
-            console.log('🎮 点击配置项:', { config, index, gameId });
 
             if (!config) {
                 console.error('🎮 配置数据为空');
@@ -134,7 +173,6 @@ Component({
                 .map(key => `${key}=${encodeURIComponent(params[key])}`)
                 .join('&');
 
-            console.log('🎮 跳转到赌球结果页面, 参数:', params);
 
             // 跳转到赌球结果页面
             wx.navigateTo({
@@ -172,12 +210,117 @@ Component({
                     });
                 }
             });
+        },
+
+        // 游戏额外选项点击事件
+        onGamePublicClick() {
+            console.log('🎮 点击游戏是否公开');
+            wx.showToast({
+                title: '游戏公开设置功能开发中',
+                icon: 'none'
+            });
+        },
+
+        onDonatePotClick() {
+            console.log('🎮 点击捐锅设置');
+            wx.showToast({
+                title: '捐锅设置功能开发中',
+                icon: 'none'
+            });
+        },
+
+        onSkipHoleClick() {
+            console.log('🎮 点击跳洞设置');
+            wx.showToast({
+                title: '跳洞设置功能开发中',
+                icon: 'none'
+            });
+        },
+
+        onAdjustStartHoleClick() {
+            console.log('🎮 点击调整出发洞');
+            wx.showToast({
+                title: '调整出发洞功能开发中',
+                icon: 'none'
+            });
+        },
+
+        onKickClick() {
+            console.log('🎮 点击踢一脚');
+            wx.showToast({
+                title: '踢一脚功能开发中',
+                icon: 'none'
+            });
+        },
+
+        onBigWindClick() {
+            console.log('🎮 点击大风吹');
+            wx.showToast({
+                title: '大风吹功能开发中',
+                icon: 'none'
+            });
+        },
+
+        // 通用选项点击处理方法
+        onExtraOptionClick(e) {
+            const option = e.currentTarget.dataset.option;
+            console.log('🎮 点击游戏选项:', option);
+
+            // 根据选项ID执行不同的处理逻辑
+            switch (option.id) {
+                case 'gamePublic':
+                    wx.showToast({
+                        title: '游戏公开设置功能开发中',
+                        icon: 'none'
+                    });
+                    break;
+                case 'donatePot':
+                    wx.showToast({
+                        title: '捐锅设置功能开发中',
+                        icon: 'none'
+                    });
+                    break;
+                case 'skipHole':
+                    wx.showToast({
+                        title: '跳洞设置功能开发中',
+                        icon: 'none'
+                    });
+                    break;
+                case 'adjustStartHole':
+                    wx.showToast({
+                        title: '调整出发洞功能开发中',
+                        icon: 'none'
+                    });
+                    break;
+                case 'kick':
+                    wx.showToast({
+                        title: '踢一脚功能开发中',
+                        icon: 'none'
+                    });
+                    break;
+                case 'bigWind':
+                    wx.showToast({
+                        title: '大风吹功能开发中',
+                        icon: 'none'
+                    });
+                    break;
+                default:
+                    wx.showToast({
+                        title: '功能开发中',
+                        icon: 'none'
+                    });
+            }
         }
     },
 
     // 生命周期
     lifetimes: {
         attached() {
+            console.log('🎮 [RuntimConfigList] 组件已挂载');
+
+            // 调试：检查extraOptions数据
+            console.log('🎮 [RuntimConfigList] extraOptions数据:', this.data.extraOptions);
+
             // 创建多个store绑定
             this.gameStoreBindings = createStoreBindings(this, {
                 store: gameStore,

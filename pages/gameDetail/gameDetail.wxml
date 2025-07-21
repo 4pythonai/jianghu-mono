@@ -11,9 +11,7 @@
 </view>
 <view class="tab-content" wx:if="{{currentTab === 0}}">
   <ScoreTable bind:cellclick="onCellClick" />
-  <OperationBar 
-    bind:showaddplayer="onShowAddPlayer"
-    bind:showgameoperation="onShowGameOperation" />
+  <OperationBar bind:showaddplayer="onShowAddPlayer" bind:showgameoperation="onShowGameOperation" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 1}}">
   <bbs gameId="{{gameData.gameid || ''}}" />
@@ -21,12 +19,9 @@
 <view class="tab-content" wx:if="{{currentTab === 2}}">
   <RuntimConfigList id="gambleComponent" gameId="{{gameData.gameid || ''}}" players="{{gameData.players || []}}" />
 </view>
-
 <!-- 记分面板 -->
 <ScoreInputPanel id="scoreInputPanel" />
-
 <!-- 添加球员面板 -->
 <AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
-
 <!-- 游戏操作面板 -->
-<GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick"/>
+<GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" />
