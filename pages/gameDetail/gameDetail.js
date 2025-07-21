@@ -74,24 +74,11 @@ Page({
         console.log('📊 [GameDetail] 切换到tab:', newTab);
         this.setData({ currentTab: newTab });
 
-        // 当切换到游戏tab时，通知gamble组件刷新数据
+        // 切到赌博tab时，调用组件的refresh方法
         if (newTab === 2) {
-            this.refreshGambleData();
+            const gambleComponent = this.selectComponent('#gambleComponent');
+            gambleComponent?.refresh?.();
         }
-    },
-
-    // 刷新游戏数据
-    refreshGambleData() {
-        console.log('📊 [GameDetail] 刷新游戏数据');
-        const gambleComponent = this.selectComponent('#gambleComponent');
-        gambleComponent?.refreshRuntimeConfig?.();
-    },
-
-    // 刷新 runtime configs
-    refreshRuntimeConfigs() {
-        console.log('📊 [GameDetail] 刷新 runtime configs');
-        const gambleComponent = this.selectComponent('#gambleComponent');
-        gambleComponent?.refreshRuntimeConfig?.();
     },
 
     onShow() {
@@ -104,6 +91,5 @@ Page({
                 this.fetchGameDetail(gameId);
             }
         }
-        this.refreshRuntimeConfigs();
     },
 });

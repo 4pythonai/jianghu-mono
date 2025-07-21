@@ -74,6 +74,9 @@ Component({
     },
 
     methods: {
+        refresh() {
+            this.refreshRuntimeConfig && this.refreshRuntimeConfig();
+        },
         // 模块方法
         initGame() {
             // 初始化游戏
