@@ -1,17 +1,11 @@
 <view class="tabs">
-  <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">
-    计分
-  </view>
-  <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">
-    互动
-  </view>
-  <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-tab="2">
-    游戏
-  </view>
+  <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">计分</view>
+  <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">互动</view>
+  <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-tab="2">游戏</view>
 </view>
 <!-- 记分 -->
 <view wx:if="{{currentTab === 0}}">
-  <GameMagement id="gameMagement" />
+  <GameMagement id="gameMagement" gameId="{{gameId}}" groupId="{{groupId}}" />
 </view>
 <!-- 互动 -->
 <view class="tab-content" wx:if="{{currentTab === 1}}">
@@ -19,5 +13,9 @@
 </view>
 <!-- 赌博相关 -->
 <view class="tab-content" wx:if="{{currentTab === 2}}">
-  <RuntimeConfigList id="gambleComponent" gameId="{{gameData.gameid || ''}}" players="{{gameData.players || []}}" />
+  <RuntimeConfigList
+    id="gambleComponent"
+    gameId="{{gameData.gameid || ''}}"
+    players="{{gameData.players || []}}"
+  />
 </view>

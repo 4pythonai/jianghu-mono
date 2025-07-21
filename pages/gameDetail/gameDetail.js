@@ -2,8 +2,6 @@ import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../stores/gameStore'
 
 Page({
-
-
     data: {
         gameId: '',
         groupId: '',
@@ -11,85 +9,45 @@ Page({
     },
 
     onLoad(options) {
-        // ** 核心:创建 Store 和 Page 的绑定 **
         this.storeBindings = createStoreBindings(this, {
-            store: gameStore, // 需要绑定的 store
+            store: gameStore,
             fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes'],
-            actions: ['fetchGameDetail'],
+            actions: [], // 不再需要fetchGameDetail
         });
-
         const gameId = options?.gameId;
-        const groupId = options?.groupId; // 新增:获取 groupId 参数
-
+        const groupId = options?.groupId;
         this.setData({ gameId, groupId });
-
-        if (gameId) {
-            if (groupId) {
-                console.log('🎯 加载指定分组的比赛详情', { gameId, groupId });
-                this.fetchGameDetail(gameId, groupId);
-            } else {
-                console.log('🎯 加载比赛详情', { gameId });
-                this.fetchGameDetail(gameId);
-            }
-        } else {
-            console.warn('⚠️ 无效的比赛ID');
-            wx.showToast({
-                title: '比赛ID无效',
-                icon: 'none'
-            });
-        }
+        // 不再主动拉取数据，交由各tab组件管理
     },
 
     onUnload() {
-        // ** 关键:在页面销毁时清理绑定 **
         this.storeBindings.destroyStoreBindings();
     },
 
-    // 重试加载
-    retryLoad() {
-        if (this.data.loading) return;
-
-        const { gameId, groupId } = this.data;
-
-        if (gameId) {
-            if (groupId) {
-                this.fetchGameDetail(gameId, groupId);
-            } else {
-                this.fetchGameDetail(gameId);
-            }
-        }
-    },
-
-    // 切换tab页方法
     switchTab: function (e) {
         const tabValue = e.currentTarget.dataset.tab;
         const newTab = Number.parseInt(tabValue, 10);
-
-        // 确保 newTab 是有效的数字
         if (Number.isNaN(newTab) || newTab < 0) {
             console.warn('⚠️ 无效的tab值:', tabValue);
             return;
         }
-
-        console.log('📊 [GameDetail] 切换到tab:', newTab);
         this.setData({ currentTab: newTab });
-
-        // 切到赌博tab时，调用组件的refresh方法
-        if (newTab === 2) {
-            const gambleComponent = this.selectComponent('#gambleComponent');
-            gambleComponent?.refresh?.();
-        }
+        this.refreshCurrentTab();
     },
 
     onShow() {
-        // 每次页面显示都强制刷新数据，确保记分tab有最新的球员和球洞
-        const { gameId, groupId } = this.data;
-        if (gameId) {
-            if (groupId) {
-                this.fetchGameDetail(gameId, groupId);
-            } else {
-                this.fetchGameDetail(gameId);
-            }
+        this.refreshCurrentTab();
+    },
+
+    refreshCurrentTab() {
+        const { currentTab } = this.data;
+        if (currentTab === 0) {
+            this.selectComponent('#gameMagement')?.refresh?.();
+        } else if (currentTab === 1) {
+            this.selectComponent('#bbsComponent')?.refresh?.();
+        } else if (currentTab === 2) {
+            console.log('🎯 刷新赌博tab');
+            this.selectComponent('#gambleComponent')?.refresh?.();
         }
     },
 });

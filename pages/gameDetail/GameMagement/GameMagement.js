@@ -1,6 +1,9 @@
+import { gameStore } from '../../../stores/gameStore';
+
 Component({
     properties: {
-        // 这里可以定义需要从父页面传递的数据属性
+        gameId: String,
+        groupId: String
     },
     methods: {
         onCellClick(e) {
@@ -87,6 +90,16 @@ Component({
             } else {
                 console.error('无法找到 #gameOperationPanel 组件');
             }
+        },
+        refresh() {
+            console.log('[GameMagement] refresh called');
+            this.fetchGameDetail();
+        },
+        fetchGameDetail() {
+            const { gameId, groupId } = this.data;
+            console.log('[GameMagement] fetchGameDetail called', { gameId, groupId });
+            if (!gameId) return;
+            gameStore.fetchGameDetail(gameId, groupId);
         }
     }
 }); 
