@@ -1,4 +1,4 @@
-// subpackages/gamble/pages/gameDetail/gamble.js
+// subpackages/gamble/gamble.js
 Page({
 
   /**
