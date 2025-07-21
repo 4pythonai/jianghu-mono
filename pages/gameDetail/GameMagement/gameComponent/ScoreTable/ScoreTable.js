@@ -226,8 +226,7 @@ Component({
         },
 
         // 作为一个中继, 把事件继续往父组件传递
-        onCellClick: function (e) {
-            console.log('📊 [ScoreTable] 转发cellclick事件:', e.detail);
+        onCellClick(e) {
             this.triggerEvent('cellclick', e.detail);
         },
 

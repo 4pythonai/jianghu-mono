@@ -11,7 +11,7 @@
 </view>
 <!-- 记分 -->
 <view wx:if="{{currentTab === 0}}">
-  <GameMagement id="gameMagement" bind:cellclick="onCellClick" bind:showaddplayer="onShowAddPlayer" bind:addplayerconfirm="onAddPlayerConfirm" bind:showgameoperation="onShowGameOperation" bind:optionclick="onOptionClick" />
+  <GameMagement id="gameMagement" />
 </view>
 <!-- 互动 -->
 <view class="tab-content" wx:if="{{currentTab === 1}}">

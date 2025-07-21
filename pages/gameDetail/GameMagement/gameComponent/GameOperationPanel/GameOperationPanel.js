@@ -166,6 +166,14 @@ Component({
                 title: '功能开发中',
                 icon: 'none'
             });
+        },
+        onCancelGame(e) {
+            console.log('📊 [GameOperationPanel] 取消比赛被触发');
+            // TODO: 实现取消比赛功能
+        },
+        onFinishGame(e) {
+            console.log('📊 [GameOperationPanel] 结束比赛被触发');
+            // TODO: 实现结束比赛功能
         }
     }
 }) 
