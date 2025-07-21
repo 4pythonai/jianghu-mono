@@ -89,8 +89,7 @@
 		{
 			"root": "subpackages/game-manage",
 			"pages": [
-				"pages/gameDetail/game-manage",
-				"pages/gameDetail/ScoreTable"
+				"pages/gameDetail/game-manage"
 			]
 		},
 		{
@@ -102,7 +101,7 @@
 		{
 			"root": "subpackages/gamble",
 			"pages": [
-				"pages/gameDetail/gamble"
+				"gamble"
 			]
 		}
 	],

@@ -3,8 +3,8 @@ import { gameStore } from '../../stores/gameStore'
 
 Page({
     usingComponents: {
-        'bbs': '/subpackages/bbs/pages/gameDetail/bbs',
-        'gamble': '/subpackages/gamble/pages/gameDetail/gamble',
+        'bbs': '/subpackages/bbs',
+        'gamble': '/subpackages/gamble',
         'ScoreTable': '/subpackages/game-manage/pages/gameDetail/ScoreTable'
     },
     data: {
