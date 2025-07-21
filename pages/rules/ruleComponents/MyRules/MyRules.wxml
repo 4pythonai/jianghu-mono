@@ -84,7 +84,7 @@
                     <text class="group-title">4人游戏</text>
                 </view>
                 <view class="group-list">
-                    <R4P8421 wx:for="{{ myRules.fourPlayers }}" wx:key="id" item="{{ item }}" bind:editRule="onEditRule" bind:viewRule="onViewRule" bind:longPressRule="onLongPressRule" />
+                    <Rule4P8421 wx:for="{{ myRules.fourPlayers }}" wx:key="id" item="{{ item }}" bind:editRule="onEditRule" bind:viewRule="onViewRule" bind:longPressRule="onLongPressRule" />
                 </view>
             </view>
         </view>
