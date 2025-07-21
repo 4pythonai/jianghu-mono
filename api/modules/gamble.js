@@ -25,6 +25,10 @@ const gamble = {
     // listRuntimeConfig
     listRuntimeConfig: (data, options) => request('/Gamble/listRuntimeConfig', data, options),
 
+    setGamblesVisible: (data, options) => request('/Gamble/setGambileVisible', data, options),
+
+    setGamblesBigWind: (data, options) => request('/Gamble/setGamblesBigWind', data, options),
+
 
 }
 

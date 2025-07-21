@@ -27,12 +27,6 @@ Component({
         // 游戏额外选项数据
         extraOptions: [
             {
-                id: 'gamePublic',
-                title: '游戏是否公开',
-                icon: '/assets/icons/icons8-delete-50.png',
-                handler: 'onGamePublicClick'
-            },
-            {
                 id: 'donatePot',
                 title: '捐锅设置',
                 icon: '/assets/icons/icons8-delete-50.png',
@@ -55,12 +49,6 @@ Component({
                 title: '踢一脚',
                 icon: '/assets/icons/icons8-delete-50.png',
                 handler: 'onKickClick'
-            },
-            {
-                id: 'bigWind',
-                title: '大风吹',
-                icon: '/assets/icons/icons8-delete-50.png',
-                handler: 'onBigWindClick'
             }
         ]
     },
@@ -259,6 +247,25 @@ Component({
                 title: '大风吹功能开发中',
                 icon: 'none'
             });
+        },
+
+        onGamePublicChange(e) {
+            const value = e.detail.value;
+            console.log('【游戏是否公开】选择：', value);
+            // 打印所有gamble id
+            const ids = (this.data.runtimeConfigs || []).map(item => item.id);
+            console.log('本页面所有的gamble id:', ids);
+            // 这里调用 setGamblesVisible，暂时只打印log
+            // this.setGamblesVisible(value);
+        },
+        onBigWindChange(e) {
+            const value = e.detail.value;
+            console.log('【大风吹】选择：', value);
+            // 打印所有gamble id
+            const ids = (this.data.runtimeConfigs || []).map(item => item.id);
+            console.log('本页面所有的gamble id:', ids);
+            // 这里调用 setGamblesBigWind，暂时只打印log
+            // this.setGamblesBigWind(value);
         },
 
         // 通用选项点击处理方法

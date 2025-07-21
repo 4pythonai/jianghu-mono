@@ -60,6 +60,28 @@
         <!-- 游戏额外选项 -->
         <view class="extra-options-container">
             <view class="extra-options-title">游戏设置</view>
+            <view class="radio-group-container">
+                <radio-group name="gamePublic" bindchange="onGamePublicChange">
+                    <label class="radio-label">
+                        <radio value="public" checked="true" />
+                        公开
+                    </label>
+                    <label class="radio-label">
+                        <radio value="private" />
+                        私密
+                    </label>
+                </radio-group>
+                <radio-group name="bigWind" bindchange="onBigWindChange">
+                    <label class="radio-label">
+                        <radio value="yes" />
+                        大风吹
+                    </label>
+                    <label class="radio-label">
+                        <radio value="no" checked="true" />
+                        否
+                    </label>
+                </radio-group>
+            </view>
             <view wx:for="{{ extraOptions }}" wx:key="id" class="gambels-extra-opetion" bindtap="onExtraOptionClick" data-option="{{ item }}">
                 <view class="option-content">
                     <image class="option-icon" src="{{ item.icon }}" mode="aspectFit"></image>
