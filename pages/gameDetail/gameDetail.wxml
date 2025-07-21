@@ -17,7 +17,7 @@
   <bbs gameId="{{gameData.gameid || ''}}" />
 </view>
 <view class="tab-content" wx:if="{{currentTab === 2}}">
-  <RuntimConfigList id="gambleComponent" gameId="{{gameData.gameid || ''}}" players="{{gameData.players || []}}" />
+  <RuntimeConfigList id="gambleComponent" gameId="{{gameData.gameid || ''}}" players="{{gameData.players || []}}" />
 </view>
 <!-- 记分面板 -->
 <ScoreInputPanel id="scoreInputPanel" />

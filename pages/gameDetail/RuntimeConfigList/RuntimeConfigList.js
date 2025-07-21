@@ -78,7 +78,7 @@ Component({
     observers: {
         // 可以添加其他需要监听的属性
         'runtimeConfigs': (newConfigs) => {
-            console.log('🎮 [RuntimConfigList] runtimeConfigs 变化:', {
+            console.log('🎮 [RuntimeConfigList] runtimeConfigs 变化:', {
                 length: newConfigs?.length || 0,
                 configs: newConfigs
             });
@@ -316,10 +316,10 @@ Component({
     // 生命周期
     lifetimes: {
         attached() {
-            console.log('🎮 [RuntimConfigList] 组件已挂载');
+            console.log('🎮 [RuntimeConfigList] 组件已挂载');
 
             // 调试：检查extraOptions数据
-            console.log('🎮 [RuntimConfigList] extraOptions数据:', this.data.extraOptions);
+            console.log('🎮 [RuntimeConfigList] extraOptions数据:', this.data.extraOptions);
 
             // 创建多个store绑定
             this.gameStoreBindings = createStoreBindings(this, {
