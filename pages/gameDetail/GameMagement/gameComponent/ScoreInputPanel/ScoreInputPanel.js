@@ -15,7 +15,8 @@ Component({
         localScores: [],
         players: [],
         playerItemHeight: 120,
-        isSaving: false
+        isSaving: false,
+        currentHole: null, // 新增: 用于存储当前显示的洞信息
     },
 
     observers: {
@@ -53,51 +54,18 @@ Component({
      * 组件的方法列表
      */
     methods: {
-        show({ holeIndex, playerIndex, unique_key }) {
-
-            // 类型检查和保护
-            if (typeof unique_key !== 'string') {
-                unique_key = String(unique_key || ''); // 强制转换为字符串
-            }
-
-            const holeInfo = this.data.holeList[holeIndex];
-            if (!holeInfo) {
-                return;
-            }
-
-            // 确保 holeInfo.unique_key 也是字符串
-            if (typeof holeInfo.unique_key !== 'string') {
-                holeInfo.unique_key = String(holeInfo.unique_key || '');
-            }
-
-            const players = this.data.players;
-            const gameData = this.data.gameData;
-
-            const localScores = players.map((player, pIndex) => {
-                const scoreData = this.data.scores[pIndex][holeIndex];
-                return {
-                    userid: player.userid,
-                    score: scoreData.score,
-                    putts: scoreData.putts,
-                    penalty_strokes: scoreData.penalty_strokes || 0,
-                    sand_save: scoreData.sand_save || 0,
-                };
-            });
-
-            for (const score of localScores) {
-                if (!score.score || score.score === 0) {
-                    score.score = holeInfo.par || 0;
-                    score.putts = 2;
-                }
-            }
-
+        show(options) {
+            const { holeIndex } = options;
+            const hole = this.data.holeList?.[holeIndex] || {};
+            console.log('[ScoreInputPanel] show: holeIndex', holeIndex, 'hole:', hole);
             this.setData({
                 isVisible: true,
-                holeInfo: { ...holeInfo, originalIndex: holeIndex, unique_key: unique_key },
-                players: players,
-                gameData: gameData,
-                localScores: localScores,
-                activePlayerIndex: playerIndex,
+                currentHole: hole,
+                holeInfo: { ...hole, originalIndex: holeIndex, unique_key: hole.unique_key }, // 确保holeInfo包含originalIndex和unique_key
+                players: this.data.players, // 确保players是最新的
+                gameData: this.data.gameData, // 确保gameData是最新的
+                localScores: this.data.localScores, // 确保localScores是最新的
+                activePlayerIndex: this.data.activePlayerIndex, // 确保activePlayerIndex是最新的
             });
         },
 
@@ -107,6 +75,7 @@ Component({
                 isVisible: false,
                 holeInfo: null,
                 localScores: [],
+                currentHole: null, // 隐藏时也清空currentHole
             });
 
         },
