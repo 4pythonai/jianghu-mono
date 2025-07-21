@@ -55,17 +55,31 @@ Component({
      */
     methods: {
         show(options) {
-            const { holeIndex } = options;
+            const { holeIndex, playerIndex } = options;
             const hole = this.data.holeList?.[holeIndex] || {};
-            console.log('[ScoreInputPanel] show: holeIndex', holeIndex, 'hole:', hole);
+            const players = this.data.players || [];
+            const scores = this.data.scores || [];
+
+            // 重新生成 localScores
+            const localScores = players.map((player, pIndex) => {
+                const scoreData = scores[pIndex]?.[holeIndex] || {};
+                return {
+                    userid: player.userid,
+                    score: scoreData.score ?? hole.par ?? 0,
+                    putts: scoreData.putts ?? 2,
+                    penalty_strokes: scoreData.penalty_strokes ?? 0,
+                    sand_save: scoreData.sand_save ?? 0,
+                };
+            });
+
             this.setData({
                 isVisible: true,
                 currentHole: hole,
-                holeInfo: { ...hole, originalIndex: holeIndex, unique_key: hole.unique_key }, // 确保holeInfo包含originalIndex和unique_key
-                players: this.data.players, // 确保players是最新的
-                gameData: this.data.gameData, // 确保gameData是最新的
-                localScores: this.data.localScores, // 确保localScores是最新的
-                activePlayerIndex: this.data.activePlayerIndex, // 确保activePlayerIndex是最新的
+                holeInfo: { ...hole, originalIndex: holeIndex, unique_key: hole.unique_key },
+                players,
+                gameData: this.data.gameData,
+                localScores,
+                activePlayerIndex: playerIndex,
             });
         },
 
