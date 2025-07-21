@@ -3,11 +3,6 @@
 	"usingComponents": {
 		"RuntimeConfigList": "./RuntimeConfigList/RuntimeConfigList",
 		"BBS": "./BBS/BBS",
-		"ScoreTable": "./ScoreTable/ScoreTable",
-		"OperationBar": "./OperationBar/OperationBar",
-		"ScoreInputPanel": "/components/ScoreInputPanel/ScoreInputPanel",
-		"AddPlayerHubPanel": "./AddPlayerHubPanel/AddPlayerHubPanel",
-		"GameOperationPanel": "./GameOperationPanel/GameOperationPanel",
 		"GameMagement": "./GameMagement/GameMagement"
 	},
 	"componentPlaceholder": {

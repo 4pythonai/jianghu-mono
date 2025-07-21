@@ -1,4 +1,4 @@
-import gameApi from '../../../api/modules/game'
+import gameApi from '../../../../../api/modules/game'
 
 Component({
 
