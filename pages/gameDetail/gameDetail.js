@@ -94,7 +94,6 @@ Page({
         gambleComponent?.refreshRuntimeConfig?.();
     },
 
-    // 页面显示时检查数据
     onShow() {
         // 每次页面显示都强制刷新数据，确保记分tab有最新的球员和球洞
         const { gameId, groupId } = this.data;
@@ -105,13 +104,6 @@ Page({
                 this.fetchGameDetail(gameId);
             }
         }
-
-        // 刷新 runtime configs，确保配置列表是最新的
         this.refreshRuntimeConfigs();
     },
-
-
-
-
-
 });
