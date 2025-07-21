@@ -10,33 +10,44 @@ Component({
         }
     },
 
+    //     按得分排序
+    // 得分相同按出身得分排序
+    // 得分相同按输赢排序，输赢相同按出身得分排序
+    // 得分相同按输赢排序，输赢相同按出身输赢排序
+    // 按成绩排序
+    // 成绩相同按出身成绩排序
+    // 成绩相同按输赢排序，输赢相同按出身成绩排序
+    // 成绩相同按输赢排序，输赢相同按出身输赢排序
+
+
     data: {
         // 排名配置选项
         rankingOptions: [
             {
-                value: 'score.reverse',
-                label: '按成绩排序, 冲突时回溯成绩',
-            },
-            {
-                value: 'score.win_loss.reverse_win',
-                label: '按成绩排序, 按输赢, 回溯输赢',
-            },
-            {
-                value: 'score.win_loss.reverse_score',
-                label: '按成绩排序, 按输赢, 回溯成绩',
-            },
-            {
                 value: 'indicator.reverse',
-                label: '按得分排序, 冲突时回溯得分',
+                label: '得分相同按出身得分排序',
             },
             {
                 value: 'indicator.win_loss.reverse_win',
-                label: '按得分排序, 按输赢, 回溯输赢',
+                label: '得分相同按输赢排序，输赢相同按出身得分排序',
             },
             {
                 value: 'indicator.win_loss.reverse_indicator',
-                label: '按得分排序, 按输赢, 回溯得分',
+                label: '得分相同按输赢排序，输赢相同按出身输赢排序',
+            },
+            {
+                value: 'score.reverse',
+                label: '成绩相同按出身成绩排序',
+            },
+            {
+                value: 'score.win_loss.reverse_win',
+                label: '成绩相同按输赢排序，输赢相同按出身成绩排序',
+            },
+            {
+                value: 'score.win_loss.reverse_score',
+                label: '成绩相同按输赢排序，输赢相同按出身输赢排序',
             }
+
         ],
 
         // 当前选中的索引
