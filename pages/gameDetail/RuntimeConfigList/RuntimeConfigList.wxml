@@ -13,7 +13,7 @@
       bindtap="onDeleteConfig"
     />
     <view class="config-header">
-      <text class="config-title">游戏配置 #{{ index + 1 }}</text>
+      <text class="config-title">游戏配置#{{ index + 1 }}/{{item.abstract}}</text>
     </view>
     <view class="config-details">
       <view class="config-row">

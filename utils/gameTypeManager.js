@@ -193,7 +193,7 @@ const GameTypeManager = {
         const defaultConfig = {
             red_blue_config: '4_固拉',
             bootstrap_order: playerIds,
-            ranking_tie_resolve_config: 'score.reverse',
+            ranking_tie_resolve_config: 'indicator.reverse',
             val8421_config: {}
         };
 

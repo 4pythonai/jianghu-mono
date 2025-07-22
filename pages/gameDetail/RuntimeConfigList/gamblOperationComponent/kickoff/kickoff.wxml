@@ -1,27 +1,23 @@
 <view class="kickoff-popup" bindtap="close">
   <view class="kickoff-content" catchtap="noop">
-    <view class="kickoff-title">选择运行时配置</view>
-
+    <view class="kickoff-title">踢一脚</view>
     <!-- 循环渲染 runtimeConfigs -->
-    <view class="config-list">
-      <view class="config-item" wx:for="{{runtimeConfigs}}" wx:key="id">
-        <checkbox
-          value="{{item.id}}"
-          checked="{{selectedIds[item.id]}}"
-          bindtap="onCheckboxChange"
-          data-id="{{item.id}}"
-        />
-        <view class="config-info">
-          <view class="config-name">{{item.name || '配置' + item.id}}</view>
-          <view class="config-desc">ID: {{item.id}}</view>
-        </view>
-      </view>
+
+    <view class="section">
+      <view class="section-title">请选择踢一脚的游戏</view>
+      <checkbox-group value="{{selectedIdList}}" bindchange="onCheckboxChange">
+        <block wx:for="{{runtimeConfigs}}" wx:key="id">
+          <label class="game-item">
+            <checkbox value="{{item.id}}" />
+            <text class="game-title">{{item.abstract}}</text>
+          </label>
+        </block>
+      </checkbox-group>
     </view>
 
-    <!-- 按钮组 -->
-    <view class="button-group">
-      <button class="confirm-btn" bindtap="onConfirm">确定</button>
-      <button class="cancel-btn" bindtap="close">关闭</button>
+    <view class="kickoff-footer">
+      <button class="kickoff-btn-cancel" bindtap="close">取消</button>
+      <button class="kickoff-btn-confirm" bindtap="onConfirm">确定</button>
     </view>
   </view>
 </view>

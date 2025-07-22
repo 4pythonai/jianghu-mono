@@ -6,7 +6,7 @@ Component({
         // 当前选中的配置
         selectedConfig: {
             type: String,
-            value: 'score.reverse'
+            value: 'indicator.reverse'
         }
     },
 

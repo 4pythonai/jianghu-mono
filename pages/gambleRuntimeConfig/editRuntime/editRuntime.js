@@ -27,7 +27,7 @@ Page({
             gambleUserName: null,   // 用户规则名称(如:规则_4721)
             red_blue_config: '4_固拉',
             bootstrap_order: [],
-            ranking_tie_resolve_config: 'score.reverse',
+            ranking_tie_resolve_config: 'indicator.reverse',
             val8421_config: {}      // 球员8421指标配置
         },
 
