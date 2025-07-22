@@ -32,25 +32,25 @@ Component({
             {
                 id: 'juanguo',
                 title: '捐锅设置',
-                icon: '/assets/icons/icons8-delete-50.png',
+                icon: '/assets/icons/icons8-kitchen-100.png',
                 handler: 'onJuanguoClick'
             },
             {
                 id: 'holejump',
                 title: '跳洞设置',
-                icon: '/assets/icons/icons8-delete-50.png',
+                icon: '/assets/icons/icons8-skip-100.png',
                 handler: 'onHoleJumpClick'
             },
             {
                 id: 'starthole',
                 title: '调整出发洞',
-                icon: '/assets/icons/icons8-delete-50.png',
+                icon: '/assets/icons/icons8-golf-100.png',
                 handler: 'onStartHoleClick'
             },
             {
                 id: 'kick',
                 title: '踢一脚',
-                icon: '/assets/icons/icons8-delete-50.png',
+                icon: '/assets/icons/icons8-kicking-100.png',
                 handler: 'onKickClick'
             }
         ],

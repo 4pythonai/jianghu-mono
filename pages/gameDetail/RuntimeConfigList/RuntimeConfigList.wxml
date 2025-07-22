@@ -110,11 +110,7 @@
           <text class="option-text">{{ item.title }}</text>
         </view>
         <view class="option-arrow">
-          <image
-            class="arrow-icon"
-            src="/assets/icons/icons8-right-button-50-2.png"
-            mode="aspectFit"
-          ></image>
+          <image class="arrow-icon" src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
         </view>
       </view>
     </view>

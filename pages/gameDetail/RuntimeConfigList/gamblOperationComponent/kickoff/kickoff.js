@@ -38,9 +38,9 @@ Component({
             const selectedIdList = e.detail.value;
             // 构建 selectedIds 结构
             const selectedIds = {};
-            selectedIdList.forEach(id => {
+            for (const id of selectedIdList) {
                 selectedIds[id] = true;
-            });
+            }
             this.setData({
                 selectedIdList,
                 selectedIds
