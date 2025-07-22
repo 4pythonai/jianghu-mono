@@ -7,11 +7,11 @@ Component({
         runtimeConfigs: Array
     },
     data: {
-        // 可根据需要添加本地状态
+        selectedIds: {} // 存储选中的配置ID
     },
     lifetimes: {
         attached() {
-            console.log('[kickoff] 组件已挂载，runtimeConfigs:', this.data.runtimeConfigs);
+            console.log('[kickoff] 组件已挂载, runtimeConfigs:', this.data.runtimeConfigs);
             console.log('[kickoff] gameStore:', toJS(gameStore));
             console.log('[kickoff] holeRangeStore:', toJS(holeRangeStore));
             // 你也可以打印具体字段
@@ -31,9 +31,42 @@ Component({
         }
     },
     methods: {
+        // 处理checkbox选择变化
+        onCheckboxChange(e) {
+            const id = e.currentTarget.dataset.id;
+            const selectedIds = { ...this.data.selectedIds };
+            
+            // 切换选中状态
+            selectedIds[id] = !selectedIds[id];
+            
+            this.setData({
+                selectedIds
+            });
+            
+            console.log('[kickoff] 选中状态变化:', { id, selected: selectedIds[id] });
+        },
+
+        // 确定按钮点击
+        onConfirm() {
+            const selectedIds = [];
+            
+            // 收集所有选中的ID
+            for (const [id, isSelected] of Object.entries(this.data.selectedIds)) {
+                if (isSelected) {
+                    selectedIds.push(id);
+                }
+            }
+            
+            console.log('[kickoff] 所有选中的ID:', selectedIds);
+            
+            // 可以触发事件传递给父组件
+            this.triggerEvent('confirm', { selectedIds });
+        },
+
         close() {
             this.triggerEvent('close');
         },
+        
         noop() {
             // 空方法，阻止冒泡
         }

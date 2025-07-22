@@ -1,37 +1,27 @@
 <view class="kickoff-popup" bindtap="close">
   <view class="kickoff-content" catchtap="noop">
-    <view>Kick组件</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>gameData: {{gameData }}</view>
-    <view>runtimeConfigs: {{runtimeConfigs }}</view>
-    <button class="extra-close-btn" bindtap="close">关闭</button>
+    <view class="kickoff-title">选择运行时配置</view>
+
+    <!-- 循环渲染 runtimeConfigs -->
+    <view class="config-list">
+      <view class="config-item" wx:for="{{runtimeConfigs}}" wx:key="id">
+        <checkbox
+          value="{{item.id}}"
+          checked="{{selectedIds[item.id]}}"
+          bindtap="onCheckboxChange"
+          data-id="{{item.id}}"
+        />
+        <view class="config-info">
+          <view class="config-name">{{item.name || '配置' + item.id}}</view>
+          <view class="config-desc">ID: {{item.id}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 按钮组 -->
+    <view class="button-group">
+      <button class="confirm-btn" bindtap="onConfirm">确定</button>
+      <button class="cancel-btn" bindtap="close">关闭</button>
+    </view>
   </view>
 </view>

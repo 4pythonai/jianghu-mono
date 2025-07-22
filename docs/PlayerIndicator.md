@@ -1,4 +1,4 @@
-# PlayerIndicator组件
+# PlayerIndicator 组件
 
 ## 组件功能
 PlayerIndicator 组件用于配置8421游戏中每个球员的个人指标配置。
