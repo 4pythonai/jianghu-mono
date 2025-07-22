@@ -104,33 +104,18 @@
 /* 分组列表样式 - 使用卡片行样式 */
 .group-list {
 	display: flex;
-	flex-direction: row;
-	gap: 32rpx;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	max-width: 632rpx;
+	flex-direction: column;
+	width: 100%;
 	margin-left: auto;
 	margin-right: auto;
 }
 
-/* 规则卡片样式 - 使用rule-card样式 */
-.rule-item {
-	width: 700rpx;
-	min-height: 180rpx;
-	background: #4caf7a;
-	border-radius: 24rpx;
-	box-shadow: 8rpx 8rpx 16rpx 0 rgba(0, 0, 0, 0.18);
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	padding: 24rpx;
-	transition: transform 0.1s;
-	margin-bottom: 0;
-}
-
-.rule-item:active {
-	transform: scale(0.97);
+.group-list-item {
+	width: 90vw;
+	max-width: 700rpx;
+	min-width: 280rpx;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .rule-header {
@@ -212,12 +197,6 @@
 
 /* 响应式适配 */
 @media screen and (max-width: 400px) {
-	.rule-item {
-		min-width: 280rpx;
-		width: 280rpx;
-		max-width: 280rpx;
-	}
-
 	.rule-title {
 		font-size: 26rpx;
 	}

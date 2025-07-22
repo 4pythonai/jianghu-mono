@@ -1,21 +1,14 @@
 /* 规则卡片样式 - 与MyRules组件保持一致 */
-.rule-item {
-	width: 650rpx;
-	min-height: 180rpx;
+.rule-item1 {
 	background: #4caf7a;
 	border-radius: 24rpx;
 	box-shadow: 8rpx 8rpx 16rpx 0 rgba(0, 0, 0, 0.18);
 	position: relative;
-	display: flex;
-	flex-direction: column;
 	justify-content: space-between;
 	padding: 24rpx;
 	transition: transform 0.1s;
-	margin-bottom: 0;
-}
-
-.rule-item:active {
-	transform: scale(0.97);
+	margin-bottom: 24rpx;
+	width: 100%;
 }
 
 .rule-header {
@@ -47,6 +40,8 @@
 
 .rule-description {
 	margin: 8rpx 0;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .rule-description text {
@@ -122,12 +117,6 @@
 
 /* 响应式适配 */
 @media screen and (max-width: 400px) {
-	.rule-item {
-		min-width: 280rpx;
-		width: 280rpx;
-		max-width: 280rpx;
-	}
-
 	.rule-title {
 		font-size: 26rpx;
 	}
