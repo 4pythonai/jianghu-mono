@@ -49,9 +49,12 @@ class Gamble extends MY_Controller {
             }
             $holePlayListString = implode(',', $hindexArr);
             // 准备插入数据
+            $this->load->model('MAbstract');
+            $abstract = $this->MAbstract->createAbstract($json_paras['gambleSysName'], $json_paras['red_blue_config']);
             $insert_data = [
                 'creator_id' => $userid,
                 'gameid' => $gameid,
+                'abstract' => $abstract,
                 'groupid' => $groupid,
                 'val8421_config' => isset($json_paras['val8421_config']) ? json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE) : null,
                 'userRuleId' => $userRuleId,

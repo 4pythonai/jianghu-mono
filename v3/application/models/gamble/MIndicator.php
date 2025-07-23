@@ -55,9 +55,10 @@ class MIndicator extends CI_Model {
             $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$userid], $_8421_add_sub_max_config);
 
             $logMsg = sprintf(
-                "第 %s 洞,红队,队员:%4d,PAR:%d,分值:%2d,指标:%2d",
+                "第 %s 洞,红队,队员:%4d,%s, PAR:%d,分值:%2d,指标:%2d",
                 $hole['id'],
                 $userid,
+                $this->MUser->getNicknameById($userid),
                 $hole['par'],
                 $hole['computedScores'][$userid],
                 $indicator
@@ -80,9 +81,10 @@ class MIndicator extends CI_Model {
             $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$userid], $_8421_add_sub_max_config);
 
             $logMsg = sprintf(
-                "第 %s 洞,蓝队,队员:%4d,PAR:%d,分值:%2d,指标:%2d",
+                "第 %s 洞,蓝队,队员:%4d,%s,PAR:%d,分值:%2d,指标:%2d",
                 $hole['id'],
                 $userid,
+                $this->MUser->getNicknameById($userid),
                 $hole['par'],
                 $hole['computedScores'][$userid],
                 $indicator

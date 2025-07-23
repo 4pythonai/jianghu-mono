@@ -6,6 +6,32 @@ if (!defined('BASEPATH')) {
 
 /**
  * 
+ *          {
+                value: 'indicator.reverse',
+                label: '得分相同按出身得分排序',
+            },
+            {
+                value: 'indicator.win_loss.reverse_win',
+                label: '得分相同按输赢排序，输赢相同按出身得分排序',
+            },
+            {
+                value: 'indicator.win_loss.reverse_indicator',
+                label: '得分相同按输赢排序，输赢相同按出身输赢排序',
+            },
+            {
+                value: 'score.reverse',
+                label: '成绩相同按出身成绩排序',
+            },
+            {
+                value: 'score.win_loss.reverse_win',
+                label: '成绩相同按输赢排序，输赢相同按出身成绩排序',
+            },
+            {
+                value: 'score.win_loss.reverse_score',
+                label: '成绩相同按输赢排序，输赢相同按出身输赢排序',
+            }
+
+
  * 排名的返回格式:
  * [ranking] => Array
  * (
@@ -36,18 +62,18 @@ class MRankingP4 extends CI_Model {
         // debug("使用排序规则: " . $tieResolveConfig);
 
         switch ($tieResolveConfig) {
-            case 'score.reverse':
-                return $this->rankByScoreReverse($holeIndex, $hole, $context, $bootStrapOrder);
-            case 'score.win_loss.reverse_win':
-                return $this->rankByScoreWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder);
-            case 'score.win_loss.reverse_score':
-                return $this->rankByScoreWinLossReverseScore($holeIndex, $hole, $context, $bootStrapOrder);
             case 'indicator.reverse':
                 return $this->rankByIndicatorReverse($holeIndex, $hole, $context, $bootStrapOrder);
             case 'indicator.win_loss.reverse_win':
                 return $this->rankByIndicatorWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder);
             case 'indicator.win_loss.reverse_indicator':
                 return $this->rankByIndicatorWinLossReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder);
+            case 'score.reverse':
+                return $this->rankByScoreReverse($holeIndex, $hole, $context, $bootStrapOrder);
+            case 'score.win_loss.reverse_win':
+                return $this->rankByScoreWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder);
+            case 'score.win_loss.reverse_score':
+                return $this->rankByScoreWinLossReverseScore($holeIndex, $hole, $context, $bootStrapOrder);
             default:
                 debug("未知的排序规则: " . $tieResolveConfig);
                 return [];
@@ -58,7 +84,86 @@ class MRankingP4 extends CI_Model {
     }
 
     /**
-     * A.1: 按成绩排序，冲突时回溯成绩
+     *  得分(Indicator)相同按"出身"得分(Indicator)排序
+     */
+    private function rankByIndicatorReverse($holeIndex, $hole, $context, $bootStrapOrder) {
+        $users = $bootStrapOrder;
+
+        // 按得分排序（得分越高越好）
+        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+            $indicatorA = $hole['indicators'][$auser] ?? 0;
+            $indicatorB = $hole['indicators'][$bUser] ?? 0;
+
+            if ($indicatorA !== $indicatorB) {
+                return $indicatorB - $indicatorA; // 降序
+            }
+
+            // 得分相同，回溯历史得分
+            return $this->compareByHistoryIndicator($auser, $bUser, $holeIndex, $context);
+        });
+    }
+
+
+    /**
+     * 得分相同按输赢排序，输赢相同按出身得分排序
+     */
+
+    private function rankByIndicatorWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder) {
+        $users = $bootStrapOrder;
+
+        // 按得分排序
+        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+            $indicatorA = $hole['indicators'][$auser] ?? 0;
+            $indicatorB = $hole['indicators'][$bUser] ?? 0;
+
+            if ($indicatorA !== $indicatorB) {
+                return $indicatorB - $indicatorA; // 降序
+            }
+
+            // 得分相同，按输赢排序
+            $winCompare = $this->compareByWinLoss($auser, $bUser, $hole);
+            if ($winCompare !== 0) {
+                return $winCompare;
+            }
+
+            // 输赢相同，回溯历史 indicator
+            return $this->compareByHistoryIndicator($auser, $bUser, $holeIndex, $context);
+        });
+    }
+
+
+
+    /**
+     *  得分相同按输赢排序，输赢相同按"出身"(上一洞)输赢排序
+     */
+    private function rankByIndicatorWinLossReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder) {
+        $users = $bootStrapOrder;
+
+        // 按得分排序
+        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+            $indicatorA = $hole['indicators'][$auser] ?? 0;
+            $indicatorB = $hole['indicators'][$bUser] ?? 0;
+
+            if ($indicatorA !== $indicatorB) {
+                return $indicatorB - $indicatorA; // 降序
+            }
+
+            // 得分相同，按输赢排序
+            $winCompare = $this->compareByWinLoss($auser, $bUser, $hole);
+            if ($winCompare !== 0) {
+                return $winCompare;
+            }
+
+
+            // 输赢相同，回溯历史输赢
+            return $this->compareByHistoryWinLoss($auser, $bUser, $holeIndex, $context);
+        });
+    }
+
+
+    /**
+     * 
+     * 成绩(score)相同按"出身"成绩(score_排序
      */
     private function rankByScoreReverse($holeIndex, $hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
@@ -75,12 +180,13 @@ class MRankingP4 extends CI_Model {
             // 成绩相同，回溯历史成绩
             return $this->compareByHistoryScore($auser, $bUser, $holeIndex, $context);
         });
-
-        return $this->arrayToRanking($users);
     }
 
+
+
+
     /**
-     * A.2.1: 按成绩排序，按输赢，回溯输赢
+       成绩(score)相同按输赢排序，输赢相同按"出身"成绩(score)排序
      */
     private function rankByScoreWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
@@ -101,14 +207,18 @@ class MRankingP4 extends CI_Model {
             }
 
             // 输赢相同，回溯历史输赢
-            return $this->compareByHistoryWinLoss($auser, $bUser, $holeIndex, $context);
+            return $this->compareByHistoryScore($auser, $bUser, $holeIndex, $context);
         });
-
-        return $this->arrayToRanking($users);
     }
 
+
+
+
+
+
+
     /**
-     * A.2.2: 按成绩排序，按输赢，回溯成绩
+     * 成绩(score)相同按输赢排序，输赢相同按"出身"输赢排序
      */
     private function rankByScoreWinLossReverseScore($holeIndex, $hole, $context, $bootStrapOrder) {
 
@@ -131,85 +241,7 @@ class MRankingP4 extends CI_Model {
             }
 
             // 输赢相同，回溯历史成绩
-            return $this->compareByHistoryScore($auser, $bUser, $holeIndex, $context);
-        });
-
-        return $this->arrayToRanking($users);
-    }
-
-    /**
-     * B.1: 按得分排序，冲突时回溯得分
-     */
-    private function rankByIndicatorReverse($holeIndex, $hole, $context, $bootStrapOrder) {
-        $users = $bootStrapOrder;
-
-        // 按得分排序（得分越高越好）
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
-            $indicatorA = $hole['indicators'][$auser] ?? 0;
-            $indicatorB = $hole['indicators'][$bUser] ?? 0;
-
-            if ($indicatorA !== $indicatorB) {
-                return $indicatorB - $indicatorA; // 降序
-            }
-
-            // 得分相同，回溯历史得分
-            return $this->compareByHistoryIndicator($auser, $bUser, $holeIndex, $context);
-        });
-
-        return $this->arrayToRanking($users);
-    }
-
-    /**
-     * B.2.1: 按得分排序，按输赢，回溯输赢
-     */
-    private function rankByIndicatorWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder) {
-        $users = $bootStrapOrder;
-
-        // 按得分排序
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
-            $indicatorA = $hole['indicators'][$auser] ?? 0;
-            $indicatorB = $hole['indicators'][$bUser] ?? 0;
-
-            if ($indicatorA !== $indicatorB) {
-                return $indicatorB - $indicatorA; // 降序
-            }
-
-            // 得分相同，按输赢排序
-            $winCompare = $this->compareByWinLoss($auser, $bUser, $hole);
-            if ($winCompare !== 0) {
-                return $winCompare;
-            }
-
-            // 输赢相同，回溯历史输赢
             return $this->compareByHistoryWinLoss($auser, $bUser, $holeIndex, $context);
-        });
-
-        return $this->arrayToRanking($users);
-    }
-
-    /**
-     * B.2.2: 按得分排序，按输赢，回溯得分
-     */
-    private function rankByIndicatorWinLossReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder) {
-        $users = $bootStrapOrder;
-
-        // 按得分排序
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
-            $indicatorA = $hole['indicators'][$auser] ?? 0;
-            $indicatorB = $hole['indicators'][$bUser] ?? 0;
-
-            if ($indicatorA !== $indicatorB) {
-                return $indicatorB - $indicatorA; // 降序
-            }
-
-            // 得分相同，按输赢排序
-            $winCompare = $this->compareByWinLoss($auser, $bUser, $hole);
-            if ($winCompare !== 0) {
-                return $winCompare;
-            }
-
-            // 输赢相同，回溯历史得分
-            return $this->compareByHistoryIndicator($auser, $bUser, $holeIndex, $context);
         });
 
         return $this->arrayToRanking($users);

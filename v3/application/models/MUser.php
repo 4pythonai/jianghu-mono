@@ -187,4 +187,11 @@ class MUser  extends CI_Model {
     $user = $this->db->query($players_query, [$userid])->row_array();
     return $user;
   }
+
+
+  public function getNicknameById($user_id) {
+    $this->db->where('id', $user_id);
+    $user = $this->db->get('t_user')->row_array();
+    return $user['wx_nickname'];
+  }
 }
