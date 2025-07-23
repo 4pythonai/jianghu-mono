@@ -2,6 +2,7 @@
 <template name="configItem">
   <view
     class="config-item"
+    bindtap="handleGotoResult"
     hover-class="config-item-hover"
     data-config="{{ item }}"
     data-index="{{ index }}"
@@ -56,12 +57,6 @@
         data-index="{{ index }}"
         bindtap="onRuntimeItemClick"
       >配置游戏</button>
-      <button
-        class="result-btn"
-        data-config="{{ item }}"
-        data-index="{{ index }}"
-        bindtap="handleGotoResult"
-      >查看结果</button>
     </view>
   </view>
 </template>
