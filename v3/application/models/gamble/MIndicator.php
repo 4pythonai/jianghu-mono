@@ -34,7 +34,6 @@ class MIndicator extends CI_Model {
      * @param array $configs 8421配置
      */
     private function calculate8421Indicators(&$hole, $context) {
-        // debug($hole);
         $val8421_config = $context->val8421_config;
         $sub8421ConfigString =  $context->sub8421_config_string;
         $max8421SubValue = $context->max8421_sub_value;

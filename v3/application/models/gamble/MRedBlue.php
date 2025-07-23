@@ -59,6 +59,7 @@ class MRedBlue extends CI_Model {
                 $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[3]];
                 $hole['red'] = [$context->bootStrapOrder[1], $context->bootStrapOrder[2]];
                 $hole['debug'][] = "分组:{$context->redBlueConfig},第一洞分组,采用出发设置";
+                $hole['ranking'] = $context->bootStrapOrder;
             }
 
             if ($context->redBlueConfig == "4_固拉") {
@@ -77,12 +78,7 @@ class MRedBlue extends CI_Model {
             $humanReabableIndex   = $index + 1;
             $preHoleIndex = $index - 1;
             $preHole = $context->usefulHoles[$preHoleIndex];
-            // debug("第{$humanReabableIndex}个洞,红蓝分组:{$context->redBlueConfig}");
-            // debug("上一洞名次");
             $preRanking = $preHole['ranking'];
-            // debug($preRanking);
-            // debug("出发顺序");
-            // debug($context->bootStrapOrder);
 
 
             if ($context->redBlueConfig == "4_固拉") {

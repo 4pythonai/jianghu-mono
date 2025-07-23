@@ -101,6 +101,7 @@ class MRankingP4 extends CI_Model {
             // 得分相同，回溯历史得分
             return $this->compareByHistoryIndicator($auser, $bUser, $holeIndex, $context);
         });
+        return $this->arrayToRanking($users);
     }
 
 
@@ -129,6 +130,8 @@ class MRankingP4 extends CI_Model {
             // 输赢相同，回溯历史 indicator
             return $this->compareByHistoryIndicator($auser, $bUser, $holeIndex, $context);
         });
+
+        return $this->arrayToRanking($users);
     }
 
 
@@ -158,6 +161,8 @@ class MRankingP4 extends CI_Model {
             // 输赢相同，回溯历史输赢
             return $this->compareByHistoryWinLoss($auser, $bUser, $holeIndex, $context);
         });
+
+        return $this->arrayToRanking($users);
     }
 
 
@@ -180,6 +185,7 @@ class MRankingP4 extends CI_Model {
             // 成绩相同，回溯历史成绩
             return $this->compareByHistoryScore($auser, $bUser, $holeIndex, $context);
         });
+        return $this->arrayToRanking($users);
     }
 
 
@@ -209,6 +215,7 @@ class MRankingP4 extends CI_Model {
             // 输赢相同，回溯历史输赢
             return $this->compareByHistoryScore($auser, $bUser, $holeIndex, $context);
         });
+        return $this->arrayToRanking($users);
     }
 
 
