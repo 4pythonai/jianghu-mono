@@ -349,6 +349,7 @@
 	border-radius: 10px;
 	transition: all 0.3s ease;
 	font-size: 14px;
+	width: 220rpx !important;
 }
 
 .section-label {
