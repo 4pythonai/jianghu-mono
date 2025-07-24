@@ -60,12 +60,29 @@ Component({
             const players = this.data.players || [];
             const scores = this.data.scores || [];
 
+            console.log('🔍 [ScoreInputPanel] show方法调试:', {
+                holeIndex,
+                hole,
+                holePar: hole.par,
+                scores: scores
+            });
+
             // 重新生成 localScores
             const localScores = players.map((player, pIndex) => {
                 const scoreData = scores[pIndex]?.[holeIndex] || {};
+                // 当scoreData.score为0或undefined时，使用hole.par作为默认值
+                const defaultScore = (scoreData.score && scoreData.score > 0) ? scoreData.score : (hole.par ?? 0);
+
+                console.log(`🔍 [ScoreInputPanel] 玩家${pIndex}成绩初始化:`, {
+                    playerName: player.name,
+                    scoreData,
+                    holePar: hole.par,
+                    defaultScore
+                });
+
                 return {
                     userid: player.userid,
-                    score: scoreData.score ?? hole.par ?? 0,
+                    score: defaultScore,
                     putts: scoreData.putts ?? 2,
                     penalty_strokes: scoreData.penalty_strokes ?? 0,
                     sand_save: scoreData.sand_save ?? 0,
