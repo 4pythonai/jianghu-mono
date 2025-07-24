@@ -50,10 +50,10 @@
               holeIndex="{{ holeIndex }}"
               par="{{ holeList[holeIndex].par }}"
               unique_key="{{ holeList[holeIndex].unique_key }}"
-              score="{{ playerScores[playerIndex][holeIndex].score }}"
-              putts="{{ playerScores[playerIndex][holeIndex].putts }}"
-              penalty_strokes="{{ playerScores[playerIndex][holeIndex].penalty_strokes }}"
-              sand_save="{{ playerScores[playerIndex][holeIndex].sand_save }}"
+              score="{{ displayScores[playerIndex][holeIndex].score || '' }}"
+              putts="{{ displayScores[playerIndex][holeIndex].putts }}"
+              penalty_strokes="{{ displayScores[playerIndex][holeIndex].penalty_strokes }}"
+              sand_save="{{ displayScores[playerIndex][holeIndex].sand_save }}"
               userid="{{ players[playerIndex].userid }}"
               holeid="{{ holeList[holeIndex].holeid }}"
               bind:cellclick="onCellClick"
@@ -74,7 +74,7 @@
       bindscroll="onTotalScroll"
     >
       <view class="cell-total" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIdx">
-        <text style="color:#333;font-size:16px;">{{playerTotals[playerIdx]}}</text>
+        <text style="color:#333;font-size:16px;">{{displayTotals[playerIdx]}}</text>
       </view>
     </scroll-view>
   </view>

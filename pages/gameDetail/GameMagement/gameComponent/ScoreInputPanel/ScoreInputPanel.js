@@ -40,7 +40,7 @@ Component({
             this.scoreStoreBindings = createStoreBindings(this, {
                 store: scoreStore,
                 fields: ['scores'],
-                actions: ['updateCellScore', 'batchUpdateScoresForHole'],
+                actions: ['updateCellScore', 'batchUpdateScoresForHole', 'updateScore'],
             });
         },
         detached() {
@@ -67,13 +67,14 @@ Component({
                 scores: scores
             });
 
-            // 重新生成 localScores
-            const localScores = players.map((player, pIndex) => {
-                const scoreData = scores[pIndex]?.[holeIndex] || {};
-                // 当scoreData.score为0或undefined时，使用hole.par作为默认值
+            // 重新生成 localScores，基于一维分数数组
+            const localScores = players.map((player) => {
+                const scoreData = (scores || []).find(
+                    s => String(s.userid) === String(player.userid) && String(s.hindex) === String(hole.hindex)
+                ) || {};
                 const defaultScore = (scoreData.score && scoreData.score > 0) ? scoreData.score : (hole.par ?? 0);
 
-                console.log(`🔍 [ScoreInputPanel] 玩家${pIndex}成绩初始化:`, {
+                console.log(`🔍 [ScoreInputPanel] 玩家${player.userid}成绩初始化:`, {
                     playerName: player.name,
                     scoreData,
                     holePar: hole.par,
@@ -141,42 +142,43 @@ Component({
             if (this.data.isSaving) {
                 return false; // 防止重复提交, 返回false表示未执行保存
             }
-            const holeIndexForStore = this.data.holeInfo.originalIndex; // 用于更新store的数组索引
-            const holeUniqueKeyForAPI = this.data.holeInfo.unique_key; // 用于发送给API的唯一键
+            const hindex = this.data.currentHole?.hindex;
+            const holeUniqueKeyForAPI = this.data.currentHole?.unique_key;
 
-            if (holeIndexForStore === undefined) {
+            if (hindex === undefined) {
                 return false;
             }
 
-
-            // 1. 保存旧值, 用于回滚
-            const oldScores = this.data.players.map((_, pIndex) => {
-                return { ...this.data.scores[pIndex][holeIndexForStore] };
-            });
+            // 1. 保存旧值, 用于回滚（可选，暂时不处理）
 
             this.setSaving(true);
 
-
+            // 用一维updateScore方法乐观更新
             for (let i = 0; i < this.data.localScores.length; i++) {
                 const playerScore = this.data.localScores[i];
-
-                // 调用scoreStore的乐观更新
-                this.updateCellScore({
-                    playerIndex: i,
-                    holeIndex: holeIndexForStore,
-                    ...playerScore
+                this.updateScore({
+                    userid: playerScore.userid,
+                    hindex,
+                    score: playerScore.score,
+                    putts: playerScore.putts,
+                    penalty_strokes: playerScore.penalty_strokes,
+                    sand_save: playerScore.sand_save
                 });
             }
 
             try {
                 // 4. 调用API
+                const scores = this.data.localScores.map(score => ({
+                    ...score,
+                    hindex
+                }));
                 const apiData = {
                     gameId: this.data.gameid,
+                    hindex,
                     groupId: this.data.groupId, // 添加分组ID
                     holeUniqueKey: holeUniqueKeyForAPI, // 使用 unique_key 作为洞的唯一标识
-                    scores: this.data.localScores,
+                    scores,
                 };
-
 
                 // 🔧 禁用API自带的Loading, 使用组件自己的isSaving状态管理
                 const result = await app.api.game.saveGameScore(apiData, {
@@ -197,10 +199,10 @@ Component({
                 }
 
                 wx.showToast({ title: '保存失败,已撤销', icon: 'error' });
-                this.batchUpdateScoresForHole({
-                    holeIndex: holeIndexForStore,
-                    scoresToUpdate: oldScores,
-                });
+                // this.batchUpdateScoresForHole({ // 移除二维数组回滚
+                //     holeIndex: holeIndexForStore,
+                //     scoresToUpdate: oldScores,
+                // });
                 console.log('🔄 [ScoreInputPanel] 回滚完成');
                 return false; // 返回false表示保存失败
 

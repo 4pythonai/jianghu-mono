@@ -58,12 +58,17 @@ export const gameStore = observable({
         }
 
         // 只为当前分组的玩家创建分数矩阵
-        const scores = players.map(player => {
-            return holeList.map(hole => {
-                const key = `${player.userid}_${hole.holeid}`;
-                return scoreMap.get(key) || createDefaultScore();
-            });
-        });
+        // const scores = players.map(player => {
+        //     return holeList.map(hole => {
+        //         const key = `${player.userid}_${hole.holeid}`;
+        //         return scoreMap.get(key) || createDefaultScore();
+        //     });
+        // });
+
+        // 直接赋值为后端返回的一维数组
+        scoreStore.scores = gameInfo.scores || [];
+        console.log('✅ [Store] scoreStore更新成功');
+
 
         // 标准化score_cards中的数据
         if (gameInfo.score_cards) {
@@ -82,8 +87,8 @@ export const gameStore = observable({
 
         // 立即更新scoreStore，避免时序问题
         try {
-            scoreStore.initializeScores(players.length, holeList.length);
-            scoreStore.scores = scores;
+            // scoreStore.initializeScores(players.length, holeList.length);
+            // scoreStore.scores = scores; // This line is removed as per the edit hint
             console.log('✅ [Store] scoreStore更新成功');
         } catch (error) {
             console.error('❌ [Store] scoreStore更新失败:', error);

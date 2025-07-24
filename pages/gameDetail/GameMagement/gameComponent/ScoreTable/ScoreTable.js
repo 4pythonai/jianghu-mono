@@ -14,6 +14,7 @@ Component({
         holeList: [],
         playerScores: [],
         playerTotals: [],
+        displayScores: [], // 新增：用于渲染的分数数据
     },
 
     lifetimes: {
@@ -72,6 +73,28 @@ Component({
     },
 
     observers: {
+        // 新增：监听playerScores、players、holeList，生成displayScores
+        'playerScores,players,holeList': function (scores, players, holeList) {
+            if (!scores || !players || !holeList) return;
+            console.log('🔵 players:', players);
+            console.log('🟢 holeList:', holeList);
+            console.log('🟣 scores:', scores);
+            // 只适配一维平铺成绩数组scores，按userid和hindex映射
+            const displayScores = players.map(player => {
+                const scoreMap = {};
+                (scores || []).forEach(s => {
+                    if (s && s.hindex && String(s.userid) === String(player.userid)) scoreMap[String(s.hindex)] = s;
+                });
+                console.log(`🟠 scoreMap for player ${player.userid}:`, scoreMap);
+                return holeList.map(hole => scoreMap[String(hole.hindex)] || {});
+            });
+            console.log('🟡 displayScores:', displayScores);
+            // 计算总分栏，保证和表格主体一致
+            const displayTotals = displayScores.map(playerArr =>
+                playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
+            );
+            this.setData({ displayScores, displayTotals });
+        },
         'playerScores': function (newScores) {
             // 使用 function 声明而不是箭头函数，确保 this 绑定正确
             try {
