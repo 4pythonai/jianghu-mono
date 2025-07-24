@@ -186,7 +186,50 @@ class Game extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['gameId'];
         $game_detail = $this->MDetailGame->get_detail_game($game_id);
-        echo json_encode(['code' => 200, 'game_detail' => $game_detail], JSON_UNESCAPED_UNICODE);
+        $fist4PlayersGamble  = $this->getFirst4PlayersGamble($game_id);
+        echo json_encode(['code' => 200, 'game_detail' => $game_detail, 'fist4PlayersGamble' => $fist4PlayersGamble], JSON_UNESCAPED_UNICODE);
+    }
+
+    // t_gamble_runtime
+
+    public function getFirst4PlayersGamble($game_id) {
+
+
+        $this->load->model('GamblePipe');
+        $this->load->model('GamblePipeRunner');
+        $this->load->model('gamble/MGambleDataFactory');
+        $this->load->model('gamble/MRuntimeConfig');
+        $this->load->model('gamble/MStroking');
+        $this->load->model('gamble/MIndicator');
+        $this->load->model('gamble/MRedBlue');
+        $this->load->model('gamble/MMoney');
+        $this->load->model('gamble/MRanking');
+        $this->load->model('gamble/GambleContext');
+        $this->load->model('gamble/MRanking');
+        $this->load->model('gamble/GambleContext');
+        $this->load->model('gamble/MMeat');
+
+
+        $row = $this->db->get_where('t_gamble_runtime', ['gameid' => $game_id, 'playersNumber' => 4])->row_array();
+        if ($row) {
+            // debug($row);
+            $gambleid = $row['id'];
+            $row = $this->db->get_where('t_gamble_runtime', ['id' => $gambleid])->row_array();
+            $cfg = [
+                'gambleSysName' => $row['gambleSysName'],
+                'userRuleId' => $row['userRuleId'],
+                'gameid' => $row['gameid'],
+                'gambleid' => $gambleid,
+                'groupid' => $row['groupid'],
+                'userid' => $row['creator_id']
+            ];
+
+
+            $final_result = $this->GamblePipe->GetGambleResult($cfg);
+            return $final_result;
+        } else {
+            return null;
+        }
     }
 
 

@@ -15,15 +15,6 @@ class Auth extends MY_Controller {
   }
 
 
-
-
-
-
-
-
-
-
-
   public  function JwtToken($mobile, $user) {
     $this->load->helper('my_jwt_helper');
     $secret_key = 'nanx_xiaoke-20211213';
@@ -38,7 +29,6 @@ class Auth extends MY_Controller {
 
   public function db_login($mobile, $pwd_try) {
     $user = $this->db->select('id,user,password,staff_name,active,salt')->get_where('nanx_user', ['mobile' => $mobile])->result_array();
-    // $user = $this->db->select('id,name,password,salt')->get_where('tier2', ['tierUid' => $mobile])->result_array();
 
     if (1 != sizeof($user)) {
       return 'user_not_found';
