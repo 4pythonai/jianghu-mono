@@ -1,5 +1,13 @@
-<view class="hole-cell" bindtap="recordScore">
-	<text class="score-text {{ scoreClass }}">{{formattedScore}}</text>
-	<text class="putts-text" wx:if="{{ formattedputts !== '' && formattedputts !== '0' }}">{{formattedputts}}</text>
-	<text class="diff-text" wx:if="{{ formattedDiff !== '' && formattedDiff !== '0' }}">{{formattedDiff}}</text>
+<view class="hole-cell" style="background:#fff" bindtap="recordScore">
+  <view wx:if="{{colorTag === 'red'}}" class="color-tag-red"></view>
+  <view wx:if="{{colorTag === 'blue'}}" class="color-tag-blue"></view>
+  <text class="score-text {{ scoreClass }}">{{formattedScore}}</text>
+  <text
+    class="putts-text"
+    wx:if="{{ formattedputts !== '' && formattedputts !== '0' }}"
+  >{{formattedputts}}</text>
+  <text
+    class="diff-text"
+    wx:if="{{ formattedDiff !== '' && formattedDiff !== '0' }}"
+  >{{formattedDiff}}</text>
 </view>

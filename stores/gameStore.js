@@ -20,6 +20,7 @@ export const gameStore = observable({
     groupId: null,
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
+    red_blue: [],        // 新增：红蓝分组数据
 
     loading: false,      // 加载状态
     error: null,         // 错误信息
@@ -98,15 +99,18 @@ export const gameStore = observable({
             if (res?.code === 200 && res.game_detail) {
                 // ** 调用私有方法处理数据 **
                 this._processGameData(res.game_detail, groupId);
+                this.red_blue = res.red_blue || [];
+                return res; // 关键：返回原始接口数据，包含red_blue
             } else {
                 throw new Error(res?.msg || '获取比赛详情失败');
             }
         } catch (err) {
             console.error('❌ [Store] 获取比赛详情失败:', err);
             this.error = err.message || '获取数据失败';
+            throw err;
         } finally {
             this.loading = false;
-            console.log('�� [Store] 获取流程结束');
+            console.log(' [Store] 获取流程结束');
         }
     }),
 

@@ -1,6 +1,9 @@
 import { gameStore } from '../../../stores/gameStore';
 
 Component({
+    data: {
+        red_blue: []
+    },
     properties: {
         gameId: String,
         groupId: String
@@ -95,11 +98,20 @@ Component({
             console.log('[GameMagement] refresh called');
             this.fetchGameDetail();
         },
+
+
         fetchGameDetail() {
             const { gameId, groupId } = this.data;
             console.log('[GameMagement] fetchGameDetail called', { gameId, groupId });
             if (!gameId) return;
-            gameStore.fetchGameDetail(gameId, groupId);
+            // 假设gameStore.fetchGameDetail返回Promise或你有回调
+            gameStore.fetchGameDetail(gameId, groupId).then(res => {
+                console.log('接口返回red_blue:', res && res.red_blue);
+                if (res && res.red_blue) {
+                    this.setData({ red_blue: res.red_blue });
+                    console.log('页面data.red_blue:', this.data.red_blue);
+                }
+            });
         }
     }
 }); 

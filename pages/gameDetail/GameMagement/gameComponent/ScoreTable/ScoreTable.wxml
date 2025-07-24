@@ -49,6 +49,7 @@
               playerIndex="{{ playerIndex }}"
               holeIndex="{{ holeIndex }}"
               par="{{ holeList[holeIndex].par }}"
+              colorTag="{{ cell.colorTag }}"
               unique_key="{{ holeList[holeIndex].unique_key }}"
               score="{{ displayScores[playerIndex][holeIndex].score || '' }}"
               putts="{{ displayScores[playerIndex][holeIndex].putts }}"
@@ -56,6 +57,7 @@
               sand_save="{{ displayScores[playerIndex][holeIndex].sand_save }}"
               userid="{{ players[playerIndex].userid }}"
               holeid="{{ holeList[holeIndex].holeid }}"
+              colorTag="{{ displayScores[playerIndex][holeIndex].colorTag }}"
               bind:cellclick="onCellClick"
             />
           </view>

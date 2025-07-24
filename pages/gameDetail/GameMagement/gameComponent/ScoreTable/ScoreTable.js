@@ -19,6 +19,7 @@ Component({
 
     lifetimes: {
         attached() {
+            console.log('ScoreTable attached, gameStore.red_blue:', gameStore.red_blue);
             try {
                 // ** 核心:创建 Store 和 Component 的绑定 **
                 this.storeBindings = createStoreBindings(this, {
@@ -75,18 +76,37 @@ Component({
     observers: {
         // 新增：监听playerScores、players、holeList，生成displayScores
         'playerScores,players,holeList': function (scores, players, holeList) {
+            const red_blue = gameStore.red_blue;
+            console.log('🔴 red_blue:', red_blue);
             if (!scores || !players || !holeList) return;
             console.log('🔵 players:', players);
             console.log('🟢 holeList:', holeList);
             console.log('🟣 scores:', scores);
-            // 只适配一维平铺成绩数组scores，按userid和hindex映射
+            // 构建red_blue映射
+            const redBlueMap = {};
+            (red_blue || []).forEach(item => {
+                redBlueMap[String(item.hindex)] = item;
+            });
+            // 只适配一维平铺成绩数组scores，按userid和hindex映射，并加colorTag
             const displayScores = players.map(player => {
                 const scoreMap = {};
                 (scores || []).forEach(s => {
                     if (s && s.hindex && String(s.userid) === String(player.userid)) scoreMap[String(s.hindex)] = s;
                 });
-                console.log(`🟠 scoreMap for player ${player.userid}:`, scoreMap);
-                return holeList.map(hole => scoreMap[String(hole.hindex)] || {});
+                return holeList.map(hole => {
+                    const cell = scoreMap[String(hole.hindex)] || {};
+                    // 角标逻辑
+                    const rb = redBlueMap[String(hole.hindex)];
+                    let colorTag = '';
+                    if (rb) {
+                        if ((rb.red || []).map(String).includes(String(player.userid))) colorTag = 'red';
+                        if ((rb.blue || []).map(String).includes(String(player.userid))) colorTag = 'blue';
+                    }
+                    if (colorTag) {
+                        console.log(`🟣 cellTag: player ${player.userid}, hindex ${hole.hindex}, colorTag: ${colorTag}, rb:`, rb);
+                    }
+                    return { ...cell, colorTag };
+                });
             });
             console.log('🟡 displayScores:', displayScores);
             // 计算总分栏，保证和表格主体一致

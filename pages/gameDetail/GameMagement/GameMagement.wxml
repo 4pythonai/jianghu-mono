@@ -1,7 +1,7 @@
 <view class="tab-content">
-    <ScoreTable bind:cellclick="onCellClick" />
-    <OperationBar bind:showaddplayer="onShowAddPlayer" bind:showgameoperation="onShowGameOperation" />
-    <ScoreInputPanel id="scoreInputPanel" />
-    <AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
-    <GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" />
+  <ScoreTable red_blue="{{red_blue}}" bind:cellclick="onCellClick" />
+  <OperationBar bind:showaddplayer="onShowAddPlayer" bind:showgameoperation="onShowGameOperation" />
+  <ScoreInputPanel id="scoreInputPanel" />
+  <AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
+  <GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" />
 </view>

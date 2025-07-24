@@ -3,6 +3,10 @@ import { gameStore } from '../../stores/gameStore'
 
 Component({
     properties: {
+        colorTag: {
+            type: String,
+            value: ''
+        },
         playerIndex: Number,
         holeIndex: Number,
         userid: {
@@ -108,7 +112,8 @@ Component({
     methods: {
         // 计算并更新 diff
         calculateAndUpdateDiff: function () {
-            const { score = 0, par = 0 } = this.properties;
+            const { score = 0, par = 0, colorTag = '' } = this.properties;
+            console.log('🟣 HoleCell colorTag:', colorTag);
             const calculatedDiff = (score > 0 && par > 0) ? score - par : 0;
 
             const prefix = calculatedDiff > 0 ? '+' : '';

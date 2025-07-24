@@ -5,14 +5,14 @@
 	flex-shrink: 0;
 	padding: 10px;
 	position: relative;
+	overflow: visible !important;
 }
 
 .flag-red {
 	position: relative;
 }
 
-.flag-red::after {
-	content: "";
+.color-tag-red {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -21,6 +21,19 @@
 	border-style: solid;
 	border-width: 0 12px 12px 0;
 	border-color: transparent #ff0000 transparent transparent;
+	z-index: 9999;
+}
+
+.color-tag-blue {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 12px 12px 0;
+	border-color: transparent #0000ff transparent transparent;
+	z-index: 9999;
 }
 
 .flag-blue {
@@ -36,6 +49,23 @@
 	height: 0;
 	border-style: solid;
 	border-width: 0 12px 12px 0;
+	border-color: transparent #0000ff transparent transparent;
+}
+
+.corner-flag {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 24px 24px 0;
+	z-index: 2;
+}
+.corner-flag.red {
+	border-color: transparent #ff0000 transparent transparent;
+}
+.corner-flag.blue {
 	border-color: transparent #0000ff transparent transparent;
 }
 
@@ -90,7 +120,7 @@
 }
 
 .score-par {
-	color:  blue;
+	color: blue;
 }
 
 .score-bogey {

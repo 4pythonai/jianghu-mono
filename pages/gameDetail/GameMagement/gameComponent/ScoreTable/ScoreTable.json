@@ -1,5 +1,11 @@
 {
 	"component": true,
+	"properties": {
+		"red_blue": {
+			"type": "array",
+			"value": []
+		}
+	},
 	"usingComponents": {
 		"PlayerInfo": "/components/player-info/player-info",
 		"HoleCell": "/components/HoleCell/HoleCell"

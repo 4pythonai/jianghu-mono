@@ -1,4 +1,9 @@
 {
 	"component": true,
-	"usingComponents": {}
+	"properties": {
+		"colorTag": {
+			"type": "string",
+			"value": ""
+		}
+	}
 }
