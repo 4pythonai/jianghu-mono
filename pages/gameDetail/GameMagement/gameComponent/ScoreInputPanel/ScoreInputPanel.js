@@ -61,7 +61,6 @@ Component({
             const scores = this.data.scores || [];
 
 
-            // 重新生成 localScores，基于一维分数数组
             const localScores = players.map((player) => {
                 const scoreData = (scores || []).find(
                     s => String(s.userid) === String(player.userid) && String(s.hindex) === String(hole.hindex)
@@ -174,6 +173,17 @@ Component({
                 });
 
                 wx.showToast({ title: result.message, icon: 'success', duration: 1500 });
+
+                // 保存成功后刷新父页面（GameMagement）数据
+                const pages = getCurrentPages();
+                const currentPage = pages[pages.length - 1];
+                if (currentPage) {
+                    const gameMagement = currentPage.selectComponent('#gameMagement');
+                    if (gameMagement && typeof gameMagement.refresh === 'function') {
+                        gameMagement.refresh();
+                    }
+                }
+
                 return true; // 返回true表示保存成功
 
             } catch (err) {
