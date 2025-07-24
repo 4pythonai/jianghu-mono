@@ -60,12 +60,6 @@ Component({
             const players = this.data.players || [];
             const scores = this.data.scores || [];
 
-            console.log('🔍 [ScoreInputPanel] show方法调试:', {
-                holeIndex,
-                hole,
-                holePar: hole.par,
-                scores: scores
-            });
 
             // 重新生成 localScores，基于一维分数数组
             const localScores = players.map((player) => {
@@ -74,12 +68,6 @@ Component({
                 ) || {};
                 const defaultScore = (scoreData.score && scoreData.score > 0) ? scoreData.score : (hole.par ?? 0);
 
-                console.log(`🔍 [ScoreInputPanel] 玩家${player.userid}成绩初始化:`, {
-                    playerName: player.name,
-                    scoreData,
-                    holePar: hole.par,
-                    defaultScore
-                });
 
                 return {
                     userid: player.userid,
@@ -199,11 +187,6 @@ Component({
                 }
 
                 wx.showToast({ title: '保存失败,已撤销', icon: 'error' });
-                // this.batchUpdateScoresForHole({ // 移除二维数组回滚
-                //     holeIndex: holeIndexForStore,
-                //     scoresToUpdate: oldScores,
-                // });
-                console.log('🔄 [ScoreInputPanel] 回滚完成');
                 return false; // 返回false表示保存失败
 
             } finally {
@@ -244,7 +227,6 @@ Component({
                 if (saveResult === false) {
                     return; // 保存失败或被跳过, 不关闭面板
                 }
-                console.log('✅ [ScoreInputPanel] _saveChanges 执行成功');
             } catch (error) {
                 return; // 如果保存失败, 不执行后续操作
             }
@@ -286,7 +268,6 @@ Component({
                                 this.hide(); // 只有保存成功才关闭面板
                             }
                         } catch (error) {
-                            console.error('❌ [ScoreInputPanel] 清除后保存失败:', error);
                         }
                     }
                 }

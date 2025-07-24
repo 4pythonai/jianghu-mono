@@ -16,10 +16,10 @@ export const scoreStore = observable({
      */
     get playerTotalScores() {
         const totals = {};
-        (this.scores || []).forEach(s => {
+        for (const s of (this.scores || [])) {
             if (!totals[s.userid]) totals[s.userid] = 0;
             if (typeof s.score === 'number') totals[s.userid] += s.score;
-        });
+        }
         return totals;
     },
 

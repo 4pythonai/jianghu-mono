@@ -43,18 +43,7 @@ export function normalizeScore(score) {
     };
 }
 
-/**
- * 创建默认分数对象
- * @returns {object}
- */
-export function createDefaultScore() {
-    return {
-        score: 0,
-        putts: 0,
-        penalty_strokes: 0,
-        sand_save: 0,
-    };
-}
+
 
 /**
  * 标准化score_cards中的洞数据
