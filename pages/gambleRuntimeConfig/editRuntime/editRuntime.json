@@ -5,6 +5,7 @@
         "HoleRangeSelector": "../RuntimeComponents/HoleRangeSelector/HoleRangeSelector",
         "RedBlueConfig": "../RuntimeComponents/RedBlueConfig/RedBlueConfig",
         "RankConflictResolver": "../RuntimeComponents/RankConflictResolver/RankConflictResolver",
-        "PlayerIndicator": "../RuntimeComponents/PlayerIndicator/PlayerIndicator"
+        "PlayerIndicator": "../RuntimeComponents/PlayerIndicator/PlayerIndicator",
+        "Rule4P8421": "../../../components/RuleCard/4p/4p-8421/Rule4P8421"
     }
 }

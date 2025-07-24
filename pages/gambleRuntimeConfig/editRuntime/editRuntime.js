@@ -37,7 +37,6 @@ Page({
     },
 
     onLoad(options) {
-        console.log('[EditRuntime] 页面加载, 参数:', options);
 
         // 简化：直接从 runtimeStore 获取配置数据
         const configId = options.configId;
@@ -57,7 +56,7 @@ Page({
             return;
         }
 
-        console.log('[EditRuntime] 找到配置数据:', config);
+        console.log('[⭕️⭕️⭕️⭕️] Spect:', toJS(config.spec));
 
         // 从 gameStore 获取玩家数据
         const players = gameStore.players || [];
@@ -68,6 +67,7 @@ Page({
 
         // 直接设置配置数据
         this.setData({
+            config: config,
             configId: configId,
             gambleSysName: config.gambleSysName,
             gameId: config.gameid,

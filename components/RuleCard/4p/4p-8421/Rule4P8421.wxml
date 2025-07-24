@@ -1,3 +1,5 @@
+<!-- Rule4P8421 组件 -->
+
 <view
   class="rule-item1"
   bindtap="onViewRule"
@@ -26,8 +28,7 @@
     </view>
   </view>
   <view class="rule-footer">
-    <text class="rule-time">{{ item.created_at || item.createTime }}</text>
-    <view class="rule-actions" catchtap="true">
+    <view wx:if="{{showEdit}}" class="rule-actions" catchtap="true">
       <text class="action-btn edit-btn" bindtap="onEditRule" data-item="{{ item }}">编辑</text>
     </view>
   </view>

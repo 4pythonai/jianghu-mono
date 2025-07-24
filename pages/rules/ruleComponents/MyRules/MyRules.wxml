@@ -28,6 +28,7 @@
               bind:editRule="onEditRule"
               bind:viewRule="onViewRule"
               bind:longPressRule="onLongPressRule"
+              showEdit="{{true}}"
             />
           </block>
         </view>

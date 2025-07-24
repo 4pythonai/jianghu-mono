@@ -77,33 +77,27 @@ Component({
         // 新增：监听playerScores、players、holeList，生成displayScores
         'playerScores,players,holeList': function (scores, players, holeList) {
             const red_blue = gameStore.red_blue;
-            console.log('🔴 red_blue:', red_blue);
             if (!scores || !players || !holeList) return;
-            console.log('🔵 players:', players);
-            console.log('🟢 holeList:', holeList);
-            console.log('🟣 scores:', scores);
+
             // 构建red_blue映射
             const redBlueMap = {};
-            (red_blue || []).forEach(item => {
-                redBlueMap[String(item.hindex)] = item;
-            });
+            for (const item of (red_blue || [])) {
+                redBlueMap[String(item?.hindex)] = item;
+            }
             // 只适配一维平铺成绩数组scores，按userid和hindex映射，并加colorTag
             const displayScores = players.map(player => {
                 const scoreMap = {};
-                (scores || []).forEach(s => {
-                    if (s && s.hindex && String(s.userid) === String(player.userid)) scoreMap[String(s.hindex)] = s;
-                });
+                for (const s of (scores || [])) {
+                    if (s?.hindex && String(s?.userid) === String(player?.userid)) scoreMap[String(s?.hindex)] = s;
+                }
                 return holeList.map(hole => {
-                    const cell = scoreMap[String(hole.hindex)] || {};
+                    const cell = scoreMap[String(hole?.hindex)] || {};
                     // 角标逻辑
-                    const rb = redBlueMap[String(hole.hindex)];
+                    const rb = redBlueMap[String(hole?.hindex)];
                     let colorTag = '';
                     if (rb) {
-                        if ((rb.red || []).map(String).includes(String(player.userid))) colorTag = 'red';
-                        if ((rb.blue || []).map(String).includes(String(player.userid))) colorTag = 'blue';
-                    }
-                    if (colorTag) {
-                        console.log(`🟣 cellTag: player ${player.userid}, hindex ${hole.hindex}, colorTag: ${colorTag}, rb:`, rb);
+                        if ((rb.red || []).map(String).includes(String(player?.userid))) colorTag = 'red';
+                        if ((rb.blue || []).map(String).includes(String(player?.userid))) colorTag = 'blue';
                     }
                     return { ...cell, colorTag };
                 });

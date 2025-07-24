@@ -113,14 +113,10 @@ Component({
         // 计算并更新 diff
         calculateAndUpdateDiff: function () {
             const { score = 0, par = 0, colorTag = '' } = this.properties;
-            console.log('🟣 HoleCell colorTag:', colorTag);
             const calculatedDiff = (score > 0 && par > 0) ? score - par : 0;
-
             const prefix = calculatedDiff > 0 ? '+' : '';
             const formattedDiff = calculatedDiff !== 0 ? prefix + calculatedDiff.toString() : '0';
-
             const newScoreClass = gameStore.getScoreClass(calculatedDiff);
-
             this.setData({
                 calculatedDiff: calculatedDiff,
                 formattedDiff: formattedDiff,

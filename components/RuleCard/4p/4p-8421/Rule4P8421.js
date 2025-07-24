@@ -8,6 +8,10 @@ Component({
         item: {
             type: Object,
             value: {}
+        },
+        showEdit: {
+            type: Boolean,
+            value: false
         }
     },
 
@@ -23,7 +27,7 @@ Component({
      */
     lifetimes: {
         attached() {
-            console.log('🎯 [R4P8421] 组件已加载, item:', this.data.item);
+            console.log('✅✅✅ item:', this.data.item);
             this.parseConfigDetails();
         },
 
