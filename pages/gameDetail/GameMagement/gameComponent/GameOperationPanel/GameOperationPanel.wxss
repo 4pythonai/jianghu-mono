@@ -21,6 +21,9 @@
 	pointer-events: auto;
 	transform: translateX(-50%) scale(1);
 }
+.operation-panel[hidden] {
+	display: none !important;
+}
 
 /* 标题 */
 .panel-header {

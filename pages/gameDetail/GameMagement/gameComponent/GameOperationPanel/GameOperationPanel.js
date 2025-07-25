@@ -6,7 +6,7 @@ Component({
      * 组件的初始数据
      */
     data: {
-        isVisible: false, // 控制面板显示/隐藏
+        isOperatonPanelVisible: false, // 控制面板显示/隐藏
         gameId: null,     // 游戏ID
     },
 
@@ -18,7 +18,7 @@ Component({
         show(options = {}) {
             console.log('🎮 [GameOperationPanel] 显示面板', options);
             this.setData({
-                isVisible: true,
+                isOperatonPanelVisible: true,
                 ...options
             });
         },
@@ -27,7 +27,7 @@ Component({
         hide() {
             console.log('🎮 [GameOperationPanel] 隐藏面板');
             this.setData({
-                isVisible: false
+                isOperatonPanelVisible: false
             });
         },
 

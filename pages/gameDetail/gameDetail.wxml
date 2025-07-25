@@ -4,15 +4,15 @@
   <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-tab="2">游戏</view>
 </view>
 <!-- 记分 -->
-<view wx:if="{{currentTab === 0}}">
+<view hidden="{{currentTab !== 0}}">
   <GameMagement id="gameMagement" gameId="{{gameId}}" groupId="{{groupId}}" />
 </view>
 <!-- 互动 -->
-<view class="tab-content" wx:if="{{currentTab === 1}}">
-  <BBS gameId="{{gameData.gameid || ''}}" />
+<view class="tab-content" hidden="{{currentTab !== 1}}">
+  <BBS id="bbsComponent" gameId="{{gameData.gameid || ''}}" />
 </view>
 <!-- 赌博相关 -->
-<view class="tab-content" wx:if="{{currentTab === 2}}">
+<view class="tab-content" hidden="{{currentTab !== 2}}">
   <RuntimeConfigList
     id="gambleComponent"
     gameId="{{gameData.gameid || ''}}"

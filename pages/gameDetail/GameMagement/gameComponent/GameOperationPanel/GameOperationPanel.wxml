@@ -1,5 +1,9 @@
 <!-- 游戏操作面板 -->
-<view class="operation-panel {{isVisible ? 'show' : ''}}" catchtap="stopPropagation">
+<view
+  class="operation-panel {{isVisible ? 'show' : ''}}"
+  hidden="{{!isVisible}}"
+  catchtap="stopPropagation"
+>
   <!-- 面板标题 -->
   <view class="panel-header">
     <text class="panel-title">更多</text>
