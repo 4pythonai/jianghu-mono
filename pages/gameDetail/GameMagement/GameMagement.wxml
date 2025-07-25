@@ -3,5 +3,9 @@
   <OperationBar bind:showaddplayer="onShowAddPlayer" bind:showgameoperation="onShowGameOperation" />
   <ScoreInputPanel id="scoreInputPanel" />
   <AddPlayerHubPanel id="addPlayerHubPanel" bind:confirm="onAddPlayerConfirm" />
-  <GameOperationPanel id="gameOperationPanel" bind:optionclick="onOptionClick" />
+  <GameOperationPanel
+    id="gameOperationPanel"
+    bind:optionclick="onOptionClick"
+    hidden="{{!isGameOperationPanelVisible}}"
+  />
 </view>

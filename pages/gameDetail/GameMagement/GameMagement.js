@@ -2,7 +2,8 @@ import { gameStore } from '../../../stores/gameStore';
 
 Component({
     data: {
-        red_blue: []
+        red_blue: [],
+        isGameOperationPanelVisible: false // 新增，用于控制 GameOperationPanel 显示
     },
     properties: {
         gameId: String,
@@ -34,14 +35,12 @@ Component({
             });
         },
         onShowGameOperation(e) {
-            const gameOperationPanel = this.selectComponent('#gameOperationPanel');
-            if (gameOperationPanel) {
-                gameOperationPanel.show({});
-            } else {
-                console.error('无法找到 #gameOperationPanel 组件');
-            }
+            // 只用 data 变量控制显示
+            this.setData({ isGameOperationPanelVisible: true });
         },
         onOptionClick(e) {
+            // 关闭操作面板
+            this.setData({ isGameOperationPanelVisible: false });
             const { option } = e.detail;
             // 这里直接处理所有操作逻辑
             switch (option) {
@@ -86,19 +85,11 @@ Component({
                 console.error('无法找到 #addPlayerHubPanel 组件');
             }
         },
-        showGameOperationPanel(options) {
-            const gameOperationPanel = this.selectComponent('#gameOperationPanel');
-            if (gameOperationPanel) {
-                gameOperationPanel.show(options);
-            } else {
-                console.error('无法找到 #gameOperationPanel 组件');
-            }
-        },
+        // showGameOperationPanel(options) 方法已废弃，不再使用
         refresh() {
             console.log('[GameMagement] refresh called');
             this.fetchGameDetail();
         },
-
 
         fetchGameDetail() {
             const { gameId, groupId } = this.data;
@@ -106,8 +97,8 @@ Component({
             if (!gameId) return;
             // 假设gameStore.fetchGameDetail返回Promise或你有回调
             gameStore.fetchGameDetail(gameId, groupId).then(res => {
-                console.log('接口返回red_blue:', res && res.red_blue);
-                if (res && res.red_blue) {
+                console.log('接口返回red_blue:', res?.red_blue);
+                if (res?.red_blue) {
                     this.setData({ red_blue: res.red_blue });
                     console.log('页面data.red_blue:', this.data.red_blue);
                 }
