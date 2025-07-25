@@ -7,7 +7,7 @@
 		}
 	},
 	"usingComponents": {
-		"PlayerInfo": "/components/player-info/player-info",
+		"PlayerInfo": "/components/PlayerInfo/PlayerInfo",
 		"HoleCell": "/components/HoleCell/HoleCell"
 	}
 }

@@ -1,7 +1,12 @@
-<view class="match-container" hover-class="hover-class" hover-stay-time="100" bindtap="onMatchItemTap">
+<view
+  class="match-container"
+  hover-class="hover-class"
+  hover-stay-time="100"
+  bindtap="onMatchItemTap"
+>
   <!-- 左侧头像组 -->
   <view class="avatar-column">
-    <avatar-group avatars="{{avatarUrls}}" maxShow="4" />
+    <AvatarGroup avatars="{{avatarUrls}}" maxShow="4" />
   </view>
   <!-- 右侧内容区 -->
   <view class="content-column">
@@ -14,7 +19,7 @@
     </view>
     <!-- 第2行:进度条 -->
     <view class="row progress-row">
-      <progress-bar completedHoles="{{completedHoles}}" holes="{{holes}}" />
+      <ProgressBar completedHoles="{{completedHoles}}" holes="{{holes}}" />
     </view>
     <!-- 第3行:地点 -->
     <view class="row course-row">
