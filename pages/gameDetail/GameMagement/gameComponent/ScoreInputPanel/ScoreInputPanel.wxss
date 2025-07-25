@@ -43,7 +43,7 @@
 	justify-content: center;
 	width: 100rpx;
 	height: 100rpx;
-	background-color: #a4d4a5;
+	background-color: #0ead11;
 	border-radius: 50%;
 }
 
@@ -196,17 +196,18 @@
 	margin-top: 10rpx;
 }
 
+/* 底部按钮区域样式优化 */
 .footer-buttons {
 	display: flex;
-	justify-content: space-between;
-	margin-top: 30rpx;
+	justify-content: center;
+	gap: 32rpx; /* 按钮间距，可根据实际效果调整 */
+	margin-top: 32rpx;
 }
 
 .btn-clear,
 .btn-confirm {
-	width: 48%;
-	border-radius: 50rpx;
-	font-size: 32rpx;
+	flex: 1 1 0;
+	margin: 0;
 }
 
 .btn-clear {

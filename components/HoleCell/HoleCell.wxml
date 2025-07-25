@@ -2,12 +2,6 @@
   <view wx:if="{{colorTag === 'red'}}" class="color-tag-red"></view>
   <view wx:if="{{colorTag === 'blue'}}" class="color-tag-blue"></view>
   <text class="score-text {{ scoreClass }}">{{formattedScore}}</text>
-  <text
-    class="putts-text"
-    wx:if="{{ formattedputts !== '' && formattedputts !== '0' }}"
-  >{{formattedputts}}</text>
-  <text
-    class="diff-text"
-    wx:if="{{ formattedDiff !== '' && formattedDiff !== '0' }}"
-  >{{formattedDiff}}</text>
+  <text class="putts-text">{{formattedputts}}</text>
+  <text class="diff-text">{{formattedDiff}}</text>
 </view>
