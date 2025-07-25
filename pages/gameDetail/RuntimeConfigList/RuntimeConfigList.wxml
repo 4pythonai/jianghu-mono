@@ -55,7 +55,7 @@
         class="detail-btn"
         data-config="{{ item }}"
         data-index="{{ index }}"
-        bindtap="onRuntimeItemClick"
+        catchtap="onRuntimeItemClick"
       >配置游戏</button>
     </view>
   </view>
@@ -82,17 +82,7 @@
           </label>
         </radio-group>
       </view>
-      <view class="gambels-extra-opetion">
-        <view class="option-text">大风吹</view>
-        <radio-group name="bigWind" class="radio-group-row" bindchange="onBigWindChange">
-          <label class="radio-label">
-            <radio value="yes" />大风吹
-          </label>
-          <label class="radio-label">
-            <radio value="no" checked="true" />否
-          </label>
-        </radio-group>
-      </view>
+
       <view
         wx:for="{{ extraOptions }}"
         wx:key="id"
@@ -107,6 +97,18 @@
         <view class="option-arrow">
           <image class="arrow-icon" src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
         </view>
+      </view>
+
+      <view class="gambels-extra-opetion">
+        <view class="option-text">大风吹</view>
+        <radio-group name="bigWind" class="radio-group-row" bindchange="onBigWindChange">
+          <label class="radio-label">
+            <radio value="yes" />是
+          </label>
+          <label class="radio-label">
+            <radio value="no" checked="true" />否
+          </label>
+        </radio-group>
       </view>
     </view>
     <view class="config-list">

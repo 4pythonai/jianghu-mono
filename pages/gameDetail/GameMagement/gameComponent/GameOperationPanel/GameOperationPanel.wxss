@@ -1,127 +1,146 @@
-/* 游戏操作面板样式 */
-.operation-panel-mask {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(0, 0, 0, 0.5);
-	z-index: 9999;
-	opacity: 0;
-	visibility: hidden;
-	transition: all 0.3s ease;
-}
-
-.operation-panel-mask.show {
-	opacity: 1;
-	visibility: visible;
-}
-
+/* 弹框主体 */
 .operation-panel {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background-color: #2c2c2c;
-	border-radius: 20rpx 20rpx 0 0;
-	padding: 40rpx 32rpx 60rpx;
-	transform: translateY(100%);
-	transition: transform 0.3s ease;
+	position: fixed;
+	left: 50%;
+	bottom: 40rpx;
+	transform: translateX(-50%);
+	width: 90vw;
+	background-color: #fff;
+	border-radius: 24rpx;
+	box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+	padding: 40rpx 24rpx 32rpx;
+	z-index: 1000;
+	animation: panel-fade-in 0.3s;
+	opacity: 0;
+	pointer-events: none;
+	transform: translateX(-50%) scale(0.98);
+	transition: opacity 0.2s, transform 0.2s;
 }
-
 .operation-panel.show {
-	transform: translateY(0);
+	opacity: 1;
+	pointer-events: auto;
+	transform: translateX(-50%) scale(1);
 }
 
+/* 标题 */
 .panel-header {
 	text-align: center;
-	margin-bottom: 40rpx;
+	margin-bottom: 32rpx;
+	border-bottom: 1rpx solid #f0f0f0;
+	padding-bottom: 24rpx;
 }
-
 .panel-title {
 	font-size: 36rpx;
-	font-weight: 600;
-	color: #fff;
+	font-weight: bold;
+	color: #222;
 }
 
+/* 选项网格 */
 .options-grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	gap: 40rpx;
-	margin-bottom: 40rpx;
+	gap: 32rpx;
+	margin-bottom: 32rpx;
 }
 
+/* 单个选项 */
 .option-item {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	text-align: center;
+	cursor: pointer;
+	transition: transform 0.1s;
+	-webkit-tap-highlight-color: transparent;
+	tap-highlight-color: transparent;
+	outline: none;
 }
 
+/* 图标圆圈 */
 .option-icon {
 	width: 80rpx;
 	height: 80rpx;
-	background-color: #404040;
+	background: linear-gradient(135deg, #f5f6fa 60%, #e9ecef 100%);
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	margin-bottom: 16rpx;
-	transition: background-color 0.2s ease;
+	margin-bottom: 12rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.12), 0 1rpx 0 #fff inset;
+	border: 1rpx solid #e0e0e0;
+	position: relative;
 }
 
-.option-item:active .option-icon {
-	background-color: #505050;
+.option-icon::after {
+	content: "";
+	position: absolute;
+	top: 8rpx;
+	left: 16rpx;
+	width: 48rpx;
+	height: 16rpx;
+	background: linear-gradient(
+		90deg,
+		rgba(255, 255, 255, 0.45),
+		rgba(255, 255, 255, 0)
+	);
+	border-radius: 8rpx;
+	pointer-events: none;
+}
+.menu-icon {
+	width: 60rpx;
+	height: 60rpx;
+	filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.1));
 }
 
 .icon-text {
-	font-size: 48rpx;
+	font-size: 44rpx;
 }
 
+/* 选项文字 */
 .option-label {
-	font-size: 28rpx;
-	color: #fff;
+	font-size: 26rpx;
+	color: #333;
+	margin-top: 2rpx;
 }
 
-/* 危险操作样式 */
-.cancel-icon {
-	background-color: #ff4757 !important;
-}
-
-.finish-icon {
-	background-color: #5cb85c !important;
-}
-
+/* 分割线 */
 .divider {
 	height: 1rpx;
-	background-color: #404040;
-	margin: 40rpx 0;
+	background: #f0f0f0;
+	margin: 32rpx 0;
 }
 
+/* 底部按钮 */
 .bottom-actions {
 	padding: 0;
 }
-
 .action-btn {
 	width: 100%;
-	height: 88rpx;
-	border-radius: 44rpx;
+	height: 80rpx;
+	border-radius: 40rpx;
+	background: linear-gradient(90deg, #f5f6fa 60%, #e9ecef 100%);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	transition: opacity 0.2s ease;
+	transition: opacity 0.2s;
 }
-
 .action-btn:active {
-	opacity: 0.8;
+	opacity: 0.7;
 }
-
-.close-btn {
-	background-color: #404040;
-}
-
-.action-text {
-	font-size: 32rpx;
-	color: #fff;
+.close-btn .action-text {
+	font-size: 30rpx;
+	color: #222;
 	font-weight: 500;
+}
+
+/* 弹出动画 */
+@keyframes panel-fade-in {
+	from {
+		opacity: 0;
+		transform: translate(-50%, 40rpx);
+	}
+	to {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
 }
