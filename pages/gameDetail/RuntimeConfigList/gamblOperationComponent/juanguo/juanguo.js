@@ -4,23 +4,29 @@ import { holeRangeStore } from '../../../../../stores/holeRangeStore';
 import { toJS } from 'mobx-miniprogram';
 Component({
     properties: {
-        runtimeConfigs: Array
+        // 传入的 runtimeConfigs 列表
+        runtimeConfigs: {
+            type: Array,
+            value: []
+        }
     },
     data: {
-        selectedIdList: [], // 选中的配置ID数组
-        donationType: 'normal', // 捐锅方式: normal-普通, bigpot-大锅饭
-        donationPoints: 1, // 默认每洞捐1分
-        totalFee: '', // 总费用（大锅饭模式）
+        // 当前选中的配置 id 列表
+        selectedIdList: [],
+        // 捐锅方式: normal-普通, bigpot-大锅饭
+        donationType: 'normal',
+        // 默认每洞捐1分
+        donationPoints: 1,
+        // 总费用（大锅饭模式）
+        totalFee: ''
     },
     lifetimes: {
         attached() {
-            console.log('[juanguo] 组件已挂载, runtimeConfigs:', this.data.runtimeConfigs);
-            console.log('[juanguo] gameStore:', toJS(gameStore));
-            console.log('[juanguo] holeRangeStore:', toJS(holeRangeStore));
+            // 绑定 mobx store
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
                 fields: ['gameData', 'players'],
-                actions: [],
+                actions: []
             });
         },
         detached() {
@@ -28,32 +34,12 @@ Component({
         }
     },
     methods: {
-        // 处理checkbox-group选中变化
-        onCheckboxGroupChange(e) {
-            this.setData({
-                selectedIdList: e.detail.value
-            });
-            console.log('[juanguo] 选中ID变化:', e.detail.value);
-        },
-
-        // 处理checkbox选择变化
+        // 处理 RuntimeConfigSelector 组件的 checkbox 变化
         onCheckboxChange(e) {
-            const id = e.currentTarget.dataset.id;
-            const selectedIdList = [...this.data.selectedIdList];
-
-            // 切换选中状态
-            const index = selectedIdList.indexOf(id);
-            if (index > -1) {
-                selectedIdList.splice(index, 1);
-            } else {
-                selectedIdList.push(id);
-            }
-
             this.setData({
-                selectedIdList
+                selectedIdList: e.detail.selectedIdList
             });
-
-            console.log('[juanguo] 选中状态变化:', { id, selected: selectedIdList.includes(id) });
+            console.log('[juanguo] 选中ID变化:', e.detail.selectedIdList);
         },
 
         // 捐锅方式切换
@@ -81,32 +67,26 @@ Component({
 
         // 确定按钮点击
         onConfirm() {
-            // 直接用selectedIdList
-            const selectedIds = this.data.selectedIdList;
-
             // 构建捐锅配置数据
             const donationConfig = {
-                selectedIds,
+                selectedIds: this.data.selectedIdList,
                 donationType: this.data.donationType,
                 donationPoints: this.data.donationType === 'normal' ? Number(this.data.donationPoints) : 0,
-                totalFee: this.data.donationType === 'bigpot' ? Number(this.data.totalFee) : 0,
+                totalFee: this.data.donationType === 'bigpot' ? Number(this.data.totalFee) : 0
             };
-
             console.log('[juanguo] 捐锅配置:', donationConfig);
-
-            // 可以触发事件传递给父组件
+            // 触发事件传递给父组件
             this.triggerEvent('confirm', { donationConfig });
-
             // 关闭弹窗
             this.close();
         },
 
+        // 关闭弹窗
         close() {
             this.triggerEvent('close');
         },
 
-        noop() {
-            // 空方法，阻止冒泡
-        }
+        // 空方法，阻止冒泡
+        noop() { }
     }
 }); 
