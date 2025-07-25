@@ -145,7 +145,6 @@ Component({
                         console.log(`🎮 [GameOperationPanel] 成功跳转到${option}页面`);
                     },
                     fail: (err) => {
-                        console.error(`❌ [GameOperationPanel] 跳转失败:`, err);
                         wx.showToast({
                             title: '页面跳转失败',
                             icon: 'error'
