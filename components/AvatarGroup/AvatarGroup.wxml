@@ -1,12 +1,6 @@
-<view class="avatar-group-container">
+<view class="avatar-group-container {{showMode}}">
   <block wx:for="{{showAvatars}}" wx:key="index">
-    <image 
-      src="{{item}}" 
-      class="avatar avatar-{{index}}" 
-      style="z-index: {{999 - index}};"
-    />
+    <image src="{{item}}" class="avatar avatar-{{index}}" style="z-index: {{999 - index}};" />
   </block>
-  <view class="more-tip" wx:if="{{moreCount > 0}}">
-    +{{moreCount}}
-  </view>
+  <view class="more-tip" wx:if="{{moreCount > 0}}">+{{moreCount}}</view>
 </view>

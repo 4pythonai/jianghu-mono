@@ -8,7 +8,7 @@
 export function normalizePlayer(player) {
     return {
         ...player,
-        userid: player.userid != null ? String(player.userid) : (player.user_id != null ? String(player.user_id) : ''),
+        userid: String(player.userid),
         nickname: player.nickname || player.wx_nickname || '未知玩家',
     };
 }

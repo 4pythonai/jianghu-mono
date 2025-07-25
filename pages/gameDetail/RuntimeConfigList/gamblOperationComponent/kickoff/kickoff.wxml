@@ -8,11 +8,30 @@
       <checkbox-group value="{{selectedIdList}}" bindchange="onCheckboxChange">
         <block wx:for="{{runtimeConfigs}}" wx:key="id">
           <label class="game-item">
-            <checkbox value="{{item.id}}" />
-            <text class="game-title">{{item.abstract}}</text>
+            <view class="game-item-row">
+              <checkbox value="{{item.id}}" />
+              <view class="game-item-info">
+                <text class="game-title">{{item.abstract}}</text>
+                <AvatarGroup players="{{item.attenders}}" maxShow="4" showMode="line" />
+              </view>
+            </view>
           </label>
         </block>
       </checkbox-group>
+    </view>
+
+    <view class="section-title">请选择洞号及倍数</view>
+    <view class="hole-list">
+      <block wx:for="{{holePlayList}}" wx:key="index">
+        <view
+          class="hole-item {{index === 0 ? 'active' : ''}}"
+          bindtap="onSelectHole"
+          data-index="{{index}}"
+          data-hindex="{{item.hindex}}"
+        >
+          <text class="hole-item-text">{{item.holename}}</text>
+        </view>
+      </block>
     </view>
 
     <view class="kickoff-footer">

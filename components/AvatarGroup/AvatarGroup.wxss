@@ -7,6 +7,12 @@
 	justify-content: center; /* 水平居中 */
 }
 
+.line {
+	width: auto;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+}
+
 .avatar {
 	width: 50rpx;
 	height: 50rpx;

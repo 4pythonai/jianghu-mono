@@ -69,7 +69,7 @@ Component({
                     // 从players中找到对应的玩家对象
                     const player = players.find(p => {
                         // 使用与 GameTypeManager 一致的字段名处理
-                        const playerUserId = String(p.userid || p.user_id);
+                        const playerUserId = String(p.userid);
                         return playerUserId === String(userId);
                     });
 
@@ -114,7 +114,7 @@ Component({
 
             return playersArray.map(player => {
                 // 使用与 GameTypeManager 一致的字段名处理
-                const userid = player.userid || player.user_id;
+                const userid = player.userid;
                 return Number.parseInt(userid) || 0;
             });
         },

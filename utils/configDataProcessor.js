@@ -141,7 +141,7 @@ const ConfigDataProcessor = {
             }
 
             // 验证所有玩家ID都存在 - 使用与 normalizePlayer 一致的字段名处理
-            const playerIds = players.map(p => Number.parseInt(p.userid || p.user_id));
+            const playerIds = players.map(p => Number.parseInt(p.userid));
             const allPlayersIncluded = config.bootstrap_order.every(id =>
                 playerIds.includes(Number.parseInt(id))
             );

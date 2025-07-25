@@ -6,7 +6,7 @@
 >
   <!-- 左侧头像组 -->
   <view class="avatar-column">
-    <AvatarGroup avatars="{{avatarUrls}}" maxShow="4" />
+    <AvatarGroup players="{{players}}" maxShow="4" showMode="group" />
   </view>
   <!-- 右侧内容区 -->
   <view class="content-column">

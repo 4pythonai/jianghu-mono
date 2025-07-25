@@ -29,6 +29,7 @@
 	border-bottom: 1rpx solid #f0f0f0;
 	padding-bottom: 24rpx;
 }
+
 .panel-title {
 	font-size: 36rpx;
 	font-weight: bold;

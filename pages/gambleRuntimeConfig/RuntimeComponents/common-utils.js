@@ -63,7 +63,7 @@ const RuntimeComponentsUtils = {
 
             return players.map(player => {
                 // 使用与 GameTypeManager 一致的字段名处理
-                const userid = player.userid || player.user_id;
+                const userid = player.userid;
                 return Number.parseInt(userid) || 0;
             });
         },

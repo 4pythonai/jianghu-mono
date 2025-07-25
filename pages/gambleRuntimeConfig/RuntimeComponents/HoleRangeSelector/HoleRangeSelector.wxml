@@ -5,19 +5,18 @@
     <!-- 起始洞标签 -->
     <view class="selector-label">起始洞</view>
     <view class="hole-circle">
-      <view class="hole-number" bindtap="onShowModal" data-type="start">
-        {{holePlayList[0].holename}}
-      </view>
+      <view class="hole-number" bindtap="onShowModal" data-type="start">{{holePlayList[0].holename}}</view>
     </view>
     <view class="selector-label">终止洞</view>
     <view class="hole-circle">
-      <view class="hole-number" bindtap="onShowModal" data-type="end">
-        {{holePlayList[holePlayList.length-1].holename }}
-      </view>
+      <view
+        class="hole-number"
+        bindtap="onShowModal"
+        data-type="end"
+      >{{holePlayList[holePlayList.length-1].holename }}</view>
     </view>
   </view>
 
-  <!-- 弹出自定义球洞选择器组件 -->
   <RealHolePlayListSetter
     wx:if="{{ifShowModal}}"
     startHoleindex="{{startHoleindex}}"

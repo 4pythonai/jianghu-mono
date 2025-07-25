@@ -63,7 +63,7 @@ Component({
 
             const playersWithConfig = players.map(player => {
                 // 使用与 GameTypeManager 一致的字段名处理
-                const userid = String(player.userid || player.user_id);
+                const userid = String(player.userid);
                 const config = val8421Config[userid] || RuntimeComponentsUtils.config8421.getDefaultConfig();
                 const configString = RuntimeComponentsUtils.config8421.configToString(config);
 
@@ -86,7 +86,7 @@ Component({
         onPlayerClick(e) {
             const { player, index } = e.currentTarget.dataset;
 
-            const currentConfig = this.data.val8421Config[player.userid || player.user_id] || RuntimeComponentsUtils.config8421.getDefaultConfig();
+            const currentConfig = this.data.val8421Config[player.userid] || RuntimeComponentsUtils.config8421.getDefaultConfig();
             const configString = RuntimeComponentsUtils.config8421.configToString(currentConfig);
 
             this.setData({
@@ -141,7 +141,7 @@ Component({
             const newConfig = RuntimeComponentsUtils.config8421.stringToConfig(configString);
             const newVal8421Config = {
                 ...val8421Config,
-                [currentPlayer.userid || currentPlayer.user_id]: newConfig
+                [currentPlayer.userid]: newConfig
             };
 
             RuntimeComponentsUtils.logger.log('PLAYER_INDICATOR', '确认配置', {

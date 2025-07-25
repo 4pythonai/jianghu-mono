@@ -178,16 +178,14 @@ const GameTypeManager = {
             players.forEach((player, index) => {
                 console.log(`  玩家${index + 1}:`, {
                     userid: player.userid,
-                    user_id: player.user_id,
                     nickname: player.nickname,
                     wx_nickname: player.wx_nickname,
-                    'userid || user_id': player.userid || player.user_id
                 });
             });
         }
 
         // 使用与 normalizePlayer 一致的字段名处理
-        const playerIds = players.map(player => Number.parseInt(player.userid || player.user_id));
+        const playerIds = players.map(player => Number.parseInt(player.userid));
         console.log('[GameTypeManager] 玩家ID列表:', playerIds);
 
         const defaultConfig = {
@@ -213,7 +211,7 @@ const GameTypeManager = {
 
             for (const player of players) {
                 // 使用与 normalizePlayer 一致的字段名处理
-                const userid = String(player.userid || player.user_id);
+                const userid = String(player.userid);
 
                 // 确保 userid 有效
                 if (!userid || userid === 'undefined' || userid === 'null') {
@@ -262,7 +260,7 @@ const GameTypeManager = {
                     result.issues.push('8421游戏应该有默认球员配置，但配置为空');
                 }
 
-                const expectedPlayerIds = players.map(p => String(p.userid || p.user_id));
+                const expectedPlayerIds = players.map(p => String(p.userid));
                 const missingPlayers = expectedPlayerIds.filter(id => !result.val8421ConfigKeys.includes(id));
 
                 if (missingPlayers.length > 0) {

@@ -27,16 +27,18 @@ Component({
             value: ''
         }
     },
+
     data: {
-        avatarUrls: []
     },
-    observers: {
-        'players': function (players) {
-            this.setData({
-                avatarUrls: players?.map(p => p?.avatar) || []
-            });
-        }
-    },
+
+    // observers: {
+    //     'players': function (players) {
+    //         this.setData({
+    //             avatarUrls: players?.map(p => p?.avatar) || []
+    //         });
+    //     }
+    // },
+
     methods: {
         _groupPlayersByGroupId(players, gameData) {
             console.log('🔄 开始分组玩家数据:', { players, gameData });

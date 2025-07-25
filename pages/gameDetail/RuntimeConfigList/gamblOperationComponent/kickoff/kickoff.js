@@ -1,30 +1,39 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../../../../stores/gameStore';
-import { holeRangeStore } from '../../../../../stores/holeRangeStore';
 import { toJS } from 'mobx-miniprogram';
 Component({
     properties: {
         runtimeConfigs: Array
     },
+
     data: {
         selectedIds: {}, // 存储选中的配置ID
-        selectedIdList: [] // 存储选中的ID数组
+        selectedIdList: [], // 存储选中的ID数组,
+        holePlayList: [] // 存储洞序（实际来源于 gameStore.gameData.holePlayList）
     },
+
     lifetimes: {
         attached() {
             console.log('[kickoff] 组件已挂载, runtimeConfigs:', this.data.runtimeConfigs);
-            console.log('[kickoff] gameStore:', toJS(gameStore));
-            console.log('[kickoff] holeRangeStore:', toJS(holeRangeStore));
-            // 你也可以打印具体字段
-            console.log('[kickoff] gameStore.gameData:', toJS(gameStore.gameData));
-            console.log('[kickoff] gameStore.players:', toJS(gameStore.players));
+            console.log('[kickoff] ⭕️⭕️⭕️ holeList:', toJS(gameStore.gameData.holeList));
 
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
-                fields: ['gameData', 'players'],
+                fields: {
+                    gameData: 'gameData',
+                    players: 'players',
+                },
                 actions: [],
             });
+            // 监听 gameData 变化，手动同步 holePlayList
+            this.setData({
+                holePlayList: gameStore.gameData.holeList || []
+            });
+            // 如果 gameData 是异步赋值，建议在 observer 或 autorun 里同步 holePlayList
 
+            setTimeout(() => {
+                console.log('[kickoff] this.data.holePlayList:', this.data.holePlayList);
+            }, 1000);
         },
 
         detached() {

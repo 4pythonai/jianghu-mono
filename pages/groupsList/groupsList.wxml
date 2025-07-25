@@ -20,13 +20,14 @@
 
   <!-- 分组列表 -->
   <view class="groups-container" wx:else>
-    <view class="group-item" 
-          wx:for="{{groups}}" 
-          wx:key="groupId" 
-          bindtap="onGroupTap"
-          data-group-id="{{item.groupId}}"
-          data-group-name="{{item.groupName}}">
-      
+    <view
+      class="group-item"
+      wx:for="{{groups}}"
+      wx:key="groupId"
+      bindtap="onGroupTap"
+      data-group-id="{{item.groupId}}"
+      data-group-name="{{item.groupName}}"
+    >
       <!-- 分组标题 -->
       <view class="group-header">
         <view class="group-name">{{item.groupName || '第' + (index + 1) + '组'}}</view>
@@ -36,7 +37,7 @@
 
       <!-- 玩家列表 -->
       <view class="players-list" wx:if="{{item.players && item.players.length > 0}}">
-        <view class="player-item" wx:for="{{item.players}}" wx:key="user_id" wx:for-item="player">
+        <view class="player-item" wx:for="{{item.players}}" wx:key="userid" wx:for-item="player">
           <image class="player-avatar" src="{{player.avatar || '/images/default-avatar.png'}}" />
           <view class="player-name">{{player.nickname || player.wx_nickname || '未知玩家'}}</view>
         </view>
@@ -53,4 +54,4 @@
       <view class="empty-text">暂无分组信息</view>
     </view>
   </view>
-</view> 
+</view>
