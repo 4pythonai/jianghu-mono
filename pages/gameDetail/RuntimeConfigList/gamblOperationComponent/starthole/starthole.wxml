@@ -1,6 +1,20 @@
-<view class="starthole-popup" bindtap="close">
-  <view class="starthole-content" catchtap="noop">
-    <view>starthole 功能开发中</view>
-    <button class="extra-close-btn" bindtap="close">关闭</button>
+<view class="kickoff-popup" bindtap="close">
+  <view class="kickoff-content" catchtap="noop">
+    <view class="panel-title">调整出发洞</view>
+    <!-- 循环渲染 runtimeConfigs -->
+
+    <view class="section">
+      <RuntimeConfigSelector
+        runtimeConfigs="{{runtimeConfigs}}"
+        selectedIdList="{{selectedIdList}}"
+        title="请选择调整出发洞的游戏"
+        bind:checkboxChange="onCheckboxChange"
+      />
+    </view>
+
+    <view class="kickoff-footer">
+      <button class="kickoff-btn-cancel" bindtap="close">取消</button>
+      <button class="kickoff-btn-confirm" bindtap="onConfirm">确定</button>
+    </view>
   </view>
 </view>
