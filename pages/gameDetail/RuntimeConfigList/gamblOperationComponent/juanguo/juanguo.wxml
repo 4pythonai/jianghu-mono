@@ -1,17 +1,14 @@
 <view class="juanguo-popup" bindtap="close">
   <view class="juanguo-content" catchtap="noop">
-    <view class="title">捐锅设置</view>
+    <view class="panel-title">捐锅设置</view>
     <!-- 选择捐锅的游戏 -->
     <view class="section">
-      <view class="section-title">请选择捐锅的游戏</view>
-      <checkbox-group value="{{selectedIdList}}" bindchange="onCheckboxGroupChange">
-        <block wx:for="{{runtimeConfigs}}" wx:key="id">
-          <label class="game-item">
-            <checkbox value="{{item.id}}" />
-            <text class="game-title">{{item.abstract}}</text>
-          </label>
-        </block>
-      </checkbox-group>
+      <RuntimeConfigSelector
+        runtimeConfigs="{{runtimeConfigs}}"
+        selectedIdList="{{selectedIdList}}"
+        title="请选择捐锅的游戏"
+        bind:checkboxChange="onCheckboxChange"
+      />
     </view>
     <!-- 选择捐锅方式 -->
     <view class="section">

@@ -1,3 +1,4 @@
 {
-    "usingComponents": {}
+    "AvatarGroup": "../../../../../components/AvatarGroup/AvatarGroup",
+    "RuntimeConfigSelector": "/components/RuntimeConfigSelector/RuntimeConfigSelector"
 }

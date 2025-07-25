@@ -1,0 +1,25 @@
+.runtime-config-selector {
+	padding: 16rpx 0;
+}
+.section-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	margin-bottom: 16rpx;
+}
+.game-item {
+	display: block;
+	margin-bottom: 16rpx;
+}
+.game-item-row {
+	display: flex;
+	align-items: center;
+}
+.game-item-info {
+	margin-left: 16rpx;
+}
+.game-title {
+	font-size: 28rpx;
+	color: #333;
+	margin-bottom: 4rpx;
+	display: block;
+}

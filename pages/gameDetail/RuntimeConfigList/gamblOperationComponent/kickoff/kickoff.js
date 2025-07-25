@@ -3,83 +3,64 @@ import { gameStore } from '../../../../../stores/gameStore';
 import { toJS } from 'mobx-miniprogram';
 Component({
     properties: {
-        runtimeConfigs: Array
+        // 传入的 runtimeConfigs 列表
+        runtimeConfigs: {
+            type: Array,
+            value: []
+        }
     },
 
     data: {
-        selectedIds: {}, // 存储选中的配置ID
-        selectedIdList: [], // 存储选中的ID数组,
-        holePlayList: [] // 存储洞序（实际来源于 gameStore.gameData.holePlayList）
+        // 当前选中的配置 id 列表
+        selectedIdList: [],
+        // 洞序列表（从 gameStore 取）
+        holePlayList: []
     },
 
     lifetimes: {
         attached() {
-            console.log('[kickoff] 组件已挂载, runtimeConfigs:', this.data.runtimeConfigs);
-            console.log('[kickoff] ⭕️⭕️⭕️ holeList:', toJS(gameStore.gameData.holeList));
-
+            // 绑定 mobx store
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
                 fields: {
                     gameData: 'gameData',
-                    players: 'players',
-                },
-                actions: [],
+                    players: 'players'
+                }
             });
-            // 监听 gameData 变化，手动同步 holePlayList
+            // 初始化洞序列表
             this.setData({
                 holePlayList: gameStore.gameData.holeList || []
             });
-            // 如果 gameData 是异步赋值，建议在 observer 或 autorun 里同步 holePlayList
-
-            setTimeout(() => {
-                console.log('[kickoff] this.data.holePlayList:', this.data.holePlayList);
-            }, 1000);
         },
-
         detached() {
             this.storeBindings.destroyStoreBindings();
         }
     },
+
     methods: {
-        // 处理checkbox选择变化（标准写法）
+        // 处理 checkbox 选择变化
         onCheckboxChange(e) {
-            // e.detail.value 是所有被选中的 value 数组
-            const selectedIdList = e.detail.value;
-            // 构建 selectedIds 结构
-            const selectedIds = {};
-            for (const id of selectedIdList) {
-                selectedIds[id] = true;
-            }
+            // e.detail.selectedIdList 是 RuntimeConfigSelector 组件传递的选中 id 数组
             this.setData({
-                selectedIdList,
-                selectedIds
+                selectedIdList: e.detail.selectedIdList
             });
-            console.log('[kickoff] 选中ID列表:', selectedIdList);
         },
 
         // 确定按钮点击
         onConfirm() {
-            const selectedIds = [];
-
-            // 收集所有选中的ID
-            for (const [id, isSelected] of Object.entries(this.data.selectedIds)) {
-                if (isSelected) {
-                    selectedIds.push(id);
-                }
-            }
-
-            console.log('[kickoff] 所有选中的ID:', selectedIds);
-
-            // 可以触发事件传递给父组件
-            this.triggerEvent('confirm', { selectedIds });
+            // 直接用 selectedIdList
+            const { selectedIdList } = this.data;
+            console.log('[kickoff] 所有选中的ID:', selectedIdList);
+            // 触发事件传递给父组件
+            this.triggerEvent('confirm', { selectedIdList });
         },
 
+        // 关闭弹窗
         close() {
             this.triggerEvent('close');
         },
 
-        noop() {
-            // 空方法，阻止冒泡
-        }
+        // 空方法，阻止冒泡
+        noop() { }
     }
 });
