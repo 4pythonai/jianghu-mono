@@ -8,7 +8,7 @@ class MScore  extends CI_Model {
 
 
 
-  public function saveScore($game_id, $group_id, $hole_unique_key, $scores) {
+  public function saveScore($game_id, $group_id, $hole_unique_key, $hindex, $scores) {
     // 从 holeUniqueKey 中解析出 hole_id (格式: "1_19" -> 19)
     $court_key = explode('_', $hole_unique_key)[0];
     $hole_id = explode('_', $hole_unique_key)[1];
@@ -24,6 +24,7 @@ class MScore  extends CI_Model {
       $save_data = [
         'gameid' => $game_id,
         'user_id' => $user_id,
+        'hindex' => $hindex,
         'userid' => $user_id,
         'group_id' => $group_id,
         'hole_id' => $hole_id,
@@ -43,13 +44,15 @@ class MScore  extends CI_Model {
         ->where('gameid', $game_id)
         ->where('user_id', $user_id)
         ->where('hole_id', $hole_id)
+        ->where('hindex', $hindex)
         ->get();
 
       if ($existing->num_rows() > 0) {
         // 存在记录，执行更新
         $this->db->where('gameid', $game_id)
           ->where('user_id', $user_id)
-          ->where('hole_id', $hole_id);
+          ->where('hole_id', $hole_id)
+          ->where('hindex', $hindex);
 
         if ($this->db->update('t_game_score', $save_data)) {
           $success_count++;

@@ -82,6 +82,7 @@ class MDetailGame  extends CI_Model {
             $fixedd[] = [
                 'userid' => $score['user_id'],
                 'holeid' => $score['hole_id'],
+                'hindex' => intval($score['hindex']),
                 'score' => intval($score['score']),
                 'putts' => intval($score['putts']),
                 'penalty_strokes' => intval($score['penalty_strokes']),

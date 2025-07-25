@@ -186,8 +186,8 @@ class Game extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['gameId'];
         $game_detail = $this->MDetailGame->get_detail_game($game_id);
-        $fist4PlayersGamble  = $this->getFirst4PlayersGamble($game_id);
-        echo json_encode(['code' => 200, 'game_detail' => $game_detail, 'fist4PlayersGamble' => $fist4PlayersGamble], JSON_UNESCAPED_UNICODE);
+        $red_blue  = $this->getFirst4PlayersGamble($game_id);
+        echo json_encode(['code' => 200, 'game_detail' => $game_detail, 'red_blue' => $red_blue], JSON_UNESCAPED_UNICODE);
     }
 
     // t_gamble_runtime
@@ -212,7 +212,6 @@ class Game extends MY_Controller {
 
         $row = $this->db->get_where('t_gamble_runtime', ['gameid' => $game_id, 'playersNumber' => 4])->row_array();
         if ($row) {
-            // debug($row);
             $gambleid = $row['id'];
             $row = $this->db->get_where('t_gamble_runtime', ['id' => $gambleid])->row_array();
             $cfg = [
@@ -226,7 +225,17 @@ class Game extends MY_Controller {
 
 
             $final_result = $this->GamblePipe->GetGambleResult($cfg);
-            return $final_result;
+
+            $red_blue = [];
+            foreach ($final_result['useful_holes'] as $hole) {
+                $red_blue[] =  [
+                    'hindex' => $hole['hindex'],
+                    'red' => $hole['red'],
+                    'blue' => $hole['blue']
+                ];
+            }
+
+            return $red_blue;
         } else {
             return null;
         }
@@ -237,6 +246,7 @@ class Game extends MY_Controller {
     public function saveGameScore() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['gameId'];
+        $hindex = $json_paras['hindex'];
 
         $game_info = $this->MDetailGame->getGameInfo($game_id);
         if ($game_info['status'] == 'finished' || $game_info['status'] == 'canceled') {
@@ -248,7 +258,7 @@ class Game extends MY_Controller {
         $group_id = $json_paras['groupId'];
         $hole_unique_key = $json_paras['holeUniqueKey'];
         $scores = $json_paras['scores'];
-        $this->MScore->saveScore($game_id, $group_id, $hole_unique_key, $scores);
+        $this->MScore->saveScore($game_id, $group_id, $hole_unique_key, $hindex, $scores);
         echo json_encode(['code' => 200, 'message' => '保存成功'], JSON_UNESCAPED_UNICODE);
     }
 
