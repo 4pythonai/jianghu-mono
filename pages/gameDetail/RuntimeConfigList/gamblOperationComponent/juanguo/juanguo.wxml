@@ -52,7 +52,7 @@
         </label>
         <label class="radio-item">
           <radio value="bigpot" checked="{{donationType === 'bigpot'}}" />
-          <text>大锅版</text>
+          <text>大锅版,共计</text>
           <!-- 总费用输入框紧跟在大锅版radio后面，仅在选择大锅版时显示 -->
           <input
             class="input-inline"
@@ -62,6 +62,7 @@
             wx:if="{{donationType === 'bigpot'}}"
             placeholder="请输入总费用"
           />
+          <text>元</text>
         </label>
         <label class="radio-item">
           <radio value="none" checked="{{donationType === 'none'}}" />
