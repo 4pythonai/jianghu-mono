@@ -352,6 +352,13 @@
 	width: 220rpx !important;
 }
 
+/* 按钮图标样式 */
+.detail-btn .btn-icon {
+	width: 32rpx;
+	height: 32rpx;
+	filter: brightness(0) invert(1); /* 将图标变为白色 */
+}
+
 .section-label {
 	margin-bottom: 10rpx;
 }

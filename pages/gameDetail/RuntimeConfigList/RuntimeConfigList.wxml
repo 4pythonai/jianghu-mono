@@ -56,6 +56,15 @@
         data-config="{{ item }}"
         data-index="{{ index }}"
         catchtap="onRuntimeItemClick"
+      >
+        <image class="btn-icon" src="/assets/icons/icons8-kicking-50.png" mode="aspectFit"></image>踢一脚
+      </button>
+
+      <button
+        class="detail-btn"
+        data-config="{{ item }}"
+        data-index="{{ index }}"
+        catchtap="onRuntimeItemClick"
       >配置游戏</button>
     </view>
   </view>
