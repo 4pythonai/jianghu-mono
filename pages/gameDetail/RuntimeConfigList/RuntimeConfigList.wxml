@@ -52,7 +52,7 @@
     </view>
     <view class="config-click-hint">
       <button
-        class="detail-btn"
+        class="detail-btn kick-btn"
         data-config="{{ item }}"
         data-index="{{ index }}"
         catchtap="onKickClick"
