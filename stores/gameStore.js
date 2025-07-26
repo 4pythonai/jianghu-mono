@@ -101,7 +101,7 @@ export const gameStore = observable({
                 // ** 调用私有方法处理数据 **
                 this._processGameData(res.game_detail, groupId);
                 this.red_blue = res.red_blue || [];
-                this.runtimeMultipliers = res.runtime_multipliers || []; // 存储运行时倍数
+                this.runtimeMultipliers = res.runtimeMultipliers || []; // 存储运行时倍数
                 return res; // 关键：返回原始接口数据，包含red_blue
             }
 

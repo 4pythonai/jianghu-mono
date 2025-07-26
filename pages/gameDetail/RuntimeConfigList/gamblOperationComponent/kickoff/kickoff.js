@@ -36,6 +36,9 @@ Component({
                 }
             });
             // 初始化洞序列表
+
+            console.log('[kickoff] attached🟢🟡🟢🟡🟢🟡 gameStore:', toJS(gameStore));
+
             this.setData({
                 holePlayList: gameStore.gameData?.holeList || []
             });
@@ -45,10 +48,24 @@ Component({
         }
     },
 
+    observers: {
+        'runtimeMultipliers': (runtimeMultipliers) => {
+            console.log('[kickoff] runtimeMultipliers 数据变化');
+            console.log('[kickoff] runtimeMultipliers 数据:', runtimeMultipliers);
+            console.log('[kickoff] runtimeMultipliers 数据类型:', typeof runtimeMultipliers);
+            console.log('[kickoff] runtimeMultipliers 数据长度:', runtimeMultipliers?.length || 0);
+
+            // 如果数据不为空，打印详细信息
+            if (runtimeMultipliers && runtimeMultipliers.length > 0) {
+                console.log('[kickoff] runtimeMultipliers 详细数据:', JSON.stringify(runtimeMultipliers, null, 2));
+            }
+        }
+    },
+
     methods: {
-        // 处理 checkbox 选择变化
+
         onCheckboxChange(e) {
-            // e.detail.selectedIdList 是 RuntimeConfigSelector 组件传递的选中 id 数组
+            console.log(" 踢一脚:🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲", this.data.runtimeMultipliers)
             this.setData({
                 selectedIdList: e.detail.selectedIdList
             });
@@ -111,7 +128,7 @@ Component({
             console.log('[kickoff] 选中的游戏配置ID:', selectedIdList);
 
             if (currentHindex && currentMultiplier) {
-                const hole = this.data.holePlayList.find(h => h.hindex == currentHindex);
+                const hole = this.data.holePlayList.find(h => h.hindex === currentHindex);
                 const holeName = hole ? hole.holename : `洞号${currentHindex}`;
                 console.log(`[kickoff] 选择的球洞: ${holeName} (洞号: ${currentHindex})`);
                 console.log(`[kickoff] 设置的倍数: ${currentMultiplier}`);
