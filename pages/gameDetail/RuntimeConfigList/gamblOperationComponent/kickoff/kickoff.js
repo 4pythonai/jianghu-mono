@@ -19,7 +19,9 @@ Component({
         selectedHole: null,
         // 简化的数据结构：存储当前选择的洞号和倍数
         currentHindex: null,
-        currentMultiplier: null
+        currentMultiplier: null,
+        // 新增：运行时倍数数据
+        runtimeMultipliers: []
     },
 
     lifetimes: {
@@ -29,12 +31,13 @@ Component({
                 store: gameStore,
                 fields: {
                     gameData: 'gameData',
-                    players: 'players'
+                    players: 'players',
+                    runtimeMultipliers: 'runtimeMultipliers' // 新增：绑定运行时倍数数据
                 }
             });
             // 初始化洞序列表
             this.setData({
-                holePlayList: gameStore.gameData.holeList || []
+                holePlayList: gameStore.gameData?.holeList || []
             });
         },
         detached() {
@@ -58,10 +61,23 @@ Component({
 
             console.log(`[kickoff] 选择球洞: ${hole.holename} (洞号: ${hindex})`);
 
+            // 检查当前洞是否已有倍数配置
+            const existingMultiplier = this.getHoleMultiplier(hindex);
+            if (existingMultiplier) {
+                console.log(`[kickoff] 洞号 ${hindex} 当前倍数: ${existingMultiplier}`);
+            }
+
             this.setData({
                 selectedHole: hole,
                 showMultiplierSelector: true
             });
+        },
+
+        // 获取指定洞号的倍数配置
+        getHoleMultiplier(hindex) {
+            const { runtimeMultipliers } = this.data;
+            const multiplierConfig = runtimeMultipliers.find(item => item.hindex === hindex);
+            return multiplierConfig?.multiplier || null;
         },
 
         // 倍数选择确认

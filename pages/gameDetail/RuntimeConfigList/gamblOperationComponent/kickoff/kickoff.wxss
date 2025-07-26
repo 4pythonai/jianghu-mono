@@ -147,3 +147,20 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
+
+/* 新增：洞倍数信息样式 */
+.hole-multiplier-info {
+	position: absolute;
+	bottom: 4rpx;
+	left: 50%;
+	transform: translateX(-50%);
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 8rpx;
+	padding: 2rpx 6rpx;
+}
+
+.multiplier-text {
+	font-size: 20rpx;
+	color: #e74c3c;
+	font-weight: bold;
+}

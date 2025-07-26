@@ -12,7 +12,8 @@
 - `gameid`: 游戏ID
 - `groupId`: 分组ID
 - `gameData`: 游戏数据
-- `red_blue`: 红蓝分组数据（新增）
+- `red_blue`: 红蓝分组数据
+- `runtimeMultipliers`: 运行时倍数数据（新增）
 
 #### holeRangeStore
 专门管理球洞相关数据：
@@ -48,6 +49,33 @@
 - 简化数据流
 - 提高代码可维护性
 - 确保数据一致性
+
+#### runtimeMultipliers 数据管理优化
+**新增功能**：运行时倍数数据管理
+1. ✅ API 接口返回 `runtimeMultipliers` 数据
+2. ✅ `gameStore` 存储 `runtimeMultipliers` 数据
+3. ✅ `kickoff` 组件通过 MobX 绑定直接从 `gameStore` 获取 `runtimeMultipliers` 数据
+4. ✅ 在洞选择界面显示当前倍数配置
+
+**数据结构**：
+```javascript
+// runtimeMultipliers 数据结构
+[
+  {
+    hindex: 1,        // 洞号
+    multiplier: 2     // 倍数
+  },
+  {
+    hindex: 3,
+    multiplier: 4
+  }
+]
+```
+
+**功能特性**：
+- 在踢一脚功能中显示每个洞的当前倍数配置
+- 支持查看和修改洞的倍数设置
+- 与 `HoleMultiplierSelector` 组件集成
 
 ### 运行时配置数据结构
 

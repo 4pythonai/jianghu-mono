@@ -20,7 +20,8 @@ export const gameStore = observable({
     groupId: null,
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
-    red_blue: [],        // 新增：红蓝分组数据
+    red_blue: [],        // 红蓝分组数据
+    runtimeMultipliers: [], // 新增：运行时倍数数据
 
     loading: false,      // 加载状态
     error: null,         // 错误信息
@@ -100,6 +101,7 @@ export const gameStore = observable({
                 // ** 调用私有方法处理数据 **
                 this._processGameData(res.game_detail, groupId);
                 this.red_blue = res.red_blue || [];
+                this.runtimeMultipliers = res.runtime_multipliers || []; // 存储运行时倍数
                 return res; // 关键：返回原始接口数据，包含red_blue
             }
 
@@ -145,6 +147,8 @@ export const gameStore = observable({
             gameid: this.gameid,
             loading: this.loading,
             error: this.error,
+            red_blue: this.red_blue,
+            runtimeMultipliers: this.runtimeMultipliers,
             // 从 holeRangeStore 获取洞相关数据
             ...holeRangeStore.getState()
         };
