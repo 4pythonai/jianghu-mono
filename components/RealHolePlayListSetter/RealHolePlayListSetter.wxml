@@ -18,23 +18,7 @@
       </block>
     </view>
 
-    <!-- <view class="modal-title"> 选择游戏的起点洞/终点洞 </view>
-    <view class="hole-list">
-      <block wx:for="{{holePlayList}}" wx:key="index">
-        <view
-          class="hole-item {{selectedMap[item.hindex] ? 'selected' : 'unselected'}}"
-          data-index="{{index}}"
-          data-hindex="{{item.hindex}}"
-          bindtouchstart="onHoleTouchStart"
-          bindtouchmove="onHoleTouchMove"
-        >
-          <text class="hole-item-text">{{item.holename}}</text>
-        </view>
-      </block>
-    </view>-->
-
     <view class="spliter"></view>
-
     <view class="modal-btns">
       <button class="btn-cancel" bindtap="onCancel">取消</button>
       <button class="btn-confirm" bindtap="onConfirmHoleOrder">确定</button>

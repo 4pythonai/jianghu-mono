@@ -102,8 +102,14 @@ Page({
                     holePlayListStr: config.holePlayListStr
                 });
 
-                // 使用 holeRangeStore 设置洞顺序
-                holeRangeStore.setHolePlayListFromString(config.holePlayListStr);
+                // 解析洞索引字符串并更新 holePlayList
+                const holeIndexes = config.holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
+                const newHolePlayList = holeIndexes.map(hindex => {
+                    const hole = holeRangeStore.holeList.find(h => h.hindex === hindex);
+                    return hole || { hindex, holename: `B${hindex}` };
+                }).filter(hole => hole);
+
+                holeRangeStore.updateHolePlayList(newHolePlayList);
 
             } catch (error) {
                 console.error('[EditRuntime] 解析 holePlayListStr 失败:', error);

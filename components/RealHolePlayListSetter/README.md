@@ -75,9 +75,11 @@
 ## 更新日志
 
 - 2024-01-XX: 重构组件，支持渲染所有洞并添加视觉区分
-- 清理了 holeRangeStore 中不需要的方法
+- 清理了 holeRangeStore 中不需要的方法和属性
 - 优化了洞序对齐逻辑
 - 修复终止洞选择逻辑：点击灰色洞时，从第一个洞到被点击洞的所有洞都会被选中
+- 简化了组件数据结构，移除了不必要的 selectedHindexArray 和 selectedMap
+- 清理了 HoleRangeSelector 中未使用的方法
 
 ## 使用示例
 
@@ -85,4 +87,20 @@
 // 场景：用户点击第8个洞（灰色洞）
 // 结果：第1-8个洞都会变成绿色（被选中）
 // 第9个洞及之后的洞保持灰色（未被选中）
-``` 
+```
+
+## 清理内容
+
+### holeRangeStore.js
+- 删除了 `loading` 和 `error` 属性
+- 删除了 `setHolePlayListFromString` 方法
+- 删除了 `resetHoleRange` 方法
+- 删除了 `holeCount` 和 `rangeHoleCount` getter
+
+### RealHolePlayListSetter.js
+- 删除了 `selectedHindexArray` 和 `selectedMap` 属性
+- 删除了拖拽相关的属性（`dragStartIndex`, `dragCurrentIndex`, `holeRects`）
+- 简化了 `onConfirmHoleOrder` 方法逻辑
+
+### HoleRangeSelector.js
+- 删除了未使用的 `onModalConfirm` 方法 

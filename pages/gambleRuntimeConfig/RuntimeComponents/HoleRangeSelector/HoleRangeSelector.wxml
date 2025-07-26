@@ -9,7 +9,7 @@
         class="hole-number"
         bindtap="onSlectStartModal"
         data-type="start"
-      >{{holePlayList[0].holename}}</view>
+      >{{startHole ? startHole.holename : ''}}</view>
     </view>
     <view class="selector-label">终止洞</view>
     <view class="hole-circle">
@@ -17,7 +17,7 @@
         class="hole-number"
         bindtap="onSelectEndModal"
         data-type="end"
-      >{{holePlayList[holePlayList.length-1].holename }}</view>
+      >{{endHole ? endHole.holename : ''}}</view>
     </view>
   </view>
 

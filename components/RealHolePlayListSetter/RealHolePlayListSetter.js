@@ -28,7 +28,7 @@ Component({
     data: {
         holeList: [],           // 所有洞的列表（原始数据）
         holePlayList: [],       // 游戏顺序的洞列表
-        displayHoleList: []     // 用于显示的洞列表（包含所有洞，按顺序排列）
+        displayHoleList: [],    // 用于显示的洞列表（包含所有洞，按顺序排列）
     },
 
     lifetimes: {
@@ -50,16 +50,15 @@ Component({
                 displayHoleList
             });
         },
-
     },
 
     methods: {
         /**
- * 构建显示列表：包含所有洞，按holePlayList的顺序排列
- * @param {Array} holeList 所有洞的列表
- * @param {Array} holePlayList 游戏顺序的洞列表
- * @returns {Array} 用于显示的洞列表
- */
+         * 构建显示列表：包含所有洞，按holePlayList的顺序排列
+         * @param {Array} holeList 所有洞的列表
+         * @param {Array} holePlayList 游戏顺序的洞列表
+         * @returns {Array} 用于显示的洞列表
+         */
         buildDisplayHoleList(holeList, holePlayList) {
             if (!holeList || !Array.isArray(holeList)) {
                 return [];
@@ -168,10 +167,10 @@ Component({
         },
 
         /**
- * 根据终止洞构建新的holePlayList（包含从开始到终止洞的所有洞）
- * @param {number} endHindex 终止洞的hindex
- * @returns {Array} 新的holePlayList
- */
+         * 根据终止洞构建新的holePlayList（包含从开始到终止洞的所有洞）
+         * @param {number} endHindex 终止洞的hindex
+         * @returns {Array} 新的holePlayList
+         */
         buildHolePlayListToEnd(endHindex) {
             const { holeList, holePlayList, displayHoleList } = this.data;
 
@@ -202,7 +201,7 @@ Component({
             // 1. 更新 holePlayList（保持完整的洞顺序）
             holeRangeStore.updateHolePlayList(this.data.holePlayList);
 
-            // 2. 设置洞范围（选中的洞）
+            // 2. 设置洞范围（使用holePlayList的第一个和最后一个洞）
             if (this.data.holePlayList.length > 0) {
                 const startHoleindex = this.data.holePlayList[0].hindex;
                 const endHoleindex = this.data.holePlayList[this.data.holePlayList.length - 1].hindex;

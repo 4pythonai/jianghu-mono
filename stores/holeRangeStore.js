@@ -14,8 +14,6 @@ export const holeRangeStore = observable({
     startHoleindex: null,   // 参与游戏的第一个洞索引
     endHoleindex: null,     // 参与游戏的最后一个洞索引
 
-
-
     /**
      * 初始化洞数据
      * @param {Array} holeList 原始洞数据
@@ -47,39 +45,6 @@ export const holeRangeStore = observable({
             startHoleindex: this.startHoleindex,
             endHoleindex: this.endHoleindex
         });
-    }),
-
-    /**
-     * 根据 holePlayListStr 重新设置洞顺序
-     * @param {string} holePlayListStr 洞顺序字符串，如 "3,4,5,6,7,8,9,1,2"
-     */
-    setHolePlayListFromString: action(function (holePlayListStr) {
-        console.log('🕳️ [holeRangeStore] 根据字符串设置洞顺序:', holePlayListStr);
-
-        if (!holePlayListStr || !this.holeList.length) {
-            console.warn('🕳️ [holeRangeStore] 无效的 holePlayListStr 或 holeList 为空');
-            return;
-        }
-
-        try {
-            // 解析洞索引字符串
-            const holeIndexes = holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
-
-            // 根据索引重新排序洞列表
-            const newHolePlayList = holeIndexes.map(hindex => {
-                const hole = this.holeList.find(h => h.hindex === hindex);
-                return hole || { hindex, holename: `B${hindex}` };
-            }).filter(hole => hole);
-
-            this.holePlayList = newHolePlayList;
-
-            console.log('🕳️ [holeRangeStore] 洞顺序设置完成:', {
-                holeIndexes,
-                newHolePlayList: newHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
-            });
-        } catch (error) {
-            console.error('🕳️ [holeRangeStore] 解析 holePlayListStr 失败:', error);
-        }
     }),
 
     /**
@@ -143,25 +108,6 @@ export const holeRangeStore = observable({
 
             this.rangeHolePlayList = rangeHolePlayList;
         }
-
-        console.log('🕳️ [holeRangeStore] 洞顺序列表更新完成:', {
-            holePlayListLength: this.holePlayList.length,
-            rangeHolePlayListLength: this.rangeHolePlayList.length
-        });
-    }),
-
-    /**
-     * 重置洞范围到默认状态
-     */
-    resetHoleRange: action(function () {
-        console.log('🕳️ [holeRangeStore] 重置洞范围');
-
-        if (this.holeList.length > 0) {
-            this.holePlayList = JSON.parse(JSON.stringify(this.holeList));
-            this.rangeHolePlayList = JSON.parse(JSON.stringify(this.holeList));
-            this.startHoleindex = this.holeList[0].hindex;
-            this.endHoleindex = this.holeList[this.holeList.length - 1].hindex;
-        }
     }),
 
     /**
@@ -188,7 +134,5 @@ export const holeRangeStore = observable({
             startHoleindex: this.startHoleindex,
             endHoleindex: this.endHoleindex
         };
-    },
-
-
+    }
 }); 
