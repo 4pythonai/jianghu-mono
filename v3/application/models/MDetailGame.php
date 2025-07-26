@@ -8,7 +8,7 @@ class MDetailGame  extends CI_Model {
     }
 
 
-    public function get_detail_game($game_id) {
+    public function getGameDetail($game_id) {
         // 获取游戏基本信息
         $game_info = $this->getGameInfo($game_id);
         if (!$game_info) {
@@ -230,6 +230,27 @@ class MDetailGame  extends CI_Model {
         return $players_result;
     }
 
+
+    public function getGameHoles($gameid) {
+        $gameid = (int)$gameid;
+
+        $complexRows = $this->getHoleListByGameId($gameid);
+        $simppleRows = [];
+        foreach ($complexRows as $row) {
+            $simppleRows[] = [
+                'court_key' => $row['court_key'],
+                'holeid' => $row['holeid'],
+                'holename' => $row['holename'],
+                'par' => $row['par'],
+                'hindex' => $row['hindex'],
+                // 'id' => '#' . $row['hindex']
+            ];
+        }
+        return $simppleRows;
+    }
+
+
+
     /**
      * 根据游戏ID获取球洞列表
      * @param int $gameid 游戏ID
@@ -275,13 +296,21 @@ class MDetailGame  extends CI_Model {
             $holes_result = $this->db->query($holes_query, [$courtid]);
 
             foreach ($holes_result->result_array() as $hole) {
-                $holeList[] = [
+
+                $holenames = array_column($holeList, 'holename');
+
+                $holename = $hole['holename'];
+                if (in_array($holename, $holenames)) {
+                    $holename .= "'";
+                }
+
+                $tmpHole = [
                     'unique_key' => $court_key . '_' . $hole['holeid'],
                     'court_key' => $court_key,
                     'holeid' => (int)$hole['holeid'],
                     'holeno' => (int)$hole['holeno'],
                     'hindex' => $hindex,
-                    'holename' => $hole['holename'] ?: '',
+                    'holename' => $holename,
                     'par' => (int)$hole['par'],
                     'black' => (int)$hole['black'],
                     'gold' => (int)$hole['gold'],
@@ -291,6 +320,8 @@ class MDetailGame  extends CI_Model {
                     'Tnum' => (int)$hole['Tnum'],
                     'diffindex' => (int)$hole['diffindex']
                 ];
+
+                $holeList[] = $tmpHole;
                 $hindex++;
             }
         }

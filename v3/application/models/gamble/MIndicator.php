@@ -55,7 +55,7 @@ class MIndicator extends CI_Model {
 
             $logMsg = sprintf(
                 "第 %s 洞,红队,队员:%4d,%s, PAR:%d,分值:%2d,指标:%2d",
-                $hole['id'],
+                $hole['hindex'],
                 $userid,
                 $this->MUser->getNicknameById($userid),
                 $hole['par'],
@@ -81,7 +81,7 @@ class MIndicator extends CI_Model {
 
             $logMsg = sprintf(
                 "第 %s 洞,蓝队,队员:%4d,%s,PAR:%d,分值:%2d,指标:%2d",
-                $hole['id'],
+                $hole['hindex'],
                 $userid,
                 $this->MUser->getNicknameById($userid),
                 $hole['par'],

@@ -29,7 +29,7 @@ class Feed extends MY_Controller {
         $allgames = $result['allgames'];
         foreach ($allgames as $game) {
             $game_id = $game['id'];
-            $game_detail = $this->MDetailGame->get_detail_game($game_id);
+            $game_detail = $this->MDetailGame->getGameDetail($game_id);
             $games[] = $game_detail;
         }
         $ret = [];

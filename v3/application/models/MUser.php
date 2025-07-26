@@ -67,8 +67,8 @@ class MUser  extends CI_Model {
 
 
 
-  public function updateNickName($user_id, $nickname) {
-    $this->db->where('id', $user_id);
+  public function updateNickName($userid, $nickname) {
+    $this->db->where('id', $userid);
     $this->db->update('t_user', ['wx_nickname' => $nickname]);
   }
 
@@ -76,8 +76,8 @@ class MUser  extends CI_Model {
 
 
 
-  public  function updateUserPhone($user_id, $phoneNumber) {
-    $this->db->where('id', $user_id);
+  public  function updateUserPhone($userid, $phoneNumber) {
+    $this->db->where('id', $userid);
     $this->db->update('t_user', ['mobile' => $phoneNumber]);
   }
 
@@ -85,12 +85,12 @@ class MUser  extends CI_Model {
 
 
 
-  public function getFriends($user_id) {
+  public function getFriends($userid) {
     $web_url = config_item('web_url');
     $this->db->select("u.wx_nickname, concat('{$web_url}',u.avatar) as avatar, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
     $this->db->from('t_friend f');
     $this->db->join('t_user u', 'f.fuserid = u.id');
-    $this->db->where('f.userid', $user_id);
+    $this->db->where('f.userid', $userid);
     $friends = $this->db->get()->result_array();
     return $friends;
   }
@@ -178,7 +178,7 @@ class MUser  extends CI_Model {
     $web_url = config_item('web_url');
     $players_query = "
         SELECT 
-            u.id as user_id,
+            u.id as userid,
             u.wx_nickname as wx_nickname,
             concat('$web_url', u.avatar) as avatar
         FROM t_user u
@@ -189,8 +189,8 @@ class MUser  extends CI_Model {
   }
 
 
-  public function getNicknameById($user_id) {
-    $this->db->where('id', $user_id);
+  public function getNicknameById($userid) {
+    $this->db->where('id', $userid);
     $user = $this->db->get('t_user')->row_array();
     return $user['wx_nickname'];
   }

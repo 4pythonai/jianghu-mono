@@ -337,8 +337,7 @@ class Gamble extends MY_Controller {
             $attender_info = $this->MUser->getPlayerInfo($attender);
             $attenders_info[] = $attender_info;
         }
-        $gamble['all_players'] = $attenders_info;
-        return $gamble;
+        return $attenders_info;
     }
 
 

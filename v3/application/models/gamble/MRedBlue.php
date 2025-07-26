@@ -79,6 +79,10 @@ class MRedBlue extends CI_Model {
             $preHoleIndex = $index - 1;
             $preHole = $context->usefulHoles[$preHoleIndex];
             $preRanking = $preHole['ranking'];
+            $preDraw = $preHole['draw'];
+            $preBlue = $preHole['blue'];
+            $preRed = $preHole['red'];
+
 
 
             if ($context->redBlueConfig == "4_固拉") {
@@ -121,6 +125,13 @@ class MRedBlue extends CI_Model {
                     }
                 }
                 $hole['debug'][] = "分组:{$context->redBlueConfig},第" . ($index + 1) . "洞分组, 0号和上一洞剩余名次最后一名一组";
+            }
+
+            // 上一洞打平,不换边
+            if ($preDraw == 'y') {
+                $hole['blue'] = $preBlue;
+                $hole['red'] = $preRed;
+                $hole['debug'][] = "分组:上一洞打平,不换边";
             }
         }
     }

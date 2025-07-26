@@ -9,7 +9,7 @@ class MGambleDataFactory extends CI_Model {
   // 根据实际打球顺序排序
 
   public function getHoleOrderArrayByHolePlayList($gameid, $holePlayListString) {
-    $holes = $this->getGameHoles($gameid);
+    $holes = $this->MDetailGame->getGameHoles($gameid);
 
 
     $hindexArray = explode(',', $holePlayListString);
@@ -44,27 +44,6 @@ class MGambleDataFactory extends CI_Model {
     return $afterOrder;
   }
 
-  public function getGameHoles($gameid) {
-    $gameid = (int)$gameid;
-    $sql = "SELECT court_key, holeid, par, holename ";
-    $sql .= "FROM t_game_court, t_court_hole ";
-    $sql .= "WHERE t_game_court.courtid = t_court_hole.courtid AND t_game_court.gameid = $gameid ";
-    $sql .= "ORDER BY court_key, t_court_hole.courtid, holename LIMIT 18";
-    $holes = $this->db->query($sql)->result_array();
-
-
-    $index = 1;
-    foreach (array_keys($holes) as $key) {
-      $holes[$key]['hindex'] = $index;
-      $holes[$key]['id'] = '#' . $index;
-      $index++;
-    }
-    return $holes;
-  }
-
-
-
-
 
 
   public function getGameid($groupid) {
@@ -77,7 +56,7 @@ class MGambleDataFactory extends CI_Model {
 
   public function getHoleScore($gameid) {
 
-    $holes = $this->getGameHoles($gameid);
+    $holes = $this->MDetailGame->getGameHoles($gameid);
     $holedata       = array();
     $index       = 0;
     foreach ($holes as $one_hole) {
@@ -108,14 +87,18 @@ class MGambleDataFactory extends CI_Model {
 
   // 获取已经完全记分的球洞
   public function getFinishedHoles($holes, $scores) {
+
+    // debug(' holes +++++++++++++++++++++', $holes);
+    // debug('scores+++++++++++++++++++++', $scores);
+    // die;
     $useful_holes = [];
     // 循环所有的洞
     foreach ($holes as $hole) {
-      $holeId = $hole['id']; // 例如: #1, #2
+      $holeId = $hole['hindex']; // 例如: #1, #2
       // 在scores中找到对应的成绩记录
       $correspondingScore = null;
       foreach ($scores as $score) {
-        if ($score['id'] == $holeId) {
+        if ($score['hindex'] == $holeId) {
           $correspondingScore = $score;
           break;
         }

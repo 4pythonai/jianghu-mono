@@ -14,9 +14,9 @@ class User extends MY_Controller {
     // 获取好友列表
     public function getFriendList() {
         try {
-            $user_id = $this->getUser();
+            $userid = $this->getUser();
             $ret = [];
-            $friends = $this->MUser->getFriends($user_id);
+            $friends = $this->MUser->getFriends($userid);
             $ret['code'] = 200;
             $ret['friends'] = $friends;
             $ret['total'] = count($friends);

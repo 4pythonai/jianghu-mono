@@ -102,7 +102,6 @@ class Course extends MY_Controller {
 
 
     public function getFavorites() {
-        $user_id = $this->getUser();
         $query = "SELECT * FROM t_course  limit 3";
         $courses = $this->db->query($query)->result_array();
         echo json_encode(['code' => 200, 'courses' => $courses], JSON_UNESCAPED_UNICODE);

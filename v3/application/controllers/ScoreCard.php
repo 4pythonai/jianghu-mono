@@ -34,7 +34,7 @@ class ScoreCard extends CI_Controller {
     }
 
     public function index() {
-        $gameid=$this->input->get('gameid');
+        $gameid = $this->input->get('gameid');
         // 默认显示比赛ID 1338073 的记分卡
         $this->show($gameid);
     }
@@ -46,7 +46,7 @@ class ScoreCard extends CI_Controller {
         }
 
         // 获取比赛详细信息
-        $game_info = $this->MDetailGame->get_detail_game($game_id);
+        $game_info = $this->MDetailGame->getGameDetail($game_id);
         // debug($game_info);
         // exit;
         if (empty($game_info)) {
@@ -79,7 +79,7 @@ class ScoreCard extends CI_Controller {
         }
 
         // 获取比赛详细信息
-        $game_info = $this->MDetailGame->get_detail_game($game_id);
+        $game_info = $this->MDetailGame->getGameDetail($game_id);
 
         if (empty($game_info)) {
             echo json_encode(['code' => 404, 'message' => '比赛不存在'], JSON_UNESCAPED_UNICODE);

@@ -21,8 +21,6 @@ class Game extends MY_Controller {
 
     public function createGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        // $game_id = $json_paras['game_id'];
-        $user_id = $json_paras['user_id'];
         $course_id = $json_paras['course_id'];
         $start_time = $json_paras['start_time'];
         $end_time = $json_paras['end_time'];
@@ -185,14 +183,40 @@ class Game extends MY_Controller {
     public function gameDetail() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['gameId'];
-        $game_detail = $this->MDetailGame->get_detail_game($game_id);
-        $red_blue  = $this->getFirst4PlayersGamble($game_id);
-        echo json_encode(['code' => 200, 'game_detail' => $game_detail, 'red_blue' => $red_blue], JSON_UNESCAPED_UNICODE);
+        $game_detail = $this->MDetailGame->getGameDetail($game_id);
+        $red_blue  = $this->getFirst4PlayersGambleRedBlug($game_id);
+        echo json_encode(
+            ['code' => 200, 'game_detail' => $game_detail, 'red_blue' => $red_blue, 'runtimeMultipliers' => $this->getHoleMultiplier($game_id)],
+            JSON_UNESCAPED_UNICODE
+        );
     }
+
+
+    private function getHoleMultiplier($game_id) {
+
+        return [
+            [
+                'runtime_id' => 1344664,
+                'holeMultipliers' => [
+                    [
+                        'hindex' => 6,
+                        'multiplier' => 2
+                    ],
+                    [
+                        'hindex' => 10,
+                        'multiplier' => 4
+                    ]
+                ]
+
+
+            ]
+        ];
+    }
+
 
     // t_gamble_runtime
 
-    public function getFirst4PlayersGamble($game_id) {
+    public function getFirst4PlayersGambleRedBlug($game_id) {
 
 
         $this->load->model('GamblePipe');
@@ -237,7 +261,7 @@ class Game extends MY_Controller {
 
             return $red_blue;
         } else {
-            return null;
+            return [];
         }
     }
 

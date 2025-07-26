@@ -25,13 +25,13 @@ class Test extends CI_Controller {
 
     public function index() {
 
+        $game_id = 1338112;
 
-        $get_data_config = ['userid' => 837590];
-        $result  =  $this->MGamePipeRunner->GameFeedHandler($get_data_config);
-        $ret = [];
-        $ret['code'] = 200;
-        $ret['star_friends'] = $result['star_friends'];
-        echo json_encode($ret);
+        $holes = $this->MDetailGame->getGameHoles($game_id);
+        debug($holes);
+
+        $holes = $this->MDetailGame->getHoleListByGameId($game_id);
+        debug($holes);
     }
 
 
