@@ -74,8 +74,6 @@ Component({
         onModalCancel(e) {
             this.setData({ ifShowModal: false });
         },
-        onModalConfirm(e) {
-            this.setData({ ifShowModal: false });
-        }
+
     }
 }); 

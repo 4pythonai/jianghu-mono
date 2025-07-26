@@ -28,12 +28,7 @@ Component({
     data: {
         holeList: [],           // 所有洞的列表（原始数据）
         holePlayList: [],       // 游戏顺序的洞列表
-        displayHoleList: [],    // 用于显示的洞列表（包含所有洞，按顺序排列）
-        selectedHindexArray: [], // 只存储选中的hindex数组
-        selectedMap: {}, // 选中状态映射，用于WXML渲染
-        dragStartIndex: null,
-        dragCurrentIndex: null,
-        holeRects: []
+        displayHoleList: []     // 用于显示的洞列表（包含所有洞，按顺序排列）
     },
 
     lifetimes: {
@@ -46,61 +41,16 @@ Component({
             const plainHolePlayList = toJS(holePlayList);
             const plainRangeHolePlayList = toJS(rangeHolePlayList);
 
-            // 根据传入的startHoleindex和endHoleindex设置初始选中范围
-            let selectedHindexArray = [];
-
-            if (this.properties.startHoleindex !== null && this.properties.endHoleindex !== null) {
-                // 如果有传入起始和结束洞索引，根据这些参数设置选中范围（编辑模式）
-                const startIndex = this.properties.startHoleindex;
-                const endIndex = this.properties.endHoleindex;
-
-                // 确保startIndex <= endIndex
-                const minIndex = Math.min(startIndex, endIndex);
-                const maxIndex = Math.max(startIndex, endIndex);
-
-                // 从plainHolePlayList中找到对应hindex的洞
-                for (let i = minIndex; i <= maxIndex; i++) {
-                    const hole = plainHolePlayList.find(h => h.hindex === i);
-                    if (hole) {
-                        selectedHindexArray.push(i);
-                    }
-                }
-
-            } else {
-                // 创建模式 - 默认全选所有洞
-                selectedHindexArray = plainHolePlayList ? plainHolePlayList.map(hole => hole.hindex) : [];
-            }
-
             // 构建显示列表：包含所有洞，按holePlayList的顺序排列
             const displayHoleList = this.buildDisplayHoleList(plainHoleList, plainHolePlayList);
-
-            // 构建初始selectedMap
-            const selectedMap = {};
-            for (const hindex of selectedHindexArray) {
-                selectedMap[hindex] = true;
-            }
-
-            // 构建holePlayList的hindex集合，用于快速判断
-            const holePlayListHindexSet = new Set(plainHolePlayList.map(hole => hole.hindex));
-
-            // 为displayHoleList添加状态标记
-            const displayHoleListWithStatus = displayHoleList.map(hole => ({
-                ...hole,
-                inPlaylist: holePlayListHindexSet.has(hole.hindex)
-            }));
 
             this.setData({
                 holeList: plainHoleList,
                 holePlayList: plainHolePlayList,
-                displayHoleList: displayHoleListWithStatus,
-                selectedHindexArray,
-                selectedMap
+                displayHoleList
             });
         },
-        ready() {
-            // 获取所有球洞的位置信息，用于拖选计算
-            // this.getHoleRects();
-        },
+
     },
 
     methods: {
@@ -253,19 +203,9 @@ Component({
             holeRangeStore.updateHolePlayList(this.data.holePlayList);
 
             // 2. 设置洞范围（选中的洞）
-            const selectedHoles = this.data.holePlayList.filter(hole =>
-                this.data.selectedHindexArray.includes(hole.hindex)
-            );
-
-            // 将 selectedHoles 转换为普通对象数组
-            const plainSelectedHoles = selectedHoles.map(hole => toJS(hole));
-
-            console.log('🕳️ onConfirmHoleOrder - selectedHoles: ', plainSelectedHoles);
-
-            // 使用 holeRangeStore 更新洞范围
-            if (plainSelectedHoles.length > 0) {
-                const startHoleindex = plainSelectedHoles[0].hindex;
-                const endHoleindex = plainSelectedHoles[plainSelectedHoles.length - 1].hindex;
+            if (this.data.holePlayList.length > 0) {
+                const startHoleindex = this.data.holePlayList[0].hindex;
+                const endHoleindex = this.data.holePlayList[this.data.holePlayList.length - 1].hindex;
                 holeRangeStore.setHoleRange(startHoleindex, endHoleindex);
             }
 

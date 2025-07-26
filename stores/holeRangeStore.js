@@ -14,9 +14,7 @@ export const holeRangeStore = observable({
     startHoleindex: null,   // 参与游戏的第一个洞索引
     endHoleindex: null,     // 参与游戏的最后一个洞索引
 
-    // ---- 状态管理 ----
-    loading: false,         // 加载状态
-    error: null,           // 错误信息
+
 
     /**
      * 初始化洞数据
@@ -81,7 +79,6 @@ export const holeRangeStore = observable({
             });
         } catch (error) {
             console.error('🕳️ [holeRangeStore] 解析 holePlayListStr 失败:', error);
-            this.error = error.message;
         }
     }),
 
@@ -178,8 +175,6 @@ export const holeRangeStore = observable({
         this.rangeHolePlayList = [];
         this.startHoleindex = null;
         this.endHoleindex = null;
-        this.loading = false;
-        this.error = null;
     }),
 
     /**
@@ -191,23 +186,9 @@ export const holeRangeStore = observable({
             holePlayList: this.holePlayList,
             rangeHolePlayList: this.rangeHolePlayList,
             startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex,
-            loading: this.loading,
-            error: this.error
+            endHoleindex: this.endHoleindex
         };
     },
 
-    /**
-     * 获取洞数量
-     */
-    get holeCount() {
-        return this.holeList.length;
-    },
 
-    /**
-     * 获取参与游戏的洞数量
-     */
-    get rangeHoleCount() {
-        return this.rangeHolePlayList.length;
-    }
 }); 
