@@ -21,7 +21,9 @@ Component({
         currentHindex: null,
         currentMultiplier: null,
         // 新增：运行时倍数数据
-        runtimeMultipliers: []
+        runtimeMultipliers: [],
+        // 新增：每个洞的倍数信息，用于在 WXML 中显示
+        holeMultiplierMap: {}
     },
 
     lifetimes: {
@@ -49,7 +51,7 @@ Component({
     },
 
     observers: {
-        'runtimeMultipliers': (runtimeMultipliers) => {
+        'runtimeMultipliers': function (runtimeMultipliers) {
             console.log('[kickoff] runtimeMultipliers 数据变化');
             console.log('[kickoff] runtimeMultipliers 数据:', runtimeMultipliers);
             console.log('[kickoff] runtimeMultipliers 数据类型:', typeof runtimeMultipliers);
@@ -58,7 +60,21 @@ Component({
             // 如果数据不为空，打印详细信息
             if (runtimeMultipliers && runtimeMultipliers.length > 0) {
                 console.log('[kickoff] runtimeMultipliers 详细数据:', JSON.stringify(runtimeMultipliers, null, 2));
+
+                // 遍历每个倍数配置，打印详细信息
+                for (const [index, item] of runtimeMultipliers.entries()) {
+                    console.log(`[kickoff] 倍数配置 ${index + 1}:`, {
+                        hindex: item.hindex,
+                        multiplier: item.multiplier,
+                        item: item
+                    });
+                }
+            } else {
+                console.log('[kickoff] runtimeMultipliers 为空或未定义');
             }
+
+            // 更新洞号倍数映射表
+            this.updateHoleMultiplierMap();
         }
     },
 
@@ -77,11 +93,16 @@ Component({
             const hole = this.data.holePlayList[index];
 
             console.log(`[kickoff] 选择球洞: ${hole.holename} (洞号: ${hindex})`);
+            console.log('[kickoff] onSelectHole - 当前 runtimeMultipliers 数据:', this.data.runtimeMultipliers);
 
             // 检查当前洞是否已有倍数配置
             const existingMultiplier = this.getHoleMultiplier(hindex);
+            console.log(`[kickoff] onSelectHole - 洞号 ${hindex} 现有倍数:`, existingMultiplier);
+
             if (existingMultiplier) {
                 console.log(`[kickoff] 洞号 ${hindex} 当前倍数: ${existingMultiplier}`);
+            } else {
+                console.log(`[kickoff] 洞号 ${hindex} 暂无倍数配置`);
             }
 
             this.setData({
@@ -93,14 +114,24 @@ Component({
         // 获取指定洞号的倍数配置
         getHoleMultiplier(hindex) {
             const { runtimeMultipliers } = this.data;
+            console.log(`[kickoff] getHoleMultiplier - 查找洞号 ${hindex} 的倍数配置`);
+            console.log('[kickoff] getHoleMultiplier - 当前 runtimeMultipliers:', runtimeMultipliers);
+
             const multiplierConfig = runtimeMultipliers.find(item => item.hindex === hindex);
-            return multiplierConfig?.multiplier || null;
+            console.log('[kickoff] getHoleMultiplier - 找到的配置:', multiplierConfig);
+
+            const result = multiplierConfig?.multiplier || null;
+            console.log('[kickoff] getHoleMultiplier - 返回倍数:', result);
+            return result;
         },
 
         // 倍数选择确认
         onMultiplierConfirm(e) {
             const { hindex, multiplier } = e.detail;
             const holeName = this.data.selectedHole?.holename || `洞号${hindex}`;
+
+            console.log('[kickoff] onMultiplierConfirm - 接收到倍数选择:', e.detail);
+            console.log(`[kickoff] onMultiplierConfirm - hindex: ${hindex}, multiplier: ${multiplier}`);
 
             this.setData({
                 currentHindex: hindex,
@@ -110,6 +141,10 @@ Component({
 
             console.log(`[kickoff] 球洞 "${holeName}" (洞号: ${hindex}) 设置倍数为: ${multiplier}`);
             console.log('[kickoff] 当前选择:', { hindex, multiplier });
+            console.log('[kickoff] onMultiplierConfirm - 设置后的数据:', {
+                currentHindex: this.data.currentHindex,
+                currentMultiplier: this.data.currentMultiplier
+            });
         },
 
         // 倍数选择取消
@@ -126,6 +161,7 @@ Component({
 
             console.log('=== [kickoff] 踢一脚配置确认 ===');
             console.log('[kickoff] 选中的游戏配置ID:', selectedIdList);
+            console.log('[kickoff] onConfirm - 当前所有数据:', this.data);
 
             if (currentHindex && currentMultiplier) {
                 const hole = this.data.holePlayList.find(h => h.hindex === currentHindex);
@@ -134,6 +170,8 @@ Component({
                 console.log(`[kickoff] 设置的倍数: ${currentMultiplier}`);
             } else {
                 console.log('[kickoff] 未选择球洞或倍数');
+                console.log('[kickoff] onConfirm - currentHindex:', currentHindex);
+                console.log('[kickoff] onConfirm - currentMultiplier:', currentMultiplier);
             }
 
             console.log('[kickoff] 完整配置数据:', {
@@ -157,6 +195,26 @@ Component({
         },
 
         // 空方法，阻止冒泡
-        noop() { }
+        noop() { },
+
+        // 更新洞号倍数映射表
+        updateHoleMultiplierMap() {
+            const { runtimeMultipliers, holePlayList } = this.data;
+            const holeMultiplierMap = {};
+
+            console.log('[kickoff] updateHoleMultiplierMap - 开始更新倍数映射表');
+            console.log('[kickoff] updateHoleMultiplierMap - runtimeMultipliers:', runtimeMultipliers);
+            console.log('[kickoff] updateHoleMultiplierMap - holePlayList:', holePlayList);
+
+            // 为每个洞创建倍数映射
+            for (const hole of holePlayList) {
+                const multiplierConfig = runtimeMultipliers.find(item => item.hindex === hole.hindex);
+                holeMultiplierMap[hole.hindex] = multiplierConfig?.multiplier || null;
+                console.log(`[kickoff] updateHoleMultiplierMap - 洞号 ${hole.hindex} 倍数:`, holeMultiplierMap[hole.hindex]);
+            }
+
+            this.setData({ holeMultiplierMap });
+            console.log('[kickoff] updateHoleMultiplierMap - 更新完成:', holeMultiplierMap);
+        }
     }
 });

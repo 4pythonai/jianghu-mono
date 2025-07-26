@@ -22,8 +22,8 @@
         >
           <text class="hole-item-text">{{item.holename}}</text>
           <!-- 新增：显示当前倍数配置 -->
-          <view wx:if="{{getHoleMultiplier(item.hindex)}}" class="hole-multiplier-info">
-            <text class="multiplier-text">当前: {{getHoleMultiplier(item.hindex)}}倍</text>
+          <view wx:if="{{holeMultiplierMap[item.hindex]}}" class="hole-multiplier-info">
+            <text class="multiplier-text">当前: {{holeMultiplierMap[item.hindex]}}倍</text>
           </view>
         </view>
       </block>
