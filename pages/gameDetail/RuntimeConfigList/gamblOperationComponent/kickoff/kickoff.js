@@ -61,13 +61,19 @@ Component({
             if (runtimeMultipliers && runtimeMultipliers.length > 0) {
                 console.log('[kickoff] runtimeMultipliers 详细数据:', JSON.stringify(runtimeMultipliers, null, 2));
 
-                // 遍历每个倍数配置，打印详细信息
-                for (const [index, item] of runtimeMultipliers.entries()) {
-                    console.log(`[kickoff] 倍数配置 ${index + 1}:`, {
-                        hindex: item.hindex,
-                        multiplier: item.multiplier,
-                        item: item
+                // 遍历每个 runtime 配置，打印详细信息
+                for (const [index, runtimeConfig] of runtimeMultipliers.entries()) {
+                    console.log(`[kickoff] runtime配置 ${index + 1}:`, {
+                        runtime_id: runtimeConfig.runtime_id,
+                        holeMultipliers: runtimeConfig.holeMultipliers
                     });
+
+                    // 打印每个洞的倍数配置
+                    if (runtimeConfig.holeMultipliers && Array.isArray(runtimeConfig.holeMultipliers)) {
+                        for (const holeMultiplier of runtimeConfig.holeMultipliers) {
+                            console.log(`[kickoff] 洞号 ${holeMultiplier.hindex} 倍数: ${holeMultiplier.multiplier}`);
+                        }
+                    }
                 }
             } else {
                 console.log('[kickoff] runtimeMultipliers 为空或未定义');
@@ -117,12 +123,27 @@ Component({
             console.log(`[kickoff] getHoleMultiplier - 查找洞号 ${hindex} 的倍数配置`);
             console.log('[kickoff] getHoleMultiplier - 当前 runtimeMultipliers:', runtimeMultipliers);
 
-            const multiplierConfig = runtimeMultipliers.find(item => item.hindex === hindex);
-            console.log('[kickoff] getHoleMultiplier - 找到的配置:', multiplierConfig);
+            // 遍历 runtimeMultipliers 数组，查找匹配的洞号倍数
+            for (const runtimeConfig of runtimeMultipliers) {
+                if (runtimeConfig.holeMultipliers && Array.isArray(runtimeConfig.holeMultipliers)) {
+                    // 在 holeMultipliers 中查找匹配的洞号
+                    const multiplierConfig = runtimeConfig.holeMultipliers.find(item => {
+                        // 考虑 hindex 的类型，转换为字符串进行比较
+                        const itemHindex = String(item.hindex);
+                        const searchHindex = String(hindex);
+                        return itemHindex === searchHindex;
+                    });
 
-            const result = multiplierConfig?.multiplier || null;
-            console.log('[kickoff] getHoleMultiplier - 返回倍数:', result);
-            return result;
+                    if (multiplierConfig) {
+                        console.log('[kickoff] getHoleMultiplier - 找到的配置:', multiplierConfig);
+                        console.log('[kickoff] getHoleMultiplier - 返回倍数:', multiplierConfig.multiplier);
+                        return multiplierConfig.multiplier;
+                    }
+                }
+            }
+
+            console.log('[kickoff] getHoleMultiplier - 未找到配置，返回 null');
+            return null;
         },
 
         // 倍数选择确认
@@ -208,9 +229,28 @@ Component({
 
             // 为每个洞创建倍数映射
             for (const hole of holePlayList) {
-                const multiplierConfig = runtimeMultipliers.find(item => item.hindex === hole.hindex);
-                holeMultiplierMap[hole.hindex] = multiplierConfig?.multiplier || null;
-                console.log(`[kickoff] updateHoleMultiplierMap - 洞号 ${hole.hindex} 倍数:`, holeMultiplierMap[hole.hindex]);
+                // 在 runtimeMultipliers 中查找该洞号的倍数配置
+                let foundMultiplier = null;
+
+                for (const runtimeConfig of runtimeMultipliers) {
+                    if (runtimeConfig.holeMultipliers && Array.isArray(runtimeConfig.holeMultipliers)) {
+                        // 在 holeMultipliers 中查找匹配的洞号
+                        const multiplierConfig = runtimeConfig.holeMultipliers.find(item => {
+                            // 考虑 hindex 的类型，转换为字符串进行比较
+                            const itemHindex = String(item.hindex);
+                            const holeHindex = String(hole.hindex);
+                            return itemHindex === holeHindex;
+                        });
+
+                        if (multiplierConfig) {
+                            foundMultiplier = multiplierConfig.multiplier;
+                            break; // 找到后跳出内层循环
+                        }
+                    }
+                }
+
+                holeMultiplierMap[hole.hindex] = foundMultiplier;
+                console.log(`[kickoff] updateHoleMultiplierMap - 洞号 ${hole.hindex} 倍数:`, foundMultiplier);
             }
 
             this.setData({ holeMultiplierMap });
