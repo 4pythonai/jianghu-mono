@@ -46,18 +46,13 @@ Component({
                 title: '调整出发洞',
                 icon: '/assets/icons/icons8-golf-100.png',
                 handler: 'onStartHoleClick'
-            },
-            {
-                id: 'kick',
-                title: '踢一脚',
-                icon: '/assets/icons/icons8-kicking-100.png',
-                handler: 'onKickClick'
             }
         ],
         isKickoffVisible: false,
         isHolejumpVisible: false,
         isStartholeVisible: false,
         isJuanguoVisible: false,
+        selectedConfigForKick: null, // 当前选中的配置项（用于踢一脚功能）
     },
 
 
@@ -252,15 +247,33 @@ Component({
             this.setData({ isStartholeVisible: false });
         },
 
-        onKickClick() {
-            console.log('🎮 点击踢一脚 runtimeConfigs:', this.data.runtimeConfigs);
-            this.setData({ isKickoffVisible: true }, () => {
+        onKickClick(e) {
+            const { config, index } = e.currentTarget.dataset;
+            console.log('🎮 点击踢一脚 config:', config, 'index:', index);
+
+            if (!config) {
+                console.error('🎮 配置数据为空');
+                wx.showToast({
+                    title: '配置数据错误',
+                    icon: 'none'
+                });
+                return;
+            }
+
+            // 设置选中的配置项，只传递当前选中的配置
+            this.setData({
+                isKickoffVisible: true,
+                selectedConfigForKick: config
+            }, () => {
                 console.log('isKickoffVisible:', this.data.isKickoffVisible);
             });
         },
 
         onKickoffClose() {
-            this.setData({ isKickoffVisible: false });
+            this.setData({
+                isKickoffVisible: false,
+                selectedConfigForKick: null
+            });
         },
 
         onBigWindClick() {
@@ -292,9 +305,7 @@ Component({
         onExtraOptionClick(e) {
             const option = e.currentTarget.dataset.option;
             console.log('🎮 点击游戏选项:', option);
-            if (option.id === 'kick') {
-                this.onKickClick();
-            } else if (option.id === 'holejump') {
+            if (option.id === 'holejump') {
                 this.onHoleJumpClick();
             } else if (option.id === 'starthole') {
                 this.onStartholeClick();

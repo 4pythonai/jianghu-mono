@@ -55,7 +55,7 @@
         class="detail-btn"
         data-config="{{ item }}"
         data-index="{{ index }}"
-        catchtap="onRuntimeItemClick"
+        catchtap="onKickClick"
       >
         <image class="btn-icon" src="/assets/icons/icons8-kicking-50.png" mode="aspectFit"></image>踢一脚
       </button>
@@ -148,7 +148,7 @@
   </view>
   <kickoff
     wx:if="{{isKickoffVisible}}"
-    runtimeConfigs="{{runtimeConfigs}}"
+    runtimeConfigs="{{[selectedConfigForKick]}}"
     bind:close="onKickoffClose"
   />
   <holejump

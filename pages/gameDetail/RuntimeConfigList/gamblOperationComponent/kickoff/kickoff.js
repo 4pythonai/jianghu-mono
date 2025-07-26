@@ -3,7 +3,7 @@ import { gameStore } from '../../../../../stores/gameStore';
 import { toJS } from 'mobx-miniprogram';
 Component({
     properties: {
-        // 传入的 runtimeConfigs 列表
+        // 传入的 runtimeConfigs 列表（现在只包含一个配置项）
         runtimeConfigs: {
             type: Array,
             value: []
@@ -11,8 +11,6 @@ Component({
     },
 
     data: {
-        // 当前选中的配置 id 列表
-        selectedIdList: [],
         // 洞序列表（从 gameStore 取）
         holePlayList: [],
         showMultiplierSelector: false,
@@ -85,14 +83,6 @@ Component({
     },
 
     methods: {
-
-        onCheckboxChange(e) {
-            console.log(" 踢一脚:🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲🈲", this.data.runtimeMultipliers)
-            this.setData({
-                selectedIdList: e.detail.selectedIdList
-            });
-        },
-
         // 选择洞号
         onSelectHole(e) {
             const { index, hindex } = e.currentTarget.dataset;
@@ -178,11 +168,22 @@ Component({
 
         // 确定按钮点击
         onConfirm() {
-            const { selectedIdList, currentHindex, currentMultiplier } = this.data;
+            const { currentHindex, currentMultiplier, runtimeConfigs } = this.data;
+
+            // 获取当前配置项信息
+            const currentConfig = runtimeConfigs?.[0] || {};
+            const configId = currentConfig.id;
+            const configName = currentConfig.gambleUserName || currentConfig.gambleSysName || '未知配置';
 
             console.log('=== [kickoff] 踢一脚配置确认 ===');
-            console.log('[kickoff] 选中的游戏配置ID:', selectedIdList);
-            console.log('[kickoff] onConfirm - 当前所有数据:', this.data);
+            console.log('[kickoff] 当前配置信息:', {
+                configId: configId,
+                configName: configName,
+                gambleSysName: currentConfig.gambleSysName,
+                gambleUserName: currentConfig.gambleUserName
+            });
+            console.log('[kickoff] 选择的洞号:', currentHindex);
+            console.log('[kickoff] 设置的倍数:', currentMultiplier);
 
             if (currentHindex && currentMultiplier) {
                 const hole = this.data.holePlayList.find(h => h.hindex === currentHindex);
@@ -196,7 +197,8 @@ Component({
             }
 
             console.log('[kickoff] 完整配置数据:', {
-                selectedIdList,
+                configId,
+                configName,
                 hindex: currentHindex,
                 multiplier: currentMultiplier
             });
@@ -204,7 +206,8 @@ Component({
 
             // 触发事件传递给父组件
             this.triggerEvent('confirm', {
-                selectedIdList,
+                configId,
+                configName,
                 hindex: currentHindex,
                 multiplier: currentMultiplier
             });
