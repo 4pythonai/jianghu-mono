@@ -121,32 +121,6 @@ export const holeRangeStore = observable({
     }),
 
     /**
-     * 根据选中的洞数组设置洞范围
-     * @param {Array} selectedHoles 选中的洞数组
-     */
-    setHoleRangeFromSelected: action(function (selectedHoles) {
-        console.log('🕳️ [holeRangeStore] 根据选中洞设置范围:', selectedHoles);
-
-        if (!selectedHoles || !Array.isArray(selectedHoles) || selectedHoles.length === 0) {
-            console.warn('🕳️ [holeRangeStore] 无效的选中洞数组');
-            return;
-        }
-
-        // 设置范围（不修改 holePlayList，只修改范围相关的数据）
-        if (selectedHoles.length > 0) {
-            this.startHoleindex = selectedHoles[0].hindex;
-            this.endHoleindex = selectedHoles[selectedHoles.length - 1].hindex;
-            this.rangeHolePlayList = [...selectedHoles];
-        }
-
-        console.log('🕳️ [holeRangeStore] 根据选中洞设置范围完成:', {
-            startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex,
-            rangeHolePlayListLength: this.rangeHolePlayList.length
-        });
-    }),
-
-    /**
      * 更新洞顺序列表（用于拖拽排序后）
      * @param {Array} newHolePlayList 新的洞顺序列表
      */

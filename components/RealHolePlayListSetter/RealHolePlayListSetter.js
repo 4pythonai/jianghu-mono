@@ -26,8 +26,9 @@ Component({
     },
 
     data: {
-        holeList: [],
-        holePlayList: [],
+        holeList: [],           // 所有洞的列表（原始数据）
+        holePlayList: [],       // 游戏顺序的洞列表
+        displayHoleList: [],    // 用于显示的洞列表（包含所有洞，按顺序排列）
         selectedHindexArray: [], // 只存储选中的hindex数组
         selectedMap: {}, // 选中状态映射，用于WXML渲染
         dragStartIndex: null,
@@ -44,7 +45,6 @@ Component({
             const plainHoleList = toJS(holeList);
             const plainHolePlayList = toJS(holePlayList);
             const plainRangeHolePlayList = toJS(rangeHolePlayList);
-
 
             // 根据传入的startHoleindex和endHoleindex设置初始选中范围
             let selectedHindexArray = [];
@@ -71,17 +71,8 @@ Component({
                 selectedHindexArray = plainHolePlayList ? plainHolePlayList.map(hole => hole.hindex) : [];
             }
 
-            // 如果没有 holePlayList 数据，尝试从 holeList 生成
-            if (!holePlayList || holePlayList.length === 0) {
-                const generatedHolePlayList = holeList ? [...holeList] : [];
-                this.setData({
-                    holeList,
-                    holePlayList: generatedHolePlayList,
-                    selectedHindexArray,
-                    selectedMap: {}
-                });
-                return;
-            }
+            // 构建显示列表：包含所有洞，按holePlayList的顺序排列
+            const displayHoleList = this.buildDisplayHoleList(plainHoleList, plainHolePlayList);
 
             // 构建初始selectedMap
             const selectedMap = {};
@@ -89,9 +80,19 @@ Component({
                 selectedMap[hindex] = true;
             }
 
+            // 构建holePlayList的hindex集合，用于快速判断
+            const holePlayListHindexSet = new Set(plainHolePlayList.map(hole => hole.hindex));
+
+            // 为displayHoleList添加状态标记
+            const displayHoleListWithStatus = displayHoleList.map(hole => ({
+                ...hole,
+                inPlaylist: holePlayListHindexSet.has(hole.hindex)
+            }));
+
             this.setData({
-                holeList,
-                holePlayList,
+                holeList: plainHoleList,
+                holePlayList: plainHolePlayList,
+                displayHoleList: displayHoleListWithStatus,
                 selectedHindexArray,
                 selectedMap
             });
@@ -103,48 +104,107 @@ Component({
     },
 
     methods: {
+        /**
+ * 构建显示列表：包含所有洞，按holePlayList的顺序排列
+ * @param {Array} holeList 所有洞的列表
+ * @param {Array} holePlayList 游戏顺序的洞列表
+ * @returns {Array} 用于显示的洞列表
+ */
+        buildDisplayHoleList(holeList, holePlayList) {
+            if (!holeList || !Array.isArray(holeList)) {
+                return [];
+            }
 
+            if (!holePlayList || !Array.isArray(holePlayList) || holePlayList.length === 0) {
+                // 如果没有holePlayList，按原始顺序显示所有洞
+                return holeList.map(hole => ({
+                    ...hole,
+                    inPlaylist: false
+                }));
+            }
+
+            // 获取holePlayList中第一个洞的hindex
+            const firstHoleHindex = holePlayList[0]?.hindex;
+
+            // 找到第一个洞在holeList中的位置
+            const firstHoleIndex = holeList.findIndex(hole => hole.hindex === firstHoleHindex);
+
+            if (firstHoleIndex === -1) {
+                // 如果找不到第一个洞，按原始顺序显示
+                return holeList.map(hole => ({
+                    ...hole,
+                    inPlaylist: false
+                }));
+            }
+
+            // 重新排列holeList，让第一个洞对齐holePlayList的第一个洞
+            const reorderedHoleList = [
+                ...holeList.slice(firstHoleIndex),
+                ...holeList.slice(0, firstHoleIndex)
+            ];
+
+            // 构建holePlayList的hindex集合，用于快速判断
+            const holePlayListHindexSet = new Set(holePlayList.map(hole => hole.hindex));
+
+            // 为每个洞添加状态标记
+            return reorderedHoleList.map(hole => ({
+                ...hole,
+                inPlaylist: holePlayListHindexSet.has(hole.hindex)
+            }));
+        },
 
         onHideModal() {
             this.triggerEvent('cancel');
         },
 
         onSelectHole(e) {
-
             const selectType = this.properties.selectType; // 获取选择类型
-
 
             if (selectType === 'start') {
                 const hindex = Number(e.currentTarget.dataset.hindex);
-                const sortedList = [...this.data.holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
-                const startIdx = sortedList.findIndex(hole => Number(hole.hindex) === hindex);
-                const newHolePlayList = sortedList.slice(startIdx).concat(sortedList.slice(0, startIdx));
+                console.log('🕳️ 选择起始洞:', hindex);
+
+                // 重新构建holePlayList，以选中的洞为起始
+                const newHolePlayList = this.buildHolePlayListFromStart(hindex);
+
+                // 重新构建显示列表
+                const newDisplayHoleList = this.buildDisplayHoleList(this.data.holeList, newHolePlayList);
+
                 this.setData({
-                    holePlayList: newHolePlayList
+                    holePlayList: newHolePlayList,
+                    displayHoleList: newDisplayHoleList
                 });
             }
 
-
             if (selectType === 'end') {
+                const hindex = Number(e.currentTarget.dataset.hindex);
+                console.log('🕳️ 选择终止洞:', hindex);
 
-                // const hindex = Number(e.currentTarget.dataset.hindex);
-                // const sortedList = [...this.data.holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
-                // const startIdx = sortedList.findIndex(hole => Number(hole.hindex) === hindex);
-                // const newHolePlayList = sortedList.slice(startIdx).concat(sortedList.slice(0, startIdx));
-                // this.setData({
-                //     holePlayList: newHolePlayList
-                // });
+                // 这里可以添加终止洞的逻辑
+                // 暂时保持原有逻辑
+            }
+        },
 
+        /**
+         * 根据起始洞构建新的holePlayList
+         * @param {number} startHindex 起始洞的hindex
+         * @returns {Array} 新的holePlayList
+         */
+        buildHolePlayListFromStart(startHindex) {
+            const { holeList } = this.data;
+
+            // 找到起始洞在holeList中的位置
+            const startIndex = holeList.findIndex(hole => hole.hindex === startHindex);
+
+            if (startIndex === -1) {
+                return [...holeList];
             }
 
-
-
-
-
-
-
-
-
+            // 重新排列，以起始洞为开始
+            return [
+                ...holeList.slice(startIndex),
+                ...holeList.slice(0, startIndex)
+            ];
         },
 
         onConfirmHoleOrder() {
@@ -161,10 +221,14 @@ Component({
             // 将 selectedHoles 转换为普通对象数组
             const plainSelectedHoles = selectedHoles.map(hole => toJS(hole));
 
-            console.log(' ⭕️+++  onConfirmHoleOrder - selectedHoles: ', plainSelectedHoles);
+            console.log('🕳️ onConfirmHoleOrder - selectedHoles: ', plainSelectedHoles);
 
             // 使用 holeRangeStore 更新洞范围
-            holeRangeStore.setHoleRangeFromSelected(plainSelectedHoles);
+            if (plainSelectedHoles.length > 0) {
+                const startHoleindex = plainSelectedHoles[0].hindex;
+                const endHoleindex = plainSelectedHoles[plainSelectedHoles.length - 1].hindex;
+                holeRangeStore.setHoleRange(startHoleindex, endHoleindex);
+            }
 
             this.triggerEvent('cancel');
         },

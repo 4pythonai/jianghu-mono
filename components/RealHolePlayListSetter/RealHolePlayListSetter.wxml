@@ -5,11 +5,12 @@
   <view class="modal-content">
     <view class="modal-title">设置洞序</view>
     <view class="hole-list">
-      <block wx:for="{{holePlayList}}" wx:key="index">
+      <block wx:for="{{displayHoleList}}" wx:key="hindex">
         <view
-          class="hole-item {{index === 0 ? 'active' : ''}}"
+          class="hole-item {{index === 0 ? 'active' : ''}} {{item.inPlaylist ? 'in-playlist' : 'not-in-playlist'}}"
           bindtap="onSelectHole"
           data-index="{{index}}"
+          data-holename="{{item.holename}}"
           data-hindex="{{item.hindex}}"
         >
           <text class="hole-item-text">{{item.holename}}</text>

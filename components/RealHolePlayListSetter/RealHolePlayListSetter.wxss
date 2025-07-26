@@ -124,6 +124,24 @@
 	border: 2rpx solid #bbb;
 }
 
+/* 新增样式：在holePlayList中的洞 */
+.hole-item.in-playlist {
+	background: #27ae60;
+	color: #fff;
+	border: 2rpx solid #27ae60;
+}
+
+/* 新增样式：不在holePlayList中的洞（灰色） */
+.hole-item.not-in-playlist {
+	background: #e0e0e0;
+	color: #999;
+	border: 2rpx solid #ccc;
+}
+
+.hole-item.not-in-playlist .hole-item-text {
+	color: #999;
+}
+
 .modal-btns {
 	display: flex;
 	justify-content: space-between;
