@@ -31,12 +31,13 @@
         bindtap="onSelectMultiplier"
         data-multiplier="8"
       >X8</view>
-      <view class="multiplier-btn custom-input-container {{isCustomActive ? 'active' : ''}}">
+      <view
+        class="multiplier-btn custom-input-container {{isCustomActive === true ? 'active' : ''}}"
+      >
         <text class="custom-prefix">X</text>
         <input
           class="custom-input"
           type="digit"
-          placeholder
           value="{{customValue}}"
           bindinput="onCustomInputChange"
           bindtap="onCustomInputTap"
