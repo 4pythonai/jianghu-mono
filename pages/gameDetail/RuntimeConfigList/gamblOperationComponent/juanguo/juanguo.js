@@ -1,6 +1,5 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../../../../stores/gameStore';
-import { holeRangeStore } from '../../../../../stores/holeRangeStore';
 import { toJS } from 'mobx-miniprogram';
 Component({
     properties: {

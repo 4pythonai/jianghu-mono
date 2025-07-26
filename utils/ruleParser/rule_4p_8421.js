@@ -1,6 +1,7 @@
 /**
  * 4p-8421 规则解析器
  */
+import { GOLF_SCORE_TYPES } from '../gameConstants.js'
 
 /**
  * 解析扣分配置
@@ -65,17 +66,9 @@ function parseEatmeatConfig(item) {
         }
 
         if (eatRangeObj) {
-            const eatRangeLabels = {
-                "BetterThanBirdie": "帕以上",
-                "Birdie": "鸟",
-                "Par": "帕",
-                "WorseThanPar": "鸟以下"
-            };
-
-            const eatRangeKeys = ["BetterThanBirdie", "Birdie", "Par", "WorseThanPar"];
-            const eatDetails = eatRangeKeys.map(key => {
+            const eatDetails = GOLF_SCORE_TYPES.KEYS.map(key => {
                 const value = eatRangeObj[key];
-                const label = eatRangeLabels[key];
+                const label = GOLF_SCORE_TYPES.LABELS[key];
                 return `${label}${value}个`;
             }).join('、');
 

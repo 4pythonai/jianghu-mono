@@ -1,4 +1,5 @@
 import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../../utils/gameConstants.js'
 
 Component({
   properties: {
@@ -6,38 +7,24 @@ Component({
     visible: Boolean
   },
   data: {
-    // 新的JSON格式数据
-    eating_range: {
-      "BetterThanBirdie": 1,
-      "Birdie": 1,
-      "Par": 1,
-      "WorseThanPar": 1
-    },
-    // 键到中文标签的映射
-    eatRangeLabels: {
-      "BetterThanBirdie": "帕以上",
-      "Birdie": "鸟",
-      "Par": "帕",
-      "WorseThanPar": "鸟以下"
-    },
-    // 用于渲染的键数组
-    eatRangeKeys: ["BetterThanBirdie", "Birdie", "Par", "WorseThanPar"],
+    // 使用统一的常量配置
+    eating_range: GameConstantsUtils.getDefaultEatingRange(),
+    eatRangeLabels: GOLF_SCORE_TYPES.LABELS,
+    eatRangeKeys: GOLF_SCORE_TYPES.KEYS,
 
-    meatValueOptions: [
-      '肉算1分', '分值翻倍', '分值连续翻倍'
-    ],
+    meatValueOptions: EATMEAT_CONFIG.MEAT_VALUE_OPTIONS.map(item => item.label),
     scoreSelected: 0,
 
     // 修改封顶选项, 支持可编辑数字
-    topOptions: ['不封顶', 'X分封顶'],
+    topOptions: EATMEAT_CONFIG.TOP_OPTIONS.map(item => item.label),
     topSelected: 0,
 
     // 新增可编辑变量
     topScoreLimit: 3, // 封顶分数, 默认3
 
-    // 数字选择器范围
-    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20, 吃肉数量范围
-    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20, 封顶分数范围
+    // 数字选择器范围 - 使用统一配置
+    eatValueRange: EATMEAT_CONFIG.RANGES.EAT_VALUE,
+    topScoreRange: EATMEAT_CONFIG.RANGES.TOP_SCORE,
   },
   // 组件生命周期
   lifetimes: {
