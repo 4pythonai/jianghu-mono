@@ -6,10 +6,10 @@ import { autorun } from 'mobx-miniprogram';
 Component({
     lifetimes: {
         attached() {
-            const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = holeRangeStore.getState();
+            const { holeList, startHoleindex, endHoleindex } = holeRangeStore;
             this.updateHoleDisplay(holeList, startHoleindex, endHoleindex);
             this.disposer = autorun(() => {
-                const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = holeRangeStore.getState();
+                const { holeList, startHoleindex, endHoleindex } = holeRangeStore;
                 this.updateHoleDisplay(holeList, startHoleindex, endHoleindex);
             });
         },
@@ -19,8 +19,6 @@ Component({
     },
     data: {
         holeList: [],
-        holePlayList: [],
-        rangeHolePlayList: [],
         ifShowModal: false,
         startHoleindex: null,
         endHoleindex: null,
@@ -61,15 +59,10 @@ Component({
         onSlectStartModal(e) {
             // 获取点击的data-type
             const dataType = e.currentTarget.dataset.type;
-            console.log(' ⭕️ HoleRangeSelector onSlectStartModal - data-type:', dataType);
 
             // 从holeRangeStore获取当前的起始洞和结束洞索引
-            const { startHoleindex, endHoleindex } = holeRangeStore.getState();
+            const { startHoleindex, endHoleindex } = holeRangeStore;
 
-            console.log(' ⭕️ HoleRangeSelector onSlectStartModal - 从holeRangeStore获取洞范围:', {
-                startHoleindex,
-                endHoleindex
-            });
 
             this.setData({
                 ifShowModal: true,
@@ -82,15 +75,9 @@ Component({
         onSelectEndModal(e) {
             // 获取点击的data-type
             const dataType = e.currentTarget.dataset.type;
-            console.log(' ⭕️ HoleRangeSelector onSelectEndModal - data-type:', dataType);
 
             // 从holeRangeStore获取当前的起始洞和结束洞索引
-            const { startHoleindex, endHoleindex } = holeRangeStore.getState();
-
-            console.log(' ⭕️ HoleRangeSelector onSelectEndModal - 从holeRangeStore获取洞范围:', {
-                startHoleindex,
-                endHoleindex
-            });
+            const { startHoleindex, endHoleindex } = holeRangeStore;
 
             this.setData({
                 ifShowModal: true,

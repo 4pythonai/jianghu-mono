@@ -121,18 +121,5 @@ export const holeRangeStore = observable({
         this.rangeHolePlayList = [];
         this.startHoleindex = null;
         this.endHoleindex = null;
-    }),
-
-    /**
-     * 获取当前状态
-     */
-    getState() {
-        return {
-            holeList: this.holeList,
-            holePlayList: this.holePlayList,
-            rangeHolePlayList: this.rangeHolePlayList,
-            startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex
-        };
-    }
+    })
 }); 
