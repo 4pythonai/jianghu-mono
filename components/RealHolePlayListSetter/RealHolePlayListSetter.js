@@ -180,8 +180,18 @@ Component({
                 const hindex = Number(e.currentTarget.dataset.hindex);
                 console.log('🕳️ 选择终止洞:', hindex);
 
-                // 这里可以添加终止洞的逻辑
-                // 暂时保持原有逻辑
+                // 实现终止洞的逻辑
+                const newHolePlayList = this.buildHolePlayListToEnd(hindex);
+                console.log('🕳️ 新的holePlayList:', newHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename })));
+
+                // 重新构建显示列表
+                const newDisplayHoleList = this.buildDisplayHoleList(this.data.holeList, newHolePlayList);
+                console.log('🕳️ 新的displayHoleList:', newDisplayHoleList.map(h => ({ hindex: h.hindex, holename: h.holename, inPlaylist: h.inPlaylist })));
+
+                this.setData({
+                    holePlayList: newHolePlayList,
+                    displayHoleList: newDisplayHoleList
+                });
             }
         },
 
@@ -205,6 +215,35 @@ Component({
                 ...holeList.slice(startIndex),
                 ...holeList.slice(0, startIndex)
             ];
+        },
+
+        /**
+ * 根据终止洞构建新的holePlayList（包含从开始到终止洞的所有洞）
+ * @param {number} endHindex 终止洞的hindex
+ * @returns {Array} 新的holePlayList
+ */
+        buildHolePlayListToEnd(endHindex) {
+            const { holeList, holePlayList, displayHoleList } = this.data;
+
+            // 如果没有holePlayList，返回空数组
+            if (!holePlayList || holePlayList.length === 0) {
+                return [];
+            }
+
+            // 在displayHoleList中找到终止洞的位置
+            const endIndex = displayHoleList.findIndex(hole => hole.hindex === endHindex);
+
+            if (endIndex === -1) {
+                // 如果终止洞不在displayHoleList中，返回完整的holePlayList
+                return [...holePlayList];
+            }
+
+            // 从displayHoleList中获取从开始到终止洞的所有洞（包括灰色的洞）
+            const selectedHoles = displayHoleList.slice(0, endIndex + 1);
+
+            console.log('🕳️ 选择的洞（包含灰色洞）:', selectedHoles.map(h => ({ hindex: h.hindex, holename: h.holename, inPlaylist: h.inPlaylist })));
+
+            return selectedHoles;
         },
 
         onConfirmHoleOrder() {

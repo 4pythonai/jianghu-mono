@@ -108,7 +108,7 @@
 }
 
 .hole-item.active {
-	background: #007aff;
+	background: #007aff !important;
 	color: #fff;
 	border-color: #007aff;
 }
