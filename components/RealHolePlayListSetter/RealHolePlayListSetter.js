@@ -17,6 +17,11 @@ Component({
         endHoleindex: {
             type: Number,
             value: null
+        },
+        // 新增属性：选择类型（start/end）
+        selectType: {
+            type: String,
+            value: null
         }
     },
 
@@ -93,90 +98,53 @@ Component({
         },
         ready() {
             // 获取所有球洞的位置信息，用于拖选计算
-            this.getHoleRects();
+            // this.getHoleRects();
         },
     },
 
     methods: {
-        getHoleRects() {
-            wx.createSelectorQuery().in(this)
-                .selectAll('.hole-item')
-                .boundingClientRect(rects => {
-                    if (rects && rects.length > 0) {
-                        this.setData({ holeRects: rects });
-                    }
-                }).exec();
-        },
 
-        onHoleTouchStart(e) {
-            const index = Number(e.currentTarget.dataset.index);
-            this.setData({
-                dragStartIndex: index,
-                dragCurrentIndex: index
-            });
-            this.updateSelectedRange(index, index);
-            console.log(' ⭕️ gameStore:', gameStore);
-        },
-
-        onHoleTouchMove(e) {
-            const touch = e.touches[0];
-            const { holeRects } = this.data;
-            let moveIndex = this.data.dragCurrentIndex;
-
-            // 遍历所有球洞，找到手指当前滑过的球洞index
-            for (let i = 0; i < holeRects.length; i++) {
-                const rect = holeRects[i];
-                // 简化检测逻辑：只检查X坐标范围，Y坐标暂时忽略
-                if (
-                    touch.pageX >= rect.left &&
-                    touch.pageX <= rect.right
-                ) {
-                    moveIndex = i;
-                    break;
-                }
-            }
-
-            this.setData({
-                dragCurrentIndex: moveIndex
-            });
-            this.updateSelectedRange(this.data.dragStartIndex, moveIndex);
-        },
-
-
-        updateSelectedRange(start, end) {
-            const min = Math.min(start, end);
-            const max = Math.max(start, end);
-
-            // 获取区间内的球洞hindex
-            const selectedHindexArray = [];
-            for (let i = min; i <= max; i++) {
-                if (this.data.holePlayList[i]) {
-                    selectedHindexArray.push(this.data.holePlayList[i].hindex);
-                }
-            }
-            // 构建selectedMap
-            const selectedMap = {};
-            for (const hindex of selectedHindexArray) {
-                selectedMap[hindex] = true;
-            }
-            this.setData({
-                selectedHindexArray,
-                selectedMap
-            });
-        },
 
         onHideModal() {
             this.triggerEvent('cancel');
         },
 
         onSelectHole(e) {
-            const hindex = Number(e.currentTarget.dataset.hindex);
-            const sortedList = [...this.data.holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
-            const startIdx = sortedList.findIndex(hole => Number(hole.hindex) === hindex);
-            const newHolePlayList = sortedList.slice(startIdx).concat(sortedList.slice(0, startIdx));
-            this.setData({
-                holePlayList: newHolePlayList
-            });
+
+            const selectType = this.properties.selectType; // 获取选择类型
+
+
+            if (selectType === 'start') {
+                const hindex = Number(e.currentTarget.dataset.hindex);
+                const sortedList = [...this.data.holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
+                const startIdx = sortedList.findIndex(hole => Number(hole.hindex) === hindex);
+                const newHolePlayList = sortedList.slice(startIdx).concat(sortedList.slice(0, startIdx));
+                this.setData({
+                    holePlayList: newHolePlayList
+                });
+            }
+
+
+            if (selectType === 'end') {
+
+                // const hindex = Number(e.currentTarget.dataset.hindex);
+                // const sortedList = [...this.data.holeList].sort((a, b) => (a.hindex || 0) - (b.hindex || 0));
+                // const startIdx = sortedList.findIndex(hole => Number(hole.hindex) === hindex);
+                // const newHolePlayList = sortedList.slice(startIdx).concat(sortedList.slice(0, startIdx));
+                // this.setData({
+                //     holePlayList: newHolePlayList
+                // });
+
+            }
+
+
+
+
+
+
+
+
+
         },
 
         onConfirmHoleOrder() {
@@ -189,10 +157,14 @@ Component({
             const selectedHoles = this.data.holePlayList.filter(hole =>
                 this.data.selectedHindexArray.includes(hole.hindex)
             );
-            console.log(' ⭕️⭕️⭕️⭕️⭕️  onConfirmHoleOrder - selectedHoles: ', selectedHoles);
+
+            // 将 selectedHoles 转换为普通对象数组
+            const plainSelectedHoles = selectedHoles.map(hole => toJS(hole));
+
+            console.log(' ⭕️+++  onConfirmHoleOrder - selectedHoles: ', plainSelectedHoles);
 
             // 使用 holeRangeStore 更新洞范围
-            holeRangeStore.setHoleRangeFromSelected(selectedHoles);
+            holeRangeStore.setHoleRangeFromSelected(plainSelectedHoles);
 
             this.triggerEvent('cancel');
         },
