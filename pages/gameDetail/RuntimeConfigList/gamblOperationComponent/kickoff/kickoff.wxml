@@ -11,11 +11,14 @@
           data-index="{{index}}"
           data-hindex="{{item.hindex}}"
         >
-          <text class="hole-item-text">{{item.holename}}</text>
-          <!-- 新增：显示当前倍数配置 -->
-          <view wx:if="{{holeMultiplierMap[item.hindex]}}" class="hole-multiplier-info">
-            <text class="multiplier-text">当前: {{holeMultiplierMap[item.hindex]}}倍</text>
+          <view class="hole-circle">
+            <text class="hole-item-text">{{item.holename}}</text>
           </view>
+          <!-- 显示当前倍数配置，在圆圈外下方 -->
+          <text
+            wx:if="{{holeMultiplierMap[item.hindex]}}"
+            class="multiplier-text"
+          >X{{holeMultiplierMap[item.hindex]}}</text>
         </view>
       </block>
     </view>

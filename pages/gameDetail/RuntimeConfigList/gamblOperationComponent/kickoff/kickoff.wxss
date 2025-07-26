@@ -122,6 +122,18 @@
 }
 
 .hole-item {
+	position: relative;
+	width: 100%;
+	height: 120rpx; /* 固定高度 */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	box-sizing: border-box;
+	margin: 0;
+}
+
+.hole-circle {
 	width: 100%;
 	padding-top: 100%; /* 保证宽高比1:1 */
 	position: relative;
@@ -129,8 +141,6 @@
 	background: #27ae60; /* 绿色 */
 	border: 2rpx solid #eee;
 	box-sizing: border-box;
-	margin: 0;
-	overflow: hidden;
 }
 
 .hole-item-text {
@@ -142,25 +152,21 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 28rpx;
+	font-size: 24rpx;
 	color: #fff; /* 白字 */
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	text-align: center;
 }
 
-/* 新增：洞倍数信息样式 */
-.hole-multiplier-info {
+/* 倍数文本样式 - 绝对定位在圆圈下方 */
+.multiplier-text {
 	position: absolute;
-	bottom: 4rpx;
+	bottom: 8rpx; /* 调整位置，更贴近洞号名称 */
 	left: 50%;
 	transform: translateX(-50%);
-	background: rgba(255, 255, 255, 0.9);
-	border-radius: 8rpx;
-	padding: 2rpx 6rpx;
-}
-
-.multiplier-text {
 	font-size: 20rpx;
-	color: #e74c3c;
+	color: #e74c3c; /* 红色字体 */
 	font-weight: bold;
+	text-align: center;
 }
