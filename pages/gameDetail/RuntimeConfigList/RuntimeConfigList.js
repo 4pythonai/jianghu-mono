@@ -31,7 +31,7 @@ Component({
         extraOptions: [
             {
                 id: 'juanguo',
-                title: '捐锅设置',
+                title: '捐锅设置(以最后一次为准)',
                 icon: '/assets/icons/icons8-kitchen-100.png',
                 handler: 'onJuanguoClick'
             },

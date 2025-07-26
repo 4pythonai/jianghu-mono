@@ -1,6 +1,6 @@
 <view class="juanguo-popup" bindtap="close">
   <view class="juanguo-content" catchtap="noop">
-    <view class="panel-title">捐锅设置</view>
+    <view class="panel-title">捐锅设置(以最后一次为准)</view>
     <!-- 选择捐锅的游戏 -->
     <view class="section">
       <RuntimeConfigSelector
