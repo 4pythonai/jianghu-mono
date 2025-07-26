@@ -12,12 +12,14 @@ Component({
     data: {
         // 当前选中的配置 id 列表
         selectedIdList: [],
-        // 捐锅方式: normal-普通, bigpot-大锅饭
+        // 捐锅方式: normal-普通, all-全捐, bigpot-大锅饭
         donationType: 'normal',
         // 默认每洞捐1分
         donationPoints: 1,
         // 总费用（大锅饭模式）
-        totalFee: ''
+        totalFee: '',
+        // 最大合计捐锅点数
+        maxDonationPoints: ''
     },
     lifetimes: {
         attached() {
@@ -64,6 +66,12 @@ Component({
             this.setData({ totalFee });
         },
 
+        // 最大捐锅点数输入
+        onMaxDonationPointsInput(e) {
+            const maxDonationPoints = e.detail.value;
+            this.setData({ maxDonationPoints });
+        },
+
         // 确定按钮点击
         onConfirm() {
             // 构建捐锅配置数据
@@ -71,7 +79,8 @@ Component({
                 selectedIds: this.data.selectedIdList,
                 donationType: this.data.donationType,
                 donationPoints: this.data.donationType === 'normal' ? Number(this.data.donationPoints) : 0,
-                totalFee: this.data.donationType === 'bigpot' ? Number(this.data.totalFee) : 0
+                totalFee: this.data.donationType === 'bigpot' ? Number(this.data.totalFee) : 0,
+                maxDonationPoints: (this.data.donationType === 'normal' || this.data.donationType === 'all') ? Number(this.data.maxDonationPoints) : 0
             };
             console.log('[juanguo] 捐锅配置:', donationConfig);
             // 触发事件传递给父组件

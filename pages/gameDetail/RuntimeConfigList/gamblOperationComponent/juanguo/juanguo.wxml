@@ -18,17 +18,37 @@
           <radio value="normal" checked="{{donationType === 'normal'}}" />
           <text>赢家每洞捐</text>
           <input
-            class="input-inline"
+            class="input-inline point-input"
             type="number"
             value="{{donationPoints}}"
             bindinput="onDonationPointsInput"
             wx:if="{{donationType === 'normal'}}"
           />
-          <text wx:if="{{donationType === 'normal'}}">分</text>
+          <text wx:if="{{donationType === 'normal'}}">分,捐到</text>
+          <!-- 最大捐锅点数输入框，仅在选择普通模式时显示 -->
+          <input
+            class="input-inline"
+            type="number"
+            value="{{maxDonationPoints}}"
+            bindinput="onMaxDonationPointsInput"
+            wx:if="{{donationType === 'normal'}}"
+            placeholder="最大合计点数"
+          />
+          <text>为止</text>
         </label>
         <label class="radio-item">
           <radio value="all" checked="{{donationType === 'all'}}" />
-          <text>全捐，捐满为止</text>
+          <text>全捐，捐到</text>
+          <!-- 最大捐锅点数输入框，仅在选择全捐模式时显示 -->
+          <input
+            class="input-inline"
+            type="number"
+            value="{{maxDonationPoints}}"
+            bindinput="onMaxDonationPointsInput"
+            wx:if="{{donationType === 'all'}}"
+            placeholder="最大合计点数"
+          />
+          <text>为止</text>
         </label>
         <label class="radio-item">
           <radio value="bigpot" checked="{{donationType === 'bigpot'}}" />
