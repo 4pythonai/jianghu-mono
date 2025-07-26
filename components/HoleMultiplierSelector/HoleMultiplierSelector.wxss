@@ -1,0 +1,128 @@
+.multiplier-popup {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	z-index: 10000;
+	background: rgba(0, 0, 0, 0.4);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.multiplier-content {
+	width: 80vw;
+	max-width: 600rpx;
+	background: #fff;
+	border-radius: 16rpx;
+	padding: 40rpx 32rpx 32rpx 32rpx;
+	box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+	animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.multiplier-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 32rpx;
+	color: #333;
+}
+
+.multiplier-options {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+	gap: 16rpx;
+	margin-bottom: 32rpx;
+}
+
+.multiplier-btn {
+	padding: 24rpx 16rpx;
+	text-align: center;
+	border-radius: 12rpx;
+	font-size: 28rpx;
+	background: #f5f5f5;
+	color: #666;
+	border: 2rpx solid transparent;
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.multiplier-btn.active {
+	background: #4caf50;
+	color: #fff;
+	border-color: #4caf50;
+}
+
+.multiplier-btn.custom-input-container {
+	background: #fff;
+	border: 2rpx solid #e0e0e0;
+	padding: 16rpx 12rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8rpx;
+}
+
+.multiplier-btn.custom-input-container.active {
+	border-color: #4caf50;
+	background: #f0f8f0;
+}
+
+.custom-prefix {
+	font-size: 28rpx;
+	color: #333;
+	font-weight: 500;
+}
+
+.custom-input {
+	flex: 1;
+	text-align: center;
+	font-size: 28rpx;
+	color: #333;
+	border: none;
+	background: transparent;
+	min-width: 60rpx;
+}
+
+.custom-input:focus {
+	outline: none;
+}
+
+.multiplier-footer {
+	display: flex;
+	gap: 16rpx;
+}
+
+.multiplier-btn-cancel,
+.multiplier-btn-confirm {
+	flex: 1;
+	padding: 20rpx 0;
+	border-radius: 12rpx;
+	font-size: 28rpx;
+	border: none;
+}
+
+.multiplier-btn-cancel {
+	background: #f5f5f5;
+	color: #666;
+}
+
+.multiplier-btn-confirm {
+	background: #4caf50;
+	color: #fff;
+}

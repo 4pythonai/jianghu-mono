@@ -1,7 +1,6 @@
 <view class="kickoff-popup" bindtap="close">
   <view class="kickoff-content" catchtap="noop">
     <view class="panel-title">踢一脚</view>
-    <!-- 循环渲染 runtimeConfigs -->
 
     <view class="section">
       <RuntimeConfigSelector
@@ -32,3 +31,12 @@
     </view>
   </view>
 </view>
+
+<!-- 倍数选择弹窗 -->
+<HoleMultiplierSelector
+  visible="{{showMultiplierSelector}}"
+  hindex="{{selectedHole.hindex}}"
+  holename="{{selectedHole.holename}}"
+  bind:confirm="onMultiplierConfirm"
+  bind:cancel="onMultiplierCancel"
+/>
