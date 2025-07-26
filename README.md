@@ -12,6 +12,7 @@
 - `gameid`: 游戏ID
 - `groupId`: 分组ID
 - `gameData`: 游戏数据
+- `red_blue`: 红蓝分组数据（新增）
 
 #### holeRangeStore
 专门管理球洞相关数据：
@@ -25,6 +26,28 @@
 管理分数相关数据：
 - `scores`: 玩家分数矩阵
 - `playerTotalScores`: 玩家总分
+
+### 数据流优化
+
+#### red_blue 数据管理优化
+**问题**：之前 `red_blue` 数据在多个地方重复管理：
+1. API 接口返回 `red_blue` 数据
+2. `gameStore` 存储 `red_blue` 数据
+3. `GameMagement` 组件再次设置 `red_blue` 到自己的 `data` 中
+4. `ScoreTable` 组件通过 `properties` 接收 `red_blue` 数据
+
+**解决方案**：统一到 `gameStore` 管理：
+1. ✅ API 接口返回 `red_blue` 数据
+2. ✅ `gameStore` 存储 `red_blue` 数据
+3. ✅ `ScoreTable` 组件通过 MobX 绑定直接从 `gameStore` 获取 `red_blue` 数据
+4. ✅ 移除 `GameMagement` 组件中的 `red_blue` 数据管理
+5. ✅ 移除 `ScoreTable` 组件的 `red_blue` 属性定义
+
+**优势**：
+- 减少数据重复管理
+- 简化数据流
+- 提高代码可维护性
+- 确保数据一致性
 
 ### 运行时配置数据结构
 
@@ -59,6 +82,7 @@
 2. **简化数据流**: 组件直接从 `holeRangeStore` 获取数据，减少数据传递层级
 3. **提高性能**: 使用 MobX 的响应式更新，避免不必要的重新渲染
 4. **更好的维护性**: 洞相关逻辑集中在 `holeRangeStore` 中，便于维护和扩展
+5. **red_blue 数据优化**: 统一到 `gameStore` 管理，避免重复设置
 
 ### 组件内部处理
 
@@ -66,6 +90,7 @@
 - 向父组件传递数据时自动转换为用户ID数组
 - 确保UI显示完整性的同时满足数据格式要求
 - 洞相关组件统一使用 `holeRangeStore` 管理状态
+- ScoreTable 组件通过 MobX 绑定直接从 gameStore 获取 red_blue 数据
 
 # 高尔夫小程序项目
 

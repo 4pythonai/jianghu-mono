@@ -101,9 +101,9 @@ export const gameStore = observable({
                 this._processGameData(res.game_detail, groupId);
                 this.red_blue = res.red_blue || [];
                 return res; // 关键：返回原始接口数据，包含red_blue
-            } else {
-                throw new Error(res?.msg || '获取比赛详情失败');
             }
+
+            throw new Error(res?.msg || '获取比赛详情失败');
         } catch (err) {
             console.error('❌ [Store] 获取比赛详情失败:', err);
             this.error = err.message || '获取数据失败';

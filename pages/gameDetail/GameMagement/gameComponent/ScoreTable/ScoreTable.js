@@ -15,6 +15,7 @@ Component({
         playerScores: [],
         playerTotals: [],
         displayScores: [], // 新增：用于渲染的分数数据
+        red_blue: [], // 新增：红蓝分组数据
     },
 
     lifetimes: {
@@ -26,6 +27,7 @@ Component({
                     store: gameStore,
                     fields: {
                         players: 'players',
+                        red_blue: 'red_blue',
                     },
                     actions: [],
                 });
@@ -37,6 +39,7 @@ Component({
                     },
                     actions: [],
                 });
+
                 this.scoreStoreBindings = createStoreBindings(this, {
                     store: scoreStore,
                     fields: {
@@ -74,9 +77,8 @@ Component({
     },
 
     observers: {
-        // 新增：监听playerScores、players、holeList，生成displayScores
-        'playerScores,players,holeList': function (scores, players, holeList) {
-            const red_blue = gameStore.red_blue;
+        // 修改：监听playerScores、players、holeList、red_blue，生成displayScores
+        'playerScores,players,holeList,red_blue': function (scores, players, holeList, red_blue) {
             if (!scores || !players || !holeList) return;
 
             // 构建red_blue映射

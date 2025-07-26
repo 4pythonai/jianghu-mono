@@ -2,8 +2,7 @@ import { gameStore } from '../../../stores/gameStore';
 
 Component({
     data: {
-        red_blue: [],
-        isGameOperationPanelVisible: false // 新增，用于控制 GameOperationPanel 显示
+        isGameOperationPanelVisible: false // 用于控制 GameOperationPanel 显示
     },
     properties: {
         gameId: String,
@@ -95,14 +94,8 @@ Component({
             const { gameId, groupId } = this.data;
             console.log('[GameMagement] fetchGameDetail called', { gameId, groupId });
             if (!gameId) return;
-            // 假设gameStore.fetchGameDetail返回Promise或你有回调
-            gameStore.fetchGameDetail(gameId, groupId).then(res => {
-                console.log('接口返回red_blue:', res?.red_blue);
-                if (res?.red_blue) {
-                    this.setData({ red_blue: res.red_blue });
-                    console.log('页面data.red_blue:', this.data.red_blue);
-                }
-            });
+            // 直接调用gameStore，不需要在组件中再次设置red_blue
+            gameStore.fetchGameDetail(gameId, groupId);
         }
     }
 }); 
