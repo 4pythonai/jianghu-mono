@@ -95,10 +95,19 @@ Component({
             // 设置选中的ID列表 - 确保ID是字符串类型并去重
             const selectedIds = [...new Set(configsWithDonation.map(item => String(item.id)))];
             console.log('[juanguo] 设置选中的ID列表:', selectedIds);
+
+            // 先设置其他数据
             this.setData({
-                selectedIdList: selectedIds,
                 forceRefresh: this.data.forceRefresh + 1
             });
+
+            // 延迟设置 selectedIdList，确保组件已完全渲染
+            setTimeout(() => {
+                this.setData({
+                    selectedIdList: selectedIds
+                });
+                console.log('[juanguo] 延迟设置 selectedIdList 完成');
+            }, 100);
 
             // 回显捐锅方式UI
             if (configsWithDonation.length > 0) {

@@ -36,8 +36,25 @@ Component({
                 // 转换为字符串并去重
                 const stringIds = [...new Set(newVal.map(id => String(id)))];
                 console.log('[RuntimeConfigSelector] 转换并去重后的字符串ID:', stringIds);
+
+                // 计算选中状态对象
+                const isSelected = {};
+                this.data.runtimeConfigs.forEach(config => {
+                    isSelected[config.id] = stringIds.includes(String(config.id));
+                });
+
+                // 只有在数据真正不同时才设置，避免无限循环
                 if (JSON.stringify(stringIds) !== JSON.stringify(newVal)) {
-                    this.setData({ selectedIdList: stringIds });
+                    setTimeout(() => {
+                        this.setData({
+                            selectedIdList: stringIds,
+                            isSelected: isSelected
+                        });
+                        console.log('[RuntimeConfigSelector] 延迟设置 selectedIdList 完成');
+                    }, 50);
+                } else {
+                    // 只更新 isSelected
+                    this.setData({ isSelected: isSelected });
                 }
 
                 // 延迟调试
@@ -46,6 +63,12 @@ Component({
                 }, 100);
             } else {
                 console.log('[RuntimeConfigSelector] selectedIdList 为空或未定义');
+                // 清空选中状态
+                const isSelected = {};
+                this.data.runtimeConfigs.forEach(config => {
+                    isSelected[config.id] = false;
+                });
+                this.setData({ isSelected: isSelected });
             }
         }
     },
@@ -62,11 +85,43 @@ Component({
             }
         },
 
-        // 选中项变化时触发
-        onCheckboxChange(e) {
-            console.log('[RuntimeConfigSelector] checkbox变化:', e.detail.value);
-            // 通过自定义事件把选中的id数组传递给父组件/页面
-            this.triggerEvent('checkboxChange', { selectedIdList: e.detail.value });
+        // 点击项目时触发
+        onItemTap(e) {
+            const itemId = String(e.currentTarget.dataset.id);
+            console.log('[RuntimeConfigSelector] 点击项目:', itemId);
+
+            const currentSelectedIdList = this.data.selectedIdList || [];
+            console.log('[RuntimeConfigSelector] 当前选中列表:', currentSelectedIdList);
+
+            let newSelectedIdList;
+
+            if (currentSelectedIdList.includes(itemId)) {
+                // 如果已选中，则取消选中
+                newSelectedIdList = currentSelectedIdList.filter(id => id !== itemId);
+                console.log('[RuntimeConfigSelector] 取消选中:', itemId);
+            } else {
+                // 如果未选中，则选中
+                newSelectedIdList = [...currentSelectedIdList, itemId];
+                console.log('[RuntimeConfigSelector] 选中:', itemId);
+            }
+
+            console.log('[RuntimeConfigSelector] 新的选中列表:', newSelectedIdList);
+
+            // 计算新的选中状态对象
+            const isSelected = {};
+            this.data.runtimeConfigs.forEach(config => {
+                isSelected[config.id] = newSelectedIdList.includes(String(config.id));
+            });
+
+            this.setData({
+                selectedIdList: newSelectedIdList,
+                isSelected: isSelected
+            }, () => {
+                console.log('[RuntimeConfigSelector] setData 完成，当前状态:', this.data.selectedIdList);
+            });
+
+            // 触发父组件事件
+            this.triggerEvent('checkboxChange', { selectedIdList: newSelectedIdList });
         },
 
         // 调试方法：检查checkbox状态

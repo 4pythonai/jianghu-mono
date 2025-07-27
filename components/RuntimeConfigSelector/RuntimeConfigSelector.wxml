@@ -1,22 +1,22 @@
 <view class="runtime-config-selector">
   <view class="section-title">{{title}}</view>
-  <checkbox-group
-    wx:if="{{selectedIdList && selectedIdList.length >= 0}}"
-    value="{{selectedIdList}}"
-    key="{{selectedIdList.join(',')}}"
-    bindchange="onCheckboxChange"
-    data-debug="{{selectedIdList}}"
-  >
+  <view class="checkbox-list">
     <block wx:for="{{runtimeConfigs}}" wx:key="id">
-      <label class="game-item">
+      <view class="game-item" bindtap="onItemTap" data-id="{{item.id}}">
         <view class="game-item-row">
-          <checkbox value="{{'' + item.id}}" />
+          <view
+            class="custom-checkbox {{isSelected[item.id] ? 'checked' : ''}}"
+            data-debug="{{isSelected[item.id]}}"
+          >
+            <text wx:if="{{isSelected[item.id]}}" class="checkmark">✓</text>
+            <text wx:else class="debug-text">□</text>
+          </view>
           <view class="game-item-info">
             <text class="game-title">{{item.abstract}}</text>
             <AvatarGroup players="{{item.attenders}}" maxShow="4" showMode="line" />
           </view>
         </view>
-      </label>
+      </view>
     </block>
-  </checkbox-group>
+  </view>
 </view>
