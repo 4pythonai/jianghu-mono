@@ -186,28 +186,28 @@ class Game extends MY_Controller {
         $game_detail = $this->MDetailGame->getGameDetail($game_id);
         $red_blue  = $this->getFirst4PlayersGambleRedBlug($game_id);
         echo json_encode(
-            ['code' => 200, 'game_detail' => $game_detail, 'red_blue' => $red_blue, 'runtimeMultipliers' => $this->getHoleMultiplier($game_id)],
+            ['code' => 200, 'game_detail' => $game_detail, 'red_blue' => $red_blue],
             JSON_UNESCAPED_UNICODE
         );
     }
 
 
-    private function getHoleMultiplier($gameid) {
+    // private function getHoleMultiplier($gameid) {
 
 
-        $rows = $this->db->get_where('t_gamble_runtime', ['gameid' => $gameid])->result_array();
-        $result = [];
-        foreach ($rows as $row) {
+    //     $rows = $this->db->get_where('t_gamble_runtime', ['gameid' => $gameid])->result_array();
+    //     $result = [];
+    //     foreach ($rows as $row) {
 
-            $tmp = [];
-            $kickConfig = json_decode($row['kickConfig'], true);
-            $tmp['runtime_id'] = $row['id'];
-            $tmp['holeMultipliers'] = $kickConfig;
-            $result[] = $tmp;
-        }
+    //         $tmp = [];
+    //         $kickConfig = json_decode($row['kickConfig'], true);
+    //         $tmp['runtime_id'] = $row['id'];
+    //         $tmp['kickConfig'] = $kickConfig;
+    //         $result[] = $tmp;
+    //     }
 
-        return $result;
-    }
+    //     return $result;
+    // }
 
 
     // t_gamble_runtime

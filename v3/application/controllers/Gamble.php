@@ -24,7 +24,7 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
 
-        $rangeHolePlayList = $json_paras['rangeHolePlayList'];
+        $rangeHolePlayList = $json_paras['holePlayList'];
         $startHoleindex = $rangeHolePlayList[0]['hindex'];
         $endHoleindex = $rangeHolePlayList[count($rangeHolePlayList) - 1]['hindex'];
 
@@ -357,6 +357,104 @@ class Gamble extends MY_Controller {
         $id = $json_paras['configId'];
         $kickConfig = $json_paras['completeMultiplierConfig'];
         $this->db->where('id', $id)->update('t_gamble_runtime', ['kickConfig' => json_encode($kickConfig, JSON_UNESCAPED_UNICODE)]);
+        echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+
+    public function updateDonation() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        // debug($json_paras);
+        // 获取参数
+        $allRuntimeIDs = $json_paras['allRuntimeIDs'] ?? [];
+        $selectedIds = $json_paras['selectedIds'] ?? [];
+        $donationType = $json_paras['donationType'] ?? '';
+
+        // 第一步：清空所有 allRuntimeIDs 对应的 donationCfg 字段
+        if (!empty($allRuntimeIDs)) {
+            $this->db->where_in('id', $allRuntimeIDs);
+
+            $donationCfg = json_encode([
+                'donationType' => 'none',
+            ], JSON_UNESCAPED_UNICODE);
+
+
+            $this->db->update('t_gamble_runtime', ['donationCfg' => $donationCfg]);
+        }
+
+        // 第二步：根据 donationType 构建 donationCfg 配置
+        $donationCfg = [];
+
+        switch ($donationType) {
+            case 'bigpot':
+                $donationCfg = [
+                    'donationType' => 'bigpot',
+                    'totalFee' => $json_paras['totalFee'] ?? 0
+                ];
+                break;
+
+            case 'normal':
+                $donationCfg = [
+                    'donationType' => 'normal',
+                    'donationPoints' => $json_paras['donationPoints'] ?? 0,
+                    'maxDonationPoints' => $json_paras['maxDonationPoints'] ?? 0
+                ];
+                break;
+
+            case 'all':
+                $donationCfg = [
+                    'donationType' => 'all',
+                    'maxDonationPoints' => $json_paras['maxDonationPoints'] ?? 0
+                ];
+                break;
+
+            case "none":
+                $donationCfg = [
+                    'donationType' => 'none',
+                ];
+                break;
+
+            default:
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '无效的 donationType'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+        }
+
+        // 第三步：更新 selectedIds 对应的 donationCfg 字段
+        if (!empty($selectedIds)) {
+            $this->db->where_in('id', $selectedIds);
+            $this->db->update('t_gamble_runtime', [
+                'donationCfg' => json_encode($donationCfg, JSON_UNESCAPED_UNICODE)
+            ]);
+        }
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '捐赠配置更新成功';
+        $ret['data'] = [
+            'clearedCount' => count($allRuntimeIDs),
+            'updatedCount' => count($selectedIds),
+            'donationCfg' => $donationCfg
+        ];
+
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+    public function setGambleVisible() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $allRuntimeIDs = $json_paras['allRuntimeIDs'] ?? [];
+        $ifShow = $json_paras['ifShow'];
+        $this->db->where_in('id', $allRuntimeIDs)->update('t_gamble_runtime', ['ifShow' => $ifShow]);
+        echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+
+    public function updateBigWind() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $allRuntimeIDs = $json_paras['allRuntimeIDs'] ?? [];
+        $bigWind = $json_paras['bigWind'];
+        $this->db->where_in('id', $allRuntimeIDs)->update('t_gamble_runtime', ['bigWind' => $bigWind]);
         echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
     }
 }
