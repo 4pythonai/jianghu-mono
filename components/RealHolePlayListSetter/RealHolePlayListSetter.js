@@ -1,4 +1,5 @@
 // RealHolePlayListSetter
+import { gameStore } from '../../stores/gameStore';
 import { holeRangeStore } from '../../stores/holeRangeStore';
 import { toJS } from 'mobx-miniprogram';
 
@@ -33,7 +34,7 @@ Component({
     lifetimes: {
         attached() {
             // 从 holeRangeStore 获取洞数据
-            const { holeList, holePlayList, rangeHolePlayList } = holeRangeStore;
+            const { holeList, holePlayList } = holeRangeStore.getState();
 
             // 使用 toJS 转换 observable 对象为普通对象
             const plainHoleList = toJS(holeList);
@@ -129,9 +130,11 @@ Component({
 
                 // 实现终止洞的逻辑
                 const newHolePlayList = this.buildHolePlayListToEnd(hindex);
+                console.log('🕳️ 新的holePlayList:', newHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename })));
 
                 // 重新构建显示列表
                 const newDisplayHoleList = this.buildDisplayHoleList(this.data.holeList, newHolePlayList);
+                console.log('🕳️ 新的displayHoleList:', newDisplayHoleList.map(h => ({ hindex: h.hindex, holename: h.holename, inPlaylist: h.inPlaylist })));
 
                 this.setData({
                     holePlayList: newHolePlayList,
@@ -185,6 +188,8 @@ Component({
 
             // 从displayHoleList中获取从开始到终止洞的所有洞（包括灰色的洞）
             const selectedHoles = displayHoleList.slice(0, endIndex + 1);
+
+            console.log('🕳️ 选择的洞（包含灰色洞）:', selectedHoles.map(h => ({ hindex: h.hindex, holename: h.holename, inPlaylist: h.inPlaylist })));
 
             return selectedHoles;
         },

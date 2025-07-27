@@ -6,10 +6,10 @@ import { autorun } from 'mobx-miniprogram';
 Component({
     lifetimes: {
         attached() {
-            const { holeList, startHoleindex, endHoleindex } = holeRangeStore;
+            const { holeList, startHoleindex, endHoleindex } = holeRangeStore.getState();
             this.updateHoleDisplay(holeList, startHoleindex, endHoleindex);
             this.disposer = autorun(() => {
-                const { holeList, startHoleindex, endHoleindex } = holeRangeStore;
+                const { holeList, startHoleindex, endHoleindex } = holeRangeStore.getState();
                 this.updateHoleDisplay(holeList, startHoleindex, endHoleindex);
             });
         },
@@ -19,6 +19,7 @@ Component({
     },
     data: {
         holeList: [],
+        holePlayList: [],
         ifShowModal: false,
         startHoleindex: null,
         endHoleindex: null,
@@ -61,7 +62,7 @@ Component({
             const dataType = e.currentTarget.dataset.type;
 
             // 从holeRangeStore获取当前的起始洞和结束洞索引
-            const { startHoleindex, endHoleindex } = holeRangeStore;
+            const { startHoleindex, endHoleindex } = holeRangeStore.getState();
 
 
             this.setData({
@@ -77,7 +78,7 @@ Component({
             const dataType = e.currentTarget.dataset.type;
 
             // 从holeRangeStore获取当前的起始洞和结束洞索引
-            const { startHoleindex, endHoleindex } = holeRangeStore;
+            const { startHoleindex, endHoleindex } = holeRangeStore.getState();
 
             this.setData({
                 ifShowModal: true,

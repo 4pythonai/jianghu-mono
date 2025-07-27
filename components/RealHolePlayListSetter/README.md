@@ -92,15 +92,14 @@
 ## 清理内容
 
 ### holeRangeStore.js
-- 删除了 `loading` 和 `error` 属性
-- 删除了 `setHolePlayListFromString` 方法
-- 删除了 `resetHoleRange` 方法
-- 删除了 `holeCount` 和 `rangeHoleCount` getter
+- 删除了 `rangeHolePlayList` 属性，改用 getter 方法动态计算
+- 简化了 `setHoleRange` 方法，移除了重复计算逻辑
+- 简化了 `updateHolePlayList` 方法，移除了重复计算逻辑
+- 简化了 `clear` 方法
 
 ### RealHolePlayListSetter.js
-- 删除了 `selectedHindexArray` 和 `selectedMap` 属性
-- 删除了拖拽相关的属性（`dragStartIndex`, `dragCurrentIndex`, `holeRects`）
-- 简化了 `onConfirmHoleOrder` 方法逻辑
+- 删除了对 `rangeHolePlayList` 的引用
+- 简化了组件数据结构
 
 ### HoleRangeSelector.js
-- 删除了未使用的 `onModalConfirm` 方法 
+- 删除了 `rangeHolePlayList` 属性 

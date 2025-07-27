@@ -211,7 +211,7 @@ Component({
             console.log('[AddRule] 游戏数据:', gameStore);
 
             // 从 holeRangeStore 获取洞数据
-            const { holeList } = holeRangeStore;
+            const { holeList } = holeRangeStore.getState();
 
             // 准备传递给运行时配置页面的数据(简化版)
             const runtimeConfigData = {

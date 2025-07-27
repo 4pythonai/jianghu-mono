@@ -212,7 +212,7 @@ Component({
             }
 
             // 从 holeRangeStore 获取洞数据
-            const { holeList, holePlayList } = holeRangeStore;
+            const { holeList, holePlayList } = holeRangeStore.getState();
 
             // 准备传递给运行时配置页面的数据(简化版, 减少URL长度)
             const runtimeConfigData = {

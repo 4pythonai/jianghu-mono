@@ -150,7 +150,7 @@ export const gameStore = observable({
             red_blue: this.red_blue,
             runtimeMultipliers: this.runtimeMultipliers,
             // 从 holeRangeStore 获取洞相关数据
-            ...holeRangeStore
+            ...holeRangeStore.getState()
         };
     },
 
