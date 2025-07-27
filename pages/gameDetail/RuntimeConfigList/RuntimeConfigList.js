@@ -276,6 +276,30 @@ Component({
             });
         },
 
+        onKickoffConfirm(e) {
+            const { configId, configName, hindex, multiplier, completeMultiplierConfig, holeMultiplierMap } = e.detail;
+
+            console.log('🎮 [RuntimeConfigList] 踢一脚配置确认:', {
+                configId,
+                configName,
+                hindex,
+                multiplier,
+                completeMultiplierConfig,
+                holeMultiplierMap
+            });
+
+            // 这里可以处理踢一脚配置的确认逻辑
+            // 例如：保存到服务器、更新本地状态等
+
+            wx.showToast({
+                title: `踢一脚配置已保存`,
+                icon: 'success'
+            });
+
+            // 关闭弹窗
+            this.onKickoffClose();
+        },
+
         onBigWindClick() {
             console.log('🎮 点击大风吹');
             wx.showToast({

@@ -150,6 +150,7 @@
     wx:if="{{isKickoffVisible}}"
     runtimeConfigs="{{[selectedConfigForKick]}}"
     bind:close="onKickoffClose"
+    bind:confirm="onKickoffConfirm"
   />
   <holejump
     wx:if="{{isHolejumpVisible}}"

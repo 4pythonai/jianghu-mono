@@ -78,6 +78,34 @@ export const gameStore = observable({
         this.isSaving = status;
     }),
 
+    // 更新运行时倍数配置
+    updateRuntimeMultipliers: action(function (configId, holeMultipliers) {
+        console.log('[gameStore] 更新运行时倍数配置:', { configId, holeMultipliers });
+        console.log('[gameStore] 更新前的 runtimeMultipliers:', this.runtimeMultipliers);
+
+        // 查找匹配的配置项
+        const existingIndex = this.runtimeMultipliers.findIndex(runtime =>
+            String(runtime.runtime_id) === String(configId)
+        );
+
+        console.log('[gameStore] 查找结果 - existingIndex:', existingIndex);
+
+        if (existingIndex !== -1) {
+            // 更新现有配置
+            this.runtimeMultipliers[existingIndex].holeMultipliers = holeMultipliers;
+            console.log('[gameStore] 更新现有配置:', this.runtimeMultipliers[existingIndex]);
+        } else {
+            // 新增配置
+            this.runtimeMultipliers.push({
+                runtime_id: configId,
+                holeMultipliers: holeMultipliers
+            });
+            console.log('[gameStore] 新增配置:', this.runtimeMultipliers[this.runtimeMultipliers.length - 1]);
+        }
+
+        console.log('[gameStore] 更新后的 runtimeMultipliers:', this.runtimeMultipliers);
+    }),
+
     // 从API获取并初始化游戏数据
     fetchGameDetail: action(async function (gameId, groupId = null) {
         if (this.loading) return; // 防止重复加载
