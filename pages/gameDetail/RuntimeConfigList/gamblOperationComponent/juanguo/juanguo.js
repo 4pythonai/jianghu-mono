@@ -96,7 +96,9 @@ Component({
             // 回显捐锅方式UI
             if (configsWithDonation.length > 0) {
                 // 使用第一个有捐锅配置的项来回显（后台确保所有配置都一样）
-                const firstDonationConfig = configsWithDonation[0].donationCfg;
+                const firstConfig = configsWithDonation[0];
+                const firstDonationConfig = JSON.parse(firstConfig.donationCfg);
+                console.log('[juanguo] 使用第一个配置回显:', firstDonationConfig);
                 this.restoreDonationUI(firstDonationConfig);
             } else {
                 // 所有配置都没有捐锅配置，选中"不捐锅"
