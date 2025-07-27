@@ -5,6 +5,7 @@
 `holeRangeStore` 是一个专门管理高尔夫球洞相关状态的 MobX store，统一管理以下数据：
 - `holeList`: 所有球洞列表（原始数据，不变）
 - `holePlayList`: 实际打球顺序的球洞列表（完整的洞顺序，如 B1-B9）
+- `rangeHolePlayList`: 当前选择范围的球洞列表（选中的洞，如 B1-B4）
 - `startHoleindex`: 起始洞号（选中范围的起始洞）
 - `endHoleindex`: 结束洞号（选中范围的结束洞）
 
@@ -13,6 +14,7 @@
 ```
 holeList: [B1, B2, B3, B4, B5, B6, B7, B8, B9]  // 原始洞数据
 holePlayList: [B1, B2, B3, B4, B5, B6, B7, B8, B9]  // 打球顺序（可拖拽排序）
+rangeHolePlayList: [B1, B2, B3, B4]  // 选中的洞范围
 startHoleindex: 1  // 起始洞索引
 endHoleindex: 4    // 结束洞索引
 ```
@@ -24,14 +26,23 @@ endHoleindex: 4    // 结束洞索引
 // 初始化洞数据
 holeRangeStore.initializeHoles(holeList)
 
+// 重置洞范围到默认状态
+holeRangeStore.resetHoleRange()
+
 // 清空所有洞数据
-holeRangeStore.clear()
+holeRangeStore.clearHoleData()
 ```
 
 ### 2. 洞顺序管理
 ```javascript
+// 根据字符串设置洞顺序 (例如: "3,4,5,6,7,8,9,1,2")
+holeRangeStore.setHolePlayListFromString(holePlayListStr)
+
 // 更新洞顺序列表（用于拖拽排序后）
 holeRangeStore.updateHolePlayList(newHolePlayList)
+
+// 根据选中的洞设置洞范围
+holeRangeStore.setHoleRangeFromSelected(selectedHoles)
 ```
 
 ### 3. 洞范围管理
@@ -45,8 +56,10 @@ holeRangeStore.setHoleRange(startHoleindex, endHoleindex)
 // 获取当前状态
 const state = holeRangeStore.getState()
 
-// 获取范围洞列表（动态计算）
-const rangeHolePlayList = holeRangeStore.rangeHolePlayList
+// 获取洞数量
+const holeCount = holeRangeStore.holeCount
+const holePlayCount = holeRangeStore.holePlayCount
+const rangeHoleCount = holeRangeStore.rangeHoleCount
 ```
 
 ## 测试步骤
@@ -77,7 +90,7 @@ const rangeHolePlayList = holeRangeStore.rangeHolePlayList
 
 ### 1. 洞数据显示为灰色
 **原因**: 可能是 `holePlayList` 没有正确设置
-**解决**: 检查是否正确调用了 `updateHolePlayList` 方法
+**解决**: 检查是否正确调用了 `setHolePlayListFromString` 或 `setHoleRangeFromSelected`
 
 ### 2. 洞范围不正确
 **原因**: `startHoleindex` 和 `endHoleindex` 设置错误
@@ -87,9 +100,13 @@ const rangeHolePlayList = holeRangeStore.rangeHolePlayList
 **原因**: 组件没有正确绑定到 `holeRangeStore`
 **解决**: 确保组件正确导入了 `holeRangeStore` 并创建了绑定
 
-### 4. 获取范围洞列表
-**方法**: 使用 `holeRangeStore.rangeHolePlayList` getter 方法
-**说明**: 该方法会根据当前的 `startHoleindex` 和 `endHoleindex` 动态计算范围洞列表
+### 4. 拖选后洞范围错误
+**原因**: 混淆了 `holePlayList` 和 `rangeHolePlayList` 的概念
+**解决**: 
+- `holePlayList` 应该保持完整的洞顺序
+- `rangeHolePlayList` 应该是选中的洞范围
+- 使用 `updateHolePlayList()` 更新洞顺序
+- 使用 `setHoleRangeFromSelected()` 设置洞范围
 
 ## 性能优化
 
@@ -108,7 +125,6 @@ const rangeHolePlayList = holeRangeStore.rangeHolePlayList
 
 ## 更新日志
 
-- 2024-12-19: 重构洞数据管理，统一使用 `holeRangeStore`
-- 2024-12-19: 删除 `rangeHolePlayList` 属性，改用 getter 方法动态计算
-- 简化了数据流，提高了性能和可维护性
-- 更新了相关文档和测试指南 
+- **v1.0.0**: 初始版本，统一管理洞相关状态
+- **v1.1.0**: 添加了 `setHoleRangeFromSelected` 方法
+- **v1.2.0**: 优化了数据流，简化了组件集成 

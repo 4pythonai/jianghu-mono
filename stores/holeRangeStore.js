@@ -10,6 +10,7 @@ export const holeRangeStore = observable({
     // ---- 洞相关状态 ----
     holeList: [],           // 洞信息列表（原始洞数据）
     holePlayList: [],       // 洞顺序列表（按游戏顺序排列）
+    rangeHolePlayList: [],  // 参与游戏的洞顺序列表（选中的洞范围）
     startHoleindex: null,   // 参与游戏的第一个洞索引
     endHoleindex: null,     // 参与游戏的最后一个洞索引
 
@@ -30,6 +31,7 @@ export const holeRangeStore = observable({
 
         this.holeList = normalizedHoles;
         this.holePlayList = JSON.parse(JSON.stringify(normalizedHoles));
+        this.rangeHolePlayList = JSON.parse(JSON.stringify(normalizedHoles));
 
         // 设置默认的起始和结束洞索引
         if (normalizedHoles.length > 0) {
@@ -61,9 +63,22 @@ export const holeRangeStore = observable({
         this.startHoleindex = Number.parseInt(startHoleindex);
         this.endHoleindex = Number.parseInt(endHoleindex);
 
+        // 确保 startHoleindex <= endHoleindex
+        const minIndex = Math.min(this.startHoleindex, this.endHoleindex);
+        const maxIndex = Math.max(this.startHoleindex, this.endHoleindex);
+
+        // 从 holePlayList 中找到对应范围的洞
+        const rangeHolePlayList = this.holePlayList.filter(hole => {
+            const hindex = hole.hindex;
+            return hindex >= minIndex && hindex <= maxIndex;
+        });
+
+        this.rangeHolePlayList = rangeHolePlayList;
+
         console.log('🕳️ [holeRangeStore] 洞范围设置完成:', {
             startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex
+            endHoleindex: this.endHoleindex,
+            rangeHolePlayList: rangeHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename }))
         });
     }),
 
@@ -80,6 +95,19 @@ export const holeRangeStore = observable({
         }
 
         this.holePlayList = [...newHolePlayList];
+
+        // 重新计算 rangeHolePlayList（基于当前的 startHoleindex 和 endHoleindex）
+        if (this.startHoleindex !== null && this.endHoleindex !== null) {
+            const minIndex = Math.min(this.startHoleindex, this.endHoleindex);
+            const maxIndex = Math.max(this.startHoleindex, this.endHoleindex);
+
+            const rangeHolePlayList = this.holePlayList.filter(hole => {
+                const hindex = hole.hindex;
+                return hindex >= minIndex && hindex <= maxIndex;
+            });
+
+            this.rangeHolePlayList = rangeHolePlayList;
+        }
     }),
 
     /**
@@ -90,6 +118,7 @@ export const holeRangeStore = observable({
 
         this.holeList = [];
         this.holePlayList = [];
+        this.rangeHolePlayList = [];
         this.startHoleindex = null;
         this.endHoleindex = null;
     }),
@@ -101,25 +130,9 @@ export const holeRangeStore = observable({
         return {
             holeList: this.holeList,
             holePlayList: this.holePlayList,
+            rangeHolePlayList: this.rangeHolePlayList,
             startHoleindex: this.startHoleindex,
             endHoleindex: this.endHoleindex
         };
-    },
-
-    /**
-     * 获取范围洞列表（动态计算）
-     */
-    get rangeHolePlayList() {
-        if (this.startHoleindex === null || this.endHoleindex === null) {
-            return [];
-        }
-
-        const minIndex = Math.min(this.startHoleindex, this.endHoleindex);
-        const maxIndex = Math.max(this.startHoleindex, this.endHoleindex);
-
-        return this.holePlayList.filter(hole => {
-            const hindex = hole.hindex;
-            return hindex >= minIndex && hindex <= maxIndex;
-        });
     }
 }); 

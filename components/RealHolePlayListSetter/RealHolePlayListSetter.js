@@ -34,7 +34,7 @@ Component({
     lifetimes: {
         attached() {
             // 从 holeRangeStore 获取洞数据
-            const { holeList, holePlayList } = holeRangeStore.getState();
+            const { holeList, holePlayList, rangeHolePlayList } = holeRangeStore.getState();
 
             // 使用 toJS 转换 observable 对象为普通对象
             const plainHoleList = toJS(holeList);

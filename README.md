@@ -19,6 +19,7 @@
 专门管理球洞相关数据：
 - `holeList`: 所有球洞列表
 - `holePlayList`: 实际打球顺序的球洞列表
+- `rangeHolePlayList`: 当前选择范围的球洞列表
 - `startHoleindex`: 起始洞号
 - `endHoleindex`: 结束洞号
 
