@@ -56,36 +56,20 @@ Component({
             const configsWithDonation = [];
             const configsWithoutDonation = [];
 
-            runtimeConfigs.forEach(config => {
-                // 优先使用解析后的 donationCfg_parsed，如果没有则使用原始的 donationCfg
-                let donationCfg = config.donationCfg_parsed || config.donationCfg;
-                console.log(`[juanguo] 配置 ${config.id} 的 donationCfg:`, donationCfg);
+            for (const config of runtimeConfigs) {
+                const donationCfgStr = config.donationCfg;
+                console.log('[juanguo] 配置', config.id, '的 donationCfg:', donationCfgStr, '类型:', typeof donationCfgStr);
 
-                // 如果 donationCfg 是字符串，尝试解析为对象
-                if (donationCfg && typeof donationCfg === 'string') {
-                    try {
-                        donationCfg = JSON.parse(donationCfg);
-                        console.log(`[juanguo] 解析后的 donationCfg:`, donationCfg);
-                    } catch (e) {
-                        console.error(`[juanguo] 解析 donationCfg 失败:`, e);
-                        donationCfg = null;
-                    }
-                }
+                // 解析 JSON 字符串
+                const donationCfg = JSON.parse(donationCfgStr);
+                console.log('[juanguo] 解析后:', donationCfg);
 
-                if (donationCfg && typeof donationCfg === 'object' && Object.keys(donationCfg).length > 0) {
-                    // 检查是否不是 {"donationType":"none"}
-                    if (donationCfg.donationType && donationCfg.donationType !== 'none') {
-                        configsWithDonation.push({
-                            id: config.id,
-                            donationCfg: donationCfg
-                        });
-                    } else {
-                        configsWithoutDonation.push(config.id);
-                    }
+                if (donationCfg?.donationType && donationCfg.donationType !== 'none') {
+                    configsWithDonation.push(config);
                 } else {
                     configsWithoutDonation.push(config.id);
                 }
-            });
+            }
 
             console.log('[juanguo] 分析结果:', {
                 configsWithDonation: configsWithDonation,

@@ -67,7 +67,10 @@
 	opacity: 0.7;
 }
 
-/* 去掉所有点击高亮 */
-.game-item * {
+/* 去掉点击高亮 */
+.game-item-row,
+.custom-checkbox,
+.game-item-info,
+.game-title {
 	-webkit-tap-highlight-color: transparent;
 }

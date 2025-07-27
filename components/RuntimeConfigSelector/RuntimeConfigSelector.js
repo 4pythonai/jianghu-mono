@@ -39,9 +39,9 @@ Component({
 
                 // 计算选中状态对象
                 const isSelected = {};
-                this.data.runtimeConfigs.forEach(config => {
+                for (const config of this.data.runtimeConfigs) {
                     isSelected[config.id] = stringIds.includes(String(config.id));
-                });
+                }
 
                 // 只有在数据真正不同时才设置，避免无限循环
                 if (JSON.stringify(stringIds) !== JSON.stringify(newVal)) {
@@ -65,9 +65,9 @@ Component({
                 console.log('[RuntimeConfigSelector] selectedIdList 为空或未定义');
                 // 清空选中状态
                 const isSelected = {};
-                this.data.runtimeConfigs.forEach(config => {
+                for (const config of this.data.runtimeConfigs) {
                     isSelected[config.id] = false;
-                });
+                }
                 this.setData({ isSelected: isSelected });
             }
         }
@@ -109,9 +109,9 @@ Component({
 
             // 计算新的选中状态对象
             const isSelected = {};
-            this.data.runtimeConfigs.forEach(config => {
+            for (const config of this.data.runtimeConfigs) {
                 isSelected[config.id] = newSelectedIdList.includes(String(config.id));
-            });
+            }
 
             this.setData({
                 selectedIdList: newSelectedIdList,
@@ -132,11 +132,12 @@ Component({
             console.log('  checkbox-group value:', this.data.selectedIdList);
 
             // 检查每个checkbox的value
-            this.data.runtimeConfigs.forEach((config, index) => {
-                const checkboxValue = '' + config.id;
+            for (let i = 0; i < this.data.runtimeConfigs.length; i++) {
+                const config = this.data.runtimeConfigs[i];
+                const checkboxValue = `${config.id}`;
                 const isSelected = this.data.selectedIdList.includes(checkboxValue);
-                console.log(`  checkbox ${index}: value="${checkboxValue}", selected=${isSelected}`);
-            });
+                console.log(`  checkbox ${i}: value="${checkboxValue}", selected=${isSelected}`);
+            }
         }
     }
 });
