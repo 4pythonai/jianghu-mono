@@ -25,7 +25,8 @@ Component({
         lastRefreshTime: 0, // 记录上次刷新时间, 避免频繁刷新
 
         // 游戏额外选项数据
-
+        ifShow: 'y',     // 游戏是否公开，默认公开
+        bigWind: 'n',    // 大风吹，默认否
 
         // holejump  juanguo   kickoff   starthole
         extraOptions: [
@@ -67,11 +68,14 @@ Component({
     // 观察者 - 移除对 currentTab 的监听，改为由父组件主动调用
     observers: {
         // 可以添加其他需要监听的属性
-        'runtimeConfigs': (newConfigs) => {
+        'runtimeConfigs': function (newConfigs) {
             console.log('🎮 [RuntimeConfigList] runtimeConfigs 变化:', {
                 length: newConfigs?.length || 0,
                 configs: newConfigs
             });
+
+            // 实现回显功能
+            this.updateRadioButtonStates(newConfigs);
         }
     },
 
@@ -389,6 +393,48 @@ Component({
                 this.onStartholeClick();
             } else if (option.id === 'juanguo') {
                 this.onJuanguoClick();
+            }
+        },
+
+        // 更新单选按钮状态 - 实现回显功能
+        updateRadioButtonStates(configs) {
+            if (!configs || configs.length === 0) {
+                console.log('🎮 [RuntimeConfigList] 没有配置数据，使用默认值');
+                return;
+            }
+
+            // 由于后台保证所有配置项的值都一样，取第一个配置项的值
+            const firstConfig = configs[0];
+
+            // 详细调试：打印第一个配置项的所有字段
+            console.log('🎮 [RuntimeConfigList] 第一个配置项的完整数据:', firstConfig);
+            console.log('🎮 [RuntimeConfigList] 第一个配置项的所有字段:', Object.keys(firstConfig));
+
+            console.log('🎮 [RuntimeConfigList] 回显配置数据:', {
+                ifShow: firstConfig.ifShow,
+                bigWind: firstConfig.bigWind,
+                ifShowType: typeof firstConfig.ifShow,
+                bigWindType: typeof firstConfig.bigWind
+            });
+
+            // 更新游戏是否公开状态
+            if (firstConfig.ifShow !== undefined) {
+                this.setData({
+                    ifShow: firstConfig.ifShow
+                });
+                console.log('🎮 [RuntimeConfigList] 游戏是否公开回显:', firstConfig.ifShow);
+            } else {
+                console.log('🎮 [RuntimeConfigList] ifShow 字段不存在或为 undefined');
+            }
+
+            // 更新大风吹状态
+            if (firstConfig.bigWind !== undefined) {
+                this.setData({
+                    bigWind: firstConfig.bigWind
+                });
+                console.log('🎮 [RuntimeConfigList] 大风吹回显:', firstConfig.bigWind);
+            } else {
+                console.log('🎮 [RuntimeConfigList] bigWind 字段不存在或为 undefined');
             }
         }
     },

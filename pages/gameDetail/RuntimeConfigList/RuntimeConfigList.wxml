@@ -82,12 +82,12 @@
       <view class="extra-options-title">游戏设置</view>
       <view class="gambels-extra-opetion">
         <view class="option-text">游戏是否公开</view>
-        <radio-group name="gamePublic" class="radio-group-row" bindchange="onGamePublicChange">
+        <radio-group name="ifShow" class="radio-group-row" bindchange="onGamePublicChange">
           <label class="radio-label">
-            <radio value="y" checked="true" />公开
+            <radio value="y" checked="{{ifShow === 'y'}}" />公开
           </label>
           <label class="radio-label">
-            <radio value="n" />私密
+            <radio value="n" checked="{{ifShow === 'n'}}" />私密
           </label>
         </radio-group>
       </view>
@@ -112,10 +112,10 @@
         <view class="option-text">大风吹</view>
         <radio-group name="bigWind" class="radio-group-row" bindchange="onBigWindChange">
           <label class="radio-label">
-            <radio value="y" />是
+            <radio value="y" checked="{{bigWind === 'y'}}" />是
           </label>
           <label class="radio-label">
-            <radio value="n" checked="true" />否
+            <radio value="n" checked="{{bigWind === 'n'}}" />否
           </label>
         </radio-group>
       </view>
