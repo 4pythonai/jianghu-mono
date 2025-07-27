@@ -85,17 +85,17 @@
 - 提高代码可维护性
 - 确保数据一致性
 
-#### runtimeMultipliers 数据管理优化
+#### kickConfigs 数据管理优化
 **新增功能**：运行时倍数数据管理
-1. ✅ API 接口返回 `runtimeMultipliers` 数据
-2. ✅ `gameStore` 存储 `runtimeMultipliers` 数据
-3. ✅ `kickoff` 组件通过 MobX 绑定直接从 `gameStore` 获取 `runtimeMultipliers` 数据
+1. ✅ API 接口返回 `kickConfig` 数据
+2. ✅ `gameStore` 存储 `kickConfigs` 数据
+3. ✅ `kickoff` 组件通过 MobX 绑定直接从 `gameStore` 获取 `kickConfigs` 数据
 4. ✅ 在洞选择界面显示当前倍数配置
 5. ✅ 支持连锁设置倍数功能
 
 **数据结构**：
 ```javascript
-// runtimeMultipliers 数据结构
+// kickConfigs 数据结构
 [
   {
     runtime_id: "config_id",  // 配置项ID

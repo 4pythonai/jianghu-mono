@@ -22,7 +22,7 @@ Component({
         currentHindex: null,
         currentMultiplier: null,
         // 新增：运行时倍数数据
-        kickConfig: [],
+        kickConfigs: [],
         // 新增：每个洞的倍数信息，用于在 WXML 中显示
         holeMultiplierMap: {}
     },
@@ -35,13 +35,14 @@ Component({
                 fields: {
                     gameData: 'gameData',
                     players: 'players',
-                    kickConfig: 'kickConfig' // 新增：绑定运行时倍数数据
+                    kickConfigs: 'kickConfigs' // 新增：绑定运行时倍数数据
                 },
                 actions: {
                     updateRuntimeMultipliers: 'updateRuntimeMultipliers' // 新增：绑定更新方法
                 }
             });
             console.log('[kickoff] attached🟢🟡🟢🟡🟢🟡 gameStore:', toJS(gameStore));
+            console.log('[kickoff] attached - gameStore.kickConfigs:', toJS(gameStore.kickConfigs));
 
             // 从 runtimeConfigs 的 holePlayListStr 获取 holePlayList
             this.updateHolePlayListFromConfig();
@@ -57,11 +58,13 @@ Component({
             this.updateHolePlayListFromConfig();
         },
 
-        'kickConfig': function (kickConfig) {
-            console.log('[kickoff] kickConfig 数据变化');
-            console.log('[kickoff] kickConfig 数据:', kickConfig);
-            console.log('[kickoff] kickConfig 数据类型:', typeof kickConfig);
-            console.log('[kickoff] kickConfig 数据长度:', kickConfig?.length || 0);
+        'kickConfigs': function (kickConfigs) {
+            console.log('[kickoff] kickConfigs 数据变化');
+            console.log('[kickoff] kickConfigs 数据:', kickConfigs);
+            console.log('[kickoff] kickConfigs 数据类型:', typeof kickConfigs);
+            console.log('[kickoff] kickConfigs 数据长度:', kickConfigs?.length || 0);
+            console.log('[kickoff] kickConfigs 是否为数组:', Array.isArray(kickConfigs));
+            console.log('[kickoff] kickConfigs 详细内容:', JSON.stringify(kickConfigs, null, 2));
 
             // 获取当前配置项信息
             const currentConfig = this.data.runtimeConfigs?.[0] || {};
@@ -69,11 +72,11 @@ Component({
             console.log('[kickoff] 当前配置项ID:', configId);
 
             // 根据 runtime_id 匹配当前配置项
-            if (kickConfig && kickConfig.length > 0) {
+            if (kickConfigs && kickConfigs.length > 0) {
                 console.log('[kickoff] 开始匹配 runtime_id 和 configId...');
 
                 // 查找匹配的 runtime 配置
-                const matchedRuntime = kickConfig.find(runtime => {
+                const matchedRuntime = kickConfigs.find(runtime => {
                     const isMatch = String(runtime.runtime_id) === String(configId);
                     console.log(`[kickoff] 比较: runtime_id=${runtime.runtime_id} vs configId=${configId}, 匹配结果: ${isMatch}`);
                     return isMatch;
@@ -90,7 +93,7 @@ Component({
                     this.setData({ holeMultiplierMap: {} });
                 }
             } else {
-                console.log('[kickoff] kickConfig 为空或未定义');
+                console.log('[kickoff] kickConfigs 为空或未定义');
                 this.setData({ holeMultiplierMap: {} });
             }
         }
@@ -103,7 +106,7 @@ Component({
             const hole = this.data.holePlayList[index];
 
             console.log(`[kickoff] 选择球洞: ${hole.holename} (洞号: ${hindex})`);
-            console.log('[kickoff] onSelectHole - 当前 kickConfig 数据:', this.data.kickConfig);
+            console.log('[kickoff] onSelectHole - 当前 kickConfigs 数据:', this.data.kickConfigs);
 
             // 检查当前洞是否已有倍数配置
             const existingMultiplier = this.getHoleMultiplier(hindex);
@@ -123,12 +126,12 @@ Component({
 
         // 获取指定洞号的倍数配置
         getHoleMultiplier(hindex) {
-            const { kickConfig } = this.data;
+            const { kickConfigs } = this.data;
             console.log(`[kickoff] getHoleMultiplier - 查找洞号 ${hindex} 的倍数配置`);
-            console.log('[kickoff] getHoleMultiplier - 当前 kickConfig:', kickConfig);
+            console.log('[kickoff] getHoleMultiplier - 当前 kickConfigs:', kickConfigs);
 
-            // 遍历 kickConfig 数组，查找匹配的洞号倍数
-            for (const runtimeConfig of kickConfig) {
+            // 遍历 kickConfigs 数组，查找匹配的洞号倍数
+            for (const runtimeConfig of kickConfigs) {
                 if (runtimeConfig.holeMultipliers && Array.isArray(runtimeConfig.holeMultipliers)) {
                     // 在 holeMultipliers 中查找匹配的洞号
                     const multiplierConfig = runtimeConfig.holeMultipliers.find(item => {
@@ -171,7 +174,7 @@ Component({
                 console.log(`[kickoff] 当前洞索引: ${currentHoleIndex}, 洞号: ${hindex}`);
 
                 // 获取现有的倍数配置
-                const matchedRuntime = this.data.kickConfig?.find(runtime => {
+                const matchedRuntime = this.data.kickConfigs?.find(runtime => {
                     const isMatch = String(runtime.runtime_id) === String(configId);
                     return isMatch;
                 });
@@ -212,10 +215,10 @@ Component({
                 this.updateRuntimeMultipliers(configId, holeMultipliers);
 
                 console.log('[kickoff] updateRuntimeMultipliers 调用完成');
-                console.log('[kickoff] 当前 kickConfig 数据:', this.data.kickConfig);
+                console.log('[kickoff] 当前 kickConfigs 数据:', this.data.kickConfigs);
 
-                // 直接更新组件的 kickConfig 数据
-                const currentRuntimeMultipliers = this.data.kickConfig || [];
+                // 直接更新组件的 kickConfigs 数据
+                const currentRuntimeMultipliers = this.data.kickConfigs || [];
                 const existingIndex = currentRuntimeMultipliers.findIndex(runtime =>
                     String(runtime.runtime_id) === String(configId)
                 );
@@ -236,8 +239,8 @@ Component({
                     }];
                 }
 
-                console.log('[kickoff] 更新后的 kickConfig:', updatedRuntimeMultipliers);
-                this.setData({ kickConfig: updatedRuntimeMultipliers });
+                console.log('[kickoff] 更新后的 kickConfigs:', updatedRuntimeMultipliers);
+                this.setData({ kickConfigs: updatedRuntimeMultipliers });
 
                 // 更新倍数映射表显示
                 this.updateHoleMultiplierMapForConfig({
@@ -268,7 +271,7 @@ Component({
 
         // 确定按钮点击
         onConfirm() {
-            const { currentHindex, currentMultiplier, runtimeConfigs, kickConfig } = this.data;
+            const { currentHindex, currentMultiplier, runtimeConfigs, kickConfigs } = this.data;
 
             // 获取当前配置项信息
             const currentConfig = runtimeConfigs?.[0] || {};
@@ -287,7 +290,7 @@ Component({
 
             // 获取完整的倍数配置信息
             let completeMultiplierConfig = null;
-            const matchedRuntime = kickConfig?.find(runtime => {
+            const matchedRuntime = kickConfigs?.find(runtime => {
                 const isMatch = String(runtime.runtime_id) === String(configId);
                 return isMatch;
             });
@@ -336,16 +339,16 @@ Component({
 
         // 更新洞号倍数映射表
         updateHoleMultiplierMap() {
-            const { kickConfig, holePlayList } = this.data;
+            const { kickConfigs, holePlayList } = this.data;
             const holeMultiplierMap = {};
 
 
             // 为每个洞创建倍数映射
             for (const hole of holePlayList) {
-                // 在 kickConfig 中查找该洞号的倍数配置
+                // 在 kickConfigs 中查找该洞号的倍数配置
                 let foundMultiplier = null;
 
-                for (const runtimeConfig of kickConfig) {
+                for (const runtimeConfig of kickConfigs) {
                     if (runtimeConfig.holeMultipliers && Array.isArray(runtimeConfig.holeMultipliers)) {
                         // 在 holeMultipliers 中查找匹配的洞号
                         const multiplierConfig = runtimeConfig.holeMultipliers.find(item => {
