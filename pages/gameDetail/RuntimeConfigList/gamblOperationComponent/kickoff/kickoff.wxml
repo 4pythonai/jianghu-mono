@@ -16,9 +16,9 @@
           </view>
           <!-- 显示当前倍数配置，在圆圈外下方 -->
           <text
-            wx:if="{{holeMultiplierMap[item.hindex]}}"
+            wx:if="{{holeMultipliers[item.hindex]}}"
             class="multiplier-text"
-          >X{{holeMultiplierMap[item.hindex]}}</text>
+          >X{{holeMultipliers[item.hindex]}}</text>
         </view>
       </block>
     </view>
