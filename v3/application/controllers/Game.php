@@ -192,25 +192,6 @@ class Game extends MY_Controller {
     }
 
 
-    // private function getHoleMultiplier($gameid) {
-
-
-    //     $rows = $this->db->get_where('t_gamble_runtime', ['gameid' => $gameid])->result_array();
-    //     $result = [];
-    //     foreach ($rows as $row) {
-
-    //         $tmp = [];
-    //         $kickConfig = json_decode($row['kickConfig'], true);
-    //         $tmp['runtime_id'] = $row['id'];
-    //         $tmp['kickConfig'] = $kickConfig;
-    //         $result[] = $tmp;
-    //     }
-
-    //     return $result;
-    // }
-
-
-    // t_gamble_runtime
 
     public function getFirst4PlayersGambleRedBlug($game_id) {
 
