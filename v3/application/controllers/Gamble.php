@@ -114,16 +114,15 @@ class Gamble extends MY_Controller {
         }
         $json_paras['val8421_config'] = $val8421_config;
 
+
+        $startHoleindex = $json_paras['holePlayList'][0]['hindex'];
+        $endHoleindex = $json_paras['holePlayList'][count($json_paras['holePlayList']) - 1]['hindex'];
+
         $holePlayListString = implode(',', array_column($json_paras['holePlayList'], 'hindex'));
         $json_paras['holePlayList'] = $holePlayListString;
         $json_paras['bootstrap_order'] = $bootstrap_order;
 
-        $ristItemOfHolePlayList = $json_paras['rangeHolePlayList'][0];
-        $lastItemOfHolePlayList = $json_paras['rangeHolePlayList'][count($json_paras['rangeHolePlayList']) - 1];
-
-
-        $json_paras['startHoleindex'] = $ristItemOfHolePlayList['hindex'];
-        $json_paras['endHoleindex'] = $lastItemOfHolePlayList['hindex'];
+        // 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
 
         $json_paras['creator_id'] = $userid;
         unset($json_paras['rangeHolePlayList']);
@@ -140,8 +139,8 @@ class Gamble extends MY_Controller {
             'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'],
             'val8421_config' => $json_paras['val8421_config'],
             'holePlayList' => $json_paras['holePlayList'],
-            'startHoleindex' => $ristItemOfHolePlayList['hindex'],
-            'endHoleindex' => $lastItemOfHolePlayList['hindex'],
+            'startHoleindex' => $startHoleindex,
+            'endHoleindex' => $endHoleindex,
             'creator_id' => $json_paras['creator_id']
         ];
 

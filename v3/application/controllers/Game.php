@@ -196,7 +196,7 @@ class Game extends MY_Controller {
 
         return [
             [
-                'runtime_id' => 1344664,
+                'runtime_id' => 1344669,
                 'holeMultipliers' => [
                     [
                         'hindex' => 6,
