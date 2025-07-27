@@ -21,7 +21,7 @@ export const gameStore = observable({
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
     red_blue: [],        // 红蓝分组数据
-    runtimeMultipliers: [], // 新增：运行时倍数数据
+    kickConfig: [], // 新增：运行时倍数数据
 
     loading: false,      // 加载状态
     error: null,         // 错误信息
@@ -81,10 +81,10 @@ export const gameStore = observable({
     // 更新运行时倍数配置
     updateRuntimeMultipliers: action(function (configId, holeMultipliers) {
         console.log('[gameStore] 更新运行时倍数配置:', { configId, holeMultipliers });
-        console.log('[gameStore] 更新前的 runtimeMultipliers:', this.runtimeMultipliers);
+        console.log('[gameStore] 更新前的 kickConfig:', this.kickConfig);
 
         // 查找匹配的配置项
-        const existingIndex = this.runtimeMultipliers.findIndex(runtime =>
+        const existingIndex = this.kickConfig.findIndex(runtime =>
             String(runtime.runtime_id) === String(configId)
         );
 
@@ -92,18 +92,18 @@ export const gameStore = observable({
 
         if (existingIndex !== -1) {
             // 更新现有配置
-            this.runtimeMultipliers[existingIndex].holeMultipliers = holeMultipliers;
-            console.log('[gameStore] 更新现有配置:', this.runtimeMultipliers[existingIndex]);
+            this.kickConfig[existingIndex].holeMultipliers = holeMultipliers;
+            console.log('[gameStore] 更新现有配置:', this.kickConfig[existingIndex]);
         } else {
             // 新增配置
-            this.runtimeMultipliers.push({
+            this.kickConfig.push({
                 runtime_id: configId,
                 holeMultipliers: holeMultipliers
             });
-            console.log('[gameStore] 新增配置:', this.runtimeMultipliers[this.runtimeMultipliers.length - 1]);
+            console.log('[gameStore] 新增配置:', this.kickConfig[this.kickConfig.length - 1]);
         }
 
-        console.log('[gameStore] 更新后的 runtimeMultipliers:', this.runtimeMultipliers);
+        console.log('[gameStore] 更新后的 kickConfig:', this.kickConfig);
     }),
 
     // 从API获取并初始化游戏数据
@@ -129,7 +129,7 @@ export const gameStore = observable({
                 // ** 调用私有方法处理数据 **
                 this._processGameData(res.game_detail, groupId);
                 this.red_blue = res.red_blue || [];
-                this.runtimeMultipliers = res.runtimeMultipliers || []; // 存储运行时倍数
+                this.kickConfig = res.kickConfig || []; // 存储运行时倍数
                 return res; // 关键：返回原始接口数据，包含red_blue
             }
 
@@ -176,7 +176,7 @@ export const gameStore = observable({
             loading: this.loading,
             error: this.error,
             red_blue: this.red_blue,
-            runtimeMultipliers: this.runtimeMultipliers,
+            kickConfig: this.kickConfig,
             // 从 holeRangeStore 获取洞相关数据
             ...holeRangeStore.getState()
         };
