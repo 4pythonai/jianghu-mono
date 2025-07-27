@@ -116,11 +116,10 @@ const ConfigDataProcessor = {
      */
     processHoleData(decodedData) {
         // 从 holeRangeStore 获取洞数据
-        const { holePlayList, rangeHolePlayList } = holeRangeStore.getState();
+        const { holePlayList } = holeRangeStore.getState();
 
         return {
-            holePlayList,
-            rangeHolePlayList
+            holePlayList
         };
     },
 
@@ -172,13 +171,12 @@ const ConfigDataProcessor = {
      */
     prepareSaveData(runtimeConfig, isEdit, configId = '') {
         // 从 holeRangeStore 获取洞数据
-        const { holeList, holePlayList, rangeHolePlayList, startHoleindex, endHoleindex } = holeRangeStore.getState();
+        const { holeList, holePlayList, startHoleindex, endHoleindex } = holeRangeStore.getState();
 
         const saveData = {
             ...runtimeConfig,
             holeList,
             holePlayList,
-            rangeHolePlayList,
             startHoleindex,
             endHoleindex
         };

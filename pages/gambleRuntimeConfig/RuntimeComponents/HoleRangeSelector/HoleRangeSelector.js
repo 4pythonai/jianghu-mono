@@ -19,8 +19,6 @@ Component({
     },
     data: {
         holeList: [],
-        holePlayList: [],
-        rangeHolePlayList: [],
         ifShowModal: false,
         startHoleindex: null,
         endHoleindex: null,

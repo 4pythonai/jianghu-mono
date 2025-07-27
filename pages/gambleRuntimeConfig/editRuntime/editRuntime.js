@@ -16,8 +16,6 @@ Page({
         gameId: null,
         configId: '',
         players: [],
-        gameData: null,
-        userRule: null,
 
         runtimeConfig: {
             gameid: null,           // 游戏ID
