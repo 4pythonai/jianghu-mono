@@ -84,10 +84,10 @@
         <view class="option-text">游戏是否公开</view>
         <radio-group name="gamePublic" class="radio-group-row" bindchange="onGamePublicChange">
           <label class="radio-label">
-            <radio value="public" checked="true" />公开
+            <radio value="y" checked="true" />公开
           </label>
           <label class="radio-label">
-            <radio value="private" />私密
+            <radio value="n" />私密
           </label>
         </radio-group>
       </view>
@@ -112,10 +112,10 @@
         <view class="option-text">大风吹</view>
         <radio-group name="bigWind" class="radio-group-row" bindchange="onBigWindChange">
           <label class="radio-label">
-            <radio value="yes" />是
+            <radio value="y" />是
           </label>
           <label class="radio-label">
-            <radio value="no" checked="true" />否
+            <radio value="n" checked="true" />否
           </label>
         </radio-group>
       </view>

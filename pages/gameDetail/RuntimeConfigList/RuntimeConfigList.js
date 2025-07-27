@@ -356,15 +356,27 @@ Component({
             // 打印所有gamble id
             const ids = (this.data.runtimeConfigs || []).map(item => item.id);
             console.log('本页面所有的gamble id:', ids);
-            // 这里调用 setGamblesVisible，暂时只打印log
-            // this.setGamblesVisible(value);
+
+            app.api.gamble.setGambleVisible({
+                allRuntimeIDs: ids,
+                ifShow: value
+            });
+
+
         },
+
         onBigWindChange(e) {
             const value = e.detail.value;
             console.log('【大风吹】选择：', value);
             // 打印所有gamble id
             const ids = (this.data.runtimeConfigs || []).map(item => item.id);
             console.log('本页面所有的gamble id:', ids);
+
+
+            app.api.gamble.updateBigWind({
+                allRuntimeIDs: ids,
+                bigWind: value
+            });
         },
 
         // 通用选项点击处理方法

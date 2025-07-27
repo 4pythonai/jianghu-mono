@@ -25,13 +25,16 @@ const gamble = {
     // listRuntimeConfig
     listRuntimeConfig: (data, options) => request('/Gamble/listRuntimeConfig', data, options),
 
-    setGamblesVisible: (data, options) => request('/Gamble/setGambileVisible', data, options),
+    setGambleVisible: (data, options) => request('/Gamble/setGambleVisible', data, options),
 
-    setGamblesBigWind: (data, options) => request('/Gamble/setGamblesBigWind', data, options),
 
     updateKickOffMultiplier: (data, options) => request('/Gamble/updateKickOffMultiplier', data, options),
 
     updateDonation: (data, options) => request('/Gamble/updateDonation', data, options),
+
+    updateBigWind: (data, options) => request('/Gamble/updateBigWind', data, options),
+
+
 }
 
 export default gamble
