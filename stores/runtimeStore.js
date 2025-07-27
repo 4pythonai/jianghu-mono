@@ -46,6 +46,19 @@ export const runtimeStore = observable({
                 }
             }
 
+            // 解析 donationCfg JSON 字符串
+            if (config.donationCfg && typeof config.donationCfg === 'string') {
+                try {
+                    processedConfig.donationCfg_parsed = JSON.parse(config.donationCfg);
+                } catch (e) {
+                    console.error('[runtimeStore] 解析 donationCfg 失败:', e);
+                    processedConfig.donationCfg_parsed = null;
+                }
+            } else if (config.donationCfg && typeof config.donationCfg === 'object') {
+                // 如果已经是对象，直接使用
+                processedConfig.donationCfg_parsed = config.donationCfg;
+            }
+
             return processedConfig;
         } catch (e) {
             return config;

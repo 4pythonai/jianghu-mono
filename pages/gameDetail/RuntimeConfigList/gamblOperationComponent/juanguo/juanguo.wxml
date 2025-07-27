@@ -4,10 +4,12 @@
     <!-- 选择捐锅的游戏 -->
     <view class="section">
       <RuntimeConfigSelector
+        wx:if="{{selectedIdList.length >= 0}}"
         runtimeConfigs="{{runtimeConfigs}}"
         selectedIdList="{{selectedIdList}}"
         title="请选择捐锅的游戏"
         bind:checkboxChange="onCheckboxChange"
+        key="{{selectedIdList.join(',') + '_' + forceRefresh}}"
       />
     </view>
     <!-- 选择捐锅方式 -->
