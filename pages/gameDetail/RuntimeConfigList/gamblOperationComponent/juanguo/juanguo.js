@@ -74,9 +74,13 @@ Component({
 
         // 确定按钮点击
         onConfirm() {
+            // 获取所有配置的 id 列表
+            const allRuntimeIDs = this.properties.runtimeConfigs?.map(config => config.id) || [];
+
             // 构建捐锅配置数据
             const donationConfig = {
                 selectedIds: this.data.selectedIdList,
+                allRuntimeIDs: allRuntimeIDs,
                 donationType: this.data.donationType,
                 donationPoints: this.data.donationType === 'normal' ? Number(this.data.donationPoints) : 0,
                 totalFee: this.data.donationType === 'bigpot' ? Number(this.data.totalFee) : 0,
@@ -84,7 +88,7 @@ Component({
             };
             console.log('[juanguo] 捐锅配置:', donationConfig);
             // 触发事件传递给父组件
-            this.triggerEvent('confirm', { donationConfig });
+            this.triggerEvent('confirmDonation', { donationConfig });
             // 关闭弹窗
             this.close();
         },

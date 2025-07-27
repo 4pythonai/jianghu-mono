@@ -166,5 +166,6 @@
     wx:if="{{isJuanguoVisible}}"
     runtimeConfigs="{{runtimeConfigs}}"
     bind:close="onJuanguoClose"
+    bind:confirmDonation="onJuanguoConfirm"
   />
 </view>

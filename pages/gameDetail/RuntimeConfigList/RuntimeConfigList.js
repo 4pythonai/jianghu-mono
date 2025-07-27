@@ -222,6 +222,34 @@ Component({
             this.setData({ isJuanguoVisible: false });
         },
 
+        async onJuanguoConfirm(e) {
+            const { donationConfig } = e.detail;
+            console.log('RuntimeConfigList.js/捐锅配置确认:', donationConfig);
+
+            // updateDonation
+
+            const res = await app.api.gamble.updateDonation(donationConfig);
+
+            console.log('RuntimeConfigList.js/捐锅配置确认 res:', res);
+
+            if (res.code === 200) {
+                // 刷新运行时配置
+                this.refreshRuntimeConfig();
+                wx.showToast({
+                    title: '捐锅配置已保存',
+                    icon: 'success'
+                });
+            } else {
+                wx.showToast({
+                    title: '捐锅配置保存失败',
+                    icon: 'none'
+                });
+            }
+
+            // 关闭弹窗
+            this.onJuanguoClose();
+        },
+
         onHoleJumpClick() {
             console.log('🎮 点击跳洞设置');
             this.setData({ isHolejumpVisible: true });

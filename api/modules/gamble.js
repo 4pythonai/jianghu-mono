@@ -31,7 +31,7 @@ const gamble = {
 
     updateKickOffMultiplier: (data, options) => request('/Gamble/updateKickOffMultiplier', data, options),
 
-
+    updateDonation: (data, options) => request('/Gamble/updateDonation', data, options),
 }
 
 export default gamble
