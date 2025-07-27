@@ -206,6 +206,31 @@ Component({
                 console.log('[kickoff] updateRuntimeMultipliers 调用完成');
                 console.log('[kickoff] 当前 runtimeMultipliers 数据:', this.data.runtimeMultipliers);
 
+                // 直接更新组件的 runtimeMultipliers 数据
+                const currentRuntimeMultipliers = this.data.runtimeMultipliers || [];
+                const existingIndex = currentRuntimeMultipliers.findIndex(runtime =>
+                    String(runtime.runtime_id) === String(configId)
+                );
+
+                let updatedRuntimeMultipliers;
+                if (existingIndex !== -1) {
+                    // 更新现有配置
+                    updatedRuntimeMultipliers = [...currentRuntimeMultipliers];
+                    updatedRuntimeMultipliers[existingIndex] = {
+                        ...updatedRuntimeMultipliers[existingIndex],
+                        holeMultipliers: holeMultipliers
+                    };
+                } else {
+                    // 新增配置
+                    updatedRuntimeMultipliers = [...currentRuntimeMultipliers, {
+                        runtime_id: configId,
+                        holeMultipliers: holeMultipliers
+                    }];
+                }
+
+                console.log('[kickoff] 更新后的 runtimeMultipliers:', updatedRuntimeMultipliers);
+                this.setData({ runtimeMultipliers: updatedRuntimeMultipliers });
+
                 // 更新倍数映射表显示
                 this.updateHoleMultiplierMapForConfig({
                     runtime_id: configId,
