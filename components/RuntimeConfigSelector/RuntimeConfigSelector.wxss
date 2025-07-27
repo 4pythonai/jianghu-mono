@@ -46,8 +46,8 @@
 }
 
 .custom-checkbox.checked {
-	background-color: #007aff !important;
-	border-color: #007aff !important;
+	background-color: #07c160 !important;
+	border-color: #07c160 !important;
 }
 
 .checkmark {
@@ -60,8 +60,14 @@
 /* 点击效果 */
 .game-item {
 	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
 }
 
 .game-item:active {
 	opacity: 0.7;
+}
+
+/* 去掉所有点击高亮 */
+.game-item * {
+	-webkit-tap-highlight-color: transparent;
 }
