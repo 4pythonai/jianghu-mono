@@ -79,8 +79,8 @@ export const gameStore = observable({
     }),
 
     // 更新运行时倍数配置
-    updateRuntimeMultipliers: action(function (configId, holeMultipliers) {
-        console.log('[gameStore] 更新运行时倍数配置:', { configId, holeMultipliers });
+    updateRuntimeMultipliers: action(function (configId, kickConfig) {
+        console.log('[gameStore] 更新运行时倍数配置:', { configId, kickConfig });
         console.log('[gameStore] 更新前的 kickConfigs:', this.kickConfigs);
 
         // 查找匹配的配置项
@@ -92,13 +92,13 @@ export const gameStore = observable({
 
         if (existingIndex !== -1) {
             // 更新现有配置
-            this.kickConfigs[existingIndex].holeMultipliers = holeMultipliers;
+            this.kickConfigs[existingIndex].kickConfig = kickConfig;
             console.log('[gameStore] 更新现有配置:', this.kickConfigs[existingIndex]);
         } else {
             // 新增配置
             this.kickConfigs.push({
                 runtime_id: configId,
-                holeMultipliers: holeMultipliers
+                kickConfig: kickConfig
             });
             console.log('[gameStore] 新增配置:', this.kickConfigs[this.kickConfigs.length - 1]);
         }
