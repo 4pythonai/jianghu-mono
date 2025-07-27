@@ -279,7 +279,21 @@ Component({
         onKickoffConfirm(e) {
             const { configId, configName, hindex, multiplier, completeMultiplierConfig, holeMultiplierMap } = e.detail;
 
-            console.log('🎮 [RuntimeConfigList] 踢一脚配置确认:', {
+            // updateKickOffMultiplier
+            console.log(' [🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻  踢一脚配置确认:', {
+                configId,
+                configName,
+                hindex,
+                multiplier,
+                completeMultiplierConfig,
+                holeMultiplierMap
+            });
+
+            // 调用 updateKickOffMultiplier
+
+            // app.api.gamble.deleteRuntimeConfig
+
+            app.api.gamble.updateKickOffMultiplier({
                 configId,
                 configName,
                 hindex,
@@ -292,7 +306,7 @@ Component({
             // 例如：保存到服务器、更新本地状态等
 
             wx.showToast({
-                title: `踢一脚配置已保存`,
+                title: "踢一脚配置已保存",
                 icon: 'success'
             });
 

@@ -1,6 +1,9 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../../../../stores/gameStore';
 import { toJS } from 'mobx-miniprogram';
+
+
+
 Component({
     properties: {
         // 传入的 runtimeConfigs 列表（现在只包含一个配置项）
@@ -39,9 +42,9 @@ Component({
                 }
             });
             console.log('[kickoff] attached🟢🟡🟢🟡🟢🟡 gameStore:', toJS(gameStore));
-            this.setData({
-                holePlayList: gameStore.gameData?.holeList || []
-            });
+
+            // 从 runtimeConfigs 的 holePlayListStr 获取 holePlayList
+            this.updateHolePlayListFromConfig();
         },
         detached() {
             this.storeBindings.destroyStoreBindings();
@@ -49,6 +52,11 @@ Component({
     },
 
     observers: {
+        'runtimeConfigs': function (runtimeConfigs) {
+            console.log('[kickoff] runtimeConfigs 数据变化:', runtimeConfigs);
+            this.updateHolePlayListFromConfig();
+        },
+
         'runtimeMultipliers': function (runtimeMultipliers) {
             console.log('[kickoff] runtimeMultipliers 数据变化');
             console.log('[kickoff] runtimeMultipliers 数据:', runtimeMultipliers);
@@ -306,8 +314,8 @@ Component({
                 completeMultiplierConfig
             });
             console.log('=== [kickoff] 配置确认完成 ===');
+            // 调用 RuntimeConfigList.js 中的 onKickoffConfirm 方法。
 
-            // 触发事件传递给父组件
             this.triggerEvent('confirm', {
                 configId,
                 configName,
@@ -331,9 +339,6 @@ Component({
             const { runtimeMultipliers, holePlayList } = this.data;
             const holeMultiplierMap = {};
 
-            console.log('[kickoff] updateHoleMultiplierMap - 开始更新倍数映射表');
-            console.log('[kickoff] updateHoleMultiplierMap - runtimeMultipliers:', runtimeMultipliers);
-            console.log('[kickoff] updateHoleMultiplierMap - holePlayList:', holePlayList);
 
             // 为每个洞创建倍数映射
             for (const hole of holePlayList) {
@@ -397,6 +402,43 @@ Component({
 
             this.setData({ holeMultiplierMap });
             console.log('[kickoff] updateHoleMultiplierMapForConfig - 更新完成:', holeMultiplierMap);
+        },
+
+        // 从 runtimeConfigs 的 holePlayListStr 获取 holePlayList
+        updateHolePlayListFromConfig() {
+            const { runtimeConfigs } = this.data;
+            if (runtimeConfigs && runtimeConfigs.length > 0) {
+                const config = runtimeConfigs[0];
+                if (config.holePlayListStr) {
+                    try {
+                        console.log('[kickoff] 解析 holePlayListStr:', config.holePlayListStr);
+
+                        // holePlayListStr 是逗号分隔的字符串，如 "3,4,5,6,7,8,9,1,2"
+                        const holeIndexes = config.holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
+
+                        // 从 gameStore 获取完整的洞信息
+                        const allHoles = gameStore.gameData?.holeList || [];
+
+                        // 根据索引构建 holePlayList
+                        const holePlayList = holeIndexes.map(hindex => {
+                            const hole = allHoles.find(h => h.hindex === hindex);
+                            return hole || { hindex, holename: `洞${hindex}` };
+                        }).filter(hole => hole);
+
+                        this.setData({ holePlayList });
+                        console.log('[kickoff] 从 runtimeConfigs 获取的 holePlayList:', holePlayList);
+                    } catch (e) {
+                        console.error('[kickoff] 解析 holePlayListStr 失败:', e);
+                        this.setData({ holePlayList: [] });
+                    }
+                } else {
+                    console.warn('[kickoff] runtimeConfigs 中未找到 holePlayListStr');
+                    this.setData({ holePlayList: [] });
+                }
+            } else {
+                console.warn('[kickoff] runtimeConfigs 为空或未定义');
+                this.setData({ holePlayList: [] });
+            }
         }
     }
 });

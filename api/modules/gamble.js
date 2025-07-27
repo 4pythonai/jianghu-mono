@@ -29,6 +29,8 @@ const gamble = {
 
     setGamblesBigWind: (data, options) => request('/Gamble/setGamblesBigWind', data, options),
 
+    updateKickOffMultiplier: (data, options) => request('/Gamble/updateKickOffMultiplier', data, options),
+
 
 }
 
