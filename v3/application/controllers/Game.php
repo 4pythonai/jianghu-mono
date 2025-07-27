@@ -192,25 +192,21 @@ class Game extends MY_Controller {
     }
 
 
-    private function getHoleMultiplier($game_id) {
-
-        return [
-            [
-                'runtime_id' => 1344669,
-                'holeMultipliers' => [
-                    [
-                        'hindex' => 6,
-                        'multiplier' => 2
-                    ],
-                    [
-                        'hindex' => 10,
-                        'multiplier' => 4
-                    ]
-                ]
+    private function getHoleMultiplier($gameid) {
 
 
-            ]
-        ];
+        $rows = $this->db->get_where('t_gamble_runtime', ['gameid' => $gameid])->result_array();
+        $result = [];
+        foreach ($rows as $row) {
+
+            $tmp = [];
+            $kickConfig = json_decode($row['kickConfig'], true);
+            $tmp['runtime_id'] = $row['id'];
+            $tmp['holeMultipliers'] = $kickConfig;
+            $result[] = $tmp;
+        }
+
+        return $result;
     }
 
 

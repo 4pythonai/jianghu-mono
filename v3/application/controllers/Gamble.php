@@ -349,4 +349,14 @@ class Gamble extends MY_Controller {
         $this->db->delete('t_gamble_runtime', ['id' => $id]);
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
+
+    public function updateKickOffMultiplier() {
+
+
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $id = $json_paras['configId'];
+        $kickConfig = $json_paras['completeMultiplierConfig'];
+        $this->db->where('id', $id)->update('t_gamble_runtime', ['kickConfig' => json_encode($kickConfig, JSON_UNESCAPED_UNICODE)]);
+        echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
+    }
 }
