@@ -170,6 +170,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'gambleSysName' => $this->context->gambleSysName,
             'redBlueConfig' => $this->context->redBlueConfig,
             'ranking4TieResolveConfig' => $this->context->ranking4TieResolveConfig,
+            'draw8421_config' => $this->context->draw8421_config,
             // 'holes' => $this->context->holes,
             'startHoleindex' => $this->context->startHoleindex,
             'endHoleindex' => $this->context->endHoleindex,

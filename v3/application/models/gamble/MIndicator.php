@@ -162,13 +162,9 @@ class MIndicator extends CI_Model {
         }
 
 
-        // $currentHoleMultiplier = $this->getCurrentHoleMultiplier($hole, $context->kickConfig);
-        // debug("倍数",  $hole['hindex'] . " ++++ " . $currentHoleMultiplier);
 
-        // $hole['points_before_kick'] = $points;
-        $hole['points'] = $points;
-
-        // debug("hole123", $hole);
+        $hole['points_before_kick'] = $points;
+        $hole['points'] =  $points;
     }
 
 

@@ -61,82 +61,53 @@ class MMeat extends CI_Model {
      */
     private function executeMeatEating($hole, $eating_count, $context) {
         if ($eating_count <= 0 || empty($context->meat_pool)) {
-            $this->addDebug($hole, "吃肉结果: 没有可吃的肉");
             return 0;
         }
 
         // 找出可以吃的肉（按顺序，先产生的先吃）
-        $eaten_meat_indices = $this->consumeMeat($context, $eating_count);
-        $actual_eaten_count = count($eaten_meat_indices);
+        $eaten_meat_blocks = $this->consumeMeat($context, $eating_count);
 
-        if ($actual_eaten_count == 0) {
-            $this->addDebug($hole, "吃肉结果: 实际吃到的肉数量为 0");
+        if (empty($eaten_meat_blocks)) {
             return 0;
         }
 
+        // 打印被吃掉的肉的详细信息
+        echo "=== 被吃掉的肉详情 ===\n";
+        foreach ($eaten_meat_blocks as $meat_detail) {
+            print_r($meat_detail);
+        }
+        echo "总共吃掉了 " . count($eaten_meat_blocks) . " 块肉\n";
+        echo "========================\n";
+
         $points = abs($hole['points']); // 使用指标分数作为基础分数
-        $meat_value_config = $context->meat_value_config_string ?? 'MEAT_AS_1';
+        $meat_value_config = $context->meat_value_config_string;
         $meat_max_value = $context->meat_max_value;
 
-        $meatPoints = $this->calculateMeatMoney($actual_eaten_count, $points, $meat_value_config, $meat_max_value);
-        $this->addDebug($hole, "吃肉结果: 获得金额 {$meatPoints}");
-
-        return $meatPoints;
+        return $this->calculateMeatMoney(count($eaten_meat_blocks), $points, $meat_value_config, $meat_max_value);
     }
 
     /**
-     * 消耗肉并返回被消耗的肉索引
+     * 消耗肉并返回被消耗的肉详情
      * @param GambleContext $context 上下文数据（通过引用传递）
      * @param int $eating_count 要吃几块肉
-     * @return array 被消耗的肉索引数组
+     * @return array 被消耗的肉详情数组
      */
     private function consumeMeat(&$context, $eating_count) {
         $eaten_indices = [];
         foreach ($context->meat_pool as $index => &$meat) {
             if (!$meat['is_eaten'] && count($eaten_indices) < $eating_count) {
-                $eaten_indices[] = $index;
+                // 保存肉的详细信息，同时保留索引信息
+                $meat_detail = $meat;
+                unset($meat_detail['is_eaten']);
+                $meat_detail['original_index'] = $index; // 保留原始索引
+                $eaten_indices[] = $meat_detail;
                 $meat['is_eaten'] = true; // 标记为已吃
             }
         }
         return $eaten_indices;
     }
 
-    /**
-     * 根据配置计算吃肉金额 - 简化后的计算逻辑
-     * @param int $eaten_count 实际吃到的肉数量
-     * @param int $points 本洞基础得分
-     * @param string $meat_value_config 肉价值配置
-     * @param int $meat_max_value 每次吃肉的封顶值
-     * @return int 吃肉金额
-     */
-    private function calculateMeatMoney($eaten_count, $points, $meat_value_config, $meat_max_value) {
-        if ($eaten_count <= 0) {
-            return 0;
-        }
 
-        // 根据配置模式计算肉值
-        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
-            // MEAT_AS_X 模式：每块肉固定价值
-            $meat_value = $this->parseMeatAsX($meat_value_config);
-            return $eaten_count * $meat_value;
-        }
-
-        if ($meat_value_config === 'SINGLE_DOUBLE') {
-            // 分值翻倍模式: 1个肉2倍 ,2个肉3倍, 3个肉4倍
-            $multiplier = $eaten_count;
-            $meat_money = $points * $multiplier;
-            return min($meat_money, $meat_max_value);
-        }
-
-        if ($meat_value_config === 'CONTINUE_DOUBLE') {
-            // 连续翻倍模式: 1个肉乘以2,2个肉乘以4,3个肉乘以8
-            $multiplier = pow(2, $eaten_count);
-            $meat_money = $points * ($multiplier - 1);
-            return min($meat_money, $meat_max_value);
-        }
-
-        return 0;
-    }
 
     /**
      * 解析 MEAT_AS_X 配置字符串
@@ -181,19 +152,65 @@ class MMeat extends CI_Model {
      * @return int 能吃几块肉
      */
     private function determineEatingCount($winner_performance, $context, $available_meat_count, &$hole) {
-        $meat_value_config = $context->meat_value_config_string ?? 'MEAT_AS_1';
+        $meat_value_config = $context->meat_value_config_string;
 
         if ($meat_value_config === 'CONTINUE_DOUBLE') {
             // CONTINUE_DOUBLE模式：直接吃掉所有可用的肉
             $eating_count = $available_meat_count;
             $this->addDebug($hole, "吃肉分析: CONTINUE_DOUBLE模式，直接吃掉所有 {$eating_count} 块可用肉");
-        } else {
-            // 其他模式：根据表现决定能吃几块肉
+        }
+
+        if ($meat_value_config === 'SINGLE_DOUBLE') {
+            // SINGLE_DOUBLE模式：根据表现决定能吃几块肉
             $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eating_range);
-            $this->addDebug($hole, "吃肉分析: 根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉");
+            $this->addDebug($hole, "吃肉分析: SINGLE_DOUBLE模式，根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉");
+        }
+
+        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
+            // MEAT_AS_X模式：根据表现决定能吃几块肉
+            $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eating_range);
+            $this->addDebug($hole, "吃肉分析: MEAT_AS_X模式，根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉");
         }
 
         return $eating_count;
+    }
+
+
+    /**
+     * 根据配置计算吃肉金额 - 简化后的计算逻辑
+     * @param int $eaten_count 实际吃到的肉数量
+     * @param int $points 本洞基础得分
+     * @param string $meat_value_config 肉价值配置
+     * @param int $meat_max_value 每次吃肉的封顶值
+     * @return int 吃肉金额
+     */
+    private function calculateMeatMoney($eaten_count, $points, $meat_value_config, $meat_max_value) {
+        if ($eaten_count <= 0) {
+            return 0;
+        }
+
+        // 根据配置模式计算肉值
+        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
+            // MEAT_AS_X 模式：每块肉固定价值
+            $meat_value = $this->parseMeatAsX($meat_value_config);
+            return $eaten_count * $meat_value;
+        }
+
+        if ($meat_value_config === 'SINGLE_DOUBLE') {
+            // 分值翻倍模式: 1个肉2倍 ,2个肉3倍, 3个肉4倍
+            $multiplier = $eaten_count;
+            $meat_money = $points * $multiplier;
+            return min($meat_money, $meat_max_value);
+        }
+
+        if ($meat_value_config === 'CONTINUE_DOUBLE') {
+            // 连续翻倍模式: 1个肉乘以2,2个肉乘以4,3个肉乘以8
+            $multiplier = pow(2, $eaten_count);
+            $meat_money = $points * ($multiplier - 1);
+            return min($meat_money, $meat_max_value);
+        }
+
+        return 0;
     }
 
     /**
