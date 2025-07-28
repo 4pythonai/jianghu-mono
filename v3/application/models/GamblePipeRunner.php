@@ -139,7 +139,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $this->MIndicator->computeIndicators($index, $hole, $context);
 
             // 判断输赢
-            $this->MIndicator->judgeWinner($hole, $context);
+            $this->MIndicator->setWinFailPoints($hole, $context);
 
             // 进行排名计算( 排名必须在输赢判定后,因为排名可能用到输赢)
             $this->MRanking->rankAttendersWithContext($index, $hole, $context);
