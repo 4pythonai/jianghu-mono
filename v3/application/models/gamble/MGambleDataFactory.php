@@ -86,7 +86,7 @@ class MGambleDataFactory extends CI_Model {
 
 
   // 获取已经完全记分的球洞
-  public function getFinishedHoles($holes, $scores) {
+  public function getUsefulHoles($holes, $scores) {
 
     // debug(' holes +++++++++++++++++++++', $holes);
     // debug('scores+++++++++++++++++++++', $scores);

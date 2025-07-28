@@ -96,7 +96,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
 
-        // 新增：初始化全局上下文对象
         $this->context = GambleContext::fromGamblePipeRunner($this);
     }
 
@@ -114,8 +113,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
     // 得到需要计算的洞
-    public function setFinishedHolesInRange() {
-        $tmp = $this->MGambleDataFactory->getFinishedHoles($this->context->rangedHoles, $this->context->scores);
+    public function setUsefullHoles() {
+        $tmp = $this->MGambleDataFactory->getUsefulHoles($this->context->rangedHoles, $this->context->scores);
         $this->context->usefulHoles = $tmp;
     }
 
@@ -125,8 +124,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     public function processHoles() {
         // 直接使用全局 context
         $context = $this->context;
-
-        // debug("kickConfig123", $context->kickConfig);
 
 
         foreach ($context->usefulHoles as $index => &$hole) {
@@ -168,7 +165,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getter() {
         // 返回 context 里的所有数据
-        return [
+        $tmp = [
             'gameid' => $this->context->gameid,
             'gambleid' => $this->context->gambleid,
             'groupid' => $this->context->groupid,
@@ -191,6 +188,12 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'donationCfg' => $this->context->donationCfg,
             'bigWind' => $this->context->bigWind,
         ];
+
+        debug("+++++++++++++++++++++");
+        debug($tmp);
+        debug("+++++++++++++++++++++");
+
+        return $tmp;
     }
 
 

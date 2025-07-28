@@ -36,7 +36,7 @@ class GamblePipe extends CI_Model {
 
 
             ->pipe(function () {
-                $this->GamblePipeRunner->setFinishedHolesInRange();
+                $this->GamblePipeRunner->setUsefullHoles();
             })
 
 
@@ -48,6 +48,8 @@ class GamblePipe extends CI_Model {
             ->pipe(function () {
                 return $this->GamblePipeRunner->getter();
             });
+
+
 
         $tmp = $pipeline->process($cfg);
         return $tmp;

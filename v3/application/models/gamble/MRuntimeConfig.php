@@ -9,11 +9,11 @@ class MRuntimeConfig extends CI_Model {
     public function getGambleConfig($gambleid) {
         $sql = "select * from t_gamble_runtime where id=$gambleid";
         $RunTimeConfigRow = $this->db->query($sql)->row_array();
+
         $userRuleId = $RunTimeConfigRow['userRuleId'];
         $sql = "select * from t_gamble_rule_user where id=$userRuleId";
         $GambleConfigRow = $this->db->query($sql)->row_array();
 
-        // donationCfg , kickConfig
 
 
         $RunTimeConfigRow['sub8421_config_string'] = $GambleConfigRow['sub8421_config_string'];
