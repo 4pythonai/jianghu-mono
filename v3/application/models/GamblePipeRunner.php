@@ -126,6 +126,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         // 直接使用全局 context
         $context = $this->context;
 
+        // debug("kickConfig123", $context->kickConfig);
+
 
         foreach ($context->usefulHoles as $index => &$hole) {
             $hole['debug'] = [];
@@ -147,11 +149,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 检查是否产生肉（顶洞）
             $this->MMeat->addMeatIfDraw($hole, $context);
 
-            // 设置双方金额（这会设置 winner_detail）
+            // 设置双方点数（这会设置 winner_detail）
             $this->MMoney->setHoleMoneyDetail($hole, $context->dutyConfig);
 
             // 处理吃肉逻辑（在 winner_detail 设置之后）
-
             $this->MMeat->processEating($hole, $context);
         }
     }

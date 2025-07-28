@@ -123,6 +123,9 @@ class MIndicator extends CI_Model {
 
     public function setWinFailPoints(&$hole, $context) {
 
+
+        // debug("kickConfig123", $context->kickConfig);
+
         $indicatorBlue = $hole['indicatorBlue'];
         $indicatorRed = $hole['indicatorRed'];
 
@@ -159,8 +162,36 @@ class MIndicator extends CI_Model {
         }
 
 
+        // $currentHoleMultiplier = $this->getCurrentHoleMultiplier($hole, $context->kickConfig);
+        // debug("倍数",  $hole['hindex'] . " ++++ " . $currentHoleMultiplier);
+
+        // $hole['points_before_kick'] = $points;
         $hole['points'] = $points;
+
+        // debug("hole123", $hole);
     }
+
+
+    // 得到当前洞的倍数
+    private function getCurrentHoleMultiplier($hole, $kickConfig) {
+        // return 3;
+
+        // 如果 kickConfig 为 null，直接返回1
+        if ($kickConfig === null) {
+            return 1;
+        }
+
+        $currentHoleMultiplier = 1; // 默认值为1
+        foreach ($kickConfig as $kickConfig) {
+            if ($kickConfig['hindex'] == $hole['hindex']) {
+                $currentHoleMultiplier = $kickConfig['multiplier'];
+                break;
+            }
+        }
+        return $currentHoleMultiplier;
+    }
+
+
 
     /**
      * 根据顶洞配置判断是否为顶洞

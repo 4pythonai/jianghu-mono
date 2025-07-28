@@ -57,7 +57,6 @@ class MMoney extends CI_Model {
                 ];
             }
 
-            // debug($hole);
 
             if (array_key_exists('failer_detail', $hole)) {
                 // 输家里面只要出现一个负分,就靠考虑下"包负分"的情况
