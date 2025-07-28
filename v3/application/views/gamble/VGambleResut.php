@@ -89,7 +89,7 @@
                             if (isset($hole['winner_detail']) && is_array($hole['winner_detail'])) {
                                 foreach ($hole['winner_detail'] as $winner) {
                                     $userid = $winner['userid'];
-                                    $money = ($winner['scoreMoney'] ?? 0) + ($winner['meatMoney'] ?? 0);
+                                    $money = ($winner['scorePoints'] ?? 0) + ($winner['meatMoney'] ?? 0);
                                     $hole_money[$userid] = $money;
                                     $total_money[$userid] += $money;
                                 }
@@ -99,7 +99,7 @@
                             if (isset($hole['failer_detail']) && is_array($hole['failer_detail'])) {
                                 foreach ($hole['failer_detail'] as $failer) {
                                     $userid = $failer['userid'];
-                                    $money = ($failer['scoreMoney'] ?? 0) + ($failer['meatMoney'] ?? 0);
+                                    $money = ($failer['scorePoints'] ?? 0) + ($failer['meatMoney'] ?? 0);
                                     $hole_money[$userid] = $money;
                                     $total_money[$userid] += $money;
                                 }

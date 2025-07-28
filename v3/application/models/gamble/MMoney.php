@@ -37,23 +37,23 @@ class MMoney extends CI_Model {
         if (count($hole['red']) == 2 && count($hole['blue']) == 2) {
             if ($hole['winner'] == 'blue') {
                 $hole['winner_detail'] = [
-                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]], 'indicator' => $hole['indicators'][$hole['blue'][0]], 'scoreMoney' => $hole['points']],
-                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]], 'indicator' => $hole['indicators'][$hole['blue'][1]], 'scoreMoney' => $hole['points']],
+                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]], 'indicator' => $hole['indicators'][$hole['blue'][0]], 'scorePoints' => $hole['points']],
+                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]], 'indicator' => $hole['indicators'][$hole['blue'][1]], 'scorePoints' => $hole['points']],
                 ];
                 $hole['failer_detail'] = [
-                    ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]], 'indicator' => $hole['indicators'][$hole['red'][0]], 'scoreMoney' => -$hole['points']],
-                    ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]], 'indicator' => $hole['indicators'][$hole['red'][1]], 'scoreMoney' => -$hole['points']],
+                    ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]], 'indicator' => $hole['indicators'][$hole['red'][0]], 'scorePoints' => -$hole['points']],
+                    ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]], 'indicator' => $hole['indicators'][$hole['red'][1]], 'scorePoints' => -$hole['points']],
                 ];
             }
 
             if ($hole['winner'] == 'red') {
                 $hole['winner_detail'] = [
-                    ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]], 'indicator' => $hole['indicators'][$hole['red'][0]], 'scoreMoney' => $hole['points']],
-                    ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]], 'indicator' => $hole['indicators'][$hole['red'][1]], 'scoreMoney' => $hole['points']],
+                    ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]], 'indicator' => $hole['indicators'][$hole['red'][0]], 'scorePoints' => $hole['points']],
+                    ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]], 'indicator' => $hole['indicators'][$hole['red'][1]], 'scorePoints' => $hole['points']],
                 ];
                 $hole['failer_detail'] = [
-                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]], 'indicator' => $hole['indicators'][$hole['blue'][0]], 'scoreMoney' => -$hole['points']],
-                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]], 'indicator' => $hole['indicators'][$hole['blue'][1]], 'scoreMoney' => -$hole['points']],
+                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]], 'indicator' => $hole['indicators'][$hole['blue'][0]], 'scorePoints' => -$hole['points']],
+                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]], 'indicator' => $hole['indicators'][$hole['blue'][1]], 'scorePoints' => -$hole['points']],
                 ];
             }
 
@@ -111,20 +111,20 @@ class MMoney extends CI_Model {
         $indicator1 = $hole['failer_detail'][0]['indicator'];
         $indicator2 = $hole['failer_detail'][1]['indicator'];
         if ($indicator1 > 0 && $indicator2 < 0) {
-            $hole['failer_detail'][0]['scoreMoney'] =  $hole['failer_detail'][0]['scoreMoney'] + abs($hole['failer_detail'][1]['indicator']);
-            $hole['failer_detail'][1]['scoreMoney'] =  $hole['failer_detail'][1]['scoreMoney'] - abs($hole['failer_detail'][1]['indicator']);
+            $hole['failer_detail'][0]['scorePoints'] =  $hole['failer_detail'][0]['scorePoints'] + abs($hole['failer_detail'][1]['indicator']);
+            $hole['failer_detail'][1]['scorePoints'] =  $hole['failer_detail'][1]['scorePoints'] - abs($hole['failer_detail'][1]['indicator']);
         }
 
         if ($indicator1 < 0 && $indicator2 > 0) {
-            $hole['failer_detail'][0]['scoreMoney'] =  $hole['failer_detail'][0]['scoreMoney'] - abs($hole['failer_detail'][0]['indicator']);
-            $hole['failer_detail'][1]['scoreMoney'] =  $hole['failer_detail'][1]['scoreMoney'] + abs($hole['failer_detail'][0]['indicator']);
+            $hole['failer_detail'][0]['scorePoints'] =  $hole['failer_detail'][0]['scorePoints'] - abs($hole['failer_detail'][0]['indicator']);
+            $hole['failer_detail'][1]['scorePoints'] =  $hole['failer_detail'][1]['scorePoints'] + abs($hole['failer_detail'][0]['indicator']);
         }
 
         // 两个人都是负分,各自承担
         if ($indicator1 < 0 && $indicator2 < 0) {
             $totalWinnerIndicator = $hole['winner_detail'][0]['indicator'] + $hole['winner_detail'][1]['indicator'];
-            $hole['failer_detail'][0]['scoreMoney'] =  -1 * $totalWinnerIndicator - 2 * (abs($hole['failer_detail'][0]['indicator']));
-            $hole['failer_detail'][1]['scoreMoney'] =  -1 * $totalWinnerIndicator - 2 * (abs($hole['failer_detail'][1]['indicator']));
+            $hole['failer_detail'][0]['scorePoints'] =  -1 * $totalWinnerIndicator - 2 * (abs($hole['failer_detail'][0]['indicator']));
+            $hole['failer_detail'][1]['scorePoints'] =  -1 * $totalWinnerIndicator - 2 * (abs($hole['failer_detail'][1]['indicator']));
         }
     }
 }
