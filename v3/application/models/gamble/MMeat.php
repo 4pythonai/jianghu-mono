@@ -114,17 +114,22 @@ class MMeat extends CI_Model {
             return 0;
         }
 
+        // 根据配置模式计算肉值
         if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
             // MEAT_AS_X 模式：每块肉固定价值
             $meat_value = $this->parseMeatAsX($meat_value_config);
             return $eaten_count * $meat_value;
-        } elseif ($meat_value_config === 'SINGLE_DOUBLE') {
-            // 分值翻倍模式：1个肉2倍，2个肉3倍，3个肉4倍
+        }
+
+        if ($meat_value_config === 'SINGLE_DOUBLE') {
+            // 分值翻倍模式: 1个肉2倍 ,2个肉3倍, 3个肉4倍
             $multiplier = $eaten_count;
             $meat_money = $points * $multiplier;
             return min($meat_money, $meat_max_value);
-        } elseif ($meat_value_config === 'CONTINUE_DOUBLE') {
-            // 连续翻倍模式：1个肉乘以2,2个肉乘以4,3个肉乘以8
+        }
+
+        if ($meat_value_config === 'CONTINUE_DOUBLE') {
+            // 连续翻倍模式: 1个肉乘以2,2个肉乘以4,3个肉乘以8
             $multiplier = pow(2, $eaten_count);
             $meat_money = $points * ($multiplier - 1);
             return min($meat_money, $meat_max_value);
@@ -136,7 +141,7 @@ class MMeat extends CI_Model {
     /**
      * 解析 MEAT_AS_X 配置字符串
      * @param string $config_string 配置字符串，如 "MEAT_AS_3"
-     * @return int X值，默认为1
+     * @return int X值 默认为1
      */
     private function parseMeatAsX($config_string) {
         if (preg_match('/MEAT_AS_(\d+)/', $config_string, $matches)) {
