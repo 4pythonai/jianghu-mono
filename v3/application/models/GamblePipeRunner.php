@@ -39,7 +39,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $eating_range; // 吃肉范围
     private $stroking_config; // 让杆配置
     private $meat_value_config_string; // 吃肉配置
-    private $meat_max_value; // 吃肉封顶
+    private $meat_max_value; // 吃肉封顶,
+    private $kickConfig; // 踢球配置
+    private $donationCfg; // 捐赠配置
+    private $bigWind; // 大风配置
 
 
 
@@ -86,6 +89,12 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->startHoleindex = $_config_row['startHoleindex'];
         $this->endHoleindex = $_config_row['endHoleindex'];
         $this->redBlueConfig = $_config_row['red_blue_config'];
+
+        $this->kickConfig = $_config_row['kickConfig'];
+        $this->donationCfg = $_config_row['donationCfg'];
+        $this->bigWind = $_config_row['bigWind'];
+
+
 
         // 新增：初始化全局上下文对象
         $this->context = GambleContext::fromGamblePipeRunner($this);
@@ -177,6 +186,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'useful_holes' => $this->context->usefulHoles, // 实际的计算结果,
             'rangedHoles' => $this->context->rangedHoles, // 实际的计算结果,
             'eating_range' => $this->context->eating_range,
+            'kickConfig' => $this->context->kickConfig,
+            'donationCfg' => $this->context->donationCfg,
+            'bigWind' => $this->context->bigWind,
         ];
     }
 
@@ -285,5 +297,17 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getHolePlayList() {
         return $this->holePlayList;
+    }
+
+    public function getKickConfig() {
+        return $this->kickConfig;
+    }
+
+    public function getDonationCfg() {
+        return $this->donationCfg;
+    }
+
+    public function getBigWind() {
+        return $this->bigWind;
     }
 }

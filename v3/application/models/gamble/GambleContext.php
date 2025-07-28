@@ -35,6 +35,9 @@ class GambleContext extends CI_Model {
     public $meat_value_config_string;
     public $meat_max_value;
     public $holePlayList;
+    public $kickConfig;
+    public $donationCfg;
+    public $bigWind;
 
     public function __construct($data = []) {
         parent::__construct();
@@ -75,6 +78,9 @@ class GambleContext extends CI_Model {
         'meat_value_config_string' => 'getMeatValueConfigString',
         'meat_max_value' => 'getMeatMaxValue',
         'holePlayList' => 'getHolePlayList',
+        'kickConfig' => 'getKickConfig',
+        'donationCfg' => 'getDonationCfg',
+        'bigWind' => 'getBigWind',
     ];
 
     /**
