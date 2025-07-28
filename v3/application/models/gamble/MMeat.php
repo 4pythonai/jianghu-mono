@@ -221,27 +221,27 @@ class MMeat extends CI_Model {
         }
 
         // 执行吃肉，获得金额
-        $meatMoney = $this->eatMeat($hole['holename'],  $eating_count, $ponits, $context);
-        $hole['debug'][] = "吃肉结果: 获得金额 {$meatMoney}";
+        $meatPoints = $this->eatMeat($hole['holename'],  $eating_count, $ponits, $context);
+        $hole['debug'][] = "吃肉结果: 获得金额 {$meatPoints}";
 
         // 将吃肉金额添加到每个赢家的详细信息中
-        if ($meatMoney > 0) {
+        if ($meatPoints > 0) {
 
 
             for ($i = 0; $i < count($hole['winner_detail']); $i++) {
-                $hole['winner_detail'][$i]['meatMoney'] = $meatMoney;
+                $hole['winner_detail'][$i]['meatPoints'] = $meatPoints;
             }
             for ($i = 0; $i < count($hole['failer_detail']); $i++) {
-                $hole['failer_detail'][$i]['meatMoney'] = -1 * $meatMoney;
+                $hole['failer_detail'][$i]['meatPoints'] = -1 * $meatPoints;
             }
 
-            $hole['debug'][] = "所有赢家每人获得吃肉金额: {$meatMoney}";
+            $hole['debug'][] = "所有赢家每人获得吃肉金额: {$meatPoints}";
         } else {
-            // 如果没有吃到肉，也要设置 meatMoney 为 0
+            // 如果没有吃到肉，也要设置 meatPoints 为 0
             for ($i = 0; $i < count($hole['winner_detail']); $i++) {
-                $hole['winner_detail'][$i]['meatMoney'] = 0;
+                $hole['winner_detail'][$i]['meatPoints'] = 0;
             }
-            $hole['debug'][] = "没有吃到肉，meatMoney 设为 0";
+            $hole['debug'][] = "没有吃到肉，meatPoints 设为 0";
         }
     }
 
