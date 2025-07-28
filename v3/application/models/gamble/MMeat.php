@@ -43,7 +43,8 @@ class MMeat extends CI_Model {
         // 如果当前洞是顶洞（draw == 'y'），则产生一块肉
         if (isset($hole['draw']) && $hole['draw'] == 'y') {
             $context->meat_pool[] = [
-                'hole_index' => $hole['index'] ?? count($context->meat_pool),
+                'hole_index' => $hole['hindex'],
+                'hole_name' => $hole['holename'],
                 'is_eaten' => false
             ];
 

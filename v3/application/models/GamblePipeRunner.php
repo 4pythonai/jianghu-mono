@@ -173,16 +173,19 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 'holes' => $this->context->holes,
             'startHoleindex' => $this->context->startHoleindex,
             'endHoleindex' => $this->context->endHoleindex,
+            'meat_pool' => $this->context->meat_pool,
             // 'scores' => $this->context->scores,
-            'group_info' => $this->context->group_info,
+            'meat_value_config_string' => $this->context->meat_value_config_string,
+            'meat_max_value' => $this->context->meat_max_value,
             'attenders' => $this->context->attenders,
             'bootStrapOrder' => $this->context->bootStrapOrder,
             'dutyConfig' => $this->context->dutyConfig,
-            'useful_holes' => $this->context->usefulHoles, // 实际的计算结果,
             'eating_range' => $this->context->eating_range,
             'kickConfig' => $this->context->kickConfig,
             'donationCfg' => $this->context->donationCfg,
             'bigWind' => $this->context->bigWind,
+            'group_info' => $this->context->group_info,
+            'useful_holes' => $this->context->usefulHoles, // 实际的计算结果,
         ];
 
         // debug("+++++++++++++++++++++");
