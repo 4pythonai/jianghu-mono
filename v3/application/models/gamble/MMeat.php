@@ -255,13 +255,13 @@ class MMeat extends CI_Model {
      */
     private function calculateEatingCountByPerformance($winner_performance, $eating_range) {
         // 解析表现字符串，获取杆数差值
-        $diff = $this->getDiffFromPerformance($winner_performance);
+        $diff = $this->parsePerformanceToDiff($winner_performance);
 
         // 根据差值确定表现等级
         $performance_level = $this->getPerformanceByDiff($diff);
 
         // 根据表现等级返回吃肉数量
-        return $this->getEatingCountByPerformanceLevel($performance_level, $eating_range);
+        return $this->getEatingCountByPerformance($performance_level, $eating_range);
     }
 
     /**
@@ -269,7 +269,7 @@ class MMeat extends CI_Model {
      * @param string $performance 表现字符串
      * @return int 杆数差值
      */
-    private function getDiffFromPerformance($performance) {
+    private function parsePerformanceToDiff($performance) {
         if (strpos($performance, 'Par+') === 0) {
             return intval(str_replace('Par+', '', $performance));
         } elseif (strpos($performance, 'Par-') === 0) {
@@ -291,7 +291,7 @@ class MMeat extends CI_Model {
      * @param array $eating_range 配置信息
      * @return int 能吃的肉数量
      */
-    private function getEatingCountByPerformanceLevel($performance_level, $eating_range) {
+    private function getEatingCountByPerformance($performance_level, $eating_range) {
         switch ($performance_level) {
             case 'Eagle':
                 return $eating_range['BetterThanBirdie'] ?? 2;
