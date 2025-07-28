@@ -7,6 +7,34 @@ if (!defined('BASEPATH')) {
 class MMeat extends CI_Model {
 
     /**
+     * 处理吃肉逻辑 - 重构后的主函数
+     * @param array $hole 当前洞数据（通过引用传递）
+     * @param GambleContext $context 上下文数据（通过引用传递）
+     */
+    public function processEating(&$hole, &$context) {
+        if (!$this->canEatMeat($hole)) {
+            return;
+        }
+
+        $best_winner = $this->findBestWinner($hole['winner_detail'] ?? []);
+        if (!$best_winner) {
+            $this->addDebug($hole, "吃肉检查: 找不到最佳赢家");
+            return;
+        }
+
+        $winner_performance = $this->calculatePerformance($best_winner['computedScore'], $hole);
+        $this->addDebug($hole, "吃肉分析: 最佳赢家(userid: {$best_winner['userid']})杆数: {$best_winner['computedScore']}, Par: {$hole['par']}, 表现: {$winner_performance}");
+
+        $available_meat_count = $this->getAvailableMeatCount($context);
+        $this->addDebug($hole, "肉池状态: 总共 " . count($context->meat_pool) . " 块肉，可用 {$available_meat_count} 块肉");
+
+        $eating_count = $this->determineEatingCount($winner_performance, $context, $available_meat_count, $hole);
+        $meatPoints = $this->executeMeatEating($hole, $eating_count, $context);
+
+        $this->distributeMeatPoints($hole, $meatPoints);
+    }
+
+    /**
      * 检查当前洞是否产生肉（顶洞）
      * @param array $hole 当前洞数据（通过引用传递）
      * @param GambleContext $context 上下文数据（通过引用传递）
@@ -19,26 +47,156 @@ class MMeat extends CI_Model {
                 'is_eaten' => false
             ];
 
-            $hole['debug'][] = "产生一块肉，当前肉池数量：" . count($context->meat_pool);
+            $this->addDebug($hole, "产生一块肉，当前肉池数量：" . count($context->meat_pool));
         }
+    }
+
+    /**
+     * 执行吃肉并计算获得的金额 - 合并了原有的eatMeat和calculateMeatMoney逻辑
+     * @param array $hole 当前洞数据
+     * @param int $eating_count 能吃几块肉
+     * @param GambleContext $context 上下文数据
+     * @return int 吃肉获得的金额
+     */
+    private function executeMeatEating($hole, $eating_count, $context) {
+        if ($eating_count <= 0 || empty($context->meat_pool)) {
+            $this->addDebug($hole, "吃肉结果: 没有可吃的肉");
+            return 0;
+        }
+
+        // 找出可以吃的肉（按顺序，先产生的先吃）
+        $eaten_meat_indices = $this->consumeMeat($context, $eating_count);
+        $actual_eaten_count = count($eaten_meat_indices);
+
+        if ($actual_eaten_count == 0) {
+            $this->addDebug($hole, "吃肉结果: 实际吃到的肉数量为 0");
+            return 0;
+        }
+
+        $points = abs($hole['points']); // 使用指标分数作为基础分数
+        $meat_value_config = $context->meat_value_config_string ?? 'MEAT_AS_1';
+        $meat_max_value = $context->meat_max_value;
+
+        $meatPoints = $this->calculateMeatMoney($actual_eaten_count, $points, $meat_value_config, $meat_max_value);
+        $this->addDebug($hole, "吃肉结果: 获得金额 {$meatPoints}");
+
+        return $meatPoints;
+    }
+
+    /**
+     * 消耗肉并返回被消耗的肉索引
+     * @param GambleContext $context 上下文数据（通过引用传递）
+     * @param int $eating_count 要吃几块肉
+     * @return array 被消耗的肉索引数组
+     */
+    private function consumeMeat(&$context, $eating_count) {
+        $eaten_indices = [];
+        foreach ($context->meat_pool as $index => &$meat) {
+            if (!$meat['is_eaten'] && count($eaten_indices) < $eating_count) {
+                $eaten_indices[] = $index;
+                $meat['is_eaten'] = true; // 标记为已吃
+            }
+        }
+        return $eaten_indices;
+    }
+
+    /**
+     * 根据配置计算吃肉金额 - 简化后的计算逻辑
+     * @param int $eaten_count 实际吃到的肉数量
+     * @param int $points 本洞基础得分
+     * @param string $meat_value_config 肉价值配置
+     * @param int $meat_max_value 每次吃肉的封顶值
+     * @return int 吃肉金额
+     */
+    private function calculateMeatMoney($eaten_count, $points, $meat_value_config, $meat_max_value) {
+        if ($eaten_count <= 0) {
+            return 0;
+        }
+
+        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
+            // MEAT_AS_X 模式：每块肉固定价值
+            $meat_value = $this->parseMeatAsX($meat_value_config);
+            return $eaten_count * $meat_value;
+        } elseif ($meat_value_config === 'SINGLE_DOUBLE') {
+            // 分值翻倍模式：1个肉2倍，2个肉3倍，3个肉4倍
+            $multiplier = $eaten_count;
+            $meat_money = $points * $multiplier;
+            return min($meat_money, $meat_max_value);
+        } elseif ($meat_value_config === 'CONTINUE_DOUBLE') {
+            // 连续翻倍模式：1个肉乘以2,2个肉乘以4,3个肉乘以8
+            $multiplier = pow(2, $eaten_count);
+            $meat_money = $points * ($multiplier - 1);
+            return min($meat_money, $meat_max_value);
+        }
+
+        return 0;
+    }
+
+    /**
+     * 解析 MEAT_AS_X 配置字符串
+     * @param string $config_string 配置字符串，如 "MEAT_AS_3"
+     * @return int X值，默认为1
+     */
+    private function parseMeatAsX($config_string) {
+        if (preg_match('/MEAT_AS_(\d+)/', $config_string, $matches)) {
+            return intval($matches[1]);
+        }
+        return 1; // 默认值
+    }
+
+    /**
+     * 验证是否可以吃肉
+     * @param array $hole 当前洞数据
+     * @return bool 是否可以吃肉
+     */
+    private function canEatMeat($hole) {
+        // 只有有输赢的洞才能吃肉
+        if (!isset($hole['draw']) || $hole['draw'] == 'y') {
+            $this->addDebug($hole, "吃肉检查: 顶洞或无输赢，不能吃肉");
+            return false;
+        }
+
+        // 获取赢家信息
+        $winner_detail = $hole['winner_detail'] ?? [];
+        if (empty($winner_detail)) {
+            $this->addDebug($hole, "吃肉检查: 没有赢家信息");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 确定能吃几块肉 - 合并了原有的getEatingCount逻辑
+     * @param string $winner_performance 赢家表现
+     * @param GambleContext $context 上下文数据
+     * @param int $available_meat_count 可用肉数量
+     * @param array $hole 当前洞数据（通过引用传递）
+     * @return int 能吃几块肉
+     */
+    private function determineEatingCount($winner_performance, $context, $available_meat_count, &$hole) {
+        $meat_value_config = $context->meat_value_config_string ?? 'MEAT_AS_1';
+
+        if ($meat_value_config === 'CONTINUE_DOUBLE') {
+            // CONTINUE_DOUBLE模式：直接吃掉所有可用的肉
+            $eating_count = $available_meat_count;
+            $this->addDebug($hole, "吃肉分析: CONTINUE_DOUBLE模式，直接吃掉所有 {$eating_count} 块可用肉");
+        } else {
+            // 其他模式：根据表现决定能吃几块肉
+            $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eating_range);
+            $this->addDebug($hole, "吃肉分析: 根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉");
+        }
+
+        return $eating_count;
     }
 
     /**
      * 根据赢家表现计算能吃几块肉
      * @param string $winner_performance 赢家表现 (如 'Birdie', 'Par', 'Par+1' 等)
-     * @param array $configs 配置信息
+     * @param array $eating_range 配置信息
      * @return int 能吃的肉数量
-     * 
-     * 配置示例:
-     * 'BetterThanBirdie' => 2,     // Eagle等（比小鸟球更好的成绩）
-     * 'Birdie' => 2,               // 小鸟球
-     * 'Par' => 1,                  // 标准杆
-     * 'WorseThanPar' => 0,         // Bogey及以上（比Par更差的成绩）
      */
-    public function getEatingCount($winner_performance, $eating_range) {
-
-
-
+    private function calculateEatingCountByPerformance($winner_performance, $eating_range) {
         // 根据表现决定能吃几块肉
         if (strpos($winner_performance, 'Par+') === 0) {
             $par_plus = intval(str_replace('Par+', '', $winner_performance));
@@ -62,186 +220,54 @@ class MMeat extends CI_Model {
     }
 
     /**
-     * 执行吃肉并计算获得的金额
-     * @param int $eating_count 能吃的肉数量
-     * @param int $base_score 本洞基础得分
-     * @param array $configs 配置信息
-     * @param GambleContext $context 上下文数据（通过引用传递）
-     * @return int 吃肉获得的金额
+     * 获取可用肉数量
+     * @param GambleContext $context 上下文数据
+     * @return int 可用肉数量
      */
-    public function eatMeat($holename, $eating_count, $points, &$context) {
-        if ($eating_count <= 0) {
-            return 0;
-        }
-
-        if (empty($context->meat_pool)) {
-            return 0;
-        }
-
-
-        // 找出可以吃的肉（按顺序，先产生的先吃）
-        $available_meat = [];
-        foreach ($context->meat_pool as $index => &$meat) {
-            if (!$meat['is_eaten'] && count($available_meat) < $eating_count) {
-                $available_meat[] = $index;
-                $meat['is_eaten'] = true; // 标记为已吃
-                // debug("eatMeat: 吃掉第 {$index} 块肉");
-            }
-        }
-
-        $actual_eaten_count = count($available_meat);
-        // debug("eatMeat: 实际吃到 {$actual_eaten_count} 块肉");
-
-        if ($actual_eaten_count == 0) {
-            // debug("eatMeat: 实际吃到的肉数量为 0，返回 0");
-            return 0;
-        }
-
-        // 根据配置计算吃肉金额
-        $meat_value_config = $context->meat_value_config_string ?? 'MEAT_AS_1';
-        $meat_max_value = $context->meat_max_value;
-
-        // debug("eatMeat: 肉价值配置: {$meat_value_config}, 封顶: {$meat_max_value}");
-
-        $result = $this->calculateMeatMoney($holename, $actual_eaten_count, $points, $meat_value_config, $meat_max_value);
-        // debug("eatMeat: 计算结果: {$result}");
-
-        return $result;
-    }
-
-    /**
-     * 根据配置计算吃肉金额
-     * @param int $eaten_count 实际吃到的肉数量
-     * @param int $base_score 本洞基础得分
-     * @param string $meat_value_config 肉价值配置
-     * @param int $meat_max_value 每次吃肉的封顶值
-     * @return int 吃肉金额
-     */
-    private function calculateMeatMoney($holename, $eaten_count, $points, $meat_value_config, $meat_max_value) {
-        if ($eaten_count <= 0) {
-            debug("calculateMeatMoney: 吃肉数量 <= 0，返回 0");
-            return 0;
-        }
-
-        // debug("calculateMeatMoney:  {$holename} 吃了 {$eaten_count} 块肉，配置: {$meat_value_config}");
-
-        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
-            // MEAT_AS_X 模式：每块肉固定价值
-            $meat_value = $this->parseMeatAsX($meat_value_config);
-            $total_meat_money = $eaten_count * $meat_value;
-            // MEAT_AS_ 模式,不考虑封顶.
-            $final_money = $total_meat_money;
-            return $final_money;
-        } elseif ($meat_value_config === 'SINGLE_DOUBLE') {
-            // 分值翻倍模式：本洞赢 8 分, 吃 1 个洞2倍(16 分) ,2 个洞 X3(24 分),3 个洞 X4 倍(32 分)
-            $multiplier = $eaten_count; // 1个肉2倍，2个肉3倍，3个肉4倍
-            $meat_money = $points * $multiplier;
-            $final_money = min($meat_money,  $meat_max_value);
-            // debug("calculateMeatMoney:模式[SINGLE_DOUBLE] , 封顶为: {$meat_max_value} , 倍数 {$multiplier}，肉为 {$meat_money}，封顶后 {$final_money}");
-            return $final_money;
-        } elseif ($meat_value_config === 'CONTINUE_DOUBLE') {
-            // 连续翻倍模式：1个肉乘以2,2个肉乘以4,3个肉乘以8
-            $multiplier = pow(2, $eaten_count); // 2^eaten_count
-            $meat_money = $points * ($multiplier - 1); // 减去原本的base_score，只返回额外部分
-            $final_money = min($meat_money,  $meat_max_value);
-            return $final_money;
-        }
-
-        return 0;
-    }
-
-    /**
-     * 解析 MEAT_AS_X 配置字符串
-     * @param string $config_string 配置字符串，如 "MEAT_AS_3"
-     * @return int X值，默认为1
-     */
-    private function parseMeatAsX($config_string) {
-        if (preg_match('/MEAT_AS_(\d+)/', $config_string, $matches)) {
-            return intval($matches[1]);
-        }
-        return 1; // 默认值
-    }
-
-    /**
-     * 处理整个吃肉流程
-     * @param array $hole 当前洞数据（通过引用传递）
-     * @param array $configs 配置信息
-     * @param GambleContext $context 上下文数据（通过引用传递）
-     * @return void
-     */
-    public function processEating(&$hole,  &$context) {
-
-        $eating_range = $context->eating_range;
-        // 只有有输赢的洞才能吃肉
-        if (!isset($hole['draw']) || $hole['draw'] == 'y') {
-            $hole['debug'][] = "吃肉检查: 顶洞或无输赢，不能吃肉";
-            return;
-        }
-
-        // 获取赢家信息
-        $winner_detail = $hole['winner_detail'] ?? [];
-        if (empty($winner_detail)) {
-            $hole['debug'][] = "吃肉检查: 没有赢家信息";
-            return;
-        }
-
-        // winner_detail 是一个数组，找出表现最好的赢家（computedScore最小）
-        $best_winner = $this->findBestWinner($winner_detail);
-        if (!$best_winner) {
-            $hole['debug'][] = "吃肉检查: 找不到最佳赢家";
-            return;
-        }
-
-        // 根据最好赢家的杆数计算表现
-        $winner_performance = $this->calculatePerformance($best_winner['computedScore'], $hole);
-        $ponits = abs($hole['points']); // 使用指标分数作为基础分数
-
-        $hole['debug'][] = "吃肉分析: 最佳赢家(userid: {$best_winner['userid']})杆数: {$best_winner['computedScore']}, Par: {$hole['par']}, 表现: {$winner_performance}";
-
-        // 检查肉池状态
-        $meat_pool_count = count($context->meat_pool);
-        $available_meat_count = 0;
+    private function getAvailableMeatCount($context) {
+        $count = 0;
         foreach ($context->meat_pool as $meat) {
             if (!$meat['is_eaten']) {
-                $available_meat_count++;
+                $count++;
             }
         }
-        $hole['debug'][] = "肉池状态: 总共 {$meat_pool_count} 块肉，可用 {$available_meat_count} 块肉";
+        return $count;
+    }
 
-        // 根据配置决定能吃几块肉
-        $meat_value_config = $context->meat_value_config_string ?? 'MEAT_AS_1';
-        if ($meat_value_config === 'CONTINUE_DOUBLE') {
-            // CONTINUE_DOUBLE模式：直接吃掉所有可用的肉
-            $eating_count = $available_meat_count;
-            $hole['debug'][] = "吃肉分析: CONTINUE_DOUBLE模式，直接吃掉所有 {$eating_count} 块可用肉";
-        } else {
-            // 其他模式：根据表现决定能吃几块肉
-            $eating_count = $this->getEatingCount($winner_performance, $eating_range);
-            $hole['debug'][] = "吃肉分析: 根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉";
+    /**
+     * 分配吃肉金额
+     * @param array $hole 当前洞数据（通过引用传递）
+     * @param int $meatPoints 吃肉获得的金额
+     */
+    private function distributeMeatPoints(&$hole, $meatPoints) {
+        // 确保数组存在
+        if (!isset($hole['winner_detail'])) {
+            $hole['winner_detail'] = [];
+        }
+        if (!isset($hole['failer_detail'])) {
+            $hole['failer_detail'] = [];
         }
 
-        // 执行吃肉，获得金额
-        $meatPoints = $this->eatMeat($hole['holename'],  $eating_count, $ponits, $context);
-        $hole['debug'][] = "吃肉结果: 获得金额 {$meatPoints}";
-
-        // 将吃肉金额添加到每个赢家的详细信息中
         if ($meatPoints > 0) {
-
-
-            for ($i = 0; $i < count($hole['winner_detail']); $i++) {
-                $hole['winner_detail'][$i]['meatPoints'] = $meatPoints;
-            }
-            for ($i = 0; $i < count($hole['failer_detail']); $i++) {
-                $hole['failer_detail'][$i]['meatPoints'] = -1 * $meatPoints;
-            }
-
-            $hole['debug'][] = "所有赢家每人获得吃肉金额: {$meatPoints}";
+            $this->setMeatPointsForPlayers($hole['winner_detail'], $meatPoints);
+            $this->setMeatPointsForPlayers($hole['failer_detail'], -$meatPoints);
+            $this->addDebug($hole, "所有赢家每人获得吃肉金额: {$meatPoints}");
         } else {
             // 如果没有吃到肉，也要设置 meatPoints 为 0
-            for ($i = 0; $i < count($hole['winner_detail']); $i++) {
-                $hole['winner_detail'][$i]['meatPoints'] = 0;
-            }
-            $hole['debug'][] = "没有吃到肉，meatPoints 设为 0";
+            $this->setMeatPointsForPlayers($hole['winner_detail'], 0);
+            $this->addDebug($hole, "没有吃到肉，meatPoints 设为 0");
+        }
+    }
+
+    /**
+     * 为球员设置meatPoints
+     * @param array $players 球员数组（通过引用传递）
+     * @param int $meatPoints meatPoints值
+     */
+    private function setMeatPointsForPlayers(&$players, $meatPoints) {
+        for ($i = 0; $i < count($players); $i++) {
+            $players[$i]['meatPoints'] = $meatPoints;
+            $players[$i]['pointsWithMeat'] = $players[$i]['scorePoints'] + $meatPoints;
         }
     }
 
@@ -291,5 +317,17 @@ class MMeat extends CI_Model {
         } else {
             return 'Par+' . $diff; // 更多杆
         }
+    }
+
+    /**
+     * 添加调试信息 - 统一调试信息处理
+     * @param array $hole 洞数据（通过引用传递）
+     * @param string $message 调试信息
+     */
+    private function addDebug(&$hole, $message) {
+        if (!isset($hole['debug'])) {
+            $hole['debug'] = [];
+        }
+        $hole['debug'][] = $message;
     }
 }
