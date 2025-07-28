@@ -34,6 +34,76 @@ class MMeat extends CI_Model {
         $this->distributeMeatPoints($hole, $meatPoints);
     }
 
+
+    /**
+     * @param array $hole 当前洞数据
+     * @param int $eating_count 能吃几块肉
+     * @param GambleContext $context 上下文数据
+     * @return int 吃肉获得的金额
+     */
+    private function executeMeatEating(&$hole, $eating_count, $context) {
+        if ($eating_count <= 0 || empty($context->meat_pool)) {
+            return 0;
+        }
+
+        // 找出可以吃的肉（按顺序，先产生的先吃）
+        $eaten_meat_blocks = $this->consumeMeat($context, $eating_count);
+
+        if (empty($eaten_meat_blocks)) {
+            return 0;
+        }
+
+        debug("当前洞❤️🧡💛💚💙💜" . $hole['holename']);
+
+        echo "总共吃掉了" . count($eaten_meat_blocks) . " 块肉\n";
+        echo "========================\n";
+
+        // 打印被吃掉的肉的详细信息
+        echo "=== 被吃掉的肉详情 ===\n";
+        foreach ($eaten_meat_blocks as $meat_detail) {
+            debug($meat_detail);
+        }
+
+
+        $points = abs($hole['points']); // 使用指标分数作为基础分数
+        $meat_value_config = $context->meat_value_config_string;
+        $meat_max_value = $context->meat_max_value;
+
+        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
+            return $this->calculateMeatMoney_MEAT_AS($context, $hole, $eaten_meat_blocks, $meat_value_config);
+        }
+
+        if ($meat_value_config === 'SINGLE_DOUBLE') {
+            return $this->calculateMeatMoney_SINGLE_DOUBLE($context, $hole, $eaten_meat_blocks, $points, $meat_max_value);
+        }
+
+        if ($meat_value_config === 'CONTINUE_DOUBLE') {
+            return $this->calculateMeatMoney_CONTINUE_DOUBLE($context, $hole, $eaten_meat_blocks, $points, $meat_max_value);
+        }
+    }
+
+
+
+    private function calculateMeatMoney_MEAT_AS($context, &$currentHole, $eaten_meat_blocks, $meat_as_x) {
+        $eaten_count = count($eaten_meat_blocks);
+        if ($eaten_count === 0) {
+            return 0;
+        }
+        // MEAT_AS_X 模式：每块肉固定价值,  MEAT_AS_ 没有封顶
+
+        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole);
+
+
+        if ($multiplier > 1) {
+            $this->addDebug($currentHole, "🧲吃肉:踢一脚导致 使用 multiplier: {$multiplier}");
+        }
+
+        $meat_value = $this->parseMeatAsX($meat_as_x);
+        return $eaten_count * $meat_value * $multiplier;
+    }
+
+
+
     /**
      * 检查当前洞是否产生肉（顶洞）
      * @param array $hole 当前洞数据（通过引用传递）
@@ -52,38 +122,47 @@ class MMeat extends CI_Model {
         }
     }
 
-    /**
-     * 执行吃肉并计算获得的金额 - 合并了原有的eatMeat和calculateMeatMoney逻辑
-     * @param array $hole 当前洞数据
-     * @param int $eating_count 能吃几块肉
-     * @param GambleContext $context 上下文数据
-     * @return int 吃肉获得的金额
-     */
-    private function executeMeatEating($hole, $eating_count, $context) {
-        if ($eating_count <= 0 || empty($context->meat_pool)) {
+
+    private function calculateMeatMoney_SINGLE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $points, $meat_max_value) {
+
+        $eaten_count = count($eaten_meat_blocks);
+        if ($eaten_count === 0) {
+            return 0;
+        }
+        // 分值翻倍模式: 1个肉2倍 (points+points) ,2个肉3倍(2points+points), 3个肉4倍(3points+points),
+        // 当前不加 points,后面会加上
+        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole);
+        if ($multiplier > 1) {
+            $this->addDebug($currentHole, "🧲吃肉:踢一脚导致 使用 multiplier: {$multiplier}");
+        }
+
+        $factor  = $eaten_count;
+        $meat_money = $points * $factor * $multiplier;
+        return min($meat_money, $meat_max_value);
+    }
+
+
+
+    private function calculateMeatMoney_CONTINUE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $points, $meat_max_value) {
+
+        // eaten_meat_blocks
+        $eaten_count = count($eaten_meat_blocks);
+
+        if ($eaten_count === 0) {
             return 0;
         }
 
-        // 找出可以吃的肉（按顺序，先产生的先吃）
-        $eaten_meat_blocks = $this->consumeMeat($context, $eating_count);
 
-        if (empty($eaten_meat_blocks)) {
-            return 0;
+        // 连续翻倍模式: 1个肉乘以2,2个肉乘以4,3个肉乘以8
+
+        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole);
+        if ($multiplier > 1) {
+            $this->addDebug($currentHole, "🧲吃肉:踢一脚导致 使用 multiplier: {$multiplier}");
         }
 
-        // 打印被吃掉的肉的详细信息
-        echo "=== 被吃掉的肉详情 ===\n";
-        foreach ($eaten_meat_blocks as $meat_detail) {
-            print_r($meat_detail);
-        }
-        echo "总共吃掉了 " . count($eaten_meat_blocks) . " 块肉\n";
-        echo "========================\n";
-
-        $points = abs($hole['points']); // 使用指标分数作为基础分数
-        $meat_value_config = $context->meat_value_config_string;
-        $meat_max_value = $context->meat_max_value;
-
-        return $this->calculateMeatMoney(count($eaten_meat_blocks), $points, $meat_value_config, $meat_max_value);
+        $factor = pow(2, $eaten_count);
+        $meat_money = $multiplier * $points * ($factor - 1);
+        return min($meat_money, $meat_max_value);
     }
 
     /**
@@ -176,42 +255,7 @@ class MMeat extends CI_Model {
     }
 
 
-    /**
-     * 根据配置计算吃肉金额 - 简化后的计算逻辑
-     * @param int $eaten_count 实际吃到的肉数量
-     * @param int $points 本洞基础得分
-     * @param string $meat_value_config 肉价值配置
-     * @param int $meat_max_value 每次吃肉的封顶值
-     * @return int 吃肉金额
-     */
-    private function calculateMeatMoney($eaten_count, $points, $meat_value_config, $meat_max_value) {
-        if ($eaten_count <= 0) {
-            return 0;
-        }
 
-        // 根据配置模式计算肉值
-        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
-            // MEAT_AS_X 模式：每块肉固定价值
-            $meat_value = $this->parseMeatAsX($meat_value_config);
-            return $eaten_count * $meat_value;
-        }
-
-        if ($meat_value_config === 'SINGLE_DOUBLE') {
-            // 分值翻倍模式: 1个肉2倍 ,2个肉3倍, 3个肉4倍
-            $multiplier = $eaten_count;
-            $meat_money = $points * $multiplier;
-            return min($meat_money, $meat_max_value);
-        }
-
-        if ($meat_value_config === 'CONTINUE_DOUBLE') {
-            // 连续翻倍模式: 1个肉乘以2,2个肉乘以4,3个肉乘以8
-            $multiplier = pow(2, $eaten_count);
-            $meat_money = $points * ($multiplier - 1);
-            return min($meat_money, $meat_max_value);
-        }
-
-        return 0;
-    }
 
     /**
      * 根据杆数和洞的Par值计算表现
@@ -343,7 +387,7 @@ class MMeat extends CI_Model {
         } else {
             // 如果没有吃到肉，也要设置 meatPoints 为 0
             $this->setMeatPointsForPlayers($hole['winner_detail'], 0);
-            $this->addDebug($hole, "没有吃到肉，meatPoints 设为 0");
+            $this->addDebug($hole, "没有吃到肉 ,meatPoints 设为 0");
         }
     }
 
@@ -392,5 +436,18 @@ class MMeat extends CI_Model {
             $hole['debug'] = [];
         }
         $hole['debug'][] = $message;
+    }
+
+
+    private function findCurrentHoleMultiplier($context, $currentHole) {
+
+        $kickConfig = $context->kickConfig;
+        foreach ($kickConfig as $config) {
+            if ($config['hindex'] == $currentHole['hindex']) {
+                return $config['multiplier'];
+            }
+        }
+        debug("❌❌ 当前洞没有找到 multiplier, 使用默认值 1");
+        return 1;
     }
 }
