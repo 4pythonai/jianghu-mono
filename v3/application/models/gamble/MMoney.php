@@ -16,23 +16,23 @@ class MMoney extends CI_Model {
      * 
      */
 
-    public function setHoleMoneyDetail(&$hole, $dutyConfig) {
+    public function setHolePointsDetail(&$hole, $dutyConfig) {
 
         $attendersNum = count($hole['red']) + count($hole['blue']);
         if ($attendersNum == 2) {
-            $this->set2PlayerHoleMoneyDetail($hole);
+            $this->set2PlayerHolePointsDetail($hole);
         }
         if ($attendersNum == 3) {
-            $this->set3PlayerHoleMoneyDetail($hole);
+            $this->set3PlayerHolePointsDetail($hole);
         }
         if ($attendersNum == 4) {
-            $this->set4PlayerHoleMoneyDetail($hole, $dutyConfig);
+            $this->set4PlayerHolePointsDetail($hole, $dutyConfig);
         }
     }
 
 
     // 4人比赛输赢金额分配
-    public function set4PlayerHoleMoneyDetail(&$hole, $dutyConfig) {
+    public function set4PlayerHolePointsDetail(&$hole, $dutyConfig) {
         // 2:2 
         if (count($hole['red']) == 2 && count($hole['blue']) == 2) {
             if ($hole['winner'] == 'blue') {

@@ -26,7 +26,6 @@ class GambleContext extends CI_Model {
     public $dutyConfig;
     public $ranking4TieResolveConfig;
     public $draw8421_config;
-    public $meat_pool = []; // 肉池管理
     public $val8421_config;
     public $sub8421_config_string;
     public $max8421_sub_value;
@@ -38,6 +37,11 @@ class GambleContext extends CI_Model {
     public $kickConfig;
     public $donationCfg;
     public $bigWind;
+
+
+    public $meat_pool = []; // 肉池管理
+    public $donation_pool = []; // 捐赠池管理
+
 
     public function __construct($data = []) {
         parent::__construct();

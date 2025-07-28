@@ -9,7 +9,6 @@ use League\Pipeline\StageInterface;
 class GamblePipeRunner   extends CI_Model implements StageInterface {
     public  $payload = [];
 
-    // 常量定义 (根据业务逻辑，所有参与用户都在出发顺序中，无需默认值)
 
     public $context; //全局上下文对象
 
@@ -20,7 +19,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $gambleid;
     private $groupid;
     private $userid;
-    private $group_info;       // group信息,所有人
+    private $group_info;
 
 
     private $holes;
@@ -145,7 +144,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $this->MMeat->addMeatIfDraw($hole, $context);
 
             // 设置双方点数（这会设置 winner_detail）
-            $this->MMoney->setHoleMoneyDetail($hole, $context->dutyConfig);
+            $this->MMoney->setHolePointsDetail($hole, $context->dutyConfig);
 
             // 处理吃肉逻辑（在 winner_detail 设置之后）
             $this->MMeat->processEating($hole, $context);
