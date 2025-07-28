@@ -191,32 +191,97 @@ class MMeat extends CI_Model {
     }
 
     /**
+     * 根据杆数和洞的Par值计算表现
+     * @param int $computed_score 实际杆数
+     * @param array $hole 洞信息
+     * @return string 表现描述
+     */
+    private function calculatePerformance($computed_score, $hole) {
+        $par = $hole['par'];
+        $diff = $computed_score - $par;
+
+        return $this->getPerformanceByDiff($diff);
+    }
+
+    /**
+     * 根据杆数差值获取表现描述
+     * @param int $diff 杆数与Par的差值
+     * @return string 表现描述
+     */
+    private function getPerformanceByDiff($diff) {
+        if ($diff <= -2) {
+            return 'Eagle'; // 老鹰球或更好
+        } elseif ($diff == -1) {
+            return 'Birdie'; // 小鸟球
+        } elseif ($diff == 0) {
+            return 'Par'; // 标准杆
+        } elseif ($diff == 1) {
+            return 'Par+1'; // 柏忌
+        } elseif ($diff == 2) {
+            return 'Par+2'; // 双柏忌
+        } else {
+            return 'Par+' . $diff; // 更多杆
+        }
+    }
+
+    /**
      * 根据赢家表现计算能吃几块肉
      * @param string $winner_performance 赢家表现 (如 'Birdie', 'Par', 'Par+1' 等)
      * @param array $eating_range 配置信息
      * @return int 能吃的肉数量
      */
     private function calculateEatingCountByPerformance($winner_performance, $eating_range) {
-        // 根据表现决定能吃几块肉
-        if (strpos($winner_performance, 'Par+') === 0) {
-            $par_plus = intval(str_replace('Par+', '', $winner_performance));
-            if ($par_plus >= 2) {
-                // Double Bogey及以上，比Birdie差很多
-                return $eating_range['WorseThanPar'] ?? 0;
-            } else {
-                // Bogey (Par+1)，算作Par水平
-                return $eating_range['Par'] ?? 1;
-            }
-        } elseif ($winner_performance === 'Par') {
-            return $eating_range['Par'] ?? 1;
-        } elseif ($winner_performance === 'Birdie') {
-            return $eating_range['Birdie'] ?? 2;
-        } elseif (strpos($winner_performance, 'Eagle') !== false || strpos($winner_performance, 'Par-') === 0) {
-            // Eagle、Albatross等，比小鸟球更好的成绩
-            return $eating_range['BetterThanBirdie'] ?? 2;
+        // 解析表现字符串，获取杆数差值
+        $diff = $this->getDiffFromPerformance($winner_performance);
+
+        // 根据差值确定表现等级
+        $performance_level = $this->getPerformanceByDiff($diff);
+
+        // 根据表现等级返回吃肉数量
+        return $this->getEatingCountByPerformanceLevel($performance_level, $eating_range);
+    }
+
+    /**
+     * 从表现字符串解析杆数差值
+     * @param string $performance 表现字符串
+     * @return int 杆数差值
+     */
+    private function getDiffFromPerformance($performance) {
+        if (strpos($performance, 'Par+') === 0) {
+            return intval(str_replace('Par+', '', $performance));
+        } elseif (strpos($performance, 'Par-') === 0) {
+            return -intval(str_replace('Par-', '', $performance));
+        } elseif ($performance === 'Par') {
+            return 0;
+        } elseif ($performance === 'Birdie') {
+            return -1;
+        } elseif (strpos($performance, 'Eagle') !== false) {
+            return -2; // Eagle或更好
         }
 
-        return 0; // 默认不能吃肉
+        return 0; // 默认值
+    }
+
+    /**
+     * 根据表现等级获取吃肉数量
+     * @param string $performance_level 表现等级
+     * @param array $eating_range 配置信息
+     * @return int 能吃的肉数量
+     */
+    private function getEatingCountByPerformanceLevel($performance_level, $eating_range) {
+        switch ($performance_level) {
+            case 'Eagle':
+                return $eating_range['BetterThanBirdie'] ?? 2;
+            case 'Birdie':
+                return $eating_range['Birdie'] ?? 2;
+            case 'Par':
+                return $eating_range['Par'] ?? 1;
+            case 'Par+1':
+                return $eating_range['Par'] ?? 1; // Bogey算作Par水平
+            default:
+                // Par+2及以上算作比Par更差的成绩
+                return $eating_range['WorseThanPar'] ?? 0;
+        }
     }
 
     /**
@@ -292,31 +357,6 @@ class MMeat extends CI_Model {
         }
 
         return $best_winner;
-    }
-
-    /**
-     * 根据杆数和洞的Par值计算表现
-     * @param int $computed_score 实际杆数
-     * @param array $hole 洞信息
-     * @return string 表现描述
-     */
-    private function calculatePerformance($computed_score, $hole) {
-        $par = $hole['par'] ?? 4; // 默认Par 4
-        $diff = $computed_score - $par;
-
-        if ($diff <= -2) {
-            return 'Eagle'; // 老鹰球或更好
-        } elseif ($diff == -1) {
-            return 'Birdie'; // 小鸟球
-        } elseif ($diff == 0) {
-            return 'Par'; // 标准杆
-        } elseif ($diff == 1) {
-            return 'Par+1'; // 柏忌
-        } elseif ($diff == 2) {
-            return 'Par+2'; // 双柏忌
-        } else {
-            return 'Par+' . $diff; // 更多杆
-        }
     }
 
     /**
