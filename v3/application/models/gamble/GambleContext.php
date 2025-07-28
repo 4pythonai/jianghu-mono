@@ -68,7 +68,6 @@ class GambleContext extends CI_Model {
         'redBlueConfig' => 'getRedBlueConfig',
         'dutyConfig' => 'getDutyConfig',
         'ranking4TieResolveConfig' => 'getRanking4TieResolveConfig',
-        'rangedHoles' => 'getRangedHoles',
         'draw8421_config' => 'getDraw8421Config',
         'val8421_config' => 'getVal8421Config',
         'sub8421_config_string' => 'getSub8421ConfigString',
