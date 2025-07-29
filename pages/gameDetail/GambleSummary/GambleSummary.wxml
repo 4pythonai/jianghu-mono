@@ -2,7 +2,7 @@
   <!-- 导航栏 -->
   <view class="nav-bar">
     <view class="nav-left">
-      <text class="nav-title">游戏汇总</text>
+      <text class="nav-title">游戏详情</text>
     </view>
     <view class="nav-right">
       <view class="icon-btn" bindtap="onIconClick">
@@ -12,21 +12,33 @@
   </view>
 
   <view class="gamble-container">
-    <view class="summary-title">单个赌博[gameID:{{gameId}}][groupID:{{groupId}}]</view>
+    <view class="summary-title">赌博汇总[gameID:{{gameId}}][groupID:{{groupId}}]</view>
 
     <!-- 使用GambleResultTable组件 -->
     <view class="gamble-results">
-      <!-- 赌博结果表格 -->
-      <gamble-result-table
-        wx:if="{{groupInfo && groupInfo.length > 0}}"
-        groupInfo="{{groupInfo}}"
-        holesData="{{holesData}}"
-        usefulHoles="{{usefulHoles}}"
-        redBlueData="{{redBlueData}}"
-      ></gamble-result-table>
+      <!-- 循环渲染每个赌博结果 -->
+      <view
+        class="gamble-result-item"
+        wx:for="{{gambleResults}}"
+        wx:key="index"
+        wx:for-item="gambleResult"
+      >
+        <!-- 赌博结果标题 -->
+        <view class="gamble-result-title" wx:if="{{gambleResults.length > 1}}">赌博配置 {{index + 1}}</view>
+
+        <!-- 赌博结果表格 -->
+        <gamble-result-table
+          groupInfo="{{gambleResult.group_info || gambleResult.groupInfo || []}}"
+          holesData="{{gambleResult.holes || gambleResult.holesData || []}}"
+          usefulHoles="{{gambleResult.useful_holes || gambleResult.usefulHoles || gambleResult.holes || gambleResult.holesData || []}}"
+        ></gamble-result-table>
+      </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" wx:if="{{(!groupInfo || groupInfo.length === 0) && !loading}}">
+      <view
+        class="empty-state"
+        wx:if="{{(!gambleResults || gambleResults.length === 0) && !loading}}"
+      >
         <text>暂无赌博结果数据</text>
       </view>
 

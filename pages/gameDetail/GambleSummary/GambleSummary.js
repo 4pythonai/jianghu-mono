@@ -86,12 +86,6 @@ Component({
 
                 console.log('[GambleSummary] API调用成功，返回数据:', result);
 
-                // 保存原始数据到组件状态
-                this.setData({
-                    gambleResults: result.gambleResults || result,
-                    loading: false
-                });
-
                 // 处理数据，提取关键信息并传递给组件
                 this.processGambleSummaryData(result);
 
@@ -132,37 +126,25 @@ Component({
             console.log('[GambleSummary] 开始处理数据...', data);
 
             // 处理嵌套的数据结构
-            let actualData = data;
+            let gambleResultsArray = [];
 
-            // 如果数据在 gambleResults 数组中，取第一个元素
-            if (data.gambleResults && Array.isArray(data.gambleResults) && data.gambleResults.length > 0) {
-                actualData = data.gambleResults[0];
+            // 如果数据在 gambleResults 数组中，直接使用
+            if (data.gambleResults && Array.isArray(data.gambleResults)) {
+                gambleResultsArray = data.gambleResults;
+            } else if (Array.isArray(data)) {
+                // 如果直接是数组，直接使用
+                gambleResultsArray = data;
+            } else {
+                // 如果是单个对象，包装成数组
+                gambleResultsArray = [data];
             }
 
-            // 提取数据，兼容不同的数据结构
-            const groupInfo = actualData.group_info || actualData.groupInfo || [];
-            const holesData = actualData.holes || actualData.holesData || [];
-            const usefulHoles = actualData.useful_holes || actualData.usefulHoles || holesData;
+            console.log('[GambleSummary] 处理后的赌博结果数组:', gambleResultsArray);
 
-            // API返回的useful_holes中已经包含了红蓝分组信息，不需要额外的redBlueData
-            const redBlueData = [];
-
-            console.log('[GambleSummary] 提取的数据:', {
-                groupInfo: groupInfo.length,
-                holesData: holesData.length,
-                usefulHoles: usefulHoles.length,
-                redBlueData: redBlueData.length,
-                groupInfoSample: groupInfo[0],
-                usefulHolesSample: usefulHoles[0],
-                redBlueSample: redBlueData[0]
-            });
-
-            // 更新数据状态
+            // 更新数据状态 - 保存完整的数组
             this.setData({
-                groupInfo,
-                holesData,
-                usefulHoles,
-                redBlueData
+                gambleResults: gambleResultsArray,
+                loading: false
             });
         },
 
