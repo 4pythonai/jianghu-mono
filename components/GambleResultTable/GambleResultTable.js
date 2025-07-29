@@ -5,11 +5,6 @@ Component({
             type: Array,
             value: []
         },
-        // 洞数据数组
-        holesData: {
-            type: Array,
-            value: []
-        },
         // 实际赌球结果数据
         usefulHoles: {
             type: Array,
@@ -25,7 +20,7 @@ Component({
     },
 
     observers: {
-        'groupInfo, holesData, usefulHoles': function (groupInfo, holesData, usefulHoles) {
+        'groupInfo, usefulHoles': function (groupInfo, usefulHoles) {
 
             this.processData();
         }
@@ -34,7 +29,7 @@ Component({
     methods: {
         // 处理数据
         processData() {
-            const { groupInfo, holesData, usefulHoles } = this.properties;
+            const { groupInfo, usefulHoles } = this.properties;
 
 
             // 处理球员信息 - 保持为数组格式
@@ -49,8 +44,8 @@ Component({
             }
 
 
-            // 使用 useful_holes 而不是 holes 来获取实际的赌球结果
-            const holesDataToUse = usefulHoles || holesData || [];
+            // 使用 useful_holes 来获取实际的赌球结果
+            const holesDataToUse = usefulHoles || [];
 
             // 初始化每个球员的总金额和总锅
             const totalMoney = {};

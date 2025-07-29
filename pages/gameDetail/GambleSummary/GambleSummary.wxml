@@ -28,9 +28,8 @@
 
         <!-- 赌博结果表格 -->
         <gamble-result-table
-          groupInfo="{{gambleResult.group_info || gambleResult.groupInfo || []}}"
-          holesData="{{gambleResult.holes || gambleResult.holesData || []}}"
-          usefulHoles="{{gambleResult.useful_holes || gambleResult.usefulHoles || gambleResult.holes || gambleResult.holesData || []}}"
+          groupInfo="{{gambleResult.group_info  }}"
+          usefulHoles="{{gambleResult.useful_holes  }}"
         ></gamble-result-table>
       </view>
 

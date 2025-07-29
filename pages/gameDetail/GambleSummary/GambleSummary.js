@@ -9,27 +9,12 @@ Component({
         groupId: {
             type: String,
             value: ''
-        },
-        players: {
-            type: Array,
-            value: []
-        },
-        redBlueData: {
-            type: Array,
-            value: []
         }
     },
 
     data: {
-        totalAmount: '0',
-        gameStatus: '进行中',
         gambleResults: [],
-        loading: false,
-        // 新增：用于传递给GambleResultTable组件的数据
-        groupInfo: [],
-        holesData: [],
-        usefulHoles: [],
-        redBlueData: []
+        loading: false
     },
 
     lifetimes: {
@@ -37,8 +22,7 @@ Component({
             console.log('[GambleSummary] 组件加载');
             console.log('[GambleSummary] 接收到的属性:', {
                 gameId: this.properties.gameId,
-                groupId: this.properties.groupId,
-                playersCount: this.properties.players?.length
+                groupId: this.properties.groupId
             });
 
             // 组件加载时获取赌博汇总数据
@@ -58,9 +42,6 @@ Component({
             if (groupId) {
                 this.fetchGambleSummary();
             }
-        },
-        'players': (players) => {
-            console.log('[GambleSummary] players 属性变化:', players?.length);
         }
     },
 
@@ -157,12 +138,10 @@ Component({
             // 使用传入的属性
             const gameId = this.properties.gameId;
             const groupId = this.properties.groupId;
-            const players = this.properties.players || [];
 
             console.log('[GambleSummary] 准备跳转，数据:', {
                 gameId,
-                groupId,
-                playersCount: players.length
+                groupId
             });
 
             if (!gameId) {
@@ -175,7 +154,7 @@ Component({
 
             // 跳转到RuntimeConfigList页面
             wx.navigateTo({
-                url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameId=${gameId}&groupId=${groupId}&players=${JSON.stringify(players)}`,
+                url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameId=${gameId}&groupId=${groupId}`,
                 success: () => {
                     console.log('[GambleSummary] 跳转成功');
                 },

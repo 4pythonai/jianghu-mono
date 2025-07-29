@@ -13,12 +13,5 @@
 </view>
 <!-- 赌博相关 -->
 <view class="tab-content" hidden="{{currentTab !== 2}}" style="width: 100%; padding: 0;">
-  <GambleSummary
-    gameId="{{gameId}}"
-    groupId="{{groupId}}"
-    players="{{players}}"
-    redBlueData="{{red_blue}}"
-    showWebview="{{currentTab === 2}}"
-    id="GambleSummary"
-  />
+  <GambleSummary gameId="{{gameId}}" groupId="{{groupId}}" id="GambleSummary" />
 </view>
