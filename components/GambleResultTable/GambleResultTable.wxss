@@ -41,8 +41,9 @@
 	flex: 0 0 120rpx;
 	min-width: 120rpx;
 	max-width: 120rpx;
-	background: #e9ecef;
+	background: #fff;
 	font-weight: 700;
+	border-bottom: 1rpx solid #e9ecef;
 }
 
 .player-info {
@@ -161,6 +162,7 @@
 .total-row .hole-header {
 	background: #e9ecef;
 	color: #495057;
+	border-bottom: 1rpx solid #e9ecef;
 }
 
 /* 横向滚动优化 */
@@ -204,6 +206,7 @@
 		flex: 0 0 100rpx;
 		min-width: 100rpx;
 		max-width: 100rpx;
+		border-bottom: 1rpx solid #e9ecef;
 	}
 }
 
