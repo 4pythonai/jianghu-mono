@@ -27,7 +27,6 @@
       <!-- 空状态 -->
       <view class="empty-state" wx:if="{{(!groupInfo || groupInfo.length === 0) && !loading}}">
         <text>暂无赌博结果数据</text>
-        <text style="font-size: 24rpx; color: #999; margin-top: 10rpx;">请检查API返回的数据结构</text>
       </view>
 
       <!-- 加载状态 -->

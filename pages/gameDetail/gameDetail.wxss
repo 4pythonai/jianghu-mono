@@ -51,7 +51,9 @@
 
 /* Tab内容样式 */
 .tab-content {
-	padding: 5px;
+	padding: 0;
+	width: 100%;
+	overflow: hidden;
 }
 
 .empty-tab {

@@ -1,5 +1,5 @@
 <view class="gamble-result-table">
-  <view class="table-container">
+  <view class="table-container" style="width: 100%; min-width: 100%;">
     <!-- 表头 -->
     <view class="table-header">
       <view class="header-cell hole-header">
@@ -19,7 +19,7 @@
             src="{{player.cover}}"
             mode="aspectFill"
           ></image>
-          <view class="player-name">{{player.nickname}}</view>
+          <view class="player-name" style="font-size: 20rpx; max-width: 100%;">{{player.nickname}}</view>
         </view>
       </view>
     </view>

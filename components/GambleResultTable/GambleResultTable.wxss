@@ -1,5 +1,6 @@
 .gamble-result-table {
 	width: 100%;
+	min-width: 100%;
 	background: #fff;
 	border-radius: 12rpx;
 	overflow: hidden;
@@ -8,6 +9,8 @@
 
 .table-container {
 	width: 100%;
+	min-width: 100%;
+	overflow-x: auto;
 }
 
 /* 表头样式 */
@@ -15,16 +18,19 @@
 	display: flex;
 	background: #f8f9fa;
 	border-bottom: 2rpx solid #e9ecef;
+	min-width: 100%;
 }
 
 .header-cell {
 	flex: 1;
+	min-width: 100rpx;
 	padding: 20rpx 12rpx;
 	text-align: center;
 	font-weight: 600;
 	font-size: 28rpx;
 	color: #495057;
 	border-right: 1rpx solid #e9ecef;
+	white-space: nowrap;
 }
 
 .header-cell:last-child {
@@ -32,7 +38,9 @@
 }
 
 .hole-header {
-	flex: 0.5;
+	flex: 0 0 120rpx;
+	min-width: 120rpx;
+	max-width: 120rpx;
 	background: #e9ecef;
 	font-weight: 700;
 }
@@ -43,13 +51,15 @@
 	align-items: center;
 	justify-content: center;
 	height: 100%;
+	min-height: 80rpx;
+	width: 100%;
 }
 
 .player-avatar {
-	width: 60rpx;
-	height: 60rpx;
+	width: 50rpx;
+	height: 50rpx;
 	border-radius: 50%;
-	margin-bottom: 8rpx;
+	margin-bottom: 4rpx;
 	border: 2rpx solid #dee2e6;
 }
 
@@ -59,18 +69,24 @@
 	text-align: center;
 	line-height: 1.2;
 	word-break: break-all;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 /* 表格主体样式 */
 .table-body {
 	max-height: 600rpx;
 	overflow-y: auto;
+	overflow-x: auto;
 }
 
 .table-row {
 	display: flex;
 	border-bottom: 1rpx solid #e9ecef;
 	transition: background-color 0.2s ease;
+	min-width: 100%;
 }
 
 .table-row:hover {
@@ -83,6 +99,7 @@
 
 .cell {
 	flex: 1;
+	min-width: 100rpx;
 	padding: 16rpx 12rpx;
 	text-align: center;
 	font-size: 26rpx;
@@ -91,6 +108,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	white-space: nowrap;
 }
 
 .cell:last-child {
@@ -145,17 +163,37 @@
 	color: #495057;
 }
 
+/* 横向滚动优化 */
+.table-container::-webkit-scrollbar {
+	height: 8rpx;
+}
+
+.table-container::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 4rpx;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+	background: #c1c1c1;
+	border-radius: 4rpx;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+	background: #a8a8a8;
+}
+
 /* 响应式设计 */
 @media (max-width: 750rpx) {
 	.header-cell,
 	.cell {
 		padding: 12rpx 8rpx;
 		font-size: 24rpx;
+		min-width: 80rpx;
 	}
 
 	.player-avatar {
-		width: 50rpx;
-		height: 50rpx;
+		width: 40rpx;
+		height: 40rpx;
 	}
 
 	.player-name {
@@ -163,7 +201,9 @@
 	}
 
 	.hole-header {
-		flex: 0.4;
+		flex: 0 0 100rpx;
+		min-width: 100rpx;
+		max-width: 100rpx;
 	}
 }
 
@@ -184,4 +224,37 @@
 
 .table-body::-webkit-scrollbar-thumb:hover {
 	background: #a8a8a8;
+}
+
+/* 确保表格在小屏幕上也能正常显示 */
+@media (max-width: 600rpx) {
+	.gamble-result-table {
+		border-radius: 8rpx;
+	}
+
+	.table-container {
+		border-radius: 8rpx;
+	}
+
+	.header-cell,
+	.cell {
+		padding: 8rpx 6rpx;
+		font-size: 22rpx;
+		min-width: 60rpx;
+	}
+
+	.player-name {
+		font-size: 20rpx;
+	}
+
+	.hole-header {
+		flex: 0 0 80rpx;
+		min-width: 80rpx;
+		max-width: 80rpx;
+	}
+
+	.player-avatar {
+		width: 35rpx;
+		height: 35rpx;
+	}
 }
