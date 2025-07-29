@@ -59,42 +59,9 @@ class MDonation extends CI_Model {
             return;
         }
 
-        foreach ($context->usefulHoles as &$hole) {
-            if (!isset($hole['winner_detail']) || empty($hole['winner_detail'])) {
-                continue;
-            }
-
-            foreach ($hole['winner_detail'] as &$winner) {
-                // 从0.5点开始，逐步增加捐赠点数
-                $_final_donation = $this->calculateOptimalDonation($winner, $donationCfg, $_current_total, $maxDonationPoints);
-
-                if ($_final_donation > 0) {
-                    // 记录捐赠信息
-                    $winner['pointsDonated'] = $_final_donation;
-                    $winner['pointsAfterDonation'] = $this->getWinnerPoints($winner) - $_final_donation;
-
-                    // 添加到捐赠池
-                    $this->addToDonationPool($context, [
-                        'holeid' => $hole['holeid'],
-                        'holename' => $hole['holename'],
-                        'userid' => $winner['userid'],
-                        'pointsDonated' => $_final_donation,
-                        'donationType' => $donationType,
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]);
-
-                    $_current_total += $_final_donation;
-                } else {
-                    $winner['pointsDonated'] = 0;
-                    $winner['pointsAfterDonation'] = $this->getWinnerPoints($winner);
-                }
-            }
-
-            // 如果达到最大点数，停止处理
-            if ($_current_total >= $maxDonationPoints) {
-                debug("捐赠池已达到最大点数: {$maxDonationPoints}");
-                break;
-            }
+        // 对于"全捐"和"normal"模式，都使用公平分配
+        if ($donationType == 'all' || $donationType == 'normal') {
+            $this->processAllDonationFairly($context, $maxDonationPoints, $_current_total);
         }
     }
 
@@ -132,7 +99,120 @@ class MDonation extends CI_Model {
     }
 
     /**
-     * 从0.5点开始，逐步计算最优捐赠点数
+     * 公平处理"全捐"和"normal"模式
+     */
+    private function processAllDonationFairly($context, $maxDonationPoints, $_current_total) {
+        // 收集所有赢家的信息
+        $_winners = [];
+        $_total_winner_points = 0;
+        $donationCfg = $context->donationCfg;
+        $donationType = $donationCfg['donationType'];
+
+        foreach ($context->usefulHoles as $hole) {
+            if (!isset($hole['winner_detail']) || empty($hole['winner_detail'])) {
+                continue;
+            }
+
+            foreach ($hole['winner_detail'] as $winner) {
+                $_points = $this->getWinnerPoints($winner);
+                if ($_points > 0) {
+                    if ($donationType == 'normal') {
+                        // normal模式：每个赢家最多捐 donationPoints
+                        $_donation_limit = floatval($donationCfg['donationPoints'] ?? 0);
+                        $_max_per_winner = min($_points, $_donation_limit);
+                    } else {
+                        // all模式：每个赢家捐全部赢点
+                        $_max_per_winner = $_points;
+                    }
+
+                    $_winners[] = [
+                        'hole' => $hole,
+                        'winner' => $winner,
+                        'points' => $_points,
+                        'max_donation' => $_max_per_winner
+                    ];
+                    $_total_winner_points += $_max_per_winner;
+                }
+            }
+        }
+
+        if (empty($_winners)) {
+            return;
+        }
+
+        // 计算需要捐赠的总点数
+        $_remaining_to_donate = $maxDonationPoints - $_current_total;
+
+        if ($_remaining_to_donate <= 0) {
+            return;
+        }
+
+        // 计算每个赢家应该捐赠的点数（按比例分配）
+        $_donations = [];
+        $_total_allocated = 0;
+
+        foreach ($_winners as $_winner_info) {
+            $_max_per_winner = $_winner_info['max_donation'];
+
+            // 按比例计算该赢家应该捐赠的点数
+            $_proportional_donation = ($_max_per_winner / $_total_winner_points) * $_remaining_to_donate;
+
+            // 确保不超过该赢家的最大捐赠限制
+            $_final_donation = min($_proportional_donation, $_max_per_winner);
+
+            $_donations[] = [
+                'winner_info' => $_winner_info,
+                'donation' => $_final_donation
+            ];
+
+            $_total_allocated += $_final_donation;
+        }
+
+        // 如果分配的总数超过了需要捐赠的点数，按比例缩减
+        if ($_total_allocated > $_remaining_to_donate) {
+            $_scale_factor = $_remaining_to_donate / $_total_allocated;
+            foreach ($_donations as &$_donation) {
+                $_donation['donation'] *= $_scale_factor;
+            }
+        }
+
+        // 应用捐赠
+        foreach ($_donations as $_donation) {
+            $_winner_info = $_donation['winner_info'];
+            $_final_donation = $_donation['donation'];
+            $_hole = $_winner_info['hole'];
+            $_winner = $_winner_info['winner'];
+            $_points = $_winner_info['points'];
+
+            if ($_final_donation > 0) {
+                // 更新赢家信息
+                foreach ($context->usefulHoles as &$hole) {
+                    if ($hole['holeid'] == $_hole['holeid']) {
+                        foreach ($hole['winner_detail'] as &$winner) {
+                            if ($winner['userid'] == $_winner['userid']) {
+                                $winner['pointsDonated'] = $_final_donation;
+                                $winner['pointsAfterDonation'] = $_points - $_final_donation;
+
+                                // 添加到捐赠池
+                                $this->addToDonationPool($context, [
+                                    'holeid' => $hole['holeid'],
+                                    'holename' => $hole['holename'],
+                                    'userid' => $winner['userid'],
+                                    'pointsDonated' => $_final_donation,
+                                    'donationType' => 'all',
+                                    'timestamp' => date('Y-m-d H:i:s')
+                                ]);
+                                break 2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 从0.5点开始，逐步计算最优捐赠点数（仅用于normal模式）
      */
     private function calculateOptimalDonation($winner, $donationCfg, $_current_total, $maxDonationPoints) {
         $_winner_points = $this->getWinnerPoints($winner);
@@ -163,7 +243,7 @@ class MDonation extends CI_Model {
      */
     private function processBigpotDonation($context) {
         $donationCfg = $context->donationCfg;
-        $totalFee = floatval($donationCfg['totalFee'] ?? 0);
+        $totalFee = floatval($donationCfg['totalFee']);
 
         if ($totalFee <= 0) {
             debug("大锅饭模式需要设置总费用");

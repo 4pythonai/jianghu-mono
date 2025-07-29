@@ -174,7 +174,7 @@
                                         }
                                         ?>
                                         <span class="<?php echo $class; ?>">
-                                            <?php echo $money > 0 ? '+' : ''; ?><?php echo number_format($money, 0); ?>
+                                            <?php echo $money > 0 ? '+' : ''; ?><?php echo $money; ?>
                                         </span>
                                     </td>
                                 <?php endforeach; ?>
@@ -201,7 +201,7 @@
                                 }
                                 ?>
                                 <span class="<?php echo $class; ?>">
-                                    <?php echo $money > 0 ? '+' : ''; ?><?php echo number_format($money, 0); ?>
+                                    <?php echo $money > 0 ? '+' : ''; ?><?php echo $money; ?>
                                 </span>
                             </td>
                         <?php endforeach; ?>
@@ -224,7 +224,7 @@
                                 }
                                 ?>
                                 <span class="<?php echo $class; ?>">
-                                    <?php echo $donated > 0 ? '+' : ''; ?><?php echo number_format($donated, 0); ?>
+                                    <?php echo $donated > 0 ? '+' : ''; ?><?php echo $donated; ?>
                                 </span>
                             </td>
                         <?php endforeach; ?>
