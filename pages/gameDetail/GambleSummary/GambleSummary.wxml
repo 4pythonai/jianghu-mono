@@ -1,0 +1,34 @@
+<view class="gamble-summary">
+  <view class="nav-bar">
+    <view class="nav-left">
+      <text class="nav-title">游戏详情</text>
+    </view>
+    <view class="nav-right">
+      <view class="icon-btn" bindtap="onIconClick">
+        <image class="nav-icon" src="/assets/icons/icons8-right-arrow-50-3.png" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+  <view class="gamble-container">
+    <view class="summary-title">赌博汇总[gameID:{{gameId}}][groupID:{{groupId}}]</view>
+
+    <!-- 模拟表格 3列 4 行 -->
+    <view class="table-container">
+      <!-- 表头 -->
+      <view class="table-header">
+        <view class="header-cell">玩家</view>
+        <view class="header-cell">洞号</view>
+        <view class="header-cell">倍数</view>
+      </view>
+
+      <!-- 表格内容 -->
+      <view class="table-body">
+        <view class="table-row" wx:for="{{tableData}}" wx:key="index">
+          <view class="table-cell">{{item.player}}</view>
+          <view class="table-cell">{{item.hole}}</view>
+          <view class="table-cell multiplier">×{{item.multiplier}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

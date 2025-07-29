@@ -12,12 +12,18 @@ Page({
         this.storeBindings = createStoreBindings(this, {
             store: gameStore,
             fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes'],
-            actions: [], // 不再需要fetchGameDetail
+            actions: ['fetchGameDetail'], // 添加fetchGameDetail action
         });
         const gameId = options?.gameId;
         const groupId = options?.groupId;
         this.setData({ gameId, groupId });
-        // 不再主动拉取数据，交由各tab组件管理
+
+        console.log('[gameDetail] 页面加载，参数:', { gameId, groupId });
+
+        // 主动加载游戏数据
+        if (gameId) {
+            this.fetchGameDetail(gameId, groupId);
+        }
     },
 
     onUnload() {
@@ -36,6 +42,11 @@ Page({
     },
 
     onShow() {
+        console.log('[gameDetail] 页面显示，当前数据:', {
+            gameData: this.data.gameData,
+            gameId: this.data.gameId,
+            groupId: this.data.groupId
+        });
         this.refreshCurrentTab();
     },
 
@@ -47,7 +58,7 @@ Page({
             this.selectComponent('#bbsComponent')?.refresh?.();
         } else if (currentTab === 2) {
             console.log('🎯 刷新赌博tab');
-            this.selectComponent('#gambleComponent')?.refresh?.();
+            this.selectComponent('#GambleSummary')?.refresh?.();
         }
     },
 });

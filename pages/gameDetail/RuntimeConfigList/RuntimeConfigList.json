@@ -1,4 +1,5 @@
 {
+	"navigationBarTitleText": "游戏配置",
 	"usingComponents": {
 		"kickoff": "./gamblOperationComponent/kickoff/kickoff",
 		"holejump": "./gamblOperationComponent/holejump/holejump",

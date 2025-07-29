@@ -51,7 +51,7 @@
 
 /* Tab内容样式 */
 .tab-content {
-	padding: 10px;
+	padding: 5px;
 }
 
 .empty-tab {

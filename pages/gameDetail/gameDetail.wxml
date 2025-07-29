@@ -12,10 +12,20 @@
   <BBS id="bbsComponent" gameId="{{gameData.gameid || ''}}" />
 </view>
 <!-- 赌博相关 -->
-<view class="tab-content" hidden="{{currentTab !== 2}}">
+
+<view hidden="{{currentTab !== 2}}">
+  <GambleSummary
+    gameId="{{gameId}}"
+    groupId="{{groupId}}"
+    players="{{players}}"
+    id="GambleSummary"
+  />
+</view>
+
+<!-- <view class="tab-content" hidden="{{currentTab !== 2}}">
   <RuntimeConfigList
     id="gambleComponent"
     gameId="{{gameData.gameid || ''}}"
     players="{{gameData.players || []}}"
   />
-</view>
+</view>-->

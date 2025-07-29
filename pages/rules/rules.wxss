@@ -66,7 +66,7 @@
 
 /* Tab内容区域 */
 .tab-content {
-	padding: 10px;
+	padding: 5px;
 }
 
 /* Tab内容区域保持最小样式 */

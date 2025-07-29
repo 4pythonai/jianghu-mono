@@ -5,6 +5,7 @@
 		"pages/community/community",
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
+		"pages/gameDetail/RuntimeConfigList/RuntimeConfigList",
 		"pages/groupsList/groupsList",
 		"pages/createGame/createGame",
 		"pages/createGame/moreCreate/moreCreate",
