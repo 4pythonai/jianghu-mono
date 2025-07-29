@@ -14,6 +14,11 @@ Component({
         usefulHoles: {
             type: Array,
             value: []
+        },
+        // 红蓝分组数据
+        redBlueData: {
+            type: Array,
+            value: []
         }
     },
 
@@ -26,11 +31,12 @@ Component({
     },
 
     observers: {
-        'groupInfo, holesData, usefulHoles': function (groupInfo, holesData, usefulHoles) {
+        'groupInfo, holesData, usefulHoles, redBlueData': function (groupInfo, holesData, usefulHoles, redBlueData) {
             console.log('[GambleResultTable] 数据变化:', {
                 groupInfoLength: groupInfo?.length,
                 holesDataLength: holesData?.length,
-                usefulHolesLength: usefulHoles?.length
+                usefulHolesLength: usefulHoles?.length,
+                redBlueDataLength: redBlueData?.length
             });
             this.processData();
         }
@@ -39,12 +45,13 @@ Component({
     methods: {
         // 处理数据
         processData() {
-            const { groupInfo, holesData, usefulHoles } = this.properties;
+            const { groupInfo, holesData, usefulHoles, redBlueData } = this.properties;
 
             console.log('[GambleResultTable] 开始处理数据:', {
                 groupInfo,
                 holesData,
-                usefulHoles
+                usefulHoles,
+                redBlueData
             });
 
             // 处理球员信息 - 保持为数组格式
@@ -62,6 +69,9 @@ Component({
                 playersCount: players.length,
                 playersMapKeys: Object.keys(playersMap)
             });
+
+            // 不需要构建红蓝分组映射，因为useful_holes中已经包含了红蓝分组信息
+            console.log('[GambleResultTable] 使用useful_holes中的红蓝分组信息');
 
             // 使用 useful_holes 而不是 holes 来获取实际的赌球结果
             const holesDataToUse = usefulHoles || holesData || [];
@@ -127,10 +137,41 @@ Component({
                         });
                     }
 
+                    // 确保红蓝分组数据的类型一致性
+                    const redTeam = (hole.red || []).map(id => String(id));
+                    const blueTeam = (hole.blue || []).map(id => String(id));
+
+                    console.log(`[GambleResultTable] 洞${hole.hindex}的红蓝分组:`, {
+                        holeIndex: hole.hindex,
+                        red: redTeam,
+                        blue: blueTeam,
+                        originalRed: hole.red,
+                        originalBlue: hole.blue
+                    });
+
+                    // 为每个球员计算class
+                    const playerClasses = {};
+                    players.forEach(player => {
+                        const userid = String(player.userid);
+                        let classes = ['cell'];
+
+                        if (redTeam.includes(userid)) {
+                            classes.push('team-red');
+                        }
+                        if (blueTeam.includes(userid)) {
+                            classes.push('team-blue');
+                        }
+
+                        playerClasses[userid] = classes.join(' ');
+                    });
+
                     processedHoles.push({
                         ...hole,
                         holeMoney,
-                        holeDonated
+                        holeDonated,
+                        red: redTeam,
+                        blue: blueTeam,
+                        playerClasses
                     });
                 });
             }
@@ -139,7 +180,8 @@ Component({
                 playersCount: players.length,
                 processedHolesCount: processedHoles.length,
                 totalMoney,
-                totalDonated
+                totalDonated,
+                sampleHole: processedHoles[0]
             });
 
             this.setData({
@@ -183,6 +225,29 @@ Component({
                 return `${holeName}❓`;
             }
             return holeName;
+        },
+
+        // 获取单元格的class
+        getCellClass(hole, player) {
+            let classes = ['cell'];
+
+            // 检查红队
+            if (hole.red && Array.isArray(hole.red)) {
+                const isRed = hole.red.some(id => String(id) === String(player.userid));
+                if (isRed) {
+                    classes.push('team-red');
+                }
+            }
+
+            // 检查蓝队
+            if (hole.blue && Array.isArray(hole.blue)) {
+                const isBlue = hole.blue.some(id => String(id) === String(player.userid));
+                if (isBlue) {
+                    classes.push('team-blue');
+                }
+            }
+
+            return classes.join(' ');
         }
     }
 });

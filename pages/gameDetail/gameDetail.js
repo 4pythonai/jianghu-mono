@@ -11,7 +11,7 @@ Page({
     onLoad(options) {
         this.storeBindings = createStoreBindings(this, {
             store: gameStore,
-            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes'],
+            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes', 'red_blue'],
             actions: ['fetchGameDetail'], // 添加fetchGameDetail action
         });
         const gameId = options?.gameId;

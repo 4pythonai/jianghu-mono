@@ -13,6 +13,10 @@ Component({
         players: {
             type: Array,
             value: []
+        },
+        redBlueData: {
+            type: Array,
+            value: []
         }
     },
 
@@ -24,7 +28,8 @@ Component({
         // 新增：用于传递给GambleResultTable组件的数据
         groupInfo: [],
         holesData: [],
-        usefulHoles: []
+        usefulHoles: [],
+        redBlueData: []
     },
 
     lifetimes: {
@@ -132,7 +137,6 @@ Component({
             // 如果数据在 gambleResults 数组中，取第一个元素
             if (data.gambleResults && Array.isArray(data.gambleResults) && data.gambleResults.length > 0) {
                 actualData = data.gambleResults[0];
-                console.log('[GambleSummary] 从 gambleResults[0] 中提取数据:', actualData);
             }
 
             // 提取数据，兼容不同的数据结构
@@ -140,19 +144,25 @@ Component({
             const holesData = actualData.holes || actualData.holesData || [];
             const usefulHoles = actualData.useful_holes || actualData.usefulHoles || holesData;
 
+            // API返回的useful_holes中已经包含了红蓝分组信息，不需要额外的redBlueData
+            const redBlueData = [];
+
             console.log('[GambleSummary] 提取的数据:', {
                 groupInfo: groupInfo.length,
                 holesData: holesData.length,
                 usefulHoles: usefulHoles.length,
+                redBlueData: redBlueData.length,
                 groupInfoSample: groupInfo[0],
-                usefulHolesSample: usefulHoles[0]
+                usefulHolesSample: usefulHoles[0],
+                redBlueSample: redBlueData[0]
             });
 
             // 更新数据状态
             this.setData({
                 groupInfo,
                 holesData,
-                usefulHoles
+                usefulHoles,
+                redBlueData
             });
         },
 

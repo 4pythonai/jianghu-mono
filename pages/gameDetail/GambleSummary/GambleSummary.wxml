@@ -22,6 +22,7 @@
         groupInfo="{{groupInfo}}"
         holesData="{{holesData}}"
         usefulHoles="{{usefulHoles}}"
+        redBlueData="{{redBlueData}}"
       ></gamble-result-table>
 
       <!-- 空状态 -->

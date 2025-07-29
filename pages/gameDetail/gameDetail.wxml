@@ -17,6 +17,7 @@
     gameId="{{gameId}}"
     groupId="{{groupId}}"
     players="{{players}}"
+    redBlueData="{{red_blue}}"
     showWebview="{{currentTab === 2}}"
     id="GambleSummary"
   />

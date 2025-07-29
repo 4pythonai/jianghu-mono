@@ -34,7 +34,7 @@
           </view>
         </view>
         <view
-          class="cell {{item.red && item.red.includes(player.userid) ? 'team-red' : ''}} {{item.blue && item.blue.includes(player.userid) ? 'team-blue' : ''}}"
+          class="{{item.playerClasses[player.userid] || 'cell'}}"
           wx:for="{{players}}"
           wx:key="userid"
           wx:for-item="player"
@@ -46,7 +46,7 @@
           <text
             wx:if="{{false}}"
             style="display: none;"
-          >red:{{item.red}}, blue:{{item.blue}}, userid:{{player.userid}}</text>
+          >R:{{item.red}}, B:{{item.blue}}, U:{{player.userid}}</text>
         </view>
       </view>
     </view>

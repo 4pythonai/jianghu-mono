@@ -2,9 +2,10 @@
 	width: 100%;
 	min-width: 100%;
 	background: #fff;
-	border-radius: 12rpx;
+	border-radius: 16rpx;
 	overflow: hidden;
-	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+	border: 0.5rpx solid #f0f0f0;
 }
 
 .table-container {
@@ -16,21 +17,44 @@
 /* 表头样式 */
 .table-header {
 	display: flex;
-	background: #f8f9fa;
-	border-bottom: 2rpx solid #e9ecef;
+	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+	border-bottom: 2rpx solid #dee2e6;
 	min-width: 100%;
+	position: relative;
+}
+
+.table-header::after {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 1rpx;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		#dee2e6 20%,
+		#dee2e6 80%,
+		transparent 100%
+	);
 }
 
 .header-cell {
 	flex: 1;
 	min-width: 100rpx;
-	padding: 20rpx 12rpx;
+	padding: 24rpx 16rpx;
 	text-align: center;
 	font-weight: 600;
 	font-size: 28rpx;
 	color: #495057;
-	border-right: 1rpx solid #e9ecef;
+	border-right: 1rpx solid #dee2e6;
 	white-space: nowrap;
+	position: relative;
+	transition: all 0.2s ease;
+}
+
+.header-cell:hover {
+	background: rgba(255, 255, 255, 0.3);
 }
 
 .header-cell:last-child {
@@ -41,27 +65,24 @@
 	flex: 0 0 120rpx;
 	min-width: 120rpx;
 	max-width: 120rpx;
-	background: #fff;
+	background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
 	font-weight: 700;
-	border-bottom: 1rpx solid #e9ecef;
+	border-bottom: 1rpx solid #dee2e6;
+	border-right: 2rpx solid #dee2e6;
+	position: relative;
 }
 
 .player-info {
 	display: flex;
 }
 
-.team-red {
+/* 队伍颜色标识 - 用于表头 */
+.header-cell.team-red {
 	background-color: #ffdddd; /* 浅红色背景 */
 }
 
-.team-blue {
+.header-cell.team-blue {
 	background-color: #ddddff; /* 浅蓝色背景 */
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: 100%;
-	min-height: 80rpx;
-	width: 100%;
 }
 
 .player-avatar {
@@ -93,9 +114,14 @@
 
 .table-row {
 	display: flex;
-	border-bottom: 1rpx solid #e9ecef;
-	transition: background-color 0.2s ease;
+	border-bottom: 1rpx solid #f0f0f0;
+	transition: all 0.2s ease;
 	min-width: 100%;
+	position: relative;
+}
+
+.table-row:nth-child(even) {
+	background-color: rgba(248, 249, 250, 0.3);
 }
 
 .table-row:hover {
@@ -109,15 +135,21 @@
 .cell {
 	flex: 1;
 	min-width: 100rpx;
-	padding: 16rpx 12rpx;
+	padding: 20rpx 16rpx;
 	text-align: center;
 	font-size: 26rpx;
 	color: #495057;
-	border-right: 1rpx solid #e9ecef;
+	border-right: 1rpx solid #f0f0f0;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	white-space: nowrap;
+	position: relative;
+	transition: all 0.2s ease;
+}
+
+.cell:hover {
+	background-color: rgba(0, 123, 255, 0.05);
 }
 
 .cell:last-child {
@@ -131,13 +163,45 @@
 
 /* 队伍颜色标识 */
 .team-red {
-	background-color: #ffdddd; /* 浅红色背景 */
-	border-left: 4rpx solid #dc3545; /* 红色边框 */
+	background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+	border-left: 4rpx solid #f44336;
+	position: relative;
+}
+
+.team-red::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(
+		45deg,
+		transparent 0%,
+		rgba(244, 67, 54, 0.05) 100%
+	);
+	pointer-events: none;
 }
 
 .team-blue {
-	background-color: #ddddff; /* 浅蓝色背景 */
-	border-left: 4rpx solid #007bff; /* 蓝色边框 */
+	background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+	border-left: 4rpx solid #2196f3;
+	position: relative;
+}
+
+.team-blue::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(
+		45deg,
+		transparent 0%,
+		rgba(33, 150, 243, 0.05) 100%
+	);
+	pointer-events: none;
 }
 
 /* 金额样式 */
@@ -157,9 +221,26 @@
 
 /* 总计行样式 */
 .total-row {
-	background: #f8f9fa;
-	border-top: 2rpx solid #dee2e6;
+	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+	border-top: 3rpx solid #dee2e6;
 	font-weight: 600;
+	position: relative;
+}
+
+.total-row::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 1rpx;
+	background: linear-gradient(
+		90deg,
+		transparent 0%,
+		#dee2e6 20%,
+		#dee2e6 80%,
+		transparent 100%
+	);
 }
 
 .total-row .cell {
