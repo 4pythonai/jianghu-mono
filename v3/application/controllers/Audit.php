@@ -32,6 +32,7 @@ class Audit extends CI_Controller {
         $this->load->model('gamble/MRanking');
         $this->load->model('gamble/GambleContext');
         $this->load->model('gamble/MMeat');
+        $this->load->model('gamble/MDonation');
     }
 
     public function printResult($result) {

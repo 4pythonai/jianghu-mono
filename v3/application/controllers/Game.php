@@ -209,6 +209,7 @@ class Game extends MY_Controller {
         $this->load->model('gamble/MRanking');
         $this->load->model('gamble/GambleContext');
         $this->load->model('gamble/MMeat');
+        $this->load->model('gamble/MDonation');
 
 
         $row = $this->db->get_where('t_gamble_runtime', ['gameid' => $game_id, 'playersNumber' => 4])->row_array();

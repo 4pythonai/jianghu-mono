@@ -149,6 +149,11 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 处理吃肉逻辑（在 winner_detail 设置之后）
             $this->MMeat->processEating($hole, $context);
         }
+
+
+        $this->MDonation->processDonation($context);
+
+        $this->MDonation->setFinalPoints($context);
     }
 
 
@@ -175,6 +180,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'startHoleindex' => $this->context->startHoleindex,
             'endHoleindex' => $this->context->endHoleindex,
             'meat_pool' => $this->context->meat_pool,
+            'donation_pool' => $this->context->donation_pool,
             // 'scores' => $this->context->scores,
             'meat_value_config_string' => $this->context->meat_value_config_string,
             'meat_max_value' => $this->context->meat_max_value,
