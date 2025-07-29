@@ -20,7 +20,11 @@ Component({
         totalAmount: '0',
         gameStatus: '进行中',
         gambleResults: [],
-        loading: false
+        loading: false,
+        // 新增：用于传递给GambleResultTable组件的数据
+        groupInfo: [],
+        holesData: [],
+        usefulHoles: []
     },
 
     lifetimes: {
@@ -75,16 +79,16 @@ Component({
                 // 调用API获取赌博汇总数据
                 const result = await this.callGambleSummaryAPI(gameId, groupId);
 
-                console.log('[GambleSummary] API调用成功，返回数据:', result.gambleResults);
+                console.log('[GambleSummary] API调用成功，返回数据:', result);
 
-                // 保存数据到组件状态
+                // 保存原始数据到组件状态
                 this.setData({
-                    gambleResults: result.gambleResults,
+                    gambleResults: result.gambleResults || result,
                     loading: false
                 });
 
-                // 处理数据，提取关键信息
-                this.processGambleSummaryData(result.gambleResults);
+                // 处理数据，提取关键信息并传递给组件
+                this.processGambleSummaryData(result);
 
             } catch (error) {
                 console.error('[GambleSummary] API调用失败:', error);
@@ -120,7 +124,36 @@ Component({
          * 处理赌博汇总数据
          */
         processGambleSummaryData(data) {
-            console.log('[GambleSummary] 开始处理数据...');
+            console.log('[GambleSummary] 开始处理数据...', data);
+
+            // 处理嵌套的数据结构
+            let actualData = data;
+
+            // 如果数据在 gambleResults 数组中，取第一个元素
+            if (data.gambleResults && Array.isArray(data.gambleResults) && data.gambleResults.length > 0) {
+                actualData = data.gambleResults[0];
+                console.log('[GambleSummary] 从 gambleResults[0] 中提取数据:', actualData);
+            }
+
+            // 提取数据，兼容不同的数据结构
+            const groupInfo = actualData.group_info || actualData.groupInfo || [];
+            const holesData = actualData.holes || actualData.holesData || [];
+            const usefulHoles = actualData.useful_holes || actualData.usefulHoles || holesData;
+
+            console.log('[GambleSummary] 提取的数据:', {
+                groupInfo: groupInfo.length,
+                holesData: holesData.length,
+                usefulHoles: usefulHoles.length,
+                groupInfoSample: groupInfo[0],
+                usefulHolesSample: usefulHoles[0]
+            });
+
+            // 更新数据状态
+            this.setData({
+                groupInfo,
+                holesData,
+                usefulHoles
+            });
         },
 
         /**
