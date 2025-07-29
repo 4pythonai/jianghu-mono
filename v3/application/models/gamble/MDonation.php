@@ -20,12 +20,16 @@ if (!defined('BASEPATH')) {
 class MDonation extends CI_Model {
 
     public function processDonation($context) {
-        debug(" ❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️ ");
+        // debug(" ❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️❇️ ");
         // debug($context->usefulHoles);
-        debug($context->donationCfg);
+        // debug($context->donationCfg);
 
         $donationCfg = $context->donationCfg;
         $donationType = $donationCfg['donationType'];
+
+        if ($donationType == 'none') {
+            return;
+        }
 
         switch ($donationType) {
             case 'normal':
@@ -34,9 +38,6 @@ class MDonation extends CI_Model {
                 break;
             case 'bigpot':
                 $this->processBigpotDonation($context);
-                break;
-            default:
-                debug("未知的捐锅类型: " . $donationType);
                 break;
         }
     }

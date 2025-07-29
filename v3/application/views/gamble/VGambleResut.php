@@ -1,13 +1,45 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>赌球结果</title>
     <link rel="stylesheet" href="<?php echo config_item('web_url') . '/v3/css/gamble-result.css'; ?>">
+    <style>
+        .summary-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-label {
+            font-weight: bold;
+            color: #495057;
+            font-size: 16px;
+        }
+
+        .summary-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #212529;
+            padding: 5px 10px;
+            background-color: #ffffff;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
 </head>
 
 <body>
@@ -41,13 +73,6 @@
 
                         $player_count = count($players);
 
-                        // 调试：检查球员数据
-                        echo "<!-- 调试：球员数据 -->";
-                        echo "<!-- 球员数量: " . $player_count . " -->";
-                        foreach ($players as $userid => $player) {
-                            echo "<!-- 用户ID: " . $userid . ", 昵称: '" . $player['nickname'] . "' -->";
-                        }
-
                         // 显示球员姓名作为表头
                         foreach ($players as $player): ?>
                             <th class="player-header">
@@ -65,10 +90,12 @@
                 </thead>
                 <tbody>
                     <?php
-                    // 初始化每个球员的总金额
+                    // 初始化每个球员的总金额和总锅
                     $total_money = [];
+                    $total_donated = [];
                     foreach ($players as $userid => $player) {
                         $total_money[$userid] = 0;
+                        $total_donated[$userid] = 0;
                     }
 
                     // 使用 useful_holes 而不是 holes 来获取实际的赌球结果
@@ -77,21 +104,26 @@
                     // 遍历所有洞
                     if (isset($holes_data) && is_array($holes_data)):
                         foreach ($holes_data as $hole):
-                            // 获取这个洞的所有球员金额
+                            // 获取这个洞的所有球员金额和锅
                             $hole_money = [];
+                            $hole_donated = [];
 
-                            // 初始化所有球员的金额为0
+                            // 初始化所有球员的金额和锅为0
                             foreach ($players as $userid => $player) {
                                 $hole_money[$userid] = 0;
+                                $hole_donated[$userid] = 0;
                             }
 
                             // 处理获胜者详情
                             if (isset($hole['winner_detail']) && is_array($hole['winner_detail'])) {
                                 foreach ($hole['winner_detail'] as $winner) {
                                     $userid = $winner['userid'];
-                                    $money = ($winner['scorePoints'] ?? 0) + ($winner['meatPoints'] ?? 0);
+                                    $money = $winner['final_points'] ?? 0;
+                                    $donated = $winner['pointsDonated'] ?? 0;
                                     $hole_money[$userid] = $money;
+                                    $hole_donated[$userid] = $donated;
                                     $total_money[$userid] += $money;
+                                    $total_donated[$userid] += $donated;
                                 }
                             }
 
@@ -99,9 +131,12 @@
                             if (isset($hole['failer_detail']) && is_array($hole['failer_detail'])) {
                                 foreach ($hole['failer_detail'] as $failer) {
                                     $userid = $failer['userid'];
-                                    $money = ($failer['scorePoints'] ?? 0) + ($failer['meatPoints'] ?? 0);
+                                    $money = $failer['final_points'] ?? 0;
+                                    $donated = $failer['pointsDonated'] ?? 0;
                                     $hole_money[$userid] = $money;
+                                    $hole_donated[$userid] = $donated;
                                     $total_money[$userid] += $money;
+                                    $total_donated[$userid] += $donated;
                                 }
                             }
                     ?>
@@ -167,6 +202,29 @@
                                 ?>
                                 <span class="<?php echo $class; ?>">
                                     <?php echo $money > 0 ? '+' : ''; ?><?php echo number_format($money, 0); ?>
+                                </span>
+                            </td>
+                        <?php endforeach; ?>
+                    </tr>
+
+                    <!-- 锅汇总行 -->
+                    <tr class="total-row">
+                        <td class="hole-header">总锅</td>
+                        <?php foreach ($players as $userid => $player): ?>
+                            <td>
+                                <?php
+                                $donated = $total_donated[$userid];
+                                $class = '';
+                                if ($donated > 0) {
+                                    $class = 'money-positive';
+                                } elseif ($donated < 0) {
+                                    $class = 'money-negative';
+                                } else {
+                                    $class = 'money-zero';
+                                }
+                                ?>
+                                <span class="<?php echo $class; ?>">
+                                    <?php echo $donated > 0 ? '+' : ''; ?><?php echo number_format($donated, 0); ?>
                                 </span>
                             </td>
                         <?php endforeach; ?>

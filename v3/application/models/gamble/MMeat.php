@@ -53,16 +53,15 @@ class MMeat extends CI_Model {
             return 0;
         }
 
-        debug("当前洞❤️🧡💛💚💙💜" . $hole['holename']);
-
-        echo "总共吃掉了" . count($eaten_meat_blocks) . " 块肉\n";
-        echo "========================\n";
+        // debug("当前洞❤️🧡💛💚💙💜" . $hole['holename']);
+        // echo "总共吃掉了" . count($eaten_meat_blocks) . " 块肉\n";
+        // echo "========================\n";
 
         // 打印被吃掉的肉的详细信息
-        echo "=== 被吃掉的肉详情 ===\n";
-        foreach ($eaten_meat_blocks as $meat_detail) {
-            debug($meat_detail);
-        }
+        // echo "=== 被吃掉的肉详情 ===\n";
+        // foreach ($eaten_meat_blocks as $meat_detail) {
+        //     debug($meat_detail);
+        // }
 
 
         $points = abs($hole['points']); // 使用指标分数作为基础分数
