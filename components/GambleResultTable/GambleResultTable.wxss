@@ -48,6 +48,14 @@
 
 .player-info {
 	display: flex;
+}
+
+.team-red {
+	background-color: #ffdddd; /* 浅红色背景 */
+}
+
+.team-blue {
+	background-color: #ddddff; /* 浅蓝色背景 */
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
@@ -123,13 +131,13 @@
 
 /* 队伍颜色标识 */
 .team-red {
-	background-color: rgba(220, 53, 69, 0.1);
-	border-left: 4rpx solid #dc3545;
+	background-color: #ffdddd; /* 浅红色背景 */
+	border-left: 4rpx solid #dc3545; /* 红色边框 */
 }
 
 .team-blue {
-	background-color: rgba(0, 123, 255, 0.1);
-	border-left: 4rpx solid #007bff;
+	background-color: #ddddff; /* 浅蓝色背景 */
+	border-left: 4rpx solid #007bff; /* 蓝色边框 */
 }
 
 /* 金额样式 */
@@ -160,7 +168,7 @@
 }
 
 .total-row .hole-header {
-	background: #e9ecef;
+	background: #f8f9fa;
 	color: #495057;
 	border-bottom: 1rpx solid #e9ecef;
 }
@@ -206,6 +214,7 @@
 		flex: 0 0 100rpx;
 		min-width: 100rpx;
 		max-width: 100rpx;
+		background: #fff;
 		border-bottom: 1rpx solid #e9ecef;
 	}
 }
@@ -254,6 +263,7 @@
 		flex: 0 0 80rpx;
 		min-width: 80rpx;
 		max-width: 80rpx;
+		background: #fff;
 	}
 
 	.player-avatar {

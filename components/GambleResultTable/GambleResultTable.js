@@ -18,7 +18,7 @@ Component({
     },
 
     data: {
-        players: {},
+        players: [], // 改为数组格式
         playerCount: 0,
         totalMoney: {},
         totalDonated: {},
@@ -47,15 +47,21 @@ Component({
                 usefulHoles
             });
 
-            // 处理球员信息
-            const players = {};
+            // 处理球员信息 - 保持为数组格式
+            const players = [];
+            const playersMap = {}; // 用于快速查找的对象映射
+
             if (groupInfo && Array.isArray(groupInfo)) {
                 groupInfo.forEach(player => {
-                    players[player.userid] = player;
+                    players.push(player);
+                    playersMap[player.userid] = player;
                 });
             }
 
-            console.log('[GambleResultTable] 处理后的球员信息:', players);
+            console.log('[GambleResultTable] 处理后的球员信息:', {
+                playersCount: players.length,
+                playersMapKeys: Object.keys(playersMap)
+            });
 
             // 使用 useful_holes 而不是 holes 来获取实际的赌球结果
             const holesDataToUse = usefulHoles || holesData || [];
@@ -65,7 +71,8 @@ Component({
             // 初始化每个球员的总金额和总锅
             const totalMoney = {};
             const totalDonated = {};
-            Object.keys(players).forEach(userid => {
+            players.forEach(player => {
+                const userid = player.userid;
                 totalMoney[userid] = 0;
                 totalDonated[userid] = 0;
             });
@@ -80,7 +87,8 @@ Component({
                     const holeDonated = {};
 
                     // 初始化所有球员的金额和锅为0
-                    Object.keys(players).forEach(userid => {
+                    players.forEach(player => {
+                        const userid = player.userid;
                         holeMoney[userid] = 0;
                         holeDonated[userid] = 0;
                     });
@@ -91,10 +99,14 @@ Component({
                             const userid = winner.userid;
                             const money = winner.final_points || 0;
                             const donated = winner.pointsDonated || 0;
-                            holeMoney[userid] = money;
-                            holeDonated[userid] = donated;
-                            totalMoney[userid] += money;
-                            totalDonated[userid] += donated;
+
+                            // 确保该用户存在于我们的球员列表中
+                            if (playersMap[userid]) {
+                                holeMoney[userid] = money;
+                                holeDonated[userid] = donated;
+                                totalMoney[userid] += money;
+                                totalDonated[userid] += donated;
+                            }
                         });
                     }
 
@@ -104,10 +116,14 @@ Component({
                             const userid = failer.userid;
                             const money = failer.final_points || 0;
                             const donated = failer.pointsDonated || 0;
-                            holeMoney[userid] = money;
-                            holeDonated[userid] = donated;
-                            totalMoney[userid] += money;
-                            totalDonated[userid] += donated;
+
+                            // 确保该用户存在于我们的球员列表中
+                            if (playersMap[userid]) {
+                                holeMoney[userid] = money;
+                                holeDonated[userid] = donated;
+                                totalMoney[userid] += money;
+                                totalDonated[userid] += donated;
+                            }
                         });
                     }
 
@@ -120,15 +136,15 @@ Component({
             }
 
             console.log('[GambleResultTable] 处理完成:', {
-                playersCount: Object.keys(players).length,
+                playersCount: players.length,
                 processedHolesCount: processedHoles.length,
                 totalMoney,
                 totalDonated
             });
 
             this.setData({
-                players,
-                playerCount: Object.keys(players).length,
+                players, // 现在是数组格式
+                playerCount: players.length,
                 totalMoney,
                 totalDonated,
                 processedHoles

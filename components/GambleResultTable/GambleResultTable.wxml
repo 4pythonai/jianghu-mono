@@ -10,7 +10,7 @@
         wx:for="{{players}}"
         wx:key="userid"
         wx:for-item="player"
-        wx:for-index="userid"
+        wx:for-index="index"
       >
         <view class="player-info">
           <image
@@ -34,15 +34,19 @@
           </view>
         </view>
         <view
-          class="cell {{item.red && item.red.includes(userid) ? 'team-red' : ''}} {{item.blue && item.blue.includes(userid) ? 'team-blue' : ''}}"
+          class="cell {{item.red && item.red.includes(player.userid) ? 'team-red' : ''}} {{item.blue && item.blue.includes(player.userid) ? 'team-blue' : ''}}"
           wx:for="{{players}}"
           wx:key="userid"
           wx:for-item="player"
-          wx:for-index="userid"
+          wx:for-index="index"
         >
           <text
-            class="{{item.holeMoney[userid] > 0 ? 'money-positive' : item.holeMoney[userid] < 0 ? 'money-negative' : 'money-zero'}}"
-          >{{item.holeMoney[userid] > 0 ? '+' : ''}}{{item.holeMoney[userid]}}</text>
+            class="{{item.holeMoney[player.userid] > 0 ? 'money-positive' : item.holeMoney[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
+          >{{item.holeMoney[player.userid] > 0 ? '+' : ''}}{{item.holeMoney[player.userid]}}</text>
+          <text
+            wx:if="{{false}}"
+            style="display: none;"
+          >red:{{item.red}}, blue:{{item.blue}}, userid:{{player.userid}}</text>
         </view>
       </view>
     </view>
@@ -57,11 +61,11 @@
         wx:for="{{players}}"
         wx:key="userid"
         wx:for-item="player"
-        wx:for-index="userid"
+        wx:for-index="index"
       >
         <text
-          class="{{totalMoney[userid] > 0 ? 'money-positive' : totalMoney[userid] < 0 ? 'money-negative' : 'money-zero'}}"
-        >{{totalMoney[userid] > 0 ? '+' : ''}}{{totalMoney[userid]}}</text>
+          class="{{totalMoney[player.userid] > 0 ? 'money-positive' : totalMoney[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
+        >{{totalMoney[player.userid] > 0 ? '+' : ''}}{{totalMoney[player.userid]}}</text>
       </view>
     </view>
 
@@ -75,11 +79,11 @@
         wx:for="{{players}}"
         wx:key="userid"
         wx:for-item="player"
-        wx:for-index="userid"
+        wx:for-index="index"
       >
         <text
-          class="{{totalDonated[userid] > 0 ? 'money-positive' : totalDonated[userid] < 0 ? 'money-negative' : 'money-zero'}}"
-        >{{totalDonated[userid] > 0 ? '+' : ''}}{{totalDonated[userid]}}</text>
+          class="{{totalDonated[player.userid] > 0 ? 'money-positive' : totalDonated[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
+        >{{totalDonated[player.userid] > 0 ? '+' : ''}}{{totalDonated[player.userid]}}</text>
       </view>
     </view>
   </view>

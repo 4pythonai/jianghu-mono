@@ -2,7 +2,7 @@
   <!-- 导航栏 -->
   <view class="nav-bar">
     <view class="nav-left">
-      <text class="nav-title">游戏详情</text>
+      <text class="nav-title">游戏汇总</text>
     </view>
     <view class="nav-right">
       <view class="icon-btn" bindtap="onIconClick">
@@ -12,7 +12,7 @@
   </view>
 
   <view class="gamble-container">
-    <view class="summary-title">赌博汇总[gameID:{{gameId}}][groupID:{{groupId}}]</view>
+    <view class="summary-title">单个赌博[gameID:{{gameId}}][groupID:{{groupId}}]</view>
 
     <!-- 使用GambleResultTable组件 -->
     <view class="gamble-results">
