@@ -151,7 +151,7 @@
 
                     <!-- 总计行 -->
                     <tr class="total-row">
-                        <td class="hole-header">总计</td>
+                        <td class="hole-header">总成绩</td>
                         <?php foreach ($players as $userid => $player): ?>
                             <td>
                                 <?php
