@@ -1,3 +1,5 @@
+import gamble from '../../../api/modules/gamble.js'
+
 Component({
     properties: {
         gameId: {
@@ -15,19 +17,10 @@ Component({
     },
 
     data: {
-        // 模拟表格数据
-        tableData: [
-            { player: '张三', hole: '3号洞', multiplier: 2 },
-            { player: '李四', hole: '4号洞', multiplier: 3 },
-            { player: '王五', hole: '5号洞', multiplier: 1 },
-            { player: '赵六', hole: '6号洞', multiplier: 4 }
-        ],
-        // 汇总信息
-        summary: {
-            totalPlayers: 4,
-            totalHoles: 4,
-            averageMultiplier: 2.5
-        }
+        totalAmount: '0',
+        gameStatus: '进行中',
+        gambleResults: [],
+        loading: false
     },
 
     lifetimes: {
@@ -35,21 +28,100 @@ Component({
             console.log('[GambleSummary] 组件加载');
             console.log('[GambleSummary] 接收到的属性:', {
                 gameId: this.properties.gameId,
+                groupId: this.properties.groupId,
                 playersCount: this.properties.players?.length
             });
+
+            // 组件加载时获取赌博汇总数据
+            this.fetchGambleSummary();
         }
     },
 
     observers: {
         'gameId': function (gameId) {
             console.log('[GambleSummary] gameId 属性变化:', gameId);
+            if (gameId) {
+                this.fetchGambleSummary();
+            }
         },
-        'players': function (players) {
+        'groupId': function (groupId) {
+            console.log('[GambleSummary] groupId 属性变化:', groupId);
+            if (groupId) {
+                this.fetchGambleSummary();
+            }
+        },
+        'players': (players) => {
             console.log('[GambleSummary] players 属性变化:', players?.length);
         }
     },
 
     methods: {
+        /**
+         * 获取赌博汇总数据
+         */
+        async fetchGambleSummary() {
+            const { gameId, groupId } = this.properties;
+
+            if (!gameId || !groupId) {
+                console.log('[GambleSummary] gameId 或 groupId 为空，跳过API调用');
+                return;
+            }
+
+            console.log('[GambleSummary] 开始获取赌博汇总数据:', { gameId, groupId });
+
+            this.setData({ loading: true });
+
+            try {
+                // 调用API获取赌博汇总数据
+                const result = await this.callGambleSummaryAPI(gameId, groupId);
+
+                console.log('[GambleSummary] API调用成功，返回数据:', result.gambleResults);
+
+                // 保存数据到组件状态
+                this.setData({
+                    gambleResults: result.gambleResults,
+                    loading: false
+                });
+
+                // 处理数据，提取关键信息
+                this.processGambleSummaryData(result.gambleResults);
+
+            } catch (error) {
+                console.error('[GambleSummary] API调用失败:', error);
+                this.setData({ loading: false });
+
+                wx.showToast({
+                    title: '获取数据失败',
+                    icon: 'none'
+                });
+            }
+        },
+
+        /**
+         * 调用赌博汇总API
+         */
+        callGambleSummaryAPI(gameId, groupId) {
+            return new Promise((resolve, reject) => {
+                // 使用正确的API调用方式
+                gamble.getGambleSummary({
+                    gameId: gameId,
+                    groupId: groupId
+                }).then(res => {
+                    console.log('[GambleSummary] API原始响应:', res);
+                    resolve(res);
+                }).catch(err => {
+                    console.error('[GambleSummary] API调用错误:', err);
+                    reject(err);
+                });
+            });
+        },
+
+        /**
+         * 处理赌博汇总数据
+         */
+        processGambleSummaryData(data) {
+            console.log('[GambleSummary] 开始处理数据...');
+        },
 
         /**
          * 导航栏图标按钮点击事件
@@ -93,44 +165,11 @@ Component({
         },
 
         /**
-         * 处理分享
-         */
-        handleShare() {
-            console.log('[GambleSummary] 处理分享');
-            wx.showToast({
-                title: '分享功能开发中',
-                icon: 'none'
-            });
-        },
-
-        /**
-         * 处理设置
-         */
-        handleSettings() {
-            console.log('[GambleSummary] 处理设置');
-            wx.showToast({
-                title: '设置功能开发中',
-                icon: 'none'
-            });
-        },
-
-        /**
-         * 处理帮助
-         */
-        handleHelp() {
-            console.log('[GambleSummary] 处理帮助');
-            wx.showToast({
-                title: '帮助功能开发中',
-                icon: 'none'
-            });
-        },
-
-        /**
          * 刷新方法 - 供父组件调用
          */
         refresh() {
             console.log('[GambleSummary] 组件刷新');
-            // 这里可以添加刷新逻辑
+            this.fetchGambleSummary();
         }
     }
 });

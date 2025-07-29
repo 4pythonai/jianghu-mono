@@ -35,6 +35,8 @@ const gamble = {
     updateBigWind: (data, options) => request('/Gamble/updateBigWind', data, options),
 
 
+    getGambleSummary: (data, options) => request('/Audit/getGambleSummary', data, options),
+
 }
 
 export default gamble

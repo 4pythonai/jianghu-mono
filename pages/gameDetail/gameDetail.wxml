@@ -18,14 +18,7 @@
     gameId="{{gameId}}"
     groupId="{{groupId}}"
     players="{{players}}"
+    showWebview="{{currentTab === 2}}"
     id="GambleSummary"
   />
 </view>
-
-<!-- <view class="tab-content" hidden="{{currentTab !== 2}}">
-  <RuntimeConfigList
-    id="gambleComponent"
-    gameId="{{gameData.gameid || ''}}"
-    players="{{gameData.players || []}}"
-  />
-</view>-->
