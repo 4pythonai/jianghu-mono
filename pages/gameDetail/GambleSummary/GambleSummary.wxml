@@ -9,6 +9,38 @@
         <image class="nav-icon" src="/assets/icons/icons8-right-arrow-50-3.png" mode="aspectFit"></image>
       </view>
     </view>
+  </view>
+
+  <view class="gamble-container">
+    <view class="summary-title">赌博汇总[gameID:{{gameId}}][groupID:{{groupId}}]</view>
+
+    <!-- 循环渲染赌博结果 -->
+    <view class="gamble-results">
+      <view class="results-header">
+        <text class="header-text">赌博结果列表</text>
+      </view>
+
+      <view class="results-list">
+        <view class="result-item" wx:for="{{gambleResults}}" wx:key="index">
+          <view class="result-key">
+            <text>Key: {{index}}</text>
+          </view>
+          <view class="result-content">
+            <text>{{item}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{gambleResults.length === 0 && !loading}}">
+        <text>暂无赌博结果数据</text>
+      </view>
+
+      <!-- 加载状态 -->
+      <view class="loading-state" wx:if="{{loading}}">
+        <text>加载中...</text>
+      </view>
+    </view>
 
     <view>AAA</view>
   </view>
