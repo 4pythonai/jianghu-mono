@@ -27,9 +27,11 @@ Page({
     G_4P_8421_Store.updateUserRulename(value);
     console.log('规则名称已更新:', value);
   },
+
   onShowKoufen() {
     this.setData({ showKoufen: true });
   },
+
   onCloseKoufen() {
     this.setData({ showKoufen: false });
   },

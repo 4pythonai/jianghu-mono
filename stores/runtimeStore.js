@@ -69,6 +69,7 @@ export const runtimeStore = observable({
 
             if (res?.code === 200) {
                 const rawConfigs = res.gambles || [];
+                console.log('🎮 [runtimeStore] API 返回原始数据:', rawConfigs);
 
                 // 处理配置数据 - 使用朴素的写法
                 const processedConfigs = [];
@@ -76,19 +77,23 @@ export const runtimeStore = observable({
                     const tmp = this.processOneGamble(config);
                     processedConfigs.push(tmp);
                 }
+
+                console.log('🎮 [runtimeStore] 处理后的配置数据:', processedConfigs);
+                console.log('🎮 [runtimeStore] 第一个配置项的 bigWind:', processedConfigs[0]?.bigWind);
+                console.log('🎮 [runtimeStore] 第一个配置项的 ifShow:', processedConfigs[0]?.ifShow);
+
                 this.runtimeConfigs = processedConfigs;
+                console.log('🎮 [runtimeStore] 已更新 runtimeConfigs，长度:', this.runtimeConfigs.length);
 
-                // 调试信息
-                console.log('🎮 [runtimeStore] 处理完成:', {
-                    rawCount: rawConfigs.length,
-                    processedCount: processedConfigs.length,
-                    runtimeConfigsLength: this.runtimeConfigs.length
-                });
-
+                return processedConfigs;
             }
+
+            console.log('🎮 [runtimeStore] API 返回非200状态码:', res?.code);
+            return [];
         } catch (err) {
             this.runtimeConfigError = err.message || '获取运行时配置失败';
             this.runtimeConfigs = [];
+            throw err; // 直接抛出错误，让调用方处理
         } finally {
             this.loadingRuntimeConfig = false;
         }

@@ -1,8 +1,8 @@
 {
   "navigationBarTitleText": "4人8421规则配置",
   "usingComponents": {
-    "draw8421_config": "/components/Gamble/8421_configItems/draw8421Config/draw8421Config",
     "koufen": "/components/Gamble/8421_configItems/koufen/koufen",
+    "draw8421_config": "/components/Gamble/8421_configItems/draw8421Config/draw8421Config",
     "eatmeat": "/components/Gamble/8421_configItems/eatmeat/eatmeat"
   }
 }
