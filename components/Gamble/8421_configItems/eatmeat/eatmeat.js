@@ -27,25 +27,7 @@ Component({
 
 
     meatValueOption: 0,
-
-    // 修改封顶选项, 支持可编辑数字
-
-    //   TOP_OPTIONS: [
-    //     { label: '不封顶', value: 10000000 },
-    //     { label: 'X分封顶', value: 'custom' }
-    // ],
-
-    //   TOP_OPTIONS: [
-    //     { label: '不封顶', value: 10000000 },
-    //     { label: 'X分封顶', value: 'custom' }
-    // ],
-
-
-
     topOptions: ["不封顶", "X分封顶"],
-
-
-
     topSelected: 0,
 
     // 新增可编辑变量
@@ -131,21 +113,26 @@ Component({
       this.setData({ eating_range: newEatingRange });
       console.log('更新吃肉配置:', key, value);
     },
-    onScoreSelect(e) {
+
+    onMeatValueChange(e) {
       const index = Number.parseInt(e.currentTarget.dataset.index);
       this.setData({ meatValueOption: index });
     },
+
     onTopSelect(e) {
       this.setData({ topSelected: e.currentTarget.dataset.index });
     },
     // 封顶分数改变
+
     onTopScoreChange(e) {
       const value = this.data.topScoreRange[e.detail.value];
       this.setData({ topScoreLimit: value });
     },
+
     onCancel() {
       this.triggerEvent('cancel');
     },
+
     onConfirm() {
       const data = this.data;
 
@@ -171,13 +158,6 @@ Component({
 
       // 调用store的action更新数据
       G_4P_8421_Store.updateEatmeatRule(eating_range, meatValueConfig, meat_max_value);
-
-      console.log('吃肉组件已更新store:', {
-        eating_range,
-        meatValueConfig,
-        meat_max_value,
-        customValues: { topScoreLimit: data.topScoreLimit }
-      });
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {

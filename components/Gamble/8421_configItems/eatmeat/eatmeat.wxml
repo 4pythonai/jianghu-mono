@@ -27,7 +27,7 @@
 
       <view
         class="modal-item {{noKoufen ? 'disabled' : ''}}"
-        bindtap="{{noKoufen ? '' : 'onScoreSelect'}}"
+        bindtap="{{noKoufen ? '' : 'onMeatValueChange'}}"
         data-index="0"
       >
         <view class="radio-outer {{meatValueOption === 0 ? 'checked' : ''}}">
@@ -38,7 +38,7 @@
 
       <view
         class="modal-item {{noKoufen ? 'disabled' : ''}}"
-        bindtap="{{noKoufen ? '' : 'onScoreSelect'}}"
+        bindtap="{{noKoufen ? '' : 'onMeatValueChange'}}"
         data-index="1"
       >
         <view class="radio-outer {{meatValueOption === 1 ? 'checked' : ''}}">
@@ -49,7 +49,7 @@
 
       <view
         class="modal-item {{noKoufen ? 'disabled' : ''}}"
-        bindtap="{{noKoufen ? '' : 'onScoreSelect'}}"
+        bindtap="{{noKoufen ? '' : 'onMeatValueChange'}}"
         data-index="2"
       >
         <view class="radio-outer {{meatValueOption === 2 ? 'checked' : ''}}">
