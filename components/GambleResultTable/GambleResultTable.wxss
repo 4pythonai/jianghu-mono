@@ -23,13 +23,10 @@
 	padding: 8rpx;
 	text-align: center;
 	border-right: 1px solid #dee2e6;
-	min-width: 140rpx;
 }
 
 .hole-header {
-	flex: 0 0 120rpx;
-	min-width: 120rpx;
-	max-width: 120rpx;
+	flex: 1;
 	background-color: #ffffff;
 	font-weight: bold;
 	border-right: 1px solid #dee2e6;
@@ -104,6 +101,8 @@
 	height: 100%;
 	font-weight: bold;
 	color: #495057;
+	padding: 0 8rpx;
+	text-align: center;
 }
 
 /* 总计行样式 */
@@ -148,9 +147,9 @@
 /* 响应式设计 */
 @media (max-width: 750rpx) {
 	.hole-header {
-		flex: 0 0 100rpx;
-		min-width: 100rpx;
-		max-width: 100rpx;
+		flex: 0 0 120rpx;
+		min-width: 120rpx;
+		max-width: 120rpx;
 	}
 
 	.player-avatar {
