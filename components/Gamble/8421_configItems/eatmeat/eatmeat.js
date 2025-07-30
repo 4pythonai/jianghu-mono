@@ -1,18 +1,31 @@
 import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../../utils/gameConstants.js'
 
+
+const MEAT_VALUE_OPTIONS = [
+  { label: '肉算x分', value: 'MEAT_AS_1' },
+  { label: '分值翻倍', value: 'SINGLE_DOUBLE' },
+  { label: '分值连续翻倍', value: 'CONTINUE_DOUBLE' }
+];
+
+
 Component({
   properties: {
     value: Object,
     visible: Boolean
   },
+
+
+
   data: {
+
+
     // 使用统一的常量配置
     eating_range: GameConstantsUtils.getDefaultEatingRange(),
     eatRangeLabels: GOLF_SCORE_TYPES.LABELS,
     eatRangeKeys: GOLF_SCORE_TYPES.KEYS,
 
-    meatValueOptions: EATMEAT_CONFIG.MEAT_VALUE_OPTIONS.map(item => item.label),
+    meatValueOptions: MEAT_VALUE_OPTIONS.map(item => item.label),
     scoreSelected: 0,
 
     // 修改封顶选项, 支持可编辑数字

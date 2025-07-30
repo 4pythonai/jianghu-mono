@@ -214,10 +214,10 @@ Component({
                 maxDonationPoints: (this.data.donationType === 'normal' || this.data.donationType === 'all') ? Number(this.data.maxDonationPoints) : 0
             };
             console.log('[juanguo] 捐锅配置:', donationConfig);
-            // 触发事件传递给父组件
+
+            // 触发事件传递给父组件，让父组件决定是否关闭弹窗
             this.triggerEvent('confirmDonation', { donationConfig });
-            // 关闭弹窗
-            this.close();
+            // 注意：不再在这里自动关闭弹窗，由父组件控制
         },
 
         // 关闭弹窗

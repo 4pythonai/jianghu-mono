@@ -313,8 +313,16 @@ Page({
         const { donationConfig } = e.detail;
         console.log('RuntimeConfigList.js/捐锅配置确认:', donationConfig);
 
-        // updateDonation
+        if (donationConfig.selectedIds.length === 0) {
+            wx.showToast({
+                title: '请选择要捐锅的游戏',
+                icon: 'none'
+            });
+            // 验证失败时不关闭弹窗，让用户停留在当前界面
+            return;
+        }
 
+        // updateDonation
         const res = await app.api.gamble.updateDonation(donationConfig);
 
         console.log('RuntimeConfigList.js/捐锅配置确认 res:', res);
@@ -326,15 +334,15 @@ Page({
                 title: '捐锅配置已保存',
                 icon: 'success'
             });
+            // 成功时才关闭弹窗
+            this.onJuanguoClose();
         } else {
             wx.showToast({
                 title: '捐锅配置保存失败',
                 icon: 'none'
             });
+            // 失败时不关闭弹窗，让用户停留在当前界面
         }
-
-        // 关闭弹窗
-        this.onJuanguoClose();
     },
 
     onHoleJumpClick() {
@@ -392,29 +400,23 @@ Page({
     },
 
     onKickoffConfirm(e) {
-        const { configId, configName, hindex, multiplier, completeMultiplierConfig, holeMultiplierMap } = e.detail;
+        const { configId, configName, hindex, multipliers, completeMultiplierConfig, holeMultiplierMap } = e.detail;
 
-        // updateKickOffMultiplier
         console.log(' [🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻🌻  踢一脚配置确认:', {
             configId,
             configName,
             hindex,
-            multiplier,
+            multipliers,
             completeMultiplierConfig,
             holeMultiplierMap
         });
 
-        // 调用 updateKickOffMultiplier
 
-        // app.api.gamble.deleteRuntimeConfig
 
         app.api.gamble.updateKickOffMultiplier({
             configId,
             configName,
-            hindex,
-            multiplier,
-            completeMultiplierConfig,
-            holeMultiplierMap
+            multipliers
         });
 
         // 这里可以处理踢一脚配置的确认逻辑

@@ -1,4 +1,4 @@
-<view class="juanguo-popup" bindtap="close">
+<view class="juanguo-popup">
   <view class="juanguo-content" catchtap="noop">
     <view class="panel-title">捐锅设置(以最后一次为准)</view>
     <!-- 选择捐锅的游戏 -->

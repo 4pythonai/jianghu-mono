@@ -139,6 +139,8 @@ Component({
 
         // 确定按钮
         onConfirm() {
+
+
             const config = this.data.runtimeConfigs?.[0];
             if (!config) {
                 console.error('[kickoff] 无配置信息');
@@ -151,15 +153,20 @@ Component({
                 multiplier: Number(multiplier)
             }));
 
+
+            console.log('🌸🌸🌸🌸 当前 multiplierArray:', multiplierArray);
+
             // 更新 store
             this.updateRuntimeMultipliers(config.id, multiplierArray);
-
-            // 触发确认事件
-            this.triggerEvent('confirm', {
+            const triggerData = {
                 configId: config.id,
                 configName: config.gambleUserName || config.gambleSysName || '未知配置',
                 multipliers: multiplierArray
-            });
+            }
+
+            // 触发确认事件
+            console.log('🌸🌸🌸🌸 当前 triggerData:', triggerData);
+            this.triggerEvent('confirm', triggerData);
         },
 
         // 关闭弹窗
