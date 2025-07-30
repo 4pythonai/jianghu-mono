@@ -115,76 +115,25 @@ class Audit extends CI_Controller {
         // 按 hindex 排序
         ksort($all_holes);
 
-        // 第三步：循环每个 hole，根据 userid 进行分项汇总
+        // 第三步：为每个洞生成正确的 players_detail 结构
         foreach ($all_holes as $hindex => $hole) {
-            // 为每个用户初始化 players_detail（去重）
+            // 为每个用户初始化 players_detail
             $players_detail = [];
-            $processed_users = []; // 用于跟踪已处理的用户
-
             foreach ($rebObj['group_info'] as $player) {
-                $userid = $player['userid'];
-
-                // 避免重复用户
-                if (in_array($userid, $processed_users)) {
-                    continue;
-                }
-
-                $processed_users[] = $userid;
                 $players_detail[] = [
-                    'userid' => $userid,
+                    'userid' => $player['userid'],
                     'final_points' => 0,
                     'pointsDonated' => 0
                 ];
             }
 
-            // 遍历所有赌球结果，汇总该洞的数据
-            foreach ($group_results as $result) {
-                if (!isset($result['useful_holes']) || !is_array($result['useful_holes'])) {
-                    continue;
-                }
-
-                // 找到对应的洞
-                foreach ($result['useful_holes'] as $result_hole) {
-                    if ($result_hole['hindex'] == $hindex) {
-                        // 处理 winner_detail
-                        if (isset($result_hole['winner_detail']) && is_array($result_hole['winner_detail'])) {
-                            foreach ($result_hole['winner_detail'] as $winner) {
-                                $userid = $winner['userid'];
-                                // 找到对应的玩家并累加分数
-                                foreach ($players_detail as &$player) {
-                                    if ($player['userid'] == $userid) {
-                                        $player['final_points'] += isset($winner['final_points']) ? $winner['final_points'] : 0;
-                                        $player['pointsDonated'] += isset($winner['pointsDonated']) ? $winner['pointsDonated'] : 0;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        // 处理 failer_detail
-                        if (isset($result_hole['failer_detail']) && is_array($result_hole['failer_detail'])) {
-                            foreach ($result_hole['failer_detail'] as $failer) {
-                                $userid = $failer['userid'];
-                                // 找到对应的玩家并累加分数
-                                foreach ($players_detail as &$player) {
-                                    if ($player['userid'] == $userid) {
-                                        $player['final_points'] += isset($failer['final_points']) ? $failer['final_points'] : 0;
-                                        $player['pointsDonated'] += isset($failer['pointsDonated']) ? $failer['pointsDonated'] : 0;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-
-            // 添加到结果中，保留原始洞的所有属性
-            $hole_data = $hole; // 复制原始洞的所有属性
-            $hole_data['players_detail'] = $players_detail; // 替换 players_detail
+            // 添加到结果中
+            $hole_data = $hole;
+            $hole_data['players_detail'] = $players_detail;
             $rebObj['useful_holes'][] = $hole_data;
         }
+
+        // 从这开始,汇总
 
         return $rebObj;
     }
