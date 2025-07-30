@@ -134,6 +134,52 @@ class Audit extends CI_Controller {
         }
 
         // 从这开始,汇总
+        foreach ($rebObj['useful_holes'] as &$hole) {
+            $hindex = $hole['hindex'];
+
+            // 遍历所有赌球结果，汇总该洞的数据
+            foreach ($group_results as $result) {
+                if (!isset($result['useful_holes']) || !is_array($result['useful_holes'])) {
+                    continue;
+                }
+
+                // 找到对应的洞
+                foreach ($result['useful_holes'] as $result_hole) {
+                    if ($result_hole['hindex'] == $hindex) {
+                        // 处理 winner_detail
+                        if (isset($result_hole['winner_detail']) && is_array($result_hole['winner_detail'])) {
+                            foreach ($result_hole['winner_detail'] as $winner) {
+                                $userid = $winner['userid'];
+                                // 找到对应的玩家并累加分数
+                                foreach ($hole['players_detail'] as &$player) {
+                                    if ($player['userid'] == $userid) {
+                                        $player['final_points'] += isset($winner['final_points']) ? $winner['final_points'] : 0;
+                                        $player['pointsDonated'] += isset($winner['pointsDonated']) ? $winner['pointsDonated'] : 0;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        // 处理 failer_detail
+                        if (isset($result_hole['failer_detail']) && is_array($result_hole['failer_detail'])) {
+                            foreach ($result_hole['failer_detail'] as $failer) {
+                                $userid = $failer['userid'];
+                                // 找到对应的玩家并累加分数
+                                foreach ($hole['players_detail'] as &$player) {
+                                    if ($player['userid'] == $userid) {
+                                        $player['final_points'] += isset($failer['final_points']) ? $failer['final_points'] : 0;
+                                        $player['pointsDonated'] += isset($failer['pointsDonated']) ? $failer['pointsDonated'] : 0;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
 
         return $rebObj;
     }
