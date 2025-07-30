@@ -50,7 +50,154 @@ class Audit extends CI_Controller {
 
         $paras = $_GET;
         $gambleid = $paras['gambleid'];
+
+        $final_result = $this->getGambleResult($gambleid, $debugMode);
+        $this->printResult($final_result);
+    }
+
+
+    public function getGambleSummary() {
+        $debugMode = false; // 小程序
+        $paras = json_decode(file_get_contents('php://input'), true);
+
+
+
+        $groupid = $paras['groupId'];
+        $gambles = $this->db->get_where('t_gamble_runtime', ['groupid' => $groupid])->result_array();
+
+        $group_results = [];
+        foreach ($gambles as $gamble) {
+            $gambleid = $gamble['id'];
+
+            $complex = $this->getGambleResult($gambleid, $debugMode);
+            $simple = [];
+            $simple['useful_holes'] = $complex['useful_holes'];
+            $simple['group_info'] = $complex['group_info'];
+            $group_results[] = $simple;
+        }
+
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['SummaryResult'] = $this->subTotal($group_results);
+        $ret['gambleResults'] = $group_results;
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+
+    private function subTotal($group_results) {
+        // 如果 group_results 长度为0，返回 null
+        if (empty($group_results)) {
+            return null;
+        }
+
+        // 第一步：生成 group_info，来源于第一个项的 group_info
+        $rebObj = [
+            'group_info' => $group_results[0]['group_info'],
+            'useful_holes' => []
+        ];
+
+        // 第二步：收集所有的 useful_holes，去重并按 hindex 排序
+        $all_holes = [];
+        foreach ($group_results as $result) {
+            if (isset($result['useful_holes']) && is_array($result['useful_holes'])) {
+                foreach ($result['useful_holes'] as $hole) {
+                    $hindex = $hole['hindex'];
+                    $tmphole = [];
+                    $tmphole['hindex'] = $hole['hindex'];
+                    $tmphole['par'] = $hole['par'];
+                    $tmphole['holename'] = $hole['holename'];
+                    $all_holes[$hindex] = $tmphole;
+                }
+            }
+        }
+
+        // 按 hindex 排序
+        ksort($all_holes);
+
+        // 第三步：循环每个 hole，根据 userid 进行分项汇总
+        foreach ($all_holes as $hindex => $hole) {
+            // 为每个用户初始化 players_detail（去重）
+            $players_detail = [];
+            $processed_users = []; // 用于跟踪已处理的用户
+
+            foreach ($rebObj['group_info'] as $player) {
+                $userid = $player['userid'];
+
+                // 避免重复用户
+                if (in_array($userid, $processed_users)) {
+                    continue;
+                }
+
+                $processed_users[] = $userid;
+                $players_detail[] = [
+                    'userid' => $userid,
+                    'final_points' => 0,
+                    'pointsDonated' => 0
+                ];
+            }
+
+            // 遍历所有赌球结果，汇总该洞的数据
+            foreach ($group_results as $result) {
+                if (!isset($result['useful_holes']) || !is_array($result['useful_holes'])) {
+                    continue;
+                }
+
+                // 找到对应的洞
+                foreach ($result['useful_holes'] as $result_hole) {
+                    if ($result_hole['hindex'] == $hindex) {
+                        // 处理 winner_detail
+                        if (isset($result_hole['winner_detail']) && is_array($result_hole['winner_detail'])) {
+                            foreach ($result_hole['winner_detail'] as $winner) {
+                                $userid = $winner['userid'];
+                                // 找到对应的玩家并累加分数
+                                foreach ($players_detail as &$player) {
+                                    if ($player['userid'] == $userid) {
+                                        $player['final_points'] += isset($winner['final_points']) ? $winner['final_points'] : 0;
+                                        $player['pointsDonated'] += isset($winner['pointsDonated']) ? $winner['pointsDonated'] : 0;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        // 处理 failer_detail
+                        if (isset($result_hole['failer_detail']) && is_array($result_hole['failer_detail'])) {
+                            foreach ($result_hole['failer_detail'] as $failer) {
+                                $userid = $failer['userid'];
+                                // 找到对应的玩家并累加分数
+                                foreach ($players_detail as &$player) {
+                                    if ($player['userid'] == $userid) {
+                                        $player['final_points'] += isset($failer['final_points']) ? $failer['final_points'] : 0;
+                                        $player['pointsDonated'] += isset($failer['pointsDonated']) ? $failer['pointsDonated'] : 0;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // 添加到结果中，保留原始洞的所有属性
+            $hole_data = $hole; // 复制原始洞的所有属性
+            $hole_data['players_detail'] = $players_detail; // 替换 players_detail
+            $rebObj['useful_holes'][] = $hole_data;
+        }
+
+        return $rebObj;
+    }
+
+    /**
+     * 获取单个赌博结果
+     * @param int $gambleid 赌博ID
+     * @param bool $debugMode 是否开启调试模式
+     * @return array 赌博结果
+     */
+    private function getGambleResult($gambleid, $debugMode = false) {
         $row = $this->db->get_where('t_gamble_runtime', ['id' => $gambleid])->row_array();
+
         $cfg = [
             'gambleSysName' => $row['gambleSysName'],
             'userRuleId' => $row['userRuleId'],
@@ -60,7 +207,6 @@ class Audit extends CI_Controller {
             'userid' => $row['creator_id']
         ];
 
-
         $web_url = config_item('web_url');
         $detail_url = "{$web_url}/v3/index.php/Audit/index?gambleid={$gambleid}";
 
@@ -69,12 +215,10 @@ class Audit extends CI_Controller {
 
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
         if ($debugMode) {
-            $simple = $final_result;
-            // unset($simple['holes']);
-            debug($simple);
+            debug($final_result);
         }
 
         $final_result['qrcode_url'] = $qrcode_url;
-        $this->printResult($final_result);
+        return $final_result;
     }
 }
