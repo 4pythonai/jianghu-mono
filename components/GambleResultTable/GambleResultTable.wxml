@@ -19,7 +19,7 @@
             src="{{player.cover}}"
             mode="aspectFill"
           ></image>
-          <view class="player-name" style="font-size: 20rpx; max-width: 100%;">{{player.nickname}}</view>
+          <view class="player-name">{{player.nickname}}</view>
         </view>
       </view>
     </view>
