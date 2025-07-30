@@ -3,9 +3,9 @@ import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../.
 
 
 const MEAT_VALUE_OPTIONS = [
-  { label: '肉算x分', value: 'MEAT_AS_1' },
-  { label: '分值翻倍', value: 'SINGLE_DOUBLE' },
-  { label: '分值连续翻倍', value: 'CONTINUE_DOUBLE' }
+  { label: '肉算x分', meatTag: 'MEAT_AS_X', value: 'MEAT_AS_1' },
+  { label: '分值翻倍', meatTag: 'SINGLE_DOUBLE', value: 'SINGLE_DOUBLE' },
+  { label: '分值连续翻倍', meatTag: 'CONTINUE_DOUBLE', value: 'CONTINUE_DOUBLE' }
 ];
 
 
@@ -25,10 +25,17 @@ Component({
     eatRangeLabels: GOLF_SCORE_TYPES.LABELS,
     eatRangeKeys: GOLF_SCORE_TYPES.KEYS,
 
-    meatValueOptions: MEAT_VALUE_OPTIONS.map(item => item.label),
-    scoreSelected: 0,
+
+    meatValueOption: 0,
 
     // 修改封顶选项, 支持可编辑数字
+
+    //   TOP_OPTIONS: [
+    //     { label: '不封顶', value: 10000000 },
+    //     { label: 'X分封顶', value: 'custom' }
+    // ],
+
+
     topOptions: EATMEAT_CONFIG.TOP_OPTIONS.map(item => item.label),
     topSelected: 0,
 
@@ -84,15 +91,15 @@ Component({
 
       // 解析肉分值计算方式 - 新格式:MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
       if (meatValue) {
-        let scoreSelected = 0;
+        let meatValueOption = 0;
         if (meatValue?.startsWith('MEAT_AS_')) {
-          scoreSelected = 0;
+          meatValueOption = 0;
         } else if (meatValue === 'SINGLE_DOUBLE') {
-          scoreSelected = 1;
+          meatValueOption = 1;
         } else if (meatValue === 'CONTINUE_DOUBLE') {
-          scoreSelected = 2;
+          meatValueOption = 2;
         }
-        this.setData({ scoreSelected });
+        this.setData({ meatValueOption });
       }
 
       // 解析封顶配置 - 新格式:数字, 10000000表示不封顶
@@ -116,7 +123,8 @@ Component({
       console.log('更新吃肉配置:', key, value);
     },
     onScoreSelect(e) {
-      this.setData({ scoreSelected: e.currentTarget.dataset.index });
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      this.setData({ meatValueOption: index });
     },
     onTopSelect(e) {
       this.setData({ topSelected: e.currentTarget.dataset.index });
@@ -137,7 +145,7 @@ Component({
 
       // 肉分值计算方式改为新格式
       let meatValueConfig = null;
-      switch (data.scoreSelected) {
+      switch (data.meatValueOption) {
         case 0:
           meatValueConfig = 'MEAT_AS_1'; // 固定为MEAT_AS_1, 如需要其他数值可以再扩展
           break;
