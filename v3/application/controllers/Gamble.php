@@ -244,7 +244,7 @@ class Gamble extends MY_Controller {
                      sub8421_config_string,
                      update_time
                      FROM t_gamble_rule_user 
-                     WHERE creator_id = ? 
+                     WHERE creator_id = ? and softdeleted='n'
                      ORDER BY create_time DESC";
 
             $rules = $this->db->query($query, [$userid])->result_array();
@@ -298,7 +298,9 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $userRuleId = $json_paras['userRuleId'];
-        $this->db->delete('t_gamble_rule_user', ['id' => $userRuleId, 'creator_id' => $userid]);
+        // using softdelete to  'y' 
+        $this->db->where('id', $userRuleId)->update('t_gamble_rule_user', ['softdeleted' => 'y']);
+        // $this->db->delete('t_gamble_rule_user', ['id' => $userRuleId, 'creator_id' => $userid]);
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
 

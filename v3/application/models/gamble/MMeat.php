@@ -29,9 +29,26 @@ class MMeat extends CI_Model {
         $this->addDebug($hole, "肉池状态: 总共 " . count($context->meat_pool) . " 块肉，可用 {$available_meat_count} 块肉");
 
         $eating_count = $this->determineEatingCount($winner_performance, $context, $available_meat_count, $hole);
+
+        // 如果是最后一个洞,且配置了大风吹,则在最后一个洞吃掉所有
+        if ($this->ifLastHole($context, $hole)  && $context->bigWind == 'y') {
+            $eating_count =  $available_meat_count;
+            $this->addDebug($hole, "🧲吃肉: 大风吹, 吃掉所有肉, 吃掉剩余的{$eating_count} 块肉");
+        }
+
         $meatPoints = $this->executeMeatEating($hole, $eating_count, $context);
 
         $this->distributeMeatPoints($hole, $meatPoints);
+    }
+
+
+    public function ifLastHole($context, $hole) {
+
+        $lastHoleOfUsefulHoles = $context->useful_holes[count($context->useful_holes) - 1];
+        if ($lastHoleOfUsefulHoles['hindex'] == $hole['hindex']) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -74,24 +91,6 @@ class MMeat extends CI_Model {
 
 
 
-    private function calculateMeatMoney_MEAT_AS($context, &$currentHole, $eaten_meat_blocks, $meat_as_x) {
-        $eaten_count = count($eaten_meat_blocks);
-        if ($eaten_count === 0) {
-            return 0;
-        }
-        // MEAT_AS_X 模式：每块肉固定价值,  MEAT_AS_ 没有封顶
-
-        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole['hindex']);
-
-
-        if ($multiplier > 1) {
-            $this->addDebug($currentHole, "🧲吃肉:踢一脚导致 使用 multiplier: {$multiplier}");
-        }
-
-        $meat_value = $this->parseMeatAsX($meat_as_x);
-        return $eaten_count * $meat_value * $multiplier;
-    }
-
 
 
     /**
@@ -114,6 +113,27 @@ class MMeat extends CI_Model {
 
 
 
+    private function calculateMeatMoney_MEAT_AS($context, &$currentHole, $eaten_meat_blocks, $meat_as_x) {
+        $eaten_count = count($eaten_meat_blocks);
+        if ($eaten_count === 0) {
+            return 0;
+        }
+        // MEAT_AS_X 模式：每块肉固定价值,  MEAT_AS_ 没有封顶
+
+        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole['hindex']);
+
+
+        if ($multiplier > 1) {
+            $this->addDebug($currentHole, "🧲吃肉:踢一脚导致 使用 multiplier: {$multiplier}");
+        }
+
+        $meat_value = $this->parseMeatAsX($meat_as_x);
+        return $eaten_count * $meat_value * $multiplier;
+    }
+
+
+
+
     /**
      *     Hole           倍数
      *    ❓[ 肉 hole ]    m1
@@ -124,9 +144,6 @@ class MMeat extends CI_Model {
      * 
      *    m1*basepoints +m2*basepoints +m3*basepoints +m4*basepoints 
      */
-
-
-
     private function calculateMeatMoney_SINGLE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $raw_points, $meat_max_value) {
 
         // debug(" 肉:🟥🟥🟥🟥 ", $eaten_meat_blocks);
