@@ -53,18 +53,9 @@ class MMeat extends CI_Model {
             return 0;
         }
 
-        // debug("当前洞❤️🧡💛💚💙💜" . $hole['holename']);
-        // echo "总共吃掉了" . count($eaten_meat_blocks) . " 块肉\n";
-        // echo "========================\n";
-
-        // 打印被吃掉的肉的详细信息
-        // echo "=== 被吃掉的肉详情 ===\n";
-        // foreach ($eaten_meat_blocks as $meat_detail) {
-        //     debug($meat_detail);
-        // }
 
 
-        $points = abs($hole['points']); // 使用指标分数作为基础分数
+        $points = abs($hole['points_before_kick']); // 不要使用踢完以后的 points
         $meat_value_config = $context->meat_value_config_string;
         $meat_max_value = $context->meat_max_value;
 
@@ -90,7 +81,7 @@ class MMeat extends CI_Model {
         }
         // MEAT_AS_X 模式：每块肉固定价值,  MEAT_AS_ 没有封顶
 
-        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole);
+        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole['hindex']);
 
 
         if ($multiplier > 1) {
@@ -122,22 +113,38 @@ class MMeat extends CI_Model {
     }
 
 
-    private function calculateMeatMoney_SINGLE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $points, $meat_max_value) {
+
+    /**
+     *     Hole           倍数
+     *    ❓[ 肉 hole ]    m1
+     *    ❓[ 肉 hole ]    m2
+     *    ❓[ 肉 hole ]    m3
+     *    ❓[ 肉 hole ]    m4
+     *    ✅[ 肉 hole ]    basepoints m5
+     * 
+     *    m1*basepoints +m2*basepoints +m3*basepoints +m4*basepoints 
+     */
+
+
+
+    private function calculateMeatMoney_SINGLE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $raw_points, $meat_max_value) {
+
+        // debug(" 肉:🟥🟥🟥🟥 ", $eaten_meat_blocks);
+        // debug(" 肉:🟥 raw_points  ", $raw_points);
 
         $eaten_count = count($eaten_meat_blocks);
         if ($eaten_count === 0) {
             return 0;
         }
-        // 分值翻倍模式: 1个肉2倍 (points+points) ,2个肉3倍(2points+points), 3个肉4倍(3points+points),
-        // 当前不加 points,后面会加上
-        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole);
-        if ($multiplier > 1) {
-            $this->addDebug($currentHole, "🧲吃肉:踢一脚导致 使用 multiplier: {$multiplier}");
-        }
 
-        $factor  = $eaten_count;
-        $meat_money = $points * $factor * $multiplier;
-        return min($meat_money, $meat_max_value);
+        $metal_total = 0;
+        foreach ($eaten_meat_blocks as $meat) {
+            $meatHoleMultiplier = $this->findCurrentHoleMultiplier($context, $meat['hole_index']);
+            $one_meat_money = $raw_points * $meatHoleMultiplier;
+            $this->addDebug($currentHole, " raw_points= { $raw_points } 🧲吃了 1 块肉:肉洞的踢一脚导致,使用 multiplier: {$meatHoleMultiplier},得到: {$one_meat_money}");
+            $metal_total += $one_meat_money;
+        }
+        return min($metal_total, $meat_max_value);
     }
 
 
@@ -154,7 +161,7 @@ class MMeat extends CI_Model {
 
         // 连续翻倍模式: 1个肉乘以2,2个肉乘以4,3个肉乘以8
 
-        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole);
+        $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole['hindex']);
         if ($multiplier > 1) {
             $this->addDebug($currentHole, "🧲吃肉:踢一脚导致 使用 multiplier: {$multiplier}");
         }
@@ -438,15 +445,22 @@ class MMeat extends CI_Model {
     }
 
 
-    private function findCurrentHoleMultiplier($context, $currentHole) {
+    private function findCurrentHoleMultiplier($context, $hindex) {
 
         $kickConfig = $context->kickConfig;
+
+        // 检查 kickConfig 是否为数组且不为空
+        if (!is_array($kickConfig) || empty($kickConfig)) {
+            // debug("❌❌ kickConfig 不是数组或为空，使用默认值 1");
+            return 1;
+        }
+
         foreach ($kickConfig as $config) {
-            if ($config['hindex'] == $currentHole['hindex']) {
+            if ($config['hindex'] == $hindex) {
                 return $config['multiplier'];
             }
         }
-        debug("❌❌ 当前洞没有找到 multiplier, 使用默认值 1");
+        // debug("❌❌ 当前洞没有找到 multiplier, 使用默认值 1");
         return 1;
     }
 }

@@ -124,7 +124,6 @@ class MIndicator extends CI_Model {
     public function setWinFailPoints(&$hole, $context) {
 
 
-        // debug("kickConfig123", $context->kickConfig);
 
         $indicatorBlue = $hole['indicatorBlue'];
         $indicatorRed = $hole['indicatorRed'];
@@ -164,7 +163,9 @@ class MIndicator extends CI_Model {
 
 
         $hole['points_before_kick'] = $points;
-        $hole['points'] =  $points;
+        $currentHoleMultiplier = $this->getCurrentHoleMultiplier($hole, $context->kickConfig);
+
+        $hole['points'] =  $points * $currentHoleMultiplier;
     }
 
 
