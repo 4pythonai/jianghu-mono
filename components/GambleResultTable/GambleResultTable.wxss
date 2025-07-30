@@ -107,8 +107,6 @@
 
 /* 表格主体样式 */
 .table-body {
-	max-height: 600rpx;
-	overflow-y: auto;
 	overflow-x: auto;
 }
 
@@ -298,25 +296,6 @@
 		background: #fff;
 		border-bottom: 1rpx solid #e9ecef;
 	}
-}
-
-/* 滚动条样式 */
-.table-body::-webkit-scrollbar {
-	width: 6rpx;
-}
-
-.table-body::-webkit-scrollbar-track {
-	background: #f1f1f1;
-	border-radius: 3rpx;
-}
-
-.table-body::-webkit-scrollbar-thumb {
-	background: #c1c1c1;
-	border-radius: 3rpx;
-}
-
-.table-body::-webkit-scrollbar-thumb:hover {
-	background: #a8a8a8;
 }
 
 /* 确保表格在小屏幕上也能正常显示 */

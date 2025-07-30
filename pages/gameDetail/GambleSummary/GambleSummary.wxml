@@ -12,7 +12,7 @@
   </view>
 
   <view class="gamble-container">
-    <view class="summary-title">赌博汇总[gameID:{{gameId}}][groupID:{{groupId}}]</view>
+    <view class="summary-title2">汇总待开发[gameID:{{gameId}}][groupID:{{groupId}}]</view>
 
     <!-- 使用GambleResultTable组件 -->
     <view class="gamble-results">
@@ -27,10 +27,10 @@
         <view class="gamble-result-title" wx:if="{{gambleResults.length > 1}}">赌博配置 {{index + 1}}</view>
 
         <!-- 赌博结果表格 -->
-        <gamble-result-table
+        <GambleResultTable
           groupInfo="{{gambleResult.group_info  }}"
           usefulHoles="{{gambleResult.useful_holes  }}"
-        ></gamble-result-table>
+        ></GambleResultTable>
       </view>
 
       <!-- 空状态 -->

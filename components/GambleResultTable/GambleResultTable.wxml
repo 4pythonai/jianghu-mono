@@ -43,10 +43,6 @@
           <text
             class="{{item.holeMoney[player.userid] > 0 ? 'money-positive' : item.holeMoney[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
           >{{item.holeMoney[player.userid] > 0 ? '+' : ''}}{{item.holeMoney[player.userid]}}</text>
-          <text
-            wx:if="{{false}}"
-            style="display: none;"
-          >R:{{item.red}}, B:{{item.blue}}, U:{{player.userid}}</text>
         </view>
       </view>
     </view>

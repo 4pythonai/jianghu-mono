@@ -1,5 +1,5 @@
 {
     "usingComponents": {
-        "gamble-result-table": "/components/GambleResultTable/GambleResultTable"
+        "GambleResultTable": "/components/GambleResultTable/GambleResultTable"
     }
 }

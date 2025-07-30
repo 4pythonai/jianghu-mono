@@ -59,17 +59,14 @@ Component({
             // 处理洞数据
             const processedHoles = [];
             if (holesDataToUse && Array.isArray(holesDataToUse)) {
-                for (let index = 0; index < holesDataToUse.length; index++) {
-                    const hole = holesDataToUse[index];
+                for (const hole of holesDataToUse) {
 
                     const holeMoney = {};
-                    const holeDonated = {};
 
-                    // 初始化所有球员的金额和锅为0
+                    // 初始化所有球员的金额为0
                     for (const player of players) {
                         const userid = player.userid;
                         holeMoney[userid] = 0;
-                        holeDonated[userid] = 0;
                     }
 
                     // 处理获胜者详情
@@ -82,7 +79,6 @@ Component({
                             // 确保该用户存在于我们的球员列表中
                             if (playersMap[userid]) {
                                 holeMoney[userid] = money;
-                                holeDonated[userid] = donated;
                                 totalMoney[userid] += money;
                                 totalDonated[userid] += donated;
                             }
@@ -99,7 +95,6 @@ Component({
                             // 确保该用户存在于我们的球员列表中
                             if (playersMap[userid]) {
                                 holeMoney[userid] = money;
-                                holeDonated[userid] = donated;
                                 totalMoney[userid] += money;
                                 totalDonated[userid] += donated;
                             }
@@ -130,7 +125,6 @@ Component({
                     processedHoles.push({
                         ...hole,
                         holeMoney,
-                        holeDonated,
                         red: redTeam,
                         blue: blueTeam,
                         playerClasses
