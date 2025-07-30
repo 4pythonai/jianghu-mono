@@ -35,8 +35,17 @@ Component({
     //     { label: 'X分封顶', value: 'custom' }
     // ],
 
+    //   TOP_OPTIONS: [
+    //     { label: '不封顶', value: 10000000 },
+    //     { label: 'X分封顶', value: 'custom' }
+    // ],
 
-    topOptions: EATMEAT_CONFIG.TOP_OPTIONS.map(item => item.label),
+
+
+    topOptions: ["不封顶", "X分封顶"],
+
+
+
     topSelected: 0,
 
     // 新增可编辑变量

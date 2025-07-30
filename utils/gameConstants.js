@@ -58,18 +58,6 @@ export const GAME_8421_CONFIG = {
 
 // 吃肉规则配置常量
 export const EATMEAT_CONFIG = {
-    // 肉分值计算方式
-    MEAT_VALUE_OPTIONS: [
-        { label: '肉算1分', value: 'MEAT_AS_1' },
-        { label: '分值翻倍', value: 'SINGLE_DOUBLE' },
-        { label: '分值连续翻倍', value: 'CONTINUE_DOUBLE' }
-    ],
-
-    // 封顶选项
-    TOP_OPTIONS: [
-        { label: '不封顶', value: 10000000 },
-        { label: 'X分封顶', value: 'custom' }
-    ],
 
     // 数值范围
     RANGES: {
