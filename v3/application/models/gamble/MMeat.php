@@ -33,7 +33,7 @@ class MMeat extends CI_Model {
         // 如果是最后一个洞,且配置了大风吹,则在最后一个洞吃掉所有
         if ($this->ifLastHole($context, $hole)  && $context->bigWind == 'y') {
             $eating_count =  $available_meat_count;
-            $this->addDebug($hole, "🧲吃肉: 大风吹, 吃掉所有肉, 吃掉剩余的{$eating_count} 块肉");
+            $this->addDebug($hole, "🧲吃肉: 大风吹, 吃掉所有肉, 吃掉剩余的{$available_meat_count} 块肉");
         }
 
         $meatPoints = $this->executeMeatEating($hole, $eating_count, $context);
@@ -44,7 +44,7 @@ class MMeat extends CI_Model {
 
     public function ifLastHole($context, $hole) {
 
-        $lastHoleOfUsefulHoles = $context->useful_holes[count($context->useful_holes) - 1];
+        $lastHoleOfUsefulHoles = $context->usefulHoles[count($context->usefulHoles) - 1];
         if ($lastHoleOfUsefulHoles['hindex'] == $hole['hindex']) {
             return true;
         }
@@ -76,6 +76,7 @@ class MMeat extends CI_Model {
         $meat_value_config = $context->meat_value_config_string;
         $meat_max_value = $context->meat_max_value;
 
+        // 与封顶无关
         if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
             return $this->calculateMeatMoney_MEAT_AS($context, $hole, $eaten_meat_blocks, $meat_value_config);
         }
@@ -84,8 +85,9 @@ class MMeat extends CI_Model {
             return $this->calculateMeatMoney_SINGLE_DOUBLE($context, $hole, $eaten_meat_blocks, $points, $meat_max_value);
         }
 
+        // 与封顶无关
         if ($meat_value_config === 'CONTINUE_DOUBLE') {
-            return $this->calculateMeatMoney_CONTINUE_DOUBLE($context, $hole, $eaten_meat_blocks, $points, $meat_max_value);
+            return $this->calculateMeatMoney_CONTINUE_DOUBLE($context, $hole, $eaten_meat_blocks, $points);
         }
     }
 
@@ -158,15 +160,17 @@ class MMeat extends CI_Model {
         foreach ($eaten_meat_blocks as $meat) {
             $meatHoleMultiplier = $this->findCurrentHoleMultiplier($context, $meat['hole_index']);
             $one_meat_money = $raw_points * $meatHoleMultiplier;
+
+            $one_meat_money = min($one_meat_money, $meat_max_value);
             $this->addDebug($currentHole, " raw_points= { $raw_points } 🧲吃了 1 块肉:肉洞的踢一脚导致,使用 multiplier: {$meatHoleMultiplier},得到: {$one_meat_money}");
             $metal_total += $one_meat_money;
         }
-        return min($metal_total, $meat_max_value);
+        return   $metal_total;
     }
 
 
 
-    private function calculateMeatMoney_CONTINUE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $points, $meat_max_value) {
+    private function calculateMeatMoney_CONTINUE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $points) {
 
         // eaten_meat_blocks
         $eaten_count = count($eaten_meat_blocks);
@@ -185,7 +189,7 @@ class MMeat extends CI_Model {
 
         $factor = pow(2, $eaten_count);
         $meat_money = $multiplier * $points * ($factor - 1);
-        return min($meat_money, $meat_max_value);
+        return min($meat_money);
     }
 
     /**
