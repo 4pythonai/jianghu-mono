@@ -126,6 +126,25 @@
 	margin-right: 12rpx;
 }
 
+.kpi-value-selector {
+	display: flex;
+	align-items: center;
+}
+
+.kpi-value-selector picker {
+	display: flex;
+	align-items: center;
+}
+
+.kpi-value-selector .kpi-value {
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.kpi-value-selector .kpi-value:hover {
+	background: #dee2e6;
+}
+
 /* 切换按钮 */
 .toggle-btn {
 	width: 40rpx;

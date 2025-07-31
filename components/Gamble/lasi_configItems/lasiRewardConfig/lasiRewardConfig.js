@@ -92,12 +92,7 @@ Component({
             });
         },
 
-        // 切换详细说明显示
-        onToggleDetail() {
-            this.setData({
-                showDetail: !this.data.showDetail
-            });
-        },
+
 
         // 获取奖励类型描述
         getRewardTypeDescription(value) {

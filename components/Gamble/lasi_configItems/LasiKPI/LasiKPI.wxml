@@ -1,6 +1,6 @@
 <view class="config-section">
   <!-- 标题栏 -->
-  <view class="section-header" bindtap="onToggleDetail">
+  <view class="section-header">
     <view class="header-left">
       <text class="section-title">拉丝配置</text>
     </view>
@@ -17,50 +17,77 @@
       <!-- 左侧KPI选项列表 -->
       <view class="kpi-options">
         <!-- 较好成绩PK -->
-        <view
-          class="kpi-item {{isSelected.best ? 'selected' : ''}}"
-          bindtap="onSelectIndicator"
-          data-value="best"
-        >
+        <view class="kpi-item {{isSelected.best ? 'selected' : ''}}">
           <!-- 占位元素，保持对齐 -->
           <view class="toggle-placeholder"></view>
-          <view class="checkbox {{isSelected.best ? 'checked' : ''}}">
+          <view
+            class="checkbox {{isSelected.best ? 'checked' : ''}}"
+            bindtap="onSelectIndicator"
+            data-value="best"
+          >
             <text wx:if="{{isSelected.best}}" class="check-icon">✓</text>
           </view>
           <text class="kpi-label">较好成绩PK</text>
-          <view class="kpi-value">{{kpiValues.best}} 分</view>
+          <view class="kpi-value-selector">
+            <picker
+              bindchange="onKpiValueChange"
+              data-kpi="best"
+              value="{{kpiValues.best - 1}}"
+              range="{{[1,2,3,4,5]}}"
+            >
+              <view class="kpi-value">{{kpiValues.best}} 分</view>
+            </picker>
+          </view>
         </view>
 
         <!-- 较差成绩PK -->
-        <view
-          class="kpi-item {{isSelected.worst ? 'selected' : ''}}"
-          bindtap="onSelectIndicator"
-          data-value="worst"
-        >
+        <view class="kpi-item {{isSelected.worst ? 'selected' : ''}}">
           <!-- 占位元素，保持对齐 -->
           <view class="toggle-placeholder"></view>
-          <view class="checkbox {{isSelected.worst ? 'checked' : ''}}">
+          <view
+            class="checkbox {{isSelected.worst ? 'checked' : ''}}"
+            bindtap="onSelectIndicator"
+            data-value="worst"
+          >
             <text wx:if="{{isSelected.worst}}" class="check-icon">✓</text>
           </view>
           <text class="kpi-label">较差成绩PK</text>
-          <view class="kpi-value">{{kpiValues.worst}} 分</view>
+          <view class="kpi-value-selector">
+            <picker
+              bindchange="onKpiValueChange"
+              data-kpi="worst"
+              value="{{kpiValues.worst - 1}}"
+              range="{{[1,2,3,4,5]}}"
+            >
+              <view class="kpi-value">{{kpiValues.worst}} 分</view>
+            </picker>
+          </view>
         </view>
 
         <!-- 双方总杆PK -->
-        <view
-          class="kpi-item {{isSelected.total ? 'selected' : ''}}"
-          bindtap="onSelectIndicator"
-          data-value="total"
-        >
+        <view class="kpi-item {{isSelected.total ? 'selected' : ''}}">
           <!-- 切换按钮 -->
           <view class="toggle-btn" catchtap="onToggleTotalType">
             <image class="toggle-icon" src="/assets/icons/icons8-loop-50.png" mode="aspectFit"></image>
           </view>
-          <view class="checkbox {{isSelected.total ? 'checked' : ''}}">
+          <view
+            class="checkbox {{isSelected.total ? 'checked' : ''}}"
+            bindtap="onSelectIndicator"
+            data-value="total"
+          >
             <text wx:if="{{isSelected.total}}" class="check-icon">✓</text>
           </view>
           <text class="kpi-label">{{totalCalculationType === 'add_total' ? '加法总杆PK' : '乘法总杆PK'}}</text>
-          <view class="kpi-value">{{kpiValues.total}} 分</view>
+          <view class="kpi-value-selector">
+            <picker
+              bindchange="onKpiValueChange"
+              data-kpi="total"
+              value="{{kpiValues.total - 1}}"
+              range="{{[1,2,3,4,5]}}"
+            >
+              <view class="kpi-value">{{kpiValues.total}} 分</view>
+            </picker>
+          </view>
         </view>
       </view>
 

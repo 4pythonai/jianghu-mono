@@ -104,6 +104,24 @@ Component({
             this.printCurrentKpiConfig();
         },
 
+        // KPI分值变化处理
+        onKpiValueChange(e) {
+            const { kpi } = e.currentTarget.dataset;
+            const value = parseInt(e.detail.value) + 1; // picker的value从0开始，所以+1
+
+            const { kpiValues } = this.data;
+            kpiValues[kpi] = value;
+
+            this.setData({
+                kpiValues
+            });
+
+            this.calculateTotalScore();
+            this.updateStore();
+            this.generateRuleName();
+            this.printCurrentKpiConfig();
+        },
+
 
 
         // 计算总分
