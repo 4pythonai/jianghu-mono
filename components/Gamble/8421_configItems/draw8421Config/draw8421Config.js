@@ -1,9 +1,12 @@
-import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 
 Component({
   properties: {
-    value: String,
-    visible: Boolean
+    visible: Boolean,
+    noKoufen: {
+      type: Boolean,
+      value: false
+    }
   },
   data: {
     options: [
@@ -30,7 +33,7 @@ Component({
 
   methods: {
     syncSelectedFromStore() {
-      const currentValue = G_4P_8421_Store.draw8421_config;
+      const currentValue = G4P8421Store.draw8421_config;
       if (currentValue) {
         if (currentValue === 'DrawEqual') {
           this.setData({ selected: 0 });
@@ -85,14 +88,13 @@ Component({
       }
 
       // 调用store的action更新数据
-      G_4P_8421_Store.updateDingdongRule(selectedValue);
+      G4P8421Store.updateDingdongRule(selectedValue);
 
       console.log('顶洞组件已更新store:', selectedValue);
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
-        value: selectedValue,
-        selectedIndex: this.data.selected
+        value: selectedValue
       });
     }
   }

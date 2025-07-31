@@ -2,7 +2,7 @@ import { observable, action } from 'mobx-miniprogram'
 import { gameStore } from '../../../gameStore' // 导入 gameStore 来获取 gameid
 import { GameConstantsUtils } from '../../../../utils/gameConstants.js'
 
-export const G_4P_8421_Store = observable({
+export const G4P8421Store = observable({
     // 生成规则摘要名称
     generateAbstractName: () => {
         return `规则_${Math.floor(Math.random() * 10000)}`;

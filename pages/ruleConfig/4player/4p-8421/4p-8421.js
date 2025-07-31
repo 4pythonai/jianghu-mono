@@ -1,4 +1,4 @@
-import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 import { reaction } from 'mobx-miniprogram'
 const app = getApp()
 
@@ -9,9 +9,6 @@ Page({
     showKoufen: false,
     showDingdong: false,
     showEatmeat: false,
-    koufenValue: '',
-    dingdongValue: '',
-    eatmeatValue: '',
     user_rulename: '',
     draw8421_config: null,
     noKoufen: false,
@@ -24,7 +21,7 @@ Page({
   onRuleNameInput(e) {
     const value = e.detail.value;
     this.setData({ user_rulename: value });
-    G_4P_8421_Store.updateUserRulename(value);
+    G4P8421Store.updateUserRulename(value);
     console.log('规则名称已更新:', value);
   },
 
@@ -39,12 +36,13 @@ Page({
   onKoufenConfirm(e) {
     const detail = e.detail;
     this.setData({
-      koufenValue: detail.parsedData || detail.value,
       showKoufen: false
     });
 
     // 更新显示值
     this.updateKoufenDisplayValue();
+    // 更新noKoufen状态
+    this.updateNoKoufenStatus();
 
     // 组件已经更新了store, 这里只需要更新UI显示
     console.log('页面收到扣分规则更新:', detail.parsedData);
@@ -58,7 +56,6 @@ Page({
   onDingdongConfirm(e) {
     const detail = e.detail;
     this.setData({
-      dingdongValue: detail.value,
       showDingdong: false
     });
 
@@ -77,7 +74,6 @@ Page({
   onEatmeatConfirm(e) {
     const detail = e.detail;
     this.setData({
-      eatmeatValue: detail.parsedData || detail.value,
       showEatmeat: false
     });
 
@@ -89,7 +85,7 @@ Page({
   },
   onAddToMyRules() {
     // 输出完整Store数据用于调试
-    const allData = G_4P_8421_Store.debugAllRulesData();
+    const allData = G4P8421Store.debugAllRulesData();
 
     app.api.gamble.addGambleRule(allData).then(res => {
       console.log('添加规则成功:', res);
@@ -119,7 +115,7 @@ Page({
 
   // 更新扣分规则显示值
   updateKoufenDisplayValue() {
-    const store = G_4P_8421_Store;
+    const store = G4P8421Store;
     let displayValue = '';
 
     // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
@@ -166,7 +162,7 @@ Page({
 
   // 更新顶洞规则显示值
   updateDingdongDisplayValue() {
-    const store = G_4P_8421_Store;
+    const store = G4P8421Store;
     let displayValue = '';
 
     // 映射英文格式到中文显示
@@ -204,7 +200,7 @@ Page({
 
   // 更新吃肉规则显示值
   updateEatmeatDisplayValue() {
-    const store = G_4P_8421_Store;
+    const store = G4P8421Store;
     let displayValue = '';
 
     // 格式化吃肉规则显示 - 适配新格式
@@ -247,30 +243,41 @@ Page({
     console.log('吃肉规则显示值已更新:', displayValue);
   },
 
+  // 更新noKoufen状态
+  updateNoKoufenStatus() {
+    const store = G4P8421Store;
+    const isNoSub = store.sub8421_config_string === 'NoSub';
+    this.setData({
+      noKoufen: isNoSub
+    });
+    console.log('noKoufen状态已更新:', isNoSub);
+  },
+
   onLoad() {
     // 4人8421规则配置页, 后续补充
     console.log('4P-8421 规则配置页面加载完成');
 
     // 初始化显示值
     this.setData({
-      user_rulename: G_4P_8421_Store.user_rulename,
-      draw8421_config: G_4P_8421_Store.draw8421_config
+      user_rulename: G4P8421Store.user_rulename,
+      draw8421_config: G4P8421Store.draw8421_config
     });
     this.updateKoufenDisplayValue();
     this.updateDingdongDisplayValue();
     this.updateEatmeatDisplayValue();
+    this.updateNoKoufenStatus(); // 初始化noKoufen状态
 
     // 监听Store变化
     this._storeReactions = [
       reaction(
-        () => G_4P_8421_Store.user_rulename,
+        () => G4P8421Store.user_rulename,
         (value) => {
           this.setData({ user_rulename: value });
           console.log('Store规则名称变化:', value);
         }
       ),
       reaction(
-        () => G_4P_8421_Store.draw8421_config,
+        () => G4P8421Store.draw8421_config,
         (value) => {
           this.setData({ draw8421_config: value });
           this.updateDingdongDisplayValue();
@@ -278,14 +285,15 @@ Page({
         }
       ),
       reaction(
-        () => [G_4P_8421_Store.max8421_sub_value, G_4P_8421_Store.sub8421_config_string, G_4P_8421_Store.duty_config],
+        () => [G4P8421Store.max8421_sub_value, G4P8421Store.sub8421_config_string, G4P8421Store.duty_config],
         () => {
           this.updateKoufenDisplayValue();
+          this.updateNoKoufenStatus(); // 更新noKoufen状态
           console.log('Store扣分规则变化');
         }
       ),
       reaction(
-        () => [G_4P_8421_Store.eating_range, G_4P_8421_Store.meat_value_config_string, G_4P_8421_Store.meat_max_value],
+        () => [G4P8421Store.eating_range, G4P8421Store.meat_value_config_string, G4P8421Store.meat_max_value],
         () => {
           this.updateEatmeatDisplayValue();
           console.log('Store吃肉规则变化');

@@ -1,8 +1,7 @@
-import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 
 Component({
   properties: {
-    value: String,
     visible: Boolean
   },
   data: {
@@ -48,9 +47,9 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const max8421SubValue = G_4P_8421_Store.max8421_sub_value;
-      const koufenStart = G_4P_8421_Store.sub8421_config_string;
-      const partnerPunishment = G_4P_8421_Store.duty_config;
+      const max8421SubValue = G4P8421Store.max8421_sub_value;
+      const koufenStart = G4P8421Store.sub8421_config_string;
+      const partnerPunishment = G4P8421Store.duty_config;
 
       if (max8421SubValue !== 10000000 || koufenStart || partnerPunishment) {
         // 解析已保存的配置
@@ -114,8 +113,7 @@ Component({
             break;
           default:
             // 兼容旧格式
-            const dutyOptions = ['不包负分', '同伴顶头包负分', '包负分'];
-            const index = dutyOptions.indexOf(partnerPunishment);
+            const index = this.data.dutyOptions.indexOf(partnerPunishment);
             if (index !== -1) {
               selectedDuty = index;
             }
@@ -185,7 +183,7 @@ Component({
       }
 
       // 调用store的action更新数据
-      G_4P_8421_Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, duty_config);
+      G4P8421Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, duty_config);
 
       console.log('扣分组件已更新store:', {
         max8421SubValue,
@@ -196,14 +194,6 @@ Component({
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
-        value: {
-          selectedStart,
-          selectedMax,
-          selectedDuty,
-          paScore,
-          doubleParScore,
-          maxSubScore
-        },
         parsedData: { max8421SubValue, sub8421ConfigString, duty_config }
       });
     }

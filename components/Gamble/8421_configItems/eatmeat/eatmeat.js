@@ -1,18 +1,13 @@
-import { G_4P_8421_Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../../utils/gameConstants.js'
-
-
-const MEAT_VALUE_OPTIONS = [
-  { label: '肉算x分', meatTag: 'MEAT_AS_X', value: 'MEAT_AS_1' },
-  { label: '分值翻倍', meatTag: 'SINGLE_DOUBLE', value: 'SINGLE_DOUBLE' },
-  { label: '分值连续翻倍', meatTag: 'CONTINUE_DOUBLE', value: 'CONTINUE_DOUBLE' }
-];
-
 
 Component({
   properties: {
-    value: Object,
-    visible: Boolean
+    visible: Boolean,
+    noKoufen: {
+      type: Boolean,
+      value: false
+    }
   },
 
 
@@ -57,9 +52,9 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const eating_range = G_4P_8421_Store.eating_range;
-      const meatValue = G_4P_8421_Store.meat_value_config_string;
-      const meat_max_value = G_4P_8421_Store.meat_max_value;
+      const eating_range = G4P8421Store.eating_range;
+      const meatValue = G4P8421Store.meat_value_config_string;
+      const meat_max_value = G4P8421Store.meat_max_value;
 
       if (eating_range || meatValue || meat_max_value !== 10000000) {
         // 解析已保存的配置
@@ -157,14 +152,10 @@ Component({
       const meat_max_value = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
 
       // 调用store的action更新数据
-      G_4P_8421_Store.updateEatmeatRule(eating_range, meatValueConfig, meat_max_value);
+      G4P8421Store.updateEatmeatRule(eating_range, meatValueConfig, meat_max_value);
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
-        value: {
-          ...data,
-          topScoreLimit: data.topScoreLimit
-        },
         parsedData: { eating_range, meatValueConfig, meat_max_value }
       });
     }
