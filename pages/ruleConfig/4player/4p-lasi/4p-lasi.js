@@ -17,34 +17,55 @@ Page({
         console.log('规则名称已更新:', value);
     },
 
-    onAddToMyRules() {
+    onAddLasiToMyRules() {
         // 输出完整Store数据用于调试
         const allData = G4PLasiStore.debugAllRulesData();
 
-        app.api.gamble.addGambleRule(allData).then(res => {
-            console.log('添加规则成功:', res);
+        // 验证必要配置
+        if (!allData.user_rulename.trim()) {
             wx.showToast({
-                title: '已添加至我的规则',
-                icon: 'success',
-                duration: 1500,
-                success: () => {
-                    // Toast显示完成后跳转到规则页面
-                    setTimeout(() => {
-                        wx.navigateTo({
-                            url: '/pages/rules/rules'
-                        });
-                    }, 1000);
-                }
-            });
-
-        }).catch(err => {
-            console.error('添加规则失败:', err);
-            wx.showToast({
-                title: '添加规则失败',
+                title: '请输入规则名称',
                 icon: 'none',
-                duration: 1000
+                duration: 1500
             });
-        });
+            return;
+        }
+
+        if (allData.lasi_config.indicators.length === 0) {
+            wx.showToast({
+                title: '请至少选择一个KPI指标',
+                icon: 'none',
+                duration: 1500
+            });
+            return;
+        }
+
+        console.log('💋💋💋💋💋💋💋💋💋💋allData', allData);
+
+        // app.api.gamble.addGambleRule(allData).then(res => {
+        //     console.log('添加规则成功:', res);
+        //     wx.showToast({
+        //         title: '已添加至我的规则',
+        //         icon: 'success',
+        //         duration: 1500,
+        //         success: () => {
+        //             // Toast显示完成后跳转到规则页面
+        //             setTimeout(() => {
+        //                 wx.navigateTo({
+        //                     url: '/pages/rules/rules'
+        //                 });
+        //             }, 1000);
+        //         }
+        //     });
+
+        // }).catch(err => {
+        //     console.error('添加规则失败:', err);
+        //     wx.showToast({
+        //         title: '添加规则失败',
+        //         icon: 'none',
+        //         duration: 1000
+        //     });
+        // });
     },
 
     onLoad() {

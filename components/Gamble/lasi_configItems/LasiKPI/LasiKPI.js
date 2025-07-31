@@ -192,6 +192,18 @@ Component({
             };
 
             G4PLasiStore.updateLasiConfig(config);
+
+            // 通知奖励配置组件更新
+            this.notifyRewardConfigUpdate();
+        },
+
+        // 通知奖励配置组件更新
+        notifyRewardConfigUpdate() {
+            // 触发自定义事件，通知父组件KPI配置已更新
+            this.triggerEvent('kpiConfigChange', {
+                selectedIndicators: this.data.selectedIndicators,
+                hasTotalType: this.data.selectedIndicators.includes('total')
+            });
         },
 
         // 获取配置结果 - 返回指定格式的数组

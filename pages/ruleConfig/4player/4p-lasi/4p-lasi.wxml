@@ -10,7 +10,7 @@
     <LasiKPI />
 
     <!-- 拉丝奖励规则 -->
-    <lasi_reward_config />
+    <LasiKPIReward />
 
     <!-- 拉丝顶洞规则 -->
     <!-- <lasi_dingdong_config /> -->
@@ -22,6 +22,6 @@
     <lasi_baodong_config />
 
     <!-- 底部按钮 -->
-    <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>
+    <button class="add-btn" bindtap="onAddLasiToMyRules">添加至我的规则</button>
   </view>
 </view>

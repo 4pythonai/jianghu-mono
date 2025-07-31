@@ -2,7 +2,7 @@
     "navigationBarTitleText": "4人拉丝规则配置",
     "usingComponents": {
         "LasiKPI": "/components/Gamble/lasi_configItems/LasiKPI/LasiKPI",
-        "lasi_reward_config": "/components/Gamble/lasi_configItems/lasiRewardConfig/lasiRewardConfig",
+        "LasiKPIReward": "/components/Gamble/lasi_configItems/lasiRewardConfig/lasiRewardConfig",
         "lasi_eatmeat_config": "/components/Gamble/lasi_configItems/eatmeat/eatmeat",
         "lasi_baodong_config": "/components/Gamble/lasi_configItems/koufen/koufen"
     }
