@@ -2,11 +2,8 @@ import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_842
 
 Component({
   properties: {
-    noKoufen: {
-      type: Boolean,
-      value: false
-    }
   },
+
   data: {
     // 组件内部状态
     visible: false,
@@ -116,7 +113,6 @@ Component({
 
 
     onShowConfig() {
-      if (this.data.noKoufen) return; // 如果禁用则不显示
       this.setData({ visible: true });
       // 每次显示时重新加载配置
       this.syncSelectedFromStore();

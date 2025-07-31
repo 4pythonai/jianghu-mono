@@ -28,12 +28,11 @@
           <view class="eat-label">{{eatRangeLabels[item]}}</view>
           <!-- 改为滚轮选择器 -->
           <picker
-            class="eat-picker {{noKoufen ? 'disabled-picker' : ''}}"
+            class="eat-picker"
             range="{{eatValueRange}}"
             value="{{eating_range[item] - 1}}"
             data-index="{{index}}"
-            bindchange="{{noKoufen ? '' : 'onEatValueChange'}}"
-            disabled="{{noKoufen}}"
+            bindchange="onEatValueChange"
           >
             <view class="picker-value">{{eating_range[item]}}</view>
           </picker>
@@ -42,11 +41,7 @@
       <view class="modal-divider"></view>
       <view class="eat-row">肉的分值</view>
 
-      <view
-        class="modal-item {{noKoufen ? 'disabled' : ''}}"
-        bindtap="{{noKoufen ? '' : 'onMeatValueChange'}}"
-        data-index="0"
-      >
+      <view class="modal-item" bindtap="onMeatValueChange" data-index="0">
         <view class="radio-outer {{meatValueOption === 0 ? 'checked' : ''}}">
           <view class="radio-inner" wx:if="{{meatValueOption === 0}}"></view>
         </view>
@@ -58,7 +53,6 @@
             range="{{meatScoreRange}}"
             value="{{meatScoreValue - 1}}"
             bindchange="onMeatScoreChange"
-            disabled="{{noKoufen}}"
           >
             <view class="picker-value">{{meatScoreValue}}</view>
           </picker>
@@ -66,22 +60,14 @@
         </view>
       </view>
 
-      <view
-        class="modal-item {{noKoufen ? 'disabled' : ''}}"
-        bindtap="{{noKoufen ? '' : 'onMeatValueChange'}}"
-        data-index="1"
-      >
+      <view class="modal-item" bindtap="onMeatValueChange" data-index="1">
         <view class="radio-outer {{meatValueOption === 1 ? 'checked' : ''}}">
           <view class="radio-inner" wx:if="{{meatValueOption === 1}}"></view>
         </view>
         <text>分值翻倍</text>
       </view>
 
-      <view
-        class="modal-item {{noKoufen ? 'disabled' : ''}}"
-        bindtap="{{noKoufen ? '' : 'onMeatValueChange'}}"
-        data-index="2"
-      >
+      <view class="modal-item" bindtap="onMeatValueChange" data-index="2">
         <view class="radio-outer {{meatValueOption === 2 ? 'checked' : ''}}">
           <view class="radio-inner" wx:if="{{meatValueOption === 2}}"></view>
         </view>
@@ -92,8 +78,8 @@
       <view class="eat-row">肉值封顶</view>
       <block wx:for="{{topOptions}}" wx:key="index">
         <view
-          class="modal-item {{noKoufen || meatValueOption !== 1 ? 'disabled' : ''}}"
-          bindtap="{{noKoufen || meatValueOption !== 1 ? '' : 'onTopSelect'}}"
+          class="modal-item {{meatValueOption !== 1 ? 'disabled' : ''}}"
+          bindtap="{{meatValueOption !== 1 ? '' : 'onTopSelect'}}"
           data-index="{{index}}"
         >
           <view class="radio-outer {{topSelected === index ? 'checked' : ''}}">

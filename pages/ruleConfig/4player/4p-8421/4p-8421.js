@@ -6,8 +6,7 @@ Page({
   // 存储reaction清理函数
   _storeReactions: null,
   data: {
-    user_rulename: '',
-    noKoufen: false
+    user_rulename: ''
   },
 
   // 规则名称输入事件
@@ -20,8 +19,6 @@ Page({
 
   onKoufenConfirm(e) {
     const detail = e.detail;
-    // 更新noKoufen状态
-    this.updateNoKoufenStatus();
     console.log('页面收到扣分规则更新:', detail.parsedData);
   },
 
@@ -55,15 +52,7 @@ Page({
     });
   },
 
-  // 更新noKoufen状态
-  updateNoKoufenStatus() {
-    const store = G4P8421Store;
-    const isNoSub = store.sub8421_config_string === 'NoSub';
-    this.setData({
-      noKoufen: isNoSub
-    });
-    console.log('noKoufen状态已更新:', isNoSub);
-  },
+
 
   onLoad() {
     // 4人8421规则配置页, 后续补充
@@ -73,7 +62,6 @@ Page({
     this.setData({
       user_rulename: G4P8421Store.user_rulename
     });
-    this.updateNoKoufenStatus(); // 初始化noKoufen状态
 
     // 监听Store变化
     this._storeReactions = [
@@ -88,7 +76,6 @@ Page({
       reaction(
         () => [G4P8421Store.max8421_sub_value, G4P8421Store.sub8421_config_string, G4P8421Store.duty_config],
         () => {
-          this.updateNoKoufenStatus(); // 更新noKoufen状态
           console.log('Store扣分规则变化');
         }
       ),

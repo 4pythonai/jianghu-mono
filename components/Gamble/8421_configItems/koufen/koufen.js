@@ -2,10 +2,6 @@ import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_842
 
 Component({
   properties: {
-    noKoufen: {
-      type: Boolean,
-      value: false
-    }
   },
   data: {
     // 组件内部状态
@@ -43,13 +39,7 @@ Component({
       this.updateDisplayValue();
     }
   },
-  // 属性变化监听
-  observers: {
-    'noKoufen': function (newVal) {
-      // 当noKoufen变化时，更新显示值
-      this.updateDisplayValue();
-    }
-  },
+
   methods: {
     // 计算显示值
     updateDisplayValue() {

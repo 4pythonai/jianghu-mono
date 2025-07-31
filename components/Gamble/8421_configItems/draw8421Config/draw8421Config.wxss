@@ -126,11 +126,6 @@
 	transform: scale(0.95);
 }
 
-.disabled-item {
-	opacity: 0.5;
-	pointer-events: none;
-}
-
 /* 显示部分样式 */
 .rule-section {
 	display: flex;

@@ -3,10 +3,6 @@ import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../.
 
 Component({
   properties: {
-    noKoufen: {
-      type: Boolean,
-      value: false
-    }
   },
 
   data: {
@@ -181,7 +177,6 @@ Component({
     },
 
     onShowConfig() {
-      if (this.data.noKoufen || G4P8421Store.draw8421_config === 'NoDraw') return; // 如果禁用则不显示
       this.setData({ visible: true });
       // 每次显示时重新加载配置
       this.initializeFromStore();
