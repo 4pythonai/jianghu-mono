@@ -62,7 +62,7 @@ Page({
                 () => G4PLasiStore.user_rulename,
                 (value) => {
                     this.setData({ user_rulename: value });
-                    console.log('Store规则名称变化:', value);
+                    // console.log('Store规则名称变化:', value);
                 }
             ),
         ];

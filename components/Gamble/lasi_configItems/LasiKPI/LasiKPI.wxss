@@ -76,36 +76,38 @@
 	opacity: 0;
 }
 
-/* 选项列表 */
-.options-list {
-	padding: 24rpx;
+/* 主要内容区域 */
+.main-content {
+	display: flex;
+	padding: 32rpx 24rpx;
+	gap: 48rpx;
+	align-items: stretch;
 }
 
-.option-item {
+/* 左侧KPI选项列表 */
+.kpi-options {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+	justify-content: space-between;
+}
+
+.kpi-item {
 	display: flex;
 	align-items: center;
-	padding: 24rpx;
-	margin-bottom: 16rpx;
+	padding: 20rpx 24rpx;
 	background: #f8f9fa;
 	border-radius: 16rpx;
 	border: 2rpx solid transparent;
 	transition: all 0.2s ease;
+	position: relative;
+	gap: 16rpx;
 }
 
-.option-item:last-child {
-	margin-bottom: 0;
-}
-
-.option-item.selected {
+.kpi-item.selected {
 	background: #e8f5e8;
 	border-color: #4caf7a;
-}
-
-.option-left {
-	display: flex;
-	align-items: center;
-	gap: 16rpx;
-	flex: 1;
 }
 
 .checkbox {
@@ -117,6 +119,7 @@
 	align-items: center;
 	justify-content: center;
 	transition: all 0.2s ease;
+	flex-shrink: 0;
 }
 
 .checkbox.checked {
@@ -128,60 +131,83 @@
 	color: #fff;
 	font-size: 20rpx;
 	font-weight: bold;
+	line-height: 1;
 }
 
-.option-text {
+.kpi-label {
+	flex: 1;
+	font-size: 28rpx;
+	color: #6c757d;
+	font-weight: 500;
+	line-height: 32rpx;
+}
+
+.kpi-value {
+	font-size: 26rpx;
+	color: #6c757d;
+	background: #e9ecef;
+	padding: 8rpx 16rpx;
+	border-radius: 8rpx;
+	margin-right: 12rpx;
+}
+
+/* 切换按钮 */
+.toggle-btn {
+	width: 40rpx;
+	height: 40rpx;
+	border-radius: 50%;
+	background: #f8f9fa;
+	border: 2rpx solid #dee2e6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+	flex-shrink: 0;
+}
+
+.toggle-btn:active {
+	background: #e9ecef;
+	transform: scale(0.95);
+}
+
+.toggle-icon {
+	width: 40rpx;
+	height: 40rpx;
+}
+
+/* 占位元素，保持对齐 */
+.toggle-placeholder {
+	width: 40rpx;
+	height: 40rpx;
+	flex-shrink: 0;
+}
+
+/* 右侧总分显示 */
+.total-score {
 	display: flex;
 	flex-direction: column;
-	gap: 4rpx;
+	align-items: center;
+	justify-content: center;
+	min-width: 120rpx;
+	padding: 32rpx 24rpx;
+	background: #f8f9fa;
+	border-radius: 16rpx;
+	border: 2rpx solid #e9ecef;
+	height: 100%;
+	min-height: 280rpx;
 }
 
-.option-label {
-	font-size: 28rpx;
-	font-weight: 500;
-	color: #2c3e50;
+.total-number {
+	font-size: 48rpx;
+	font-weight: bold;
+	color: #4caf7a;
+	line-height: 1;
+	margin-bottom: 8rpx;
 }
 
-.option-desc {
+.total-unit {
 	font-size: 24rpx;
 	color: #6c757d;
-	line-height: 1.4;
-}
-
-/* 总杆计算方式切换 */
-.calculation-toggle {
-	padding: 24rpx;
-	border-top: 1rpx solid #e9ecef;
-}
-
-.toggle-label {
-	display: block;
-	font-size: 26rpx;
-	font-weight: 600;
-	color: #2c3e50;
-	margin-bottom: 16rpx;
-}
-
-.toggle-container {
-	display: flex;
-	background: #f8f9fa;
-	border-radius: 12rpx;
-	padding: 4rpx;
-}
-
-.toggle-option {
-	flex: 1;
-	text-align: center;
-	padding: 16rpx;
-	border-radius: 8rpx;
-	font-size: 26rpx;
-	color: #6c757d;
-	transition: all 0.2s ease;
-}
-
-.toggle-option.active {
-	background: #4caf7a;
-	color: #fff;
 }
 
 /* 说明文字 */
