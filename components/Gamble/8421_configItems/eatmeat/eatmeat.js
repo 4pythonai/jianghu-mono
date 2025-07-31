@@ -1,5 +1,6 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../../utils/gameConstants.js'
+import { reaction } from 'mobx-miniprogram'
 
 Component({
   properties: {
@@ -9,6 +10,7 @@ Component({
     // 组件内部状态
     visible: false,
     displayValue: '请配置吃肉规则',
+    isDisabled: false, // 新增：禁用状态
 
     // 使用统一的常量配置
     eating_range: GameConstantsUtils.getDefaultEatingRange(),
@@ -35,6 +37,23 @@ Component({
       this.initializeFromStore();
       // 计算显示值
       this.updateDisplayValue();
+      // 检查禁用状态
+      this.checkDisabledState();
+
+      // 监听顶洞规则变化
+      this._storeReaction = reaction(
+        () => G4P8421Store.draw8421_config,
+        () => {
+          this.checkDisabledState();
+        }
+      );
+    },
+
+    detached() {
+      // 清理reaction
+      if (this._storeReaction) {
+        this._storeReaction();
+      }
     }
   },
   // 属性变化监听
@@ -45,6 +64,13 @@ Component({
     }
   },
   methods: {
+    // 检查禁用状态
+    checkDisabledState() {
+      const isDisabled = G4P8421Store.draw8421_config === 'NoDraw';
+      this.setData({ isDisabled });
+      console.log('吃肉组件禁用状态:', isDisabled);
+    },
+
     // 计算显示值
     updateDisplayValue() {
       const store = G4P8421Store;
@@ -177,6 +203,16 @@ Component({
     },
 
     onShowConfig() {
+      // 如果组件被禁用，则不显示配置弹窗
+      if (this.data.isDisabled) {
+        wx.showToast({
+          title: '当前规则下吃肉功能已禁用',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
+
       this.setData({ visible: true });
       // 每次显示时重新加载配置
       this.initializeFromStore();

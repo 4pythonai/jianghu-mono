@@ -188,6 +188,11 @@
 	gap: 8rpx;
 }
 
+.rule-section.disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
 .form-label {
 	font-size: 28rpx;
 	color: #222;

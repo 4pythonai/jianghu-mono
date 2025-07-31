@@ -1,13 +1,9 @@
 <!-- 吃肉规则配置组件 -->
 <!-- 显示部分 -->
-<view class="rule-section" wx:if="{{!visible}}">
+<view class="rule-section {{isDisabled ? 'disabled' : ''}}" wx:if="{{!visible}}">
   <view class="form-label">吃肉规则</view>
   <view class="form-select" bindtap="onShowConfig">
-    <input
-      class="form-input {{disabled ? 'conditionally-disabled' : ''}}"
-      value="{{displayValue}}"
-      disabled="{{disabled}}"
-    />
+    <input class="form-input" value="{{displayValue}}" disabled="{{isDisabled}}" />
     <view class="select-arrow">
       <text class="arrow-circle">▼</text>
     </view>
