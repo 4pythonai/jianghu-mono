@@ -1,1 +1,27 @@
-<view class="rule-config-empty"><text>这里是四人拉丝规则配置页(待开发)</text></view>
+<view class="rule-config-bg">
+  <view class="rule-config-card">
+    <!-- 规则名称 -->
+    <view class="form-label">规则名称</view>
+    <input class="form-input" model:value="{{user_rulename}}" bindinput="onRuleNameInput" />
+
+    <view class="section-label">请配置游戏规则</view>
+
+    <!-- 拉丝配置 -->
+    <drawlasi_config />
+
+    <!-- 拉丝奖励规则 -->
+    <lasi_reward_config />
+
+    <!-- 拉丝顶洞规则 -->
+    <!-- <lasi_dingdong_config /> -->
+
+    <!-- 拉丝吃肉规则 -->
+    <lasi_eatmeat_config />
+
+    <!-- 拉丝包洞规则 -->
+    <lasi_baodong_config />
+
+    <!-- 底部按钮 -->
+    <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>
+  </view>
+</view>

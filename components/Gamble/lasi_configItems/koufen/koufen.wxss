@@ -1,0 +1,210 @@
+.modal-mask {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
+.modal-content {
+	width: 92vw;
+	background: #fff;
+	border-radius: 36rpx 36rpx 0 0;
+	box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.18);
+	padding: 32rpx 24rpx 24rpx 24rpx;
+	margin-bottom: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.modal-title {
+	font-size: 36rpx;
+	font-weight: 600;
+	color: #222;
+	margin-bottom: 32rpx;
+	text-align: center;
+}
+.modal-list {
+	width: 100%;
+	background: #d6eadf;
+	border-radius: 24rpx;
+	padding: 32rpx 24rpx;
+	margin-bottom: 32rpx;
+	box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.1);
+}
+.modal-item {
+	display: flex;
+	align-items: center;
+	font-size: 30rpx;
+	color: #222;
+	margin-bottom: 24rpx;
+}
+.modal-item:last-child {
+	margin-bottom: 0;
+}
+.radio-outer {
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 50%;
+	border: 4rpx solid #bdbdbd;
+	margin-right: 18rpx;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.radio-outer.checked {
+	border-color: #4caf7a;
+}
+.radio-inner {
+	width: 18rpx;
+	height: 18rpx;
+	border-radius: 50%;
+	background: #4caf7a;
+}
+.modal-divider {
+	width: 100%;
+	height: 2rpx;
+	background: #fff;
+	margin: 18rpx 0;
+	border-radius: 2rpx;
+}
+.modal-actions {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	margin-top: 12rpx;
+	gap: 32rpx;
+}
+.modal-btn {
+	flex: 1;
+	height: 64rpx;
+	border-radius: 16rpx;
+	font-size: 28rpx;
+	font-weight: 500;
+	border: none;
+}
+.modal-btn.cancel {
+	background: #fff;
+	color: #4caf7a;
+	border: 2rpx solid #4caf7a;
+}
+.modal-btn.confirm {
+	background: #4caf7a;
+	color: #fff;
+	margin-left: 0;
+}
+
+.disabled-item {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+/* 新增样式 */
+.option-content {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8rpx;
+}
+
+.score-picker {
+	display: inline-block;
+	margin: 0 8rpx;
+}
+
+.picker-value {
+	display: inline-block;
+	min-width: 48rpx;
+	height: 48rpx;
+	line-height: 48rpx;
+	text-align: center;
+	background: #4caf7a;
+	color: #fff;
+	border-radius: 24rpx;
+	font-size: 28rpx;
+	font-weight: 600;
+	padding: 0 12rpx;
+	box-shadow: 0 4rpx 8rpx rgba(76, 175, 122, 0.3);
+	border: 2rpx solid #4caf7a;
+}
+
+.picker-value:active {
+	background: #45a072;
+	transform: scale(0.95);
+}
+
+/* 显示部分样式 */
+.rule-section {
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+}
+
+.form-label {
+	font-size: 28rpx;
+	color: #222;
+	font-weight: 500;
+	margin-bottom: 8rpx;
+}
+
+.form-input {
+	width: 100%;
+	height: 64rpx;
+	background: #f8f8f8;
+	border: 2rpx solid #4caf7a;
+	border-radius: 16rpx;
+	font-size: 28rpx;
+	color: #888;
+	padding: 0 24rpx;
+	margin-bottom: 0;
+	box-sizing: border-box;
+}
+
+.form-input.conditionally-disabled {
+	color: #bbb;
+	background: #f0f0f0;
+	border-color: #e0e0e0;
+}
+
+.form-input.conditionally-disabled::after {
+	content: "已禁用";
+	position: absolute;
+	right: 80rpx;
+	color: #999;
+	font-size: 24rpx;
+}
+
+.form-select {
+	position: relative;
+	margin-bottom: 0;
+}
+
+.select-arrow {
+	position: absolute;
+	right: 24rpx;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #388e3c;
+	font-size: 36rpx;
+	pointer-events: none;
+}
+
+.arrow-circle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40rpx;
+	height: 40rpx;
+	border-radius: 50%;
+	border: 2rpx solid #4caf7a;
+	color: #4caf7a;
+	font-size: 28rpx;
+	background: #fff;
+	box-sizing: border-box;
+	font-weight: bold;
+}

@@ -1,0 +1,110 @@
+<!-- 吃肉规则配置组件 -->
+<!-- 显示部分 -->
+<view class="rule-section {{isDisabled ? 'disabled' : ''}}" wx:if="{{!visible}}">
+  <view class="form-label">吃肉规则</view>
+  <view class="form-select" bindtap="onShowConfig">
+    <input class="form-input" value="{{displayValue}}" disabled="{{isDisabled}}" />
+    <view class="select-arrow">
+      <text class="arrow-circle">▼</text>
+    </view>
+  </view>
+</view>
+
+<!-- 弹窗部分 -->
+<view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
+  <view class="modal-content" catchtap>
+    <view class="modal-title">吃肉规则</view>
+    <view class="modal-list">
+      <view class="eat-row">
+        <view class="eat-label">成绩</view>
+        <view class="eat-label right">吃肉数量</view>
+      </view>
+      <block wx:for="{{eatRangeKeys}}" wx:key="index">
+        <view class="eat-row">
+          <view class="eat-label">{{eatRangeLabels[item]}}</view>
+          <!-- 改为滚轮选择器 -->
+          <picker
+            class="eat-picker"
+            range="{{eatValueRange}}"
+            value="{{eating_range[item] - 1}}"
+            data-index="{{index}}"
+            bindchange="onEatValueChange"
+          >
+            <view class="picker-value">{{eating_range[item]}}</view>
+          </picker>
+        </view>
+      </block>
+      <view class="modal-divider"></view>
+      <view class="eat-row">肉的分值</view>
+
+      <view class="modal-item" bindtap="onMeatValueChange" data-index="0">
+        <view class="radio-outer {{meatValueOption === 0 ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{meatValueOption === 0}}"></view>
+        </view>
+        <view class="option-content">
+          <text>肉算</text>
+          <picker
+            wx:if="{{meatValueOption === 0}}"
+            class="score-picker"
+            range="{{meatScoreRange}}"
+            value="{{meatScoreValue - 1}}"
+            bindchange="onMeatScoreChange"
+          >
+            <view class="picker-value">{{meatScoreValue}}</view>
+          </picker>
+          <text>分</text>
+        </view>
+      </view>
+
+      <view class="modal-item" bindtap="onMeatValueChange" data-index="1">
+        <view class="radio-outer {{meatValueOption === 1 ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{meatValueOption === 1}}"></view>
+        </view>
+        <text>分值翻倍</text>
+      </view>
+
+      <view class="modal-item" bindtap="onMeatValueChange" data-index="2">
+        <view class="radio-outer {{meatValueOption === 2 ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{meatValueOption === 2}}"></view>
+        </view>
+        <text>分值连续翻倍</text>
+      </view>
+
+      <view class="modal-divider"></view>
+      <view class="eat-row">肉值封顶</view>
+      <block wx:for="{{topOptions}}" wx:key="index">
+        <view
+          class="modal-item {{meatValueOption !== 1 ? 'disabled' : ''}}"
+          bindtap="{{meatValueOption !== 1 ? '' : 'onTopSelect'}}"
+          data-index="{{index}}"
+        >
+          <view class="radio-outer {{topSelected === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{topSelected === index}}"></view>
+          </view>
+          <view class="option-content">
+            <text wx:if="{{index === 0}}">{{item}}</text>
+            <text wx:elif="{{index === 1 && topSelected === 1}}"></text>
+            <text wx:elif="{{index === 1 && topSelected !== 1}}">{{topScoreLimit}}分封顶</text>
+
+            <!-- 封顶分数选择器 -->
+            <picker
+              wx:if="{{index === 1 && topSelected === 1}}"
+              class="score-picker"
+              range="{{topScoreRange}}"
+              value="{{topScoreLimit - 1}}"
+              bindchange="onTopScoreChange"
+              disabled="{{meatValueOption !== 1}}"
+            >
+              <view class="picker-value">{{topScoreLimit}}</view>
+            </picker>
+            <text wx:if="{{index === 1 && topSelected === 1}}">分封顶</text>
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
+    </view>
+  </view>
+</view>

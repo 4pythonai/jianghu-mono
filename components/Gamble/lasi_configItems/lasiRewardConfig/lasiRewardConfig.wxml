@@ -1,0 +1,75 @@
+<view class="config-section">
+  <!-- 标题栏 -->
+  <view class="section-header" bindtap="onToggleDetail">
+    <view class="header-left">
+      <text class="section-title">拉丝奖励规则</text>
+      <text class="section-subtitle">配置奖励机制</text>
+    </view>
+    <view class="header-right">
+      <view class="toggle-switch {{enabled ? 'enabled' : 'disabled'}}" bindtap="onToggleEnabled">
+        <view class="toggle-slider"></view>
+      </view>
+      <view class="arrow {{showDetail ? 'arrow-up' : 'arrow-down'}}">▼</view>
+    </view>
+  </view>
+
+  <!-- 详细配置区域 -->
+  <view class="config-content {{showDetail ? 'show' : 'hide'}}">
+    <!-- 奖励类型选择 -->
+    <view class="reward-type-section">
+      <text class="section-title">奖励类型</text>
+      <view class="options-list">
+        <view
+          wx:for="{{rewardOptions}}"
+          wx:key="value"
+          class="option-item {{selectedRewardType === item.value ? 'selected' : ''}} {{!enabled ? 'disabled' : ''}}"
+          bindtap="onSelectRewardType"
+          data-value="{{item.value}}"
+        >
+          <view class="option-left">
+            <view class="radio-circle {{selectedRewardType === item.value ? 'checked' : ''}}">
+              <view wx:if="{{selectedRewardType === item.value}}" class="radio-dot"></view>
+            </view>
+            <view class="option-text">
+              <text class="option-label">{{item.label}}</text>
+              <text class="option-desc">{{item.desc}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 奖励前置条件选择 -->
+    <view class="condition-section">
+      <text class="section-title">奖励前置条件</text>
+      <view class="options-list">
+        <view
+          wx:for="{{conditionOptions}}"
+          wx:key="value"
+          class="option-item {{rewardConditions.includes(item.value) ? 'selected' : ''}} {{!isConditionSelectable() ? 'disabled' : ''}}"
+          bindtap="isConditionSelectable() ? 'onSelectCondition' : ''"
+          data-value="{{item.value}}"
+        >
+          <view class="option-left">
+            <view class="checkbox {{rewardConditions.includes(item.value) ? 'checked' : ''}}">
+              <view wx:if="{{rewardConditions.includes(item.value)}}" class="check-icon">✓</view>
+            </view>
+            <view class="option-text">
+              <text class="option-label">{{item.label}}</text>
+              <text class="option-desc">{{item.desc}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{!isConditionSelectable()}}" class="condition-tip">
+        <text>当前未选择总杆指标，奖励前置条件不可选</text>
+      </view>
+    </view>
+
+    <!-- 说明文字 -->
+    <view class="explanation">
+      <text class="explanation-title">💡 奖励规则说明</text>
+      <text class="explanation-text">奖励规则可以为拉丝胜利方提供额外分数。只有在拉丝指标包含总杆时，奖励前置条件才可选。</text>
+    </view>
+  </view>
+</view>

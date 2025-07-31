@@ -1,0 +1,207 @@
+/* 配置区域容器 */
+.config-section {
+	background: #fff;
+	border-radius: 24rpx;
+	margin-bottom: 24rpx;
+	overflow: hidden;
+	box-shadow: 0 2rpx 8rpx 0 rgba(0, 0, 0, 0.04);
+}
+
+/* 标题栏 */
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 32rpx 24rpx;
+	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+	border-bottom: 1rpx solid #e9ecef;
+}
+
+.header-left {
+	display: flex;
+	flex-direction: column;
+	gap: 4rpx;
+}
+
+.section-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #2c3e50;
+}
+
+.section-subtitle {
+	font-size: 24rpx;
+	color: #6c757d;
+}
+
+.header-right {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.current-value {
+	font-size: 28rpx;
+	color: #4caf7a;
+	font-weight: 500;
+}
+
+.arrow {
+	font-size: 20rpx;
+	color: #6c757d;
+	transition: transform 0.3s ease;
+}
+
+.arrow-up {
+	transform: rotate(180deg);
+}
+
+.arrow-down {
+	transform: rotate(0deg);
+}
+
+/* 配置内容区域 */
+.config-content {
+	transition: all 0.3s ease;
+	overflow: hidden;
+}
+
+.config-content.show {
+	max-height: 2000rpx;
+	opacity: 1;
+}
+
+.config-content.hide {
+	max-height: 0;
+	opacity: 0;
+}
+
+/* 选项列表 */
+.options-list {
+	padding: 24rpx;
+}
+
+.option-item {
+	display: flex;
+	align-items: center;
+	padding: 24rpx;
+	margin-bottom: 16rpx;
+	background: #f8f9fa;
+	border-radius: 16rpx;
+	border: 2rpx solid transparent;
+	transition: all 0.2s ease;
+}
+
+.option-item:last-child {
+	margin-bottom: 0;
+}
+
+.option-item.selected {
+	background: #e8f5e8;
+	border-color: #4caf7a;
+}
+
+.option-left {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	flex: 1;
+}
+
+.checkbox {
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 6rpx;
+	border: 2rpx solid #dee2e6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+}
+
+.checkbox.checked {
+	border-color: #4caf7a;
+	background: #4caf7a;
+}
+
+.check-icon {
+	color: #fff;
+	font-size: 20rpx;
+	font-weight: bold;
+}
+
+.option-text {
+	display: flex;
+	flex-direction: column;
+	gap: 4rpx;
+}
+
+.option-label {
+	font-size: 28rpx;
+	font-weight: 500;
+	color: #2c3e50;
+}
+
+.option-desc {
+	font-size: 24rpx;
+	color: #6c757d;
+	line-height: 1.4;
+}
+
+/* 总杆计算方式切换 */
+.calculation-toggle {
+	padding: 24rpx;
+	border-top: 1rpx solid #e9ecef;
+}
+
+.toggle-label {
+	display: block;
+	font-size: 26rpx;
+	font-weight: 600;
+	color: #2c3e50;
+	margin-bottom: 16rpx;
+}
+
+.toggle-container {
+	display: flex;
+	background: #f8f9fa;
+	border-radius: 12rpx;
+	padding: 4rpx;
+}
+
+.toggle-option {
+	flex: 1;
+	text-align: center;
+	padding: 16rpx;
+	border-radius: 8rpx;
+	font-size: 26rpx;
+	color: #6c757d;
+	transition: all 0.2s ease;
+}
+
+.toggle-option.active {
+	background: #4caf7a;
+	color: #fff;
+}
+
+/* 说明文字 */
+.explanation {
+	padding: 24rpx;
+	background: #f8f9fa;
+	border-top: 1rpx solid #e9ecef;
+}
+
+.explanation-title {
+	display: block;
+	font-size: 26rpx;
+	font-weight: 600;
+	color: #2c3e50;
+	margin-bottom: 12rpx;
+}
+
+.explanation-text {
+	display: block;
+	font-size: 24rpx;
+	color: #6c757d;
+	line-height: 1.5;
+}
