@@ -7,7 +7,7 @@
     <view class="section-label">请配置游戏规则</view>
 
     <!-- 扣分规则 -->
-    <koufen bind:confirm="onKoufenConfirm" />
+    <koufen />
 
     <!-- 顶洞规则 -->
     <draw8421_config />

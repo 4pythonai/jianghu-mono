@@ -17,10 +17,6 @@ Page({
     console.log('规则名称已更新:', value);
   },
 
-  onKoufenConfirm(e) {
-    const detail = e.detail;
-    console.log('页面收到扣分规则更新:', detail.parsedData);
-  },
 
   onAddToMyRules() {
     // 输出完整Store数据用于调试
@@ -47,7 +43,7 @@ Page({
       wx.showToast({
         title: '添加规则失败',
         icon: 'none',
-        duration: 1500
+        duration: 1000
       });
     });
   },
@@ -72,19 +68,6 @@ Page({
           console.log('Store规则名称变化:', value);
         }
       ),
-
-      reaction(
-        () => [G4P8421Store.max8421_sub_value, G4P8421Store.sub8421_config_string, G4P8421Store.duty_config],
-        () => {
-          console.log('Store扣分规则变化');
-        }
-      ),
-      reaction(
-        () => [G4P8421Store.eating_range, G4P8421Store.meat_value_config_string, G4P8421Store.meat_max_value],
-        () => {
-          console.log('Store吃肉规则变化');
-        }
-      )
     ];
   },
 

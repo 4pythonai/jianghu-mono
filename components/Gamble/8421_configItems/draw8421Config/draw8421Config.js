@@ -74,7 +74,7 @@ Component({
           console.log('设置selected为0');
         } else if (currentValue.startsWith('Diff_')) {
           // 解析分数值
-          const score = parseInt(currentValue.replace('Diff_', ''));
+          const score = Number.parseInt(currentValue.replace('Diff_', ''));
           this.setData({
             selected: 1,
             selectedDiffScore: score || 1
@@ -88,7 +88,7 @@ Component({
     },
 
     onSelect(e) {
-      const index = parseInt(e.currentTarget.dataset.index);
+      const index = Number.parseInt(e.currentTarget.dataset.index);
       console.log('选择选项:', index, '当前selected:', this.data.selected);
       this.setData({ selected: index });
       console.log('设置后selected:', index);
@@ -128,15 +128,10 @@ Component({
 
       // 调用store的action更新数据
       G4P8421Store.updateDingdongRule(selectedValue);
-
-      console.log('顶洞组件已更新store:', selectedValue);
-
       // 更新显示值
       this.updateDisplayValue();
-
       // 关闭弹窗
       this.setData({ visible: false });
-
       // 向父组件传递事件
       this.triggerEvent('confirm', {
         value: selectedValue
