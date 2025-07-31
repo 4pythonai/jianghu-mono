@@ -29,11 +29,6 @@
 	color: #2c3e50;
 }
 
-.section-subtitle {
-	font-size: 24rpx;
-	color: #6c757d;
-}
-
 .header-right {
 	display: flex;
 	align-items: center;
@@ -49,31 +44,11 @@
 .arrow {
 	font-size: 20rpx;
 	color: #6c757d;
-	transition: transform 0.3s ease;
-}
-
-.arrow-up {
-	transform: rotate(180deg);
-}
-
-.arrow-down {
-	transform: rotate(0deg);
 }
 
 /* 配置内容区域 */
 .config-content {
-	transition: all 0.3s ease;
 	overflow: hidden;
-}
-
-.config-content.show {
-	max-height: 2000rpx;
-	opacity: 1;
-}
-
-.config-content.hide {
-	max-height: 0;
-	opacity: 0;
 }
 
 /* 主要内容区域 */

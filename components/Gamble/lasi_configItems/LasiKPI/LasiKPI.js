@@ -1,5 +1,4 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
-import { observable, action } from 'mobx-miniprogram'
 
 Component({
     properties: {
@@ -23,14 +22,10 @@ Component({
             worst: 1,   // 较差成绩PK分值
             total: 1    // 双方总杆PK分值
         },
-        // 是否显示详细说明
-        showDetail: true,
         // 生成的规则名称
         generatedRuleName: '',
         // 总分
-        totalScore: 0,
-        // 强制更新标记
-        forceUpdate: 0
+        totalScore: 0
     },
 
     lifetimes: {
@@ -71,10 +66,6 @@ Component({
             const { value } = e.currentTarget.dataset;
             const { selectedIndicators, isSelected } = this.data;
 
-            console.log('🎯 [LasiKPI] 选择指标:', value);
-            console.log('🎯 [LasiKPI] 当前选中状态:', isSelected);
-            console.log('🎯 [LasiKPI] 当前选中数组:', selectedIndicators);
-
             let newSelectedIndicators;
             let newIsSelected = { ...isSelected };
 
@@ -82,35 +73,21 @@ Component({
                 // 取消选择
                 newSelectedIndicators = selectedIndicators.filter(item => item !== value);
                 newIsSelected[value] = false;
-                console.log('🎯 [LasiKPI] 取消选择:', value);
             } else {
                 // 添加选择
                 newSelectedIndicators = [...selectedIndicators, value];
                 newIsSelected[value] = true;
-                console.log('🎯 [LasiKPI] 添加选择:', value);
             }
 
-            console.log('🎯 [LasiKPI] 新的选中状态:', newIsSelected);
-            console.log('🎯 [LasiKPI] 新的选中数组:', newSelectedIndicators);
-
-            // 使用setTimeout确保数据更新
             this.setData({
                 selectedIndicators: newSelectedIndicators,
                 isSelected: newIsSelected
-            }, () => {
-                console.log('🎯 [LasiKPI] setData完成后的状态:', this.data.isSelected);
-                // 强制更新视图
-                this.setData({
-                    forceUpdate: Date.now()
-                });
-
-                // 打印当前KPI配置
-                this.printCurrentKpiConfig();
             });
 
             this.calculateTotalScore();
             this.updateStore();
             this.generateRuleName();
+            this.printCurrentKpiConfig();
         },
 
         // 切换总杆计算方式 plus_total
@@ -127,12 +104,7 @@ Component({
             this.printCurrentKpiConfig();
         },
 
-        // 切换详细说明显示
-        onToggleDetail() {
-            this.setData({
-                showDetail: !this.data.showDetail
-            });
-        },
+
 
         // 计算总分
         calculateTotalScore() {
@@ -275,28 +247,7 @@ Component({
             this.generateRuleName();
         },
 
-        // 调试方法 - 打印当前状态
-        debugState() {
-            console.log('当前组件状态:', {
-                selectedIndicators: this.data.selectedIndicators,
-                isSelected: this.data.isSelected,
-                totalScore: this.data.totalScore
-            });
-        },
 
-        // 测试方法 - 手动设置选中状态
-        testSetSelected() {
-            console.log('🎯 [LasiKPI] 测试设置选中状态');
-            this.setData({
-                isSelected: {
-                    best: true,
-                    worst: false,
-                    total: true
-                },
-                selectedIndicators: ['best', 'total']
-            });
-            console.log('🎯 [LasiKPI] 测试设置完成');
-        },
 
         // 打印当前KPI配置
         printCurrentKpiConfig() {

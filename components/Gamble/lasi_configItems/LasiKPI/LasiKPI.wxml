@@ -6,12 +6,12 @@
     </view>
     <view class="header-right">
       <text class="current-value">{{generatedRuleName}}</text>
-      <view class="arrow arrow-down">▼</view>
+      <view class="arrow">▼</view>
     </view>
   </view>
 
   <!-- 详细配置区域 -->
-  <view class="config-content show">
+  <view class="config-content">
     <!-- 主要内容区域 -->
     <view class="main-content">
       <!-- 左侧KPI选项列表 -->
