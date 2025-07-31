@@ -73,16 +73,16 @@ Component({
           this.setData({ selectedStart: 0 });
           // 提取帕分数
           const scoreStr = koufenStart.replace('Par+', '');
-          const score = parseInt(scoreStr);
-          if (!isNaN(score)) {
+          const score = Number.parseInt(scoreStr);
+          if (!Number.isNaN(score)) {
             this.setData({ paScore: score });
           }
         } else if (koufenStart?.startsWith('DoublePar+')) {
           this.setData({ selectedStart: 1 });
           // 提取双帕分数
           const scoreStr = koufenStart.replace('DoublePar+', '');
-          const score = parseInt(scoreStr);
-          if (!isNaN(score)) {
+          const score = Number.parseInt(scoreStr);
+          if (!Number.isNaN(score)) {
             this.setData({ doubleParScore: score });
           }
         }
@@ -111,12 +111,13 @@ Component({
           case 'DUTY_NEGATIVE':
             selectedDuty = 2;
             break;
-          default:
+          default: {
             // 兼容旧格式
             const index = this.data.dutyOptions.indexOf(partnerPunishment);
             if (index !== -1) {
               selectedDuty = index;
             }
+          }
         }
         this.setData({ selectedDuty });
       }
