@@ -68,6 +68,17 @@ Page({
         // });
     },
 
+    // KPI配置变化事件处理
+    onKpiConfigChange(e) {
+        console.log('🎯 [4p-lasi页面] KPI配置变化事件:', e.detail);
+
+        // 通知奖励配置组件更新
+        const lasiRewardComponent = this.selectComponent('#lasiReward');
+        if (lasiRewardComponent) {
+            lasiRewardComponent.onKpiConfigChange();
+        }
+    },
+
     onLoad() {
         // 4人拉丝规则配置页
         console.log('4P-lasi 规则配置页面加载完成');

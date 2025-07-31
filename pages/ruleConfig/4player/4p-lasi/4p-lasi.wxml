@@ -7,10 +7,10 @@
     <view class="section-label">请配置游戏规则</view>
 
     <!-- 拉丝配置 -->
-    <LasiKPI />
+    <LasiKPI bind:kpiConfigChange="onKpiConfigChange" />
 
     <!-- 拉丝奖励规则 -->
-    <LasiKPIReward />
+    <LasiKPIReward id="lasiReward" />
 
     <!-- 拉丝顶洞规则 -->
     <!-- <lasi_dingdong_config /> -->

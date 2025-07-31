@@ -22,6 +22,8 @@
 
       <!-- 奖励项目列表 -->
       <view class="reward-items">
+        <!-- 调试信息 -->
+        <view style="color: red; font-size: 20rpx;">调试: addRewardItems长度 = {{addRewardItems.length}}</view>
         <view class="reward-item" wx:for="{{addRewardItems}}" wx:key="scoreName">
           <text
             class="score-name"
@@ -42,6 +44,8 @@
       </view>
 
       <!-- 奖励前置条件 -->
+      <!-- 调试信息 -->
+      <view style="color: blue; font-size: 20rpx;">调试: showPreCondition = {{showPreCondition}}</view>
       <view class="precondition-section" wx:if="{{showPreCondition}}">
         <view class="precondition-title">奖励前置条件 (当含有总杆PK时)</view>
         <view class="precondition-options">
