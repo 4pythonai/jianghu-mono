@@ -2,13 +2,16 @@ import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_842
 
 Component({
   properties: {
-    visible: Boolean,
-    displayValue: {
-      type: String,
-      value: '请配置扣分规则'
+    noKoufen: {
+      type: Boolean,
+      value: false
     }
   },
   data: {
+    // 组件内部状态
+    visible: false,
+    displayValue: '请配置扣分规则',
+
     // 扣分开始条件 (sub8421_config_string)
     Sub8421ConfigString: ['从帕+X开始扣分', '从双帕+Y开始扣分', '不扣分'],
     selectedStart: 0,
@@ -36,18 +39,65 @@ Component({
     attached() {
       // 从store获取当前配置并初始化组件状态
       this.initializeFromStore();
+      // 计算显示值
+      this.updateDisplayValue();
     }
   },
   // 属性变化监听
   observers: {
-    'visible': function (newVal) {
-      if (newVal) {
-        // 每次显示时重新加载配置
-        this.initializeFromStore();
-      }
+    'noKoufen': function (newVal) {
+      // 当noKoufen变化时，更新显示值
+      this.updateDisplayValue();
     }
   },
   methods: {
+    // 计算显示值
+    updateDisplayValue() {
+      const store = G4P8421Store;
+      let displayValue = '';
+
+      // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
+      let startText = '';
+      if (store.sub8421_config_string) {
+        if (store.sub8421_config_string === 'NoSub') {
+          startText = '不扣分';
+        } else if (store.sub8421_config_string?.startsWith('Par+')) {
+          const score = store.sub8421_config_string.replace('Par+', '');
+          startText = `帕+${score}`;
+        } else if (store.sub8421_config_string?.startsWith('DoublePar+')) {
+          const score = store.sub8421_config_string.replace('DoublePar+', '');
+          startText = `双帕+${score}`;
+        } else {
+          startText = store.sub8421_config_string;
+        }
+      }
+
+      // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
+      let fengdingText = '';
+      if (store.max8421_sub_value === 10000000) {
+        fengdingText = '不封顶';
+      } else if (typeof store.max8421_sub_value === 'number' && store.max8421_sub_value < 10000000) {
+        fengdingText = `扣${store.max8421_sub_value}分封顶`;
+      }
+
+      // 组合显示值
+      if (startText && fengdingText) {
+        displayValue = `${startText}/${fengdingText}`;
+      } else if (startText) {
+        displayValue = startText;
+      } else if (fengdingText) {
+        displayValue = fengdingText;
+      } else {
+        displayValue = '请配置扣分规则';
+      }
+
+      this.setData({
+        displayValue: displayValue
+      });
+
+      console.log('扣分规则显示值已更新:', displayValue);
+    },
+
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
@@ -151,10 +201,13 @@ Component({
       this.setData({ maxSubScore: value });
     },
     onShowConfig() {
-      this.triggerEvent('show');
+      this.setData({ visible: true });
+      // 每次显示时重新加载配置
+      this.initializeFromStore();
     },
 
     onCancel() {
+      this.setData({ visible: false });
       this.triggerEvent('cancel');
     },
     onConfirm() {
@@ -200,6 +253,12 @@ Component({
         duty_config,
         customValues: { paScore, doubleParScore, maxSubScore }
       });
+
+      // 更新显示值
+      this.updateDisplayValue();
+
+      // 关闭弹窗
+      this.setData({ visible: false });
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {

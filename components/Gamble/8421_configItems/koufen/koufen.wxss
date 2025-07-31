@@ -83,7 +83,7 @@
 .modal-btn {
 	flex: 1;
 	height: 64rpx;
-	border-radius: 32rpx;
+	border-radius: 16rpx;
 	font-size: 28rpx;
 	font-weight: 500;
 	border: none;

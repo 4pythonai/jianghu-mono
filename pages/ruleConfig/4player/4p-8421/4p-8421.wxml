@@ -7,35 +7,13 @@
     <view class="section-label">请配置游戏规则</view>
 
     <!-- 扣分规则 -->
-    <koufen
-      visible="{{showKoufen}}"
-      display-value="{{koufenDisplayValue}}"
-      bind:show="onShowKoufen"
-      bind:cancel="onCloseKoufen"
-      bind:confirm="onKoufenConfirm"
-    />
+    <koufen no-koufen="{{noKoufen}}" bind:confirm="onKoufenConfirm" />
 
     <!-- 顶洞规则 -->
-    <draw8421_config
-      visible="{{showDingdong}}"
-      display-value="{{dingdongDisplayValue}}"
-      disabled="{{noKoufen}}"
-      no-koufen="{{noKoufen}}"
-      bind:show="onShowDingdong"
-      bind:cancel="onCloseDingdong"
-      bind:confirm="onDingdongConfirm"
-    />
+    <draw8421_config no-koufen="{{noKoufen}}" />
 
     <!-- 吃肉规则 -->
-    <eatmeat
-      visible="{{showEatmeat}}"
-      display-value="{{eatmeatDisplayValue}}"
-      disabled="{{noKoufen || draw8421_config === 'NoDraw'}}"
-      no-koufen="{{noKoufen}}"
-      bind:show="onShowEatmeat"
-      bind:cancel="onCloseEatmeat"
-      bind:confirm="onEatmeatConfirm"
-    />
+    <eatmeat no-koufen="{{noKoufen}}" />
 
     <!-- 底部按钮 -->
     <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>

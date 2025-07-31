@@ -2,21 +2,16 @@ import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_842
 
 Component({
   properties: {
-    visible: Boolean,
     noKoufen: {
-      type: Boolean,
-      value: false
-    },
-    displayValue: {
-      type: String,
-      value: '请配置顶洞规则'
-    },
-    disabled: {
       type: Boolean,
       value: false
     }
   },
   data: {
+    // 组件内部状态
+    visible: false,
+    displayValue: '请配置顶洞规则',
+
     options: [
       'DrawEqual',
       'Diff_1',
@@ -37,9 +32,49 @@ Component({
     this.syncSelectedFromStore();
     // 更新显示选项
     this.updateDisplayOptions();
+    // 计算显示值
+    this.updateDisplayValue();
   },
 
   methods: {
+    // 计算显示值
+    updateDisplayValue() {
+      const store = G4P8421Store;
+      let displayValue = '';
+
+      // 映射英文格式到中文显示
+      if (store.draw8421_config) {
+        switch (store.draw8421_config) {
+          case 'DrawEqual':
+            displayValue = '得分打平';
+            break;
+          case 'Diff_1':
+            displayValue = '得分1分以内';
+            break;
+          case 'NoDraw':
+            displayValue = '无顶洞';
+            break;
+          default:
+            // 处理 Diff_X 格式
+            if (store.draw8421_config.startsWith('Diff_')) {
+              const score = store.draw8421_config.replace('Diff_', '');
+              displayValue = `得分${score}分以内`;
+            } else {
+              displayValue = store.draw8421_config;
+            }
+            break;
+        }
+      } else {
+        displayValue = '请配置顶洞规则';
+      }
+
+      this.setData({
+        displayValue: displayValue
+      });
+
+      console.log('顶洞规则显示值已更新:', displayValue);
+    },
+
     syncSelectedFromStore() {
       const currentValue = G4P8421Store.draw8421_config;
       if (currentValue) {
@@ -81,10 +116,15 @@ Component({
 
 
     onShowConfig() {
-      this.triggerEvent('show');
+      if (this.data.noKoufen) return; // 如果禁用则不显示
+      this.setData({ visible: true });
+      // 每次显示时重新加载配置
+      this.syncSelectedFromStore();
+      this.updateDisplayOptions();
     },
 
     onCancel() {
+      this.setData({ visible: false });
       this.triggerEvent('cancel');
     },
     onConfirm() {
@@ -103,6 +143,12 @@ Component({
       G4P8421Store.updateDingdongRule(selectedValue);
 
       console.log('顶洞组件已更新store:', selectedValue);
+
+      // 更新显示值
+      this.updateDisplayValue();
+
+      // 关闭弹窗
+      this.setData({ visible: false });
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
