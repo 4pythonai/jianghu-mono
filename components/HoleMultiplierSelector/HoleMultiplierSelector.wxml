@@ -1,12 +1,12 @@
 <view class="multiplier-popup" wx:if="{{visible}}" bindtap="close">
   <view class="multiplier-content" catchtap="noop">
-    <view class="multiplier-title">选择倍数 - {{holename}}</view>
+    <view class="multiplier-title">选择倍数 - 从{{holename}}开始</view>
 
     <view class="multiplier-options">
       <!-- 第一行：恢复, X2, X4 -->
       <view
         class="multiplier-btn {{selectedMultiplier === 1 ? 'active' : ''}}"
-        bindtap="onSelectMultiplier"
+        bindtap="onResetMultiplier"
         data-multiplier="1"
       >恢复</view>
       <view

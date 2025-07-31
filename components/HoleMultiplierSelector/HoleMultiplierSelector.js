@@ -23,12 +23,23 @@ Component({
     methods: {
         // 选择倍数
         onSelectMultiplier(e) {
-            const multiplier = parseInt(e.currentTarget.dataset.multiplier);
+            const multiplier = Number.parseInt(e.currentTarget.dataset.multiplier);
             this.setData({
                 selectedMultiplier: multiplier,
                 isCustomActive: false
             });
         },
+
+
+        onResetMultiplier(e) {
+            const multiplier = 1;
+            this.setData({
+                selectedMultiplier: multiplier,
+                isCustomActive: false
+            });
+        },
+
+        // onResetMultiplier
 
         // 自定义输入变化
         onCustomInputChange(e) {
@@ -54,7 +65,7 @@ Component({
             let multiplier;
 
             if (isCustomActive && customValue) {
-                multiplier = parseFloat(customValue) || 1;
+                multiplier = Number.parseFloat(customValue) || 1;
             } else {
                 multiplier = selectedMultiplier;
             }
