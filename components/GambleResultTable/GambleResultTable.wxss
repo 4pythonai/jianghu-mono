@@ -120,6 +120,8 @@
 	background-color: #ffffff;
 }
 
+/* 总计行样式 - 不包含红蓝分组 */
+
 /* 金额样式 */
 .money-positive {
 	color: #28a745;
@@ -136,13 +138,19 @@
 }
 
 /* 红蓝分组样式 */
+.cell.team-red,
 .cell-red {
 	background-color: rgba(220, 53, 69, 0.1);
+	border-left: 3px solid #dc3545;
 }
 
+.cell.team-blue,
 .cell-blue {
 	background-color: rgba(0, 123, 255, 0.1);
+	border-left: 3px solid #007bff;
 }
+
+/* 表头样式 - 不包含红蓝分组 */
 
 /* 响应式设计 */
 @media (max-width: 750rpx) {

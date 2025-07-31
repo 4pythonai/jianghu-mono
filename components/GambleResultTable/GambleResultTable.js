@@ -133,6 +133,14 @@ Component({
             }
 
 
+            console.log('🎮 [GambleResultTable] 处理后的数据:', {
+                players: players.map(p => ({ userid: p.userid, nickname: p.nickname, teamClass: p.teamClass })),
+                processedHoles: processedHoles.map(h => ({
+                    id: h.id,
+                    playerClasses: h.playerClasses
+                }))
+            });
+
             this.setData({
                 players, // 现在是数组格式
                 totalMoney,
