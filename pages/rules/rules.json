@@ -4,6 +4,6 @@
     "backgroundColor": "#f5f5f5",
     "usingComponents": {
         "MyRules": "./ruleComponents/MyRules/MyRules",
-        "add-rule": "./ruleComponents/AddRule/AddRule"
+        "SysRule": "./ruleComponents/SysRule/SysRule"
     }
 }

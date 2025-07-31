@@ -1,46 +1,41 @@
 <!-- 游戏规则页面 -->
 <view class="rules-container">
-    <!-- Debug信息 -->
-    <view class="debug-info" bindtap="debugToggleTab">
-        <text class="debug-text">当前activeTab: {{ activeTab }} (点击切换)</text>
+  <!-- Tab栏 -->
+  <view class="tab-bar">
+    <view
+      class="tab-item {{ activeTab === 0 ? 'active' : '' }}"
+      bindtap="onTabChange"
+      data-index="0"
+    >
+      <text>我的规则</text>
     </view>
-    
-    <!-- Tab栏 -->
-    <view class="tab-bar">
-        <view 
-            class="tab-item {{ activeTab === 0 ? 'active' : '' }}" 
-            bindtap="onTabChange" 
-            data-index="0"
-        >
-            <text>我的规则</text>
-        </view>
-        <view 
-            class="tab-item {{ activeTab === 1 ? 'active' : '' }}" 
-            bindtap="onTabChange" 
-            data-index="1"
-        >
-            <text>添加规则</text>
-        </view>
+    <view
+      class="tab-item {{ activeTab === 1 ? 'active' : '' }}"
+      bindtap="onTabChange"
+      data-index="1"
+    >
+      <text>添加规则</text>
     </view>
+  </view>
 
-    <!-- Tab内容区域 -->
-    <view class="tab-content">
-        <!-- 我的规则组件 -->
-        <MyRules 
-            id="myRulesComponent"
-            show="{{ activeTab == 0 }}"
-            bind:editRule="onEditRule"
-            bind:ruleDeleted="onRuleDeleted"
-            bind:pullDownComplete="onPullDownComplete"
-        ></MyRules>
+  <!-- Tab内容区域 -->
+  <view class="tab-content">
+    <!-- 我的规则组件 -->
+    <MyRules
+      id="myRulesComponent"
+      show="{{ activeTab == 0 }}"
+      bind:editRule="onEditRule"
+      bind:ruleDeleted="onRuleDeleted"
+      bind:pullDownComplete="onPullDownComplete"
+    ></MyRules>
 
-        <!-- 添加规则组件 -->
-        <add-rule 
-            id="addRuleComponent"
-            show="{{ activeTab == 1 }}"
-            editRule="{{ editRule }}"
-            bind:ruleSaved="onRuleSaved"
-            bind:cancelEdit="onCancelEdit"
-        ></add-rule>
-    </view>
-</view> 
+    <!-- 添加规则组件 -->
+    <SysRule
+      id="addRuleComponent"
+      show="{{ activeTab == 1 }}"
+      editRule="{{ editRule }}"
+      bind:ruleSaved="onRuleSaved"
+      bind:cancelEdit="onCancelEdit"
+    ></SysRule>
+  </view>
+</view>

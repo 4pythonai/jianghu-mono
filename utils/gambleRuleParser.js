@@ -2,7 +2,7 @@
  * 赌博规则解析器总控
  */
 
-import { parse4P8421Config } from './ruleParser/rule_4p_8421.js';
+import { parse4P8421Config } from './ruleParser/Parser4p8421.js';
 
 /**
  * 解析赌博规则配置

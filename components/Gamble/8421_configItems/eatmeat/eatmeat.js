@@ -25,10 +25,12 @@ Component({
 
     // 新增可编辑变量
     topScoreLimit: 3, // 封顶分数, 默认3
+    meatScoreValue: 1, // 肉算x分中的x值, 默认1
 
     // 数字选择器范围 - 使用统一配置
     eatValueRange: EATMEAT_CONFIG.RANGES.EAT_VALUE,
     topScoreRange: EATMEAT_CONFIG.RANGES.TOP_SCORE,
+    meatScoreRange: [1, 2, 3, 4, 5], // 肉分值范围 1-5
   },
   // 组件生命周期
   lifetimes: {
@@ -56,7 +58,8 @@ Component({
       let meatValueText = '';
       if (store.meat_value_config_string) {
         if (store.meat_value_config_string?.startsWith('MEAT_AS_')) {
-          meatValueText = '肉算1分';
+          const score = store.meat_value_config_string.replace('MEAT_AS_', '');
+          meatValueText = `肉算${score}分`;
         } else if (store.meat_value_config_string === 'SINGLE_DOUBLE') {
           meatValueText = '分值翻倍';
         } else if (store.meat_value_config_string === 'CONTINUE_DOUBLE') {
@@ -123,6 +126,9 @@ Component({
         let meatValueOption = 0;
         if (meatValue?.startsWith('MEAT_AS_')) {
           meatValueOption = 0;
+          // 解析肉分值
+          const score = parseInt(meatValue.replace('MEAT_AS_', ''));
+          this.setData({ meatScoreValue: score || 1 });
         } else if (meatValue === 'SINGLE_DOUBLE') {
           meatValueOption = 1;
         } else if (meatValue === 'CONTINUE_DOUBLE') {
@@ -157,6 +163,13 @@ Component({
       this.setData({ meatValueOption: index });
     },
 
+    // 新增：肉分值改变事件
+    onMeatScoreChange(e) {
+      const value = this.data.meatScoreRange[e.detail.value];
+      this.setData({ meatScoreValue: value });
+      console.log('更新肉分值:', value);
+    },
+
     onTopSelect(e) {
       this.setData({ topSelected: e.currentTarget.dataset.index });
     },
@@ -189,7 +202,7 @@ Component({
       let meatValueConfig = null;
       switch (data.meatValueOption) {
         case 0:
-          meatValueConfig = 'MEAT_AS_1'; // 固定为MEAT_AS_1, 如需要其他数值可以再扩展
+          meatValueConfig = `MEAT_AS_${data.meatScoreValue}`; // 动态生成MEAT_AS_X格式
           break;
         case 1:
           meatValueConfig = 'SINGLE_DOUBLE';
