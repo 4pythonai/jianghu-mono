@@ -14,11 +14,6 @@ Component({
       'Diff_1',
       'NoDraw'
     ],
-    displayOptions: [
-      '得分打平',
-      '得分1分以内',
-      '无顶洞'
-    ],
     selected: 0,
     // 分数选择器相关
     diffScores: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -27,8 +22,6 @@ Component({
   attached() {
     // 组件初始化时, 根据store中的值设置选中状态
     this.syncSelectedFromStore();
-    // 更新显示选项
-    this.updateDisplayOptions();
     // 计算显示值
     this.updateDisplayValue();
   },
@@ -74,9 +67,11 @@ Component({
 
     syncSelectedFromStore() {
       const currentValue = G4P8421Store.draw8421_config;
+      console.log('syncSelectedFromStore被调用，store值:', currentValue);
       if (currentValue) {
         if (currentValue === 'DrawEqual') {
           this.setData({ selected: 0 });
+          console.log('设置selected为0');
         } else if (currentValue.startsWith('Diff_')) {
           // 解析分数值
           const score = parseInt(currentValue.replace('Diff_', ''));
@@ -84,22 +79,19 @@ Component({
             selected: 1,
             selectedDiffScore: score || 1
           });
+          console.log('设置selected为1，分数:', score || 1);
         } else if (currentValue === 'NoDraw') {
           this.setData({ selected: 2 });
+          console.log('设置selected为2');
         }
       }
     },
 
-    updateDisplayOptions() {
-      const score = this.data.selectedDiffScore;
-      const newDisplayOptions = [...this.data.displayOptions];
-      newDisplayOptions[1] = `得分${score}分以内`;
-      this.setData({ displayOptions: newDisplayOptions });
-    },
-
     onSelect(e) {
-      const index = e.currentTarget.dataset.index;
+      const index = parseInt(e.currentTarget.dataset.index);
+      console.log('选择选项:', index, '当前selected:', this.data.selected);
       this.setData({ selected: index });
+      console.log('设置后selected:', index);
     },
 
     // 分数选择器相关方法
@@ -107,16 +99,15 @@ Component({
       const selectedIndex = e.detail.value;
       const selectedScore = this.data.diffScores[selectedIndex];
       this.setData({ selectedDiffScore: selectedScore });
-      this.updateDisplayOptions();
       console.log('选择分数:', selectedScore);
     },
 
-
     onShowConfig() {
       this.setData({ visible: true });
-      // 每次显示时重新加载配置
-      this.syncSelectedFromStore();
-      this.updateDisplayOptions();
+      // 只在第一次显示时重新加载配置，避免覆盖用户选择
+      if (this.data.selected === 0 && !G4P8421Store.draw8421_config) {
+        this.syncSelectedFromStore();
+      }
     },
 
     onCancel() {
