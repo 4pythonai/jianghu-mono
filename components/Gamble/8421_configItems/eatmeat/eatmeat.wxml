@@ -108,7 +108,7 @@
     </view>
     <view class="modal-actions">
       <button class="modal-btn cancel" bindtap="onCancel">取消</button>
-      <button class="modal-btn confirm" bindtap="onConfirm">确定保存</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
     </view>
   </view>
 </view>
