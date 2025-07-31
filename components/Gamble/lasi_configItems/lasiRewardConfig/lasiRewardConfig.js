@@ -53,6 +53,19 @@ Component({
                 multiplyRewardItems: config.multiplyRewardItems || this.data.multiplyRewardItems
             });
 
+            // 如果store中有rewardPair数据，需要正确映射到对应的数组
+            if (config.rewardPair && config.rewardType) {
+                if (config.rewardType === 'add') {
+                    this.setData({
+                        addRewardItems: config.rewardPair
+                    });
+                } else if (config.rewardType === 'multiply') {
+                    this.setData({
+                        multiplyRewardItems: config.rewardPair
+                    });
+                }
+            }
+
             this.printCurrentConfig();
         },
 
@@ -81,6 +94,8 @@ Component({
                 rewardType: type
             });
 
+            // 实时更新Store
+            this.updateStore();
             this.printCurrentConfig();
         },
 
@@ -115,6 +130,8 @@ Component({
                 this.setData({ multiplyRewardItems });
             }
 
+            // 实时更新Store
+            this.updateStore();
             this.printCurrentConfig();
         },
 
@@ -125,6 +142,8 @@ Component({
                 rewardPreCondition: value
             });
 
+            // 实时更新Store
+            this.updateStore();
             this.printCurrentConfig();
         },
 
@@ -154,6 +173,12 @@ Component({
                 rewardPreCondition,
                 rewardPair: rewardType === 'add' ? addRewardItems : multiplyRewardItems
             };
+        },
+
+        // 更新Store
+        updateStore() {
+            const config = this.getCurrentConfig();
+            G4PLasiStore.updateRewardConfig(config);
         },
 
         // 打印当前配置

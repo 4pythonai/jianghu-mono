@@ -28,8 +28,9 @@ export const G4PLasiStore = observable({
 
     // 拉丝奖励规则
     lasi_reward_config: {
-        enabled: false,
-        conditions: []
+        rewardType: 'add',
+        rewardPreCondition: 'total_win',
+        rewardPair: []
     },
 
     // 拉丝顶洞规则
@@ -102,8 +103,9 @@ export const G4PLasiStore = observable({
             }
         };
         this.lasi_reward_config = {
-            enabled: false,
-            conditions: []
+            rewardType: 'add',
+            rewardPreCondition: 'total_win',
+            rewardPair: []
         };
         this.lasi_dingdong_config = {
             enabled: true,
