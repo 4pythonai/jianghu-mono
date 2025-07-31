@@ -96,6 +96,7 @@
 	padding: 8rpx 12rpx;
 	background: rgba(255, 255, 255, 0.8);
 	border-radius: 8rpx;
+	border: 1rpx solid #ff0000; /* 临时调试边框 */
 }
 
 /* 成绩名称 */

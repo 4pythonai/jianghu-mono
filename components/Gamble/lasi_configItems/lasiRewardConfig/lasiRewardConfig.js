@@ -46,6 +46,7 @@ Component({
         loadConfigFromStore() {
             const config = G4PLasiStore.lasi_reward_config || {};
 
+            // 先设置基本数据
             this.setData({
                 rewardType: config.rewardType || 'add',
                 rewardPreCondition: config.rewardPreCondition || 'total_win',
@@ -66,7 +67,38 @@ Component({
                 }
             }
 
+            // 确保两个数组都有默认数据
+            if (!this.data.addRewardItems || this.data.addRewardItems.length === 0) {
+                this.setData({
+                    addRewardItems: [
+                        { scoreName: 'Par', rewardValue: 0 },
+                        { scoreName: 'Birdie', rewardValue: 1 },
+                        { scoreName: 'Eagle', rewardValue: 3 },
+                        { scoreName: 'Albatross/HIO', rewardValue: 10 }
+                    ]
+                });
+            }
+
+            if (!this.data.multiplyRewardItems || this.data.multiplyRewardItems.length === 0) {
+                this.setData({
+                    multiplyRewardItems: [
+                        { scoreName: 'Par', rewardValue: 0 },
+                        { scoreName: 'Birdie', rewardValue: 0 },
+                        { scoreName: 'Eagle', rewardValue: 0 },
+                        { scoreName: 'Albatross/HIO', rewardValue: 0 },
+                        { scoreName: 'Birdie+Birdie', rewardValue: 0 },
+                        { scoreName: 'Birdie+Eagle', rewardValue: 0 },
+                        { scoreName: 'Eagle+Eagle', rewardValue: 0 }
+                    ]
+                });
+            }
+
             this.printCurrentConfig();
+
+            // 调试信息
+            console.log('🎯 [LasiRewardConfig] loadConfigFromStore 完成');
+            console.log('🎯 [LasiRewardConfig] addRewardItems:', this.data.addRewardItems);
+            console.log('🎯 [LasiRewardConfig] multiplyRewardItems:', this.data.multiplyRewardItems);
         },
 
         // 检查KPI中是否有total类型
