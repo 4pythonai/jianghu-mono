@@ -2,7 +2,11 @@ import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_842
 
 Component({
   properties: {
-    visible: Boolean
+    visible: Boolean,
+    displayValue: {
+      type: String,
+      value: '请配置扣分规则'
+    }
   },
   data: {
     // 扣分开始条件 (sub8421_config_string)
@@ -146,6 +150,10 @@ Component({
       const value = this.data.maxSubScoreRange[e.detail.value];
       this.setData({ maxSubScore: value });
     },
+    onShowConfig() {
+      this.triggerEvent('show');
+    },
+
     onCancel() {
       this.triggerEvent('cancel');
     },

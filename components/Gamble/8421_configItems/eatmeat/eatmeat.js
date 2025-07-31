@@ -7,6 +7,14 @@ Component({
     noKoufen: {
       type: Boolean,
       value: false
+    },
+    displayValue: {
+      type: String,
+      value: '请配置吃肉规则'
+    },
+    disabled: {
+      type: Boolean,
+      value: false
     }
   },
 
@@ -122,6 +130,10 @@ Component({
     onTopScoreChange(e) {
       const value = this.data.topScoreRange[e.detail.value];
       this.setData({ topScoreLimit: value });
+    },
+
+    onShowConfig() {
+      this.triggerEvent('show');
     },
 
     onCancel() {

@@ -6,6 +6,14 @@ Component({
     noKoufen: {
       type: Boolean,
       value: false
+    },
+    displayValue: {
+      type: String,
+      value: '请配置顶洞规则'
+    },
+    disabled: {
+      type: Boolean,
+      value: false
     }
   },
   data: {
@@ -71,6 +79,10 @@ Component({
       console.log('选择分数:', selectedScore);
     },
 
+
+    onShowConfig() {
+      this.triggerEvent('show');
+    },
 
     onCancel() {
       this.triggerEvent('cancel');

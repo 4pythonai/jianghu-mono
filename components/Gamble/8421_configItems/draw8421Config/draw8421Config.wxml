@@ -1,31 +1,52 @@
+<!-- 顶洞规则配置组件 -->
+<!-- 显示部分 -->
+<view class="rule-section" wx:if="{{!visible}}">
+  <view class="form-label">顶洞规则</view>
+  <view class="form-select" bindtap="onShowConfig">
+    <input
+      class="form-input {{disabled ? 'conditionally-disabled' : ''}}"
+      value="{{displayValue}}"
+      disabled="{{disabled}}"
+    />
+    <view class="select-arrow">
+      <text class="arrow-circle">▼</text>
+    </view>
+  </view>
+</view>
+
+<!-- 弹窗部分 -->
 <view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
   <view class="modal-content" catchtap>
     <view class="modal-title">顶洞规则</view>
     <view class="modal-list">
       <block wx:for="{{displayOptions}}" wx:key="index">
-        <view class="modal-item {{noKoufen && index > 0 ? 'disabled-item' : ''}}" 
-              bindtap="{{noKoufen && index > 0 ? '' : 'onSelect'}}" 
-              data-index="{{index}}">
+        <view
+          class="modal-item {{noKoufen && index > 0 ? 'disabled-item' : ''}}"
+          bindtap="{{noKoufen && index > 0 ? '' : 'onSelect'}}"
+          data-index="{{index}}"
+        >
           <view class="radio-outer {{selected === index ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{selected === index}}"></view>
           </view>
           <view class="option-content">
             <text wx:if="{{index === 0}}">{{item}}</text>
             <text wx:elif="{{index === 1}}">得分</text>
-            
+
             <!-- 分数选择器 -->
-            <picker wx:if="{{index === 1 && selected === 1}}" 
-                    class="score-picker" 
-                    range="{{diffScores}}" 
-                    value="{{diffScores.indexOf(selectedDiffScore)}}" 
-                    bindchange="onDiffScoreChange">
+            <picker
+              wx:if="{{index === 1 && selected === 1}}"
+              class="score-picker"
+              range="{{diffScores}}"
+              value="{{diffScores.indexOf(selectedDiffScore)}}"
+              bindchange="onDiffScoreChange"
+            >
               <view class="picker-value">{{selectedDiffScore}}</view>
             </picker>
             <text wx:if="{{index === 1 && selected === 1}}">分以内</text>
-            
+
             <!-- 显示当前选中但未激活的选项文本 -->
             <text wx:if="{{index === 1 && selected !== 1}}">{{selectedDiffScore}}分以内</text>
-            
+
             <text wx:elif="{{index === 2}}">{{item}}</text>
           </view>
         </view>

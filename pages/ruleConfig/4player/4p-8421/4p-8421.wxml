@@ -7,32 +7,37 @@
     <view class="section-label">请配置游戏规则</view>
 
     <!-- 扣分规则 -->
-    <view class="form-label">扣分规则</view>
-    <view class="form-select" bindtap="onShowKoufen">
-      <input class="form-input" value="{{koufenDisplayValue}}" disabled />
-      <view class="select-arrow"><text class="arrow-circle">▼</text></view>
-    </view>
+    <koufen
+      visible="{{showKoufen}}"
+      display-value="{{koufenDisplayValue}}"
+      bind:show="onShowKoufen"
+      bind:cancel="onCloseKoufen"
+      bind:confirm="onKoufenConfirm"
+    />
 
     <!-- 顶洞规则 -->
-    <view class="form-label">顶洞规则</view>
-    <view class="form-select" bindtap="{{noKoufen ? '' : 'onShowDingdong'}}">
-      <input class="form-input {{noKoufen ? 'conditionally-disabled' : ''}}" value="{{dingdongDisplayValue}}" disabled="{{noKoufen}}" />
-      <view class="select-arrow"><text class="arrow-circle">▼</text></view>
-    </view>
+    <draw8421_config
+      visible="{{showDingdong}}"
+      display-value="{{dingdongDisplayValue}}"
+      disabled="{{noKoufen}}"
+      no-koufen="{{noKoufen}}"
+      bind:show="onShowDingdong"
+      bind:cancel="onCloseDingdong"
+      bind:confirm="onDingdongConfirm"
+    />
 
     <!-- 吃肉规则 -->
-    <view class="form-label">吃肉规则</view>
-    <view class="form-select" bindtap="{{noKoufen || draw8421_config === 'NoDraw' ? '' : 'onShowEatmeat'}}">
-      <input class="form-input {{noKoufen || draw8421_config === 'NoDraw' ? 'conditionally-disabled' : ''}}" value="{{eatmeatDisplayValue}}" disabled="{{noKoufen || draw8421_config === 'NoDraw'}}" />
-      <view class="select-arrow"><text class="arrow-circle">▼</text></view>
-    </view>
+    <eatmeat
+      visible="{{showEatmeat}}"
+      display-value="{{eatmeatDisplayValue}}"
+      disabled="{{noKoufen || draw8421_config === 'NoDraw'}}"
+      no-koufen="{{noKoufen}}"
+      bind:show="onShowEatmeat"
+      bind:cancel="onCloseEatmeat"
+      bind:confirm="onEatmeatConfirm"
+    />
 
     <!-- 底部按钮 -->
     <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>
   </view>
-
-  <!-- 弹窗组件 -->
-  <koufen visible="{{showKoufen}}" bind:cancel="onCloseKoufen" bind:confirm="onKoufenConfirm" />
-  <draw8421_config visible="{{showDingdong}}" no-koufen="{{noKoufen}}" bind:cancel="onCloseDingdong" bind:confirm="onDingdongConfirm" />
-  <eatmeat visible="{{showEatmeat}}" no-koufen="{{noKoufen}}" bind:cancel="onCloseEatmeat" bind:confirm="onEatmeatConfirm" />
 </view>
