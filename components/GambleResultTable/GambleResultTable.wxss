@@ -15,21 +15,21 @@
 .table-header {
 	display: flex;
 	background-color: #f8f9fa;
-	border-bottom: 1px solid #dee2e6;
+	border-bottom: 0.25px solid #dee2e6;
 }
 
 .header-cell {
 	flex: 1;
 	padding: 8rpx;
 	text-align: center;
-	border-right: 1px solid #dee2e6;
+	border-right: 0.25px solid #dee2e6;
 }
 
 .hole-header {
 	flex: 1;
 	background-color: #ffffff;
 	font-weight: bold;
-	border-right: 1px solid #dee2e6;
+	border-right: 0.25px solid #dee2e6;
 }
 
 .player-header {
@@ -78,14 +78,14 @@
 
 .table-row {
 	display: flex;
-	border-bottom: 1px solid #dee2e6;
+	border-bottom: 0.25px solid #dee2e6;
 }
 
 .cell {
 	flex: 1;
 	padding: 8rpx;
 	text-align: center;
-	border-right: 1px solid #dee2e6;
+	border-right: 0.25px solid #dee2e6;
 	min-width: 140rpx;
 	display: flex;
 	align-items: center;
@@ -120,8 +120,6 @@
 	background-color: #ffffff;
 }
 
-/* 总计行样式 - 不包含红蓝分组 */
-
 /* 金额样式 */
 .money-positive {
 	color: #28a745;
@@ -138,19 +136,15 @@
 }
 
 /* 红蓝分组样式 */
-.cell.team-red,
-.cell-red {
+.cell.team-red {
 	background-color: rgba(220, 53, 69, 0.1);
-	border-left: 3px solid #dc3545;
+	border-left: 1px solid #dc3545;
 }
 
-.cell.team-blue,
-.cell-blue {
+.cell.team-blue {
 	background-color: rgba(0, 123, 255, 0.1);
-	border-left: 3px solid #007bff;
+	border-left: 1px solid #007bff;
 }
-
-/* 表头样式 - 不包含红蓝分组 */
 
 /* 响应式设计 */
 @media (max-width: 750rpx) {
