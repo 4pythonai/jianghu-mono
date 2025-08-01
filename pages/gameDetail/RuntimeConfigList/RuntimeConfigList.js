@@ -93,24 +93,14 @@ Page({
         if (this.runtimeStoreBindings) {
             this.runtimeStoreBindings.destroyStoreBindings();
         }
-        console.log('[RuntimeConfigList] 页面卸载，store绑定已清理');
     },
 
     initPage() {
-        console.log('[RuntimeConfigList] 初始化页面');
-        // 刷新运行时配置
         this.refreshRuntimeConfig();
     },
 
     observers: {
-        // 监听 runtimeConfigs 变化，实现回显功能
         'runtimeConfigs': function (newConfigs) {
-            console.log('🎮 [RuntimeConfigList] runtimeConfigs 变化:', {
-                length: newConfigs?.length || 0,
-                configs: newConfigs
-            });
-
-            // 实现回显功能
             this.updateGameSettings(newConfigs);
         }
     },
@@ -144,7 +134,6 @@ Page({
         const gameId = this.data.gameId || gameStore.gameid;
         const groupId = this.data.groupId || gameStore.groupId;
 
-        console.log('[RuntimeConfigList] 刷新运行时配置:', { gameId, groupId });
 
         if (!groupId) {
             console.error('[RuntimeConfigList] groupId 为空，无法刷新配置');
@@ -156,9 +145,6 @@ Page({
 
         runtimeStore.fetchRuntimeConfigs(groupId)
             .then((result) => {
-                console.log('🎮 [RuntimeConfigList] 配置加载完成，结果:', result);
-                console.log('🎮 [RuntimeConfigList] 当前 runtimeConfigs:', this.data.runtimeConfigs);
-                console.log('🎮 [RuntimeConfigList] runtimeStore.runtimeConfigs:', runtimeStore.runtimeConfigs);
 
                 // 强制触发一次更新，确保数据同步
                 setTimeout(() => {
@@ -168,7 +154,6 @@ Page({
                 }, 100);
             })
             .catch(err => {
-                console.error('[RuntimeConfigList] 刷新配置失败:', err);
                 wx.showToast({
                     title: '加载配置失败',
                     icon: 'none'
@@ -186,7 +171,6 @@ Page({
 
         // 如果距离上次刷新不足3秒, 跳过此次刷新
         if (now - lastRefreshTime < 3000) {
-            console.log('🎮 刷新过于频繁, 跳过此次刷新');
             return;
         }
 
@@ -213,8 +197,6 @@ Page({
 
     // 更新游戏设置状态 - 从第一个配置项获取
     updateGameSettings(configs) {
-        console.log('🎮 [RuntimeConfigList] updateGameSettings 被调用，参数:', configs);
-
         if (!configs || configs.length === 0) {
             console.log('🎮 [RuntimeConfigList] 无配置数据，使用默认值');
             return;
@@ -222,34 +204,22 @@ Page({
 
         // 使用第一个配置项的值作为全局设置
         const firstConfig = configs[0];
-        console.log('🎮 [RuntimeConfigList] 更新游戏设置，第一个配置项:', firstConfig);
-        console.log('🎮 [RuntimeConfigList] 第一个配置项的 bigWind 字段:', firstConfig.bigWind);
-        console.log('🎮 [RuntimeConfigList] 第一个配置项的 ifShow 字段:', firstConfig.ifShow);
 
         const newData = {};
 
         // 更新游戏是否公开状态 - 确保字段存在且有效
         if (firstConfig.ifShow !== undefined && firstConfig.ifShow !== null) {
             newData.ifShow = firstConfig.ifShow;
-            console.log('🎮 [RuntimeConfigList] 更新 ifShow:', firstConfig.ifShow);
-        } else {
-            console.log('🎮 [RuntimeConfigList] ifShow 字段无效，使用默认值');
         }
 
         // 更新大风吹状态 - 确保字段存在且有效
         if (firstConfig.bigWind !== undefined && firstConfig.bigWind !== null) {
             newData.bigWind = firstConfig.bigWind;
-            console.log('🎮 [RuntimeConfigList] 更新 bigWind:', firstConfig.bigWind);
-        } else {
-            console.log('🎮 [RuntimeConfigList] bigWind 字段无效，使用默认值');
         }
 
         // 批量更新数据
         if (Object.keys(newData).length > 0) {
-            console.log('🎮 [RuntimeConfigList] 设置新数据:', newData);
             this.setData(newData);
-        } else {
-            console.log('🎮 [RuntimeConfigList] 没有需要更新的数据');
         }
     },
 
@@ -340,19 +310,16 @@ Page({
         // 获取所有配置项的ID
         const ids = configs.map(item => item.id);
 
-        console.log('🎮 [RuntimeConfigList] 设置游戏公开性:', { value, ids });
 
         app.api.gamble.setGambleVisible({
             allRuntimeIDs: ids,
             ifShow: value
         }).then(() => {
-            console.log('🎮 [RuntimeConfigList] 游戏公开性设置成功');
             wx.showToast({
                 title: '设置已保存',
                 icon: 'success'
             });
         }).catch(err => {
-            console.error('🎮 [RuntimeConfigList] 设置游戏公开状态失败:', err);
             // 如果失败，回滚到原来的状态
             this.setData({ ifShow: value === 'y' ? 'n' : 'y' });
             wx.showToast({
@@ -366,8 +333,6 @@ Page({
         const value = e.detail.value;
         const configs = this.data.runtimeConfigs || [];
 
-        console.log('🎮 [RuntimeConfigList] onBigWindChange 被调用，值:', value);
-        console.log('🎮 [RuntimeConfigList] 当前配置项数量:', configs.length);
 
         if (configs.length === 0) {
             wx.showToast({
@@ -383,19 +348,16 @@ Page({
         // 获取所有配置项的ID
         const ids = configs.map(item => item.id);
 
-        console.log('🎮 [RuntimeConfigList] 设置大风吹:', { value, ids });
 
         app.api.gamble.updateBigWind({
             allRuntimeIDs: ids,
             bigWind: value
         }).then(() => {
-            console.log('🎮 [RuntimeConfigList] 大风吹设置成功');
             wx.showToast({
                 title: '设置已保存',
                 icon: 'success'
             });
         }).catch(err => {
-            console.error('🎮 [RuntimeConfigList] 设置大风吹失败:', err);
             // 如果失败，回滚到原来的状态
             this.setData({ bigWind: value === 'y' ? 'n' : 'y' });
             wx.showToast({
@@ -407,7 +369,6 @@ Page({
 
     // 额外功能选项点击事件
     onJuanguoClick() {
-        console.log('🎮 点击捐锅设置');
         this.setData({ isJuanguoVisible: true });
     },
 
@@ -429,7 +390,6 @@ Page({
 
         try {
             const res = await app.api.gamble.updateDonation(donationConfig);
-            console.log('RuntimeConfigList.js/捐锅配置确认 res:', res);
 
             if (res.code === 200) {
                 // 刷新运行时配置
@@ -446,7 +406,6 @@ Page({
                 });
             }
         } catch (err) {
-            console.error('捐锅配置保存失败:', err);
             wx.showToast({
                 title: '捐锅配置保存失败',
                 icon: 'none'
@@ -455,7 +414,6 @@ Page({
     },
 
     onHoleJumpClick() {
-        console.log('🎮 点击跳洞设置');
         this.setData({ isHolejumpVisible: true });
     },
 
@@ -464,7 +422,6 @@ Page({
     },
 
     onStartholeClick() {
-        console.log('🎮 点击调整出发洞');
         this.setData({ isStartholeVisible: true });
     },
 
@@ -475,10 +432,8 @@ Page({
     // 踢一脚功能
     onKickClick(e) {
         const { config, index } = e.currentTarget.dataset;
-        console.log('🎮 点击踢一脚 config:', config, 'index:', index);
 
         if (!config) {
-            console.error('🎮 配置数据为空');
             wx.showToast({
                 title: '配置数据错误',
                 icon: 'none'
@@ -542,16 +497,9 @@ Page({
 
     // 调试方法 - 手动检查数据状态
     debugDataStatus() {
-        console.log('🎮 [RuntimeConfigList] 调试数据状态:');
-        console.log('🎮 [RuntimeConfigList] this.data.runtimeConfigs:', this.data.runtimeConfigs);
-        console.log('🎮 [RuntimeConfigList] runtimeStore.runtimeConfigs:', runtimeStore.runtimeConfigs);
-        console.log('🎮 [RuntimeConfigList] this.data.bigWind:', this.data.bigWind);
-        console.log('🎮 [RuntimeConfigList] this.data.ifShow:', this.data.ifShow);
 
         if (this.data.runtimeConfigs && this.data.runtimeConfigs.length > 0) {
             const firstConfig = this.data.runtimeConfigs[0];
-            console.log('🎮 [RuntimeConfigList] 第一个配置项的 bigWind:', firstConfig.bigWind);
-            console.log('🎮 [RuntimeConfigList] 第一个配置项的 ifShow:', firstConfig.ifShow);
         }
     }
 });

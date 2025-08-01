@@ -23,6 +23,11 @@ Component({
     },
 
     methods: {
+        // 空操作，用于阻止事件冒泡
+        noTap() {
+            // 什么都不做，只是阻止事件冒泡
+        },
+
         // 计算显示值
         updateDisplayValue() {
             const store = G4PLasiStore;

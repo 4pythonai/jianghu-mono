@@ -27,7 +27,6 @@ Component({
      */
     lifetimes: {
         attached() {
-            console.log('✅✅✅ item:', this.data.item);
             this.parseConfigDetails();
         },
 
@@ -38,7 +37,6 @@ Component({
      */
     observers: {
         'item': function (item) {
-            console.log('🎯 [R4P8421] item数据变化:', item);
             this.parseConfigDetails();
         }
     },
@@ -55,7 +53,6 @@ Component({
             if (!item) return;
 
             const details = parseGambleRule(item, '4p-8421');
-            console.log('🎯 [R4P8421] 解析的配置详情:', details);
             this.setData({ configDetails: details });
         },
 
@@ -64,8 +61,6 @@ Component({
          */
         onEditRule(e) {
             const { item } = e.currentTarget.dataset;
-            console.log('🎯 [R4P8421] 编辑规则:', item);
-            // 触发父组件的事件
             this.triggerEvent('editRule', { item, group: 'fourPlayers', id: item.userRuleId });
         },
 
@@ -74,8 +69,6 @@ Component({
          */
         onViewRule(e) {
             const { item } = e.currentTarget.dataset;
-            console.log('🎯 [R4P8421] 查看规则:', item);
-            // 触发父组件的事件
             this.triggerEvent('viewRule', { item, group: 'fourPlayers', id: item.userRuleId });
         },
 
@@ -84,8 +77,6 @@ Component({
          */
         onLongPressRule(e) {
             const { item } = e.currentTarget.dataset;
-            console.log('🎯 [R4P8421] 长按规则:', item);
-            // 触发父组件的事件
             this.triggerEvent('longPressRule', { item, group: 'fourPlayers', id: item.userRuleId });
         }
     }

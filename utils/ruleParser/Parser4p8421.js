@@ -48,14 +48,12 @@ function parseKoufenConfig(item) {
  * 解析吃肉配置
  */
 function parseEatmeatConfig(item) {
-    console.log("💔💔💔💔💔💔💔+++++++++++💔💔💔💔💔💔💔", item);
     const { meat_value_config_string, meat_max_value, eating_range } = item;
 
     let detail = '';
 
     if (eating_range) {
         let eatRangeObj = null;
-        console.log("💔💔💔💔💔💔💔💔💔💔💔💔💔💔", typeof eating_range);
         eatRangeObj = JSON.parse(eating_range);
 
 
@@ -71,8 +69,6 @@ function parseEatmeatConfig(item) {
     }
 
 
-    //   DOUBLE_WITH_REWARD: { option: 1, display: '分值翻倍(含奖励)' },
-    //   DOUBLE_WITHOUT_REWARD: { option: 2, display: '分值翻倍(不含奖励)' }
 
 
     if (meat_value_config_string) {
