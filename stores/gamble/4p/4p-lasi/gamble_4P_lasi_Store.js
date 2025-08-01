@@ -8,6 +8,10 @@ export const G4PLasiStore = observable({
         return `规则_${Math.floor(Math.random() * 10000)}`;
     },
 
+    max8421_sub_value: 10000000,
+    eating_range: GameConstantsUtils.getDefaultEatingRange(),
+
+
     gamblesysname: 'lasi',
     user_rulename: '四人拉丝',
     creator_id: null,

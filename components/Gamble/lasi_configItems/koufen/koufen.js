@@ -1,4 +1,4 @@
-import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 
 Component({
   properties: {
@@ -43,7 +43,7 @@ Component({
   methods: {
     // 计算显示值
     updateDisplayValue() {
-      const store = G4P8421Store;
+      const store = G4PLasiStore;
       let displayValue = '';
 
       // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
@@ -91,9 +91,9 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const max8421SubValue = G4P8421Store.max8421_sub_value;
-      const koufenStart = G4P8421Store.sub8421_config_string;
-      const partnerPunishment = G4P8421Store.duty_config;
+      const max8421SubValue = G4PLasiStore.max8421_sub_value;
+      const koufenStart = G4PLasiStore.sub8421_config_string;
+      const partnerPunishment = G4PLasiStore.duty_config;
 
       if (max8421SubValue !== 10000000 || koufenStart || partnerPunishment) {
         // 解析已保存的配置
@@ -235,7 +235,7 @@ Component({
       }
 
       // 调用store的action更新数据
-      G4P8421Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, duty_config);
+      G4PLasiStore.updateKoufenRule(max8421SubValue, sub8421ConfigString, duty_config);
 
       console.log('扣分组件已更新store:', {
         max8421SubValue,

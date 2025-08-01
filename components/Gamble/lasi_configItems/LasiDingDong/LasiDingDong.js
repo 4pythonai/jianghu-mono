@@ -1,4 +1,4 @@
-import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 
 Component({
     properties: {
@@ -29,7 +29,7 @@ Component({
     methods: {
         // 计算显示值
         updateDisplayValue() {
-            const store = G4P8421Store;
+            const store = G4PLasiStore;
             let displayValue = '';
 
             // 映射英文格式到中文显示
@@ -66,7 +66,7 @@ Component({
         },
 
         syncSelectedFromStore() {
-            const currentValue = G4P8421Store.draw8421_config;
+            const currentValue = G4PLasiStore.draw8421_config;
             console.log('syncSelectedFromStore被调用，store值:', currentValue);
             if (currentValue) {
                 if (currentValue === 'DrawEqual') {
@@ -105,7 +105,7 @@ Component({
         onShowConfig() {
             this.setData({ visible: true });
             // 只在第一次显示时重新加载配置，避免覆盖用户选择
-            if (this.data.selected === 0 && !G4P8421Store.draw8421_config) {
+            if (this.data.selected === 0 && !G4PLasiStore.draw8421_config) {
                 this.syncSelectedFromStore();
             }
         },
@@ -127,7 +127,7 @@ Component({
             }
 
             // 调用store的action更新数据
-            G4P8421Store.updateDingdongRule(selectedValue);
+            G4PLasiStore.updateDingdongRule(selectedValue);
             // 更新显示值
             this.updateDisplayValue();
             // 关闭弹窗

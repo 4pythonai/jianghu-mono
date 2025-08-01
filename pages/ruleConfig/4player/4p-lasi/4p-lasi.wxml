@@ -10,16 +10,16 @@
     <LasiKPI bind:kpiConfigChange="onKpiConfigChange" />
 
     <!-- 拉丝奖励规则 -->
-    <LasiKPIReward id="lasiReward" />
+    <LasiKPIReward id="LasiReward" />
 
     <!-- 拉丝d顶洞规则 -->
-    <lasiDingDong id="lasiDingDong" />
+    <LasiDingDong id="LasiDingDong" />
 
     <!-- 拉丝吃肉规则 -->
-    <lasi_eatmeat_config />
+    <LasiEatmeat />
 
     <!-- 拉丝包洞规则 -->
-    <lasi_baodong_config />
+    <LasiBaodong />
 
     <!-- 底部按钮 -->
     <button class="add-btn" bindtap="onAddLasiToMyRules">添加至我的规则</button>

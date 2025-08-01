@@ -71,7 +71,7 @@ Page({
     // KPI配置变化事件处理
     onKpiConfigChange(e) {
         // 通知奖励配置组件更新
-        const lasiRewardComponent = this.selectComponent('#lasiReward');
+        const lasiRewardComponent = this.selectComponent('#LasiReward');
         if (lasiRewardComponent) {
             lasiRewardComponent.onKpiConfigChange();
         }

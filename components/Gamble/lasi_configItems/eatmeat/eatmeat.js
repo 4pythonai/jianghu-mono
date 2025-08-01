@@ -1,4 +1,4 @@
-import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../../utils/gameConstants.js'
 import { reaction } from 'mobx-miniprogram'
 
@@ -42,7 +42,7 @@ Component({
 
       // 监听顶洞规则变化
       this._storeReaction = reaction(
-        () => G4P8421Store.draw8421_config,
+        () => G4PLasiStore.draw8421_config,
         () => {
           this.checkDisabledState();
         }
@@ -66,14 +66,14 @@ Component({
   methods: {
     // 检查禁用状态
     checkDisabledState() {
-      const isDisabled = G4P8421Store.draw8421_config === 'NoDraw';
+      const isDisabled = G4PLasiStore.draw8421_config === 'NoDraw';
       this.setData({ isDisabled });
       console.log('吃肉组件禁用状态:', isDisabled);
     },
 
     // 计算显示值
     updateDisplayValue() {
-      const store = G4P8421Store;
+      const store = G4PLasiStore;
       let displayValue = '';
 
       // 格式化吃肉规则显示 - 适配新格式
@@ -120,9 +120,9 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const eating_range = G4P8421Store.eating_range;
-      const meatValue = G4P8421Store.meat_value_config_string;
-      const meat_max_value = G4P8421Store.meat_max_value;
+      const eating_range = G4PLasiStore.eating_range;
+      const meatValue = G4PLasiStore.meat_value_config_string;
+      const meat_max_value = G4PLasiStore.meat_max_value;
 
       if (eating_range || meatValue || meat_max_value !== 10000000) {
         // 解析已保存的配置
@@ -247,7 +247,7 @@ Component({
       const meat_max_value = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
 
       // 调用store的action更新数据
-      G4P8421Store.updateEatmeatRule(eating_range, meatValueConfig, meat_max_value);
+      G4PLasiStore.updateEatmeatRule(eating_range, meatValueConfig, meat_max_value);
 
       // 更新显示值
       this.updateDisplayValue();
