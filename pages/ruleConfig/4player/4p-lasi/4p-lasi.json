@@ -5,6 +5,6 @@
         "LasiKPIReward": "/components/Gamble/lasi_configItems/lasiRewardConfig/lasiRewardConfig",
         "LasiDingDong": "/components/Gamble/lasi_configItems/LasiDingDong/LasiDingDong",
         "LasiEatmeat": "/components/Gamble/lasi_configItems/eatmeat/eatmeat",
-        "LasiBaodong": "/components/Gamble/lasi_configItems/koufen/koufen"
+        "LasiBaodong": "/components/Gamble/lasi_configItems/LasiBaodong/LasiBaodong"
     }
 }

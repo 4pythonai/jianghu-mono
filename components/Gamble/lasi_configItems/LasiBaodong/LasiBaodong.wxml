@@ -1,7 +1,7 @@
 <!-- 扣分规则配置组件 -->
 <!-- 显示部分 -->
 <view class="rule-section" wx:if="{{!visible}}">
-  <view class="form-label">扣分规则</view>
+  <view class="form-label">包洞规则</view>
   <view class="form-select" bindtap="onShowConfig">
     <input class="form-input" value="{{displayValue}}" disabled />
     <view class="select-arrow">
@@ -13,7 +13,7 @@
 <!-- 弹窗部分 -->
 <view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
   <view class="modal-content" catchtap>
-    <view class="modal-title">扣分规则</view>
+    <view class="modal-title">包洞规则</view>
     <view class="modal-list">
       <!-- 扣分开始条件 -->
       <block wx:for="{{Sub8421ConfigString}}" wx:key="index">
