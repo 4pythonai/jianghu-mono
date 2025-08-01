@@ -35,16 +35,8 @@ Component({
 
     lifetimes: {
         attached() {
-            console.log('🎯 [LasiRewardConfig] ===== 拉丝奖励配置组件加载 =====');
-            console.log('🎯 [LasiRewardConfig] 组件路径: /components/Gamble/lasi_configItems/lasiRewardConfig/lasiRewardConfig');
             this.loadConfigFromStore();
             this.checkKpiTotalType();
-
-            // 延迟检查，确保store数据已更新
-            setTimeout(() => {
-                console.log('🎯 [LasiRewardConfig] 延迟检查KPI配置');
-                this.checkKpiTotalType();
-            }, 1000);
         }
     },
 
@@ -101,36 +93,16 @@ Component({
             }
 
             this.printCurrentConfig();
-
-            // 调试信息
-            console.log('🎯 [LasiRewardConfig] loadConfigFromStore 完成');
-            console.log('🎯 [LasiRewardConfig] addRewardItems:', this.data.addRewardItems);
-            console.log('🎯 [LasiRewardConfig] multiplyRewardItems:', this.data.multiplyRewardItems);
         },
 
         // 检查KPI中是否有total类型
         checkKpiTotalType() {
-            console.log('🎯 [LasiRewardConfig] 🔍 checkKpiTotalType 方法被调用');
-
             const selectedIndicators = G4PLasiStore.lasi_config?.indicators || [];
-            const totalCalculationType = G4PLasiStore.lasi_config?.totalCalculationType || 'add_total';
-
-            // 检查是否有total类型的KPI（LasiKPI组件中使用'total'字符串）
             const hasTotalType = selectedIndicators.includes('total');
 
             this.setData({
                 showPreCondition: hasTotalType
             });
-
-            console.log('🎯 [LasiRewardConfig] ===== checkKpiTotalType 调试 =====');
-            console.log('🎯 [LasiRewardConfig] G4PLasiStore.lasi_config:', G4PLasiStore.lasi_config);
-            console.log('🎯 [LasiRewardConfig] selectedIndicators:', selectedIndicators);
-            console.log('🎯 [LasiRewardConfig] selectedIndicators类型:', typeof selectedIndicators);
-            console.log('🎯 [LasiRewardConfig] selectedIndicators长度:', selectedIndicators.length);
-            console.log('🎯 [LasiRewardConfig] 是否包含total:', selectedIndicators.includes('total'));
-            console.log('🎯 [LasiRewardConfig] hasTotalType:', hasTotalType);
-            console.log('🎯 [LasiRewardConfig] 设置 showPreCondition:', hasTotalType);
-            console.log('🎯 [LasiRewardConfig] ================================');
         },
 
         // 监听KPI配置变化（供外部调用）

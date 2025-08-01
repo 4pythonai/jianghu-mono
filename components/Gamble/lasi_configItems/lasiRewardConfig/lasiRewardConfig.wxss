@@ -96,7 +96,6 @@
 	padding: 8rpx 12rpx;
 	background: rgba(255, 255, 255, 0.8);
 	border-radius: 8rpx;
-	border: 1rpx solid #ff0000; /* 临时调试边框 */
 }
 
 /* 成绩名称 */
@@ -144,6 +143,12 @@
 	padding-top: 16rpx;
 }
 
+/* 禁用状态的前置条件区域 */
+.precondition-section.disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
 /* 前置条件标题 */
 .precondition-title {
 	font-size: 22rpx;
@@ -166,6 +171,11 @@
 	gap: 8rpx;
 	padding: 6rpx 0;
 	cursor: pointer;
+}
+
+/* 禁用状态的前置条件选项 */
+.precondition-option.disabled {
+	cursor: not-allowed;
 }
 
 /* 单选圆点 */
@@ -193,10 +203,21 @@
 	border-radius: 50%;
 }
 
+/* 禁用状态的单选圆点 */
+.radio-dot.disabled {
+	border-color: #bdc3c7;
+	background: #ecf0f1;
+}
+
 /* 前置条件文本 */
 .precondition-text {
 	font-size: 24rpx;
 	color: #2c3e50;
+}
+
+/* 禁用状态的前置条件文本 */
+.precondition-section.disabled .precondition-text {
+	color: #95a5a6;
 }
 
 /* 底部按钮区域 */

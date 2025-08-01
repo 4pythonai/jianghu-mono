@@ -3,7 +3,8 @@
     "usingComponents": {
         "LasiKPI": "/components/Gamble/lasi_configItems/LasiKPI/LasiKPI",
         "LasiKPIReward": "/components/Gamble/lasi_configItems/lasiRewardConfig/lasiRewardConfig",
-        "lasi_eatmeat_config": "/components/Gamble/lasi_configItems/eatmeat/eatmeat",
-        "lasi_baodong_config": "/components/Gamble/lasi_configItems/koufen/koufen"
+        "LasiEatmeat": "/components/Gamble/lasi_configItems/eatmeat/eatmeat",
+        "LasiDingDong": "/components/Gamble/lasi_configItems/LasiDingDong/LasiDingDong",
+        "LasiBaodong": "/components/Gamble/lasi_configItems/koufen/koufen"
     }
 }

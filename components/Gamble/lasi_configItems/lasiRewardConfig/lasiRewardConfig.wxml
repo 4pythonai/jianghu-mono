@@ -22,8 +22,6 @@
 
       <!-- 奖励项目列表 -->
       <view class="reward-items">
-        <!-- 调试信息 -->
-        <view style="color: red; font-size: 20rpx;">调试: addRewardItems长度 = {{addRewardItems.length}}</view>
         <view class="reward-item" wx:for="{{addRewardItems}}" wx:key="scoreName">
           <text
             class="score-name"
@@ -44,33 +42,37 @@
       </view>
 
       <!-- 奖励前置条件 -->
-      <!-- 调试信息 -->
-      <view style="color: blue; font-size: 20rpx;">调试: showPreCondition = {{showPreCondition}}</view>
-      <view class="precondition-section" wx:if="{{showPreCondition}}">
+      <view class="precondition-section {{!showPreCondition ? 'disabled' : ''}}">
         <view class="precondition-title">奖励前置条件 (当含有总杆PK时)</view>
         <view class="precondition-options">
           <view
-            class="precondition-option {{rewardPreCondition === 'total_win' ? 'selected' : ''}}"
-            bindtap="onPreConditionChange"
+            class="precondition-option {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+            bindtap="{{showPreCondition ? 'onPreConditionChange' : ''}}"
             data-value="total_win"
           >
-            <view class="radio-dot {{rewardPreCondition === 'total_win' ? 'selected' : ''}}"></view>
+            <view
+              class="radio-dot {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+            ></view>
             <text class="precondition-text">总成绩赢才奖</text>
           </view>
           <view
-            class="precondition-option {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}}"
-            bindtap="onPreConditionChange"
+            class="precondition-option {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+            bindtap="{{showPreCondition ? 'onPreConditionChange' : ''}}"
             data-value="total_not_fail"
           >
-            <view class="radio-dot {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}}"></view>
+            <view
+              class="radio-dot {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+            ></view>
             <text class="precondition-text">总成绩不输才奖</text>
           </view>
           <view
-            class="precondition-option {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}}"
-            bindtap="onPreConditionChange"
+            class="precondition-option {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+            bindtap="{{showPreCondition ? 'onPreConditionChange' : ''}}"
             data-value="total_ignore"
           >
-            <view class="radio-dot {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}}"></view>
+            <view
+              class="radio-dot {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+            ></view>
             <text class="precondition-text">与总成绩无关</text>
           </view>
         </view>

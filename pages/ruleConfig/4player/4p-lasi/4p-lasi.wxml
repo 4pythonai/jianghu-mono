@@ -12,8 +12,8 @@
     <!-- 拉丝奖励规则 -->
     <LasiKPIReward id="lasiReward" />
 
-    <!-- 拉丝顶洞规则 -->
-    <!-- <lasi_dingdong_config /> -->
+    <!-- 拉丝d顶洞规则 -->
+    <lasiDingDong id="lasiDingDong" />
 
     <!-- 拉丝吃肉规则 -->
     <lasi_eatmeat_config />
