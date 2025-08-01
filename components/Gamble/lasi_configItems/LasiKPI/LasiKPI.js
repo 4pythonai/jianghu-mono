@@ -52,6 +52,11 @@ Component({
             this.calculateTotalScore();
             this.generateRuleName();
 
+            // 如果设置了默认指标，需要同步到Store中
+            if (selectedIndicators.length > 0) {
+                this.updateStore();
+            }
+
             // 打印初始KPI配置
             this.printCurrentKpiConfig();
         }
@@ -237,9 +242,14 @@ Component({
                 totalScore
             });
 
-
             // 打印配置结果数组
             const configResult = this.getConfigResult();
+            console.log('🎯 [LasiKPI] 配置结果数组:', configResult);
+
+            // 打印Store中的实际数据
+            console.log('🎯 [LasiKPI] Store中的lasi_config:', G4PLasiStore.lasi_config);
+            console.log('🎯 [LasiKPI] Store中的indicators:', G4PLasiStore.lasi_config?.indicators);
+            console.log('🎯 [LasiKPI] ========================');
         }
     }
 });

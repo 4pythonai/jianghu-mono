@@ -27,28 +27,58 @@
             <text class="rule-text">不包洞</text>
           </view>
           <view
-            class="rule-option {{holeRuleType === 'double_par_plus_1' ? 'selected' : ''}}"
+            class="rule-option {{holeRuleType === 'double_par_plus_x' ? 'selected' : ''}}"
             bindtap="onHoleRuleChange"
-            data-type="double_par_plus_1"
+            data-type="double_par_plus_x"
           >
-            <view class="radio-dot {{holeRuleType === 'double_par_plus_1' ? 'selected' : ''}}"></view>
-            <text class="rule-text">双帕+1包洞</text>
+            <view class="radio-dot {{holeRuleType === 'double_par_plus_x' ? 'selected' : ''}}"></view>
+            <text class="rule-text">双帕+</text>
+            <picker
+              class="number-picker"
+              range="{{doubleParPlusRange}}"
+              value="{{doubleParPlusValue}}"
+              bindchange="onDoubleParPlusChange"
+              disabled="{{holeRuleType !== 'double_par_plus_x'}}"
+            >
+              <text class="picker-value">{{doubleParPlusValue}}</text>
+            </picker>
+            <text class="rule-text">包洞</text>
           </view>
           <view
-            class="rule-option {{holeRuleType === 'plus_4' ? 'selected' : ''}}"
+            class="rule-option {{holeRuleType === 'par_plus_x' ? 'selected' : ''}}"
             bindtap="onHoleRuleChange"
-            data-type="plus_4"
+            data-type="par_plus_x"
           >
-            <view class="radio-dot {{holeRuleType === 'plus_4' ? 'selected' : ''}}"></view>
-            <text class="rule-text">帕+4包洞</text>
+            <view class="radio-dot {{holeRuleType === 'par_plus_x' ? 'selected' : ''}}"></view>
+            <text class="rule-text">帕+</text>
+            <picker
+              class="number-picker"
+              range="{{parPlusRange}}"
+              value="{{parPlusValue}}"
+              bindchange="onParPlusChange"
+              disabled="{{holeRuleType !== 'par_plus_x'}}"
+            >
+              <text class="picker-value">{{parPlusValue}}</text>
+            </picker>
+            <text class="rule-text">包洞</text>
           </view>
           <view
-            class="rule-option {{holeRuleType === 'stroke_diff_3' ? 'selected' : ''}}"
+            class="rule-option {{holeRuleType === 'stroke_diff_x' ? 'selected' : ''}}"
             bindtap="onHoleRuleChange"
-            data-type="stroke_diff_3"
+            data-type="stroke_diff_x"
           >
-            <view class="radio-dot {{holeRuleType === 'stroke_diff_3' ? 'selected' : ''}}"></view>
-            <text class="rule-text">杆差3包洞</text>
+            <view class="radio-dot {{holeRuleType === 'stroke_diff_x' ? 'selected' : ''}}"></view>
+            <text class="rule-text">杆差</text>
+            <picker
+              class="number-picker"
+              range="{{strokeDiffRange}}"
+              value="{{strokeDiffValue - 1}}"
+              bindchange="onStrokeDiffChange"
+              disabled="{{holeRuleType !== 'stroke_diff_x'}}"
+            >
+              <text class="picker-value">{{strokeDiffValue}}</text>
+            </picker>
+            <text class="rule-text">包洞</text>
           </view>
         </view>
       </view>

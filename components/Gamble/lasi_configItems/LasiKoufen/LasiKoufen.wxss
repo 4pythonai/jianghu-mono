@@ -167,6 +167,38 @@
 	color: #222;
 }
 
+/* 数字选择器样式 */
+.number-picker {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 60rpx;
+	height: 48rpx;
+	background: #fff;
+	border: 2rpx solid #4caf7a;
+	border-radius: 12rpx;
+	margin: 0 8rpx;
+	padding: 0 12rpx;
+	box-sizing: border-box;
+}
+
+.number-picker[disabled] {
+	border-color: #ccc;
+	background: #f5f5f5;
+	opacity: 0.6;
+}
+
+.picker-value {
+	font-size: 28rpx;
+	color: #4caf7a;
+	font-weight: 500;
+	text-align: center;
+}
+
+.number-picker[disabled] .picker-value {
+	color: #999;
+}
+
 /* 分割线 */
 .modal-divider {
 	width: 100%;

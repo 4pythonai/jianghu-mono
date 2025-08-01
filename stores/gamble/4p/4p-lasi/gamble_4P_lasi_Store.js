@@ -1,5 +1,6 @@
 import { observable, action } from 'mobx-miniprogram'
 import { gameStore } from '../../../gameStore' // 导入 gameStore 来获取 gameid
+import { REWARD_DEFAULTS } from '../../../../utils/rewardDefaults.js'
 
 export const G4PLasiStore = observable({
     // 生成规则摘要名称
@@ -38,11 +39,7 @@ export const G4PLasiStore = observable({
     },
 
     // 拉丝奖励规则
-    lasi_reward_config: {
-        rewardType: 'add',
-        rewardPreCondition: 'total_win',
-        rewardPair: []
-    },
+    lasi_reward_config: REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG,
 
     // 拉丝顶洞规则
     lasi_dingdong_config: {
@@ -124,11 +121,7 @@ export const G4PLasiStore = observable({
                 total: 1
             }
         };
-        this.lasi_reward_config = {
-            rewardType: 'add',
-            rewardPreCondition: 'total_win',
-            rewardPair: []
-        };
+        this.lasi_reward_config = REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG;
         this.lasi_dingdong_config = {
             enabled: true,
             type: 'DrawEqual'

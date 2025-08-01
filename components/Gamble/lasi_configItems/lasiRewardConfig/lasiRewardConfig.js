@@ -1,4 +1,5 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
+import { REWARD_DEFAULTS } from '../../../../utils/rewardDefaults.js'
 
 Component({
     data: {
@@ -15,23 +16,10 @@ Component({
         showPreCondition: false,
 
         // 加法奖励项目
-        addRewardItems: [
-            { scoreName: 'Par', rewardValue: 0 },
-            { scoreName: 'Birdie', rewardValue: 1 },
-            { scoreName: 'Eagle', rewardValue: 3 },
-            { scoreName: 'Albatross/HIO', rewardValue: 10 }
-        ],
+        addRewardItems: REWARD_DEFAULTS.ADD_REWARD_ITEMS,
 
         // 乘法奖励项目
-        multiplyRewardItems: [
-            { scoreName: 'Par', rewardValue: 1 },
-            { scoreName: 'Birdie', rewardValue: 2 },
-            { scoreName: 'Eagle', rewardValue: 4 },
-            { scoreName: 'Albatross/HIO', rewardValue: 10 },
-            { scoreName: 'Birdie+Birdie', rewardValue: 4 },
-            { scoreName: 'Birdie+Eagle', rewardValue: 8 },
-            { scoreName: 'Eagle+Eagle', rewardValue: 16 }
-        ]
+        multiplyRewardItems: REWARD_DEFAULTS.MULTIPLY_REWARD_ITEMS
     },
 
     lifetimes: {
@@ -109,26 +97,13 @@ Component({
             // 确保两个数组都有默认数据
             if (!this.data.addRewardItems || this.data.addRewardItems.length === 0) {
                 this.setData({
-                    addRewardItems: [
-                        { scoreName: 'Par', rewardValue: 0 },
-                        { scoreName: 'Birdie', rewardValue: 1 },
-                        { scoreName: 'Eagle', rewardValue: 3 },
-                        { scoreName: 'Albatross/HIO', rewardValue: 10 }
-                    ]
+                    addRewardItems: REWARD_DEFAULTS.ADD_REWARD_ITEMS
                 });
             }
 
             if (!this.data.multiplyRewardItems || this.data.multiplyRewardItems.length === 0) {
                 this.setData({
-                    multiplyRewardItems: [
-                        { scoreName: 'Par', rewardValue: 0 },
-                        { scoreName: 'Birdie', rewardValue: 0 },
-                        { scoreName: 'Eagle', rewardValue: 0 },
-                        { scoreName: 'Albatross/HIO', rewardValue: 0 },
-                        { scoreName: 'Birdie+Birdie', rewardValue: 0 },
-                        { scoreName: 'Birdie+Eagle', rewardValue: 0 },
-                        { scoreName: 'Eagle+Eagle', rewardValue: 0 }
-                    ]
+                    multiplyRewardItems: REWARD_DEFAULTS.MULTIPLY_REWARD_ITEMS
                 });
             }
 
@@ -250,6 +225,8 @@ Component({
             const config = this.getCurrentConfig();
             G4PLasiStore.updateRewardConfig(config);
         },
+
+
 
         // 打印当前配置
         printCurrentConfig() {

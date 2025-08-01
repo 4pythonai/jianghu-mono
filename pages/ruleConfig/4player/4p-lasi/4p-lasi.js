@@ -21,16 +21,6 @@ Page({
         // 输出完整Store数据用于调试
         const allData = G4PLasiStore.debugAllRulesData();
 
-        // 验证必要配置
-        if (!allData.user_rulename.trim()) {
-            wx.showToast({
-                title: '请输入规则名称',
-                icon: 'none',
-                duration: 1500
-            });
-            return;
-        }
-
         if (allData.lasi_config.indicators.length === 0) {
             wx.showToast({
                 title: '请至少选择一个KPI指标',
