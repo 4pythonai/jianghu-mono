@@ -115,6 +115,12 @@ Component({
       this.printCurrentConfig();
     },
 
+    // 空事件处理（当包洞规则为"不包洞"时）
+    noTap() {
+      // 不执行任何操作
+      return;
+    },
+
     // 取消
     onCancel() {
       this.setData({ visible: false });

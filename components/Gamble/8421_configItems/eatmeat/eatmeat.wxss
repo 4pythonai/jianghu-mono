@@ -144,7 +144,6 @@
 /* 禁用状态的视觉区分 - 使用更具体的选择器 */
 .modal-item.disabled {
 	opacity: 0.3 !important;
-	pointer-events: none !important;
 	background-color: #f0f0f0 !important;
 }
 

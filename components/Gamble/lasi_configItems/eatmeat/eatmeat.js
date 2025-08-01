@@ -3,6 +3,9 @@ import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../.
 import { reaction } from 'mobx-miniprogram'
 
 Component({
+  properties: {
+  },
+
   data: {
     // 组件内部状态
     visible: false,
@@ -51,6 +54,13 @@ Component({
       if (this._storeReaction) {
         this._storeReaction();
       }
+    }
+  },
+  // 属性变化监听
+  observers: {
+    'noKoufen': function (noKoufen) {
+      // 当noKoufen变化时，更新显示值
+      this.updateDisplayValue();
     }
   },
   methods: {
@@ -139,7 +149,7 @@ Component({
         if (meatValue?.startsWith('MEAT_AS_')) {
           meatValueOption = 0;
           // 解析肉分值
-          const score = parseInt(meatValue.replace('MEAT_AS_', ''));
+          const score = Number.parseInt(meatValue.replace('MEAT_AS_', ''));
           this.setData({ meatScoreValue: score || 1 });
         } else if (meatValue === 'SINGLE_DOUBLE') {
           meatValueOption = 1;
@@ -171,6 +181,7 @@ Component({
     },
 
     onMeatValueChange(e) {
+      console.log('onMeatValueChange 💞💞💞💞💞💞💞💞💞💞💞💞💞', e);
       const index = Number.parseInt(e.currentTarget.dataset.index);
       this.setData({ meatValueOption: index });
     },
@@ -183,7 +194,27 @@ Component({
     },
 
     onTopSelect(e) {
+      console.log('🎯 onTopSelect 被调用了！', e);
+      console.log('当前meatValueOption:', this.data.meatValueOption);
+      console.log('点击的index:', e.currentTarget.dataset.index);
+
+      // 如果肉分值选项不是"分值翻倍"，则不处理点击事件
+      if (this.data.meatValueOption !== 1) {
+        console.log('肉分值选项不是"分值翻倍"，忽略点击事件');
+        wx.showToast({
+          title: '请先选择"分值翻倍"',
+          icon: 'none',
+          duration: 1500
+        });
+        return;
+      }
+      console.log('设置topSelected为:', e.currentTarget.dataset.index);
       this.setData({ topSelected: e.currentTarget.dataset.index });
+    },
+
+    // 空操作，用于阻止事件冒泡
+    noop() {
+      // 什么都不做，只是阻止事件冒泡
     },
     // 封顶分数改变
 

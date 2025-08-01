@@ -63,4 +63,8 @@ components/Gamble/8421_configItems/drawlasiConfig/
 
 ## 更新日志
 - 2024年: 新增四人拉丝功能，与8421功能保持平行结构
+- 2024年: 修复四人拉丝吃肉功能，添加缺失的store属性和方法
+  - 在 `G4PLasiStore` 中添加 `meat_value_config_string` 和 `meat_max_value` 属性
+  - 添加 `updateEatmeatRule` 方法，与8421 store保持一致
+  - 修复 `parseInt` 为 `Number.parseInt` 的linter错误
 

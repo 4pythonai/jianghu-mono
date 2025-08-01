@@ -114,6 +114,11 @@ Component({
       this.setData({ visible: false });
       this.triggerEvent('cancel');
     },
+
+    // 阻止事件冒泡的方法
+    noTap() {
+      // 空方法，用于阻止事件冒泡
+    },
     onConfirm() {
       let selectedValue = '';
 

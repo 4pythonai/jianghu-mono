@@ -12,7 +12,7 @@
 
 <!-- 弹窗部分 -->
 <view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
-  <view class="modal-content" catchtap>
+  <view class="modal-content" catchtap="noop">
     <view class="modal-title">吃肉规则</view>
     <view class="modal-list">
       <view class="eat-row">
@@ -75,7 +75,7 @@
       <block wx:for="{{topOptions}}" wx:key="index">
         <view
           class="modal-item {{meatValueOption !== 1 ? 'disabled' : ''}}"
-          bindtap="{{meatValueOption !== 1 ? '' : 'onTopSelect'}}"
+          bindtap="onTopSelect"
           data-index="{{index}}"
         >
           <view class="radio-outer {{topSelected === index ? 'checked' : ''}}">

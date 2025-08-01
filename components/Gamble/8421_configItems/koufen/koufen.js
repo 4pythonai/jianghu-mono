@@ -41,6 +41,11 @@ Component({
   },
 
   methods: {
+    // 空方法，用于处理禁用状态下的点击事件
+    noTap() {
+      // 什么都不做，阻止事件处理
+    },
+
     // 计算显示值
     updateDisplayValue() {
       const store = G4P8421Store;

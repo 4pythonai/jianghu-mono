@@ -11,6 +11,9 @@ export const G4PLasiStore = observable({
     max8421_sub_value: 10000000,
     eating_range: GameConstantsUtils.getDefaultEatingRange(),
 
+    // 新增：吃肉相关属性，与 8421 store 保持一致
+    meat_value_config_string: 'MEAT_AS_1',
+    meat_max_value: 10000000,
 
     gamblesysname: 'lasi',
     user_rulename: '四人拉丝',
@@ -87,6 +90,14 @@ export const G4PLasiStore = observable({
         this.user_rulename = this.generateAbstractName();
     }),
 
+    // 新增：更新吃肉规则的action，与 8421 store 保持一致
+    updateEatmeatRule: action(function (eating_range, meatValueConfig, meat_max_value) {
+        this.eating_range = eating_range;
+        this.meat_value_config_string = meatValueConfig;
+        this.meat_max_value = meat_max_value;
+        this.user_rulename = this.generateAbstractName();
+    }),
+
     // 更新包洞规则的action
     updateBaodongConfig: action(function (config) {
         this.lasi_baodong_config = { ...this.lasi_baodong_config, ...config };
@@ -128,6 +139,10 @@ export const G4PLasiStore = observable({
             holeRuleType: 'no_hole',
             holeCondition: 'partner_tops'
         };
+        // 重置吃肉相关属性
+        this.eating_range = GameConstantsUtils.getDefaultEatingRange();
+        this.meat_value_config_string = 'MEAT_AS_1';
+        this.meat_max_value = 10000000;
     }),
 
     // 获取所有规则数据的action
@@ -141,7 +156,11 @@ export const G4PLasiStore = observable({
             lasi_reward_config: this.lasi_reward_config,
             lasi_dingdong_config: this.lasi_dingdong_config,
             lasi_eatmeat_config: this.lasi_eatmeat_config,
-            lasi_baodong_config: this.lasi_baodong_config
+            lasi_baodong_config: this.lasi_baodong_config,
+            // 新增：吃肉相关属性
+            eating_range: this.eating_range,
+            meat_value_config_string: this.meat_value_config_string,
+            meat_max_value: this.meat_max_value
         };
         console.log(JSON.stringify(gambleConfig, null, 2));
         return gambleConfig;
