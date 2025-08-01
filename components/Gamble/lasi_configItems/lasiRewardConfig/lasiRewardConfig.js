@@ -2,6 +2,11 @@ import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_las
 
 Component({
     data: {
+        // 弹窗相关
+        visible: false,
+        displayValue: '请配置奖励规则',
+        disabled: false,
+
         // 当前奖励类型：'add' | 'multiply'
         rewardType: 'add',
         // 奖励前置条件：'total_win' | 'total_not_fail' | 'total_ignore'
@@ -33,10 +38,49 @@ Component({
         attached() {
             this.loadConfigFromStore();
             this.checkKpiTotalType();
+            this.updateDisplayValue();
         }
     },
 
     methods: {
+        // 空事件处理方法
+        noTap() {
+            return;
+        },
+
+        // 计算显示值
+        updateDisplayValue() {
+            const config = G4PLasiStore.lasi_reward_config;
+            let displayValue = '';
+
+            if (config?.rewardType) {
+                const rewardTypeText = config.rewardType === 'add' ? '加法奖励' : '乘法奖励';
+                const rewardPair = config.rewardPair || [];
+
+                // 计算有效的奖励项目数量
+                const validRewards = rewardPair.filter(item => item.rewardValue > 0);
+
+                if (validRewards.length > 0) {
+                    displayValue = `${rewardTypeText} (${validRewards.length}项)`;
+                } else {
+                    displayValue = `${rewardTypeText} (未设置)`;
+                }
+            } else {
+                displayValue = '请配置奖励规则';
+            }
+
+            this.setData({
+                displayValue: displayValue
+            });
+        },
+
+        // 显示配置弹窗
+        onShowConfig() {
+            this.setData({ visible: true });
+            // 重新加载配置，确保数据是最新的
+            this.loadConfigFromStore();
+        },
+
         // 从Store加载配置
         loadConfigFromStore() {
             const config = G4PLasiStore.lasi_reward_config || {};
@@ -168,6 +212,7 @@ Component({
 
         // 取消
         onCancel() {
+            this.setData({ visible: false });
             this.loadConfigFromStore();
             this.triggerEvent('cancel');
         },
@@ -178,6 +223,12 @@ Component({
 
             // 更新Store
             G4PLasiStore.updateRewardConfig(config);
+
+            // 更新显示值
+            this.updateDisplayValue();
+
+            // 关闭弹窗
+            this.setData({ visible: false });
 
             this.printCurrentConfig();
             this.triggerEvent('confirm', config);

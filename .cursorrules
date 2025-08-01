@@ -71,3 +71,40 @@
 3、括号与减数, 被减数之间不能有空格；
 4、 以上无效记得加上英文~符和双引号。
 5. 不要进行属性名称方面的防御性编程
+
+## 微信小程序事件绑定规范
+
+### 禁止空事件绑定
+- 绝对禁止在WXML中使用空字符串作为事件绑定：`bindtap=""` 或 `catchtap=""`
+- 这会导致错误：`Component does not have a method "true" to handle event "tap"`
+
+### 正确的空事件处理方式
+当需要条件性禁用事件时，使用以下方式：
+
+1. **推荐方式**：使用 `noTap` 方法
+```xml
+<!-- 正确 -->
+bindtap="{{condition ? 'noTap' : 'realMethod'}}"
+```
+
+2. **在JS中添加 noTap 方法**
+```javascript
+// 空事件处理方法
+noTap() {
+  // 不执行任何操作
+  return;
+}
+```
+
+### 常见错误示例
+```xml
+<!-- 错误 - 会导致 "true" 方法错误 -->
+bindtap="{{condition ? '' : 'realMethod'}}"
+catchtap=""
+```
+
+### 检查清单
+在编写WXML时，确保：
+- 所有 `bindtap`、`catchtap` 等事件绑定都有有效的方法名
+- 条件表达式不返回空字符串
+- 在JS文件中定义了所有被引用的事件处理方法

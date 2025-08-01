@@ -1,126 +1,140 @@
-<view class="config-section">
-  <!-- 标题栏 -->
-  <view class="section-header">
-    <view class="header-left">
-      <text class="section-title">奖励规则</text>
+<!-- 奖励规则配置组件 -->
+<!-- 显示部分 -->
+<view class="rule-section" wx:if="{{!visible}}">
+  <view class="form-label">奖励规则</view>
+  <view class="form-select" bindtap="onShowConfig">
+    <input
+      class="form-input {{disabled ? 'conditionally-disabled' : ''}}"
+      value="{{displayValue}}"
+      disabled="{{disabled}}"
+    />
+    <view class="select-arrow">
+      <text class="arrow-circle">▼</text>
     </view>
   </view>
+</view>
 
-  <!-- 主要内容区域 -->
-  <view class="main-content">
-    <!-- 左侧面板 - 加法奖励 -->
-    <view
-      class="reward-panel {{rewardType === 'add' ? 'active' : 'inactive'}}"
-      bindtap="onRewardTypeChange"
-      data-type="add"
-    >
-      <!-- 面板头部 -->
-      <view class="panel-header">
-        <view class="radio-outer {{rewardType === 'add' ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{rewardType === 'add'}}"></view>
+<!-- 弹窗部分 -->
+<view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
+  <view class="modal-content" catchtap>
+    <view class="modal-title">奖励规则</view>
+
+    <!-- 主要内容区域 -->
+    <view class="main-content">
+      <!-- 左侧面板 - 加法奖励 -->
+      <view
+        class="reward-panel {{rewardType === 'add' ? 'active' : 'inactive'}}"
+        bindtap="onRewardTypeChange"
+        data-type="add"
+      >
+        <!-- 面板头部 -->
+        <view class="panel-header">
+          <view class="radio-outer {{rewardType === 'add' ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{rewardType === 'add'}}"></view>
+          </view>
+          <text class="panel-title">加法奖励</text>
         </view>
-        <text class="panel-title">加法奖励</text>
+
+        <!-- 奖励项目列表 -->
+        <view class="reward-items">
+          <view class="reward-item" wx:for="{{addRewardItems}}" wx:key="scoreName">
+            <text
+              class="score-name"
+            >{{item.scoreName === 'Par' ? '帕' : item.scoreName === 'Birdie' ? '鸟' : item.scoreName === 'Eagle' ? '鹰' : item.scoreName === 'Albatross/HIO' ? '信天翁/HIO' : item.scoreName}}</text>
+            <view class="reward-value-container">
+              <text class="reward-prefix">+</text>
+              <input
+                class="reward-value-input"
+                type="number"
+                value="{{item.rewardValue}}"
+                data-score-name="{{item.scoreName}}"
+                data-reward-type="add"
+                bindinput="onRewardValueChange"
+                catchtap="onInputTap"
+              />
+            </view>
+          </view>
+        </view>
+
+        <!-- 奖励前置条件 -->
+        <view class="precondition-section {{!showPreCondition ? 'disabled' : ''}}">
+          <view class="precondition-title">奖励前置条件 (当含有总杆PK时)</view>
+          <view class="precondition-options">
+            <view
+              class="precondition-option {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              bindtap="{{showPreCondition ? 'onPreConditionChange' : 'noTap'}}"
+              data-value="total_win"
+            >
+              <view
+                class="radio-dot {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              ></view>
+              <text class="precondition-text">总成绩赢才奖</text>
+            </view>
+            <view
+              class="precondition-option {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              bindtap="{{showPreCondition ? 'onPreConditionChange' : 'noTap'}}"
+              data-value="total_not_fail"
+            >
+              <view
+                class="radio-dot {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              ></view>
+              <text class="precondition-text">总成绩不输才奖</text>
+            </view>
+            <view
+              class="precondition-option {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              bindtap="{{showPreCondition ? 'onPreConditionChange' : 'noTap'}}"
+              data-value="total_ignore"
+            >
+              <view
+                class="radio-dot {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              ></view>
+              <text class="precondition-text">与总成绩无关</text>
+            </view>
+          </view>
+        </view>
       </view>
 
-      <!-- 奖励项目列表 -->
-      <view class="reward-items">
-        <view class="reward-item" wx:for="{{addRewardItems}}" wx:key="scoreName">
-          <text
-            class="score-name"
-          >{{item.scoreName === 'Par' ? '帕' : item.scoreName === 'Birdie' ? '鸟' : item.scoreName === 'Eagle' ? '鹰' : item.scoreName === 'Albatross/HIO' ? '信天翁/HIO' : item.scoreName}}</text>
-          <view class="reward-value-container">
-            <text class="reward-prefix">+</text>
-            <input
-              class="reward-value-input"
-              type="number"
-              value="{{item.rewardValue}}"
-              data-score-name="{{item.scoreName}}"
-              data-reward-type="add"
-              bindinput="onRewardValueChange"
-              catchtap="onInputTap"
-            />
+      <!-- 右侧面板 - 乘法奖励 -->
+      <view
+        class="reward-panel {{rewardType === 'multiply' ? 'active' : 'inactive'}}"
+        bindtap="onRewardTypeChange"
+        data-type="multiply"
+      >
+        <!-- 面板头部 -->
+        <view class="panel-header">
+          <view class="radio-outer {{rewardType === 'multiply' ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{rewardType === 'multiply'}}"></view>
           </view>
+          <text class="panel-title">乘法奖励</text>
         </view>
-      </view>
 
-      <!-- 奖励前置条件 -->
-      <view class="precondition-section {{!showPreCondition ? 'disabled' : ''}}">
-        <view class="precondition-title">奖励前置条件 (当含有总杆PK时)</view>
-        <view class="precondition-options">
-          <view
-            class="precondition-option {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
-            bindtap="{{showPreCondition ? 'onPreConditionChange' : ''}}"
-            data-value="total_win"
-          >
-            <view
-              class="radio-dot {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
-            ></view>
-            <text class="precondition-text">总成绩赢才奖</text>
-          </view>
-          <view
-            class="precondition-option {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
-            bindtap="{{showPreCondition ? 'onPreConditionChange' : ''}}"
-            data-value="total_not_fail"
-          >
-            <view
-              class="radio-dot {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
-            ></view>
-            <text class="precondition-text">总成绩不输才奖</text>
-          </view>
-          <view
-            class="precondition-option {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
-            bindtap="{{showPreCondition ? 'onPreConditionChange' : ''}}"
-            data-value="total_ignore"
-          >
-            <view
-              class="radio-dot {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
-            ></view>
-            <text class="precondition-text">与总成绩无关</text>
+        <!-- 奖励项目列表 -->
+        <view class="reward-items">
+          <view class="reward-item" wx:for="{{multiplyRewardItems}}" wx:key="scoreName">
+            <text
+              class="score-name"
+            >{{item.scoreName === 'Par' ? '帕' : item.scoreName === 'Birdie' ? '鸟' : item.scoreName === 'Eagle' ? '鹰' : item.scoreName === 'Albatross/HIO' ? '信天翁/HIO' : item.scoreName === 'Birdie+Birdie' ? '鸟+鸟' : item.scoreName === 'Birdie+Eagle' ? '鸟+鹰' : item.scoreName === 'Eagle+Eagle' ? '鹰+鹰' : item.scoreName}}</text>
+            <view class="reward-value-container">
+              <text class="reward-prefix">×</text>
+              <input
+                class="reward-value-input"
+                type="number"
+                value="{{item.rewardValue}}"
+                data-score-name="{{item.scoreName}}"
+                data-reward-type="multiply"
+                bindinput="onRewardValueChange"
+                catchtap="onInputTap"
+              />
+            </view>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 右侧面板 - 乘法奖励 -->
-    <view
-      class="reward-panel {{rewardType === 'multiply' ? 'active' : 'inactive'}}"
-      bindtap="onRewardTypeChange"
-      data-type="multiply"
-    >
-      <!-- 面板头部 -->
-      <view class="panel-header">
-        <view class="radio-outer {{rewardType === 'multiply' ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{rewardType === 'multiply'}}"></view>
-        </view>
-        <text class="panel-title">乘法奖励</text>
-      </view>
-
-      <!-- 奖励项目列表 -->
-      <view class="reward-items">
-        <view class="reward-item" wx:for="{{multiplyRewardItems}}" wx:key="scoreName">
-          <text
-            class="score-name"
-          >{{item.scoreName === 'Par' ? '帕' : item.scoreName === 'Birdie' ? '鸟' : item.scoreName === 'Eagle' ? '鹰' : item.scoreName === 'Albatross/HIO' ? '信天翁/HIO' : item.scoreName === 'Birdie+Birdie' ? '鸟+鸟' : item.scoreName === 'Birdie+Eagle' ? '鸟+鹰' : item.scoreName === 'Eagle+Eagle' ? '鹰+鹰' : item.scoreName}}</text>
-          <view class="reward-value-container">
-            <text class="reward-prefix">×</text>
-            <input
-              class="reward-value-input"
-              type="number"
-              value="{{item.rewardValue}}"
-              data-score-name="{{item.scoreName}}"
-              data-reward-type="multiply"
-              bindinput="onRewardValueChange"
-              catchtap="onInputTap"
-            />
-          </view>
-        </view>
-      </view>
+    <!-- 底部按钮 -->
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
     </view>
-  </view>
-
-  <!-- 底部按钮 -->
-  <view class="bottom-buttons">
-    <button class="btn-cancel" bindtap="onCancel">取消</button>
-    <button class="btn-confirm" bindtap="onConfirm">确定保存</button>
   </view>
 </view>
