@@ -1,5 +1,4 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import { EATMEAT_CONFIG } from '../../../../utils/gameConstants.js'
 import { reaction } from 'mobx-miniprogram'
 
 Component({
@@ -35,9 +34,9 @@ Component({
     topScoreLimit: 3, // 封顶分数, 默认3
     meatScoreValue: 1, // 肉算x分中的x值, 默认1
 
-    // 数字选择器范围 - 使用统一配置
-    eatValueRange: EATMEAT_CONFIG.RANGES.EAT_VALUE,
-    topScoreRange: EATMEAT_CONFIG.RANGES.TOP_SCORE,
+    // 数字选择器范围 - 直接定义
+    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20, 吃肉数量范围
+    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1),  // 1-20, 封顶分数范围
     meatScoreRange: [1, 2, 3, 4, 5], // 肉分值范围 1-5
   },
   // 组件生命周期

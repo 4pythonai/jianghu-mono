@@ -40,7 +40,7 @@
             data-type="plus_4"
           >
             <view class="radio-dot {{holeRuleType === 'plus_4' ? 'selected' : ''}}"></view>
-            <text class="rule-text">+4包洞</text>
+            <text class="rule-text">帕+4包洞</text>
           </view>
           <view
             class="rule-option {{holeRuleType === 'stroke_diff_3' ? 'selected' : ''}}"

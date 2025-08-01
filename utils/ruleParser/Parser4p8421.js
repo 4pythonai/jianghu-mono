@@ -70,19 +70,30 @@ function parseEatmeatConfig(item) {
         }
     }
 
+
+    //   DOUBLE_WITH_REWARD: { option: 1, display: '分值翻倍(含奖励)' },
+    //   DOUBLE_WITHOUT_REWARD: { option: 2, display: '分值翻倍(不含奖励)' }
+
+
     if (meat_value_config_string) {
-        // 重构：处理MEAT_AS_X格式
+        // 处理MEAT_AS_X格式
         if (meat_value_config_string.startsWith('MEAT_AS_')) {
             const score = meat_value_config_string.replace('MEAT_AS_', '');
             detail += `，肉算${score}分`;
         } else {
             // 处理其他格式
             switch (meat_value_config_string) {
-                case 'SINGLE_DOUBLE':
-                    detail += '，分值翻倍';
+                case 'DOUBLE_WITH_REWARD':
+                    detail += '，分值翻倍(含奖励)';
                     break;
-                case 'CONTINUE_DOUBLE':
-                    detail += '，分值连续翻倍';
+                case 'DOUBLE_WITHOUT_REWARD':
+                    detail += '，分值翻倍(不含奖励)';
+                    break;
+                case 'SINGLE_DOUBLE': // 兼容旧格式
+                    detail += '，分值翻倍(含奖励)';
+                    break;
+                case 'CONTINUE_DOUBLE': // 兼容旧格式
+                    detail += '，分值翻倍(不含奖励)';
                     break;
                 default:
                     // 如果是不认识的格式，直接显示原值
