@@ -186,6 +186,11 @@
 	margin-top: 24rpx;
 }
 
+.condition-section.disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
 /* 条件标题 */
 .condition-title {
 	font-size: 28rpx;

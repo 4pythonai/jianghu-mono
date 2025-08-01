@@ -57,12 +57,12 @@
       <view class="modal-divider"></view>
 
       <!-- 包洞条件 -->
-      <view class="condition-section">
+      <view class="condition-section {{holeRuleType === 'no_hole' ? 'disabled' : ''}}">
         <view class="condition-title">包洞条件</view>
         <view class="condition-options">
           <view
             class="condition-option {{holeCondition === 'partner_tops' ? 'selected' : ''}}"
-            bindtap="onHoleConditionChange"
+            bindtap="{{holeRuleType === 'no_hole' ? '' : 'onHoleConditionChange'}}"
             data-condition="partner_tops"
           >
             <view class="radio-dot {{holeCondition === 'partner_tops' ? 'selected' : ''}}"></view>
@@ -70,7 +70,7 @@
           </view>
           <view
             class="condition-option {{holeCondition === 'irrelevant' ? 'selected' : ''}}"
-            bindtap="onHoleConditionChange"
+            bindtap="{{holeRuleType === 'no_hole' ? '' : 'onHoleConditionChange'}}"
             data-condition="irrelevant"
           >
             <view class="radio-dot {{holeCondition === 'irrelevant' ? 'selected' : ''}}"></view>
