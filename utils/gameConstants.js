@@ -20,41 +20,10 @@ export const GOLF_SCORE_TYPES = {
     },
 
     // 渲染顺序
-    KEYS: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
-
-    // 默认配置
-    DEFAULT_EATING_RANGE: {
-        "BetterThanBirdie": 2,
-        "Birdie": 2,
-        "Par": 1,
-        "WorseThanPar": 0
-    }
+    KEYS: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar']
 };
 
-// 8421游戏配置常量
-export const GAME_8421_CONFIG = {
-    // 默认8421配置
-    DEFAULT_8421_CONFIG: {
-        "Birdie": 8,
-        "Par": 4,
-        "Par+1": 2,
-        "Par+2": 1
-    },
 
-    // 预设配置选项
-    PRESET_CONFIGS: {
-        '6321': { "Birdie": 6, "Par": 3, "Par+1": 2, "Par+2": 1 },
-        '7321': { "Birdie": 7, "Par": 3, "Par+1": 2, "Par+2": 1 },
-        '8421': { "Birdie": 8, "Par": 4, "Par+1": 2, "Par+2": 1 },
-        '8431': { "Birdie": 8, "Par": 4, "Par+1": 3, "Par+2": 1 },
-        '8432': { "Birdie": 8, "Par": 4, "Par+1": 3, "Par+2": 2 },
-        '8532': { "Birdie": 8, "Par": 5, "Par+1": 3, "Par+2": 2 },
-        '95321': { "Birdie": 9, "Par": 5, "Par+1": 3, "Par+2": 2, "Par+3": 1 }
-    },
-
-    // 配置字段映射
-    CONFIG_KEYS: ['Birdie', 'Par', 'Par+1', 'Par+2', 'Par+3']
-};
 
 // 吃肉规则配置常量
 export const EATMEAT_CONFIG = {
@@ -143,21 +112,9 @@ export const GameConstantsUtils = {
         return GOLF_SCORE_TYPES.KEYS;
     },
 
-    /**
-     * 获取默认的吃肉配置
-     * @returns {Object} 默认配置
-     */
-    getDefaultEatingRange() {
-        return { ...GOLF_SCORE_TYPES.DEFAULT_EATING_RANGE };
-    },
 
-    /**
-     * 获取默认的8421配置
-     * @returns {Object} 默认配置
-     */
-    getDefault8421Config() {
-        return { ...GAME_8421_CONFIG.DEFAULT_8421_CONFIG };
-    },
+
+
 
     /**
      * 获取游戏类型配置

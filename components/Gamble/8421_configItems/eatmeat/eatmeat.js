@@ -1,5 +1,5 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../../utils/gameConstants.js'
+import { EATMEAT_CONFIG } from '../../../../utils/gameConstants.js'
 import { reaction } from 'mobx-miniprogram'
 
 Component({
@@ -12,10 +12,20 @@ Component({
     displayValue: '请配置吃肉规则',
     isDisabled: false, // 新增：禁用状态
 
-    // 使用统一的常量配置
-    eating_range: GameConstantsUtils.getDefaultEatingRange(),
-    eatRangeLabels: GOLF_SCORE_TYPES.LABELS,
-    eatRangeKeys: GOLF_SCORE_TYPES.KEYS,
+    // 直接使用固定的默认配置
+    eating_range: {
+      "BetterThanBirdie": 1,
+      "Birdie": 1,
+      "Par": 1,
+      "WorseThanPar": 1
+    },
+    eatRangeLabels: {
+      'BetterThanBirdie': '比鸟更好',
+      'Birdie': '鸟',
+      'Par': '帕',
+      'WorseThanPar': '比帕更差'
+    },
+    eatRangeKeys: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
 
     meatValueOption: 0,
     topOptions: ["不封顶", "X分封顶"],
@@ -124,13 +134,33 @@ Component({
       const meatValue = G4P8421Store.meat_value_config_string;
       const meat_max_value = G4P8421Store.meat_max_value;
 
-      if (eating_range || meatValue || meat_max_value !== 10000000) {
+      // 检查store中是否有有效的配置，并且不是旧的2,2,1,0配置
+      const hasValidConfig = eating_range &&
+        typeof eating_range === 'object' &&
+        !Array.isArray(eating_range) &&
+        Object.keys(eating_range).length > 0 &&
+        eating_range.BetterThanBirdie !== 2; // 检查是否是旧的配置
+
+      if (hasValidConfig && meatValue) {
         // 解析已保存的配置
         this.parseStoredConfig({
           eating_range,
           meatValue,
           meat_max_value
         });
+      } else {
+        // 如果没有有效配置或检测到旧配置，使用默认值并保存到store
+        const defaultEatingRange = {
+          "BetterThanBirdie": 1,
+          "Birdie": 1,
+          "Par": 1,
+          "WorseThanPar": 1
+        };
+        this.setData({ eating_range: defaultEatingRange });
+
+        // 保存默认配置到store
+        G4P8421Store.updateEatmeatRule(defaultEatingRange, 'MEAT_AS_1', 10000000);
+        console.log('使用默认吃肉配置:', defaultEatingRange);
       }
     },
     // 解析存储的配置
@@ -235,8 +265,6 @@ Component({
       }
 
       this.setData({ visible: true });
-      // 每次显示时重新加载配置
-      this.initializeFromStore();
     },
 
     onCancel() {

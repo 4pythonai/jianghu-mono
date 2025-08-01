@@ -1,6 +1,5 @@
 import { observable, action } from 'mobx-miniprogram'
 import { gameStore } from '../../../gameStore' // 导入 gameStore 来获取 gameid
-import { GameConstantsUtils } from '../../../../utils/gameConstants.js'
 
 export const G4P8421Store = observable({
     // 生成规则摘要名称
@@ -24,8 +23,13 @@ export const G4P8421Store = observable({
     // 顶洞规则: NoDraw(无顶洞), Diff_X(得分X分以内), DrawEqual(得分打平) - 默认:DrawEqual
     draw8421_config: 'DrawEqual',
 
-    // 吃肉规则:默认配置 - 使用统一常量
-    eating_range: GameConstantsUtils.getDefaultEatingRange(),
+    // 吃肉规则:默认配置
+    eating_range: {
+        "BetterThanBirdie": 1,
+        "Birdie": 1,
+        "Par": 1,
+        "WorseThanPar": 1
+    },
 
     // meat option: MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE - 默认:MEAT_AS_1
     meat_value_config_string: 'MEAT_AS_1',
@@ -66,7 +70,12 @@ export const G4P8421Store = observable({
         this.sub8421_config_string = 'Par+4';
         this.duty_config = 'NODUTY';
         this.draw8421_config = 'DrawEqual';
-        this.eating_range = GameConstantsUtils.getDefaultEatingRange();
+        this.eating_range = {
+            "BetterThanBirdie": 1,
+            "Birdie": 1,
+            "Par": 1,
+            "WorseThanPar": 1
+        };
         this.meat_value_config_string = 'MEAT_AS_1';
         this.meat_max_value = 10000000;
     }),

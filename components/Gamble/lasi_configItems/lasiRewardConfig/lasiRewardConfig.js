@@ -24,13 +24,13 @@ Component({
 
         // 乘法奖励项目
         multiplyRewardItems: [
-            { scoreName: 'Par', rewardValue: 0 },
-            { scoreName: 'Birdie', rewardValue: 0 },
-            { scoreName: 'Eagle', rewardValue: 0 },
-            { scoreName: 'Albatross/HIO', rewardValue: 0 },
-            { scoreName: 'Birdie+Birdie', rewardValue: 0 },
-            { scoreName: 'Birdie+Eagle', rewardValue: 0 },
-            { scoreName: 'Eagle+Eagle', rewardValue: 0 }
+            { scoreName: 'Par', rewardValue: 1 },
+            { scoreName: 'Birdie', rewardValue: 2 },
+            { scoreName: 'Eagle', rewardValue: 4 },
+            { scoreName: 'Albatross/HIO', rewardValue: 10 },
+            { scoreName: 'Birdie+Birdie', rewardValue: 4 },
+            { scoreName: 'Birdie+Eagle', rewardValue: 8 },
+            { scoreName: 'Eagle+Eagle', rewardValue: 16 }
         ]
     },
 

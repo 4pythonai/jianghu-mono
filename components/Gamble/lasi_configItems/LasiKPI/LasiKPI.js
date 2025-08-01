@@ -14,7 +14,7 @@ Component({
         totalCalculationType: 'add_total',
         // 各KPI的分值配置
         kpiValues: {
-            best: 2,    // 较好成绩PK分值
+            best: 1,    // 较好成绩PK分值
             worst: 1,   // 较差成绩PK分值
             total: 1    // 双方总杆PK分值
         },
@@ -29,11 +29,7 @@ Component({
             console.log('🎯 [LasiKPI] 拉丝KPI配置组件加载');
             // 初始化时从Store获取当前配置
             const selectedIndicators = G4PLasiStore.lasi_config?.indicators || [];
-            const kpiValues = G4PLasiStore.lasi_config?.kpiValues || {
-                best: 2,
-                worst: 1,
-                total: 1
-            };
+            const kpiValues = G4PLasiStore.lasi_config?.kpiValues || this.data.kpiValues;
 
             // 构建选中状态映射
             const isSelected = {

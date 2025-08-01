@@ -1,6 +1,5 @@
 import { observable, action } from 'mobx-miniprogram'
 import { gameStore } from '../../../gameStore' // 导入 gameStore 来获取 gameid
-import { GameConstantsUtils } from '../../../../utils/gameConstants.js'
 
 export const G4PLasiStore = observable({
     // 生成规则摘要名称
@@ -9,7 +8,12 @@ export const G4PLasiStore = observable({
     },
 
     max8421_sub_value: 10000000,
-    eating_range: GameConstantsUtils.getDefaultEatingRange(),
+    eating_range: {
+        "BetterThanBirdie": 4,
+        "Birdie": 2,
+        "Par": 1,
+        "WorseThanPar": 0
+    },
 
     // 新增：吃肉相关属性，与 8421 store 保持一致
     meat_value_config_string: 'MEAT_AS_1',
@@ -27,7 +31,7 @@ export const G4PLasiStore = observable({
         totalCalculationType: 'add_total',
         // KPI分值配置
         kpiValues: {
-            best: 2,    // 较好成绩PK分值
+            best: 1,    // 较好成绩PK分值
             worst: 1,   // 较差成绩PK分值
             total: 1    // 双方总杆PK分值
         }
@@ -140,7 +144,12 @@ export const G4PLasiStore = observable({
             holeCondition: 'partner_tops'
         };
         // 重置吃肉相关属性
-        this.eating_range = GameConstantsUtils.getDefaultEatingRange();
+        this.eating_range = {
+            "BetterThanBirdie": 4,
+            "Birdie": 2,
+            "Par": 1,
+            "WorseThanPar": 0
+        };
         this.meat_value_config_string = 'MEAT_AS_1';
         this.meat_max_value = 10000000;
     }),
