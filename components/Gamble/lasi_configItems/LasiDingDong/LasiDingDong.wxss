@@ -159,14 +159,6 @@
 	border-color: #e0e0e0;
 }
 
-.form-input.conditionally-disabled::after {
-	content: "已禁用";
-	position: absolute;
-	right: 80rpx;
-	color: #999;
-	font-size: 24rpx;
-}
-
 .form-select {
 	position: relative;
 	margin-bottom: 0;

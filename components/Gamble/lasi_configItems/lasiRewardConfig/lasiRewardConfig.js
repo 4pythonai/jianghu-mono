@@ -1,10 +1,6 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 
 Component({
-    properties: {
-        // 组件属性
-    },
-
     data: {
         // 当前奖励类型：'add' | 'multiply'
         rewardType: 'add',
@@ -213,49 +209,6 @@ Component({
             console.log('🎯 [LasiRewardConfig] 前置条件:', config.rewardPreCondition);
             console.log('🎯 [LasiRewardConfig] 奖励项目:', config.rewardPair);
             console.log('🎯 [LasiRewardConfig] ========================');
-        },
-
-        // 设置配置
-        setConfig(config) {
-            if (config.rewardType) {
-                this.setData({ rewardType: config.rewardType });
-            }
-            if (config.rewardPreCondition) {
-                this.setData({ rewardPreCondition: config.rewardPreCondition });
-            }
-            if (config.addRewardItems) {
-                this.setData({ addRewardItems: config.addRewardItems });
-            }
-            if (config.multiplyRewardItems) {
-                this.setData({ multiplyRewardItems: config.multiplyRewardItems });
-            }
-
-            this.printCurrentConfig();
-        },
-
-        // 重置配置
-        resetConfig() {
-            this.setData({
-                rewardType: 'add',
-                rewardPreCondition: 'total_win',
-                addRewardItems: [
-                    { scoreName: 'Par', rewardValue: 0 },
-                    { scoreName: 'Birdie', rewardValue: 1 },
-                    { scoreName: 'Eagle', rewardValue: 3 },
-                    { scoreName: 'Albatross/HIO', rewardValue: 10 }
-                ],
-                multiplyRewardItems: [
-                    { scoreName: 'Par', rewardValue: 0 },
-                    { scoreName: 'Birdie', rewardValue: 0 },
-                    { scoreName: 'Eagle', rewardValue: 0 },
-                    { scoreName: 'Albatross/HIO', rewardValue: 0 },
-                    { scoreName: 'Birdie+Birdie', rewardValue: 0 },
-                    { scoreName: 'Birdie+Eagle', rewardValue: 0 },
-                    { scoreName: 'Eagle+Eagle', rewardValue: 0 }
-                ]
-            });
-
-            this.printCurrentConfig();
         }
     }
 });

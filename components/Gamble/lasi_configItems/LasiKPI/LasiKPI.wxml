@@ -97,14 +97,5 @@
         <text class="total-unit">分</text>
       </view>
     </view>
-
-    <!-- 说明文字 -->
-    <view class="explanation">
-      <text class="explanation-title">💡 拉丝配置说明</text>
-      <text class="explanation-text">
-        拉丝是指从多个玩家中"拉"出特定的指标来进行比较。选择合适的指标可以让比赛更加公平有趣。
-        系统会根据您的选择自动生成规则名称。
-      </text>
-    </view>
   </view>
 </view>

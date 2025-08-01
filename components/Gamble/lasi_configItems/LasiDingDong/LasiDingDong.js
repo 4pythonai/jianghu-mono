@@ -1,29 +1,25 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 
 Component({
-    properties: {
-    },
-
     data: {
         // 组件内部状态
         visible: false,
         displayValue: '请配置顶洞规则',
+        disabled: false, // 禁用状态
 
-        options: [
-            'DrawEqual',
-            'Diff_1',
-            'NoDraw'
-        ],
         selected: 0,
         // 分数选择器相关
         diffScores: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         selectedDiffScore: 1
     },
-    attached() {
-        // 组件初始化时, 根据store中的值设置选中状态
-        this.syncSelectedFromStore();
-        // 计算显示值
-        this.updateDisplayValue();
+
+    lifetimes: {
+        attached() {
+            // 组件初始化时, 根据store中的值设置选中状态
+            this.syncSelectedFromStore();
+            // 计算显示值
+            this.updateDisplayValue();
+        }
     },
 
     methods: {
@@ -114,6 +110,7 @@ Component({
             this.setData({ visible: false });
             this.triggerEvent('cancel');
         },
+
         onConfirm() {
             let selectedValue = '';
 

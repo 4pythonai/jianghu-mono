@@ -6,6 +6,10 @@
 	margin-bottom: 24rpx;
 }
 
+.rule-section:last-child {
+	margin-bottom: 0;
+}
+
 .form-label {
 	font-size: 28rpx;
 	color: #222;
@@ -106,15 +110,6 @@
 	padding: 32rpx 24rpx;
 	margin-bottom: 32rpx;
 	box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.1);
-}
-
-/* 规则区域 */
-.rule-section {
-	margin-bottom: 24rpx;
-}
-
-.rule-section:last-child {
-	margin-bottom: 0;
 }
 
 /* 规则选项列表 */

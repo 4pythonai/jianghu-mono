@@ -1,10 +1,6 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 
 Component({
-    properties: {
-        // 组件属性
-    },
-
     data: {
         // 当前选中的指标
         selectedIndicators: [],
@@ -61,23 +57,22 @@ Component({
     },
 
     methods: {
+        // 监听KPI配置变化（供外部调用）
+        onKpiConfigChange() {
+            this.printCurrentKpiConfig();
+        },
+
         // 选择拉丝指标
         onSelectIndicator(e) {
             const { value } = e.currentTarget.dataset;
             const { selectedIndicators, isSelected } = this.data;
 
-            let newSelectedIndicators;
-            let newIsSelected = { ...isSelected };
+            const newSelectedIndicators = selectedIndicators.includes(value)
+                ? selectedIndicators.filter(item => item !== value)
+                : [...selectedIndicators, value];
 
-            if (selectedIndicators.includes(value)) {
-                // 取消选择
-                newSelectedIndicators = selectedIndicators.filter(item => item !== value);
-                newIsSelected[value] = false;
-            } else {
-                // 添加选择
-                newSelectedIndicators = [...selectedIndicators, value];
-                newIsSelected[value] = true;
-            }
+            const newIsSelected = { ...isSelected };
+            newIsSelected[value] = !selectedIndicators.includes(value);
 
             this.setData({
                 selectedIndicators: newSelectedIndicators,
@@ -107,7 +102,7 @@ Component({
         // KPI分值变化处理
         onKpiValueChange(e) {
             const { kpi } = e.currentTarget.dataset;
-            const value = parseInt(e.detail.value) + 1; // picker的value从0开始，所以+1
+            const value = Number.parseInt(e.detail.value) + 1; // picker的value从0开始，所以+1
 
             const { kpiValues } = this.data;
             kpiValues[kpi] = value;
@@ -122,16 +117,14 @@ Component({
             this.printCurrentKpiConfig();
         },
 
-
-
         // 计算总分
         calculateTotalScore() {
             const { selectedIndicators, kpiValues } = this.data;
             let total = 0;
 
-            selectedIndicators.forEach(indicator => {
+            for (const indicator of selectedIndicators) {
                 total += kpiValues[indicator] || 0;
-            });
+            }
 
             this.setData({
                 totalScore: total
@@ -213,7 +206,7 @@ Component({
             const result = [];
 
             // 添加选中的KPI配置
-            selectedIndicators.forEach(indicator => {
+            for (const indicator of selectedIndicators) {
                 if (indicator === 'total') {
                     // 总杆类型需要特殊处理
                     result.push({
@@ -226,64 +219,22 @@ Component({
                         value: kpiValues[indicator]
                     });
                 }
-            });
+            }
 
             return result;
         },
-
-        // 获取当前配置的完整信息
-        getCurrentConfig() {
-            return {
-                selectedIndicators: this.data.selectedIndicators,
-                totalCalculationType: this.data.totalCalculationType,
-                kpiValues: this.data.kpiValues,
-                totalScore: this.data.totalScore,
-                configResult: this.getConfigResult()
-            };
-        },
-
-        // 设置KPI分值
-        setKpiValue(kpi, value) {
-            const { kpiValues } = this.data;
-            kpiValues[kpi] = value;
-
-            this.setData({
-                kpiValues
-            });
-
-            this.calculateTotalScore();
-            this.updateStore();
-        },
-
-        // 重置配置
-        resetConfig() {
-            this.setData({
-                selectedIndicators: [],
-                isSelected: {
-                    best: false,
-                    worst: false,
-                    total: false
-                },
-                totalCalculationType: 'add_total',
-                kpiValues: {
-                    best: 2,
-                    worst: 1,
-                    total: 1
-                }
-            });
-
-            this.calculateTotalScore();
-            this.updateStore();
-            this.generateRuleName();
-        },
-
-
 
         // 打印当前KPI配置
         printCurrentKpiConfig() {
             const { selectedIndicators, kpiValues, totalCalculationType, totalScore } = this.data;
 
             console.log('🎯 [LasiKPI] ===== 当前KPI配置 =====');
+            console.log('🎯 [LasiKPI] 配置对象:', {
+                selectedIndicators,
+                kpiValues,
+                totalCalculationType,
+                totalScore
+            });
             console.log('🎯 [LasiKPI] 选中的指标:', selectedIndicators);
             console.log('🎯 [LasiKPI] KPI分值配置:', kpiValues);
             console.log('🎯 [LasiKPI] 总杆计算方式:', totalCalculationType);

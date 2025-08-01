@@ -16,6 +16,11 @@
 	margin-bottom: 20rpx;
 }
 
+.header-left {
+	display: flex;
+	align-items: center;
+}
+
 .section-title {
 	font-size: 36rpx;
 	font-weight: 600;
@@ -58,19 +63,29 @@
 	margin-bottom: 16rpx;
 }
 
-/* 状态圆点 */
-.status-dot {
-	width: 16rpx;
-	height: 16rpx;
+/* 单选圆点 */
+.radio-outer {
+	width: 32rpx;
+	height: 32rpx;
 	border-radius: 50%;
+	border: 4rpx solid #bdbdbd;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
 }
 
-.status-dot.active {
+.radio-outer.checked {
+	border-color: #4caf7a;
 	background: #4caf7a;
 }
 
-.status-dot.inactive {
-	background: #6c757d;
+.radio-inner {
+	width: 18rpx;
+	height: 18rpx;
+	border-radius: 50%;
+	background: #fff;
 }
 
 /* 面板标题 */
@@ -132,11 +147,6 @@
 	font-weight: 500;
 }
 
-.reward-value-input:focus {
-	border-color: #4caf7a;
-	outline: none;
-}
-
 /* 前置条件区域 */
 .precondition-section {
 	border-top: 1rpx solid #e9ecef;
@@ -193,14 +203,6 @@
 .radio-dot.selected {
 	border-color: #4caf7a;
 	background: #4caf7a;
-}
-
-.radio-dot.selected::after {
-	content: "";
-	width: 8rpx;
-	height: 8rpx;
-	background: #fff;
-	border-radius: 50%;
 }
 
 /* 禁用状态的单选圆点 */

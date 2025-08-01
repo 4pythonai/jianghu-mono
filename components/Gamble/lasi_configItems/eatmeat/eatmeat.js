@@ -3,9 +3,6 @@ import { GOLF_SCORE_TYPES, EATMEAT_CONFIG, GameConstantsUtils } from '../../../.
 import { reaction } from 'mobx-miniprogram'
 
 Component({
-  properties: {
-  },
-
   data: {
     // 组件内部状态
     visible: false,
@@ -54,13 +51,6 @@ Component({
       if (this._storeReaction) {
         this._storeReaction();
       }
-    }
-  },
-  // 属性变化监听
-  observers: {
-    'noKoufen': function (noKoufen) {
-      // 当noKoufen变化时，更新显示值
-      this.updateDisplayValue();
     }
   },
   methods: {

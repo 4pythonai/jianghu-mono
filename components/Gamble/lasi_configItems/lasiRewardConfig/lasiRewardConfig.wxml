@@ -16,7 +16,9 @@
     >
       <!-- 面板头部 -->
       <view class="panel-header">
-        <view class="status-dot {{rewardType === 'add' ? 'active' : 'inactive'}}"></view>
+        <view class="radio-outer {{rewardType === 'add' ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{rewardType === 'add'}}"></view>
+        </view>
         <text class="panel-title">加法奖励</text>
       </view>
 
@@ -87,7 +89,9 @@
     >
       <!-- 面板头部 -->
       <view class="panel-header">
-        <view class="status-dot {{rewardType === 'multiply' ? 'active' : 'inactive'}}"></view>
+        <view class="radio-outer {{rewardType === 'multiply' ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{rewardType === 'multiply'}}"></view>
+        </view>
         <text class="panel-title">乘法奖励</text>
       </view>
 
