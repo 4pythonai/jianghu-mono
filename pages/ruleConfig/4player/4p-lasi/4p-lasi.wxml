@@ -19,7 +19,7 @@
     <LasiEatmeat />
 
     <!-- 拉丝包洞规则 -->
-    <LasiBaodong />
+    <LasiKoufen />
 
     <!-- 底部按钮 -->
     <button class="add-btn" bindtap="onAddLasiToMyRules">添加至我的规则</button>

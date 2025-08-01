@@ -39,7 +39,7 @@ export const GAME_TYPE_MAP = {
     '3p-8421': { name: '3人8421', components: ['Summary', 'HoleRangeSelector', 'PlayerIndicator', 'RedBlueConfig', 'RankingSelector'], hasPlayerConfig: true, hasGrouping: true },
 
     // 4人游戏
-    '4p-lasi': { name: '4人拉死', components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'], hasPlayerConfig: false, hasGrouping: true },
+    '4p-lasi': { name: '4人拉丝', components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'], hasPlayerConfig: false, hasGrouping: true },
     '4p-8421': { name: '4人8421', components: ['Summary', 'HoleRangeSelector', 'PlayerIndicator', 'RedBlueConfig', 'RankingSelector'], hasPlayerConfig: true, hasGrouping: true },
     '4p-dizhupo': { name: '4人地主婆', components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'], hasPlayerConfig: false, hasGrouping: true },
     '4p-3da1': { name: '4人3打1', components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'], hasPlayerConfig: false, hasGrouping: true },

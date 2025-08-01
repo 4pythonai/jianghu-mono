@@ -6,9 +6,9 @@ Component({
         selectedIndicators: [],
         // 选中状态的映射对象
         isSelected: {
-            best: false,
-            worst: false,
-            total: false
+            best: true,
+            worst: true,
+            total: true
         },
         // 总杆计算方式: 'add_total' 或 'plus_total'
         totalCalculationType: 'add_total',
@@ -28,8 +28,13 @@ Component({
         attached() {
             console.log('🎯 [LasiKPI] 拉丝KPI配置组件加载');
             // 初始化时从Store获取当前配置
-            const selectedIndicators = G4PLasiStore.lasi_config?.indicators || [];
+            let selectedIndicators = G4PLasiStore.lasi_config?.indicators || [];
             const kpiValues = G4PLasiStore.lasi_config?.kpiValues || this.data.kpiValues;
+
+            // 如果没有配置或配置为空，则默认选中3个指标
+            if (!selectedIndicators || selectedIndicators.length === 0) {
+                selectedIndicators = ['best', 'worst', 'total'];
+            }
 
             // 构建选中状态映射
             const isSelected = {
@@ -231,21 +236,10 @@ Component({
                 totalCalculationType,
                 totalScore
             });
-            console.log('🎯 [LasiKPI] 选中的指标:', selectedIndicators);
-            console.log('🎯 [LasiKPI] KPI分值配置:', kpiValues);
-            console.log('🎯 [LasiKPI] 总杆计算方式:', totalCalculationType);
-            console.log('🎯 [LasiKPI] 当前总分:', totalScore);
 
-            // 打印详细的选中状态
-            console.log('🎯 [LasiKPI] 详细选中状态:');
-            console.log('  - 较好成绩PK:', selectedIndicators.includes('best') ? `选中 (${kpiValues.best}分)` : '未选中');
-            console.log('  - 较差成绩PK:', selectedIndicators.includes('worst') ? `选中 (${kpiValues.worst}分)` : '未选中');
-            console.log('  - 双方总杆PK:', selectedIndicators.includes('total') ? `选中 (${kpiValues.total}分, ${totalCalculationType === 'add_total' ? '加法总杆PK' : '乘法总杆PK'})` : '未选中');
 
             // 打印配置结果数组
             const configResult = this.getConfigResult();
-            console.log('🎯 [LasiKPI] 配置结果数组:', configResult);
-            console.log('🎯 [LasiKPI] ========================');
         }
     }
 });

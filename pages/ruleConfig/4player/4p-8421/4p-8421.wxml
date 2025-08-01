@@ -7,13 +7,13 @@
     <view class="section-label">请配置游戏规则</view>
 
     <!-- 扣分规则 -->
-    <koufen />
+    <E8421Koufen />
 
     <!-- 顶洞规则 -->
-    <draw8421_config />
+    <Draw8421 />
 
     <!-- 吃肉规则 -->
-    <eatmeat />
+    <E8421Meat />
 
     <!-- 底部按钮 -->
     <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>
