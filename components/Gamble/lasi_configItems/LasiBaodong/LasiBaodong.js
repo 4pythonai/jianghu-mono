@@ -2,40 +2,24 @@ import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_las
 
 Component({
   properties: {
+    // 组件属性
   },
+
   data: {
     // 组件内部状态
     visible: false,
-    displayValue: '请配置扣分规则',
+    displayValue: '请配置包洞规则',
 
-    // 扣分开始条件 (sub8421_config_string)
-    Sub8421ConfigString: ['从帕+X开始扣分', '从双帕+Y开始扣分', '不扣分'],
-    selectedStart: 0,
-
-    // 可编辑的数字变量
-    paScore: 4, // 帕的分数, 默认4
-    doubleParScore: 0, // 双帕的分数, 默认0
-    maxSubScore: 2, // 封顶分数, 默认2
-
-    // 数字选择器范围
-    paScoreRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
-    doubleParScoreRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
-    maxSubScoreRange: Array.from({ length: 21 }, (_, i) => i + 1), // 1-21
-
-    // 扣分封顶 (max8421_sub_value)
-    maxOptions: ['不封顶', '扣X分封顶'],
-    selectedMax: 0,
-
-    // 同伴惩罚 (duty_config)
-    dutyOptions: ['不包负分', '同伴顶头包负分', '包负分'],
-    selectedDuty: 0
+    // 包洞规则类型: 'no_hole' | 'double_par_plus_1' | 'plus_4' | 'stroke_diff_3'
+    holeRuleType: 'no_hole',
+    // 包洞条件: 'partner_tops' | 'irrelevant'
+    holeCondition: 'partner_tops'
   },
-  // 组件生命周期
+
   lifetimes: {
     attached() {
-      // 从store获取当前配置并初始化组件状态
-      this.initializeFromStore();
-      // 计算显示值
+      console.log('🎯 [LasiBaodong] 包洞规则组件加载');
+      this.loadConfigFromStore();
       this.updateDisplayValue();
     }
   },
@@ -43,206 +27,107 @@ Component({
   methods: {
     // 计算显示值
     updateDisplayValue() {
-      const store = G4PLasiStore;
+      const { holeRuleType, holeCondition } = this.data;
       let displayValue = '';
 
-      // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
-      let startText = '';
-      if (store.sub8421_config_string) {
-        if (store.sub8421_config_string === 'NoSub') {
-          startText = '不扣分';
-        } else if (store.sub8421_config_string?.startsWith('Par+')) {
-          const score = store.sub8421_config_string.replace('Par+', '');
-          startText = `帕+${score}`;
-        } else if (store.sub8421_config_string?.startsWith('DoublePar+')) {
-          const score = store.sub8421_config_string.replace('DoublePar+', '');
-          startText = `双帕+${score}`;
-        } else {
-          startText = store.sub8421_config_string;
-        }
+      // 格式化包洞规则显示
+      let ruleText = '';
+      switch (holeRuleType) {
+        case 'no_hole':
+          ruleText = '不包洞';
+          break;
+        case 'double_par_plus_1':
+          ruleText = '双帕+1包洞';
+          break;
+        case 'plus_4':
+          ruleText = '+4包洞';
+          break;
+        case 'stroke_diff_3':
+          ruleText = '杆差3包洞';
+          break;
+        default:
+          ruleText = '不包洞';
       }
 
-      // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
-      let fengdingText = '';
-      if (store.max8421_sub_value === 10000000) {
-        fengdingText = '不封顶';
-      } else if (typeof store.max8421_sub_value === 'number' && store.max8421_sub_value < 10000000) {
-        fengdingText = `扣${store.max8421_sub_value}分封顶`;
+      // 格式化包洞条件显示
+      let conditionText = '';
+      switch (holeCondition) {
+        case 'partner_tops':
+          conditionText = '同伴顶头包洞';
+          break;
+        case 'irrelevant':
+          conditionText = '与同伴成绩无关';
+          break;
+        default:
+          conditionText = '同伴顶头包洞';
       }
 
       // 组合显示值
-      if (startText && fengdingText) {
-        displayValue = `${startText}/${fengdingText}`;
-      } else if (startText) {
-        displayValue = startText;
-      } else if (fengdingText) {
-        displayValue = fengdingText;
+      if (holeRuleType === 'no_hole') {
+        displayValue = ruleText;
       } else {
-        displayValue = '请配置扣分规则';
+        displayValue = `${ruleText}/${conditionText}`;
       }
 
       this.setData({
         displayValue: displayValue
       });
 
-      console.log('扣分规则显示值已更新:', displayValue);
+      console.log('包洞规则显示值已更新:', displayValue);
     },
 
-    // 从store初始化配置
-    initializeFromStore() {
-      // 直接访问store的属性
-      const max8421SubValue = G4PLasiStore.max8421_sub_value;
-      const koufenStart = G4PLasiStore.sub8421_config_string;
-      const partnerPunishment = G4PLasiStore.duty_config;
+    // 从Store加载配置
+    loadConfigFromStore() {
+      const config = G4PLasiStore.lasi_baodong_config || {};
 
-      if (max8421SubValue !== 10000000 || koufenStart || partnerPunishment) {
-        // 解析已保存的配置
-        this.parseStoredConfig({
-          max8421SubValue,
-          koufenStart,
-          partnerPunishment
-        });
-      }
-    },
-    // 解析存储的配置
-    parseStoredConfig(config) {
-      const { max8421SubValue, koufenStart, partnerPunishment } = config;
-      console.log('从store加载配置:', config);
+      this.setData({
+        holeRuleType: config.holeRuleType || 'no_hole',
+        holeCondition: config.holeCondition || 'partner_tops'
+      });
 
-      // 解析扣分开始条件 - 新格式:NoSub, Par+X, DoublePar+X
-      if (koufenStart) {
-        if (koufenStart === 'NoSub') {
-          this.setData({ selectedStart: 2 });
-        } else if (koufenStart?.startsWith('Par+')) {
-          this.setData({ selectedStart: 0 });
-          // 提取帕分数
-          const scoreStr = koufenStart.replace('Par+', '');
-          const score = Number.parseInt(scoreStr);
-          if (!Number.isNaN(score)) {
-            this.setData({ paScore: score });
-          }
-        } else if (koufenStart?.startsWith('DoublePar+')) {
-          this.setData({ selectedStart: 1 });
-          // 提取双帕分数
-          const scoreStr = koufenStart.replace('DoublePar+', '');
-          const score = Number.parseInt(scoreStr);
-          if (!Number.isNaN(score)) {
-            this.setData({ doubleParScore: score });
-          }
-        }
-      }
+      this.printCurrentConfig();
+    },
 
-      // 解析封顶配置 - 新格式:数字, 10000000表示不封顶
-      if (max8421SubValue === 10000000) {
-        this.setData({ selectedMax: 0 });
-      } else if (typeof max8421SubValue === 'number' && max8421SubValue < 10000000) {
-        this.setData({
-          selectedMax: 1,
-          maxSubScore: max8421SubValue
-        });
-      }
-
-      // 解析同伴惩罚配置 - 新格式:NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL
-      if (partnerPunishment) {
-        let selectedDuty = 0;
-        switch (partnerPunishment) {
-          case 'NODUTY':
-            selectedDuty = 0;
-            break;
-          case 'DUTY_CODITIONAL':
-            selectedDuty = 1;
-            break;
-          case 'DUTY_NEGATIVE':
-            selectedDuty = 2;
-            break;
-          default: {
-            // 兼容旧格式
-            const index = this.data.dutyOptions.indexOf(partnerPunishment);
-            if (index !== -1) {
-              selectedDuty = index;
-            }
-          }
-        }
-        this.setData({ selectedDuty });
-      }
-    },
-    onSelectStart(e) {
-      this.setData({ selectedStart: e.currentTarget.dataset.index });
-    },
-    onSelectMax(e) {
-      this.setData({ selectedMax: e.currentTarget.dataset.index });
-    },
-    onSelectDuty(e) {
-      this.setData({ selectedDuty: e.currentTarget.dataset.index });
-    },
-    // 帕分数改变
-    onPaScoreChange(e) {
-      const value = this.data.paScoreRange[e.detail.value];
-      this.setData({ paScore: value });
-    },
-    // 双帕分数改变
-    onDoubleParScoreChange(e) {
-      const value = this.data.doubleParScoreRange[e.detail.value];
-      this.setData({ doubleParScore: value });
-    },
-    // 封顶分数改变
-    onMaxSubScoreChange(e) {
-      const value = this.data.maxSubScoreRange[e.detail.value];
-      this.setData({ maxSubScore: value });
-    },
+    // 显示配置弹窗
     onShowConfig() {
       this.setData({ visible: true });
       // 每次显示时重新加载配置
-      this.initializeFromStore();
+      this.loadConfigFromStore();
     },
 
+    // 包洞规则类型变化
+    onHoleRuleChange(e) {
+      const { type } = e.currentTarget.dataset;
+      this.setData({
+        holeRuleType: type
+      });
+
+      this.printCurrentConfig();
+    },
+
+    // 包洞条件变化
+    onHoleConditionChange(e) {
+      const { condition } = e.currentTarget.dataset;
+      this.setData({
+        holeCondition: condition
+      });
+
+      this.printCurrentConfig();
+    },
+
+    // 取消
     onCancel() {
       this.setData({ visible: false });
+      this.loadConfigFromStore();
       this.triggerEvent('cancel');
     },
+
+    // 确定保存
     onConfirm() {
-      const { selectedStart, selectedMax, selectedDuty, paScore, doubleParScore, maxSubScore } = this.data;
+      const config = this.getCurrentConfig();
 
-      // 构建新格式的配置数据
-      let sub8421ConfigString = null;
-      switch (selectedStart) {
-        case 0:
-          sub8421ConfigString = `Par+${paScore}`;
-          break;
-        case 1:
-          sub8421ConfigString = `DoublePar+${doubleParScore}`;
-          break;
-        case 2:
-          sub8421ConfigString = 'NoSub';
-          break;
-      }
-
-      // 封顶配置改为数字格式, 10000000表示不封顶
-      const max8421SubValue = selectedMax === 0 ? 10000000 : maxSubScore;
-
-      // 同伴惩罚配置改为枚举格式
-      let duty_config = null;
-      switch (selectedDuty) {
-        case 0:
-          duty_config = 'NODUTY';
-          break;
-        case 1:
-          duty_config = 'DUTY_CODITIONAL';
-          break;
-        case 2:
-          duty_config = 'DUTY_NEGATIVE';
-          break;
-      }
-
-      // 调用store的action更新数据
-      G4PLasiStore.updateKoufenRule(max8421SubValue, sub8421ConfigString, duty_config);
-
-      console.log('扣分组件已更新store:', {
-        max8421SubValue,
-        sub8421ConfigString,
-        duty_config,
-        customValues: { paScore, doubleParScore, maxSubScore }
-      });
+      // 更新Store
+      G4PLasiStore.updateBaodongConfig(config);
 
       // 更新显示值
       this.updateDisplayValue();
@@ -250,10 +135,54 @@ Component({
       // 关闭弹窗
       this.setData({ visible: false });
 
-      // 向父组件传递事件
-      this.triggerEvent('confirm', {
-        parsedData: { max8421SubValue, sub8421ConfigString, duty_config }
+      this.printCurrentConfig();
+      this.triggerEvent('confirm', config);
+    },
+
+    // 获取当前配置
+    getCurrentConfig() {
+      const { holeRuleType, holeCondition } = this.data;
+
+      return {
+        enabled: holeRuleType !== 'no_hole',
+        holeRuleType,
+        holeCondition
+      };
+    },
+
+    // 打印当前配置
+    printCurrentConfig() {
+      const config = this.getCurrentConfig();
+      console.log('🎯 [LasiBaodong] ===== 当前包洞配置 =====');
+      console.log('🎯 [LasiBaodong] 配置对象:', config);
+      console.log('🎯 [LasiBaodong] 包洞规则类型:', config.holeRuleType);
+      console.log('🎯 [LasiBaodong] 包洞条件:', config.holeCondition);
+      console.log('🎯 [LasiBaodong] 是否启用:', config.enabled);
+      console.log('🎯 [LasiBaodong] ========================');
+    },
+
+    // 设置配置
+    setConfig(config) {
+      if (config.holeRuleType) {
+        this.setData({ holeRuleType: config.holeRuleType });
+      }
+      if (config.holeCondition) {
+        this.setData({ holeCondition: config.holeCondition });
+      }
+
+      this.updateDisplayValue();
+      this.printCurrentConfig();
+    },
+
+    // 重置配置
+    resetConfig() {
+      this.setData({
+        holeRuleType: 'no_hole',
+        holeCondition: 'partner_tops'
       });
+
+      this.updateDisplayValue();
+      this.printCurrentConfig();
     }
   }
 });

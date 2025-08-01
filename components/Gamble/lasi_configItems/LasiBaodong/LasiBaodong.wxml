@@ -1,4 +1,4 @@
-<!-- 扣分规则配置组件 -->
+<!-- 包洞规则配置组件 -->
 <!-- 显示部分 -->
 <view class="rule-section" wx:if="{{!visible}}">
   <view class="form-label">包洞规则</view>
@@ -15,99 +15,69 @@
   <view class="modal-content" catchtap>
     <view class="modal-title">包洞规则</view>
     <view class="modal-list">
-      <!-- 扣分开始条件 -->
-      <block wx:for="{{Sub8421ConfigString}}" wx:key="index">
-        <view class="modal-item" bindtap="onSelectStart" data-index="{{index}}">
-          <view class="radio-outer {{selectedStart === index ? 'checked' : ''}}">
-            <view class="radio-inner" wx:if="{{selectedStart === index}}"></view>
+      <!-- 包洞规则选项 -->
+      <view class="rule-section">
+        <view class="rule-options">
+          <view
+            class="rule-option {{holeRuleType === 'no_hole' ? 'selected' : ''}}"
+            bindtap="onHoleRuleChange"
+            data-type="no_hole"
+          >
+            <view class="radio-dot {{holeRuleType === 'no_hole' ? 'selected' : ''}}"></view>
+            <text class="rule-text">不包洞</text>
           </view>
-          <view class="option-content">
-            <text wx:if="{{index === 0}}">从帕+</text>
-            <text wx:elif="{{index === 1}}">从双帕+</text>
-            <text wx:else>{{item}}</text>
-
-            <!-- 帕分数选择器 -->
-            <picker
-              wx:if="{{index === 0 && selectedStart === 0}}"
-              class="score-picker"
-              range="{{paScoreRange}}"
-              value="{{paScore}}"
-              bindchange="onPaScoreChange"
-            >
-              <view class="picker-value">{{paScore}}</view>
-            </picker>
-            <text wx:if="{{index === 0 && selectedStart === 0}}">开始扣分</text>
-
-            <!-- 双帕分数选择器 -->
-            <picker
-              wx:if="{{index === 1 && selectedStart === 1}}"
-              class="score-picker"
-              range="{{doubleParScoreRange}}"
-              value="{{doubleParScore}}"
-              bindchange="onDoubleParScoreChange"
-            >
-              <view class="picker-value">{{doubleParScore}}</view>
-            </picker>
-            <text wx:if="{{index === 1 && selectedStart === 1}}">开始扣分</text>
-
-            <!-- 显示当前选中但未激活的选项文本 -->
-            <text wx:if="{{index === 0 && selectedStart !== 0}}">{{paScore}}开始扣分</text>
-            <text wx:if="{{index === 1 && selectedStart !== 1}}">{{doubleParScore}}开始扣分</text>
+          <view
+            class="rule-option {{holeRuleType === 'double_par_plus_1' ? 'selected' : ''}}"
+            bindtap="onHoleRuleChange"
+            data-type="double_par_plus_1"
+          >
+            <view class="radio-dot {{holeRuleType === 'double_par_plus_1' ? 'selected' : ''}}"></view>
+            <text class="rule-text">双帕+1包洞</text>
+          </view>
+          <view
+            class="rule-option {{holeRuleType === 'plus_4' ? 'selected' : ''}}"
+            bindtap="onHoleRuleChange"
+            data-type="plus_4"
+          >
+            <view class="radio-dot {{holeRuleType === 'plus_4' ? 'selected' : ''}}"></view>
+            <text class="rule-text">+4包洞</text>
+          </view>
+          <view
+            class="rule-option {{holeRuleType === 'stroke_diff_3' ? 'selected' : ''}}"
+            bindtap="onHoleRuleChange"
+            data-type="stroke_diff_3"
+          >
+            <view class="radio-dot {{holeRuleType === 'stroke_diff_3' ? 'selected' : ''}}"></view>
+            <text class="rule-text">杆差3包洞</text>
           </view>
         </view>
-      </block>
+      </view>
 
       <!-- 分割线 -->
       <view class="modal-divider"></view>
 
-      <!-- 扣分封顶 -->
-      <block wx:for="{{maxOptions}}" wx:key="index">
-        <view
-          class="modal-item {{selectedStart === 2 ? 'disabled-item' : ''}}"
-          bindtap="{{selectedStart === 2 ? '' : 'onSelectMax'}}"
-          data-index="{{index}}"
-        >
-          <view class="radio-outer {{selectedMax === index ? 'checked' : ''}}">
-            <view class="radio-inner" wx:if="{{selectedMax === index}}"></view>
+      <!-- 包洞条件 -->
+      <view class="condition-section">
+        <view class="condition-title">包洞条件</view>
+        <view class="condition-options">
+          <view
+            class="condition-option {{holeCondition === 'partner_tops' ? 'selected' : ''}}"
+            bindtap="onHoleConditionChange"
+            data-condition="partner_tops"
+          >
+            <view class="radio-dot {{holeCondition === 'partner_tops' ? 'selected' : ''}}"></view>
+            <text class="condition-text">同伴顶头包洞</text>
           </view>
-          <view class="option-content">
-            <text wx:if="{{index === 0}}">{{item}}</text>
-            <text wx:elif="{{index === 1}}">扣</text>
-
-            <!-- 封顶分数选择器 -->
-            <picker
-              wx:if="{{index === 1 && selectedMax === 1}}"
-              class="score-picker"
-              range="{{maxSubScoreRange}}"
-              value="{{maxSubScore - 1}}"
-              bindchange="onMaxSubScoreChange"
-            >
-              <view class="picker-value">{{maxSubScore}}</view>
-            </picker>
-            <text wx:if="{{index === 1 && selectedMax === 1}}">分封顶</text>
-
-            <!-- 显示当前选中但未激活的选项文本 -->
-            <text wx:if="{{index === 1 && selectedMax !== 1}}">{{maxSubScore}}分封顶</text>
+          <view
+            class="condition-option {{holeCondition === 'irrelevant' ? 'selected' : ''}}"
+            bindtap="onHoleConditionChange"
+            data-condition="irrelevant"
+          >
+            <view class="radio-dot {{holeCondition === 'irrelevant' ? 'selected' : ''}}"></view>
+            <text class="condition-text">与同伴成绩无关</text>
           </view>
         </view>
-      </block>
-
-      <!-- 分割线 -->
-      <view class="modal-divider"></view>
-
-      <!-- 同伴惩罚 -->
-      <block wx:for="{{dutyOptions}}" wx:key="index">
-        <view
-          class="modal-item {{selectedStart === 2 ? 'disabled-item' : ''}}"
-          bindtap="{{selectedStart === 2 ? '' : 'onSelectDuty'}}"
-          data-index="{{index}}"
-        >
-          <view class="radio-outer {{selectedDuty === index ? 'checked' : ''}}">
-            <view class="radio-inner" wx:if="{{selectedDuty === index}}"></view>
-          </view>
-          <text>{{item}}</text>
-        </view>
-      </block>
+      </view>
     </view>
     <view class="modal-actions">
       <button class="modal-btn cancel" bindtap="onCancel">取消</button>
