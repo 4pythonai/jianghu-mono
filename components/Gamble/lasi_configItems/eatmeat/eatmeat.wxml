@@ -66,6 +66,7 @@
           >
             <view class="picker-value">{{meatScoreValue}}</view>
           </picker>
+          <text wx:if="{{meatValueOption !== 0}}">{{meatScoreValue}}</text>
           <text>分</text>
         </view>
       </view>

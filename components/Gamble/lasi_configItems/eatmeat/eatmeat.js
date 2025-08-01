@@ -1,6 +1,25 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
-import { GOLF_SCORE_TYPES, EATMEAT_CONFIG } from '../../../../utils/gameConstants.js'
+import { GOLF_SCORE_TYPES } from '../../../../utils/gameConstants.js'
 import { reaction } from 'mobx-miniprogram'
+
+// 默认吃肉配置常量
+const DEFAULT_EATING_RANGE = {
+  "BetterThanBirdie": 4,
+  "Birdie": 2,
+  "Par": 1,
+  "WorseThanPar": 0
+};
+
+// 肉分值配置映射 - 简化逻辑
+const MEAT_VALUE_CONFIGS = {
+  MEAT_AS_1: { option: 0, score: 1, display: '肉算1分' },
+  MEAT_AS_2: { option: 0, score: 2, display: '肉算2分' },
+  MEAT_AS_3: { option: 0, score: 3, display: '肉算3分' },
+  MEAT_AS_4: { option: 0, score: 4, display: '肉算4分' },
+  MEAT_AS_5: { option: 0, score: 5, display: '肉算5分' },
+  SINGLE_DOUBLE: { option: 1, display: '分值翻倍(含奖励)' },
+  CONTINUE_DOUBLE: { option: 2, display: '分值翻倍(不含奖励)' }
+};
 
 Component({
   properties: {
@@ -13,12 +32,7 @@ Component({
     isDisabled: false, // 新增：禁用状态
 
     // 直接使用固定的默认配置
-    eating_range: {
-      "BetterThanBirdie": 4,
-      "Birdie": 2,
-      "Par": 1,
-      "WorseThanPar": 0
-    },
+    eating_range: DEFAULT_EATING_RANGE,
     eatRangeLabels: GOLF_SCORE_TYPES.LABELS,
     eatRangeKeys: GOLF_SCORE_TYPES.KEYS,
 
@@ -28,7 +42,7 @@ Component({
     meatScoreValue: 1, // 肉算x分中的x值, 默认1
 
     // 数字选择器范围 - 使用统一配置
-    eatValueRange: EATMEAT_CONFIG.RANGES.EAT_VALUE,
+    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1),
     meatScoreRange: [1, 2, 3, 4, 5], // 肉分值范围 1-5
   },
   // 组件生命周期
@@ -75,34 +89,11 @@ Component({
     // 计算显示值
     updateDisplayValue() {
       const store = G4PLasiStore;
-      let displayValue = '';
+      const config = MEAT_VALUE_CONFIGS[store.meat_value_config_string];
 
-      // 格式化吃肉规则显示 - 适配新格式
-      let meatValueText = '';
-      if (store.meat_value_config_string) {
-        if (store.meat_value_config_string?.startsWith('MEAT_AS_')) {
-          const score = store.meat_value_config_string.replace('MEAT_AS_', '');
-          meatValueText = `肉算${score}分`;
-        } else if (store.meat_value_config_string === 'SINGLE_DOUBLE') {
-          meatValueText = '分值翻倍';
-        } else if (store.meat_value_config_string === 'CONTINUE_DOUBLE') {
-          meatValueText = '分值连续翻倍';
-        } else {
-          meatValueText = store.meat_value_config_string;
-        }
-      }
+      const displayValue = config?.display || '请配置吃肉规则';
 
-      // 简化显示, 只显示主要的肉分值计算方式
-      if (meatValueText) {
-        displayValue = meatValueText;
-      } else {
-        displayValue = '请配置吃肉规则';
-      }
-
-      this.setData({
-        displayValue: displayValue
-      });
-
+      this.setData({ displayValue });
       console.log('吃肉规则显示值已更新:', displayValue);
     },
 
@@ -112,7 +103,6 @@ Component({
       const eating_range = G4PLasiStore.eating_range;
       const meatValue = G4PLasiStore.meat_value_config_string;
 
-      // 检查store中是否有有效的配置，并且不是旧的2,2,1,0配置
       const hasValidConfig = eating_range &&
         typeof eating_range === 'object' &&
         !Array.isArray(eating_range) &&
@@ -126,18 +116,11 @@ Component({
           meatValue
         });
       } else {
-        // 如果没有有效配置或检测到旧配置，使用默认值并保存到store
-        const defaultEatingRange = {
-          "BetterThanBirdie": 4,
-          "Birdie": 2,
-          "Par": 1,
-          "WorseThanPar": 0
-        };
-        this.setData({ eating_range: defaultEatingRange });
+        this.setData({ eating_range: DEFAULT_EATING_RANGE });
 
         // 保存默认配置到store
-        G4PLasiStore.updateEatmeatRule(defaultEatingRange, 'MEAT_AS_1', 10000000);
-        console.log('使用默认吃肉配置:', defaultEatingRange);
+        G4PLasiStore.updateEatmeatRule(DEFAULT_EATING_RANGE, 'MEAT_AS_1', 10000000);
+        console.log('使用默认吃肉配置:', DEFAULT_EATING_RANGE);
       }
     },
     // 解析存储的配置
@@ -145,25 +128,20 @@ Component({
       const { eating_range, meatValue } = config;
       console.log('从store加载吃肉配置:', config);
 
-      // 解析吃肉数量配置 - 新格式:JSON对象
+      // 解析吃肉数量配置
       if (eating_range && typeof eating_range === 'object' && !Array.isArray(eating_range)) {
         this.setData({ eating_range });
       }
 
-      // 解析肉分值计算方式 - 新格式:MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE
+      // 解析肉分值计算方式
       if (meatValue) {
-        let meatValueOption = 0;
-        if (meatValue?.startsWith('MEAT_AS_')) {
-          meatValueOption = 0;
-          // 解析肉分值
-          const score = Number.parseInt(meatValue.replace('MEAT_AS_', ''));
-          this.setData({ meatScoreValue: score || 1 });
-        } else if (meatValue === 'SINGLE_DOUBLE') {
-          meatValueOption = 1;
-        } else if (meatValue === 'CONTINUE_DOUBLE') {
-          meatValueOption = 2;
+        const config = MEAT_VALUE_CONFIGS[meatValue];
+        if (config) {
+          this.setData({
+            meatValueOption: config.option,
+            meatScoreValue: config.score || 1
+          });
         }
-        this.setData({ meatValueOption });
       }
     },
     // 修改为适应新的JSON格式
@@ -216,34 +194,25 @@ Component({
 
     onConfirm() {
       const data = this.data;
+      const eating_range = data.eating_range;
 
-      // 解析配置数据 - 使用新的JSON格式
-      const eating_range = data.eating_range; // 吃肉得分配对, JSON格式
-
-      // 肉分值计算方式改为新格式
-      let meatValueConfig = null;
-      switch (data.meatValueOption) {
-        case 0:
-          meatValueConfig = `MEAT_AS_${data.meatScoreValue}`; // 动态生成MEAT_AS_X格式
-          break;
-        case 1:
-          meatValueConfig = 'SINGLE_DOUBLE';
-          break;
-        case 2:
-          meatValueConfig = 'CONTINUE_DOUBLE';
-          break;
+      // 根据选项生成配置字符串
+      let meatValueConfig;
+      if (data.meatValueOption === 0) {
+        meatValueConfig = `MEAT_AS_${data.meatScoreValue}`;
+      } else if (data.meatValueOption === 1) {
+        meatValueConfig = 'SINGLE_DOUBLE';
+      } else {
+        meatValueConfig = 'CONTINUE_DOUBLE';
       }
 
-      // 吃肉封顶改为数字格式, 10000000表示不封顶
-      const meat_max_value = 10000000; // 固定为不封顶
+      const meat_max_value = 10000000; // 不封顶
 
-      // 调用store的action更新数据
+      // 更新store
       G4PLasiStore.updateEatmeatRule(eating_range, meatValueConfig, meat_max_value);
 
-      // 更新显示值
+      // 更新显示值并关闭弹窗
       this.updateDisplayValue();
-
-      // 关闭弹窗
       this.setData({ visible: false });
 
       // 向父组件传递事件
