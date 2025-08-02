@@ -1,3 +1,6 @@
+/* 引入公共按钮样式 */
+/* @import "../../../../../../styles/buttons.wxss"; */
+
 .juanguo-popup {
 	position: fixed;
 	left: 0;
@@ -120,14 +123,6 @@
 /* 总费用输入框样式 */
 .input-inline[placeholder] {
 	color: #bbb;
-}
-
-.footer {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	gap: 32rpx;
-	margin-top: 32rpx;
 }
 
 /* 按钮样式已迁移到公共样式文件 */

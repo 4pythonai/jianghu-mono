@@ -1,4 +1,4 @@
-<view class="juanguo-popup">
+<view class="juanguo-popup" bindtap="close">
   <view class="juanguo-content" catchtap="noop">
     <view class="panel-title">捐锅设置(以最后一次为准)</view>
     <!-- 选择捐锅的游戏 -->
@@ -73,9 +73,9 @@
       </radio-group>
     </view>
     <!-- 底部按钮 -->
-    <view class="footer">
-      <button class="btn btn-cancel" bindtap="close">取消</button>
-      <button class="btn btn-confirm" bindtap="onConfirm">确定</button>
+    <view class="kickoff-footer">
+      <button class="kickoff-btn-cancel" bindtap="close">取消</button>
+      <button class="kickoff-btn-confirm" bindtap="onConfirm">确定</button>
     </view>
   </view>
 </view>

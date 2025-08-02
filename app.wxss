@@ -1,6 +1,7 @@
 /**app.wxss**/
 @import "./styles/iconfont.wxss";
-@import "./styles/buttons.wxss";
+@import "/styles/buttons.wxss";
+/* @import "./styles/modal.wxss"; */
 
 page {
 	--theme-color: #109d58; /* 主题绿色 */
@@ -26,7 +27,6 @@ page {
 }
 
 .wx-tabbar-item .wx-tabbar-icon {
-	font-family: "iconfont" !important;
 	font-size: 20px !important;
 }
 

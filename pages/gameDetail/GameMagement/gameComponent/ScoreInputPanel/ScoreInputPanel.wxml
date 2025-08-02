@@ -2,7 +2,6 @@
 
 <view wx:if="{{isVisible}}" class="modal-mask" bindtap="handleMaskClick">
   <view class="panel-container" catch:tap="preventBubble">
-    <!-- 上方洞信息 -->
     <view class="hole-info-bar">
       <view class="hole-name-container">
         <view class="hole-name-main">{{currentHole.holename}}</view>
@@ -17,9 +16,7 @@
       </view>
     </view>
 
-    <!-- 主体内容 -->
     <view class="main-content">
-      <!-- 左侧玩家列表 -->
       <view class="player-list-container">
         <scroll-view class="player-list-scroll" scroll-y>
           <view
@@ -35,7 +32,6 @@
         </scroll-view>
       </view>
 
-      <!-- 右侧计分区域 -->
       <view class="scoring-area-container">
         <view class="scoring-area">
           <view class="score-row">
@@ -111,7 +107,6 @@
             </view>
           </view>
 
-          <!-- 开球方向 -->
           <view class="tee-shot-options">
             <view class="shot-option active">
               <view class="shot-icon-wrapper center"></view>
@@ -137,15 +132,15 @@
         </view>
       </view>
     </view>
+  </view>
 
-    <!-- 底部按钮 -->
-    <view class="modal-actions">
-      <button class="modal-btn cancel" bind:tap="handleClear" disabled="{{isSaving}}">清除</button>
-      <button
-        class="modal-btn confirm"
-        bind:tap="handleConfirm"
-        disabled="{{isSaving}}"
-      >{{isSaving ? '保存中...' : '确定'}}</button>
-    </view>
+  <!-- 底部按钮 -->
+  <view class="modal-actions">
+    <button class="modal-btn cancel" bind:tap="handleClear" disabled="{{isSaving}}">清除</button>
+    <button
+      class="modal-btn confirm"
+      bind:tap="handleConfirm"
+      disabled="{{isSaving}}"
+    >{{isSaving ? '保存中...' : '确定'}}</button>
   </view>
 </view>
