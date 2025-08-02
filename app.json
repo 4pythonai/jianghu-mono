@@ -1,5 +1,6 @@
 {
 	"pages": [
+		"pages/button-test/button-test",
 		"pages/live/live",
 		"pages/events/events",
 		"pages/community/community",

@@ -1,70 +1,180 @@
-# 高尔夫小程序 - 四人拉丝功能
+# 高尔夫小程序 - 按钮样式系统
 
 ## 项目概述
-这是一个微信小程序项目，主要功能是高尔夫比赛管理和规则配置。最近新增了"四人拉丝"功能，与现有的"8421"功能保持平行结构。
 
-## 四人拉丝功能实现
+这是一个微信小程序项目，专门为高尔夫爱好者设计。项目已实现统一的按钮样式系统，提供一致的用户体验。
 
-### 功能描述
-四人拉丝是高尔夫比赛中的一种特殊规则，当玩家得分满足特定条件时，会触发额外的比赛机制。
+## 按钮样式系统
 
-### 文件结构
+### 🎯 系统特点
+
+- **统一设计**：所有按钮使用统一的设计语言
+- **模块化**：支持多种按钮类型和尺寸
+- **响应式**：适配不同屏幕尺寸
+- **易维护**：集中管理，便于修改和扩展
+
+### 📁 文件结构
+
 ```
-pages/ruleConfig/4player/4p-lasi/
-├── 4p-lasi.js          # 页面逻辑
-├── 4p-lasi.wxml        # 页面结构
-├── 4p-lasi.wxss        # 页面样式
-└── 4p-lasi.json        # 页面配置
+styles/
+├── buttons.wxss          # 公共按钮样式系统
+├── buttons-usage.md      # 使用说明文档
+└── iconfont.wxss         # 图标字体样式
 
-stores/gamble/4p/4p-lasi/
-└── gamble_4P_lasi_Store.js  # 状态管理
-
-components/Gamble/8421_configItems/drawlasiConfig/
-├── drawlasiConfig.js   # 拉丝配置组件
-├── drawlasiConfig.wxml # 组件结构
-├── drawlasiConfig.wxss # 组件样式
-└── drawlasiConfig.json # 组件配置
+pages/
+└── button-test/          # 按钮样式测试页面
+    ├── button-test.wxml
+    ├── button-test.wxss
+    ├── button-test.js
+    └── button-test.json
 ```
 
-### 主要功能
-1. **规则配置页面**: 用户可以配置四人拉丝的具体规则
-2. **拉丝规则选项**: 
-   - 无拉丝
-   - 得分打平
-   - 得分1-5分以内
-3. **状态管理**: 使用MobX进行状态管理
-4. **数据持久化**: 支持保存到"我的规则"
+### 🎨 按钮类型
 
-### 路由配置
-- 页面路径: `/pages/ruleConfig/4player/4p-lasi/4p-lasi`
-- 在`app.json`中已注册
-- 在`SysRule`组件中已配置跳转逻辑
+#### 基础按钮
+- `btn-primary` - 主要按钮（绿色主题）
+- `btn-secondary` - 次要按钮（灰色边框）
+- `btn-cancel` - 取消按钮
+- `btn-confirm` - 确认按钮（蓝色）
+- `btn-danger` - 危险按钮（红色）
+- `btn-wechat` - 微信风格按钮
 
-### 使用方法
-1. 在规则页面点击"四人拉丝"卡片
-2. 进入配置页面设置规则名称
-3. 配置拉丝触发条件
-4. 配置扣分规则和吃肉规则
-5. 点击"添加至我的规则"保存
+#### 特殊按钮
+- `btn-operation` - 操作按钮（深色背景）
+- `btn-back` - 返回按钮
+- `btn-retry` - 重试按钮
+- `btn-circle` - 圆形按钮
 
-### 技术特点
-- 使用微信小程序原生框架
-- 采用MobX进行状态管理
-- 组件化开发，代码复用性高
+#### 按钮尺寸
+- `btn-small` - 小按钮 (60rpx)
+- `btn-medium` - 中等按钮 (80rpx) - 默认
+- `btn-large` - 大按钮 (100rpx)
+
+#### 按钮状态
+- `disabled` - 禁用状态
+- `loading` - 加载状态
+
+#### 按钮布局
+- `btn-block` - 全宽按钮
+- `btn-group-bottom` - 底部按钮组
+- `btn-group-horizontal` - 水平按钮组
+- `btn-group-vertical` - 垂直按钮组
+
+### 🚀 快速开始
+
+#### 1. 基础用法
+
+```xml
+<!-- 基础按钮 -->
+<button class="btn btn-primary">确认</button>
+
+<!-- 带尺寸的按钮 -->
+<button class="btn btn-medium btn-primary">中等按钮</button>
+
+<!-- 带状态的按钮 -->
+<button class="btn btn-primary loading">加载中...</button>
+```
+
+#### 2. 按钮组
+
+```xml
+<!-- 底部按钮组 -->
+<view class="btn-group-bottom">
+  <button class="btn btn-cancel">取消</button>
+  <button class="btn btn-confirm">确定</button>
+</view>
+```
+
+#### 3. 特殊按钮
+
+```xml
+<!-- 带emoji的按钮 -->
+<button class="btn btn-primary btn-emoji">
+  <text class="emoji">🎮</text>
+  <text>添加游戏</text>
+</button>
+
+<!-- 圆形操作按钮 -->
+<button class="btn btn-operation btn-circle">
+  <text>+</text>
+</button>
+```
+
+### 📖 详细文档
+
+查看 `styles/buttons-usage.md` 获取完整的使用指南和迁移说明。
+
+### 🧪 测试页面
+
+访问 `pages/button-test/button-test` 页面查看所有按钮样式的效果。
+
+### 🔧 自定义样式
+
+如需自定义按钮样式，可以：
+
+1. **覆盖现有样式**
+```css
+.btn-primary {
+  background: linear-gradient(135deg, #your-color, #your-color);
+}
+```
+
+2. **创建新按钮类型**
+```css
+.btn-custom {
+  background-color: #your-color;
+  color: #your-text-color;
+}
+```
+
+### 📱 兼容性
+
+- ✅ 微信小程序
+- ✅ 支持 rpx 单位
+- ✅ 响应式设计
+- ✅ 无障碍访问
+
+### 🎯 最佳实践
+
+1. **类名顺序**：基础类 → 尺寸类 → 类型类 → 状态类
+2. **语义化命名**：使用有意义的类名组合
+3. **避免重复**：优先使用公共样式，避免重复定义
+4. **保持一致性**：在整个项目中保持按钮样式的一致性
+
+### 🔄 迁移指南
+
+项目中的旧按钮样式可以逐步迁移到新的公共样式系统：
+
+1. 确认/取消按钮组 → `btn-group-bottom`
+2. 主要操作按钮 → `btn btn-primary`
+3. 带emoji的按钮 → `btn btn-emoji`
+4. 操作按钮 → `btn btn-operation btn-circle`
+
+**详细迁移指南请查看：** `styles/migration-guide.md`
+
+### 📈 性能优化
+
+- 样式文件全局引入，避免重复加载
+- 使用CSS3特性，确保良好性能
 - 响应式设计，适配不同设备
-- 遵循微信小程序设计规范
 
-## 开发规范
-- 使用可选链操作符 `?.`
-- 使用模板字符串而非字符串拼接
-- API调用统一使用POST方法
-- 不支持CSS伪元素(::before/::after)
-- WXSS calc写法: `height: ~"calc(100vh - 80rpx)"`
+### 🤝 贡献指南
 
-## 更新日志
-- 2024年: 新增四人拉丝功能，与8421功能保持平行结构
-- 2024年: 修复四人拉丝吃肉功能，添加缺失的store属性和方法
-  - 在 `G4PLasiStore` 中添加 `meat_value_config_string` 和 `meat_max_value` 属性
-  - 添加 `updateEatmeatRule` 方法，与8421 store保持一致
-  - 修复 `parseInt` 为 `Number.parseInt` 的linter错误
+1. 遵循现有的样式规范
+2. 新增按钮类型时更新文档
+3. 保持向后兼容性
+4. 测试在不同设备上的显示效果
+
+---
+
+## 项目信息
+
+- **版本**：1.0.0
+- **更新时间**：2024年
+- **维护者**：开发团队
+- **许可证**：MIT
+
+## 联系方式
+
+如有问题或建议，请联系开发团队。
 

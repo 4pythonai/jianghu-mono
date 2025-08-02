@@ -1,5 +1,6 @@
 /**app.wxss**/
 @import "./styles/iconfont.wxss";
+@import "./styles/buttons.wxss";
 
 page {
 	--theme-color: #109d58; /* 主题绿色 */
