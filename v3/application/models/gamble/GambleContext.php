@@ -25,14 +25,14 @@ class GambleContext extends CI_Model {
     public $redBlueConfig;
     public $dutyConfig;
     public $ranking4TieResolveConfig;
-    public $draw8421_config;
-    public $val8421_config;
-    public $sub8421_config_string;
-    public $max8421_sub_value;
-    public $eating_range;
+    public $drawConfig;
+    public $playerIndicatorConfig;
+    public $deductionConfig;
+    public $deductionMaxValue;
+    public $eatingRange;
     public $stroking_config;
-    public $meat_value_config_string;
-    public $meat_max_value;
+    public $meatValueConfig;
+    public $meatMaxValue;
     public $holePlayList;
     public $kickConfig;
     public $donationCfg;
@@ -72,14 +72,14 @@ class GambleContext extends CI_Model {
         'redBlueConfig' => 'getRedBlueConfig',
         'dutyConfig' => 'getDutyConfig',
         'ranking4TieResolveConfig' => 'getRanking4TieResolveConfig',
-        'draw8421_config' => 'getDraw8421Config',
-        'val8421_config' => 'getVal8421Config',
-        'sub8421_config_string' => 'getSub8421ConfigString',
-        'max8421_sub_value' => 'getMax8421SubValue',
-        'eating_range' => 'getEatingRange',
+        'drawConfig' => 'getDrawConfig',
+        'playerIndicatorConfig' => 'getPlayerIndicatorConfig',
+        'deductionConfig' => 'getDeductionConfig',
+        'deductionMaxValue' => 'getDeductionMaxValue',
+        'eatingRange' => 'getEatingRange',
         'stroking_config' => 'getStrokingConfig',
-        'meat_value_config_string' => 'getMeatValueConfigString',
-        'meat_max_value' => 'getMeatMaxValue',
+        'meatValueConfig' => 'getMeatValueConfig',
+        'meatMaxValue' => 'getMeatMaxValue',
         'holePlayList' => 'getHolePlayList',
         'kickConfig' => 'getKickConfig',
         'donationCfg' => 'getDonationCfg',

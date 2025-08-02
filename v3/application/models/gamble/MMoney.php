@@ -80,7 +80,7 @@ class MMoney extends CI_Model {
             return true;
         }
 
-        if ($dutyConfig == "DUTY_CODITIONAL") {
+        if ($dutyConfig == "DUTY_DINGTOU") {
             // 找到输家里面成绩最好的人（computedScore最小）
             $bestFailerScore = min($failers[0]['computedScore'], $failers[1]['computedScore']);
             // 找到赢家里面成绩最好的人（computedScore最小）

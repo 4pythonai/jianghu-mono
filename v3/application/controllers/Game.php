@@ -212,10 +212,10 @@ class Game extends MY_Controller {
         $this->load->model('gamble/MDonation');
 
 
-        $row = $this->db->get_where('t_gamble_runtime', ['gameid' => $game_id, 'playersNumber' => 4])->row_array();
+        $row = $this->db->get_where('t_gamble_x_runtime', ['gameid' => $game_id, 'playersNumber' => 4])->row_array();
         if ($row) {
             $gambleid = $row['id'];
-            $row = $this->db->get_where('t_gamble_runtime', ['id' => $gambleid])->row_array();
+            $row = $this->db->get_where('t_gamble_x_runtime', ['id' => $gambleid])->row_array();
             $cfg = [
                 'gambleSysName' => $row['gambleSysName'],
                 'userRuleId' => $row['userRuleId'],

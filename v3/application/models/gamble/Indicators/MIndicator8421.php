@@ -100,13 +100,13 @@ class MIndicator8421 extends CI_Model {
             return $subVal;
         }
 
-        // 如果分数等于阈值，扣1分
+        // 如果分数等于阈值, 扣1分
         if ($score == $threshold) {
             $subVal = -1;
             return $subVal;
         }
 
-        // 如果分数大于阈值，除了基础扣1分，每超过1分再扣1分
+        // 如果分数大于阈值 , 除了基础扣1分 , 每超过1分再扣1分
         $overScore = $score - $threshold;
         $subVal = -1 - $overScore;
         if ($subVal < -1 * $maxSubValue) {

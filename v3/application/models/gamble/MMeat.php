@@ -73,8 +73,8 @@ class MMeat extends CI_Model {
 
 
         $points = abs($hole['points_before_kick']); // 不要使用踢完以后的 points
-        $meat_value_config = $context->meat_value_config_string;
-        $meat_max_value = $context->meat_max_value;
+        $meat_value_config = $context->meatValueConfig;
+        $meatMaxValue = $context->meatMaxValue;
 
         // 与封顶无关
         if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
@@ -82,7 +82,7 @@ class MMeat extends CI_Model {
         }
 
         if ($meat_value_config === 'SINGLE_DOUBLE') {
-            return $this->calculateMeatMoney_SINGLE_DOUBLE($context, $hole, $eaten_meat_blocks, $points, $meat_max_value);
+            return $this->calculateMeatMoney_SINGLE_DOUBLE($context, $hole, $eaten_meat_blocks, $points, $meatMaxValue);
         }
 
         // 与封顶无关
@@ -146,7 +146,7 @@ class MMeat extends CI_Model {
      * 
      *    m1*basepoints +m2*basepoints +m3*basepoints +m4*basepoints 
      */
-    private function calculateMeatMoney_SINGLE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $raw_points, $meat_max_value) {
+    private function calculateMeatMoney_SINGLE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $raw_points, $meatMaxValue) {
 
         // debug(" 肉:🟥🟥🟥🟥 ", $eaten_meat_blocks);
         // debug(" 肉:🟥 raw_points  ", $raw_points);
@@ -161,7 +161,7 @@ class MMeat extends CI_Model {
             $meatHoleMultiplier = $this->findCurrentHoleMultiplier($context, $meat['hole_index']);
             $one_meat_money = $raw_points * $meatHoleMultiplier;
 
-            $one_meat_money = min($one_meat_money, $meat_max_value);
+            $one_meat_money = min($one_meat_money, $meatMaxValue);
             $this->addDebug($currentHole, " raw_points= { $raw_points } 🧲吃了 1 块肉:肉洞的踢一脚导致,使用 multiplier: {$meatHoleMultiplier},得到: {$one_meat_money}");
             $metal_total += $one_meat_money;
         }
@@ -258,7 +258,7 @@ class MMeat extends CI_Model {
      * @return int 能吃几块肉
      */
     private function determineEatingCount($winner_performance, $context, $available_meat_count, &$hole) {
-        $meat_value_config = $context->meat_value_config_string;
+        $meat_value_config = $context->meatValueConfig;
 
         if ($meat_value_config === 'CONTINUE_DOUBLE') {
             // CONTINUE_DOUBLE模式：直接吃掉所有可用的肉
@@ -268,13 +268,13 @@ class MMeat extends CI_Model {
 
         if ($meat_value_config === 'SINGLE_DOUBLE') {
             // SINGLE_DOUBLE模式：根据表现决定能吃几块肉
-            $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eating_range);
+            $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eatingRange);
             $this->addDebug($hole, "吃肉分析: SINGLE_DOUBLE模式，根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉");
         }
 
         if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
             // MEAT_AS_X模式：根据表现决定能吃几块肉
-            $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eating_range);
+            $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eatingRange);
             $this->addDebug($hole, "吃肉分析: MEAT_AS_X模式，根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉");
         }
 
@@ -321,10 +321,10 @@ class MMeat extends CI_Model {
     /**
      * 根据赢家表现计算能吃几块肉
      * @param string $winner_performance 赢家表现 (如 'Birdie', 'Par', 'Par+1' 等)
-     * @param array $eating_range 配置信息
+     * @param array $eatingRange 配置信息
      * @return int 能吃的肉数量
      */
-    private function calculateEatingCountByPerformance($winner_performance, $eating_range) {
+    private function calculateEatingCountByPerformance($winner_performance, $eatingRange) {
         // 解析表现字符串，获取杆数差值
         $diff = $this->parsePerformanceToDiff($winner_performance);
 
@@ -332,7 +332,7 @@ class MMeat extends CI_Model {
         $performance_level = $this->getPerformanceByDiff($diff);
 
         // 根据表现等级返回吃肉数量
-        return $this->getEatingCountByPerformance($performance_level, $eating_range);
+        return $this->getEatingCountByPerformance($performance_level, $eatingRange);
     }
 
     /**
@@ -359,22 +359,22 @@ class MMeat extends CI_Model {
     /**
      * 根据表现等级获取吃肉数量
      * @param string $performance_level 表现等级
-     * @param array $eating_range 配置信息
+     * @param array $eatingRange 配置信息
      * @return int 能吃的肉数量
      */
-    private function getEatingCountByPerformance($performance_level, $eating_range) {
+    private function getEatingCountByPerformance($performance_level, $eatingRange) {
         switch ($performance_level) {
             case 'Eagle':
-                return $eating_range['BetterThanBirdie'] ?? 2;
+                return $eatingRange['BetterThanBirdie'] ?? 2;
             case 'Birdie':
-                return $eating_range['Birdie'] ?? 2;
+                return $eatingRange['Birdie'] ?? 2;
             case 'Par':
-                return $eating_range['Par'] ?? 1;
+                return $eatingRange['Par'] ?? 1;
             case 'Par+1':
-                return $eating_range['Par'] ?? 1; // Bogey算作Par水平
+                return $eatingRange['Par'] ?? 1; // Bogey算作Par水平
             default:
                 // Par+2及以上算作比Par更差的成绩
-                return $eating_range['WorseThanPar'] ?? 0;
+                return $eatingRange['WorseThanPar'] ?? 0;
         }
     }
 

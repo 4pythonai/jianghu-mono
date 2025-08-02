@@ -34,9 +34,9 @@ class MIndicator extends CI_Model {
      * @param array $configs 8421配置
      */
     private function calculate8421Indicators(&$hole, $context) {
-        $val8421_config = $context->val8421_config;
-        $sub8421ConfigString =  $context->sub8421_config_string;
-        $max8421SubValue = $context->max8421_sub_value;
+        $playerIndicatorConfig = $context->playerIndicatorConfig;
+        $sub8421ConfigString =  $context->deductionConfig;
+        $max8421SubValue = $context->deductionMaxValue;
 
         $indicatorBlue = 0;
         $indicatorRed = 0;
@@ -44,7 +44,7 @@ class MIndicator extends CI_Model {
 
         // 处理红队
         foreach ($hole['red'] as $userid) {
-            $userAddConfigPair = $val8421_config[$userid];
+            $userAddConfigPair = $playerIndicatorConfig[$userid];
             $_8421_add_sub_max_config = [
                 'add' => $userAddConfigPair,
                 'sub' => $sub8421ConfigString,
@@ -70,7 +70,7 @@ class MIndicator extends CI_Model {
 
         // 处理蓝队
         foreach ($hole['blue'] as $userid) {
-            $userAddConfigPair = $val8421_config[$userid];
+            $userAddConfigPair = $playerIndicatorConfig[$userid];
             $_8421_add_sub_max_config = [
                 'add' => $userAddConfigPair,
                 'sub' => $sub8421ConfigString,
@@ -129,7 +129,7 @@ class MIndicator extends CI_Model {
         $indicatorRed = $hole['indicatorRed'];
 
         // 获取顶洞配置
-        $drawConfig = $context->draw8421_config;
+        $drawConfig = $context->drawConfig;
 
         // 判断是否为顶洞
         $isDraw = $this->checkDraw($indicatorBlue, $indicatorRed, $drawConfig);

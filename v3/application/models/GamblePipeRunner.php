@@ -34,10 +34,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $holePlayList; // 洞序配置
 
     private $useful_holes; // 参与计算的球洞范围内已经记分完毕的
-    private $eating_range; // 吃肉范围
+    private $eatingRange; // 吃肉范围
     private $stroking_config; // 让杆配置
-    private $meat_value_config_string; // 吃肉配置
-    private $meat_max_value; // 吃肉封顶,
+    private $meatValueConfig; // 吃肉配置
+    private $meatMaxValue; // 吃肉封顶,
     private $kickConfig; // 踢球配置
     private $donationCfg; // 捐赠配置
     private $bigWind; // 大风配置
@@ -74,16 +74,16 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
         $this->attenders = json_decode($_config_row['attenders'], true);
         $this->bootStrapOrder = json_decode($_config_row['bootstrap_order'], true);
-        $this->dutyConfig = $_config_row['duty_config'];
+        $this->dutyConfig = $_config_row['dutyConfig'];
         $this->ranking4TieResolveConfig = $_config_row['ranking_tie_resolve_config'];
-        $this->draw8421_config = $_config_row['draw8421_config'];
-        $this->val8421_config = json_decode($_config_row['val8421_config'], true);
-        $this->sub8421_config_string = $_config_row['sub8421_config_string'];
-        $this->max8421_sub_value = $_config_row['max8421_sub_value'];
-        $this->eating_range = json_decode($_config_row['eating_range'], true);
+        $this->drawConfig = $_config_row['drawConfig'];
+        $this->playerIndicatorConfig = json_decode($_config_row['playerIndicatorConfig'], true);
+        $this->deductionConfig = $_config_row['deductionConfig'];
+        $this->deductionMaxValue = $_config_row['deductionMaxValue'];
+        $this->eatingRange = json_decode($_config_row['eatingRange'], true);
         $this->stroking_config =  json_decode($_config_row['stroking_config'], true);
-        $this->meat_value_config_string = $_config_row['meat_value_config_string'];
-        $this->meat_max_value = $_config_row['meat_max_value'];
+        $this->meatValueConfig = $_config_row['meatValueConfig'];
+        $this->meatMaxValue = $_config_row['meatMaxValue'];
         $this->startHoleindex = $_config_row['startHoleindex'];
         $this->endHoleindex = $_config_row['endHoleindex'];
         $this->redBlueConfig = $_config_row['red_blue_config'];
@@ -170,24 +170,25 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $tmp = [
             'gameid' => $this->context->gameid,
             'gambleid' => $this->context->gambleid,
+            'deductionConfig' => $this->context->deductionConfig,
             'groupid' => $this->context->groupid,
             'userid' => $this->context->userid,
             'gambleSysName' => $this->context->gambleSysName,
             'redBlueConfig' => $this->context->redBlueConfig,
             'ranking4TieResolveConfig' => $this->context->ranking4TieResolveConfig,
-            'draw8421_config' => $this->context->draw8421_config,
+            'drawConfig' => $this->context->drawConfig,
             // 'holes' => $this->context->holes,
             'startHoleindex' => $this->context->startHoleindex,
             'endHoleindex' => $this->context->endHoleindex,
             'meat_pool' => $this->context->meat_pool,
             'donation_pool' => $this->context->donation_pool,
             // 'scores' => $this->context->scores,
-            'meat_value_config_string' => $this->context->meat_value_config_string,
-            'meat_max_value' => $this->context->meat_max_value,
+            'meatValueConfig' => $this->context->meatValueConfig,
+            'meatMaxValue' => $this->context->meatMaxValue,
             'attenders' => $this->context->attenders,
             'bootStrapOrder' => $this->context->bootStrapOrder,
             'dutyConfig' => $this->context->dutyConfig,
-            'eating_range' => $this->context->eating_range,
+            'eatingRange' => $this->context->eatingRange,
             'kickConfig' => $this->context->kickConfig,
             'donationCfg' => $this->context->donationCfg,
             'bigWind' => $this->context->bigWind,
@@ -274,32 +275,32 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     }
 
 
-    public function getDraw8421Config() {
-        return $this->draw8421_config;
+    public function getDrawConfig() {
+        return $this->drawConfig;
     }
 
-    public function getVal8421Config() {
-        return $this->val8421_config;
+    public function getPlayerIndicatorConfig() {
+        return $this->playerIndicatorConfig;
     }
 
-    public function getSub8421ConfigString() {
-        return $this->sub8421_config_string;
+    public function getDeductionConfig() {
+        return $this->deductionConfig;
     }
 
-    public function getMax8421SubValue() {
-        return $this->max8421_sub_value;
+    public function getDeductionMaxValue() {
+        return $this->deductionMaxValue;
     }
 
     public function getEatingRange() {
-        return $this->eating_range;
+        return $this->eatingRange;
     }
 
-    public function getMeatValueConfigString() {
-        return $this->meat_value_config_string;
+    public function getMeatValueConfig() {
+        return $this->meatValueConfig;
     }
 
     public function getMeatMaxValue() {
-        return $this->meat_max_value;
+        return $this->meatMaxValue;
     }
 
     public function getHolePlayList() {

@@ -56,7 +56,7 @@ class Gamble extends MY_Controller {
                 'gameid' => $gameid,
                 'abstract' => $abstract,
                 'groupid' => $groupid,
-                'val8421_config' => isset($json_paras['val8421_config']) ? json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE) : null,
+                'playerIndicatorConfig' => isset($json_paras['playerIndicatorConfig']) ? json_encode($json_paras['playerIndicatorConfig'], JSON_UNESCAPED_UNICODE) : null,
                 'userRuleId' => $userRuleId,
                 'gambleSysName' => $json_paras['gambleSysName'] ?? null,
                 'gambleUserName' => $json_paras['gambleUserName'] ?? null,
@@ -72,7 +72,7 @@ class Gamble extends MY_Controller {
 
             // 插入数据
 
-            $this->db->insert('t_gamble_runtime', $insert_data);
+            $this->db->insert('t_gamble_x_runtime', $insert_data);
             $insert_id = $this->db->insert_id();
 
 
@@ -107,12 +107,12 @@ class Gamble extends MY_Controller {
             $bootstrap_order = $json_paras['bootstrap_order'] ?? null;
         }
         $json_paras['bootstrap_order'] = $bootstrap_order;
-        if (isset($json_paras['val8421_config']) && is_array($json_paras['val8421_config'])) {
-            $val8421_config = json_encode($json_paras['val8421_config'], JSON_UNESCAPED_UNICODE);
+        if (isset($json_paras['playerIndicatorConfig']) && is_array($json_paras['playerIndicatorConfig'])) {
+            $playerIndicatorConfig = json_encode($json_paras['playerIndicatorConfig'], JSON_UNESCAPED_UNICODE);
         } else {
-            $val8421_config = $json_paras['val8421_config'] ?? null;
+            $playerIndicatorConfig = $json_paras['playerIndicatorConfig'] ?? null;
         }
-        $json_paras['val8421_config'] = $val8421_config;
+        $json_paras['playerIndicatorConfig'] = $playerIndicatorConfig;
 
 
         $startHoleindex = $json_paras['holePlayList'][0]['hindex'];
@@ -137,7 +137,7 @@ class Gamble extends MY_Controller {
             'red_blue_config' => $json_paras['red_blue_config'],
             'bootstrap_order' => $json_paras['bootstrap_order'],
             'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'],
-            'val8421_config' => $json_paras['val8421_config'],
+            'playerIndicatorConfig' => $json_paras['playerIndicatorConfig'],
             'holePlayList' => $json_paras['holePlayList'],
             'startHoleindex' => $startHoleindex,
             'endHoleindex' => $endHoleindex,
@@ -147,7 +147,7 @@ class Gamble extends MY_Controller {
 
         // 更新数据库
         $this->db->where('id', $json_paras['id']);
-        $result = $this->db->update('t_gamble_runtime', $update_data);
+        $result = $this->db->update('t_gamble_x_runtime', $update_data);
 
         if ($result) {
             $ret = [];
@@ -178,17 +178,17 @@ class Gamble extends MY_Controller {
                 'gambleSysName' => $gamblesysname,
                 'gambleUserName' => $json_paras['gambleUserName'] ?? $json_paras['user_rulename'] ?? null,
                 'playersNumber' => $json_paras['playersNumber'] ?? 4,
-                'sub8421_config_string' => $json_paras['sub8421_config_string'] ?? 'Par+4',
-                'max8421_sub_value' => $json_paras['max8421_sub_value'] ?? 10000000,
-                'draw8421_config' => $json_paras['draw8421_config'] ?? 'Diff_2',
-                'eating_range' => isset($json_paras['eating_range']) ? json_encode($json_paras['eating_range'], JSON_UNESCAPED_UNICODE) : null,
-                'meat_value_config_string' => $json_paras['meat_value_config_string'] ?? 'MEAT_AS_2',
-                'meat_max_value' => $json_paras['meat_max_value'] ?? 1000000,
-                'duty_config' => $json_paras['duty_config'] ?? 'DUTY_CODITIONAL'
+                'deductionConfig' => $json_paras['deductionConfig'] ?? 'Par+4',
+                'deductionMaxValue' => $json_paras['deductionMaxValue'] ?? 10000000,
+                'drawConfig' => $json_paras['drawConfig'] ?? 'Diff_2',
+                'eatingRange' => isset($json_paras['eatingRange']) ? json_encode($json_paras['eatingRange'], JSON_UNESCAPED_UNICODE) : null,
+                'meatValueConfig' => $json_paras['meatValueConfig'] ?? 'MEAT_AS_2',
+                'meatMaxValue' => $json_paras['meatMaxValue'] ?? 1000000,
+                'dutyConfig' => $json_paras['dutyConfig'] ?? 'DUTY_DINGTOU'
             ];
 
             // 插入数据
-            $this->db->insert('t_gamble_rule_user', $insert_data);
+            $this->db->insert('t_gamble_rules_user', $insert_data);
             $insert_id = $this->db->insert_id();
 
             if ($insert_id) {
@@ -232,18 +232,18 @@ class Gamble extends MY_Controller {
             // 查询用户创建的所有赌球规则，只获取需要的字段
             $query = "SELECT id as userRuleId, 
                      create_time,
-                     draw8421_config,
-                     duty_config,
-                     eating_range,
+                     drawConfig,
+                     dutyConfig,
+                     eatingRange,
                      gambleSysName,
                      gambleUserName,
-                     max8421_sub_value,
-                     meat_max_value,
-                     meat_value_config_string,
+                     deductionMaxValue,
+                     meatMaxValue,
+                     meatValueConfig,
                      playersNumber,
-                     sub8421_config_string,
+                     deductionConfig,
                      update_time
-                     FROM t_gamble_rule_user 
+                     FROM t_gamble_rules_user 
                      WHERE creator_id = ? and softdeleted='n'
                      ORDER BY create_time DESC";
 
@@ -299,8 +299,8 @@ class Gamble extends MY_Controller {
         $userid = $this->getUser();
         $userRuleId = $json_paras['userRuleId'];
         // using softdelete to  'y' 
-        $this->db->where('id', $userRuleId)->update('t_gamble_rule_user', ['softdeleted' => 'y']);
-        // $this->db->delete('t_gamble_rule_user', ['id' => $userRuleId, 'creator_id' => $userid]);
+        $this->db->where('id', $userRuleId)->update('t_gamble_rules_user', ['softdeleted' => 'y']);
+        // $this->db->delete('t_gamble_rules_user', ['id' => $userRuleId, 'creator_id' => $userid]);
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
 
@@ -311,7 +311,7 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $groupid = $json_paras['groupId'];
         $this->db->select('*');
-        $this->db->from('t_gamble_runtime');
+        $this->db->from('t_gamble_x_runtime');
         $this->db->where('groupid', $groupid);
         $gambles = $this->db->get()->result_array();
         foreach ($gambles as &$gamble) {
@@ -319,7 +319,7 @@ class Gamble extends MY_Controller {
             $gamble['holePlayListStr'] =  $gamble['holePlayList'];
             unset($gamble['holePlayList']);
             $userRuleId = $gamble['userRuleId'];
-            $specRow = $this->db->where('id', $userRuleId)->get('t_gamble_rule_user')->row_array();
+            $specRow = $this->db->where('id', $userRuleId)->get('t_gamble_rules_user')->row_array();
             $gamble['spec'] = $specRow;
         }
 
@@ -348,7 +348,7 @@ class Gamble extends MY_Controller {
     public function deleteRuntimeConfig() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $id = $json_paras['id'];
-        $this->db->delete('t_gamble_runtime', ['id' => $id]);
+        $this->db->delete('t_gamble_x_runtime', ['id' => $id]);
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
 
@@ -358,7 +358,7 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $id = $json_paras['configId'];
         $kickConfig = $json_paras['multipliers'];
-        $this->db->where('id', $id)->update('t_gamble_runtime', ['kickConfig' => json_encode($kickConfig, JSON_UNESCAPED_UNICODE)]);
+        $this->db->where('id', $id)->update('t_gamble_x_runtime', ['kickConfig' => json_encode($kickConfig, JSON_UNESCAPED_UNICODE)]);
         echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
     }
 
@@ -380,7 +380,7 @@ class Gamble extends MY_Controller {
             ], JSON_UNESCAPED_UNICODE);
 
 
-            $this->db->update('t_gamble_runtime', ['donationCfg' => $donationCfg]);
+            $this->db->update('t_gamble_x_runtime', ['donationCfg' => $donationCfg]);
         }
 
         // 第二步：根据 donationType 构建 donationCfg 配置
@@ -426,7 +426,7 @@ class Gamble extends MY_Controller {
         // 第三步：更新 selectedIds 对应的 donationCfg 字段
         if (!empty($selectedIds)) {
             $this->db->where_in('id', $selectedIds);
-            $this->db->update('t_gamble_runtime', [
+            $this->db->update('t_gamble_x_runtime', [
                 'donationCfg' => json_encode($donationCfg, JSON_UNESCAPED_UNICODE)
             ]);
         }
@@ -447,7 +447,7 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $allRuntimeIDs = $json_paras['allRuntimeIDs'] ?? [];
         $ifShow = $json_paras['ifShow'];
-        $this->db->where_in('id', $allRuntimeIDs)->update('t_gamble_runtime', ['ifShow' => $ifShow]);
+        $this->db->where_in('id', $allRuntimeIDs)->update('t_gamble_x_runtime', ['ifShow' => $ifShow]);
         echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
     }
 
@@ -456,7 +456,7 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $allRuntimeIDs = $json_paras['allRuntimeIDs'] ?? [];
         $bigWind = $json_paras['bigWind'];
-        $this->db->where_in('id', $allRuntimeIDs)->update('t_gamble_runtime', ['bigWind' => $bigWind]);
+        $this->db->where_in('id', $allRuntimeIDs)->update('t_gamble_x_runtime', ['bigWind' => $bigWind]);
         echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
     }
 }

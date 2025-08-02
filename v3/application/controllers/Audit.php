@@ -63,7 +63,7 @@ class Audit extends CI_Controller {
 
 
         $groupid = $paras['groupId'];
-        $gambles = $this->db->get_where('t_gamble_runtime', ['groupid' => $groupid])->result_array();
+        $gambles = $this->db->get_where('t_gamble_x_runtime', ['groupid' => $groupid])->result_array();
 
         $group_results = [];
         foreach ($gambles as $gamble) {
@@ -191,7 +191,7 @@ class Audit extends CI_Controller {
      * @return array 赌博结果
      */
     private function getGambleResult($gambleid, $debugMode = false) {
-        $row = $this->db->get_where('t_gamble_runtime', ['id' => $gambleid])->row_array();
+        $row = $this->db->get_where('t_gamble_x_runtime', ['id' => $gambleid])->row_array();
 
         $cfg = [
             'gambleSysName' => $row['gambleSysName'],
