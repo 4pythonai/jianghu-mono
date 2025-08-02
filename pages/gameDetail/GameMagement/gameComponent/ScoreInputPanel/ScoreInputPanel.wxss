@@ -1,5 +1,5 @@
 /* components/ScoreInputPanel/ScoreInputPanel.wxss */
-@import "../../../../../styles/modal.wxss";
+@import "/styles/modal.wxss";
 
 .panel-container {
 	width: 100%;
