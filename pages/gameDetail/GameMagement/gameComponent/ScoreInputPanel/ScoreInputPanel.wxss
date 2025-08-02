@@ -1,17 +1,4 @@
 /* components/ScoreInputPanel/ScoreInputPanel.wxss */
-.panel-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5);
-	display: flex;
-	justify-content: center;
-	align-items: flex-end;
-	z-index: 1000;
-}
-
 .panel-container {
 	width: 100%;
 	min-height: 75vh;
@@ -177,6 +164,7 @@
 	align-items: center;
 	opacity: 0.5;
 }
+
 .shot-option.active {
 	opacity: 1;
 }
@@ -188,57 +176,98 @@
 	background-color: #cccccc;
 	position: relative;
 }
+
 .shot-option.active .shot-icon-wrapper {
 	background-color: #4caf50;
 }
+
+/* 开球方向指示器样式 */
+.shot-icon-wrapper.center {
+	background-color: #4caf50;
+}
+
+.shot-icon-wrapper.left {
+	background: linear-gradient(
+		90deg,
+		#4caf50 0%,
+		#4caf50 50%,
+		#cccccc 50%,
+		#cccccc 100%
+	);
+}
+
+.shot-icon-wrapper.right {
+	background: linear-gradient(
+		90deg,
+		#cccccc 0%,
+		#cccccc 50%,
+		#4caf50 50%,
+		#4caf50 100%
+	);
+}
+
+.shot-icon-wrapper.up {
+	background: linear-gradient(
+		0deg,
+		#cccccc 0%,
+		#cccccc 50%,
+		#4caf50 50%,
+		#4caf50 100%
+	);
+}
+
+.shot-icon-wrapper.down {
+	background: linear-gradient(
+		0deg,
+		#4caf50 0%,
+		#4caf50 50%,
+		#cccccc 50%,
+		#cccccc 100%
+	);
+}
+
 .shot-label {
 	font-size: 24rpx;
 	margin-top: 10rpx;
 }
 
-/* 底部按钮区域样式已迁移到公共样式文件 */
+.modal-mask {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+}
 
-/* 绘制小箭头图标, 微信小程序不支持::before/::after, 我们用view代替 */
-.shot-icon-wrapper.center::before {
-	content: "";
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 20rpx;
-	height: 20rpx;
-	background-color: white;
-	border-radius: 50%;
+.modal-actions {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	margin-top: 12rpx;
+	gap: 32rpx;
 }
-.shot-icon-wrapper.left::before,
-.shot-icon-wrapper.right::before,
-.shot-icon-wrapper.up::before,
-.shot-icon-wrapper.down::before {
-	content: "";
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 0;
-	height: 0;
-	border-style: solid;
+
+.modal-btn {
+	flex: 1;
+	height: 64rpx;
+	border-radius: 16rpx;
+	font-size: 28rpx;
+	font-weight: 500;
+	border: none;
 }
-.shot-icon-wrapper.left::before {
-	transform: translate(-25%, -50%);
-	border-width: 10rpx 14rpx 10rpx 0;
-	border-color: transparent white transparent transparent;
+
+.modal-btn.cancel {
+	background: #fff;
+	color: #4caf7a;
+	border: 2rpx solid #4caf7a;
 }
-.shot-icon-wrapper.right::before {
-	transform: translate(-75%, -50%);
-	border-width: 10rpx 0 10rpx 14rpx;
-	border-color: transparent transparent transparent white;
-}
-.shot-icon-wrapper.up::before {
-	transform: translate(-50%, -25%);
-	border-width: 0 10rpx 14rpx 10rpx;
-	border-color: transparent transparent white transparent;
-}
-.shot-icon-wrapper.down::before {
-	transform: translate(-50%, -75%);
-	border-width: 14rpx 10rpx 0 10rpx;
-	border-color: white transparent transparent transparent;
+
+.modal-btn.confirm {
+	background: #4caf7a;
+	color: #fff;
 }
