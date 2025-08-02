@@ -6,13 +6,18 @@
     <view class="hole-list">
       <block wx:for="{{displayHoleList}}" wx:key="hindex">
         <view
-          class="hole-item {{index === 0 ? 'active' : ''}} {{item.inPlaylist ? 'in-playlist' : 'not-in-playlist'}}"
+          class="hole-item {{index === selectedHoleIndex ? 'active' : ''}} {{item.inPlaylist ? 'in-playlist' : 'not-in-playlist'}}"
           bindtap="onSelectHole"
           data-index="{{index}}"
           data-holename="{{item.holename}}"
           data-hindex="{{item.hindex}}"
+          style="background-color: {{index === selectedHoleIndex ? '#ff0000' : (item.inPlaylist ? '#27ae60' : '#e0e0e0')}};"
         >
           <text class="hole-item-text">{{item.holename}}</text>
+          <text
+            wx:if="{{index === selectedHoleIndex}}"
+            style="position: absolute; top: -10rpx; right: -10rpx; background: red; color: white; font-size: 20rpx; border-radius: 50%; width: 30rpx; height: 30rpx; display: flex; align-items: center; justify-content: center;"
+          >✓</text>
         </view>
       </block>
     </view>

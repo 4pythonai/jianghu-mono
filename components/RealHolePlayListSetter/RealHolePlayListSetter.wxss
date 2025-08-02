@@ -81,6 +81,64 @@
 	color: #999;
 }
 
+/* 新增样式：选中的球洞（蓝色圆圈） */
+.hole-item.active {
+	background: #3498db !important;
+	border: 2rpx solid #3498db !important;
+	box-shadow: 0 0 10rpx rgba(52, 152, 219, 0.5);
+}
+
+.hole-item.active .hole-item-text {
+	color: #fff !important;
+}
+
+/* 确保active样式覆盖其他所有样式 */
+.hole-item.active.in-playlist {
+	background: #3498db !important;
+	border: 2rpx solid #3498db !important;
+}
+
+.hole-item.active.not-in-playlist {
+	background: #3498db !important;
+	border: 2rpx solid #3498db !important;
+}
+
+.hole-item.active.in-playlist .hole-item-text,
+.hole-item.active.not-in-playlist .hole-item-text {
+	color: #fff !important;
+}
+
+/* 最高优先级：内联样式覆盖 */
+.hole-item[style*="background-color: #3498db"] {
+	background: #3498db !important;
+	border: 3rpx solid #3498db !important;
+}
+
+.hole-item[style*="background-color: #3498db"] .hole-item-text {
+	color: #fff !important;
+}
+
+/* 强制覆盖：使用更具体的选择器 */
+.hole-list .hole-item.active {
+	background: #3498db !important;
+	border: 2rpx solid #3498db !important;
+	box-shadow: 0 0 10rpx rgba(52, 152, 219, 0.5) !important;
+}
+
+.hole-list .hole-item.active .hole-item-text {
+	color: #fff !important;
+}
+
+.hole-list .hole-item.active.in-playlist {
+	background: #3498db !important;
+	border: 2rpx solid #3498db !important;
+}
+
+.hole-list .hole-item.active.not-in-playlist {
+	background: #3498db !important;
+	border: 2rpx solid #3498db !important;
+}
+
 .spliter {
 	margin: 32rpx 0;
 }
