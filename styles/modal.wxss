@@ -14,12 +14,20 @@
 }
 
 .modal-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
 	text-align: center;
 	margin-bottom: 32rpx;
+	padding-bottom: 16rpx;
 	border-bottom: 1rpx solid #f0f0f0;
 }
 
 .modal-actions {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
@@ -27,6 +35,7 @@
 	padding: 40rpx 60rpx 50rpx 60rpx;
 	background-color: white;
 	border-radius: 0 0 16rpx 16rpx;
+	z-index: 1002;
 }
 
 .modal-btn {
