@@ -81,7 +81,6 @@
 /* 赌博结果容器 */
 .gamble-results {
 	width: 100%;
-	background: #fff;
 	border-radius: 12rpx;
 	overflow: hidden;
 	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
@@ -113,9 +112,10 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 400rpx;
-	color: #999;
+	min-height: 80vh;
 	font-size: 28rpx;
+	padding: 40rpx 0;
+	background: #fefefe;
 }
 
 /* 加载状态样式 */
@@ -142,4 +142,69 @@
 	.nav-title {
 		font-size: 32rpx;
 	}
+}
+
+/* 无游戏状态样式 - 居中布局 */
+.no-gamble-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 70vh;
+	text-align: center;
+	background: #f9fbfa;
+}
+
+.ps-image {
+	width: 300rpx;
+	height: 300rpx;
+	border-radius: 24rpx;
+	margin-bottom: 40rpx;
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.empty-hint {
+	font-size: 32rpx;
+	color: #999;
+	margin-bottom: 60rpx;
+}
+
+/* 底部按钮区域 - 居中布局 */
+.bottom-button-area {
+	display: flex;
+	justify-content: center;
+	padding: 0;
+	width: 100%;
+	box-sizing: border-box;
+	margin-top: 20rpx;
+}
+
+.add-game-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 16rpx;
+	padding: 24rpx 48rpx;
+	background: linear-gradient(135deg, #4caf50, #45a049);
+	color: white;
+	border: none;
+	border-radius: 16rpx;
+	font-size: 32rpx;
+	font-weight: 500;
+	box-shadow: 0 8rpx 24rpx rgba(76, 175, 80, 0.3);
+	transition: all 0.3s ease;
+	min-width: 300rpx;
+}
+
+.add-game-button:active {
+	transform: translateY(2rpx);
+	box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.4);
+}
+
+.button-emoji {
+	font-size: 36rpx;
+}
+
+.button-text {
+	font-size: 32rpx;
 }

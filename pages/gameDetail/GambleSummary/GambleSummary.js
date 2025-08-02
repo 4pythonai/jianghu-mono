@@ -65,6 +65,18 @@ Component({
         },
 
 
+        handleAddGame() {
+            // 跳转到游戏规则页面
+            wx.navigateTo({
+                url: '/pages/rules/rules',
+                success: () => {
+                    console.log('🎮 成功跳转到游戏规则页面');
+                }
+            });
+        },
+
+
+
 
 
         /**

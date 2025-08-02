@@ -12,8 +12,6 @@
   </view>
 
   <view class="gamble-container">
-    <view class="summary-title2">汇总待开发[gameID:{{gameId}}][groupID:{{groupId}}]</view>
-
     <!-- 使用GambleResultTable组件 -->
     <view class="gamble-results">
       <!-- 循环渲染每个赌博结果 -->
@@ -33,12 +31,22 @@
         ></GambleResultTable>
       </view>
 
-      <!-- 空状态 -->
       <view
         class="empty-state"
         wx:if="{{(!gambleResults || gambleResults.length === 0) && !loading}}"
       >
-        <text>暂无赌博结果数据</text>
+        <view class="no-gamble-container">
+          <view class="summary-title">汇总待开发[gameID:{{gameId}}][groupID:{{groupId}}]</view>
+          <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
+          <text class="empty-hint">暂无游戏配置</text>
+          <!-- 按钮区域 -->
+          <view class="bottom-button-area">
+            <button class="add-game-button" bindtap="handleAddGame">
+              <text class="button-emoji">🎮</text>
+              <text class="button-text">添加游戏</text>
+            </button>
+          </view>
+        </view>
       </view>
 
       <!-- 加载状态 -->
