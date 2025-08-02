@@ -5,9 +5,8 @@
     <text class="loading-text">加载中...</text>
   </view>
   <!-- 规则内容 -->
+
   <view wx:else class="rules-content">
-    <!-- 统计信息 -->
-    <!-- 空状态 -->
     <view wx:if="{{ total.overall === 0 }}" class="empty-state">
       <text class="empty-text">暂无规则</text>
       <text class="empty-hint">点击"添加规则"创建您的第一条规则</text>

@@ -2,6 +2,8 @@
 .myrules-container {
 	min-height: 100vh;
 	padding-bottom: 30rpx;
+	padding-top: 10rpx;
+	padding-left: 10rpx;
 }
 
 .loading-container {
