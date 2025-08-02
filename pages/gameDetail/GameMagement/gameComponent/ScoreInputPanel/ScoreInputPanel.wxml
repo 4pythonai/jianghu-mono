@@ -139,9 +139,9 @@
 
     <!-- 底部按钮 -->
     <view class="footer-buttons">
-      <button class="btn-clear" bind:tap="handleClear" disabled="{{isSaving}}">清除</button>
+      <button class="btn btn-clear" bind:tap="handleClear" disabled="{{isSaving}}">清除</button>
       <button
-        class="btn-confirm"
+        class="btn btn-confirm"
         bind:tap="handleConfirm"
         disabled="{{isSaving}}"
       >{{isSaving ? '保存中...' : '确定'}}</button>

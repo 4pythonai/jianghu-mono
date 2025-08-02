@@ -6,7 +6,7 @@
         <web-view wx:if="{{ webviewUrl }}" src="{{ webviewUrl }}"></web-view>
         <view wx:else class="no-url-error">
             <text class="error-text">配置ID不存在, 无法加载结果页面</text>
-            <button class="back-button" bindtap="onBackToGame">返回比赛</button>
+            <button class="btn btn-back" bindtap="onBackToGame">返回比赛</button>
         </view>
     </view>
 </view> 

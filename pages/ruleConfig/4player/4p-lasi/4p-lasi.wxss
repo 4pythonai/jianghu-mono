@@ -16,20 +16,6 @@
 	padding-top: 40rpx;
 }
 
-/* 白色圆角卡片 */
-.rule-config-card {
-	width: 92vw;
-	max-width: 700rpx;
-	background: #fff;
-	border-radius: 48rpx;
-	box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.08);
-	padding: 48rpx 32rpx 32rpx 32rpx;
-	margin-top: 24rpx;
-	display: flex;
-	flex-direction: column;
-	gap: 18rpx;
-}
-
 /* 保留规则名称输入框的样式 */
 .form-label {
 	font-size: 28rpx;

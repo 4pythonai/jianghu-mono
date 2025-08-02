@@ -34,8 +34,13 @@ Component({
             });
         },
         onShowGameOperation(e) {
-            // 只用 data 变量控制显示
-            this.setData({ isGameOperationPanelVisible: true });
+            // 调用组件的 show 方法
+            const gameOperationPanel = this.selectComponent('#gameOperationPanel');
+            if (gameOperationPanel) {
+                gameOperationPanel.show({ gameId: this.data.gameId });
+            } else {
+                console.error('无法找到 #gameOperationPanel 组件');
+            }
         },
         onOptionClick(e) {
             // 关闭操作面板

@@ -15,7 +15,7 @@
   <!-- 错误状态 -->
   <view class="error-container" wx:elif="{{error}}">
     <view class="error-text">{{error}}</view>
-    <button class="retry-btn" bindtap="retryLoad">重试</button>
+    <button class="btn btn-retry" bindtap="retryLoad">重试</button>
   </view>
 
   <!-- 分组列表 -->

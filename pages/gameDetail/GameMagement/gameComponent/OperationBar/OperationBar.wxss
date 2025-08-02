@@ -249,53 +249,11 @@
 	border-radius: 8rpx;
 }
 
-.operation-buttons {
+/* .operation-buttons {
 	display: flex;
 	margin-left: 20rpx;
 	align-items: center;
 	gap: 16rpx;
-}
+} */
 
-.btn-add {
-	width: 60rpx;
-	height: 60rpx;
-	background-color: #333;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: transform 0.2s ease;
-}
-
-.btn-add:active {
-	transform: scale(0.95);
-}
-
-.btn-icon {
-	width: 32rpx;
-	height: 32rpx;
-	filter: brightness(0) invert(1); /* 使图标变白 */
-}
-
-.btn-more {
-	width: 60rpx;
-	height: 60rpx;
-	background-color: #333;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: transform 0.2s ease;
-}
-
-.btn-more:active {
-	transform: scale(0.95);
-}
-
-.more-text {
-	color: #fff;
-	font-size: 32rpx;
-	font-weight: bold;
-	line-height: 1;
-	margin-top: -8rpx; /* 微调垂直位置 */
-}
+/* 按钮样式已迁移到公共样式文件 */

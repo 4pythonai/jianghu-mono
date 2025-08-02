@@ -11,14 +11,14 @@
   <!-- 操作按钮区域 -->
   <view class="operation-buttons">
     <!-- 添加球员按钮 -->
-    <view class="btn-add" bindtap="onAddPlayers">
-      <image class="btn-icon" src="/assets/icons/add.svg"  mode="aspectFit"></image>
-    </view>
+    <button class="btn btn-operation btn-circle" bindtap="onAddPlayers">
+      <image class="icon" src="/assets/icons/add.svg"  mode="aspectFit"></image>
+    </button>
     
     <!-- 更多按钮 -->
-    <view class="btn-more" bindtap="onMoreClick"> 
-      <text class="more-text">...</text>
-    </view>
+    <button class="btn btn-operation btn-circle" bindtap="onMoreClick"> 
+      <text>...</text>
+    </button>
   </view>
 </view>
 

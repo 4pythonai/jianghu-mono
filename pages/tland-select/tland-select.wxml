@@ -20,7 +20,11 @@
         <!-- 玩家信息 -->
         <view class="player-info">
           <view class="player-avatar">
-            <image src="{{ item.avatar || '/images/default-avatar.png' }}" mode="aspectFill" class="avatar-image"></image>
+            <image
+              src="{{ item.avatar || '/images/default-avatar.png' }}"
+              mode="aspectFill"
+              class="avatar-image"
+            ></image>
           </view>
           <view class="player-details">
             <view class="player-name">{{ item.wx_nickname || item.nickname }}</view>
@@ -31,47 +35,52 @@
         <!-- T台选择器 -->
         <view class="tee-selector">
           <view class="tee-options">
-            <view 
-              class="tee-option {{ item.tee === 'black' ? 'selected' : '' }}" 
+            <view
+              class="tee-option {{ item.tee === 'black' ? 'selected' : '' }}"
               data-player-index="{{ index }}"
               data-tee="black"
-              bindtap="onTeeSelect">
+              bindtap="onTeeSelect"
+            >
               <view class="tee-color tee-black"></view>
               <text class="tee-label">黑T</text>
             </view>
-            
-            <view 
-              class="tee-option {{ item.tee === 'blue' ? 'selected' : '' }}" 
+
+            <view
+              class="tee-option {{ item.tee === 'blue' ? 'selected' : '' }}"
               data-player-index="{{ index }}"
               data-tee="blue"
-              bindtap="onTeeSelect">
+              bindtap="onTeeSelect"
+            >
               <view class="tee-color tee-blue"></view>
               <text class="tee-label">蓝T</text>
             </view>
-            
-            <view 
-              class="tee-option {{ item.tee === 'white' ? 'selected' : '' }}" 
+
+            <view
+              class="tee-option {{ item.tee === 'white' ? 'selected' : '' }}"
               data-player-index="{{ index }}"
               data-tee="white"
-              bindtap="onTeeSelect">
+              bindtap="onTeeSelect"
+            >
               <view class="tee-color tee-white"></view>
               <text class="tee-label">白T</text>
             </view>
-            
-            <view 
-              class="tee-option {{ item.tee === 'gold' ? 'selected' : '' }}" 
+
+            <view
+              class="tee-option {{ item.tee === 'gold' ? 'selected' : '' }}"
               data-player-index="{{ index }}"
               data-tee="gold"
-              bindtap="onTeeSelect">
+              bindtap="onTeeSelect"
+            >
               <view class="tee-color tee-gold"></view>
               <text class="tee-label">金T</text>
             </view>
-            
-            <view 
-              class="tee-option {{ item.tee === 'red' ? 'selected' : '' }}" 
+
+            <view
+              class="tee-option {{ item.tee === 'red' ? 'selected' : '' }}"
               data-player-index="{{ index }}"
               data-tee="red"
-              bindtap="onTeeSelect">
+              bindtap="onTeeSelect"
+            >
               <view class="tee-color tee-red"></view>
               <text class="tee-label">红T</text>
             </view>
@@ -87,8 +96,8 @@
       <text class="summary-text">已设置 {{ players.length }} 位球员的T台</text>
     </view>
     <view class="action-buttons">
-      <button class="cancel-btn" bindtap="onCancel">取消</button>
-      <button class="confirm-btn" bindtap="onConfirm">确定</button>
+      <button class="btn btn-cancel" bindtap="onCancel">取消</button>
+      <button class="btn btn-confirm" bindtap="onConfirm">确定</button>
     </view>
   </view>
-</view> 
+</view>

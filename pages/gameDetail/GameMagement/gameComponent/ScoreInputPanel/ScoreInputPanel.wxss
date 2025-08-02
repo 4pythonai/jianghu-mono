@@ -196,30 +196,7 @@
 	margin-top: 10rpx;
 }
 
-/* 底部按钮区域样式优化 */
-.footer-buttons {
-	display: flex;
-	justify-content: center;
-	gap: 32rpx; /* 按钮间距，可根据实际效果调整 */
-	margin-top: 32rpx;
-}
-
-.btn-clear,
-.btn-confirm {
-	flex: 1 1 0;
-	margin: 0;
-}
-
-.btn-clear {
-	background-color: #f0f0f0;
-	color: #333;
-	border: 1rpx solid #ccc;
-}
-
-.btn-confirm {
-	background-color: #4caf50;
-	color: white;
-}
+/* 底部按钮区域样式已迁移到公共样式文件 */
 
 /* 绘制小箭头图标, 微信小程序不支持::before/::after, 我们用view代替 */
 .shot-icon-wrapper.center::before {

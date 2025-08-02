@@ -148,27 +148,7 @@
 	gap: 32rpx;
 }
 
-.btn-cancel {
-	flex: 1;
-	background: #f5f5f5;
-	color: #666;
-}
-
-.btn-confirm {
-	flex: 1;
-	height: 88rpx;
-	background: linear-gradient(135deg, #4caf50, #45a049);
-	color: #fff;
-	border: none;
-	border-radius: 18rpx;
-	font-size: 32rpx;
-	font-weight: bold;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: all 0.3s;
-	box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.3);
-}
+/* 按钮样式已迁移到公共样式文件 */
 
 .spliter {
 	margin: 32rpx 0;

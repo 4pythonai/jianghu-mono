@@ -142,72 +142,7 @@
 	opacity: 0.8;
 }
 
-/* 按钮容器 */
-.button-container {
-	display: flex;
-	gap: 12px;
-	margin-top: 30px;
-}
-
-.clear-button {
-	flex: 1;
-	height: 50px;
-	background-color: #f5f5f5;
-	border: 1px solid #e5e5e5;
-	border-radius: 25px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	transition: all 0.3s ease;
-}
-
-.clear-button::after {
-	border: none;
-}
-
-.clear-button:active {
-	background-color: #eeeeee;
-	transform: translateY(1px);
-}
-
-.clear-button text {
-	font-size: 16px;
-	color: #666;
-	font-weight: 500;
-}
-
-.save-button {
-	flex: 2;
-	height: 50px;
-	background: linear-gradient(135deg, #025028, #03703a);
-	border: none;
-	border-radius: 25px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	box-shadow: 0 4px 12px rgba(2, 80, 40, 0.3);
-	transition: all 0.3s ease;
-}
-
-.save-button::after {
-	border: none;
-}
-
-.save-button:active {
-	transform: translateY(2px);
-	box-shadow: 0 2px 8px rgba(2, 80, 40, 0.4);
-}
-
-.save-button.saving {
-	background: linear-gradient(135deg, #999, #777);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.save-button text {
-	font-size: 16px;
-	color: white;
-	font-weight: 600;
-}
+/* 按钮容器样式已迁移到公共样式文件 */
 
 /* 禁用状态 */
 button[disabled] {

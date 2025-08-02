@@ -213,41 +213,4 @@
 	gap: 24rpx;
 }
 
-.cancel-btn,
-.confirm-btn {
-	flex: 1;
-	height: 88rpx;
-	border-radius: 44rpx;
-	font-size: 32rpx;
-	font-weight: 500;
-	border: none;
-	transition: all 0.3s ease;
-}
-
-.cancel-btn {
-	background: #f5f5f5;
-	color: #666;
-}
-
-.cancel-btn::after {
-	border: none;
-}
-
-.cancel-btn:active {
-	background: #e0e0e0;
-}
-
-.confirm-btn {
-	background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
-	color: white;
-	box-shadow: 0 4rpx 16rpx rgba(76, 175, 80, 0.3);
-}
-
-.confirm-btn::after {
-	border: none;
-}
-
-.confirm-btn:active {
-	transform: translateY(2rpx);
-	box-shadow: 0 2rpx 8rpx rgba(76, 175, 80, 0.3);
-}
+/* 按钮样式已迁移到公共样式文件 */

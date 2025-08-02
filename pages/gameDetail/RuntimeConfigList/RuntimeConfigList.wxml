@@ -127,9 +127,9 @@
     </view>
     <!-- 添加更多游戏按钮 -->
     <view class="add-more-container">
-      <button class="add-more-button" bindtap="handleAddGame">
-        <text class="add-more-icon">+</text>
-        <text class="add-more-text">添加更多游戏</text>
+      <button class="btn btn-primary btn-emoji" bindtap="handleAddGame">
+        <text class="emoji">+</text>
+        <text>添加更多游戏</text>
       </button>
     </view>
   </view>

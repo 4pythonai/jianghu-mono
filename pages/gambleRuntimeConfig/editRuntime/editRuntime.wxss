@@ -68,43 +68,4 @@
 	margin-bottom: 16rpx;
 }
 
-/* 底部按钮 */
-.bottom-buttons {
-	display: flex;
-	gap: 20rpx;
-	padding: 20rpx 0;
-}
-
-.cancel-btn {
-	flex: 1;
-	height: 80rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: #f8f9fa;
-	color: #6c757d;
-	border: 1px solid #dee2e6;
-	border-radius: 8rpx;
-	font-size: 28rpx;
-}
-
-.confirm-btn {
-	flex: 1;
-	height: 80rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: #28a745;
-	color: #fff;
-	border: none;
-	border-radius: 8rpx;
-	font-size: 28rpx;
-}
-
-.confirm-btn:active {
-	background-color: #1e7e34;
-}
-
-.cancel-btn:active {
-	background-color: #e2e6ea;
-}
+/* 底部按钮样式已迁移到公共样式文件 */

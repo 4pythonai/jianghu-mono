@@ -213,41 +213,7 @@
 	line-height: 1.4;
 }
 
-/* 按钮区域 */
-.modal-buttons {
-	display: flex;
-	gap: 16rpx;
-	justify-content: flex-end;
-}
-
-.btn-cancel,
-.btn-confirm {
-	flex: 1;
-	padding: 16rpx 32rpx;
-	font-size: 28rpx;
-	border-radius: 8rpx;
-	border: none;
-	transition: all 0.2s ease;
-}
-
-.btn-cancel {
-	background-color: #f8f9fa;
-	color: #333;
-	border: 1rpx solid #e9ecef;
-}
-
-.btn-cancel:active {
-	background-color: #e9ecef;
-}
-
-.btn-confirm {
-	background-color: #007aff;
-	color: #fff;
-}
-
-.btn-confirm:active {
-	background-color: #0056b3;
-}
+/* 按钮区域样式已迁移到公共样式文件 */
 
 /* 响应式设计 */
 @media (max-width: 750rpx) {

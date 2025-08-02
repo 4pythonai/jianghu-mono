@@ -496,22 +496,6 @@ button.btn::after {
 	border: none;
 }
 
-/* 兼容现有的操作按钮组 */
-.operation-buttons {
-	display: flex;
-	margin-left: 20rpx;
-	align-items: center;
-	gap: 16rpx;
-}
-
-/* 兼容现有的底部按钮区域 */
-.bottom-button-area {
-	position: absolute;
-	bottom: 15px;
-	left: 15px;
-	right: 15px;
-}
-
 /* 兼容现有的动作按钮 */
 .action-button {
 	flex: 1;
@@ -579,4 +563,19 @@ button.btn::after {
 	gap: 20rpx;
 	margin-top: 40rpx;
 	padding: 0 20rpx 40rpx;
+}
+
+/* 白色圆角卡片 */
+.rule-config-card {
+	width: 92vw;
+	max-width: 700rpx;
+	background: #fff;
+	border-radius: 20rpx;
+	box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.08);
+	padding: 48rpx 32rpx 32rpx 32rpx;
+	margin-top: 24rpx;
+	margin-bottom: 24rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 18rpx;
 }

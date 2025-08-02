@@ -353,47 +353,7 @@
 	color: #95a5a6;
 }
 
-/* 底部按钮区域 */
-.bottom-buttons {
-	display: flex;
-	gap: 12rpx;
-	justify-content: center;
-}
-
-/* 按钮基础样式 */
-.bottom-buttons button {
-	flex: 1;
-	max-width: 200rpx;
-	height: 80rpx;
-	border-radius: 12rpx;
-	font-size: 28rpx;
-	font-weight: 500;
-	border: none;
-	transition: all 0.2s ease;
-}
-
-/* 取消按钮 */
-.btn-cancel {
-	background: #f8f9fa;
-	color: #6c757d;
-	border: 2rpx solid #e9ecef;
-}
-
-.btn-cancel:active {
-	background: #e9ecef;
-	transform: scale(0.98);
-}
-
-/* 确定按钮 */
-.btn-confirm {
-	background: #4caf7a;
-	color: #fff;
-}
-
-.btn-confirm:active {
-	background: #45a049;
-	transform: scale(0.98);
-}
+/* 底部按钮区域样式已迁移到公共样式文件 */
 
 /* 响应式设计 */
 @media (max-width: 750rpx) {
