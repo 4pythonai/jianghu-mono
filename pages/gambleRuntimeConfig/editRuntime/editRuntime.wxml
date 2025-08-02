@@ -32,7 +32,7 @@
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator
         players="{{players}}"
-        val8421Config="{{runtimeConfig.val8421_config}}"
+        val8421Config="{{runtimeConfig.playerIndicatorConfig}}"
         bind:change="onVal8421ConfigChange"
       />
     </view>

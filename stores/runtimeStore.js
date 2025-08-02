@@ -23,17 +23,17 @@ export const runtimeStore = observable({
         try {
             const processedConfig = { ...config };
 
-            // 解析 val8421_config JSON 字符串
-            if (config.val8421_config && typeof config.val8421_config === 'string') {
+            // 解析 playerIndicatorConfig JSON 字符串
+            if (config.playerIndicatorConfig && typeof config.playerIndicatorConfig === 'string') {
                 try {
-                    processedConfig.val8421_config_parsed = JSON.parse(config.val8421_config);
+                    processedConfig.val8421_config_parsed = JSON.parse(config.playerIndicatorConfig);
                     processedConfig.player8421Count = Object.keys(processedConfig.val8421_config_parsed).length;
                     // 添加格式化显示字段
                     processedConfig.val8421_config_display = JSON.stringify(processedConfig.val8421_config_parsed, null, 2);
                 } catch (e) {
                     processedConfig.val8421_config_parsed = {};
                     processedConfig.player8421Count = 0;
-                    processedConfig.val8421_config_display = config.val8421_config; // 显示原始字符串
+                    processedConfig.val8421_config_display = config.playerIndicatorConfig; // 显示原始字符串
                 }
             }
 

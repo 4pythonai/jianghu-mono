@@ -8,7 +8,7 @@ Component({
     visible: false,
     displayValue: '请配置扣分规则',
 
-    // 扣分开始条件 (sub8421_config_string)
+    // 扣分开始条件 (deductionConfig)
     Sub8421ConfigString: ['从帕+X开始扣分', '从双帕+Y开始扣分', '不扣分'],
     selectedStart: 0,
 
@@ -22,11 +22,11 @@ Component({
     doubleParScoreRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
     maxSubScoreRange: Array.from({ length: 21 }, (_, i) => i + 1), // 1-21
 
-    // 扣分封顶 (max8421_sub_value)
+    // 扣分封顶 (deductionMaxValue)
     maxOptions: ['不封顶', '扣X分封顶'],
     selectedMax: 0,
 
-    // 同伴惩罚 (duty_config)
+    // 同伴惩罚 (dutyConfig)
     dutyOptions: ['不包负分', '同伴顶头包负分', '包负分'],
     selectedDuty: 0
   },
@@ -53,26 +53,26 @@ Component({
 
       // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
       let startText = '';
-      if (store.sub8421_config_string) {
-        if (store.sub8421_config_string === 'NoSub') {
+      if (store.deductionConfig) {
+        if (store.deductionConfig === 'NoSub') {
           startText = '不扣分';
-        } else if (store.sub8421_config_string?.startsWith('Par+')) {
-          const score = store.sub8421_config_string.replace('Par+', '');
+        } else if (store.deductionConfig?.startsWith('Par+')) {
+          const score = store.deductionConfig.replace('Par+', '');
           startText = `帕+${score}`;
-        } else if (store.sub8421_config_string?.startsWith('DoublePar+')) {
-          const score = store.sub8421_config_string.replace('DoublePar+', '');
+        } else if (store.deductionConfig?.startsWith('DoublePar+')) {
+          const score = store.deductionConfig.replace('DoublePar+', '');
           startText = `双帕+${score}`;
         } else {
-          startText = store.sub8421_config_string;
+          startText = store.deductionConfig;
         }
       }
 
       // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
       let fengdingText = '';
-      if (store.max8421_sub_value === 10000000) {
+      if (store.deductionMaxValue === 10000000) {
         fengdingText = '不封顶';
-      } else if (typeof store.max8421_sub_value === 'number' && store.max8421_sub_value < 10000000) {
-        fengdingText = `扣${store.max8421_sub_value}分封顶`;
+      } else if (typeof store.deductionMaxValue === 'number' && store.deductionMaxValue < 10000000) {
+        fengdingText = `扣${store.deductionMaxValue}分封顶`;
       }
 
       // 组合显示值
@@ -96,9 +96,9 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const max8421SubValue = G4P8421Store.max8421_sub_value;
-      const koufenStart = G4P8421Store.sub8421_config_string;
-      const partnerPunishment = G4P8421Store.duty_config;
+      const max8421SubValue = G4P8421Store.deductionMaxValue;
+      const koufenStart = G4P8421Store.deductionConfig;
+      const partnerPunishment = G4P8421Store.dutyConfig;
 
       if (max8421SubValue !== 10000000 || koufenStart || partnerPunishment) {
         // 解析已保存的配置
@@ -147,14 +147,14 @@ Component({
         });
       }
 
-      // 解析同伴惩罚配置 - 新格式:NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL
+      // 解析同伴惩罚配置 - 新格式:NODUTY, DUTY_NEGATIVE, DUTY_DINGTOU
       if (partnerPunishment) {
         let selectedDuty = 0;
         switch (partnerPunishment) {
           case 'NODUTY':
             selectedDuty = 0;
             break;
-          case 'DUTY_CODITIONAL':
+          case 'DUTY_DINGTOU':
             selectedDuty = 1;
             break;
           case 'DUTY_NEGATIVE':
@@ -226,26 +226,26 @@ Component({
       const max8421SubValue = selectedMax === 0 ? 10000000 : maxSubScore;
 
       // 同伴惩罚配置改为枚举格式
-      let duty_config = null;
+      let dutyConfig = null;
       switch (selectedDuty) {
         case 0:
-          duty_config = 'NODUTY';
+          dutyConfig = 'NODUTY';
           break;
         case 1:
-          duty_config = 'DUTY_CODITIONAL';
+          dutyConfig = 'DUTY_DINGTOU';
           break;
         case 2:
-          duty_config = 'DUTY_NEGATIVE';
+          dutyConfig = 'DUTY_NEGATIVE';
           break;
       }
 
       // 调用store的action更新数据
-      G4P8421Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, duty_config);
+      G4P8421Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, dutyConfig);
 
       console.log('扣分组件已更新store:', {
         max8421SubValue,
         sub8421ConfigString,
-        duty_config,
+        dutyConfig,
         customValues: { paScore, doubleParScore, maxSubScore }
       });
 
@@ -257,7 +257,7 @@ Component({
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
-        parsedData: { max8421SubValue, sub8421ConfigString, duty_config }
+        parsedData: { max8421SubValue, sub8421ConfigString, dutyConfig }
       });
     }
   }

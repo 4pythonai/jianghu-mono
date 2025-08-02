@@ -97,7 +97,7 @@ const BaseConfig = {
             'runtimeConfig.red_blue_config': defaultConfig.red_blue_config,
             'runtimeConfig.bootstrap_order': defaultConfig.bootstrap_order,
             'runtimeConfig.ranking_tie_resolve_config': defaultConfig.ranking_tie_resolve_config,
-            'runtimeConfig.val8421_config': defaultConfig.val8421_config
+            'runtimeConfig.playerIndicatorConfig': defaultConfig.playerIndicatorConfig
         });
 
         console.log('[BaseConfig] 默认配置已设置到页面');
@@ -110,7 +110,7 @@ const BaseConfig = {
 
         if (is8421Game) {
             // 直接检查生成的默认配置，而不是从页面数据中获取
-            if (!defaultConfig.val8421_config || Object.keys(defaultConfig.val8421_config).length === 0) {
+            if (!defaultConfig.playerIndicatorConfig || Object.keys(defaultConfig.playerIndicatorConfig).length === 0) {
                 console.warn('[BaseConfig] 检测到生成的8421配置为空，强制重新初始化');
 
                 // 重新获取默认配置
@@ -120,12 +120,12 @@ const BaseConfig = {
                 );
 
                 pageContext.setData({
-                    'runtimeConfig.val8421_config': retryConfig.val8421_config
+                    'runtimeConfig.playerIndicatorConfig': retryConfig.playerIndicatorConfig
                 });
 
-                console.log('[BaseConfig] 强制重新初始化8421配置完成:', retryConfig.val8421_config);
+                console.log('[BaseConfig] 强制重新初始化8421配置完成:', retryConfig.playerIndicatorConfig);
             } else {
-                console.log('[BaseConfig] 8421配置已正确生成:', defaultConfig.val8421_config);
+                console.log('[BaseConfig] 8421配置已正确生成:', defaultConfig.playerIndicatorConfig);
             }
         }
 
@@ -188,8 +188,8 @@ const BaseConfig = {
 
         // 加载8421配置
         let val8421Config = {};
-        if (editConfig.val8421_config) {
-            let configData = editConfig.val8421_config;
+        if (editConfig.playerIndicatorConfig) {
+            let configData = editConfig.playerIndicatorConfig;
 
             if (typeof configData === 'string') {
                 try {
@@ -221,13 +221,13 @@ const BaseConfig = {
             if (players.length > 0) {
                 // 使用 GameTypeManager 生成默认配置
                 const defaultConfig = GameTypeManager.getDefaultConfig(editConfig.gambleSysName, players);
-                val8421Config = defaultConfig.val8421_config;
+                val8421Config = defaultConfig.playerIndicatorConfig;
             }
         }
 
         // 设置8421配置
         pageContext.setData({
-            'runtimeConfig.val8421_config': val8421Config
+            'runtimeConfig.playerIndicatorConfig': val8421Config
         });
 
         // 加载洞范围配置

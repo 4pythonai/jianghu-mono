@@ -112,7 +112,7 @@ const ConfigValidator = {
         const needsPlayerConfig = GameTypeManager.needsPlayerConfig(gambleSysName);
 
         if (needsPlayerConfig) {
-            const val8421Config = runtimeConfig.val8421_config;
+            const val8421Config = runtimeConfig.playerIndicatorConfig;
 
             if (!val8421Config || Object.keys(val8421Config).length === 0) {
                 errors.push('请配置球员指标');

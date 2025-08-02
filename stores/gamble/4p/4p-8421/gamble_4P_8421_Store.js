@@ -12,19 +12,19 @@ export const G4P8421Store = observable({
     creator_id: null,
 
     // 封顶配置: 数字类型, 如 2 表示扣2分封顶, 10000000 表示不封顶
-    max8421_sub_value: 10000000,
+    deductionMaxValue: 10000000,
 
     // 扣分开始的值: NoSub, Par+X, DoublePar+X (X为数字) - 默认:Par+4
-    sub8421_config_string: 'Par+4',
+    deductionConfig: 'Par+4',
 
-    // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_CODITIONAL - 默认:NODUTY
-    duty_config: 'NODUTY',
+    // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_DINGTOU - 默认:NODUTY
+    dutyConfig: 'NODUTY',
 
     // 顶洞规则: NoDraw(无顶洞), Diff_X(得分X分以内), DrawEqual(得分打平) - 默认:DrawEqual
-    draw8421_config: 'DrawEqual',
+    drawConfig: 'DrawEqual',
 
     // 吃肉规则:默认配置
-    eating_range: {
+    eatingRange: {
         "BetterThanBirdie": 1,
         "Birdie": 1,
         "Par": 1,
@@ -32,30 +32,30 @@ export const G4P8421Store = observable({
     },
 
     // meat option: MEAT_AS_X, SINGLE_DOUBLE, CONTINUE_DOUBLE - 默认:MEAT_AS_1
-    meat_value_config_string: 'MEAT_AS_1',
+    meatValueConfig: 'MEAT_AS_1',
 
     // 吃肉封顶:  数字类型, 如 3 表示3分封顶, 10000000 表示不封顶
-    meat_max_value: 10000000,
+    meatMaxValue: 10000000,
 
     // 更新扣分规则的action
-    updateKoufenRule: action(function (max8421SubValue, sub8421ConfigString, duty_config) {
-        this.max8421_sub_value = max8421SubValue;
-        this.sub8421_config_string = sub8421ConfigString;
-        this.duty_config = duty_config;
+    updateKoufenRule: action(function (max8421SubValue, sub8421ConfigString, dutyConfig) {
+        this.deductionMaxValue = max8421SubValue;
+        this.deductionConfig = sub8421ConfigString;
+        this.dutyConfig = dutyConfig;
         this.user_rulename = this.generateAbstractName();
     }),
 
     // 更新顶洞规则的action
-    updateDingdongRule: action(function (draw8421_config) {
-        this.draw8421_config = draw8421_config;
+    updateDingdongRule: action(function (drawConfig) {
+        this.drawConfig = drawConfig;
         this.user_rulename = this.generateAbstractName();
     }),
 
     // 更新吃肉规则的action
-    updateEatmeatRule: action(function (eating_range, meatValueConfig, meat_max_value) {
-        this.eating_range = eating_range;
-        this.meat_value_config_string = meatValueConfig;
-        this.meat_max_value = meat_max_value;
+    updateEatmeatRule: action(function (eatingRange, meatValueConfig, meatMaxValue) {
+        this.eatingRange = eatingRange;
+        this.meatValueConfig = meatValueConfig;
+        this.meatMaxValue = meatMaxValue;
         this.user_rulename = this.generateAbstractName();
     }),
 
@@ -66,18 +66,18 @@ export const G4P8421Store = observable({
 
     // 重置所有规则的action
     resetAllRules: action(function () {
-        this.max8421_sub_value = 10000000;
-        this.sub8421_config_string = 'Par+4';
-        this.duty_config = 'NODUTY';
-        this.draw8421_config = 'DrawEqual';
-        this.eating_range = {
+        this.deductionMaxValue = 10000000;
+        this.deductionConfig = 'Par+4';
+        this.dutyConfig = 'NODUTY';
+        this.drawConfig = 'DrawEqual';
+        this.eatingRange = {
             "BetterThanBirdie": 1,
             "Birdie": 1,
             "Par": 1,
             "WorseThanPar": 1
         };
-        this.meat_value_config_string = 'MEAT_AS_1';
-        this.meat_max_value = 10000000;
+        this.meatValueConfig = 'MEAT_AS_1';
+        this.meatMaxValue = 10000000;
     }),
 
     // 获取所有规则数据的action
@@ -87,13 +87,13 @@ export const G4P8421Store = observable({
             user_rulename: this.user_rulename,
             gamblesysname: this.gamblesysname,
             creator_id: this.creator_id,
-            max8421_sub_value: this.max8421_sub_value,
-            sub8421_config_string: this.sub8421_config_string,
-            duty_config: this.duty_config,
-            draw8421_config: this.draw8421_config,
-            eating_range: this.eating_range,
-            meat_value_config_string: this.meat_value_config_string,
-            meat_max_value: this.meat_max_value
+            deductionMaxValue: this.deductionMaxValue,
+            deductionConfig: this.deductionConfig,
+            dutyConfig: this.dutyConfig,
+            drawConfig: this.drawConfig,
+            eatingRange: this.eatingRange,
+            meatValueConfig: this.meatValueConfig,
+            meatMaxValue: this.meatMaxValue
         };
         console.log(JSON.stringify(gambleConfig, null, 2));
         return gambleConfig;

@@ -192,7 +192,7 @@ const GameTypeManager = {
             red_blue_config: '4_固拉',
             bootstrap_order: playerIds,
             ranking_tie_resolve_config: 'indicator.reverse',
-            val8421_config: {}
+            playerIndicatorConfig: {}
         };
 
         // 如果是8421游戏，设置默认的球员配置
@@ -219,11 +219,11 @@ const GameTypeManager = {
                     continue;
                 }
 
-                defaultConfig.val8421_config[userid] = { ...default8421Config };
+                defaultConfig.playerIndicatorConfig[userid] = { ...default8421Config };
                 console.log(`[GameTypeManager] 为玩家 ${userid} (${player.nickname || player.wx_nickname}) 设置默认配置:`, default8421Config);
             }
 
-            console.log('[GameTypeManager] 默认球员配置完成:', defaultConfig.val8421_config);
+            console.log('[GameTypeManager] 默认球员配置完成:', defaultConfig.playerIndicatorConfig);
         } else {
             console.log('[GameTypeManager] 非8421游戏或没有玩家，跳过球员配置');
         }
@@ -252,7 +252,7 @@ const GameTypeManager = {
 
         try {
             result.defaultConfig = this.getDefaultConfig(gambleSysName, players);
-            result.val8421ConfigKeys = Object.keys(result.defaultConfig.val8421_config);
+            result.val8421ConfigKeys = Object.keys(result.defaultConfig.playerIndicatorConfig);
 
             // 检查是否有问题
             if (this.needsPlayerConfig(gambleSysName) && players.length > 0) {

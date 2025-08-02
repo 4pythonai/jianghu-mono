@@ -24,7 +24,7 @@ Page({
             red_blue_config: '4_固拉',
             bootstrap_order: [],
             ranking_tie_resolve_config: 'indicator.reverse',
-            val8421_config: {}      // 球员8421指标配置
+            playerIndicatorConfig: {}      // 球员8421指标配置
         },
 
         // 页面状态
@@ -73,7 +73,7 @@ Page({
     onVal8421ConfigChange(e) {
         const { val8421Config } = e.detail;
         this.setData({
-            'runtimeConfig.val8421_config': val8421Config
+            'runtimeConfig.playerIndicatorConfig': val8421Config
         });
     },
 

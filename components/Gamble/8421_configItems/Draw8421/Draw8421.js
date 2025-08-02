@@ -33,8 +33,8 @@ Component({
       let displayValue = '';
 
       // 映射英文格式到中文显示
-      if (store.draw8421_config) {
-        switch (store.draw8421_config) {
+      if (store.drawConfig) {
+        switch (store.drawConfig) {
           case 'DrawEqual':
             displayValue = '得分打平';
             break;
@@ -46,11 +46,11 @@ Component({
             break;
           default:
             // 处理 Diff_X 格式
-            if (store.draw8421_config.startsWith('Diff_')) {
-              const score = store.draw8421_config.replace('Diff_', '');
+            if (store.drawConfig.startsWith('Diff_')) {
+              const score = store.drawConfig.replace('Diff_', '');
               displayValue = `得分${score}分以内`;
             } else {
-              displayValue = store.draw8421_config;
+              displayValue = store.drawConfig;
             }
             break;
         }
@@ -66,7 +66,7 @@ Component({
     },
 
     syncSelectedFromStore() {
-      const currentValue = G4P8421Store.draw8421_config;
+      const currentValue = G4P8421Store.drawConfig;
       console.log('syncSelectedFromStore被调用，store值:', currentValue);
       if (currentValue) {
         if (currentValue === 'DrawEqual') {
@@ -105,7 +105,7 @@ Component({
     onShowConfig() {
       this.setData({ visible: true });
       // 只在第一次显示时重新加载配置，避免覆盖用户选择
-      if (this.data.selected === 0 && !G4P8421Store.draw8421_config) {
+      if (this.data.selected === 0 && !G4P8421Store.drawConfig) {
         this.syncSelectedFromStore();
       }
     },

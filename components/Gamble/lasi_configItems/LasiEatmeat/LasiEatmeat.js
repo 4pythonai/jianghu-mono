@@ -12,7 +12,7 @@ Component({
     isDisabled: false,
 
     // 直接使用固定的默认配置
-    eating_range: {
+    eatingRange: {
       "BetterThanBirdie": 4,
       "Birdie": 2,
       "Par": 1,
@@ -51,7 +51,7 @@ Component({
 
       // 监听顶洞规则变化
       this._storeReaction = reaction(
-        () => G4PLasiStore.draw8421_config,
+        () => G4PLasiStore.drawConfig,
         () => {
           this.checkDisabledState();
         }
@@ -68,7 +68,7 @@ Component({
   methods: {
     // 检查禁用状态
     checkDisabledState() {
-      const isDisabled = G4PLasiStore.draw8421_config === 'NoDraw';
+      const isDisabled = G4PLasiStore.drawConfig === 'NoDraw';
       this.setData({ isDisabled });
       console.log('吃肉组件禁用状态:', isDisabled);
     },
@@ -80,25 +80,25 @@ Component({
 
       // 格式化吃肉规则显示
       let meatValueText = '';
-      if (store.meat_value_config_string) {
-        if (store.meat_value_config_string?.startsWith('MEAT_AS_')) {
-          const score = store.meat_value_config_string.replace('MEAT_AS_', '');
+      if (store.meatValueConfig) {
+        if (store.meatValueConfig?.startsWith('MEAT_AS_')) {
+          const score = store.meatValueConfig.replace('MEAT_AS_', '');
           meatValueText = `肉算${score}分`;
-        } else if (store.meat_value_config_string === 'DOUBLE_WITH_REWARD') {
+        } else if (store.meatValueConfig === 'DOUBLE_WITH_REWARD') {
           meatValueText = '分值翻倍(含奖励)';
-        } else if (store.meat_value_config_string === 'DOUBLE_WITHOUT_REWARD') {
+        } else if (store.meatValueConfig === 'DOUBLE_WITHOUT_REWARD') {
           meatValueText = '分值翻倍(不含奖励)';
         } else {
-          meatValueText = store.meat_value_config_string;
+          meatValueText = store.meatValueConfig;
         }
       }
 
       // 格式化封顶值 - 10000000表示不封顶
       let meatMaxText = '';
-      if (store.meat_max_value === 10000000) {
+      if (store.meatMaxValue === 10000000) {
         meatMaxText = '不封顶';
-      } else if (typeof store.meat_max_value === 'number' && store.meat_max_value < 10000000) {
-        meatMaxText = `${store.meat_max_value}分封顶`;
+      } else if (typeof store.meatMaxValue === 'number' && store.meatMaxValue < 10000000) {
+        meatMaxText = `${store.meatMaxValue}分封顶`;
       }
 
       // 简化显示, 只显示主要的肉分值计算方式
@@ -122,22 +122,22 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const eating_range = G4PLasiStore.eating_range;
-      const meatValue = G4PLasiStore.meat_value_config_string;
-      const meat_max_value = G4PLasiStore.meat_max_value;
+      const eatingRange = G4PLasiStore.eatingRange;
+      const meatValue = G4PLasiStore.meatValueConfig;
+      const meatMaxValue = G4PLasiStore.meatMaxValue;
 
       // 检查store中是否有有效的配置
-      const hasValidConfig = eating_range &&
-        typeof eating_range === 'object' &&
-        !Array.isArray(eating_range) &&
-        Object.keys(eating_range).length > 0;
+      const hasValidConfig = eatingRange &&
+        typeof eatingRange === 'object' &&
+        !Array.isArray(eatingRange) &&
+        Object.keys(eatingRange).length > 0;
 
       if (hasValidConfig && meatValue) {
         // 解析已保存的配置
         this.parseStoredConfig({
-          eating_range,
+          eatingRange,
           meatValue,
-          meat_max_value
+          meatMaxValue
         });
       } else {
         // 如果没有有效配置，使用默认值并保存到store
@@ -147,7 +147,7 @@ Component({
           "Par": 1,
           "WorseThanPar": 0
         };
-        this.setData({ eating_range: defaultEatingRange });
+        this.setData({ eatingRange: defaultEatingRange });
 
         // 保存默认配置到store
         G4PLasiStore.updateEatmeatRule(defaultEatingRange, 'MEAT_AS_1', 10000000);
@@ -157,12 +157,12 @@ Component({
 
     // 解析存储的配置
     parseStoredConfig(config) {
-      const { eating_range, meatValue, meat_max_value } = config;
+      const { eatingRange, meatValue, meatMaxValue } = config;
       console.log('从store加载吃肉配置:', config);
 
       // 解析吃肉数量配置
-      if (eating_range && typeof eating_range === 'object' && !Array.isArray(eating_range)) {
-        this.setData({ eating_range });
+      if (eatingRange && typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
+        this.setData({ eatingRange });
       }
 
       // 解析肉分值计算方式
@@ -182,12 +182,12 @@ Component({
       }
 
       // 解析封顶配置 - 10000000表示不封顶
-      if (meat_max_value === 10000000) {
+      if (meatMaxValue === 10000000) {
         this.setData({ topSelected: 0 });
-      } else if (typeof meat_max_value === 'number' && meat_max_value < 10000000) {
+      } else if (typeof meatMaxValue === 'number' && meatMaxValue < 10000000) {
         this.setData({
           topSelected: 1,
-          topScoreLimit: meat_max_value
+          topScoreLimit: meatMaxValue
         });
       }
     },
@@ -197,9 +197,9 @@ Component({
       const keyIndex = e.currentTarget.dataset.index;
       const value = this.data.eatValueRange[e.detail.value];
       const key = this.data.eatRangeKeys[keyIndex];
-      const newEatingRange = { ...this.data.eating_range };
+      const newEatingRange = { ...this.data.eatingRange };
       newEatingRange[key] = value;
-      this.setData({ eating_range: newEatingRange });
+      this.setData({ eatingRange: newEatingRange });
       console.log('更新吃肉配置:', key, value);
     },
 
@@ -271,7 +271,7 @@ Component({
       const data = this.data;
 
       // 解析配置数据
-      const eating_range = data.eating_range; // 吃肉得分配对, JSON格式
+      const eatingRange = data.eatingRange; // 吃肉得分配对, JSON格式
 
       // 肉分值计算方式
       let meatValueConfig = null;
@@ -288,10 +288,10 @@ Component({
       }
 
       // 吃肉封顶改为数字格式, 10000000表示不封顶
-      const meat_max_value = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
+      const meatMaxValue = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
 
       // 调用store的action更新数据
-      G4PLasiStore.updateEatmeatRule(eating_range, meatValueConfig, meat_max_value);
+      G4PLasiStore.updateEatmeatRule(eatingRange, meatValueConfig, meatMaxValue);
 
       // 更新显示值
       this.updateDisplayValue();
@@ -301,7 +301,7 @@ Component({
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
-        parsedData: { eating_range, meatValueConfig, meat_max_value }
+        parsedData: { eatingRange, meatValueConfig, meatMaxValue }
       });
     }
   }

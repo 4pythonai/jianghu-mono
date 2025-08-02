@@ -26,11 +26,11 @@
           <picker
             class="eat-picker"
             range="{{eatValueRange}}"
-            value="{{eating_range[item] - 1}}"
+            value="{{eatingRange[item] - 1}}"
             data-index="{{index}}"
             bindchange="onEatValueChange"
           >
-            <view class="picker-value">{{eating_range[item]}}</view>
+            <view class="picker-value">{{eatingRange[item]}}</view>
           </picker>
         </view>
       </block>

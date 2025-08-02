@@ -26,7 +26,7 @@ Page({
             red_blue_config: '4_固拉',
             bootstrap_order: [],
             ranking_tie_resolve_config: 'indicator.reverse',
-            val8421_config: {}      // 球员8421指标配置
+            playerIndicatorConfig: {}      // 球员8421指标配置
         },
 
         // 页面状态
@@ -78,7 +78,7 @@ Page({
             'runtimeConfig.red_blue_config': config.red_blue_config || '4_固拉',
             'runtimeConfig.bootstrap_order': config.bootstrap_order_parsed || config.bootstrap_order || [],
             'runtimeConfig.ranking_tie_resolve_config': config.ranking_tie_resolve_config || 'score.reverse',
-            'runtimeConfig.val8421_config': config.val8421_config_parsed || config.val8421_config || {}
+            'runtimeConfig.playerIndicatorConfig': config.val8421_config_parsed || config.playerIndicatorConfig || {}
         });
 
         // 设置 holeRangeStore 中的洞范围配置
@@ -147,7 +147,7 @@ Page({
         console.log('[EditRuntime] 8421配置变更:', val8421Config);
 
         this.setData({
-            'runtimeConfig.val8421_config': val8421Config
+            'runtimeConfig.playerIndicatorConfig': val8421Config
         });
     },
 
