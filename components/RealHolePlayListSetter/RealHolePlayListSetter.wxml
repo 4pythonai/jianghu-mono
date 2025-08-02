@@ -1,7 +1,6 @@
 <!-- RealHolePlayListSetter -->
 
-<view>
-  <view class="modal-mask" bindtap="onHideModal"></view>
+<view class="modal-mask" bindtap="onHideModal">
   <view class="modal-content">
     <view class="modal-title">设置洞序</view>
     <view class="hole-list">
@@ -19,9 +18,10 @@
     </view>
 
     <view class="spliter"></view>
-    <view class="modal-btns">
-      <button class="btn btn-cancel" bindtap="onCancel">取消</button>
-      <button class="btn btn-confirm" bindtap="onConfirmHoleOrder">确定</button>
-    </view>
+  </view>
+
+  <view class="modal-actions">
+    <button class="btn btn-cancel" bindtap="onCancel">取消</button>
+    <button class="btn btn-confirm" bindtap="onConfirmHoleOrder">确定</button>
   </view>
 </view>
