@@ -11,14 +11,6 @@
 	position: relative;
 }
 
-.gamble-header {
-	font-size: 18px;
-	font-weight: bold;
-	margin-bottom: 15px;
-	color: #333;
-	text-align: center;
-}
-
 /* 加载状态样式 */
 .loading-container {
 	display: flex;
@@ -128,11 +120,6 @@
 	color: #333;
 }
 
-.config-time {
-	font-size: 12px;
-	color: #999;
-}
-
 .config-details {
 	display: flex;
 	flex-direction: column;
@@ -172,24 +159,6 @@
 
 .config-item:hover .config-click-hint {
 	opacity: 1;
-}
-
-.click-hint-text {
-	font-size: 12px;
-	color: #4caf50;
-	font-weight: 500;
-}
-
-.click-hint-arrow {
-	font-size: 14px;
-	color: #4caf50;
-	font-weight: bold;
-	transform: translateX(0);
-	transition: transform 0.3s ease;
-}
-
-.config-item:hover .click-hint-arrow {
-	transform: translateX(3px);
 }
 
 /* 无游戏状态样式 */
@@ -278,10 +247,6 @@
 .kick-btn:active {
 	background: linear-gradient(135deg, #2e7d32, #2e7d32) !important;
 	opacity: 1;
-}
-
-.section-label {
-	margin-bottom: 10rpx;
 }
 
 /* 游戏额外选项列表样式 */
@@ -404,15 +369,26 @@
 .extra-options-title {
 	font-size: 32rpx;
 	font-weight: 600;
-	color: #fff;
+	color: #333;
 	margin-bottom: 26rpx;
 	text-align: center;
-	background: linear-gradient(135deg, #4caf50, #45a049);
+	background: linear-gradient(135deg, #f8f9fa, #e9ecef);
 	padding: 18rpx 0;
 	border-radius: 12rpx;
-	display: block;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12rpx;
 	width: 100%;
 	position: relative;
+	border: 1px solid #dee2e6;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.extra-options-title .title-icon {
+	width: 32rpx;
+	height: 32rpx;
+	filter: grayscale(100%) brightness(0.6);
 }
 
 .radio-group-row {

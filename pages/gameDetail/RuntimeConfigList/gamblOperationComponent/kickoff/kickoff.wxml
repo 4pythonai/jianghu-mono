@@ -1,4 +1,4 @@
-<view class="kickoff-popup" bindtap="close">
+<view class="modal-mask" bindtap="close">
   <view class="kickoff-content" catchtap="noop">
     <view class="modal-title">踢一脚</view>
 
@@ -22,11 +22,10 @@
         </view>
       </block>
     </view>
-
-    <view class="kickoff-footer">
-      <button class="kickoff-btn-cancel" bindtap="close">取消</button>
-      <button class="kickoff-btn-confirm" bindtap="onConfirm">确定</button>
-    </view>
+  </view>
+  <view class="modal-actions">
+    <button class="modal-btn cancel" bindtap="close">取消</button>
+    <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
   </view>
 </view>
 
