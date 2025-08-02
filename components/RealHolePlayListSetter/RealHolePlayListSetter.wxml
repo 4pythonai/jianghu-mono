@@ -19,9 +19,9 @@
     </view>
 
     <view class="spliter"></view>
-    <view class="modal-btns">
-      <button class="btn-cancel" bindtap="onCancel">取消</button>
-      <button class="btn-confirm" bindtap="onConfirmHoleOrder">确定</button>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirmHoleOrder">确定</button>
     </view>
   </view>
 </view>
