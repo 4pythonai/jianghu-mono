@@ -5,7 +5,7 @@ import { toJS } from 'mobx-miniprogram';
 
 Component({
     options: {
-        styleIsolation: 'isolated',
+        styleIsolation: 'apply-shared',
     },
 
     properties: {
@@ -29,13 +29,10 @@ Component({
         holeList: [],           // 所有洞的列表（原始数据）
         holePlayList: [],       // 游戏顺序的洞列表
         displayHoleList: [],    // 用于显示的洞列表（包含所有洞，按顺序排列）
-        selectedHoleIndex: 0,   // 当前选中的球洞索引
     },
 
     lifetimes: {
         attached() {
-            console.log('🕳️ RealHolePlayListSetter attached 被调用');
-
             // 从 holeRangeStore 获取洞数据
             const { holeList, holePlayList } = holeRangeStore.getState();
 
@@ -49,8 +46,7 @@ Component({
             this.setData({
                 holeList: plainHoleList,
                 holePlayList: plainHolePlayList,
-                displayHoleList,
-                selectedHoleIndex: 0 // 默认选中第一个球洞
+                displayHoleList
             });
         },
     },
@@ -77,15 +73,12 @@ Component({
 
             // 获取holePlayList中第一个洞的hindex
             const firstHoleHindex = holePlayList[0]?.hindex;
-            console.log('🕳️ buildDisplayHoleList - 第一个洞的hindex:', firstHoleHindex);
 
             // 找到第一个洞在holeList中的位置
             const firstHoleIndex = holeList.findIndex(hole => hole.hindex === firstHoleHindex);
-            console.log('🕳️ buildDisplayHoleList - 在holeList中的位置:', firstHoleIndex);
 
             if (firstHoleIndex === -1) {
                 // 如果找不到第一个洞，按原始顺序显示
-                console.log('🕳️ buildDisplayHoleList - 找不到第一个洞，按原始顺序显示');
                 return holeList.map(hole => ({
                     ...hole,
                     inPlaylist: false
@@ -97,7 +90,6 @@ Component({
                 ...holeList.slice(firstHoleIndex),
                 ...holeList.slice(0, firstHoleIndex)
             ];
-            console.log('🕳️ buildDisplayHoleList - 重新排列后的第一个洞:', reorderedHoleList[0]?.hindex);
 
             // 构建holePlayList的hindex集合，用于快速判断
             const holePlayListHindexSet = new Set(holePlayList.map(hole => hole.hindex));
@@ -115,12 +107,6 @@ Component({
 
         onSelectHole(e) {
             const selectType = this.properties.selectType; // 获取选择类型
-            const selectedIndex = Number(e.currentTarget.dataset.index); // 获取选中的索引
-
-            // 更新选中状态
-            this.setData({
-                selectedHoleIndex: selectedIndex
-            });
 
             if (selectType === 'start') {
                 const hindex = Number(e.currentTarget.dataset.hindex);
@@ -128,25 +114,14 @@ Component({
 
                 // 重新构建holePlayList，以选中的洞为起始
                 const newHolePlayList = this.buildHolePlayListFromStart(hindex);
-                console.log('🕳️ 新的holePlayList第一个洞:', newHolePlayList[0]?.hindex);
 
                 // 重新构建显示列表
                 const newDisplayHoleList = this.buildDisplayHoleList(this.data.holeList, newHolePlayList);
-                console.log('🕳️ 新的displayHoleList第一个洞:', newDisplayHoleList[0]?.hindex);
 
-                // 先更新数据
                 this.setData({
                     holePlayList: newHolePlayList,
                     displayHoleList: newDisplayHoleList
                 });
-
-                // 延迟一下再设置选中状态，确保数据更新完成
-                setTimeout(() => {
-                    this.setData({
-                        selectedHoleIndex: 0
-                    });
-                    console.log('🕳️ 延迟设置selectedHoleIndex为0，第一个洞应该是:', newDisplayHoleList[0]?.holename);
-                }, 50);
             }
 
             if (selectType === 'end') {
