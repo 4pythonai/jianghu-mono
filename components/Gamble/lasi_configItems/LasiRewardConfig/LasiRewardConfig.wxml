@@ -32,7 +32,7 @@
           <view class="radio-outer {{rewardType === 'add' ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{rewardType === 'add'}}"></view>
           </view>
-          <text class="panel-title">加法奖励</text>
+          <text class="modal-title">加法奖励</text>
         </view>
 
         <!-- 奖励项目列表 -->
@@ -105,7 +105,7 @@
           <view class="radio-outer {{rewardType === 'multiply' ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{rewardType === 'multiply'}}"></view>
           </view>
-          <text class="panel-title">乘法奖励</text>
+          <text class="modal-title">乘法奖励</text>
         </view>
 
         <!-- 奖励项目列表 -->

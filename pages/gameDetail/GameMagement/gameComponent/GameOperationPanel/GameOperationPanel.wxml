@@ -6,7 +6,7 @@
 >
   <!-- 面板标题 -->
   <view class="panel-header">
-    <text class="panel-title">更多</text>
+    <text class="modal-title">更多</text>
   </view>
 
   <!-- 功能选项网格 -->

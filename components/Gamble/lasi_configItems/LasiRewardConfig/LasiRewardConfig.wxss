@@ -220,7 +220,7 @@
 }
 
 /* 面板标题 */
-.panel-title {
+.modal-title {
 	font-size: 28rpx;
 	font-weight: 600;
 	color: #2c3e50;

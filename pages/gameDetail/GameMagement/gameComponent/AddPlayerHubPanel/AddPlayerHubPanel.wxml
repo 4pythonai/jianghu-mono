@@ -3,7 +3,7 @@
   <view class="panel-container {{isVisible ? 'show' : ''}}" catchtap="stopPropagation">
     <!-- 面板头部 -->
     <view class="panel-header">
-      <text class="panel-title">添加球员</text>
+      <text class="modal-title">添加球员</text>
       <view class="close-btn" bindtap="hide">
         <image class="close-icon" src="/assets/icons/close.svg" mode="aspectFit"></image>
       </view>
@@ -27,4 +27,4 @@
       </view>
     </view>
   </view>
-</view> 
+</view>

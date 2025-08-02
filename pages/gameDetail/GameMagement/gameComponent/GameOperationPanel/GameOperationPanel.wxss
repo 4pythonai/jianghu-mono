@@ -34,7 +34,7 @@
 	padding-bottom: 24rpx;
 }
 
-.panel-title {
+.modal-title {
 	font-size: 36rpx;
 	font-weight: bold;
 	color: #222;

@@ -32,7 +32,7 @@
 	}
 }
 
-.panel-title {
+.modal-title {
 	font-size: 32rpx;
 	font-weight: bold;
 	text-align: center;
