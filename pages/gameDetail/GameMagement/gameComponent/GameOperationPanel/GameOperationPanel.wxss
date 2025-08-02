@@ -10,12 +10,17 @@
 	box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
 	padding: 40rpx 24rpx 32rpx;
 	z-index: 9999;
+	animation: panel-fade-in 0.3s;
 	opacity: 0;
 	pointer-events: none;
+	transform: translateX(-50%) scale(0.98);
+	transition: opacity 0.2s, transform 0.2s;
 }
 .operation-panel.show {
 	opacity: 1;
 	pointer-events: auto;
+	transform: translateX(-50%) scale(1);
+	background-color: red !important;
 }
 .operation-panel[hidden] {
 	display: none !important;

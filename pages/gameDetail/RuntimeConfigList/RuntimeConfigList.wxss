@@ -1,4 +1,8 @@
 /* 游戏(Gamble)模块样式 */
+.add-more-container {
+	margin-top: 30rpx;
+}
+
 .gamble-container {
 	padding: 10px;
 	display: flex;

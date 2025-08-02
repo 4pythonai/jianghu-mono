@@ -249,11 +249,11 @@
 	border-radius: 8rpx;
 }
 
-/* .operation-buttons {
+.operation-buttons {
 	display: flex;
 	margin-left: 20rpx;
 	align-items: center;
 	gap: 16rpx;
-} */
+}
 
 /* 按钮样式已迁移到公共样式文件 */
