@@ -1,4 +1,4 @@
-<view class="kickoff-popup" bindtap="close">
+<view class="modal-mask" bindtap="close">
   <view class="kickoff-content" catchtap="noop">
     <view class="panel-title">跳洞设置</view>
     <!-- 循环渲染 runtimeConfigs -->
@@ -25,10 +25,10 @@
         </view>
       </block>
     </view>
+  </view>
 
-    <view class="kickoff-footer">
-      <button class="kickoff-btn-cancel" bindtap="close">取消</button>
-      <button class="kickoff-btn-confirm" bindtap="onConfirm">确定</button>
-    </view>
+  <view class="modal-actions">
+    <button class="modal-btn cancel" bindtap="close">取消</button>
+    <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
   </view>
 </view>

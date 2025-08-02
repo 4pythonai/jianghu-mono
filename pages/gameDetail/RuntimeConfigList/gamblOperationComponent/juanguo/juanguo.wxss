@@ -1,18 +1,5 @@
 /* 引入公共按钮样式 */
-/* @import "../../../../../../styles/buttons.wxss"; */
-
-.juanguo-popup {
-	position: fixed;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	top: 0;
-	z-index: 9999;
-	background: rgba(0, 0, 0, 0.4);
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-}
+@import "/styles/modal.wxss";
 
 .juanguo-content {
 	width: 100vw;
@@ -24,17 +11,6 @@
 	box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
 	animation: slideUp 0.3s;
 	overflow: auto;
-}
-
-.extra-close-btn {
-	background: #42b883;
-	color: #fff;
-	border-radius: 24rpx;
-	border: none;
-	padding: 20rpx 0;
-	font-size: 32rpx;
-	width: 100%;
-	margin-top: 32rpx;
 }
 
 .radio-item {
@@ -61,14 +37,6 @@
 	}
 }
 
-.panel-title {
-	font-size: 32rpx;
-	font-weight: bold;
-	text-align: center;
-	margin-bottom: 32rpx;
-	border-bottom: 1rpx solid #f0f0f0;
-}
-
 .section {
 	margin-bottom: 32rpx;
 	background: #fafbfc;
@@ -83,16 +51,6 @@
 	margin-bottom: 18rpx;
 	border-left: 6rpx solid #4caf50;
 	padding-left: 16rpx;
-}
-
-.game-item {
-	display: flex;
-	align-items: center;
-	padding: 18rpx 0;
-	border-bottom: 1rpx solid #e0e0e0;
-}
-.game-item:last-child {
-	border-bottom: none;
 }
 
 .input-inline {
