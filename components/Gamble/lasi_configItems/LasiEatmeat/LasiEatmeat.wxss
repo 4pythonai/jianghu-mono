@@ -1,11 +1,13 @@
 @import "/styles/modal.wxss";
 
+
 .modal-list {
+
 	width: 100%;
 	border-radius: 24rpx;
 	padding: 32rpx 24rpx;
-	margin-bottom: 32rpx;
 }
+
 .eat-row {
 	display: flex;
 	align-items: center;
