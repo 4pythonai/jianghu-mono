@@ -1,29 +1,11 @@
-@import "/styles/spec-card.wxss";
 @import "/styles/modal.wxss";
 
-.modal-content {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-
-	width: 100vw;
-	min-height: 50vh;
-	background: #fff;
-	border-top-left-radius: 16rpx;
-	border-top-right-radius: 16rpx;
-	padding: 40rpx 32rpx 32rpx 32rpx;
-	box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
-	animation: slideUp 0.3s;
-	overflow: auto;
-}
-
+ 
 .modal-list {
 	width: 100%;
-	background: #d6eadf;
 	border-radius: 24rpx;
 	padding: 32rpx 24rpx;
 	margin-bottom: 32rpx;
-	box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.1);
 }
 
 .eat-row {
@@ -82,33 +64,8 @@
 	background: #4caf7a;
 }
 
-.modal-actions {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	margin-top: 12rpx;
-	gap: 32rpx;
-}
-
-.modal-btn {
-	flex: 1;
-	height: 64rpx;
-	border-radius: 16rpx;
-	font-size: 28rpx;
-	font-weight: 500;
-	border: none;
-}
-
-.modal-btn.cancel {
-	background: #fff;
-	color: #4caf7a;
-	border: 2rpx solid #4caf7a;
-}
-
-.modal-btn.confirm {
-	background: #4caf7a;
-	color: #fff;
-}
+ 
+ 
 
 .eat-picker {
 	display: inline-block;

@@ -30,7 +30,8 @@
 	padding: 32rpx 24rpx 120rpx 24rpx;
 	z-index: 10000;
 	animation: slideUp .3s;
-	max-height: 70vh;
+	/* 移除固定的max-height，改为自适应 */
+	max-height: ~"calc(100vh - 120rpx)";
 	justify-content: flex-start;
 	align-items: stretch;
 }
