@@ -55,10 +55,12 @@
 	background: linear-gradient(135deg, #4caf50, #45a049);
 	color: #fff;
 	box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.3);
-	height: 100rpx;
+	height: 80rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	border-radius: 16rpx;
+
 }
 
 .btn-primary:active {
