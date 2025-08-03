@@ -1,40 +1,10 @@
-.modal-mask {
-	position: fixed;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.5);
-	z-index: 1000;
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-}
-.modal-content {
-	width: 92vw;
-	background: #fff;
-	border-radius: 36rpx 36rpx 0 0;
-	box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.18);
-	padding: 32rpx 24rpx 24rpx 24rpx;
-	margin-bottom: 0;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-.modal-title {
-	font-size: 36rpx;
-	font-weight: 600;
-	color: #222;
-	margin-bottom: 32rpx;
-	text-align: center;
-}
+@import "/styles/modal.wxss";
+
 .modal-list {
 	width: 100%;
-	background: #d6eadf;
 	border-radius: 24rpx;
 	padding: 32rpx 24rpx;
 	margin-bottom: 32rpx;
-	box-shadow: 0 8rpx 16rpx 0 rgba(0, 0, 0, 0.1);
 }
 .eat-row {
 	display: flex;
@@ -84,30 +54,7 @@
 	border-radius: 50%;
 	background: #4caf7a;
 }
-.modal-actions {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	margin-top: 12rpx;
-	gap: 32rpx;
-}
-.modal-btn {
-	flex: 1;
-	height: 64rpx;
-	border-radius: 16rpx;
-	font-size: 28rpx;
-	font-weight: 500;
-	border: none;
-}
-.modal-btn.cancel {
-	background: #fff;
-	color: #4caf7a;
-	border: 2rpx solid #4caf7a;
-}
-.modal-btn.confirm {
-	background: #4caf7a;
-	color: #fff;
-}
+
 
 /* 新增样式 */
 .eat-picker {
@@ -136,16 +83,7 @@
 	transform: scale(0.95);
 }
 
-.disabled-picker {
-	opacity: 0.5;
-	pointer-events: none;
-}
 
-/* 禁用状态的视觉区分 - 使用更具体的选择器 */
-.modal-item.disabled {
-	opacity: 0.3 !important;
-	background-color: #f0f0f0 !important;
-}
 
 .option-content {
 	display: flex;
@@ -212,11 +150,7 @@
 	box-sizing: border-box;
 }
 
-.form-input.conditionally-disabled {
-	color: #bbb;
-	background: #f0f0f0;
-	border-color: #e0e0e0;
-}
+
 
 .form-select {
 	position: relative;

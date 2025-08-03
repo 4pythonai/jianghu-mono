@@ -1,50 +1,4 @@
-/* 弹窗遮罩层 */
-.modal-mask {
-	position: fixed;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	background: rgba(0, 0, 0, 0.5);
-	z-index: 1000;
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-}
-
-/* 弹窗内容 */
-.modal-content {
-	width: 92vw;
-	background: #fff;
-	border-radius: 36rpx 36rpx 0 0;
-	box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.18);
-	padding: 32rpx 24rpx 24rpx 24rpx;
-	margin-bottom: 0;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	max-height: 80vh;
-	overflow-y: auto;
-}
-
-/* 弹窗标题 */
-.modal-title {
-	font-size: 36rpx;
-	font-weight: 600;
-	color: #222;
-	margin-bottom: 32rpx;
-	text-align: center;
-}
-
-/* 弹窗底部按钮 */
-.modal-actions {
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	margin-top: 12rpx;
-	gap: 32rpx;
-}
-
+@import "/styles/modal.wxss";
 /* 显示部分样式 */
 .rule-section {
 	display: flex;
@@ -58,6 +12,14 @@
 	font-weight: 500;
 	margin-bottom: 8rpx;
 }
+
+
+.reward-title {
+	font-size: 28rpx;
+	font-weight: 600;
+	color: #2c3e50;
+}
+
 
 .form-input {
 	width: 100%;
@@ -171,12 +133,7 @@
 	background: #fff;
 }
 
-/* 面板标题 */
-.modal-title {
-	font-size: 28rpx;
-	font-weight: 600;
-	color: #2c3e50;
-}
+ 
 
 /* 奖励项目列表 */
 .reward-items {
@@ -305,16 +262,4 @@
 	color: #95a5a6;
 }
 
-/* 底部按钮区域样式已迁移到公共样式文件 */
 
-/* 响应式设计 */
-@media (max-width: 750rpx) {
-	.main-content {
-		flex-direction: column;
-		gap: 16rpx;
-	}
-
-	.reward-panel {
-		min-height: 400rpx;
-	}
-}

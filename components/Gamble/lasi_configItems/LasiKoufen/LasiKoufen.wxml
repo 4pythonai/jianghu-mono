@@ -11,7 +11,7 @@
 </view>
 
 <!-- 弹窗部分 -->
-<view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
+<view class="modal-mask" wx:if="{{visible}}" bindtap="onCancel">
   <view class="modal-content" catchtap="noTap">
     <view class="modal-title">包洞规则</view>
     <view class="modal-list">

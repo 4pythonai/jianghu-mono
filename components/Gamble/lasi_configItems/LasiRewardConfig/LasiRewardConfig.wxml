@@ -15,10 +15,9 @@
 </view>
 
 <!-- 弹窗部分 -->
-<view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
+<view class="modal-mask" wx:if="{{visible}}" bindtap="onCancel">
   <view class="modal-content" catchtap>
     <view class="modal-title">奖励规则</view>
-
     <view class="main-content">
       <view
         class="reward-panel {{rewardType === 'add' ? 'active' : 'inactive'}}"
@@ -29,7 +28,7 @@
           <view class="radio-outer {{rewardType === 'add' ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{rewardType === 'add'}}"></view>
           </view>
-          <text class="modal-title">加法奖励</text>
+          <text class="reward-title">加法奖励</text>
         </view>
 
         <view class="reward-items">
@@ -98,7 +97,7 @@
           <view class="radio-outer {{rewardType === 'multiply' ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{rewardType === 'multiply'}}"></view>
           </view>
-          <text class="modal-title">乘法奖励</text>
+          <text class="reward-title">乘法奖励</text>
         </view>
 
         <view class="reward-items">
@@ -124,8 +123,8 @@
     </view>
 
     <view class="modal-actions">
-      <button class="btn btn-cancel" bindtap="onCancel">取消</button>
-      <button class="btn btn-confirm" bindtap="onConfirm">确定</button>
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
     </view>
   </view>
 </view>
