@@ -4,14 +4,21 @@
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
-	padding: 40rpx 32rpx 80rpx 32rpx;
+	align-items: center;
+	padding-top: 40rpx;
+	background-color: #f9fbfa;
+}
+
+/* 内容卡片容器 */
+.rule-config-card {
 	width: 90%;
 	max-width: 700rpx;
 	background: #fff;
 	border-radius: 24rpx;
 	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
 	box-sizing: border-box;
-	margin: 0 auto;
+	padding: 40rpx 32rpx 20rpx 32rpx;
+	margin-bottom: 40rpx;
 }
 
 /* 保留规则名称输入框的样式 */

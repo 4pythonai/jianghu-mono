@@ -1,33 +1,37 @@
 <view class="rule-config-bg">
-  <!-- 规则名称 -->
-  <view class="form-label">规则名称</view>
-  <input class="form-input" model:value="{{user_rulename}}" bindinput="onRuleNameInput" />
+  <view class="rule-config-card">
+    <!-- 规则名称 -->
+    <view class="form-label">规则名称</view>
+    <input class="form-input" model:value="{{user_rulename}}" bindinput="onRuleNameInput" />
 
-  <!-- 拉丝配置 -->
-  <view class="spec-item-wrapper">
-    <LasiKPI bind:kpiConfigChange="onKpiConfigChange" />
+    <!-- 拉丝配置 -->
+    <view class="spec-item-wrapper">
+      <LasiKPI bind:kpiConfigChange="onKpiConfigChange" />
+    </view>
+
+    <!-- 拉丝奖励规则 -->
+    <view class="spec-item-wrapper">
+      <LasiKPIReward id="LasiReward" />
+    </view>
+
+    <!-- 拉丝d顶洞规则 -->
+    <view class="spec-item-wrapper">
+      <LasiDingDong id="LasiDingDong" />
+    </view>
+
+    <!-- 拉丝吃肉规则 -->
+    <view class="spec-item-wrapper">
+      <LasiEatmeat />
+    </view>
+
+    <!-- 拉丝包洞规则 -->
+    <view class="spec-item-wrapper">
+      <LasiKoufen />
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="spec-item-wrapper">
+      <button class="add-btn" bindtap="onAddLasiToMyRules">添加至我的规则</button>
+    </view>
   </view>
-
-  <!-- 拉丝奖励规则 -->
-  <view class="spec-item-wrapper">
-    <LasiKPIReward id="LasiReward" />
-  </view>
-
-  <!-- 拉丝d顶洞规则 -->
-  <view class="spec-item-wrapper">
-    <LasiDingDong id="LasiDingDong" />
-  </view>
-
-  <!-- 拉丝吃肉规则 -->
-  <view class="spec-item-wrapper">
-    <LasiEatmeat />
-  </view>
-
-  <!-- 拉丝包洞规则 -->
-  <view class="spec-item-wrapper">
-    <LasiKoufen />
-  </view>
-
-  <!-- 底部按钮 -->
-  <button class="add-btn" bindtap="onAddLasiToMyRules">添加至我的规则</button>
 </view>

@@ -1,3 +1,5 @@
+@import "/styles/spec-card.wxss";
+
 .rule-config-empty {
 	min-height: 60vh;
 	display: flex;
@@ -7,14 +9,7 @@
 	font-size: 32rpx;
 }
 
-/* 顶部渐变背景 */
-.rule-config-bg {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding-top: 40rpx;
-}
+ 
 
 /* 保留规则名称输入框的样式 */
 .form-label {

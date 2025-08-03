@@ -4,18 +4,24 @@
     <view class="form-label">规则名称</view>
     <input class="form-input" model:value="{{user_rulename}}" bindinput="onRuleNameInput" />
 
-    <view class="section-label">请配置游戏规则</view>
-
     <!-- 扣分规则 -->
-    <E8421Koufen />
+    <view class="spec-item-wrapper">
+      <E8421Koufen />
+    </view>
 
     <!-- 顶洞规则 -->
-    <Draw8421 />
+    <view class="spec-item-wrapper">
+      <Draw8421 />
+    </view>
 
     <!-- 吃肉规则 -->
-    <E8421Meat />
+    <view class="spec-item-wrapper">
+      <E8421Meat />
+    </view>
 
     <!-- 底部按钮 -->
-    <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>
+    <view class="spec-item-wrapper">
+      <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>
+    </view>
   </view>
 </view>
