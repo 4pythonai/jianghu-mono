@@ -1,5 +1,4 @@
 <!-- 吃肉规则配置组件 -->
-<!-- 显示部分 -->
 <view class="rule-section {{isDisabled ? 'disabled' : ''}}" wx:if="{{!visible}}">
   <view class="form-label">吃肉规则</view>
   <view class="form-select" bindtap="onShowConfig">
@@ -11,7 +10,6 @@
   </view>
 </view>
 
-<!-- 弹窗部分 -->
 <view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
   <view class="modal-content" catchtap="noop">
     <view class="modal-title">吃肉规则</view>
@@ -23,7 +21,7 @@
       <block wx:for="{{eatRangeKeys}}" wx:key="index">
         <view class="eat-row">
           <view class="eat-label">{{eatRangeLabels[item]}}</view>
-          <!-- 改为滚轮选择器 -->
+
           <picker
             class="eat-picker"
             range="{{eatValueRange}}"
@@ -88,7 +86,6 @@
             <text wx:elif="{{index === 1 && topSelected === 1}}"></text>
             <text wx:elif="{{index === 1 && topSelected !== 1}}">{{topScoreLimit}}分封顶</text>
 
-            <!-- 封顶分数选择器 -->
             <picker
               wx:if="{{index === 1 && topSelected === 1}}"
               class="score-picker"

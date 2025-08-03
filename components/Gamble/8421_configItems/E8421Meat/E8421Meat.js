@@ -70,7 +70,6 @@ Component({
     checkDisabledState() {
       const isDisabled = G4P8421Store.drawConfig === 'NoDraw';
       this.setData({ isDisabled });
-      console.log('吃肉组件禁用状态:', isDisabled);
     },
 
     // 计算显示值
@@ -115,8 +114,6 @@ Component({
       this.setData({
         displayValue: displayValue
       });
-
-      console.log('吃肉规则显示值已更新:', displayValue);
     },
 
     // 从store初始化配置
@@ -158,13 +155,11 @@ Component({
 
         // 保存默认配置到store
         G4P8421Store.updateEatmeatRule(defaultEatingRange, 'MEAT_AS_1', 10000000);
-        console.log('使用默认吃肉配置:', defaultEatingRange);
       }
     },
     // 解析存储的配置
     parseStoredConfig(config) {
       const { eatingRange, meatValue, meatMaxValue } = config;
-      console.log('从store加载吃肉配置:', config);
 
       // 解析吃肉数量配置 - 新格式:JSON对象
       if (eatingRange && typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
@@ -213,7 +208,6 @@ Component({
       const newEatingRange = { ...this.data.eatingRange };
       newEatingRange[key] = value;
       this.setData({ eatingRange: newEatingRange });
-      console.log('更新吃肉配置:', key, value);
     },
 
     onMeatValueChange(e) {
@@ -225,17 +219,11 @@ Component({
     onMeatScoreChange(e) {
       const value = this.data.meatScoreRange[e.detail.value];
       this.setData({ meatScoreValue: value });
-      console.log('更新肉分值:', value);
     },
 
     onTopSelect(e) {
-      console.log('🎯 onTopSelect 被调用了！', e);
-      console.log('当前meatValueOption:', this.data.meatValueOption);
-      console.log('点击的index:', e.currentTarget.dataset.index);
-
       // 如果肉分值选项不是"分值翻倍"，则不处理点击事件
       if (this.data.meatValueOption !== 1) {
-        console.log('肉分值选项不是"分值翻倍"，忽略点击事件');
         wx.showToast({
           title: '请先选择"分值翻倍"',
           icon: 'none',
@@ -243,7 +231,6 @@ Component({
         });
         return;
       }
-      console.log('设置topSelected为:', e.currentTarget.dataset.index);
       this.setData({ topSelected: e.currentTarget.dataset.index });
     },
 
