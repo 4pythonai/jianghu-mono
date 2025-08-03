@@ -92,19 +92,19 @@
         <view class="condition-title">包洞条件</view>
         <view class="condition-options">
           <view
-            class="condition-option {{holeCondition === 'partner_tops' ? 'selected' : ''}}"
+            class="condition-option {{holeCondition === 'PARTNET_HEADHEAD' ? 'selected' : ''}}"
             bindtap="{{holeRuleType === 'no_hole' ? 'noTap' : 'onHoleConditionChange'}}"
-            data-condition="partner_tops"
+            data-condition="PARTNET_HEADHEAD"
           >
-            <view class="radio-dot {{holeCondition === 'partner_tops' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{holeCondition === 'PARTNET_HEADHEAD' ? 'selected' : ''}}"></view>
             <text class="condition-text">同伴顶头包洞</text>
           </view>
           <view
-            class="condition-option {{holeCondition === 'irrelevant' ? 'selected' : ''}}"
+            class="condition-option {{holeCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"
             bindtap="{{holeRuleType === 'no_hole' ? 'noTap' : 'onHoleConditionChange'}}"
-            data-condition="irrelevant"
+            data-condition="PARTNET_IGNORE"
           >
-            <view class="radio-dot {{holeCondition === 'irrelevant' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{holeCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"></view>
             <text class="condition-text">与同伴成绩无关</text>
           </view>
         </view>

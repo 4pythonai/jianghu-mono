@@ -51,8 +51,8 @@ export const G4PLasiStore = observable({
         enabled: false,
         // 包洞规则类型: 'no_hole' | 'double_par_plus_1' | 'plus_4' | 'stroke_diff_3'
         holeRuleType: 'no_hole',
-        // 包洞条件: 'partner_tops' | 'irrelevant'
-        holeCondition: 'partner_tops'
+        // 包洞条件: 'PARTNET_HEADHEAD' | 'PARTNET_IGNORE'
+        holeCondition: 'PARTNET_HEADHEAD'
     },
 
     // 更新拉丝配置的action
@@ -110,7 +110,7 @@ export const G4PLasiStore = observable({
         this.lasi_baodong_config = {
             enabled: false,
             holeRuleType: 'no_hole',
-            holeCondition: 'partner_tops'
+            holeCondition: 'PARTNET_HEADHEAD'
         };
         // 重置吃肉相关属性
         this.eatingRange = {

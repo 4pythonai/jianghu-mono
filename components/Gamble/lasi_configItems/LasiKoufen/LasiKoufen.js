@@ -12,8 +12,8 @@ Component({
 
     // 包洞规则类型: 'no_hole' | 'double_par_plus_x' | 'par_plus_x' | 'stroke_diff_x'
     holeRuleType: 'no_hole',
-    // 包洞条件: 'partner_tops' | 'irrelevant'
-    holeCondition: 'partner_tops',
+    // 包洞条件: 'PARTNET_HEADHEAD' | 'PARTNET_IGNORE'
+    holeCondition: 'PARTNET_HEADHEAD',
 
     // 可编辑的数字变量 - 参考E8421Meat.js的变量命名方式
     doubleParPlusValue: 1, // 双帕+X中的X值，默认1
@@ -62,10 +62,10 @@ Component({
       // 格式化包洞条件显示
       let conditionText = '';
       switch (holeCondition) {
-        case 'partner_tops':
+        case 'PARTNET_HEADHEAD':
           conditionText = '同伴顶头包洞';
           break;
-        case 'irrelevant':
+        case 'PARTNET_IGNORE':
           conditionText = '与同伴成绩无关';
           break;
         default:
@@ -121,7 +121,7 @@ Component({
 
       this.setData({
         holeRuleType: holeRuleType,
-        holeCondition: config.holeCondition || 'partner_tops',
+        holeCondition: config.holeCondition || 'PARTNET_HEADHEAD',
         doubleParPlusValue: doubleParPlusValue,
         parPlusValue: parPlusValue,
         strokeDiffValue: strokeDiffValue
@@ -280,7 +280,7 @@ Component({
     resetConfig() {
       this.setData({
         holeRuleType: 'no_hole',
-        holeCondition: 'partner_tops',
+        holeCondition: 'PARTNET_HEADHEAD',
         doubleParPlusValue: 1,
         parPlusValue: 4,
         strokeDiffValue: 3
