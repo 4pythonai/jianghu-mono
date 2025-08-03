@@ -1,0 +1,65 @@
+
+/* 主容器背景 */
+.rule-config-bg {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	padding: 40rpx 32rpx 80rpx 32rpx;
+	width: 90%;
+	max-width: 700rpx;
+	background: #fff;
+	border-radius: 24rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+	box-sizing: border-box;
+	margin: 0 auto;
+}
+
+/* 保留规则名称输入框的样式 */
+.form-label {
+	font-size: 28rpx;
+	color: #222;
+	font-weight: 500;
+	margin-bottom: 16rpx;
+}
+
+.form-input {
+	width: 100%;
+	height: 64rpx;
+	background: #f8f8f8;
+	border: 2rpx solid #4caf7a;
+	border-radius: 16rpx;
+	font-size: 28rpx;
+	color: #888;
+	padding: 0 24rpx;
+	margin-bottom: 0;
+	box-sizing: border-box;
+}
+
+.section-label {
+	font-size: 28rpx;
+	color: #666;
+	margin-bottom: 16rpx;
+}
+
+.add-btn {
+	width: 100%;
+	height: 72rpx;
+	background: #4caf7a;
+	color: #fff;
+	font-size: 32rpx;
+	border: none;
+	border-radius: 16rpx;
+	margin-top: 48rpx;
+	font-weight: 600;
+	box-shadow: 0 4rpx 16rpx 0 rgba(76, 175, 122, 0.12);
+}
+
+.add-btn:active {
+	background: #388e3c;
+}
+
+.spec-item-wrapper {
+	margin-top: 20rpx;
+	margin-bottom: 14rpx;
+	width: 100%;
+}

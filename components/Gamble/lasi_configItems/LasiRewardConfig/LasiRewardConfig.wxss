@@ -45,27 +45,6 @@
 	gap: 32rpx;
 }
 
-.modal-btn {
-	flex: 1;
-	height: 64rpx;
-	border-radius: 16rpx;
-	font-size: 28rpx;
-	font-weight: 500;
-	border: none;
-}
-
-.modal-btn.cancel {
-	background: #fff;
-	color: #4caf7a;
-	border: 2rpx solid #4caf7a;
-}
-
-.modal-btn.confirm {
-	background: #4caf7a;
-	color: #fff;
-	margin-left: 0;
-}
-
 /* 显示部分样式 */
 .rule-section {
 	display: flex;
@@ -129,34 +108,7 @@
 	font-weight: bold;
 }
 
-/* 配置区域容器 */
-.config-section {
-	background: #fff;
-	border-radius: 24rpx;
-	margin-bottom: 24rpx;
-	overflow: hidden;
-	box-shadow: 0 2rpx 8rpx 0 rgba(0, 0, 0, 0.04);
-	padding: 16rpx 12rpx;
-}
 
-/* 标题栏 */
-.section-header {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-bottom: 20rpx;
-}
-
-.header-left {
-	display: flex;
-	align-items: center;
-}
-
-.section-title {
-	font-size: 36rpx;
-	font-weight: 600;
-	color: #2c3e50;
-}
 
 /* 主要内容区域 */
 .main-content {
@@ -364,14 +316,5 @@
 
 	.reward-panel {
 		min-height: 400rpx;
-	}
-
-	.bottom-buttons {
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.bottom-buttons button {
-		max-width: 300rpx;
 	}
 }
