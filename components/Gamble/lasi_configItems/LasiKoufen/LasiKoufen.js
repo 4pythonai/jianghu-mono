@@ -11,8 +11,8 @@ Component({
     displayValue: '请配置包洞规则',
 
     // 包洞规则类型: 'NODUTY' | 'DoublePar+11' | 'ParP+4' | 'ScoreDiff_3'    
-    // 包洞条件: 'PARTNET_HEADHEAD' | 'PARTNET_IGNORE'
-    DutyCondition: 'PARTNET_HEADHEAD',
+    // 包洞条件: 'DUTY_DINGTOU' | 'PARTNET_IGNORE'
+    DutyCondition: 'DUTY_DINGTOU',
 
     // 可编辑的数字变量 - 参考E8421Meat.js的变量命名方式
     doubleParPlusValue: 1, // 双帕+X中的X值，默认1
@@ -61,7 +61,7 @@ Component({
       // 格式化包洞条件显示
       let conditionText = '';
       switch (DutyCondition) {
-        case 'PARTNET_HEADHEAD':
+        case 'DUTY_DINGTOU':
           conditionText = '同伴顶头包洞';
           break;
         case 'PARTNET_IGNORE':
@@ -120,7 +120,7 @@ Component({
 
       this.setData({
         dutyConfig: dutyConfig,
-        DutyCondition: config.DutyCondition || 'PARTNET_HEADHEAD',
+        DutyCondition: config.DutyCondition || 'DUTY_DINGTOU',
         doubleParPlusValue: doubleParPlusValue,
         parPlusValue: parPlusValue,
         strokeDiffValue: strokeDiffValue
@@ -278,7 +278,7 @@ Component({
     resetConfig() {
       this.setData({
         dutyConfig: 'NODUTY',
-        DutyCondition: 'PARTNET_HEADHEAD',
+        DutyCondition: 'DUTY_DINGTOU',
         doubleParPlusValue: 1,
         parPlusValue: 4,
         strokeDiffValue: 3
