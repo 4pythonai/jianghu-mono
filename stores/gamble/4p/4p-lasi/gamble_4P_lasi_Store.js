@@ -48,10 +48,10 @@ export const G4PLasiStore = observable({
 
     // 拉丝包洞规则
     lasi_baodong_config: {
-        // 包洞规则类型: 'no_hole' | 'double_par_plus_1' | 'plus_4' | 'stroke_diff_3'
-        holeRuleType: 'no_hole',
+        // 包洞规则类型: 'NODUTY' | 'double_par_plus_1' | 'plus_4' | 'stroke_diff_3'
+        dutyConfig: 'NODUTY',
         // 包洞条件: 'PARTNET_HEADHEAD' | 'PARTNET_IGNORE'
-        holeCondition: 'PARTNET_HEADHEAD'
+        DutyCondition: 'PARTNET_HEADHEAD'
     },
 
     // 更新拉丝配置的action
@@ -107,8 +107,8 @@ export const G4PLasiStore = observable({
         this.lasi_reward_config = REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG;
         this.lasi_dingdong_config = 'DrawEqual';
         this.lasi_baodong_config = {
-            holeRuleType: 'no_hole',
-            holeCondition: 'PARTNET_HEADHEAD'
+            dutyConfig: 'NODUTY',
+            DutyCondition: 'PARTNET_HEADHEAD'
         };
         // 重置吃肉相关属性
         this.eatingRange = {

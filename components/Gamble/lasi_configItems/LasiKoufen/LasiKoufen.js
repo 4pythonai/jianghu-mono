@@ -10,10 +10,10 @@ Component({
     visible: false,
     displayValue: '请配置包洞规则',
 
-    // 包洞规则类型: 'no_hole' | 'double_par_plus_x' | 'par_plus_x' | 'stroke_diff_x'
-    holeRuleType: 'no_hole',
+    // 包洞规则类型: 'NODUTY' | 'double_par_plus_x' | 'par_plus_x' | 'stroke_diff_x'
+    dutyConfig: 'NODUTY',
     // 包洞条件: 'PARTNET_HEADHEAD' | 'PARTNET_IGNORE'
-    holeCondition: 'PARTNET_HEADHEAD',
+    DutyCondition: 'PARTNET_HEADHEAD',
 
     // 可编辑的数字变量 - 参考E8421Meat.js的变量命名方式
     doubleParPlusValue: 1, // 双帕+X中的X值，默认1
@@ -37,13 +37,13 @@ Component({
   methods: {
     // 计算显示值
     updateDisplayValue() {
-      const { holeRuleType, holeCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
+      const { dutyConfig, DutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
       let displayValue = '';
 
       // 格式化包洞规则显示 - 使用动态数值
       let ruleText = '';
-      switch (holeRuleType) {
-        case 'no_hole':
+      switch (dutyConfig) {
+        case 'NODUTY':
           ruleText = '不包洞';
           break;
         case 'double_par_plus_x':
@@ -61,7 +61,7 @@ Component({
 
       // 格式化包洞条件显示
       let conditionText = '';
-      switch (holeCondition) {
+      switch (DutyCondition) {
         case 'PARTNET_HEADHEAD':
           conditionText = '同伴顶头包洞';
           break;
@@ -73,7 +73,7 @@ Component({
       }
 
       // 组合显示值
-      if (holeRuleType === 'no_hole') {
+      if (dutyConfig === 'NODUTY') {
         displayValue = ruleText;
       } else {
         displayValue = `${ruleText}/${conditionText}`;
@@ -91,28 +91,28 @@ Component({
       const config = G4PLasiStore.lasi_baodong_config || {};
 
       // 解析配置，支持新格式
-      let holeRuleType = config.holeRuleType || 'no_hole';
+      let dutyConfig = config.dutyConfig || 'NODUTY';
       let doubleParPlusValue = 1;
       let parPlusValue = 4;
       let strokeDiffValue = 3;
 
       // 解析规则类型和数值
-      if (config.holeRuleType) {
-        if (config.holeRuleType.startsWith('double_par_plus_')) {
-          holeRuleType = 'double_par_plus_x';
-          const value = parseInt(config.holeRuleType.replace('double_par_plus_', ''));
+      if (config.dutyConfig) {
+        if (config.dutyConfig.startsWith('double_par_plus_')) {
+          dutyConfig = 'double_par_plus_x';
+          const value = parseInt(config.dutyConfig.replace('double_par_plus_', ''));
           if (!isNaN(value)) {
             doubleParPlusValue = value;
           }
-        } else if (config.holeRuleType.startsWith('par_plus_')) {
-          holeRuleType = 'par_plus_x';
-          const value = parseInt(config.holeRuleType.replace('par_plus_', ''));
+        } else if (config.dutyConfig.startsWith('par_plus_')) {
+          dutyConfig = 'par_plus_x';
+          const value = parseInt(config.dutyConfig.replace('par_plus_', ''));
           if (!isNaN(value)) {
             parPlusValue = value;
           }
-        } else if (config.holeRuleType.startsWith('stroke_diff_')) {
-          holeRuleType = 'stroke_diff_x';
-          const value = parseInt(config.holeRuleType.replace('stroke_diff_', ''));
+        } else if (config.dutyConfig.startsWith('stroke_diff_')) {
+          dutyConfig = 'stroke_diff_x';
+          const value = parseInt(config.dutyConfig.replace('stroke_diff_', ''));
           if (!isNaN(value)) {
             strokeDiffValue = value;
           }
@@ -120,8 +120,8 @@ Component({
       }
 
       this.setData({
-        holeRuleType: holeRuleType,
-        holeCondition: config.holeCondition || 'PARTNET_HEADHEAD',
+        dutyConfig: dutyConfig,
+        DutyCondition: config.DutyCondition || 'PARTNET_HEADHEAD',
         doubleParPlusValue: doubleParPlusValue,
         parPlusValue: parPlusValue,
         strokeDiffValue: strokeDiffValue
@@ -142,17 +142,17 @@ Component({
     onHoleRuleChange(e) {
       const { type } = e.currentTarget.dataset;
       this.setData({
-        holeRuleType: type
+        dutyConfig: type
       });
 
       this.printCurrentConfig();
     },
 
     // 包洞条件变化
-    onHoleConditionChange(e) {
+    onDutyConditionChange(e) {
       const { condition } = e.currentTarget.dataset;
       this.setData({
-        holeCondition: condition
+        DutyCondition: condition
       });
 
       this.printCurrentConfig();
@@ -211,11 +211,11 @@ Component({
 
     // 获取当前配置
     getCurrentConfig() {
-      const { holeRuleType, holeCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
+      const { dutyConfig, DutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
 
       // 构建规则类型字符串，包含数值
-      let ruleTypeString = holeRuleType;
-      switch (holeRuleType) {
+      let ruleTypeString = dutyConfig;
+      switch (dutyConfig) {
         case 'double_par_plus_x':
           ruleTypeString = `double_par_plus_${doubleParPlusValue}`;
           break;
@@ -228,8 +228,8 @@ Component({
       }
 
       return {
-        holeRuleType: ruleTypeString,
-        holeCondition,
+        dutyConfig: ruleTypeString,
+        DutyCondition,
         customValues: {
           doubleParPlusValue,
           parPlusValue,
@@ -243,20 +243,20 @@ Component({
       const config = this.getCurrentConfig();
       console.log('🎯 [LasiBaodong] ===== 当前包洞配置 =====');
       console.log('🎯 [LasiBaodong] 配置对象:', config);
-      console.log('🎯 [LasiBaodong] 包洞规则类型:', config.holeRuleType);
-      console.log('🎯 [LasiBaodong] 包洞条件:', config.holeCondition);
-      console.log('🎯 [LasiBaodong] 是否启用:', config.holeRuleType !== 'no_hole');
+      console.log('🎯 [LasiBaodong] 包洞规则类型:', config.dutyConfig);
+      console.log('🎯 [LasiBaodong] 包洞条件:', config.DutyCondition);
+      console.log('🎯 [LasiBaodong] 是否启用:', config.dutyConfig !== 'NODUTY');
       console.log('🎯 [LasiBaodong] 自定义数值:', config.customValues);
       console.log('🎯 [LasiBaodong] ========================');
     },
 
     // 设置配置
     setConfig(config) {
-      if (config.holeRuleType) {
-        this.setData({ holeRuleType: config.holeRuleType });
+      if (config.dutyConfig) {
+        this.setData({ dutyConfig: config.dutyConfig });
       }
-      if (config.holeCondition) {
-        this.setData({ holeCondition: config.holeCondition });
+      if (config.DutyCondition) {
+        this.setData({ DutyCondition: config.DutyCondition });
       }
       if (config.customValues) {
         const { doubleParPlusValue, parPlusValue, strokeDiffValue } = config.customValues;
@@ -278,8 +278,8 @@ Component({
     // 重置配置
     resetConfig() {
       this.setData({
-        holeRuleType: 'no_hole',
-        holeCondition: 'PARTNET_HEADHEAD',
+        dutyConfig: 'NODUTY',
+        DutyCondition: 'PARTNET_HEADHEAD',
         doubleParPlusValue: 1,
         parPlusValue: 4,
         strokeDiffValue: 3

@@ -20,62 +20,62 @@
       <view class="rule-section">
         <view class="rule-options">
           <view
-            class="rule-option {{holeRuleType === 'no_hole' ? 'selected' : ''}}"
+            class="rule-option {{dutyConfig === 'NODUTY' ? 'selected' : ''}}"
             bindtap="onHoleRuleChange"
-            data-type="no_hole"
+            data-type="NODUTY"
           >
-            <view class="radio-dot {{holeRuleType === 'no_hole' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{dutyConfig === 'NODUTY' ? 'selected' : ''}}"></view>
             <text class="rule-text">不包洞</text>
           </view>
           <view
-            class="rule-option {{holeRuleType === 'double_par_plus_x' ? 'selected' : ''}}"
+            class="rule-option {{dutyConfig === 'double_par_plus_x' ? 'selected' : ''}}"
             bindtap="onHoleRuleChange"
             data-type="double_par_plus_x"
           >
-            <view class="radio-dot {{holeRuleType === 'double_par_plus_x' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{dutyConfig === 'double_par_plus_x' ? 'selected' : ''}}"></view>
             <text class="rule-text">双帕+</text>
             <picker
               class="number-picker"
               range="{{doubleParPlusRange}}"
               value="{{doubleParPlusValue}}"
               bindchange="onDoubleParPlusChange"
-              disabled="{{holeRuleType !== 'double_par_plus_x'}}"
+              disabled="{{dutyConfig !== 'double_par_plus_x'}}"
             >
               <text class="picker-value">{{doubleParPlusValue}}</text>
             </picker>
             <text class="rule-text">包洞</text>
           </view>
           <view
-            class="rule-option {{holeRuleType === 'par_plus_x' ? 'selected' : ''}}"
+            class="rule-option {{dutyConfig === 'par_plus_x' ? 'selected' : ''}}"
             bindtap="onHoleRuleChange"
             data-type="par_plus_x"
           >
-            <view class="radio-dot {{holeRuleType === 'par_plus_x' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{dutyConfig === 'par_plus_x' ? 'selected' : ''}}"></view>
             <text class="rule-text">帕+</text>
             <picker
               class="number-picker"
               range="{{parPlusRange}}"
               value="{{parPlusValue}}"
               bindchange="onParPlusChange"
-              disabled="{{holeRuleType !== 'par_plus_x'}}"
+              disabled="{{dutyConfig !== 'par_plus_x'}}"
             >
               <text class="picker-value">{{parPlusValue}}</text>
             </picker>
             <text class="rule-text">包洞</text>
           </view>
           <view
-            class="rule-option {{holeRuleType === 'stroke_diff_x' ? 'selected' : ''}}"
+            class="rule-option {{dutyConfig === 'stroke_diff_x' ? 'selected' : ''}}"
             bindtap="onHoleRuleChange"
             data-type="stroke_diff_x"
           >
-            <view class="radio-dot {{holeRuleType === 'stroke_diff_x' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{dutyConfig === 'stroke_diff_x' ? 'selected' : ''}}"></view>
             <text class="rule-text">杆差</text>
             <picker
               class="number-picker"
               range="{{strokeDiffRange}}"
               value="{{strokeDiffValue - 1}}"
               bindchange="onStrokeDiffChange"
-              disabled="{{holeRuleType !== 'stroke_diff_x'}}"
+              disabled="{{dutyConfig !== 'stroke_diff_x'}}"
             >
               <text class="picker-value">{{strokeDiffValue}}</text>
             </picker>
@@ -88,23 +88,23 @@
       <view class="modal-divider"></view>
 
       <!-- 包洞条件 -->
-      <view class="condition-section {{holeRuleType === 'no_hole' ? 'disabled' : ''}}">
+      <view class="condition-section {{dutyConfig === 'NODUTY' ? 'disabled' : ''}}">
         <view class="condition-title">包洞条件</view>
         <view class="condition-options">
           <view
-            class="condition-option {{holeCondition === 'PARTNET_HEADHEAD' ? 'selected' : ''}}"
-            bindtap="{{holeRuleType === 'no_hole' ? 'noTap' : 'onHoleConditionChange'}}"
+            class="condition-option {{DutyCondition === 'PARTNET_HEADHEAD' ? 'selected' : ''}}"
+            bindtap="{{dutyConfig === 'NODUTY' ? 'noTap' : 'onDutyConditionChange'}}"
             data-condition="PARTNET_HEADHEAD"
           >
-            <view class="radio-dot {{holeCondition === 'PARTNET_HEADHEAD' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{DutyCondition === 'PARTNET_HEADHEAD' ? 'selected' : ''}}"></view>
             <text class="condition-text">同伴顶头包洞</text>
           </view>
           <view
-            class="condition-option {{holeCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"
-            bindtap="{{holeRuleType === 'no_hole' ? 'noTap' : 'onHoleConditionChange'}}"
+            class="condition-option {{DutyCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"
+            bindtap="{{dutyConfig === 'NODUTY' ? 'noTap' : 'onDutyConditionChange'}}"
             data-condition="PARTNET_IGNORE"
           >
-            <view class="radio-dot {{holeCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{DutyCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"></view>
             <text class="condition-text">与同伴成绩无关</text>
           </view>
         </view>
