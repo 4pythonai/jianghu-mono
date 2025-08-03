@@ -11,7 +11,7 @@
       />
     </view>
 
-    <view class="section-title">请选择洞号及倍数</view>
+    <view class="section-title">请选择洞号</view>
     <view class="hole-list">
       <block wx:for="{{holePlayList}}" wx:key="index">
         <view

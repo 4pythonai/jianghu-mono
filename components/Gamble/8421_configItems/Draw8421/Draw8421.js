@@ -103,6 +103,7 @@ Component({
     },
 
     onShowConfig() {
+      // 直接显示弹窗，因为已经用view替代了input
       this.setData({ visible: true });
       // 只在第一次显示时重新加载配置，避免覆盖用户选择
       if (this.data.selected === 0 && !G4P8421Store.drawConfig) {

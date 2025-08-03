@@ -132,6 +132,7 @@ Component({
 
     // 显示配置弹窗
     onShowConfig() {
+      // 直接显示弹窗，因为已经用view替代了input
       this.setData({ visible: true });
       // 每次显示时重新加载配置
       this.loadConfigFromStore();

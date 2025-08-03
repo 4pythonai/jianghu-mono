@@ -1,6 +1,45 @@
 @import "/styles/modal.wxss";
 
- 
+/* 当弹窗显示时，隐藏底层的input元素 */
+.modal-mask ~ .rule-section {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateZ(-1px);
+  position: relative;
+  z-index: -1;
+}
+
+/* 确保弹窗显示时input元素完全不可见 */
+.modal-mask ~ .rule-section .form-input-simulator {
+  opacity: 0;
+  visibility: hidden;
+  caret-color: transparent;
+  background: transparent;
+  border-color: transparent;
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* 弹窗显示时，确保遮罩层完全覆盖 */
+.modal-mask {
+  z-index: 99999;
+  /* 真机上的额外保障 */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* 弹窗内容层级更高 */
+.modal-content {
+  z-index: 100000;
+  /* 真机上的额外保障 */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
 .modal-list {
 	width: 100%;
 	border-radius: 24rpx;
@@ -112,6 +151,35 @@
 	right: 80rpx;
 	color: #999;
 	font-size: 24rpx;
+}
+
+/* 模拟input的样式，避免真机上的光标问题 */
+.form-input-simulator {
+	width: 100%;
+	height: 64rpx;
+	background: #f8f8f8;
+	border: 2rpx solid #4caf7a;
+	border-radius: 16rpx;
+	font-size: 28rpx;
+	color: #888;
+	padding: 0 24rpx;
+	margin-bottom: 0;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	line-height: 64rpx;
+	/* 确保不会有任何光标或焦点效果 */
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+	pointer-events: none;
+}
+
+.form-input-simulator.conditionally-disabled {
+	color: #bbb;
+	background: #f0f0f0;
+	border-color: #e0e0e0;
 }
 
 .form-select {

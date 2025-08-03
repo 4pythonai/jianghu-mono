@@ -9,7 +9,7 @@ Component({
     // 组件内部状态
     visible: false,
     displayValue: '请配置吃肉规则',
-    isDisabled: false, // 新增：禁用状态
+    isDisabled: false,
 
     // 直接使用固定的默认配置
     eatingRange: {
@@ -63,13 +63,6 @@ Component({
       if (this._storeReaction) {
         this._storeReaction();
       }
-    }
-  },
-  // 属性变化监听
-  observers: {
-    'noKoufen': function (noKoufen) {
-      // 当noKoufen变化时，更新显示值
-      this.updateDisplayValue();
     }
   },
   methods: {
@@ -155,7 +148,13 @@ Component({
           "Par": 1,
           "WorseThanPar": 1
         };
-        this.setData({ eatingRange: defaultEatingRange });
+
+        // 设置默认的组件状态
+        this.setData({
+          eatingRange: defaultEatingRange,
+          meatValueOption: 0,  // 默认选择"肉算X分"
+          meatScoreValue: 1    // 默认肉分值为1
+        });
 
         // 保存默认配置到store
         G4P8421Store.updateEatmeatRule(defaultEatingRange, 'MEAT_AS_1', 10000000);
@@ -182,8 +181,16 @@ Component({
           this.setData({ meatScoreValue: score || 1 });
         } else if (meatValue === 'SINGLE_DOUBLE') {
           meatValueOption = 1;
+          // 确保meatScoreValue有默认值
+          if (!this.data.meatScoreValue || this.data.meatScoreValue < 1) {
+            this.setData({ meatScoreValue: 1 });
+          }
         } else if (meatValue === 'CONTINUE_DOUBLE') {
           meatValueOption = 2;
+          // 确保meatScoreValue有默认值
+          if (!this.data.meatScoreValue || this.data.meatScoreValue < 1) {
+            this.setData({ meatScoreValue: 1 });
+          }
         }
         this.setData({ meatValueOption });
       }
@@ -210,7 +217,6 @@ Component({
     },
 
     onMeatValueChange(e) {
-      console.log('onMeatValueChange 💞💞💞💞💞💞💞💞💞💞💞💞💞', e);
       const index = Number.parseInt(e.currentTarget.dataset.index);
       this.setData({ meatValueOption: index });
     },
@@ -245,8 +251,8 @@ Component({
     noop() {
       // 什么都不做，只是阻止事件冒泡
     },
-    // 封顶分数改变
 
+    // 封顶分数改变
     onTopScoreChange(e) {
       const value = this.data.topScoreRange[e.detail.value];
       this.setData({ topScoreLimit: value });

@@ -3,11 +3,8 @@
 <view class="rule-section" wx:if="{{!visible}}">
   <view class="form-label">顶洞规则</view>
   <view class="form-select" bindtap="onShowConfig">
-    <input
-      class="form-input {{disabled ? 'conditionally-disabled' : ''}}"
-      value="{{displayValue}}"
-      disabled="{{disabled}}"
-    />
+    <!-- 使用view模拟input，避免真机上的光标问题 -->
+    <view class="form-input-simulator {{disabled ? 'conditionally-disabled' : ''}}">{{displayValue}}</view>
     <view class="select-arrow">
       <text class="arrow-circle">▼</text>
     </view>

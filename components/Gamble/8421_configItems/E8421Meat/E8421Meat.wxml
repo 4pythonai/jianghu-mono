@@ -3,7 +3,8 @@
 <view class="rule-section {{isDisabled ? 'disabled' : ''}}" wx:if="{{!visible}}">
   <view class="form-label">吃肉规则</view>
   <view class="form-select" bindtap="onShowConfig">
-    <input class="form-input" value="{{displayValue}}" disabled="{{isDisabled}}" />
+    <!-- 使用view模拟input，避免真机上的光标问题 -->
+    <view class="form-input-simulator">{{displayValue}}</view>
     <view class="select-arrow">
       <text class="arrow-circle">▼</text>
     </view>
@@ -52,6 +53,7 @@
           >
             <view class="picker-value">{{meatScoreValue}}</view>
           </picker>
+          <text wx:if="{{meatValueOption !== 0}}">{{meatScoreValue}}</text>
           <text>分</text>
         </view>
       </view>
