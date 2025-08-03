@@ -1,7 +1,6 @@
 /* 添加规则组件样式 */
 .add-rule-container {
 	min-height: 100vh;
-	background-color: #efede8;
 	padding-bottom: 30rpx;
 }
 

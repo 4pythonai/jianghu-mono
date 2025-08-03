@@ -1,19 +1,17 @@
-.rule-config-empty {
-	min-height: 60vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: #f9fbfa;
-	font-size: 32rpx;
-}
 
-/* 顶部渐变背景 */
+/* 主容器背景 */
 .rule-config-bg {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	padding-top: 40rpx;
+	padding: 40rpx 32rpx 80rpx 32rpx;
+	width: 90%;
+	max-width: 700rpx;
+	background: #fff;
+	border-radius: 24rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+	box-sizing: border-box;
+	margin: 0 auto;
 }
 
 /* 保留规则名称输入框的样式 */
@@ -58,4 +56,10 @@
 
 .add-btn:active {
 	background: #388e3c;
+}
+
+.spec-item-wrapper {
+	margin-top: 20rpx;
+	margin-bottom: 10rpx;
+	width: 100%;
 }

@@ -286,7 +286,7 @@
 
 /* ===== 响应式设计 ===== */
 
-@media (max-width: 750rpx) {
+/* @media (max-width: 750rpx) {
 	.btn-medium {
 		height: 88rpx;
 		font-size: 30rpx;
@@ -296,7 +296,7 @@
 		height: 110rpx;
 		font-size: 34rpx;
 	}
-}
+} */
 
 /* ===== 兼容性处理 ===== */
 
