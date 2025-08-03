@@ -34,8 +34,8 @@ Component({
             let displayValue = '';
 
             // 映射英文格式到中文显示
-            if (store.lasi_dingdong_config?.type) {
-                switch (store.lasi_dingdong_config.type) {
+            if (store.lasi_dingdong_config) {
+                switch (store.lasi_dingdong_config) {
                     case 'DrawEqual':
                         displayValue = '得分打平';
                         break;
@@ -47,11 +47,11 @@ Component({
                         break;
                     default:
                         // 处理 Diff_X 格式
-                        if (store.lasi_dingdong_config.type.startsWith('Diff_')) {
-                            const score = store.lasi_dingdong_config.type.replace('Diff_', '');
+                        if (store.lasi_dingdong_config.startsWith('Diff_')) {
+                            const score = store.lasi_dingdong_config.replace('Diff_', '');
                             displayValue = `得分${score}分以内`;
                         } else {
-                            displayValue = store.lasi_dingdong_config.type;
+                            displayValue = store.lasi_dingdong_config;
                         }
                         break;
                 }
@@ -67,7 +67,7 @@ Component({
         },
 
         syncSelectedFromStore() {
-            const currentValue = G4PLasiStore.lasi_dingdong_config?.type;
+            const currentValue = G4PLasiStore.lasi_dingdong_config;
             console.log('syncSelectedFromStore被调用，store值:', currentValue);
             if (currentValue) {
                 if (currentValue === 'DrawEqual') {
@@ -106,7 +106,7 @@ Component({
         onShowConfig() {
             this.setData({ visible: true });
             // 只在第一次显示时重新加载配置，避免覆盖用户选择
-            if (this.data.selected === 0 && !G4PLasiStore.lasi_dingdong_config?.type) {
+            if (this.data.selected === 0 && !G4PLasiStore.lasi_dingdong_config) {
                 this.syncSelectedFromStore();
             }
         },
@@ -129,10 +129,7 @@ Component({
             }
 
             // 调用store的action更新数据
-            G4PLasiStore.updateDingdongConfig({
-                type: selectedValue,
-                enabled: selectedValue !== 'NoDraw'
-            });
+            G4PLasiStore.updateDingdongConfig(selectedValue);
             // 更新显示值
             this.updateDisplayValue();
             // 关闭弹窗
