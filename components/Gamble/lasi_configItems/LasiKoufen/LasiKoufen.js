@@ -97,41 +97,21 @@ Component({
 
       // 解析规则类型和数值
       if (config.dutyConfig) {
-        if (config.dutyConfig.startsWith('DoublePar+')) {
+        if (config.dutyConfig.startsWith('DoublePar')) {
           dutyConfig = 'double_par_plus_x';
           const value = parseInt(config.dutyConfig.replace('DoublePar+', ''));
           if (!isNaN(value)) {
             doubleParPlusValue = value;
           }
-        } else if (config.dutyConfig.startsWith('Par+')) {
+        } else if (config.dutyConfig.startsWith('Par')) {
           dutyConfig = 'par_plus_x';
           const value = parseInt(config.dutyConfig.replace('Par+', ''));
           if (!isNaN(value)) {
             parPlusValue = value;
           }
-        } else if (config.dutyConfig.startsWith('ScoreDiff_')) {
+        } else if (config.dutyConfig.startsWith('ScoreDiff')) {
           dutyConfig = 'stroke_diff_x';
           const value = parseInt(config.dutyConfig.replace('ScoreDiff_', ''));
-          if (!isNaN(value)) {
-            strokeDiffValue = value;
-          }
-        }
-        // 保持向后兼容性，支持旧格式
-        else if (config.dutyConfig.startsWith('double_par_plus_')) {
-          dutyConfig = 'double_par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('double_par_plus_', ''));
-          if (!isNaN(value)) {
-            doubleParPlusValue = value;
-          }
-        } else if (config.dutyConfig.startsWith('par_plus_')) {
-          dutyConfig = 'par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('par_plus_', ''));
-          if (!isNaN(value)) {
-            parPlusValue = value;
-          }
-        } else if (config.dutyConfig.startsWith('stroke_diff_')) {
-          dutyConfig = 'stroke_diff_x';
-          const value = parseInt(config.dutyConfig.replace('stroke_diff_', ''));
           if (!isNaN(value)) {
             strokeDiffValue = value;
           }
