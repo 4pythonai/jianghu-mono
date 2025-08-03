@@ -21,6 +21,11 @@ Page({
         // 输出完整Store数据用于调试
         const allData = G4PLasiStore.debugAllRulesData();
 
+        console.log('💋💋💋💋💋💋💋💋💋💋 保存时的数据检查');
+        console.log('💋💋💋💋💋💋💋💋💋💋 allData.lasi_config:', allData.lasi_config);
+        console.log('💋💋💋💋💋💋💋💋💋💋 allData.lasi_config.indicators:', allData.lasi_config.indicators);
+        console.log('💋💋💋💋💋💋💋💋💋💋 allData.lasi_config.indicators.length:', allData.lasi_config.indicators.length);
+
         if (allData.lasi_config.indicators.length === 0) {
             wx.showToast({
                 title: '请至少选择一个KPI指标',

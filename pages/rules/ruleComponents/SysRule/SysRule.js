@@ -250,6 +250,7 @@ Component({
         // 卡片点击跳转规则配置页
         onConfigRule(e) {
             const { title } = e.currentTarget.dataset;
+            console.log(' ⭕️⭕️⭕️⭕️⭕️⭕️⭕️ 卡片点击跳转规则配置页:', title);
             // 路由映射
             const map = {
                 // 2人

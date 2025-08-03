@@ -20,7 +20,7 @@ export const G4PLasiStore = observable({
     meatValueConfig: 'MEAT_AS_1',
     meatMaxValue: 10000000,
 
-    gamblesysname: 'lasi',
+    gamblesysname: '4p-lasi',
     user_rulename: '四人拉丝',
     creator_id: null,
 
@@ -42,10 +42,7 @@ export const G4PLasiStore = observable({
     lasi_reward_config: REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG,
 
     // 拉丝顶洞规则
-    lasi_dingdong_config: {
-        enabled: true, // 默认启用顶洞
-        type: 'DrawEqual' // NoDraw, DrawEqual, Diff_X
-    },
+    lasi_dingdong_config: 'DrawEqual', // NoDraw, DrawEqual, Diff_X
 
     // 拉丝吃肉规则
     lasi_eatmeat_config: {
