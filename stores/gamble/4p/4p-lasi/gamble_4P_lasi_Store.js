@@ -48,7 +48,7 @@ export const G4PLasiStore = observable({
 
     // 拉丝包洞规则
     lasi_baodong_config: {
-        // 包洞规则类型: 'NODUTY' | 'double_par_plus_1' | 'plus_4' | 'stroke_diff_3'
+        // 包洞规则类型: 'NODUTY' | 'Par+X' | 'DoublePar+X' | 'stroke_diff_X'
         dutyConfig: 'NODUTY',
         // 包洞条件: 'PARTNET_HEADHEAD' | 'PARTNET_IGNORE'
         DutyCondition: 'PARTNET_HEADHEAD'

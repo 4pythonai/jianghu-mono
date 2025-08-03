@@ -96,17 +96,17 @@ Component({
       let parPlusValue = 4;
       let strokeDiffValue = 3;
 
-      // 解析规则类型和数值
+      // 解析规则类型和数值 - 支持 Par+X, DoublePar+X 格式
       if (config.dutyConfig) {
-        if (config.dutyConfig.startsWith('double_par_plus_')) {
+        if (config.dutyConfig.startsWith('DoublePar+')) {
           dutyConfig = 'double_par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('double_par_plus_', ''));
+          const value = parseInt(config.dutyConfig.replace('DoublePar+', ''));
           if (!isNaN(value)) {
             doubleParPlusValue = value;
           }
-        } else if (config.dutyConfig.startsWith('par_plus_')) {
+        } else if (config.dutyConfig.startsWith('Par+')) {
           dutyConfig = 'par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('par_plus_', ''));
+          const value = parseInt(config.dutyConfig.replace('Par+', ''));
           if (!isNaN(value)) {
             parPlusValue = value;
           }
@@ -213,14 +213,14 @@ Component({
     getCurrentConfig() {
       const { dutyConfig, DutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
 
-      // 构建规则类型字符串，包含数值
+      // 构建规则类型字符串，包含数值 - 采用 Par+X, DoublePar+X 格式
       let ruleTypeString = dutyConfig;
       switch (dutyConfig) {
         case 'double_par_plus_x':
-          ruleTypeString = `double_par_plus_${doubleParPlusValue}`;
+          ruleTypeString = `DoublePar+${doubleParPlusValue}`;
           break;
         case 'par_plus_x':
-          ruleTypeString = `par_plus_${parPlusValue}`;
+          ruleTypeString = `Par+${parPlusValue}`;
           break;
         case 'stroke_diff_x':
           ruleTypeString = `stroke_diff_${strokeDiffValue}`;
@@ -253,7 +253,28 @@ Component({
     // 设置配置
     setConfig(config) {
       if (config.dutyConfig) {
-        this.setData({ dutyConfig: config.dutyConfig });
+        // 解析 dutyConfig 并设置相应的内部状态
+        if (config.dutyConfig.startsWith('DoublePar+')) {
+          const value = parseInt(config.dutyConfig.replace('DoublePar+', ''));
+          this.setData({
+            dutyConfig: 'double_par_plus_x',
+            doubleParPlusValue: !isNaN(value) ? value : 1
+          });
+        } else if (config.dutyConfig.startsWith('Par+')) {
+          const value = parseInt(config.dutyConfig.replace('Par+', ''));
+          this.setData({
+            dutyConfig: 'par_plus_x',
+            parPlusValue: !isNaN(value) ? value : 4
+          });
+        } else if (config.dutyConfig.startsWith('stroke_diff_')) {
+          const value = parseInt(config.dutyConfig.replace('stroke_diff_', ''));
+          this.setData({
+            dutyConfig: 'stroke_diff_x',
+            strokeDiffValue: !isNaN(value) ? value : 3
+          });
+        } else {
+          this.setData({ dutyConfig: config.dutyConfig });
+        }
       }
       if (config.DutyCondition) {
         this.setData({ DutyCondition: config.DutyCondition });
