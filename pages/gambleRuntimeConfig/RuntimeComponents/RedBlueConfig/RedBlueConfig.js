@@ -24,7 +24,7 @@ Component({
         // 分组方式:固拉、4_乱拉、4_高手不见面
         red_blue_config: '4_固拉',
 
-        // 玩家出发顺序
+
         bootstrap_order: [],
 
         // 拖拽状态

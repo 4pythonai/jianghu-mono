@@ -178,6 +178,53 @@ Page({
         this.refreshRuntimeConfig();
     },
 
+    // 静默刷新运行时配置 - 不显示加载状态，用于后台数据更新
+    silentRefreshRuntimeConfig() {
+        const gameId = this.data.gameId || gameStore.gameid;
+        const groupId = this.data.groupId || gameStore.groupId;
+
+        if (!groupId) {
+            console.error('[RuntimeConfigList] groupId 为空，无法静默刷新配置');
+            return;
+        }
+
+        console.log('[RuntimeConfigList] 开始静默刷新配置...');
+
+        // 记录当前滚动位置
+        const query = wx.createSelectorQuery();
+        query.select('.gamble-container').scrollOffset();
+        query.exec((res) => {
+            const scrollTop = res[0]?.scrollTop || 0;
+            console.log('[RuntimeConfigList] 记录当前滚动位置:', scrollTop);
+
+            runtimeStore.fetchRuntimeConfigs(groupId)
+                .then((result) => {
+                    console.log('[RuntimeConfigList] 静默刷新成功');
+                    // 强制触发一次更新，确保数据同步
+                    setTimeout(() => {
+                        this.updateGameSettings(this.data.runtimeConfigs);
+                        // 恢复滚动位置
+                        this.restoreScrollPosition(scrollTop);
+                    }, 100);
+                })
+                .catch(err => {
+                    console.error('[RuntimeConfigList] 静默刷新失败:', err);
+                    // 静默刷新失败时不显示错误提示，避免影响用户体验
+                });
+        });
+    },
+
+    // 恢复滚动位置
+    restoreScrollPosition(scrollTop) {
+        setTimeout(() => {
+            wx.pageScrollTo({
+                scrollTop: scrollTop,
+                duration: 0 // 立即滚动，无动画
+            });
+            console.log('[RuntimeConfigList] 恢复滚动位置到:', scrollTop);
+        }, 50);
+    },
+
     // 获取当前游戏设置状态 - 从第一个配置项获取
     getCurrentGameSettings() {
         const configs = this.data.runtimeConfigs || [];
@@ -468,6 +515,12 @@ Page({
                 icon: 'success'
             });
             this.onKickoffClose();
+
+            // 延迟静默刷新数据，避免页面闪烁
+            console.log('[RuntimeConfigList] 踢一脚配置保存成功，延迟静默刷新数据...');
+            setTimeout(() => {
+                this.silentRefreshRuntimeConfig();
+            }, 300); // 延迟300ms，等弹窗完全关闭后再静默刷新
         }).catch(err => {
             console.error('踢一脚配置保存失败:', err);
             wx.showToast({
