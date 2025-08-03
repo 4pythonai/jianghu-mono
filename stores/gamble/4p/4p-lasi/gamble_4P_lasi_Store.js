@@ -74,11 +74,7 @@ export const G4PLasiStore = observable({
 
     // 更新顶洞规则的action
     updateDingdongConfig: action(function (config) {
-        this.lasi_dingdong_config = { ...this.lasi_dingdong_config, ...config };
-        // 如果禁用顶洞，也禁用吃肉规则
-        if (!config.enabled) {
-            this.lasi_eatmeat_config.enabled = false;
-        }
+        this.lasi_dingdong_config = config;
         this.user_rulename = this.generateAbstractName();
     }),
 
@@ -119,10 +115,7 @@ export const G4PLasiStore = observable({
             }
         };
         this.lasi_reward_config = REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG;
-        this.lasi_dingdong_config = {
-            enabled: true,
-            type: 'DrawEqual'
-        };
+        this.lasi_dingdong_config = 'DrawEqual';
         this.lasi_eatmeat_config = {
             enabled: false,
             meat_value: 1,
