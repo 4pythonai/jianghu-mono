@@ -228,7 +228,6 @@ Component({
       }
 
       return {
-        enabled: holeRuleType !== 'no_hole',
         holeRuleType: ruleTypeString,
         holeCondition,
         customValues: {
@@ -246,7 +245,7 @@ Component({
       console.log('🎯 [LasiBaodong] 配置对象:', config);
       console.log('🎯 [LasiBaodong] 包洞规则类型:', config.holeRuleType);
       console.log('🎯 [LasiBaodong] 包洞条件:', config.holeCondition);
-      console.log('🎯 [LasiBaodong] 是否启用:', config.enabled);
+      console.log('🎯 [LasiBaodong] 是否启用:', config.holeRuleType !== 'no_hole');
       console.log('🎯 [LasiBaodong] 自定义数值:', config.customValues);
       console.log('🎯 [LasiBaodong] ========================');
     },
