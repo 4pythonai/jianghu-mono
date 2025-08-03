@@ -13,27 +13,43 @@
 	justify-content: center;
 }
 
-/* 弹窗内容 */
+/* 弹窗内容 - 基础样式（底部弹出） */
 .modal-content {
-	width: 92vw;
+	position: fixed;
+	left: 24rpx;
+	right: 24rpx;
+	bottom: 0;
 	background: #fff;
-	border-radius: 36rpx 36rpx 0 0;
 	box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.18);
-	padding: 24rpx 48rpx 64rpx 48rpx;
-	margin-bottom: 0;
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	max-height: 80vh;
 	overflow-y: auto;
-	/* border: 1px solid red; */
+	box-sizing: border-box;
+	border-radius: 20rpx 20rpx 0 0;
+	padding: 32rpx 24rpx 120rpx 24rpx;
+	z-index: 1001;
+	animation: slideUp .3s;
+	max-height: 70vh;
+	justify-content: flex-start;
+	align-items: stretch;
 }
 
-/* 弹窗标题 */
+
+
+/* 居中弹出样式 */
+.modal-content.center {
+	width: 92vw;
+	border-radius: 36rpx 36rpx 0 0;
+	padding: 32rpx 24rpx 24rpx 24rpx;
+	margin-bottom: 0;
+	align-items: center;
+	max-height: 80vh;
+}
+
+ /* 弹窗标题 */
 .modal-title {
 	font-size: 36rpx;
-	font-weight: 400;
-	color: #222;
+	color: #323131;
 	margin-bottom: 32rpx;
 	text-align: center;
 }
@@ -68,3 +84,14 @@
 	background: #4caf7a;
 	color: #fff;
 }
+
+
+@keyframes slideUp {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
