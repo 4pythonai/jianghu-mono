@@ -10,8 +10,7 @@ Component({
     visible: false,
     displayValue: '请配置包洞规则',
 
-    // 包洞规则类型: 'NODUTY' | 'double_par_plus_x' | 'par_plus_x' | 'stroke_diff_x'
-    dutyConfig: 'NODUTY',
+    // 包洞规则类型: 'NODUTY' | 'DoublePar+11' | 'ParP+4' | 'ScoreDiff_3'    
     // 包洞条件: 'PARTNET_HEADHEAD' | 'PARTNET_IGNORE'
     DutyCondition: 'PARTNET_HEADHEAD',
 
@@ -96,17 +95,37 @@ Component({
       let parPlusValue = 4;
       let strokeDiffValue = 3;
 
-      // 解析规则类型和数值 - 支持 Par+X, DoublePar+X 格式
+      // 解析规则类型和数值
       if (config.dutyConfig) {
-        if (config.dutyConfig.startsWith('DoublePar+')) {
+        if (config.dutyConfig.startsWith('DoubleParPlus_')) {
           dutyConfig = 'double_par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('DoublePar+', ''));
+          const value = parseInt(config.dutyConfig.replace('DoubleParPlus_', ''));
           if (!isNaN(value)) {
             doubleParPlusValue = value;
           }
-        } else if (config.dutyConfig.startsWith('Par+')) {
+        } else if (config.dutyConfig.startsWith('ParPlus_')) {
           dutyConfig = 'par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('Par+', ''));
+          const value = parseInt(config.dutyConfig.replace('ParPlus_', ''));
+          if (!isNaN(value)) {
+            parPlusValue = value;
+          }
+        } else if (config.dutyConfig.startsWith('ScoreDiff_')) {
+          dutyConfig = 'stroke_diff_x';
+          const value = parseInt(config.dutyConfig.replace('ScoreDiff_', ''));
+          if (!isNaN(value)) {
+            strokeDiffValue = value;
+          }
+        }
+        // 保持向后兼容性，支持旧格式
+        else if (config.dutyConfig.startsWith('double_par_plus_')) {
+          dutyConfig = 'double_par_plus_x';
+          const value = parseInt(config.dutyConfig.replace('double_par_plus_', ''));
+          if (!isNaN(value)) {
+            doubleParPlusValue = value;
+          }
+        } else if (config.dutyConfig.startsWith('par_plus_')) {
+          dutyConfig = 'par_plus_x';
+          const value = parseInt(config.dutyConfig.replace('par_plus_', ''));
           if (!isNaN(value)) {
             parPlusValue = value;
           }
@@ -213,17 +232,17 @@ Component({
     getCurrentConfig() {
       const { dutyConfig, DutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
 
-      // 构建规则类型字符串，包含数值 - 采用 Par+X, DoublePar+X 格式
+      // 构建规则类型字符串，包含数值
       let ruleTypeString = dutyConfig;
       switch (dutyConfig) {
         case 'double_par_plus_x':
-          ruleTypeString = `DoublePar+${doubleParPlusValue}`;
+          ruleTypeString = `DoubleParPlus_${doubleParPlusValue}`;
           break;
         case 'par_plus_x':
-          ruleTypeString = `Par+${parPlusValue}`;
+          ruleTypeString = `ParPlus_${parPlusValue}`;
           break;
         case 'stroke_diff_x':
-          ruleTypeString = `stroke_diff_${strokeDiffValue}`;
+          ruleTypeString = `ScoreDiff_${strokeDiffValue}`;
           break;
       }
 
@@ -253,28 +272,7 @@ Component({
     // 设置配置
     setConfig(config) {
       if (config.dutyConfig) {
-        // 解析 dutyConfig 并设置相应的内部状态
-        if (config.dutyConfig.startsWith('DoublePar+')) {
-          const value = parseInt(config.dutyConfig.replace('DoublePar+', ''));
-          this.setData({
-            dutyConfig: 'double_par_plus_x',
-            doubleParPlusValue: !isNaN(value) ? value : 1
-          });
-        } else if (config.dutyConfig.startsWith('Par+')) {
-          const value = parseInt(config.dutyConfig.replace('Par+', ''));
-          this.setData({
-            dutyConfig: 'par_plus_x',
-            parPlusValue: !isNaN(value) ? value : 4
-          });
-        } else if (config.dutyConfig.startsWith('stroke_diff_')) {
-          const value = parseInt(config.dutyConfig.replace('stroke_diff_', ''));
-          this.setData({
-            dutyConfig: 'stroke_diff_x',
-            strokeDiffValue: !isNaN(value) ? value : 3
-          });
-        } else {
-          this.setData({ dutyConfig: config.dutyConfig });
-        }
+        this.setData({ dutyConfig: config.dutyConfig });
       }
       if (config.DutyCondition) {
         this.setData({ DutyCondition: config.DutyCondition });
