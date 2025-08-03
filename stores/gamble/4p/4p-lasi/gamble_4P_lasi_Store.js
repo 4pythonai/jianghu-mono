@@ -44,12 +44,7 @@ export const G4PLasiStore = observable({
     // 拉丝顶洞规则
     lasi_dingdong_config: 'DrawEqual', // NoDraw, DrawEqual, Diff_X
 
-    // 拉丝吃肉规则
-    lasi_eatmeat_config: {
-        enabled: false,
-        meat_value: 1,
-        max_value: 10000000
-    },
+
 
     // 拉丝包洞规则
     lasi_baodong_config: {
@@ -78,13 +73,9 @@ export const G4PLasiStore = observable({
         this.user_rulename = this.generateAbstractName();
     }),
 
-    // 更新吃肉规则的action
-    updateEatmeatConfig: action(function (config) {
-        this.lasi_eatmeat_config = { ...this.lasi_eatmeat_config, ...config };
-        this.user_rulename = this.generateAbstractName();
-    }),
 
-    // 新增：更新吃肉规则的action，与 8421 store 保持一致
+
+    // 更新吃肉规则的action
     updateEatmeatRule: action(function (eatingRange, meatValueConfig, meatMaxValue) {
         this.eatingRange = eatingRange;
         this.meatValueConfig = meatValueConfig;
@@ -116,11 +107,6 @@ export const G4PLasiStore = observable({
         };
         this.lasi_reward_config = REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG;
         this.lasi_dingdong_config = 'DrawEqual';
-        this.lasi_eatmeat_config = {
-            enabled: false,
-            meat_value: 1,
-            max_value: 10000000
-        };
         this.lasi_baodong_config = {
             enabled: false,
             holeRuleType: 'no_hole',
@@ -147,9 +133,8 @@ export const G4PLasiStore = observable({
             lasi_config: this.lasi_config,
             lasi_reward_config: this.lasi_reward_config,
             lasi_dingdong_config: this.lasi_dingdong_config,
-            lasi_eatmeat_config: this.lasi_eatmeat_config,
             lasi_baodong_config: this.lasi_baodong_config,
-            // 新增：吃肉相关属性
+            // 吃肉相关属性
             eatingRange: this.eatingRange,
             meatValueConfig: this.meatValueConfig,
             meatMaxValue: this.meatMaxValue
