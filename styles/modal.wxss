@@ -31,7 +31,7 @@
 	z-index: 10000;
 	animation: slideUp .3s;
 	/* 移除固定的max-height，改为自适应 */
-	max-height: ~"calc(100vh - 120rpx)";
+	max-height: calc(100vh - 120rpx);
 	justify-content: flex-start;
 	align-items: stretch;
 }
