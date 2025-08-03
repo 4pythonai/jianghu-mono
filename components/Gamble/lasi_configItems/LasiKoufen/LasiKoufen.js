@@ -97,15 +97,15 @@ Component({
 
       // 解析规则类型和数值
       if (config.dutyConfig) {
-        if (config.dutyConfig.startsWith('DoubleParPlus_')) {
+        if (config.dutyConfig.startsWith('DoublePar+')) {
           dutyConfig = 'double_par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('DoubleParPlus_', ''));
+          const value = parseInt(config.dutyConfig.replace('DoublePar+', ''));
           if (!isNaN(value)) {
             doubleParPlusValue = value;
           }
-        } else if (config.dutyConfig.startsWith('ParPlus_')) {
+        } else if (config.dutyConfig.startsWith('Par+')) {
           dutyConfig = 'par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('ParPlus_', ''));
+          const value = parseInt(config.dutyConfig.replace('Par+', ''));
           if (!isNaN(value)) {
             parPlusValue = value;
           }
@@ -236,10 +236,10 @@ Component({
       let ruleTypeString = dutyConfig;
       switch (dutyConfig) {
         case 'double_par_plus_x':
-          ruleTypeString = `DoubleParPlus_${doubleParPlusValue}`;
+          ruleTypeString = `DoublePar+${doubleParPlusValue}`;
           break;
         case 'par_plus_x':
-          ruleTypeString = `ParPlus_${parPlusValue}`;
+          ruleTypeString = `Par+${parPlusValue}`;
           break;
         case 'stroke_diff_x':
           ruleTypeString = `ScoreDiff_${strokeDiffValue}`;
