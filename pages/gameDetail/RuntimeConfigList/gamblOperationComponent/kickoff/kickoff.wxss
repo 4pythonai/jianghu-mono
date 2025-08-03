@@ -1,16 +1,5 @@
 @import "/styles/modal.wxss";
 
-.kickoff-content {
-	width: 100vw;
-	min-height: 50vh;
-	background: #fff;
-	border-top-left-radius: 16rpx;
-	border-top-right-radius: 16rpx;
-	padding: 40rpx 32rpx 32rpx 32rpx;
-	box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
-	animation: slideUp 0.3s;
-	overflow: auto;
-}
 
 @keyframes slideUp {
 	from {
@@ -21,13 +10,6 @@
 	}
 }
 
-.modal-title {
-	font-size: 32rpx;
-	font-weight: bold;
-	text-align: center;
-	margin-bottom: 32rpx;
-	border-bottom: 1rpx solid #f0f0f0;
-}
 
 .section-title {
 	font-size: 28rpx;

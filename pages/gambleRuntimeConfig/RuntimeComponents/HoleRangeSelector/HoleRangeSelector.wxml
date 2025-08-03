@@ -20,12 +20,11 @@
       >{{endHole ? endHole.holename : ''}}</view>
     </view>
   </view>
-
-  <RealHolePlayListSetter
-    wx:if="{{ifShowModal}}"
-    startHoleindex="{{startHoleindex}}"
-    endHoleindex="{{endHoleindex}}"
-    selectType="{{selectType}}"
-    bind:cancel="onModalCancel"
-  />
 </view>
+<RealHolePlayListSetter
+  wx:if="{{ifShowModal}}"
+  startHoleindex="{{startHoleindex}}"
+  endHoleindex="{{endHoleindex}}"
+  selectType="{{selectType}}"
+  bind:cancel="onModalCancel"
+/>

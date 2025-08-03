@@ -1,17 +1,23 @@
 /* 引入公共按钮样式 */
 @import "/styles/modal.wxss";
 
-.juanguo-content {
-	width: 100vw;
-	min-height: 50vh;
-	background: #fff;
-	border-top-left-radius: 16rpx;
-	border-top-right-radius: 16rpx;
-	padding: 40rpx 32rpx 32rpx 32rpx;
-	box-shadow: 0 -8rpx 32rpx rgba(0, 0, 0, 0.08);
-	animation: slideUp 0.3s;
-	overflow: auto;
+.section {
+	margin-bottom: 32rpx;
+	background: #fafbfc;
+	border-radius: 12rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+	/* border: 1px solid green; */
 }
+
+.section-title {
+	font-size: 28rpx;
+	margin-bottom: 18rpx;
+	border-left: 6rpx solid #4caf50;
+	padding-left: 16rpx;
+}
+
+
+
 
 .radio-item {
 	display: flex;
@@ -37,21 +43,6 @@
 	}
 }
 
-.section {
-	margin-bottom: 32rpx;
-	background: #fafbfc;
-	border-radius: 12rpx;
-	padding: 24rpx 16rpx 16rpx 16rpx;
-	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
-}
-
-.section-title {
-	font-size: 28rpx;
-	font-weight: 600;
-	margin-bottom: 18rpx;
-	border-left: 6rpx solid #4caf50;
-	padding-left: 16rpx;
-}
 
 .input-inline {
 	background: #fff;
@@ -83,4 +74,3 @@
 	color: #bbb;
 }
 
-/* 按钮样式已迁移到公共样式文件 */

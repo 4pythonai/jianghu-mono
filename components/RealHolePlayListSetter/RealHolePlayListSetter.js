@@ -5,7 +5,7 @@ import { toJS } from 'mobx-miniprogram';
 
 Component({
     options: {
-        styleIsolation: 'apply-shared',
+        styleIsolation: 'shared',
     },
 
     properties: {

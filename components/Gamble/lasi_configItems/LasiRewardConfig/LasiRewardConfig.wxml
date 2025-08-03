@@ -19,15 +19,12 @@
   <view class="modal-content" catchtap>
     <view class="modal-title">奖励规则</view>
 
-    <!-- 主要内容区域 -->
     <view class="main-content">
-      <!-- 左侧面板 - 加法奖励 -->
       <view
         class="reward-panel {{rewardType === 'add' ? 'active' : 'inactive'}}"
         bindtap="onRewardTypeChange"
         data-type="add"
       >
-        <!-- 面板头部 -->
         <view class="panel-header">
           <view class="radio-outer {{rewardType === 'add' ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{rewardType === 'add'}}"></view>
@@ -35,7 +32,6 @@
           <text class="modal-title">加法奖励</text>
         </view>
 
-        <!-- 奖励项目列表 -->
         <view class="reward-items">
           <view class="reward-item" wx:for="{{addRewardItems}}" wx:key="scoreName">
             <text
@@ -56,7 +52,6 @@
           </view>
         </view>
 
-        <!-- 奖励前置条件 -->
         <view class="precondition-section {{!showPreCondition ? 'disabled' : ''}}">
           <view class="precondition-title">奖励前置条件 (当含有总杆PK时)</view>
           <view class="precondition-options">
@@ -94,13 +89,11 @@
         </view>
       </view>
 
-      <!-- 右侧面板 - 乘法奖励 -->
       <view
         class="reward-panel {{rewardType === 'multiply' ? 'active' : 'inactive'}}"
         bindtap="onRewardTypeChange"
         data-type="multiply"
       >
-        <!-- 面板头部 -->
         <view class="panel-header">
           <view class="radio-outer {{rewardType === 'multiply' ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{rewardType === 'multiply'}}"></view>
@@ -108,7 +101,6 @@
           <text class="modal-title">乘法奖励</text>
         </view>
 
-        <!-- 奖励项目列表 -->
         <view class="reward-items">
           <view class="reward-item" wx:for="{{multiplyRewardItems}}" wx:key="scoreName">
             <text
@@ -131,7 +123,6 @@
       </view>
     </view>
 
-    <!-- 底部按钮 -->
     <view class="modal-actions">
       <button class="btn btn-cancel" bindtap="onCancel">取消</button>
       <button class="btn btn-confirm" bindtap="onConfirm">确定</button>

@@ -1,7 +1,6 @@
 <view class="modal-mask" bindtap="close">
-  <view class="juanguo-content" catchtap="noop">
+  <view class="modal-content" catchtap="noop">
     <view class="modal-title">捐锅设置(以最后一次为准)</view>
-    <!-- 选择捐锅的游戏 -->
     <view class="section">
       <RuntimeConfigSelector
         wx:if="{{selectedIdList.length >= 0}}"
@@ -12,7 +11,6 @@
         key="{{selectedIdList.join(',') + '_' + forceRefresh}}"
       />
     </view>
-    <!-- 选择捐锅方式 -->
     <view class="section">
       <view class="section-title">请选择捐锅方式</view>
       <radio-group bindchange="onDonationTypeChange" value="{{donationType}}">
@@ -27,7 +25,6 @@
             wx:if="{{donationType === 'normal'}}"
           />
           <text wx:if="{{donationType === 'normal'}}">分,捐到</text>
-          <!-- 最大捐锅点数输入框，仅在选择普通模式时显示 -->
           <input
             class="input-inline"
             type="number"
@@ -55,7 +52,6 @@
         <label class="radio-item">
           <radio value="bigpot" checked="{{donationType === 'bigpot'}}" />
           <text>大锅版,共计</text>
-          <!-- 总费用输入框紧跟在大锅版radio后面，仅在选择大锅版时显示 -->
           <input
             class="input-inline"
             type="number"
@@ -72,10 +68,10 @@
         </label>
       </radio-group>
     </view>
-    <!-- 底部按钮 -->
-  </view>
-  <view class="modal-actions">
-    <button class="modal-btn cancel" bindtap="close">取消</button>
-    <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
+
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="close">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
+    </view>
   </view>
 </view>
