@@ -131,11 +131,11 @@ export const G4PLasiStore = observable({
             lasi_config: this.lasi_config,
             lasi_reward_config: this.lasi_reward_config,
             lasi_dingdong_config: this.lasi_dingdong_config,
-            lasi_baodong_config: this.lasi_baodong_config,
             // 吃肉相关属性
             eatingRange: this.eatingRange,
             meatValueConfig: this.meatValueConfig,
-            meatMaxValue: this.meatMaxValue
+            meatMaxValue: this.meatMaxValue,
+            lasi_baodong_config: this.lasi_baodong_config,
         };
         console.log(JSON.stringify(gambleConfig, null, 2));
         return gambleConfig;
