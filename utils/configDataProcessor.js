@@ -78,11 +78,8 @@ const ConfigDataProcessor = {
 
         if (decodedData.fromUserRule) {
             // 从用户规则进入
-            gambleSysName = decodedData.userRule?.gamblesysname || '';
-
-            if (!gambleSysName && decodedData.gambleSysName) {
-                gambleSysName = GameTypeManager.extractSysNameFromRuleType(decodedData.gambleSysName);
-            }
+            // 优先使用传递的 gambleSysName，保持完整格式
+            gambleSysName = decodedData.gambleSysName || decodedData.userRule?.gamblesysname || '';
 
             gambleUserName = decodedData.userRuleName || '';
             userRuleId = decodedData.userRuleId || null;
@@ -96,7 +93,7 @@ const ConfigDataProcessor = {
 
         } else {
             // 从系统规则进入（新增）
-            gambleSysName = GameTypeManager.extractSysNameFromRuleType(decodedData.gambleSysName || '');
+            gambleSysName = decodedData.gambleSysName || '';
             gambleUserName = decodedData.gambleSysName || '';
             userRuleId = null;
         }

@@ -168,21 +168,7 @@ const GameTypeManager = {
         return result;
     },
 
-    /**
-     * 从规则类型中提取系统名称
-     * @param {string} gambleSysName 完整的规则类型名称
-     * @returns {string} 系统名称
-     */
-    extractSysNameFromRuleType(gambleSysName) {
-        if (!gambleSysName) return '';
 
-        const parts = gambleSysName.split('-');
-        if (parts.length === 2) {
-            return parts[1];
-        }
-
-        return gambleSysName;
-    },
 
     /**
      * 验证游戏类型是否有效
