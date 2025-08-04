@@ -38,6 +38,18 @@
       <HoleRangeSelector />
     </view>
 
+    <!-- 让杆置 -->
+    <view class="section">
+      <view class="section" wx:if="{{needsGrouping}}">
+        <Stroking
+          players="{{players}}"
+          initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+          initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+          bind:change="onGroupingConfigChange"
+        />
+      </view>
+    </view>
+
     <view class="section" wx:if="{{needsPlayerConfig}}">
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator
@@ -51,18 +63,6 @@
     <view class="section">
       <view class="section" wx:if="{{needsGrouping}}">
         <RedBlueConfig
-          players="{{players}}"
-          initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
-          initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
-          bind:change="onGroupingConfigChange"
-        />
-      </view>
-    </view>
-
-    <!-- 让杆置 -->
-    <view class="section">
-      <view class="section" wx:if="{{needsGrouping}}">
-        <Stroking
           players="{{players}}"
           initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
           initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
