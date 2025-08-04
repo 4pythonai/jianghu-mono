@@ -130,9 +130,68 @@ function parseDrawConfig(item) {
     }
 }
 
+/**
+ * 解析奖励配置
+ */
 function parseRewardConfig(item) {
     const { RewardConfig } = item;
-    return RewardConfig;
+
+    if (!RewardConfig) return null;
+
+    try {
+        // 如果RewardConfig是字符串，需要解析JSON
+        const config = typeof RewardConfig === 'string' ? JSON.parse(RewardConfig) : RewardConfig;
+
+        const { rewardType, rewardPreCondition, rewardPair } = config;
+
+        let detail = '';
+
+        // 解析奖励类型
+        const rewardTypeText = rewardType === 'add' ? '加法奖励' : '乘法奖励';
+        detail += rewardTypeText;
+
+        // 解析前置条件
+        if (rewardPreCondition) {
+            let preConditionText = '';
+            switch (rewardPreCondition) {
+                case 'total_win':
+                    preConditionText = '总分获胜时';
+                    break;
+                case 'total_not_fail':
+                    preConditionText = '总分不输时';
+                    break;
+                case 'total_ignore':
+                    preConditionText = '无视总分';
+                    break;
+                default:
+                    preConditionText = rewardPreCondition;
+                    break;
+            }
+            detail += `，${preConditionText}`;
+        }
+
+        // 解析奖励项目
+        if (rewardPair && Array.isArray(rewardPair)) {
+            const validRewards = rewardPair.filter(item => item.rewardValue > 0);
+
+            if (validRewards.length > 0) {
+                const rewardDetails = validRewards.map(item => {
+                    const { scoreName, rewardValue } = item;
+                    return `${scoreName}+${rewardValue}`;
+                }).join('、');
+
+                detail += `，${rewardDetails}`;
+            } else {
+                detail += '，未设置奖励';
+            }
+        }
+
+        return detail;
+
+    } catch (error) {
+        console.error('解析奖励配置失败:', error);
+        return '奖励配置解析失败';
+    }
 }
 
 /**
