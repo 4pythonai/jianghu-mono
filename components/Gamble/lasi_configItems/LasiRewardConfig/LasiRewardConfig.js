@@ -38,7 +38,7 @@ Component({
 
         // 计算显示值
         updateDisplayValue() {
-            const config = G4PLasiStore.lasi_reward_config;
+            const config = G4PLasiStore.RewardConfig;
             let displayValue = '';
 
             if (config?.rewardType) {
@@ -71,7 +71,7 @@ Component({
 
         // 从Store加载配置
         loadConfigFromStore() {
-            const config = G4PLasiStore.lasi_reward_config || {};
+            const config = G4PLasiStore.RewardConfig || {};
 
             // 先设置基本数据
             this.setData({

@@ -92,19 +92,19 @@
         <view class="condition-title">包洞条件</view>
         <view class="condition-options">
           <view
-            class="condition-option {{DutyCondition === 'DUTY_DINGTOU' ? 'selected' : ''}}"
-            bindtap="{{dutyConfig === 'NODUTY' ? 'noTap' : 'onDutyConditionChange'}}"
+            class="condition-option {{PartnerDutyCondition === 'DUTY_DINGTOU' ? 'selected' : ''}}"
+            bindtap="{{dutyConfig === 'NODUTY' ? 'noTap' : 'onPartnerDutyConditionChange'}}"
             data-condition="DUTY_DINGTOU"
           >
-            <view class="radio-dot {{DutyCondition === 'DUTY_DINGTOU' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{PartnerDutyCondition === 'DUTY_DINGTOU' ? 'selected' : ''}}"></view>
             <text class="condition-text">同伴顶头包洞</text>
           </view>
           <view
-            class="condition-option {{DutyCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"
-            bindtap="{{dutyConfig === 'NODUTY' ? 'noTap' : 'onDutyConditionChange'}}"
+            class="condition-option {{PartnerDutyCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"
+            bindtap="{{dutyConfig === 'NODUTY' ? 'noTap' : 'onPartnerDutyConditionChange'}}"
             data-condition="PARTNET_IGNORE"
           >
-            <view class="radio-dot {{DutyCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"></view>
+            <view class="radio-dot {{PartnerDutyCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"></view>
             <text class="condition-text">与同伴成绩无关</text>
           </view>
         </view>

@@ -12,7 +12,7 @@ Component({
 
     // 包洞规则类型: 'NODUTY' | 'DoublePar+11' | 'ParP+4' | 'ScoreDiff_3'    
     // 包洞条件: 'DUTY_DINGTOU' | 'PARTNET_IGNORE'
-    DutyCondition: 'DUTY_DINGTOU',
+    PartnerDutyCondition: 'DUTY_DINGTOU',
 
     // 可编辑的数字变量 - 参考E8421Meat.js的变量命名方式
     doubleParPlusValue: 1, // 双帕+X中的X值，默认1
@@ -36,7 +36,7 @@ Component({
   methods: {
     // 计算显示值
     updateDisplayValue() {
-      const { dutyConfig, DutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
+      const { dutyConfig, PartnerDutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
       let displayValue = '';
 
       // 格式化包洞规则显示 - 使用动态数值
@@ -60,7 +60,7 @@ Component({
 
       // 格式化包洞条件显示
       let conditionText = '';
-      switch (DutyCondition) {
+      switch (PartnerDutyCondition) {
         case 'DUTY_DINGTOU':
           conditionText = '同伴顶头包洞';
           break;
@@ -120,7 +120,7 @@ Component({
 
       this.setData({
         dutyConfig: dutyConfig,
-        DutyCondition: config.DutyCondition || 'DUTY_DINGTOU',
+        PartnerDutyCondition: config.PartnerDutyCondition || 'DUTY_DINGTOU',
         doubleParPlusValue: doubleParPlusValue,
         parPlusValue: parPlusValue,
         strokeDiffValue: strokeDiffValue
@@ -148,10 +148,10 @@ Component({
     },
 
     // 包洞条件变化
-    onDutyConditionChange(e) {
+    onPartnerDutyConditionChange(e) {
       const { condition } = e.currentTarget.dataset;
       this.setData({
-        DutyCondition: condition
+        PartnerDutyCondition: condition
       });
 
       this.printCurrentConfig();
@@ -210,7 +210,7 @@ Component({
 
     // 获取当前配置
     getCurrentConfig() {
-      const { dutyConfig, DutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
+      const { dutyConfig, PartnerDutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
 
       // 构建规则类型字符串，包含数值
       let ruleTypeString = dutyConfig;
@@ -228,7 +228,7 @@ Component({
 
       return {
         dutyConfig: ruleTypeString,
-        DutyCondition,
+        PartnerDutyCondition,
         customValues: {
           doubleParPlusValue,
           parPlusValue,
@@ -243,7 +243,7 @@ Component({
       console.log('🎯 [LasiBaodong] ===== 当前包洞配置 =====');
       console.log('🎯 [LasiBaodong] 配置对象:', config);
       console.log('🎯 [LasiBaodong] 包洞规则类型:', config.dutyConfig);
-      console.log('🎯 [LasiBaodong] 包洞条件:', config.DutyCondition);
+      console.log('🎯 [LasiBaodong] 包洞条件:', config.PartnerDutyCondition);
       console.log('🎯 [LasiBaodong] 是否启用:', config.dutyConfig !== 'NODUTY');
       console.log('🎯 [LasiBaodong] 自定义数值:', config.customValues);
       console.log('🎯 [LasiBaodong] ========================');
@@ -254,8 +254,8 @@ Component({
       if (config.dutyConfig) {
         this.setData({ dutyConfig: config.dutyConfig });
       }
-      if (config.DutyCondition) {
-        this.setData({ DutyCondition: config.DutyCondition });
+      if (config.PartnerDutyCondition) {
+        this.setData({ PartnerDutyCondition: config.PartnerDutyCondition });
       }
       if (config.customValues) {
         const { doubleParPlusValue, parPlusValue, strokeDiffValue } = config.customValues;
@@ -278,7 +278,7 @@ Component({
     resetConfig() {
       this.setData({
         dutyConfig: 'NODUTY',
-        DutyCondition: 'DUTY_DINGTOU',
+        PartnerDutyCondition: 'DUTY_DINGTOU',
         doubleParPlusValue: 1,
         parPlusValue: 4,
         strokeDiffValue: 3

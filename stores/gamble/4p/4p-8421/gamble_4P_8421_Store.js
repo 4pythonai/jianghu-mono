@@ -12,10 +12,10 @@ export const G4P8421Store = observable({
     creator_id: null,
 
     // 封顶配置: 数字类型, 如 2 表示扣2分封顶, 10000000 表示不封顶
-    deductionMaxValue: 10000000,
+    badScoreMaxLost: 10000000,
 
     // 扣分开始的值: NoSub, Par+X, DoublePar+X (X为数字) - 默认:Par+4
-    deductionConfig: 'Par+4',
+    badScoreBaseLine: 'Par+4',
 
     // 同伴惩罚配置: NODUTY, DUTY_NEGATIVE, DUTY_DINGTOU - 默认:NODUTY
     dutyConfig: 'NODUTY',
@@ -39,8 +39,8 @@ export const G4P8421Store = observable({
 
     // 更新扣分规则的action
     updateKoufenRule: action(function (max8421SubValue, sub8421ConfigString, dutyConfig) {
-        this.deductionMaxValue = max8421SubValue;
-        this.deductionConfig = sub8421ConfigString;
+        this.badScoreMaxLost = max8421SubValue;
+        this.badScoreBaseLine = sub8421ConfigString;
         this.dutyConfig = dutyConfig;
         this.user_rulename = this.generateAbstractName();
     }),
@@ -66,8 +66,8 @@ export const G4P8421Store = observable({
 
     // 重置所有规则的action
     resetAllRules: action(function () {
-        this.deductionMaxValue = 10000000;
-        this.deductionConfig = 'Par+4';
+        this.badScoreMaxLost = 10000000;
+        this.badScoreBaseLine = 'Par+4';
         this.dutyConfig = 'NODUTY';
         this.drawConfig = 'DrawEqual';
         this.eatingRange = {
@@ -87,8 +87,8 @@ export const G4P8421Store = observable({
             user_rulename: this.user_rulename,
             gamblesysname: this.gamblesysname,
             creator_id: this.creator_id,
-            deductionMaxValue: this.deductionMaxValue,
-            deductionConfig: this.deductionConfig,
+            badScoreMaxLost: this.badScoreMaxLost,
+            badScoreBaseLine: this.badScoreBaseLine,
             dutyConfig: this.dutyConfig,
             drawConfig: this.drawConfig,
             eatingRange: this.eatingRange,

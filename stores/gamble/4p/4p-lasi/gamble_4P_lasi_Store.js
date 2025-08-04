@@ -8,7 +8,7 @@ export const G4PLasiStore = observable({
         return `规则_${Math.floor(Math.random() * 10000)}`;
     },
 
-    deductionMaxValue: 10000000,
+    badScoreMaxLost: 10000000,
     eatingRange: {
         "BetterThanBirdie": 4,
         "Birdie": 2,
@@ -39,7 +39,7 @@ export const G4PLasiStore = observable({
     },
 
     // 拉丝奖励规则
-    lasi_reward_config: REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG,
+    RewardConfig: REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG,
 
     // 拉丝顶洞规则
     lasi_dingdong_config: 'DrawEqual', // NoDraw, DrawEqual, Diff_X
@@ -51,7 +51,7 @@ export const G4PLasiStore = observable({
         // 包洞规则类型: 'NODUTY' | 'DoublePar+11' | 'ParP+4' | 'ScoreDiff_3'
         dutyConfig: 'NODUTY',
         // 包洞条件: 'DUTY_DINGTOU' | 'PARTNET_IGNORE'
-        DutyCondition: 'DUTY_DINGTOU'
+        PartnerDutyCondition: 'DUTY_DINGTOU'
     },
 
     // 更新拉丝配置的action
@@ -62,7 +62,7 @@ export const G4PLasiStore = observable({
 
     // 更新奖励规则的action
     updateRewardConfig: action(function (config) {
-        this.lasi_reward_config = { ...this.lasi_reward_config, ...config };
+        this.RewardConfig = { ...this.RewardConfig, ...config };
         this.user_rulename = this.generateAbstractName();
     }),
 
@@ -104,11 +104,11 @@ export const G4PLasiStore = observable({
                 total: 1
             }
         };
-        this.lasi_reward_config = REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG;
+        this.RewardConfig = REWARD_DEFAULTS.DEFAULT_REWARD_CONFIG;
         this.lasi_dingdong_config = 'DrawEqual';
         this.lasi_baodong_config = {
             dutyConfig: 'NODUTY',
-            DutyCondition: 'DUTY_DINGTOU'
+            PartnerDutyCondition: 'DUTY_DINGTOU'
         };
         // 重置吃肉相关属性
         this.eatingRange = {
@@ -129,7 +129,7 @@ export const G4PLasiStore = observable({
             gamblesysname: this.gamblesysname,
             creator_id: this.creator_id,
             lasi_config: this.lasi_config,
-            lasi_reward_config: this.lasi_reward_config,
+            RewardConfig: this.RewardConfig,
             lasi_dingdong_config: this.lasi_dingdong_config,
             // 吃肉相关属性
             eatingRange: this.eatingRange,

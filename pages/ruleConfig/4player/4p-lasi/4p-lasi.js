@@ -34,30 +34,30 @@ Page({
 
         console.log('💋💋💋💋💋💋💋💋💋💋allData', allData);
 
-        // app.api.gamble.addGambleRule(allData).then(res => {
-        //     console.log('添加规则成功:', res);
-        //     wx.showToast({
-        //         title: '已添加至我的规则',
-        //         icon: 'success',
-        //         duration: 1500,
-        //         success: () => {
-        //             // Toast显示完成后跳转到规则页面
-        //             setTimeout(() => {
-        //                 wx.navigateTo({
-        //                     url: '/pages/rules/rules'
-        //                 });
-        //             }, 1000);
-        //         }
-        //     });
+        app.api.gamble.addGambleRule(allData).then(res => {
+            console.log('添加规则成功:', res);
+            wx.showToast({
+                title: '已添加至我的规则',
+                icon: 'success',
+                duration: 1500,
+                success: () => {
+                    // Toast显示完成后跳转到规则页面
+                    setTimeout(() => {
+                        wx.navigateTo({
+                            url: '/pages/rules/rules'
+                        });
+                    }, 1000);
+                }
+            });
 
-        // }).catch(err => {
-        //     console.error('添加规则失败:', err);
-        //     wx.showToast({
-        //         title: '添加规则失败',
-        //         icon: 'none',
-        //         duration: 1000
-        //     });
-        // });
+        }).catch(err => {
+            console.error('添加规则失败:', err);
+            wx.showToast({
+                title: '添加规则失败',
+                icon: 'none',
+                duration: 1000
+            });
+        });
     },
 
     // KPI配置变化事件处理

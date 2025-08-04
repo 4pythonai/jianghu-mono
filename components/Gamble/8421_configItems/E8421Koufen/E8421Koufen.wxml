@@ -57,9 +57,6 @@
         </view>
       </block>
 
-      <!-- 分割线 -->
-      <view class="modal-divider"></view>
-
       <!-- 扣分封顶 -->
       <block wx:for="{{maxOptions}}" wx:key="index">
         <view

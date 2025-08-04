@@ -7,23 +7,23 @@ import { GOLF_SCORE_TYPES } from '../gameConstants.js'
  * 解析扣分配置
  */
 function parseKoufenConfig(item) {
-    const { deductionConfig, deductionMaxValue, dutyConfig } = item;
+    const { badScoreBaseLine, badScoreMaxLost, dutyConfig } = item;
 
     let detail = '';
 
-    if (deductionConfig === 'NoSub') {
+    if (badScoreBaseLine === 'NoSub') {
         detail = '不扣分';
-    } else if (deductionConfig.startsWith('Par+')) {
-        const score = deductionConfig.replace('Par+', '');
+    } else if (badScoreBaseLine.startsWith('Par+')) {
+        const score = badScoreBaseLine.replace('Par+', '');
         detail = `从帕+${score}开始扣分`;
-    } else if (deductionConfig.startsWith('DoublePar+')) {
-        const score = deductionConfig.replace('DoublePar+', '');
+    } else if (badScoreBaseLine.startsWith('DoublePar+')) {
+        const score = badScoreBaseLine.replace('DoublePar+', '');
         detail = `从双帕+${score}开始扣分`;
     }
 
-    if (deductionMaxValue && deductionMaxValue !== "10000000" && deductionMaxValue !== 10000000) {
-        detail += `，扣${deductionMaxValue}分封顶`;
-    } else if (deductionConfig !== 'NoSub') {
+    if (badScoreMaxLost && badScoreMaxLost !== "10000000" && badScoreMaxLost !== 10000000) {
+        detail += `，扣${badScoreMaxLost}分封顶`;
+    } else if (badScoreBaseLine !== 'NoSub') {
         detail += '，不封顶';
     }
 
@@ -142,7 +142,7 @@ function parse4P8421Config(item) {
         draw: '无'
     };
 
-    if (item.deductionConfig) {
+    if (item.badScoreBaseLine) {
         const koufenDetail = parseKoufenConfig(item);
         if (koufenDetail) details.koufen = koufenDetail;
     }

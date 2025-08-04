@@ -76,6 +76,15 @@
 }
 
 
+.modal-divider {
+	width: 100%;
+	height: 2rpx;
+	background: #b6b3b3;
+	margin: 18rpx 0;
+	border-radius: 2rpx;
+}
+
+
 .modal-btn.cancel {
 	background: #fff;
 	color: #4caf7a;

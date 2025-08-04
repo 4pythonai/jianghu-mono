@@ -8,7 +8,7 @@ Component({
     visible: false,
     displayValue: '请配置扣分规则',
 
-    // 扣分开始条件 (deductionConfig)
+    // 扣分开始条件 (badScoreBaseLine)
     Sub8421ConfigString: ['从帕+X开始扣分', '从双帕+Y开始扣分', '不扣分'],
     selectedStart: 0,
 
@@ -22,7 +22,7 @@ Component({
     doubleParScoreRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
     maxSubScoreRange: Array.from({ length: 21 }, (_, i) => i + 1), // 1-21
 
-    // 扣分封顶 (deductionMaxValue)
+    // 扣分封顶 (badScoreMaxLost)
     maxOptions: ['不封顶', '扣X分封顶'],
     selectedMax: 0,
 
@@ -53,26 +53,26 @@ Component({
 
       // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
       let startText = '';
-      if (store.deductionConfig) {
-        if (store.deductionConfig === 'NoSub') {
+      if (store.badScoreBaseLine) {
+        if (store.badScoreBaseLine === 'NoSub') {
           startText = '不扣分';
-        } else if (store.deductionConfig?.startsWith('Par+')) {
-          const score = store.deductionConfig.replace('Par+', '');
+        } else if (store.badScoreBaseLine?.startsWith('Par+')) {
+          const score = store.badScoreBaseLine.replace('Par+', '');
           startText = `帕+${score}`;
-        } else if (store.deductionConfig?.startsWith('DoublePar+')) {
-          const score = store.deductionConfig.replace('DoublePar+', '');
+        } else if (store.badScoreBaseLine?.startsWith('DoublePar+')) {
+          const score = store.badScoreBaseLine.replace('DoublePar+', '');
           startText = `双帕+${score}`;
         } else {
-          startText = store.deductionConfig;
+          startText = store.badScoreBaseLine;
         }
       }
 
       // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
       let fengdingText = '';
-      if (store.deductionMaxValue === 10000000) {
+      if (store.badScoreMaxLost === 10000000) {
         fengdingText = '不封顶';
-      } else if (typeof store.deductionMaxValue === 'number' && store.deductionMaxValue < 10000000) {
-        fengdingText = `扣${store.deductionMaxValue}分封顶`;
+      } else if (typeof store.badScoreMaxLost === 'number' && store.badScoreMaxLost < 10000000) {
+        fengdingText = `扣${store.badScoreMaxLost}分封顶`;
       }
 
       // 组合显示值
@@ -96,8 +96,8 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const max8421SubValue = G4P8421Store.deductionMaxValue;
-      const koufenStart = G4P8421Store.deductionConfig;
+      const max8421SubValue = G4P8421Store.badScoreMaxLost;
+      const koufenStart = G4P8421Store.badScoreBaseLine;
       const partnerPunishment = G4P8421Store.dutyConfig;
 
       if (max8421SubValue !== 10000000 || koufenStart || partnerPunishment) {
