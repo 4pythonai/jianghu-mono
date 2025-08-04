@@ -1,4 +1,4 @@
-import { parseGambleRule } from '../../../../utils/gambleRuleParser.js';
+import { parseGambleRule } from '../../../../../../../utils/gambleRuleParser.js';
 
 Component({
     /**

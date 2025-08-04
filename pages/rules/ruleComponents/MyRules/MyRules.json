@@ -1,6 +1,7 @@
 {
     "component": true,
     "usingComponents": {
-        "Rule4P8421": "/components/RuleCard/4p/4p-8421/Rule4P8421"
+        "Rule4P8421": "./RuleCard/4p/4p-8421/Rule4P8421",
+        "Rule4PLasi": "./RuleCard/4p/4p-lasi/Rule4PLasi"
     }
 }

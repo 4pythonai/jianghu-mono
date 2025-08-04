@@ -1,0 +1,39 @@
+<!-- Rule4P8421 组件 -->
+
+<view
+  class="rule-item1"
+  bindtap="onViewRule"
+  bindlongpress="onLongPressRule"
+  data-item="{{ item }}"
+>
+  <view class="rule-header">
+    <text class="rule-title">{{ item.gambleSysName }}/{{ item.gambleUserName }}</text>
+    <view class="rule-type">
+      <text>4人</text>
+    </view>
+  </view>
+  <!-- 配置详情展示 -->
+  <view class="rule-description">
+    <view class="config-detail-item">
+      <text class="config-label">[扣分]：</text>
+      <text class="config-text">{{ configDetails.koufen }}</text>
+    </view>
+    <view class="config-detail-item">
+      <text class="config-label">[吃肉]：</text>
+      <text class="config-text">{{ configDetails.eatmeat }}</text>
+    </view>
+    <view class="config-detail-item">
+      <text class="config-label">[顶洞]：</text>
+      <text class="config-text">{{ configDetails.draw }}</text>
+    </view>
+    <view class="config-detail-item">
+      <text class="config-label">[奖励]：</text>
+      <text class="config-text">{{ configDetails.reward }}</text>
+    </view>
+  </view>
+  <view class="rule-footer">
+    <view wx:if="{{showEdit}}" class="rule-actions" catchtap="true">
+      <text class="action-btn edit-btn" bindtap="onEditRule" data-item="{{ item }}">编辑</text>
+    </view>
+  </view>
+</view>

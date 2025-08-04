@@ -6,6 +6,7 @@
         "RedBlueConfig": "../RuntimeComponents/RedBlueConfig/RedBlueConfig",
         "RankConflictResolver": "../RuntimeComponents/RankConflictResolver/RankConflictResolver",
         "PlayerIndicator": "../RuntimeComponents/PlayerIndicator/PlayerIndicator",
-        "Rule4P8421": "../../../components/RuleCard/4p/4p-8421/Rule4P8421"
+        "Rule4P8421": "../../../pages/rules/ruleComponents/MyRules/RuleCard/4p/4p-8421/Rule4P8421",
+        "Rule4PLasi": "../../../pages/rules/ruleComponents/MyRules/RuleCard/4p/4p-lasi/Rule4PLasi"
     }
 }

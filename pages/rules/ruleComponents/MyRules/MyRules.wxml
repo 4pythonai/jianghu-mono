@@ -21,7 +21,18 @@
         <view class="group-list">
           <!-- 类似 React 的 map 循环渲染 -->
           <block wx:for="{{ myRules.fourPlayers }}" wx:key="id">
+            <!-- 根据 gambleSysName 动态选择组件 -->
             <Rule4P8421
+              wx:if="{{ item.gambleSysName === '8421' }}"
+              class="group-list-item"
+              item="{{ item }}"
+              bind:editRule="onEditRule"
+              bind:viewRule="onViewRule"
+              bind:longPressRule="onLongPressRule"
+              showEdit="{{true}}"
+            />
+            <Rule4PLasi
+              wx:elif="{{ item.gambleSysName === '4p-lasi' }}"
               class="group-list-item"
               item="{{ item }}"
               bind:editRule="onEditRule"
