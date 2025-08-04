@@ -14,6 +14,7 @@ Page({
         players: [],
         gameData: null,
         userRule: null,
+        needsPlayerConfig: false,
 
         runtimeConfig: {
             gameid: null,           // 游戏ID
@@ -43,6 +44,24 @@ Page({
             return;
         }
 
+        // 添加调试日志
+        setTimeout(() => {
+            const { gambleSysName } = this.data;
+            const needsPlayerConfig = GameTypeManager.needsPlayerConfig(gambleSysName);
+
+            this.setData({
+                needsPlayerConfig: needsPlayerConfig
+            });
+
+            console.log('[AddRuntime] 调试 gambleSysName:', {
+                value: gambleSysName,
+                type: typeof gambleSysName,
+                length: gambleSysName?.length,
+                indexOf8421: gambleSysName?.indexOf('8421'),
+                condition: gambleSysName?.indexOf('8421') !== -1,
+                needsPlayerConfig: needsPlayerConfig
+            });
+        }, 100);
 
     },
 

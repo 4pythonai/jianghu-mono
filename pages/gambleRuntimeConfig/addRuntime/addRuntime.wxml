@@ -3,6 +3,12 @@
   <view class="debug-info">
     <text>调试信息:</text>
     <text>gambleSysName: {{gambleSysName}}</text>
+    <text>gambleSysName长度: {{gambleSysName.length}}</text>
+    <text>indexOf结果: {{gambleSysName.indexOf('8421')}}</text>
+    <text>条件结果: {{gambleSysName.indexOf('8421') !== -1}}</text>
+    <text>直接比较: {{gambleSysName === '4p-lasi'}}</text>
+    <text>包含8421: {{gambleSysName.includes('8421')}}</text>
+    <text>needsPlayerConfig: {{needsPlayerConfig}}</text>
     <text>players: {{players.length}}人</text>
     <text>error: {{error}}</text>
     <text>loading: {{loading}}</text>
@@ -32,7 +38,7 @@
       <HoleRangeSelector />
     </view>
 
-    <view class="section" wx:if="{{gambleSysName.indexOf('8421') !== -1}}">
+    <view class="section" wx:if="{{needsPlayerConfig}}">
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator
         players="{{players}}"
