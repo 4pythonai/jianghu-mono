@@ -37,7 +37,9 @@ Component({
         // PAR值选择器的索引值
         par3Index: 2,
         par4Index: 2,
-        par5Index: 2
+        par5Index: 2,
+        // 临时配置存储，用于保存用户的未保存设置
+        tempConfigs: {}
     },
 
     observers: {
@@ -107,23 +109,30 @@ Component({
                 return;
             }
 
-            // 查找该用户的现有配置
-            const existingConfig = this.properties.strokingConfig && this.properties.strokingConfig.find(c => c.userid === userid);
+            // 在切换用户前，保存当前用户的临时配置
+            this.saveCurrentTempConfig();
+
+            // 优先从临时配置中查找，如果没有再从正式配置中查找
+            const tempConfig = this.data.tempConfigs[userid];
+            const existingConfig = this.properties.strokingConfig?.find(c => c.userid === userid);
+
+            // 使用临时配置或正式配置
+            const configToUse = tempConfig || existingConfig;
 
             this.setData({
                 selectedUser: user,
-                currentConfig: existingConfig ? {
-                    PAR3: existingConfig.PAR3 || 0,
-                    PAR4: existingConfig.PAR4 || 0,
-                    PAR5: existingConfig.PAR5 || 0
+                currentConfig: configToUse ? {
+                    PAR3: configToUse.PAR3 || 0,
+                    PAR4: configToUse.PAR4 || 0,
+                    PAR5: configToUse.PAR5 || 0
                 } : {
                     PAR3: 0,
                     PAR4: 0,
                     PAR5: 0
                 },
-                holeRange: existingConfig ? {
-                    startHole: existingConfig.holeRanges && existingConfig.holeRanges[0] || null,
-                    endHole: existingConfig.holeRanges && existingConfig.holeRanges[existingConfig.holeRanges.length - 1] || null
+                holeRange: configToUse ? {
+                    startHole: configToUse.holeRanges?.[0] || null,
+                    endHole: configToUse.holeRanges?.[configToUse.holeRanges.length - 1] || null
                 } : {
                     startHole: null,
                     endHole: null
@@ -131,6 +140,40 @@ Component({
             });
             this.updateHoleIndexes();
             this.updateParIndexes();
+        },
+
+        /**
+         * 保存当前用户的临时配置
+         */
+        saveCurrentTempConfig() {
+            if (!this.data.selectedUser) return;
+
+            const currentTempConfig = {
+                userid: this.data.selectedUser.userid,
+                PAR3: this.data.currentConfig.PAR3,
+                PAR4: this.data.currentConfig.PAR4,
+                PAR5: this.data.currentConfig.PAR5,
+                holeRanges: this.data.holeRange.startHole && this.data.holeRange.endHole ?
+                    this.generateHoleRanges(this.data.holeRange.startHole, this.data.holeRange.endHole) : []
+            };
+
+            // 更新临时配置存储
+            const tempConfigs = { ...this.data.tempConfigs };
+            tempConfigs[this.data.selectedUser.userid] = currentTempConfig;
+            this.setData({
+                tempConfigs: tempConfigs
+            });
+        },
+
+        /**
+         * 生成洞范围数组
+         */
+        generateHoleRanges(startHole, endHole) {
+            const ranges = [];
+            for (let i = startHole; i <= endHole; i++) {
+                ranges.push(i);
+            }
+            return ranges;
         },
 
         /**
@@ -151,6 +194,8 @@ Component({
                 [`currentConfig.${parType}`]: value
             });
             this.updateParIndexes();
+            // 保存临时配置
+            this.saveCurrentTempConfig();
         },
 
         /**
@@ -203,6 +248,8 @@ Component({
                     'holeRange.startHole': selectedHole.hindex,
                     startHoleIndex: index
                 });
+                // 保存临时配置
+                this.saveCurrentTempConfig();
             }
         },
 
@@ -217,6 +264,8 @@ Component({
                     'holeRange.endHole': selectedHole.hindex,
                     endHoleIndex: index
                 });
+                // 保存临时配置
+                this.saveCurrentTempConfig();
             }
         },
 
@@ -224,7 +273,18 @@ Component({
          * 取消配置
          */
         onCancel() {
+            // 取消时清除临时配置
+            this.clearTempConfigs();
             this.triggerEvent('cancel');
+        },
+
+        /**
+         * 清除所有临时配置
+         */
+        clearTempConfigs() {
+            this.setData({
+                tempConfigs: {}
+            });
         },
 
         /**
@@ -280,6 +340,9 @@ Component({
 
             console.log('保存让杆配置:', updatedConfigs);
             this.triggerEvent('save', { config: updatedConfigs });
+
+            // 保存成功后清除临时配置
+            this.clearTempConfigs();
         },
 
         /**
