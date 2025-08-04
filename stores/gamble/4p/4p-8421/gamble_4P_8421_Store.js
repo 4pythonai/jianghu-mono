@@ -7,8 +7,8 @@ export const G4P8421Store = observable({
         return `规则_${Math.floor(Math.random() * 10000)}`;
     },
 
-    gamblesysname: '8421',
-    user_rulename: '8421',
+    gamblesysname: '4p-8421',
+    user_rulename: '4p-8421',
     creator_id: null,
 
     // 封顶配置: 数字类型, 如 2 表示扣2分封顶, 10000000 表示不封顶

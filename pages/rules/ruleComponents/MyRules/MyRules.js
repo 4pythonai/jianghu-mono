@@ -57,14 +57,15 @@ Component({
                 console.log('📋 [MyRules] 获取用户规则成功:', res);
 
                 if (res.code === 200 && res.userRules) {
-
+                    // 预处理规则数据，为每个规则添加gambleSysName
+                    const processedRules = {
+                        twoPlayers: this.processRulesWithSysName(res.userRules.twoPlayers || [], 'twoPlayers'),
+                        threePlayers: this.processRulesWithSysName(res.userRules.threePlayers || [], 'threePlayers'),
+                        fourPlayers: this.processRulesWithSysName(res.userRules.fourPlayers || [], 'fourPlayers')
+                    };
 
                     this.setData({
-                        myRules: {
-                            twoPlayers: res.userRules.twoPlayers || [],
-                            threePlayers: res.userRules.threePlayers || [],
-                            fourPlayers: res.userRules.fourPlayers || []
-                        },
+                        myRules: processedRules,
                         total: res.userRules.total || {
                             twoPlayers: 0,
                             threePlayers: 0,
@@ -73,6 +74,17 @@ Component({
                         },
                         loading: false
                     });
+
+                    // 调试信息
+                    console.log('📋 [MyRules] 设置数据完成:');
+                    console.log('📋 [MyRules] fourPlayers规则数量:', processedRules.fourPlayers.length);
+                    processedRules.fourPlayers.forEach((rule, index) => {
+                        console.log(`📋 [MyRules] 规则${index + 1}:`, {
+                            name: rule.gambleUserName || rule.user_rulename,
+                            gambleSysName: rule.gambleSysName,
+                            gamblesysname: rule.gamblesysname
+                        });
+                    });
                 } else {
                     console.error('📋 [MyRules] API返回错误:', res);
                     this.handleLoadError('获取规则失败');
@@ -80,6 +92,18 @@ Component({
             }).catch(err => {
                 console.error('📋 [MyRules] 获取用户规则失败:', err);
                 this.handleLoadError('网络错误, 请重试');
+            });
+        },
+
+        // 为规则数据添加gambleSysName
+        processRulesWithSysName(rules, group) {
+            return rules.map(rule => {
+                const gambleSysName = this.mapUserRuleToRuleType(rule, group);
+                console.log(`📋 [MyRules] 规则 "${rule.gambleUserName || rule.user_rulename}" 映射为: ${gambleSysName}`);
+                return {
+                    ...rule,
+                    gambleSysName: gambleSysName
+                };
             });
         },
 
@@ -109,6 +133,7 @@ Component({
 
         // 刷新规则列表
         refreshRules() {
+            console.log('📋 [MyRules] 刷新规则列表');
             this.loadMyRules();
         },
 
@@ -158,6 +183,9 @@ Component({
                 const newRules = { ...this.data.myRules };
                 newRules[group] = newRules[group].filter(r => r.userRuleId !== id);
 
+                // 重新计算gambleSysName（虽然删除后不需要，但保持数据一致性）
+                newRules[group] = this.processRulesWithSysName(newRules[group], group);
+
                 // 更新统计
                 const newTotal = { ...this.data.total };
                 newTotal[group] = newRules[group].length;
@@ -200,8 +228,9 @@ Component({
             const { gameStore } = require('../../../../stores/gameStore');
             const { holeRangeStore } = require('../../../../stores/holeRangeStore');
 
-            // 根据用户规则确定ruleType
-            const gambleSysName = this.mapUserRuleToRuleType(item, group || 'fourPlayers');
+            // 直接使用已经计算好的gambleSysName
+            const gambleSysName = item.gambleSysName;
+            console.log(`📋 [MyRules] 查看规则 "${item.gambleUserName || item.user_rulename}", 使用预计算的gambleSysName: ${gambleSysName}`);
 
             if (!gambleSysName) {
                 wx.showToast({
@@ -249,7 +278,13 @@ Component({
 
         // 将用户规则映射到标准规则类型
         mapUserRuleToRuleType(userRule, group) {
-            // 根据游戏系统名称和人数确定规则类型
+            // 如果后台已经返回了完整的gambleSysName，直接使用
+            if (userRule.gambleSysName) {
+                console.log(`📋 [MyRules] 使用后台返回的gambleSysName: ${userRule.gambleSysName}`);
+                return userRule.gambleSysName;
+            }
+
+            // 如果没有gambleSysName，则使用旧的映射逻辑
             const gamblesysname = userRule.gamblesysname || '';
 
             // 构建规则类型映射

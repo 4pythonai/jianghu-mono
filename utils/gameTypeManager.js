@@ -47,7 +47,7 @@ const GameTypeManager = {
 
         // 4人游戏
         '4p-lasi': {
-            name: '4人拉死',
+            name: '4人拉丝',
             components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
             hasPlayerConfig: false,
             hasGrouping: true

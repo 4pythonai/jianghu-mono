@@ -32,7 +32,6 @@
       <HoleRangeSelector />
     </view>
 
-    <!-- 8421球员配置 -->
     <view class="section" wx:if="{{gambleSysName.indexOf('8421') !== -1}}">
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator

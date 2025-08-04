@@ -1,5 +1,5 @@
 /**
- * 4p-8421 规则解析器
+ * 4p-lasi 规则解析器
  */
 import { GOLF_SCORE_TYPES } from '../gameConstants.js'
 
