@@ -1,5 +1,6 @@
 // Summary组件 - 显示游戏规则摘要和参与人员
 const RuntimeComponentsUtils = require('../common-utils.js');
+const { GameConstantsUtils } = require('../../../../utils/gameConstants.js');
 
 Component({
     properties: {
@@ -21,26 +22,6 @@ Component({
     },
 
     data: {
-        // 规则类型映射
-        ruleTypeMap: {
-            // 2人游戏
-            '2p-gross': '2人比杆',
-            '2p-hole': '2人比洞',
-            '2p-8421': '2人8421',
-            // 3人游戏
-            '3p-doudizhu': '3人斗地主',
-            '3p-dizhupo': '3人地主婆',
-            '3p-8421': '3人8421',
-            // 4人游戏
-            '4p-lasi': '4人拉死',
-            '4p-8421': '4人8421',
-            '4p-dizhupo': '4人地主婆',
-            '4p-3da1': '4人3打1',
-            '4p-bestak': '4人Bestak',
-            // 多人游戏
-            'mp-labahua': '多人喇叭花',
-            'mp-dabudui': '多人大部队'
-        },
         // 显示的规则名称
         displayRuleName: '未知规则',
         // 带头像URL的玩家数据
@@ -96,7 +77,7 @@ Component({
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用用户规则名称', displayName);
             } else if (this.data.gambleSysName) {
                 // 否则显示系统规则名称
-                displayName = this.data.ruleTypeMap[this.data.gambleSysName] || this.data.gambleSysName;
+                displayName = GameConstantsUtils.getGameTypeName(this.data.gambleSysName);
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用系统规则名称', displayName);
             }
 
@@ -133,8 +114,6 @@ Component({
             RuntimeComponentsUtils.logger.log('SUMMARY', '重新选择规则');
             this.triggerEvent('reselect');
         },
-
-
 
         // 头像加载失败处理
         onAvatarError(e) {

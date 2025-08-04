@@ -1,4 +1,7 @@
 // 添加规则组件
+const { ROUTE_MAP, GameConstantsUtils } = require('../../../../utils/gameConstants.js');
+const gambleAPI = require('../../../../api/modules/gamble.js');
+
 Component({
     properties: {
         // 是否显示该组件
@@ -150,26 +153,47 @@ Component({
 
             this.setData({ saving: true });
 
-            // 模拟API调用
-            setTimeout(() => {
-                // TODO: 调用实际API保存规则
+            // 调用真实API保存规则
+            const apiMethod = isEdit ? gambleAPI.updateGambleRule : gambleAPI.addGambleRule;
+            const apiData = {
+                id: ruleForm.id,
+                title: ruleForm.title,
+                description: ruleForm.description,
+                type: ruleForm.type
+            };
 
+            apiMethod(apiData).then(res => {
+                console.log('📋 [AddRule] API返回数据:', res);
+
+                if (res.code === 0) {
+                    wx.showToast({
+                        title: isEdit ? '更新成功' : '保存成功',
+                        icon: 'success'
+                    });
+
+                    // 通知父组件规则已保存
+                    this.triggerEvent('ruleSaved', {
+                        rule: { ...ruleForm, id: res.data?.id || ruleForm.id },
+                        isEdit
+                    });
+
+                    // 重置表单
+                    this.resetRuleForm();
+                } else {
+                    wx.showToast({
+                        title: res.message || '保存失败',
+                        icon: 'none'
+                    });
+                }
+            }).catch(err => {
+                console.error('📋 [AddRule] API调用失败:', err);
                 wx.showToast({
-                    title: isEdit ? '更新成功' : '保存成功',
-                    icon: 'success'
+                    title: '保存失败，请稍后再试',
+                    icon: 'none'
                 });
-
-                // 通知父组件规则已保存
-                this.triggerEvent('ruleSaved', {
-                    rule: { ...ruleForm },
-                    isEdit
-                });
-
-                // 重置表单
-                this.resetRuleForm();
-
+            }).finally(() => {
                 this.setData({ saving: false });
-            }, 1500);
+            });
         },
 
         // 取消编辑
@@ -246,33 +270,16 @@ Component({
             });
         },
 
-        // 
         // 卡片点击跳转规则配置页
         onConfigRule(e) {
             const { title } = e.currentTarget.dataset;
             console.log(' ⭕️⭕️⭕️⭕️⭕️⭕️⭕️ 卡片点击跳转规则配置页:', title);
-            // 路由映射
-            const map = {
-                // 2人
-                '2p-gross': '/pages/ruleConfig/2player/2p-gross/2p-gross',
-                '2p-hole': '/pages/ruleConfig/2player/2p-hole/2p-hole',
-                '2p-8421': '/pages/ruleConfig/2player/2p-8421/2p-8421',
-                // 3人
-                '3p-doudizhu': '/pages/ruleConfig/3player/3p-doudizhu/3p-doudizhu',
-                '3p-dizhupo': '/pages/ruleConfig/3player/3p-dizhupo/3p-dizhupo',
-                '3p-8421': '/pages/ruleConfig/3player/3p-8421/3p-8421',
-                // 4人
-                '4p-lasi': '/pages/ruleConfig/4player/4p-lasi/4p-lasi',
-                '4p-8421': '/pages/ruleConfig/4player/4p-8421/4p-8421',
-                '4p-dizhupo': '/pages/ruleConfig/4player/4p-dizhupo/4p-dizhupo',
-                '4p-3da1': '/pages/ruleConfig/4player/4p-3da1/4p-3da1',
-                '4p-bestak': '/pages/ruleConfig/4player/4p-bestak/4p-bestak',
-                // 4人以上
-                'mp-labahua': '/pages/ruleConfig/mplayer/mp-labahua/mp-labahua',
-                'mp-dabudui': '/pages/ruleConfig/mplayer/mp-dabudui/mp-dabudui',
-            };
-            if (map[title]) {
-                wx.navigateTo({ url: map[title] });
+
+            // 使用统一的路由映射
+            const routePath = GameConstantsUtils.getRoutePath(title);
+
+            if (routePath) {
+                wx.navigateTo({ url: routePath });
             } else {
                 wx.showToast({
                     title: '暂未开放, 敬请期待',

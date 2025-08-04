@@ -1,6 +1,8 @@
 const app = getApp()
 
 // 我的规则组件
+const { USER_RULE_MAP, GameConstantsUtils } = require('../../../../utils/gameConstants.js');
+
 Component({
     properties: {
         // 是否显示该组件
@@ -11,17 +13,20 @@ Component({
     },
 
     data: {
+        // 我的规则列表, 按人数分组
         myRules: {
             twoPlayers: [],
             threePlayers: [],
             fourPlayers: []
-        }, // 我的规则列表, 按人数分组
+        },
+        // 统计信息
         total: {
             twoPlayers: 0,
             threePlayers: 0,
             fourPlayers: 0,
             overall: 0
-        }, // 统计信息
+        },
+        // 加载状态
         loading: false
     },
 
@@ -56,6 +61,7 @@ Component({
             app.api.gamble.getUserGambleRules().then(res => {
                 console.log('📋 [MyRules] 获取用户规则成功:', res);
 
+
                 if (res.code === 200 && res.userRules) {
                     // 预处理规则数据，为每个规则添加gambleSysName
                     const processedRules = {
@@ -64,20 +70,24 @@ Component({
                         fourPlayers: this.processRulesWithSysName(res.userRules.fourPlayers || [], 'fourPlayers')
                     };
 
+                    // 计算统计信息
+                    const total = {
+                        twoPlayers: processedRules.twoPlayers.length,
+                        threePlayers: processedRules.threePlayers.length,
+                        fourPlayers: processedRules.fourPlayers.length,
+                        overall: processedRules.twoPlayers.length + processedRules.threePlayers.length + processedRules.fourPlayers.length
+                    };
+
                     this.setData({
                         myRules: processedRules,
-                        total: res.userRules.total || {
-                            twoPlayers: 0,
-                            threePlayers: 0,
-                            fourPlayers: 0,
-                            overall: 0
-                        },
+                        total: total,
                         loading: false
                     });
 
                     // 调试信息
                     console.log('📋 [MyRules] 设置数据完成:');
                     console.log('📋 [MyRules] fourPlayers规则数量:', processedRules.fourPlayers.length);
+                    console.log('📋 [MyRules] total统计:', total);
                     processedRules.fourPlayers.forEach((rule, index) => {
                         console.log(`📋 [MyRules] 规则${index + 1}:`, {
                             name: rule.gambleUserName || rule.user_rulename,
@@ -114,12 +124,6 @@ Component({
                     twoPlayers: [],
                     threePlayers: [],
                     fourPlayers: []
-                },
-                total: {
-                    twoPlayers: 0,
-                    threePlayers: 0,
-                    fourPlayers: 0,
-                    overall: 0
                 },
                 loading: false
             });
@@ -287,72 +291,42 @@ Component({
             // 如果没有gambleSysName，则使用旧的映射逻辑
             const gamblesysname = userRule.gamblesysname || '';
 
-            // 构建规则类型映射
-            const ruleTypeMap = {
-                'twoPlayers': {
-                    '8421': '2p-8421',
-                    'gross': '2p-gross',
-                    'hole': '2p-hole'
-                },
-                'threePlayers': {
-                    '8421': '3p-8421',
-                    'doudizhu': '3p-doudizhu',
-                    'dizhupo': '3p-dizhupo'
-                },
-                'fourPlayers': {
-                    '8421': '4p-8421',
-                    'lasi': '4p-lasi',
-                    'dizhupo': '4p-dizhupo',
-                    '3da1': '4p-3da1',
-                    'bestak': '4p-bestak'
-                }
-            };
-
             // 首先根据gamblesysname精确匹配
-            if (ruleTypeMap[group]?.[gamblesysname]) {
-                return ruleTypeMap[group][gamblesysname];
+            const exactMatch = GameConstantsUtils.getUserRuleMapping(group, gamblesysname);
+            if (exactMatch) {
+                return exactMatch;
             }
 
             // 如果精确匹配失败, 根据规则名称进行模糊匹配
             const ruleName = (userRule.gambleUserName || userRule.user_rulename || '').toLowerCase();
 
             if (ruleName.includes('8421')) {
-                return ruleTypeMap[group]?.['8421'];
+                return GameConstantsUtils.getUserRuleMapping(group, '8421');
             }
             if (ruleName.includes('比杆') || ruleName.includes('gross')) {
-                return ruleTypeMap[group]?.gross;
+                return GameConstantsUtils.getUserRuleMapping(group, 'gross');
             }
             if (ruleName.includes('比洞') || ruleName.includes('hole')) {
-                return ruleTypeMap[group]?.hole;
+                return GameConstantsUtils.getUserRuleMapping(group, 'hole');
             }
             if (ruleName.includes('斗地主') || ruleName.includes('doudizhu')) {
-                return ruleTypeMap[group]?.doudizhu;
+                return GameConstantsUtils.getUserRuleMapping(group, 'doudizhu');
             }
             if (ruleName.includes('地主婆') || ruleName.includes('dizhupo')) {
-                return ruleTypeMap[group]?.dizhupo;
+                return GameConstantsUtils.getUserRuleMapping(group, 'dizhupo');
             }
             if (ruleName.includes('拉死') || ruleName.includes('lasi')) {
-                return ruleTypeMap[group]?.lasi;
+                return GameConstantsUtils.getUserRuleMapping(group, 'lasi');
             }
             if (ruleName.includes('3打1') || ruleName.includes('3da1')) {
-                return ruleTypeMap[group]?.['3da1'];
+                return GameConstantsUtils.getUserRuleMapping(group, '3da1');
             }
             if (ruleName.includes('bestak')) {
-                return ruleTypeMap[group]?.bestak;
+                return GameConstantsUtils.getUserRuleMapping(group, 'bestak');
             }
 
             // 默认返回该组的8421规则
-            return ruleTypeMap[group]?.['8421'] || null;
-        },
-
-        // 获取分组显示名称
-        getGroupDisplayName(group) {
-            const groupNames = {
-                twoPlayers: '2人游戏',
-                threePlayers: '3人游戏',
-                fourPlayers: '4人游戏'
-            };
-            return groupNames[group] || '未知';
+            return GameConstantsUtils.getUserRuleMapping(group, '8421') || null;
         },
 
         // 下拉刷新处理

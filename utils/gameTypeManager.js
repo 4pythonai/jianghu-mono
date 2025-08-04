@@ -2,94 +2,12 @@
  * 游戏类型管理器
  * 统一管理所有游戏类型的配置逻辑
  */
+const { GAME_TYPE_MAP, GameConstantsUtils } = require('./gameConstants.js');
+
 const GameTypeManager = {
-    // 游戏类型定义
-    GAME_TYPES: {
-        // 2人游戏
-        '2p-gross': {
-            name: '2人比杆',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: false
-        },
-        '2p-hole': {
-            name: '2人比洞',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: false
-        },
-        '2p-8421': {
-            name: '2人8421',
-            components: ['Summary', 'HoleRangeSelector', 'PlayerIndicator', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: true,
-            hasGrouping: false
-        },
-
-        // 3人游戏
-        '3p-doudizhu': {
-            name: '3人斗地主',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: true
-        },
-        '3p-dizhupo': {
-            name: '3人地主婆',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: true
-        },
-        '3p-8421': {
-            name: '3人8421',
-            components: ['Summary', 'HoleRangeSelector', 'PlayerIndicator', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: true,
-            hasGrouping: true
-        },
-
-        // 4人游戏
-        '4p-lasi': {
-            name: '4人拉丝',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: true
-        },
-        '4p-8421': {
-            name: '4人8421',
-            components: ['Summary', 'HoleRangeSelector', 'PlayerIndicator', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: true,
-            hasGrouping: true
-        },
-        '4p-dizhupo': {
-            name: '4人地主婆',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: true
-        },
-        '4p-3da1': {
-            name: '4人3打1',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: true
-        },
-        '4p-bestak': {
-            name: '4人Bestak',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: true
-        },
-
-        // 多人游戏
-        'mp-labahua': {
-            name: '多人喇叭花',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: true
-        },
-        'mp-dabudui': {
-            name: '多人大部队',
-            components: ['Summary', 'HoleRangeSelector', 'RedBlueConfig', 'RankingSelector'],
-            hasPlayerConfig: false,
-            hasGrouping: true
-        }
+    // 游戏类型定义 - 现在引用统一配置
+    get GAME_TYPES() {
+        return GAME_TYPE_MAP;
     },
 
     /**
@@ -98,7 +16,7 @@ const GameTypeManager = {
      * @returns {Object} 游戏类型配置
      */
     getGameTypeConfig(gambleSysName) {
-        return this.GAME_TYPES[gambleSysName] || null;
+        return GameConstantsUtils.getGameTypeConfig(gambleSysName);
     },
 
     /**
@@ -107,8 +25,7 @@ const GameTypeManager = {
      * @returns {string} 显示名称
      */
     getGameTypeName(gambleSysName) {
-        const config = this.getGameTypeConfig(gambleSysName);
-        return config ? config.name : gambleSysName;
+        return GameConstantsUtils.getGameTypeName(gambleSysName);
     },
 
     /**
@@ -117,8 +34,7 @@ const GameTypeManager = {
      * @returns {Array} 组件名称数组
      */
     getRequiredComponents(gambleSysName) {
-        const config = this.getGameTypeConfig(gambleSysName);
-        return config ? config.components : ['Summary', 'HoleRangeSelector'];
+        return GameConstantsUtils.getRequiredComponents(gambleSysName);
     },
 
     /**
@@ -127,30 +43,7 @@ const GameTypeManager = {
      * @returns {boolean}
      */
     needsPlayerConfig(gambleSysName) {
-        // 首先尝试精确匹配
-        const config = this.getGameTypeConfig(gambleSysName);
-        if (config) {
-            return config.hasPlayerConfig;
-        }
-
-        // 如果精确匹配失败，尝试部分匹配（比如 '8421' 匹配 '4p-8421'）
-        const matchingGameType = Object.keys(this.GAME_TYPES).find(key =>
-            key.includes(gambleSysName) || gambleSysName.includes(key)
-        );
-
-        if (matchingGameType) {
-            const matchedConfig = this.GAME_TYPES[matchingGameType];
-            console.log(`[GameTypeManager] 部分匹配成功: '${gambleSysName}' -> '${matchingGameType}'`);
-            return matchedConfig.hasPlayerConfig;
-        }
-
-        // 最后检查是否包含 '8421' 关键字
-        if (gambleSysName.includes('8421')) {
-            console.log(`[GameTypeManager] 通过关键字匹配: '${gambleSysName}' 包含 '8421'`);
-            return true;
-        }
-
-        return false;
+        return GameConstantsUtils.needsPlayerConfig(gambleSysName);
     },
 
     /**
@@ -159,8 +52,7 @@ const GameTypeManager = {
      * @returns {boolean}
      */
     needsGrouping(gambleSysName) {
-        const config = this.getGameTypeConfig(gambleSysName);
-        return config ? config.hasGrouping : false;
+        return GameConstantsUtils.needsGrouping(gambleSysName);
     },
 
     /**
@@ -298,7 +190,7 @@ const GameTypeManager = {
      * @returns {boolean}
      */
     isValidGameType(gambleSysName) {
-        return !!this.getGameTypeConfig(gambleSysName);
+        return GameConstantsUtils.isValidGameType(gambleSysName);
     },
 
     /**
@@ -306,7 +198,7 @@ const GameTypeManager = {
      * @returns {Array} 游戏类型数组
      */
     getAllGameTypes() {
-        return Object.keys(this.GAME_TYPES);
+        return GameConstantsUtils.getAllGameTypes();
     }
 };
 
