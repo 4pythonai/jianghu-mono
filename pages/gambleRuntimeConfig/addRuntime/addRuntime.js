@@ -15,6 +15,7 @@ Page({
         gameData: null,
         userRule: null,
         needsPlayerConfig: false,
+        needsGrouping: false,
 
         runtimeConfig: {
             gameid: null,           // 游戏ID
@@ -48,19 +49,22 @@ Page({
         setTimeout(() => {
             const { gambleSysName } = this.data;
             const needsPlayerConfig = GameTypeManager.needsPlayerConfig(gambleSysName);
+            const needsGrouping = GameTypeManager.needsGrouping(gambleSysName);
 
             this.setData({
-                needsPlayerConfig: needsPlayerConfig
+                needsPlayerConfig: needsPlayerConfig,
+                needsGrouping: needsGrouping
             });
 
-            console.log('[AddRuntime] 调试 gambleSysName:', {
-                value: gambleSysName,
-                type: typeof gambleSysName,
-                length: gambleSysName?.length,
-                indexOf8421: gambleSysName?.indexOf('8421'),
-                condition: gambleSysName?.indexOf('8421') !== -1,
-                needsPlayerConfig: needsPlayerConfig
-            });
+            // console.log('[AddRuntime] 调试 gambleSysName:', {
+            //     value: gambleSysName,
+            //     type: typeof gambleSysName,
+            //     length: gambleSysName?.length,
+            //     indexOf8421: gambleSysName?.indexOf('8421'),
+            //     condition: gambleSysName?.indexOf('8421') !== -1,
+            //     needsPlayerConfig: needsPlayerConfig,
+            //     needsGrouping: needsGrouping
+            // });
         }, 100);
 
     },

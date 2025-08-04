@@ -49,14 +49,15 @@
 
     <!-- 分组配置 -->
     <view class="section">
-      <RedBlueConfig
-        players="{{players}}"
-        initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
-        initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
-        bind:change="onGroupingConfigChange"
-      />
+      <view class="section" wx:if="{{needsGrouping}}">
+        <RedBlueConfig
+          players="{{players}}"
+          initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+          initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+          bind:change="onGroupingConfigChange"
+        />
+      </view>
     </view>
-
     <!-- 排名配置 -->
     <view class="section">
       <view class="section-label">排名规则</view>
