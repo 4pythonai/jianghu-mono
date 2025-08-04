@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Stroking组件测试</title>
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+        </style>
+    </head>
+    <body>
+        <h1>Stroking 让杆配置组件</h1>
+        <div class="test-section">
+            <h2>组件功能</h2>
+            <ul>
+                <li>✅ 用户选择：支持从游戏玩家中选择让杆用户</li>
+                <li>✅ PAR值配置：支持PAR3、PAR4、PAR5的让杆数值设置</li>
+                <li>✅ 洞范围选择：可选择起始洞和结束洞</li>
+                <li>✅ 数据管理：支持多用户配置的保存和更新</li>
+                <li>✅ 响应式设计：适配不同屏幕尺寸</li>
+            </ul>
+        </div>
+        <div class="test-section">
+            <h2>使用方法</h2>
+            <div class="code-block">
+                <pre>
+                    // 1. 在页面JSON中引入组件
+{
+  "usingComponents": {
+    "Stroking": "/pages/gambleRuntimeConfig/RuntimeComponents/Stroking/Stroking"
+  }
+}
+
+// 2. 在WXML中使用
+&lt;Stroking 
+  strokingConfig="{{strokingConfig}}"
+  bind:save="onStrokingSave"
+  bind:cancel="onStrokingCancel"
+/&gt;
+
+// 3. 在JS中处理事件
+Page({
+  data: {
+    strokingConfig: []
+  },
+  
+  onStrokingSave(e) {
+    const { config } = e.detail;
+    this.setData({ strokingConfig: config });
+  },
+  
+  onStrokingCancel() {
+    console.log('取消配置');
+  }
+});
+                </pre>
+            </div>
+        </div>
+        <div class="test-section">
+            <h2>配置数据格式</h2>
+            <div class="code-block">
+                <pre>
+                    [
+  {
+    "userid": "张三",
+    "holeRanges": [7, 8, 9, 10, 11],
+    "PAR3": 1,
+    "PAR4": 0.5,
+    "PAR5": 0.5
+  },
+  {
+    "userid": "李四", 
+    "holeRanges": [10, 11, 12, 13],
+    "PAR3": 1,
+    "PAR4": 0.5,
+    "PAR5": 0.5
+  }
+]
+                </pre>
+            </div>
+        </div>
+        <div class="test-section">
+            <h2>组件特性</h2>
+            <div class="highlight">
+                <strong>让杆数值范围：</strong>
+                -1, -0.5, 0, 0.5, 1
+                <br>
+                <strong>支持负数：</strong>
+                可以为水平较高的用户设置负让杆
+                <br>
+                <strong>多用户支持：</strong>
+                可以为多个用户分别配置让杆
+                <br>
+                <strong>洞范围灵活：</strong>
+                支持任意洞范围的让杆配置
+            </div>
+        </div>
+        <div class="test-section">
+            <h2>注意事项</h2>
+            <ul>
+                <li>组件依赖 gameStore 中的玩家数据和洞数据</li>
+                <li>确保在使用前已正确初始化游戏数据</li>
+                <li>让杆配置会影响计分计算，请谨慎使用</li>
+                <li>建议在游戏开始前完成让杆配置</li>
+            </ul>
+        </div>
+        <div class="test-section">
+            <h2>文件结构</h2>
+            <div class="code-block">
+                <pre>
+                    Stroking/
+├── Stroking.js          # 组件逻辑
+├── Stroking.wxml        # 组件模板
+├── Stroking.wxss        # 组件样式
+├── Stroking.json        # 组件配置
+├── README.md           # 使用说明
+└── test.html           # 测试页面
+                </pre>
+            </div>
+        </div>
+    </body>
+</html>

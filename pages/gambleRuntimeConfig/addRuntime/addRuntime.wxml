@@ -58,6 +58,19 @@
         />
       </view>
     </view>
+
+    <!-- 让杆置 -->
+    <view class="section">
+      <view class="section" wx:if="{{needsGrouping}}">
+        <Stroking
+          players="{{players}}"
+          initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+          initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+          bind:change="onGroupingConfigChange"
+        />
+      </view>
+    </view>
+
     <!-- 排名配置 -->
     <view class="section">
       <view class="section-label">排名规则</view>
