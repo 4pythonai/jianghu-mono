@@ -12,6 +12,10 @@ Component({
     },
 
     data: {
+        // 是否启用让杆功能
+        enableStroking: false,
+        // 是否显示配置弹窗
+        showConfigModal: false,
         // 当前选中的用户
         selectedUser: null,
         // 当前用户的让杆配置
@@ -92,7 +96,13 @@ Component({
          */
         initConfig() {
             const config = this.properties.strokingConfig || [];
-            if (config.length > 0) {
+            const hasConfig = config.length > 0;
+
+            this.setData({
+                enableStroking: hasConfig
+            });
+
+            if (hasConfig) {
                 // 如果有配置，选择第一个用户
                 const firstConfig = config[0];
                 this.selectUser(firstConfig.userid);
@@ -182,6 +192,54 @@ Component({
         onUserSelect(e) {
             const userid = e.currentTarget.dataset.userid;
             this.selectUser(userid);
+        },
+
+        /**
+         * 让杆选择改变事件
+         */
+        onStrokingChange(e) {
+            const value = e.detail.value;
+            const enableStroking = value === 'enable';
+
+            this.setData({
+                enableStroking: enableStroking
+            });
+
+            // 如果选择让杆，打开配置弹窗
+            if (enableStroking) {
+                this.openConfigModal();
+            } else {
+                // 如果选择不让杆，清除所有配置
+                this.clearAllConfigs();
+            }
+        },
+
+        /**
+         * 打开配置弹窗
+         */
+        openConfigModal() {
+            this.setData({
+                showConfigModal: true
+            });
+        },
+
+        /**
+         * 关闭配置弹窗
+         */
+        closeConfigModal() {
+            this.setData({
+                showConfigModal: false
+            });
+        },
+
+        /**
+         * 清除所有配置
+         */
+        clearAllConfigs() {
+            // 清除临时配置
+            this.clearTempConfigs();
+            // 触发清空事件，传递空配置
+            this.triggerEvent('save', { config: [] });
         },
 
         /**
@@ -275,7 +333,15 @@ Component({
         onCancel() {
             // 取消时清除临时配置
             this.clearTempConfigs();
-            this.triggerEvent('cancel');
+            // 关闭弹窗
+            this.closeConfigModal();
+            // 如果没有正式配置，重置为不让杆
+            const hasConfig = this.properties.strokingConfig && this.properties.strokingConfig.length > 0;
+            if (!hasConfig) {
+                this.setData({
+                    enableStroking: false
+                });
+            }
         },
 
         /**
@@ -341,8 +407,9 @@ Component({
             console.log('保存让杆配置:', updatedConfigs);
             this.triggerEvent('save', { config: updatedConfigs });
 
-            // 保存成功后清除临时配置
+            // 保存成功后清除临时配置并关闭弹窗
             this.clearTempConfigs();
+            this.closeConfigModal();
         },
 
         /**

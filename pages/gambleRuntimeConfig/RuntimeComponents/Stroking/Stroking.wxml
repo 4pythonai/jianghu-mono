@@ -1,121 +1,155 @@
 <!-- Stroking 组件 - 让杆配置 -->
 <view class="stroking-container">
-  <!-- 第一行：用户选择 -->
-  <view class="user-selection-row">
-    <view class="section-title">选择让杆用户</view>
-    <view class="users-grid">
-      <view
-        wx:for="{{players}}"
-        wx:key="userid"
-        class="user-item {{selectedUser && selectedUser.userid === item.userid ? 'selected' : ''}}"
-        bindtap="onUserSelect"
-        data-userid="{{item.userid}}"
-      >
-        <view class="radio-indicator">
-          <view
-            class="radio-circle {{selectedUser && selectedUser.userid === item.userid ? 'checked' : ''}}"
-          ></view>
-        </view>
-        <view class="user-content">
-          <view class="user-avatar">
-            <image src="{{item.avatar}}" mode="aspectFill" class="avatar-image"></image>
+  <!-- 让杆选择 -->
+  <view class="stroking-selection">
+    <view class="section-title">让杆设置</view>
+    <radio-group bindchange="onStrokingChange">
+      <label class="radio-option">
+        <radio value="disable" checked="{{!enableStroking}}" />
+        <text class="radio-text">不让杆</text>
+      </label>
+      <label class="radio-option">
+        <radio value="enable" checked="{{enableStroking}}" />
+        <text class="radio-text">让杆</text>
+      </label>
+    </radio-group>
+  </view>
+
+  <!-- 配置状态显示 -->
+  <view class="config-status" wx:if="{{enableStroking}}">
+    <text class="status-text">已启用让杆，点击"让杆"可重新配置</text>
+  </view>
+
+  <!-- 配置弹窗 -->
+  <view class="modal-overlay" wx:if="{{showConfigModal}}" bindtap="closeConfigModal">
+    <view class="modal-content" catchtap="noTap">
+      <view class="modal-header">
+        <text class="modal-title">让杆配置</text>
+        <view class="close-btn" bindtap="closeConfigModal">×</view>
+      </view>
+
+      <view class="modal-body">
+        <!-- 用户选择 -->
+        <view class="user-selection-row">
+          <view class="section-title">选择让杆用户</view>
+          <view class="users-grid">
+            <view
+              wx:for="{{players}}"
+              wx:key="userid"
+              class="user-item {{selectedUser && selectedUser.userid === item.userid ? 'selected' : ''}}"
+              bindtap="onUserSelect"
+              data-userid="{{item.userid}}"
+            >
+              <view class="radio-indicator">
+                <view
+                  class="radio-circle {{selectedUser && selectedUser.userid === item.userid ? 'checked' : ''}}"
+                ></view>
+              </view>
+              <view class="user-content">
+                <view class="user-avatar">
+                  <image src="{{item.avatar}}" mode="aspectFill" class="avatar-image"></image>
+                </view>
+                <view class="user-info">
+                  <text class="user-nickname">{{item.wx_nickname}}</text>
+                </view>
+              </view>
+            </view>
           </view>
-          <view class="user-info">
-            <text class="user-nickname">{{item.wx_nickname}}</text>
+        </view>
+
+        <!-- PAR值配置 -->
+        <view class="par-config-row">
+          <view class="section-title">让杆数值配置</view>
+          <view class="par-inputs">
+            <text class="par-label">PAR3</text>
+            <picker
+              mode="selector"
+              range="{{parOptions}}"
+              value="{{par3Index}}"
+              bindchange="onParValueChange"
+              data-par-type="PAR3"
+            >
+              <view class="par-picker">
+                <text class="par-value">{{currentConfig.PAR3}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+            <text class="par-label">PAR4</text>
+            <picker
+              mode="selector"
+              range="{{parOptions}}"
+              value="{{par4Index}}"
+              bindchange="onParValueChange"
+              data-par-type="PAR4"
+            >
+              <view class="par-picker">
+                <text class="par-value">{{currentConfig.PAR4}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+            <text class="par-label">PAR5</text>
+            <picker
+              mode="selector"
+              range="{{parOptions}}"
+              value="{{par5Index}}"
+              bindchange="onParValueChange"
+              data-par-type="PAR5"
+            >
+              <view class="par-picker">
+                <text class="par-value">{{currentConfig.PAR5}}</text>
+                <text class="picker-arrow">▼</text>
+              </view>
+            </picker>
+          </view>
+        </view>
+
+        <!-- 洞范围选择 -->
+        <view class="hole-range-row">
+          <view class="section-title">让杆洞范围</view>
+          <view class="hole-range-inputs">
+            <view class="hole-input-group">
+              <text class="hole-label">起始洞</text>
+              <picker
+                mode="selector"
+                range="{{holeList}}"
+                range-key="holename"
+                value="{{startHoleIndex}}"
+                bindchange="onStartHoleChange"
+              >
+                <view class="hole-picker">
+                  <text
+                    class="hole-value"
+                  >{{holeRange.startHole ? '第' + holeRange.startHole + '洞' : '请选择'}}</text>
+                  <text class="picker-arrow">▼</text>
+                </view>
+              </picker>
+            </view>
+            <view class="hole-input-group">
+              <text class="hole-label">结束洞</text>
+              <picker
+                mode="selector"
+                range="{{holeList}}"
+                range-key="holename"
+                value="{{endHoleIndex}}"
+                bindchange="onEndHoleChange"
+              >
+                <view class="hole-picker">
+                  <text
+                    class="hole-value"
+                  >{{holeRange.endHole ? '第' + holeRange.endHole + '洞' : '请选择'}}</text>
+                  <text class="picker-arrow">▼</text>
+                </view>
+              </picker>
+            </view>
           </view>
         </view>
       </view>
-    </view>
-  </view>
 
-  <!-- 第二行：PAR值配置 -->
-  <view class="par-config-row">
-    <view class="section-title">让杆数值配置</view>
-    <view class="par-inputs">
-      <text class="par-label">PAR3</text>
-      <picker
-        mode="selector"
-        range="{{parOptions}}"
-        value="{{par3Index}}"
-        bindchange="onParValueChange"
-        data-par-type="PAR3"
-      >
-        <view class="par-picker">
-          <text class="par-value">{{currentConfig.PAR3}}</text>
-          <text class="picker-arrow">▼</text>
-        </view>
-      </picker>
-      <text class="par-label">PAR4</text>
-      <picker
-        mode="selector"
-        range="{{parOptions}}"
-        value="{{par4Index}}"
-        bindchange="onParValueChange"
-        data-par-type="PAR4"
-      >
-        <view class="par-picker">
-          <text class="par-value">{{currentConfig.PAR4}}</text>
-          <text class="picker-arrow">▼</text>
-        </view>
-      </picker>
-      <text class="par-label">PAR5</text>
-      <picker
-        mode="selector"
-        range="{{parOptions}}"
-        value="{{par5Index}}"
-        bindchange="onParValueChange"
-        data-par-type="PAR5"
-      >
-        <view class="par-picker">
-          <text class="par-value">{{currentConfig.PAR5}}</text>
-          <text class="picker-arrow">▼</text>
-        </view>
-      </picker>
-    </view>
-  </view>
-
-  <!-- 第三行：洞范围选择 -->
-  <view class="hole-range-row">
-    <view class="section-title">让杆洞范围</view>
-    <view class="hole-range-inputs">
-      <view class="hole-input-group">
-        <text class="hole-label">起始洞</text>
-        <picker
-          mode="selector"
-          range="{{holeList}}"
-          range-key="holename"
-          value="{{startHoleIndex}}"
-          bindchange="onStartHoleChange"
-        >
-          <view class="hole-picker">
-            <text
-              class="hole-value"
-            >{{holeRange.startHole ? '第' + holeRange.startHole + '洞' : '请选择'}}</text>
-            <text class="picker-arrow">▼</text>
-          </view>
-        </picker>
-      </view>
-      <view class="hole-input-group">
-        <text class="hole-label">结束洞</text>
-        <picker
-          mode="selector"
-          range="{{holeList}}"
-          range-key="holename"
-          value="{{endHoleIndex}}"
-          bindchange="onEndHoleChange"
-        >
-          <view class="hole-picker">
-            <text class="hole-value">{{holeRange.endHole ? '第' + holeRange.endHole + '洞' : '请选择'}}</text>
-            <text class="picker-arrow">▼</text>
-          </view>
-        </picker>
+      <!-- 弹窗操作按钮 -->
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="onCancel">取消</button>
+        <button class="save-btn" bindtap="onSave">保存</button>
       </view>
     </view>
-  </view>
-
-  <!-- 第四行：操作按钮 -->
-  <view class="action-row">
-    <button class="cancel-btn" bindtap="onCancel">取消</button>
-    <button class="save-btn" bindtap="onSave">保存</button>
   </view>
 </view>
