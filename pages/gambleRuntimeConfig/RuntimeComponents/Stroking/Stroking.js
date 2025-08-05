@@ -44,6 +44,8 @@ Component({
         par5Index: 2,
         // 临时配置存储，用于保存用户的未保存设置
         tempConfigs: {},
+        // 弹窗打开时的临时配置备份，用于取消时恢复
+        tempConfigsBackup: {},
         // 已配置用户信息列表
         configuredUsers: []
     },
@@ -108,7 +110,7 @@ Component({
          */
         refreshConfiguredUsers() {
             const config = this.properties.strokingConfig || [];
-            const validConfigs = config.filter(c => this.isValidConfig(c));
+            const validConfigs = config.filter(c => this.isValidConfig(c) && this.hasValidParValues(c));
             const configuredUsers = this.getConfiguredUsersInfo(validConfigs);
 
             console.log('refreshConfiguredUsers - 刷新配置用户显示:', configuredUsers);
@@ -124,8 +126,8 @@ Component({
             const config = this.properties.strokingConfig || [];
             console.log('initConfig - 原始配置:', config);
 
-            // 过滤出有效的配置
-            const validConfigs = config.filter(c => this.isValidConfig(c));
+            // 过滤出有效的配置（结构完整且至少有一个PAR值不为0）
+            const validConfigs = config.filter(c => this.isValidConfig(c) && this.hasValidParValues(c));
             const hasValidConfig = validConfigs.length > 0;
             console.log('initConfig - 有效配置:', validConfigs);
             console.log('initConfig - 是否有有效配置:', hasValidConfig);
@@ -299,9 +301,12 @@ Component({
          * 打开配置弹窗
          */
         openConfigModal() {
+            // 🔑 备份当前的临时配置状态，用于取消时恢复
             this.setData({
-                showConfigModal: true
+                showConfigModal: true,
+                tempConfigsBackup: { ...this.data.tempConfigs }  // 深拷贝备份
             });
+            console.log('打开弹窗 - 备份临时配置:', this.data.tempConfigs);
         },
 
         /**
@@ -420,17 +425,21 @@ Component({
          * 取消配置
          */
         onCancel() {
-            // 取消时清除临时配置
-            this.clearTempConfigs();
+            // 🔑 取消时恢复到弹窗打开时的状态，而不是清除所有数据
+            console.log('取消配置 - 恢复到备份状态:', this.data.tempConfigsBackup);
+
+            this.setData({
+                tempConfigs: { ...this.data.tempConfigsBackup },  // 恢复备份的临时配置
+                tempConfigsBackup: {}  // 清除备份
+            });
+
+            // 如果有选中用户，重新加载该用户的配置（可能是恢复的临时配置或正式配置）
+            if (this.data.selectedUser) {
+                this.selectUser(this.data.selectedUser.userid);
+            }
+
             // 关闭弹窗
             this.closeConfigModal();
-            // 如果没有正式配置，重置为不让杆
-            const hasConfig = this.properties.strokingConfig && this.properties.strokingConfig.length > 0;
-            if (!hasConfig) {
-                this.setData({
-                    enableStroking: false
-                });
-            }
         },
 
         /**
@@ -438,7 +447,8 @@ Component({
          */
         clearTempConfigs() {
             this.setData({
-                tempConfigs: {}
+                tempConfigs: {},
+                tempConfigsBackup: {}  // 同时清除备份
             });
         },
 
@@ -449,11 +459,17 @@ Component({
             // 先保存当前用户的临时配置
             this.saveCurrentTempConfig();
 
-            // 验证所有临时配置的完整性
-            const allTempConfigs = Object.values(this.data.tempConfigs);
+            // 获取所有临时配置，并过滤掉无效的配置（所有PAR值都为0的配置）
+            const allTempConfigs = Object.values(this.data.tempConfigs).filter(config => {
+                return this.hasValidParValues(config);
+            });
+
+            console.log('过滤前的临时配置:', Object.values(this.data.tempConfigs));
+            console.log('过滤后的有效配置:', allTempConfigs);
+
             if (allTempConfigs.length === 0) {
                 wx.showToast({
-                    title: '请至少配置一个用户的让杆',
+                    title: '请至少配置一个用户的让杆（PAR值不能全为0）',
                     icon: 'none',
                     duration: 2000
                 });
@@ -501,9 +517,11 @@ Component({
             this.triggerEvent('save', { config: updatedConfigs });
 
             // 🔑 关键修复：保存成功后立即更新界面状态
-            const configuredUsers = this.getConfiguredUsersInfo(updatedConfigs);
+            // 过滤出有效的配置用于界面显示（理论上updatedConfigs已经是有效的，但为了一致性还是过滤一下）
+            const validSavedConfigs = updatedConfigs.filter(c => this.isValidConfig(c) && this.hasValidParValues(c));
+            const configuredUsers = this.getConfiguredUsersInfo(validSavedConfigs);
             this.setData({
-                enableStroking: true,
+                enableStroking: validSavedConfigs.length > 0,
                 configuredUsers: configuredUsers
             });
             console.log('保存成功 - 立即更新界面状态:', configuredUsers);
@@ -516,8 +534,11 @@ Component({
                 duration: 1500
             });
 
-            // 保存成功后清除临时配置并关闭弹窗
-            this.clearTempConfigs();
+            // 保存成功后清除临时配置和备份，然后关闭弹窗
+            this.setData({
+                tempConfigs: {},
+                tempConfigsBackup: {}  // 清除备份，因为已经保存成功
+            });
             this.closeConfigModal();
         },
 
@@ -588,6 +609,16 @@ Component({
         },
 
         /**
+         * 检查配置是否至少有一个PAR值不为0
+         */
+        hasValidParValues(config) {
+            if (!config) return false;
+
+            // 至少有一个PAR值不为0才算有效的让杆配置
+            return config.PAR3 !== 0 || config.PAR4 !== 0 || config.PAR5 !== 0;
+        },
+
+        /**
          * 删除指定用户的让杆配置
          */
         removeUserConfig(e) {
@@ -608,6 +639,36 @@ Component({
 
                         // 更新配置
                         this.triggerEvent('save', { config: updatedConfigs });
+
+                        // 🔑 关键修复：删除后立即更新界面状态和清理临时数据
+                        // 过滤出有效的配置（PAR值不全为0）
+                        const validUpdatedConfigs = updatedConfigs.filter(c => this.isValidConfig(c) && this.hasValidParValues(c));
+                        const configuredUsers = this.getConfiguredUsersInfo(validUpdatedConfigs);
+
+                        // 清理被删除用户的临时配置
+                        const tempConfigs = { ...this.data.tempConfigs };
+                        if (tempConfigs[userid]) {
+                            delete tempConfigs[userid];
+                            console.log(`删除临时配置 - 用户: ${username}`, userid);
+                        }
+
+                        // 如果删除的是当前选中的用户，重置选中状态
+                        let updateData = {
+                            enableStroking: validUpdatedConfigs.length > 0,  // 基于有效配置数量决定是否关闭让杆
+                            configuredUsers: configuredUsers,
+                            tempConfigs: tempConfigs  // 更新临时配置
+                        };
+
+                        if (this.data.selectedUser && this.data.selectedUser.userid === userid) {
+                            // 重置当前选中用户和配置
+                            updateData.selectedUser = null;
+                            updateData.currentConfig = { PAR3: 0, PAR4: 0, PAR5: 0 };
+                            updateData.holeRange = { startHole: null, endHole: null };
+                            console.log(`重置选中用户 - 因为删除了当前选中的用户: ${username}`);
+                        }
+
+                        this.setData(updateData);
+                        console.log('删除成功 - 立即更新界面状态:', configuredUsers);
 
                         wx.showToast({
                             title: `已删除 ${username} 的让杆配置`,
