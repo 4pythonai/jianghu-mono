@@ -17,7 +17,38 @@
 
   <!-- 配置状态显示 -->
   <view class="config-status" wx:if="{{enableStroking}}">
-    <text class="status-text">已启用让杆，点击"让杆"可重新配置</text>
+    <view class="status-header">
+      <text class="status-title">已配置用户 ({{configuredUsers.length}}人)</text>
+      <button class="add-config-btn" bindtap="openConfigModal">添加配置</button>
+    </view>
+
+    <view class="configured-users-list" wx:if="{{configuredUsers.length > 0}}">
+      <view wx:for="{{configuredUsers}}" wx:key="userid" class="configured-user-item">
+        <view class="user-basic-info">
+          <text class="user-name">{{item.nickname}}</text>
+          <text class="hole-count">{{item.holeCount}}洞</text>
+        </view>
+        <view class="user-par-info">
+          <text class="par-summary">{{item.parSummary}}</text>
+        </view>
+        <view class="user-actions">
+          <button
+            class="action-btn edit-btn"
+            bindtap="editUserConfig"
+            data-userid="{{item.userid}}"
+          >编辑</button>
+          <button
+            class="action-btn delete-btn"
+            bindtap="removeUserConfig"
+            data-userid="{{item.userid}}"
+          >删除</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-tip" wx:else>
+      <text class="tip-text">暂无配置，点击上方"添加配置"开始设置</text>
+    </view>
   </view>
 </view>
 
