@@ -49,6 +49,14 @@ class Gamble extends MY_Controller {
             }
             $holePlayListString = implode(',', $hindexArr);
             // 准备插入数据
+
+            if (isset($json_paras['stroking_config']) && !empty($json_paras['stroking_config'])) {
+                $stroking_config = json_encode($json_paras['stroking_config'], JSON_UNESCAPED_UNICODE);
+            } else {
+                $stroking_config = null;
+            }
+
+
             $this->load->model('MAbstract');
             $abstract = $this->MAbstract->createAbstract($json_paras['gambleSysName'], $json_paras['red_blue_config']);
             $insert_data = [
@@ -67,7 +75,8 @@ class Gamble extends MY_Controller {
                 'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score',
                 'holePlayList' => $holePlayListString,
                 'startHoleindex' => $startHoleindex,
-                'endHoleindex' => $endHoleindex
+                'endHoleindex' => $endHoleindex,
+                'stroking_config' => $stroking_config
             ];
 
             // 插入数据
@@ -164,28 +173,23 @@ class Gamble extends MY_Controller {
 
 
     public function addGambleRule() {
+
+        $this->load->model('sysrule/G4P8421Parser');
+        $this->load->model('sysrule/G4PlasiParser');
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
 
+        $gamblesysname = $json_paras['gamblesysname'];
+        if ($gamblesysname == '4p-8421') {
+            $insert_data = $this->G4P8421Parser->parserRawData($userid, $json_paras);
+        }
+
+        if ($gamblesysname == '4p-lasi') {
+            $insert_data = $this->G4PlasiParser->parserRawData($userid, $json_paras);
+        }
+
+
         try {
-            // 获取必需参数
-            $gamblesysname = $json_paras['gamblesysname'] ?? null;
-
-
-            // 准备插入数据
-            $insert_data = [
-                'creator_id' => $userid,
-                'gambleSysName' => $gamblesysname,
-                'gambleUserName' => $json_paras['gambleUserName'] ?? $json_paras['user_rulename'] ?? null,
-                'playersNumber' => $json_paras['playersNumber'] ?? 4,
-                'deductionConfig' => $json_paras['deductionConfig'] ?? 'Par+4',
-                'deductionMaxValue' => $json_paras['deductionMaxValue'] ?? 10000000,
-                'drawConfig' => $json_paras['drawConfig'] ?? 'Diff_2',
-                'eatingRange' => isset($json_paras['eatingRange']) ? json_encode($json_paras['eatingRange'], JSON_UNESCAPED_UNICODE) : null,
-                'meatValueConfig' => $json_paras['meatValueConfig'] ?? 'MEAT_AS_2',
-                'meatMaxValue' => $json_paras['meatMaxValue'] ?? 1000000,
-                'dutyConfig' => $json_paras['dutyConfig'] ?? 'DUTY_DINGTOU'
-            ];
 
             // 插入数据
             $this->db->insert('t_gamble_rules_user', $insert_data);
@@ -232,16 +236,17 @@ class Gamble extends MY_Controller {
             // 查询用户创建的所有赌球规则，只获取需要的字段
             $query = "SELECT id as userRuleId, 
                      create_time,
+                     RewardConfig,
                      drawConfig,
                      dutyConfig,
                      eatingRange,
                      gambleSysName,
                      gambleUserName,
-                     deductionMaxValue,
+                     badScoreMaxLost,
                      meatMaxValue,
                      meatValueConfig,
                      playersNumber,
-                     deductionConfig,
+                     badScoreBaseLine,
                      update_time
                      FROM t_gamble_rules_user 
                      WHERE creator_id = ? and softdeleted='n'

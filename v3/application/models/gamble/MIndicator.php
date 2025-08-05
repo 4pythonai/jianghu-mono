@@ -19,7 +19,7 @@ class MIndicator extends CI_Model {
      * @param GambleContext $context 赌球上下文对象
      */
     public function computeIndicators($index, &$hole,  $context) {
-        if ($context->gambleSysName == '8421') {
+        if ($context->gambleSysName == '4p-8421'  || $context->gambleSysName == '4p-lasi') {
             $this->calculate8421Indicators($hole, $context);
         } else {
 
@@ -35,8 +35,8 @@ class MIndicator extends CI_Model {
      */
     private function calculate8421Indicators(&$hole, $context) {
         $playerIndicatorConfig = $context->playerIndicatorConfig;
-        $sub8421ConfigString =  $context->deductionConfig;
-        $max8421SubValue = $context->deductionMaxValue;
+        $sub8421ConfigString =  $context->badScoreBaseLine;
+        $max8421SubValue = $context->badScoreMaxLost;
 
         $indicatorBlue = 0;
         $indicatorRed = 0;
@@ -123,7 +123,7 @@ class MIndicator extends CI_Model {
 
     public function setWinFailPoints(&$hole, $context) {
 
-
+        // debug($hole);
 
         $indicatorBlue = $hole['indicatorBlue'];
         $indicatorRed = $hole['indicatorRed'];

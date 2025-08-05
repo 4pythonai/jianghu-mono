@@ -16,8 +16,8 @@ class MRuntimeConfig extends CI_Model {
 
 
 
-        $RunTimeConfigRow['deductionConfig'] = $GambleConfigRow['deductionConfig'];
-        $RunTimeConfigRow['deductionMaxValue'] = $GambleConfigRow['deductionMaxValue'];
+        $RunTimeConfigRow['badScoreBaseLine'] = $GambleConfigRow['badScoreBaseLine'];
+        $RunTimeConfigRow['badScoreMaxLost'] = $GambleConfigRow['badScoreMaxLost'];
         $RunTimeConfigRow['drawConfig'] = $GambleConfigRow['drawConfig'];
         $RunTimeConfigRow['eatingRange'] = $GambleConfigRow['eatingRange'];
         $RunTimeConfigRow['meatValueConfig'] = $GambleConfigRow['meatValueConfig'];

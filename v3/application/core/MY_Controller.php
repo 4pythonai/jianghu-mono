@@ -10,6 +10,9 @@ set_error_handler('my_errorHandler');
 set_exception_handler('my_exceptionHandler');
 
 
+
+
+
 function my_errorHandler($errno, $errstr, $errfile, $errline) {
   if (strlen($errstr) > 0) {
     $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);

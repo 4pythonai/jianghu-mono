@@ -78,8 +78,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->ranking4TieResolveConfig = $_config_row['ranking_tie_resolve_config'];
         $this->drawConfig = $_config_row['drawConfig'];
         $this->playerIndicatorConfig = json_decode($_config_row['playerIndicatorConfig'], true);
-        $this->deductionConfig = $_config_row['deductionConfig'];
-        $this->deductionMaxValue = $_config_row['deductionMaxValue'];
+        $this->badScoreBaseLine = $_config_row['badScoreBaseLine'];
+        $this->badScoreMaxLost = $_config_row['badScoreMaxLost'];
         $this->eatingRange = json_decode($_config_row['eatingRange'], true);
         $this->stroking_config =  json_decode($_config_row['stroking_config'], true);
         $this->meatValueConfig = $_config_row['meatValueConfig'];
@@ -170,7 +170,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $tmp = [
             'gameid' => $this->context->gameid,
             'gambleid' => $this->context->gambleid,
-            'deductionConfig' => $this->context->deductionConfig,
+            'badScoreBaseLine' => $this->context->badScoreBaseLine,
             'groupid' => $this->context->groupid,
             'userid' => $this->context->userid,
             'gambleSysName' => $this->context->gambleSysName,
@@ -284,11 +284,11 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     }
 
     public function getDeductionConfig() {
-        return $this->deductionConfig;
+        return $this->badScoreBaseLine;
     }
 
     public function getDeductionMaxValue() {
-        return $this->deductionMaxValue;
+        return $this->badScoreMaxLost;
     }
 
     public function getEatingRange() {

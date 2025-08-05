@@ -27,8 +27,8 @@ class GambleContext extends CI_Model {
     public $ranking4TieResolveConfig;
     public $drawConfig;
     public $playerIndicatorConfig;
-    public $deductionConfig;
-    public $deductionMaxValue;
+    public $badScoreBaseLine;
+    public $badScoreMaxLost;
     public $eatingRange;
     public $stroking_config;
     public $meatValueConfig;
@@ -74,8 +74,8 @@ class GambleContext extends CI_Model {
         'ranking4TieResolveConfig' => 'getRanking4TieResolveConfig',
         'drawConfig' => 'getDrawConfig',
         'playerIndicatorConfig' => 'getPlayerIndicatorConfig',
-        'deductionConfig' => 'getDeductionConfig',
-        'deductionMaxValue' => 'getDeductionMaxValue',
+        'badScoreBaseLine' => 'getDeductionConfig',
+        'badScoreMaxLost' => 'getDeductionMaxValue',
         'eatingRange' => 'getEatingRange',
         'stroking_config' => 'getStrokingConfig',
         'meatValueConfig' => 'getMeatValueConfig',
