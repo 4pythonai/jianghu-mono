@@ -205,7 +205,7 @@ Component({
             const validConfigs = this.getValidConfigs(newConfigs);
 
             // 触发保存事件
-            this.triggerEvent('save', { config: validConfigs });
+            this.triggerEvent('saveStroking', { config: validConfigs });
 
             // 立即更新UI
             this.setData({
@@ -282,7 +282,7 @@ Component({
         /**
          * 保存配置
          */
-        onSave() {
+        onSaveStroking() {
             // 先验证当前正在配置的用户
             const validation = this.validateCurrentConfig();
             if (!validation.valid) {

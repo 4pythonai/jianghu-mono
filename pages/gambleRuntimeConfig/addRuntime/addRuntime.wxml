@@ -41,7 +41,11 @@
     <!-- 让杆置 -->
     <view class="section">
       <view class="section" wx:if="{{needsGrouping}}">
-        <Stroking players="{{players}}" bind:change="ontrokingConfigChange" />
+        <Stroking
+          players="{{players}}"
+          strokingConfig="{{runtimeConfig.stroking_config}}"
+          bind:saveStroking="saveStroking"
+        />
       </view>
     </view>
 

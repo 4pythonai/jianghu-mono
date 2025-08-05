@@ -24,7 +24,7 @@ Page({
             gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
             gambleUserName: null,   // 用户规则名称(如:规则_4721)
             red_blue_config: '4_固拉',
-            stroking_config: null,
+            stroking_config: [],    // 让杆配置，初始为空数组
             bootstrap_order: [],
             ranking_tie_resolve_config: 'indicator.reverse',
             playerIndicatorConfig: {}      // 球员8421指标配置
@@ -52,6 +52,11 @@ Page({
             const needsPlayerConfig = GameConfig.needsPlayerConfig(gambleSysName);
             const needsGrouping = GameConfig.needsGrouping(gambleSysName);
 
+            console.log('[AddRuntime] 初始化完成:');
+            console.log('- 游戏系统名称:', gambleSysName);
+            console.log('- 需要球员配置:', needsPlayerConfig);
+            console.log('- 需要分组:', needsGrouping);
+
             this.setData({
                 needsPlayerConfig: needsPlayerConfig,
                 needsGrouping: needsGrouping
@@ -61,10 +66,14 @@ Page({
 
     },
 
-    // stroking_config
+    // stroking_config 事件处理
+    saveStroking(e) {
+        const { config } = e.detail;
+        console.log('[AddRuntime] Stroking配置变更:', config);
 
-    ontrokingConfigChange(e) {
-        console.log(e)
+        this.setData({
+            'runtimeConfig.stroking_config': config
+        });
     },
 
 
@@ -105,6 +114,17 @@ Page({
     onConfirmConfig() {
         const { runtimeConfig, gambleSysName, gameId, players } = this.data;
 
+        // 打印完整配置信息
+        console.log('[AddRuntime] 准备保存配置:');
+        console.log('- 游戏系统名称:', gambleSysName);
+        console.log('- 游戏ID:', gameId);
+        console.log('- 玩家数量:', players.length);
+        console.log('- 完整运行时配置:', runtimeConfig);
+        console.log('- Stroking配置:', runtimeConfig.stroking_config);
+        console.log('- 分组配置:', runtimeConfig.red_blue_config);
+        console.log('- 启动顺序:', runtimeConfig.bootstrap_order);
+        console.log('- 排名配置:', runtimeConfig.ranking_tie_resolve_config);
+        console.log('- 球员指标配置:', runtimeConfig.playerIndicatorConfig);
 
         // 验证配置
         if (!ConfigValidator.validateAndShow(runtimeConfig, players, gambleSysName)) {

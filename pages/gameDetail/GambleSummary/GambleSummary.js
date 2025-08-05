@@ -15,12 +15,17 @@ Component({
     data: {
         SummaryResult: {},
         gambleResults: [],
-        loading: false
+        loading: false,
+        lastFetchParams: null  // 记录上次请求的参数，避免重复请求
     },
 
     lifetimes: {
         attached() {
-            this.fetchGambleSummary();
+            // 只有在属性已经设置的情况下才执行
+            const { gameId, groupId } = this.properties;
+            if (gameId && groupId) {
+                this.fetchGambleSummary();
+            }
         }
     },
 
@@ -49,19 +54,37 @@ Component({
             if (!gameId || !groupId) {
                 return;
             }
-            this.setData({ loading: true });
-            // 调用API获取赌博汇总数据
-            const result = await gamble.getGambleSummary({
-                gameId: gameId,
-                groupId: groupId
+
+            // 检查是否与上次请求参数相同，避免重复请求
+            const currentParams = `${gameId}-${groupId}`;
+            if (this.data.lastFetchParams === currentParams && this.data.loading) {
+                console.log('[GambleSummary] 避免重复请求，参数相同:', currentParams);
+                return;
+            }
+
+            console.log('[GambleSummary] 开始请求数据:', { gameId, groupId });
+            this.setData({
+                loading: true,
+                lastFetchParams: currentParams
             });
 
-            // 直接设置数据
-            this.setData({
-                SummaryResult: result.summaryResult,
-                gambleResults: result.gambleResults,
-                loading: false
-            });
+            try {
+                // 调用API获取赌博汇总数据
+                const result = await gamble.getGambleSummary({
+                    gameId: gameId,
+                    groupId: groupId
+                });
+
+                // 直接设置数据
+                this.setData({
+                    SummaryResult: result.summaryResult,
+                    gambleResults: result.gambleResults,
+                    loading: false
+                });
+            } catch (error) {
+                console.error('[GambleSummary] 请求失败:', error);
+                this.setData({ loading: false });
+            }
         },
 
 
