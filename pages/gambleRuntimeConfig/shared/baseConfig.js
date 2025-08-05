@@ -74,16 +74,6 @@ const BaseConfig = {
             playerCount: processedData.players?.length
         });
 
-        // 测试默认配置生成
-        const testResult = GameConfig.testDefaultConfig(
-            processedData.gambleSysName,
-            processedData.players
-        );
-
-        if (testResult.issues.length > 0) {
-            console.warn('[BaseConfig] 默认配置生成存在问题:', testResult.issues);
-        }
-
         // 获取默认配置
         const defaultConfig = GameConfig.getDefaultConfig(
             processedData.gambleSysName,
