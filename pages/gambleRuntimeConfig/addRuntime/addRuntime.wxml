@@ -41,12 +41,7 @@
     <!-- 让杆置 -->
     <view class="section">
       <view class="section" wx:if="{{needsGrouping}}">
-        <Stroking
-          players="{{players}}"
-          initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
-          initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
-          bind:change="onGroupingConfigChange"
-        />
+        <Stroking players="{{players}}" bind:change="ontrokingConfigChange" />
       </view>
     </view>
 

@@ -173,7 +173,7 @@
     <!-- 弹窗操作按钮 -->
     <view class="modal-actions">
       <button class="modal-btn cancel" bindtap="onCancel">取消</button>
-      <button class="modal-btn confirm" bindtap="onSave">确定</button>
+      <button class="modal-btn confirm" bindtap="ontrokingConfigChange">确定</button>
     </view>
   </view>
 </view>

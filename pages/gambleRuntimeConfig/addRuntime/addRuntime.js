@@ -24,6 +24,7 @@ Page({
             gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
             gambleUserName: null,   // 用户规则名称(如:规则_4721)
             red_blue_config: '4_固拉',
+            stroking_config: null,
             bootstrap_order: [],
             ranking_tie_resolve_config: 'indicator.reverse',
             playerIndicatorConfig: {}      // 球员8421指标配置
@@ -56,18 +57,18 @@ Page({
                 needsGrouping: needsGrouping
             });
 
-            // console.log('[AddRuntime] 调试 gambleSysName:', {
-            //     value: gambleSysName,
-            //     type: typeof gambleSysName,
-            //     length: gambleSysName?.length,
-            //     indexOf8421: gambleSysName?.indexOf('8421'),
-            //     condition: gambleSysName?.indexOf('8421') !== -1,
-            //     needsPlayerConfig: needsPlayerConfig,
-            //     needsGrouping: needsGrouping
-            // });
         }, 100);
 
     },
+
+    // stroking_config
+
+    ontrokingConfigChange(e) {
+        console.log(e)
+    },
+
+
+
 
     // 分组配置事件
     onGroupingConfigChange(e) {
