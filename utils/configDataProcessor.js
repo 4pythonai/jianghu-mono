@@ -4,7 +4,7 @@
  */
 const { gameStore } = require('../stores/gameStore');
 const { holeRangeStore } = require('../stores/holeRangeStore');
-const GameTypeManager = require('./gameTypeManager');
+const { GameConfig } = require('./gameConfig');
 
 const ConfigDataProcessor = {
     /**

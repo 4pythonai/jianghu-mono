@@ -2,7 +2,7 @@
  * 配置验证器
  * 专门处理配置验证逻辑
  */
-const GameTypeManager = require('../../../utils/gameTypeManager');
+const { GameConfig } = require('../../../utils/gameConfig');
 
 const ConfigValidator = {
 
@@ -65,7 +65,7 @@ const ConfigValidator = {
         const errors = [];
 
         // 检查是否需要分组
-        const needsGrouping = GameTypeManager.needsGrouping(gambleSysName);
+        const needsGrouping = GameConfig.needsGrouping(gambleSysName);
 
         if (needsGrouping) {
             // 验证分组方式
@@ -109,7 +109,7 @@ const ConfigValidator = {
         const errors = [];
 
         // 检查是否需要球员配置
-        const needsPlayerConfig = GameTypeManager.needsPlayerConfig(gambleSysName);
+        const needsPlayerConfig = GameConfig.needsPlayerConfig(gambleSysName);
 
         if (needsPlayerConfig) {
             const val8421Config = runtimeConfig.playerIndicatorConfig;

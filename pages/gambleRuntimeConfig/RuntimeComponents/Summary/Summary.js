@@ -1,6 +1,6 @@
 // Summary组件 - 显示游戏规则摘要和参与人员
 const RuntimeComponentsUtils = require('../common-utils.js');
-const { GameConstantsUtils } = require('../../../../utils/gameConstants.js');
+const { GameConfig } = require('../../../../utils/gameConfig.js');
 
 Component({
     properties: {
@@ -77,7 +77,7 @@ Component({
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用用户规则名称', displayName);
             } else if (this.data.gambleSysName) {
                 // 否则显示系统规则名称
-                displayName = GameConstantsUtils.getGameTypeName(this.data.gambleSysName);
+                displayName = GameConfig.getGameName(this.data.gambleSysName);
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用系统规则名称', displayName);
             }
 

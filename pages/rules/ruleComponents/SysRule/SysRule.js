@@ -1,5 +1,5 @@
 // 添加规则组件
-const { ROUTE_MAP, GameConstantsUtils } = require('../../../../utils/gameConstants.js');
+const { ROUTES, GameConfig } = require('../../../../utils/gameConfig.js');
 const gambleAPI = require('../../../../api/modules/gamble.js');
 
 Component({
@@ -276,7 +276,7 @@ Component({
             console.log(' ⭕️⭕️⭕️⭕️⭕️⭕️⭕️ 卡片点击跳转规则配置页:', title);
 
             // 使用统一的路由映射
-            const routePath = GameConstantsUtils.getRoutePath(title);
+                            const routePath = GameConfig.getRoute(title);
 
             if (routePath) {
                 wx.navigateTo({ url: routePath });

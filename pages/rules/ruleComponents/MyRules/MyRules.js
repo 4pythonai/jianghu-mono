@@ -1,7 +1,7 @@
 const app = getApp()
 
 // 我的规则组件
-const { USER_RULE_MAP, GameConstantsUtils } = require('../../../../utils/gameConstants.js');
+const { USER_RULES, GameConfig } = require('../../../../utils/gameConfig.js');
 
 Component({
     properties: {
@@ -292,7 +292,7 @@ Component({
             const gamblesysname = userRule.gamblesysname || '';
 
             // 首先根据gamblesysname精确匹配
-            const exactMatch = GameConstantsUtils.getUserRuleMapping(group, gamblesysname);
+            const exactMatch = GameConfig.getUserRule(group, gamblesysname);
             if (exactMatch) {
                 return exactMatch;
             }
@@ -301,32 +301,32 @@ Component({
             const ruleName = (userRule.gambleUserName || userRule.user_rulename || '').toLowerCase();
 
             if (ruleName.includes('8421')) {
-                return GameConstantsUtils.getUserRuleMapping(group, '8421');
+                return GameConfig.getUserRule(group, '8421');
             }
             if (ruleName.includes('比杆') || ruleName.includes('gross')) {
-                return GameConstantsUtils.getUserRuleMapping(group, 'gross');
+                return GameConfig.getUserRule(group, 'gross');
             }
             if (ruleName.includes('比洞') || ruleName.includes('hole')) {
-                return GameConstantsUtils.getUserRuleMapping(group, 'hole');
+                return GameConfig.getUserRule(group, 'hole');
             }
             if (ruleName.includes('斗地主') || ruleName.includes('doudizhu')) {
-                return GameConstantsUtils.getUserRuleMapping(group, 'doudizhu');
+                return GameConfig.getUserRule(group, 'doudizhu');
             }
             if (ruleName.includes('地主婆') || ruleName.includes('dizhupo')) {
-                return GameConstantsUtils.getUserRuleMapping(group, 'dizhupo');
+                return GameConfig.getUserRule(group, 'dizhupo');
             }
             if (ruleName.includes('拉死') || ruleName.includes('lasi')) {
-                return GameConstantsUtils.getUserRuleMapping(group, 'lasi');
+                return GameConfig.getUserRule(group, 'lasi');
             }
             if (ruleName.includes('3打1') || ruleName.includes('3da1')) {
-                return GameConstantsUtils.getUserRuleMapping(group, '3da1');
+                return GameConfig.getUserRule(group, '3da1');
             }
             if (ruleName.includes('bestak')) {
-                return GameConstantsUtils.getUserRuleMapping(group, 'bestak');
+                return GameConfig.getUserRule(group, 'bestak');
             }
 
             // 默认返回该组的8421规则
-            return GameConstantsUtils.getUserRuleMapping(group, '8421') || null;
+            return GameConfig.getUserRule(group, '8421') || null;
         },
 
         // 下拉刷新处理

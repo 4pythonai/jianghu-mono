@@ -4,7 +4,7 @@
  */
 const { gameStore } = require('../../../stores/gameStore');
 const { holeRangeStore } = require('../../../stores/holeRangeStore');
-const GameTypeManager = require('../../../utils/gameTypeManager');
+const { GameConfig } = require('../../../utils/gameConfig');
 const ConfigDataProcessor = require('../../../utils/configDataProcessor');
 
 const app = getApp();
@@ -75,7 +75,7 @@ const BaseConfig = {
         });
 
         // 测试默认配置生成
-        const testResult = GameTypeManager.testDefaultConfig(
+        const testResult = GameConfig.testDefaultConfig(
             processedData.gambleSysName,
             processedData.players
         );
@@ -85,7 +85,7 @@ const BaseConfig = {
         }
 
         // 获取默认配置
-        const defaultConfig = GameTypeManager.getDefaultConfig(
+        const defaultConfig = GameConfig.getDefaultConfig(
             processedData.gambleSysName,
             processedData.players
         );
@@ -105,7 +105,7 @@ const BaseConfig = {
         // 强制检查8421配置是否为空，如果为空则重新初始化
         const is8421Game = processedData.gambleSysName && (
             processedData.gambleSysName.includes('8421') ||
-            GameTypeManager.needsPlayerConfig(processedData.gambleSysName)
+            GameConfig.needsPlayerConfig(processedData.gambleSysName)
         );
 
         if (is8421Game) {
@@ -114,7 +114,7 @@ const BaseConfig = {
                 console.warn('[BaseConfig] 检测到生成的8421配置为空，强制重新初始化');
 
                 // 重新获取默认配置
-                const retryConfig = GameTypeManager.getDefaultConfig(
+                const retryConfig = GameConfig.getDefaultConfig(
                     processedData.gambleSysName,
                     processedData.players
                 );
@@ -209,7 +209,7 @@ const BaseConfig = {
         // 如果8421配置为空且是8421游戏，则初始化默认配置
         const is8421Game = editConfig.gambleSysName && (
             editConfig.gambleSysName.includes('8421') ||
-            GameTypeManager.needsPlayerConfig(editConfig.gambleSysName)
+            GameConfig.needsPlayerConfig(editConfig.gambleSysName)
         );
 
         if (Object.keys(val8421Config).length === 0 && is8421Game) {
@@ -220,7 +220,7 @@ const BaseConfig = {
 
             if (players.length > 0) {
                 // 使用 GameTypeManager 生成默认配置
-                const defaultConfig = GameTypeManager.getDefaultConfig(editConfig.gambleSysName, players);
+                const defaultConfig = GameConfig.getDefaultConfig(editConfig.gambleSysName, players);
                 val8421Config = defaultConfig.playerIndicatorConfig;
             }
         }

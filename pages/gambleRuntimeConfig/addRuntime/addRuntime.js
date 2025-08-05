@@ -4,7 +4,7 @@
  */
 const BaseConfig = require('../shared/baseConfig');
 const ConfigValidator = require('../shared/configValidator');
-const GameTypeManager = require('../../../utils/gameTypeManager');
+const { GameConfig } = require('../../../utils/gameConfig');
 
 Page({
     data: {
@@ -48,8 +48,8 @@ Page({
         // 添加调试日志
         setTimeout(() => {
             const { gambleSysName } = this.data;
-            const needsPlayerConfig = GameTypeManager.needsPlayerConfig(gambleSysName);
-            const needsGrouping = GameTypeManager.needsGrouping(gambleSysName);
+            const needsPlayerConfig = GameConfig.needsPlayerConfig(gambleSysName);
+            const needsGrouping = GameConfig.needsGrouping(gambleSysName);
 
             this.setData({
                 needsPlayerConfig: needsPlayerConfig,

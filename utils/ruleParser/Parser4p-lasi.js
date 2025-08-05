@@ -1,7 +1,7 @@
 /**
  * 4p-lasi 规则解析器
  */
-import { GOLF_SCORE_TYPES } from '../gameConstants.js'
+const { GOLF_SCORE_TYPES } = require('../gameConfig.js')
 
 /**
  * 解析扣分配置
