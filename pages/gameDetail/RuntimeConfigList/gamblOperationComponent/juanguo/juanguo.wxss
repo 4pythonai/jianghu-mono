@@ -23,7 +23,7 @@
 }
 
 /* 新增：让radio label和输入框字体都变小 */
-.radio-item text {
+.radio-item .radio-text {
 	font-size: 24rpx;
 }
 

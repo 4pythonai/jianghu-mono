@@ -16,7 +16,7 @@
       <radio-group bindchange="onDonationTypeChange" value="{{donationType}}">
         <label class="radio-item">
           <radio value="normal" checked="{{donationType === 'normal'}}" />
-          <text>赢家每洞捐</text>
+          <text class="radio-text">赢家每洞捐</text>
           <input
             class="input-inline point-input"
             type="number"
@@ -24,7 +24,7 @@
             bindinput="onDonationPointsInput"
             wx:if="{{donationType === 'normal'}}"
           />
-          <text wx:if="{{donationType === 'normal'}}">分,捐到</text>
+          <text class="radio-text" wx:if="{{donationType === 'normal'}}">分,捐到</text>
           <input
             class="input-inline input-inline-placeholder"
             type="number"
@@ -33,11 +33,11 @@
             wx:if="{{donationType === 'normal'}}"
             placeholder="最大合计点数"
           />
-          <text>为止</text>
+          <text class="radio-text">为止</text>
         </label>
         <label class="radio-item">
           <radio value="all" checked="{{donationType === 'all'}}" />
-          <text>全捐，捐到</text>
+          <text class="radio-text">全捐，捐到</text>
           <!-- 最大捐锅点数输入框，仅在选择全捐模式时显示 -->
           <input
             class="input-inline input-inline-placeholder"
@@ -47,11 +47,11 @@
             wx:if="{{donationType === 'all'}}"
             placeholder="最大合计点数"
           />
-          <text>为止</text>
+          <text class="radio-text">为止</text>
         </label>
         <label class="radio-item">
           <radio value="bigpot" checked="{{donationType === 'bigpot'}}" />
-          <text>大锅版,共计</text>
+          <text class="radio-text">大锅版,共计</text>
           <input
             class="input-inline input-inline-placeholder"
             type="number"
@@ -60,11 +60,11 @@
             wx:if="{{donationType === 'bigpot'}}"
             placeholder="请输入总费用"
           />
-          <text>元</text>
+          <text class="radio-text">元</text>
         </label>
         <label class="radio-item">
           <radio value="none" checked="{{donationType === 'none'}}" />
-          <text>不捐锅</text>
+          <text class="radio-text">不捐锅</text>
         </label>
       </radio-group>
     </view>
