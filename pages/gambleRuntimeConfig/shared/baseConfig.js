@@ -2,7 +2,6 @@
  * 基础配置逻辑
  * 包含新增和编辑模式的公共方法
  */
-const { gameStore } = require('../../../stores/gameStore');
 const { holeRangeStore } = require('../../../stores/holeRangeStore');
 const { GameConfig } = require('../../../utils/gameConfig');
 const ConfigDataProcessor = require('../../../utils/configDataProcessor');
@@ -287,8 +286,8 @@ const BaseConfig = {
                 });
 
                 setTimeout(() => {
-                    wx.navigateBack({
-                        delta: isEdit ? 1 : 2
+                    wx.navigateTo({
+                        url: '/pages/gameDetail/gameDetail?tab=2'
                     });
                 }, 1500);
 

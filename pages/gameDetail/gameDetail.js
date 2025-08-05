@@ -16,9 +16,13 @@ Page({
         });
         const gameId = options?.gameId;
         const groupId = options?.groupId;
-        this.setData({ gameId, groupId });
+        const tab = options?.tab;
 
-        console.log('[gameDetail] 页面加载，参数:', { gameId, groupId });
+        // 设置初始tab，如果传入了tab参数则使用，否则默认为0
+        const currentTab = tab !== undefined ? Number.parseInt(tab) : 0;
+        this.setData({ gameId, groupId, currentTab });
+
+        console.log('[gameDetail] 页面加载，参数:', { gameId, groupId, tab, currentTab });
 
         // 主动加载游戏数据
         if (gameId) {

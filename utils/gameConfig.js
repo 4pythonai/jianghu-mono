@@ -32,7 +32,7 @@ export const GAME_TYPES = {
     '3p-8421': { name: '3人8421', hasPlayerConfig: true, hasGrouping: true, hasStroking: false },
 
     // 4人游戏
-    '4p-lasi': { name: '4人拉丝', hasPlayerConfig: false, hasGrouping: true, hasStroking: true },
+    '4p-lasi': { name: '4人拉丝', hasPlayerConfig: true, hasGrouping: true, hasStroking: true },
     '4p-8421': { name: '4人8421', hasPlayerConfig: true, hasGrouping: true, hasStroking: false },
     '4p-dizhupo': { name: '4人地主婆', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
     '4p-3da1': { name: '4人3打1', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
