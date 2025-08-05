@@ -57,6 +57,14 @@ const ConfigDataProcessor = {
     getBaseGameData() {
         const players = gameStore.players || [];
         const gameData = gameStore.gameData || null;
+
+        console.log('[ConfigDataProcessor] 获取基础游戏数据:', {
+            gameId: gameStore.gameid,
+            groupId: gameStore.groupId,
+            groupIdType: typeof gameStore.groupId,
+            hasGroupId: !!gameStore.groupId
+        });
+
         return {
             players,
             gameData,

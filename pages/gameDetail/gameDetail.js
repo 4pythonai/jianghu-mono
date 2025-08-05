@@ -28,6 +28,11 @@ Page({
         if (gameId) {
             this.fetchGameDetail(gameId, groupId);
         }
+
+        // 延迟刷新当前tab数据，确保组件已经挂载
+        setTimeout(() => {
+            this.refreshCurrentTab();
+        }, 100);
     },
 
     onUnload() {
@@ -55,14 +60,33 @@ Page({
     },
 
     refreshCurrentTab() {
-        const { currentTab } = this.data;
+        const { currentTab, gameId, groupId } = this.data;
+        console.log('[gameDetail] 刷新当前tab:', { currentTab, gameId, groupId });
+
         if (currentTab === 0) {
-            this.selectComponent('#gameMagement')?.refresh?.();
+            const component = this.selectComponent('#gameMagement');
+            if (component && component.refresh) {
+                console.log('[gameDetail] 刷新记分tab');
+                component.refresh();
+            } else {
+                console.warn('[gameDetail] 记分组件未找到或没有refresh方法');
+            }
         } else if (currentTab === 1) {
-            this.selectComponent('#bbsComponent')?.refresh?.();
+            const component = this.selectComponent('#bbsComponent');
+            if (component && component.refresh) {
+                console.log('[gameDetail] 刷新互动tab');
+                component.refresh();
+            } else {
+                console.warn('[gameDetail] 互动组件未找到或没有refresh方法');
+            }
         } else if (currentTab === 2) {
-            console.log('🎯 刷新赌博tab');
-            this.selectComponent('#GambleSummary')?.refresh?.();
+            const component = this.selectComponent('#GambleSummary');
+            if (component && component.refresh) {
+                console.log('[gameDetail] 刷新游戏tab');
+                component.refresh();
+            } else {
+                console.warn('[gameDetail] 游戏组件未找到或没有refresh方法');
+            }
         }
     },
 });

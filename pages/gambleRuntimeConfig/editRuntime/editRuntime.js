@@ -69,6 +69,7 @@ Page({
             configId: configId,
             gambleSysName: config.gambleSysName,
             gameId: config.gameid,
+            groupId: config.groupid, // 添加 groupId 到页面数据
             players: players,
             'runtimeConfig.gameid': config.gameid,
             'runtimeConfig.groupid': config.groupid,
@@ -174,17 +175,18 @@ Page({
 
     // 保存配置
     async saveConfig() {
-        const { runtimeConfig, gameId, configId } = this.data;
+        const { runtimeConfig, gameId, groupId, configId } = this.data;
 
         console.log('[EditRuntime] 保存配置，数据检查:', {
             configId,
             configIdType: typeof configId,
             hasConfigId: !!configId,
             gameId,
+            groupId,
             runtimeConfigKeys: Object.keys(runtimeConfig)
         });
 
-        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, configId, this, true);
+        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, groupId, configId, this, true);
 
         if (result.success) {
             console.log('[EditRuntime] 配置更新成功');
