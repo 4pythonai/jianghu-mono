@@ -16,9 +16,6 @@
 	padding-left: 16rpx;
 }
 
-
-
-
 .radio-item {
 	display: flex;
 	align-items: center;
@@ -42,7 +39,6 @@
 		transform: translateY(0);
 	}
 }
-
 
 .input-inline {
 	background: #fff;
@@ -70,7 +66,6 @@
 }
 
 /* 总费用输入框样式 */
-.input-inline[placeholder] {
+.input-inline-placeholder {
 	color: #bbb;
 }
-

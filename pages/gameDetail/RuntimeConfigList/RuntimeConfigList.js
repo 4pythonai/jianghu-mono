@@ -97,12 +97,13 @@ Page({
 
     initPage() {
         this.refreshRuntimeConfig();
-    },
 
-    observers: {
-        'runtimeConfigs': function (newConfigs) {
-            this.updateGameSettings(newConfigs);
-        }
+        // 在 onLoad 中初始化 observers，避免深度克隆警告
+        this.observers = {
+            'runtimeConfigs': function (newConfigs) {
+                this.updateGameSettings(newConfigs);
+            }
+        };
     },
 
     // 刷新方法 - 供外部调用

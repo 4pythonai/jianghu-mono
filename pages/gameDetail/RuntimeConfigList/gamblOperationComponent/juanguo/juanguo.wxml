@@ -26,7 +26,7 @@
           />
           <text wx:if="{{donationType === 'normal'}}">分,捐到</text>
           <input
-            class="input-inline"
+            class="input-inline input-inline-placeholder"
             type="number"
             value="{{maxDonationPoints}}"
             bindinput="onMaxDonationPointsInput"
@@ -40,7 +40,7 @@
           <text>全捐，捐到</text>
           <!-- 最大捐锅点数输入框，仅在选择全捐模式时显示 -->
           <input
-            class="input-inline"
+            class="input-inline input-inline-placeholder"
             type="number"
             value="{{maxDonationPoints}}"
             bindinput="onMaxDonationPointsInput"
@@ -53,7 +53,7 @@
           <radio value="bigpot" checked="{{donationType === 'bigpot'}}" />
           <text>大锅版,共计</text>
           <input
-            class="input-inline"
+            class="input-inline input-inline-placeholder"
             type="number"
             value="{{totalFee}}"
             bindinput="onTotalFeeInput"
