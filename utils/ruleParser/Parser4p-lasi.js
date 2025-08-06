@@ -54,8 +54,18 @@ function parseEatmeatConfig(item) {
 
     if (eatingRange) {
         let eatRangeObj = null;
-        eatRangeObj = JSON.parse(eatingRange);
-
+        
+        // 处理eatingRange，可能是字符串或对象
+        if (typeof eatingRange === 'string') {
+            try {
+                eatRangeObj = JSON.parse(eatingRange);
+            } catch (error) {
+                console.error('解析eatingRange JSON字符串失败:', error);
+                eatRangeObj = null;
+            }
+        } else if (typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
+            eatRangeObj = eatingRange;
+        }
 
         if (eatRangeObj) {
             const eatDetails = GOLF_SCORE_TYPES.KEYS.map(key => {

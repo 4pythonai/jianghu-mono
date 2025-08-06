@@ -55,6 +55,7 @@ Component({
       if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
         // 使用工具类格式化显示值
         const { selected, selectedDiffScore } = this.data;
+        console.log('🎯 [Draw8421] updateDisplayValue - 当前状态:', { selected, selectedDiffScore });
 
         // 构建配置数据用于格式化
         let drawConfig = '';
@@ -65,6 +66,8 @@ Component({
         } else if (selected === 2) {
           drawConfig = 'NoDraw';
         }
+
+        console.log('🎯 [Draw8421] updateDisplayValue - 构建的drawConfig:', drawConfig);
 
         // 使用工具类格式化
         const displayValue = DisplayFormatter.formatDrawRule(drawConfig);
@@ -95,13 +98,17 @@ Component({
 
     // 事件处理方法
     onSelect(e) {
-      this.setData({ selected: e.detail.value });
-      this.updateDisplayValue();
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      console.log('🎯 [Draw8421] 选择选项:', index, '当前selected:', this.data.selected);
+      this.setData({ selected: index });
+      console.log('🎯 [Draw8421] 设置后selected:', index);
     },
 
     onDiffScoreChange(e) {
-      this.setData({ selectedDiffScore: e.detail.value });
-      this.updateDisplayValue();
+      const selectedIndex = e.detail.value;
+      const selectedScore = this.data.diffScores[selectedIndex];
+      this.setData({ selectedDiffScore: selectedScore });
+      console.log('🎯 [Draw8421] 选择分数:', selectedScore);
     },
 
     // UI控制方法
@@ -118,8 +125,25 @@ Component({
     },
 
     onConfirm() {
-      this.setData({ visible: false });
+      let selectedValue = '';
+
+      // 根据选择的选项生成配置值
+      if (this.data.selected === 0) {
+        selectedValue = 'DrawEqual';
+      } else if (this.data.selected === 1) {
+        selectedValue = `Diff_${this.data.selectedDiffScore}`;
+      } else if (this.data.selected === 2) {
+        selectedValue = 'NoDraw';
+      }
+
+      // 更新显示值
       this.updateDisplayValue();
+      // 关闭弹窗
+      this.setData({ visible: false });
+      // 向父组件传递事件
+      this.triggerEvent('confirm', {
+        value: selectedValue
+      });
     },
 
     // 获取配置数据 - 使用工具类简化

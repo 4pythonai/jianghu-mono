@@ -270,6 +270,7 @@ Page({
         const updateData = {
             id: this.data.ruleId,
             gambleUserName: this.data.user_rulename,
+            gambleSysName: this.data.gameType, // 添加游戏系统名称
             updateTime: new Date().toISOString(),
             // 合并配置数据到顶层
             ...configData
@@ -323,6 +324,16 @@ Page({
                 const data = componentInstance.getConfigData();
                 console.log(`📋 [UserRuleEdit] 组件 ${component.name} 返回数据:`, data);
 
+                // 检查eatingRange字段的特殊处理
+                if (data.eatingRange) {
+                    console.log(`📋 [UserRuleEdit] 检测到eatingRange字段:`, {
+                        type: typeof data.eatingRange,
+                        isArray: Array.isArray(data.eatingRange),
+                        value: data.eatingRange,
+                        keys: Object.keys(data.eatingRange)
+                    });
+                }
+
                 // 将组件数据合并到扁平结构中
                 Object.assign(flatData, data);
             } else {
@@ -331,6 +342,17 @@ Page({
         });
 
         console.log('📋 [UserRuleEdit] 收集到的扁平化配置数据:', flatData);
+
+        // 最终检查eatingRange字段
+        if (flatData.eatingRange) {
+            console.log(`📋 [UserRuleEdit] 最终eatingRange字段检查:`, {
+                type: typeof flatData.eatingRange,
+                isArray: Array.isArray(flatData.eatingRange),
+                value: flatData.eatingRange,
+                keys: Object.keys(flatData.eatingRange)
+            });
+        }
+
         return flatData;
     },
 

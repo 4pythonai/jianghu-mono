@@ -157,6 +157,52 @@ Component({
             return {
                 dingdongConfig: selectedValue,
             };
+        },
+
+        // 打印当前配置
+        printCurrentConfig() {
+            const config = this.getConfigData();
+            console.log('🎯 [LasiDingDong] ===== 当前顶洞配置 =====');
+            console.log('🎯 [LasiDingDong] 配置对象:', config);
+            console.log('🎯 [LasiDingDong] 顶洞规则:', config.dingdongConfig);
+            console.log('🎯 [LasiDingDong] 是否启用:', config.dingdongConfig !== 'NoDraw');
+            console.log('🎯 [LasiDingDong] ========================');
+        },
+
+        // 初始化配置数据 - 供UserRuleEdit页面调用
+        initConfigData(configData) {
+            console.log('🎯 [LasiDingDong] 初始化配置数据:', configData);
+
+            if (!configData) {
+                console.warn('🎯 [LasiDingDong] 配置数据为空，使用默认值');
+                return;
+            }
+
+            // 从配置数据中提取顶洞相关配置
+            const dingdongConfig = configData.dingdongConfig || 'DrawEqual';
+
+            // 解析配置值
+            let selected = 0;
+            let selectedDiffScore = 1;
+
+            if (dingdongConfig === 'DrawEqual') {
+                selected = 0;
+            } else if (dingdongConfig.startsWith('Diff_')) {
+                selected = 1;
+                selectedDiffScore = parseInt(dingdongConfig.replace('Diff_', '')) || 1;
+            } else if (dingdongConfig === 'NoDraw') {
+                selected = 2;
+            }
+
+            this.setData({
+                selected,
+                selectedDiffScore
+            });
+
+            this.updateDisplayValue();
+            this.printCurrentConfig();
+
+            console.log('🎯 [LasiDingDong] 配置数据初始化完成');
         }
     }
 });

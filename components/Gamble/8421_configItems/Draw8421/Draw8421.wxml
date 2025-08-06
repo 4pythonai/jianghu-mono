@@ -17,7 +17,7 @@
     <view class="modal-title">顶洞规则</view>
     <view class="modal-list">
       <!-- 得分打平选项 -->
-      <view class="modal-item" catchtap="onSelect" data-index="0">
+      <view class="modal-item" bindtap="onSelect" data-index="0">
         <view class="radio-outer {{selected === 0 ? 'checked' : ''}}">
           <view class="radio-inner" wx:if="{{selected === 0}}"></view>
         </view>
@@ -27,7 +27,7 @@
       </view>
 
       <!-- 得分X分以内选项 -->
-      <view class="modal-item" catchtap="onSelect" data-index="1">
+      <view class="modal-item" bindtap="onSelect" data-index="1">
         <view class="radio-outer {{selected === 1 ? 'checked' : ''}}">
           <view class="radio-inner" wx:if="{{selected === 1}}"></view>
         </view>
@@ -39,7 +39,7 @@
             wx:if="{{selected === 1}}"
             class="score-picker"
             range="{{diffScores}}"
-            value="{{diffScores.indexOf(selectedDiffScore)}}"
+            value="{{selectedDiffScore - 1}}"
             bindchange="onDiffScoreChange"
           >
             <view class="picker-value">{{selectedDiffScore}}</view>
@@ -52,7 +52,7 @@
       </view>
 
       <!-- 无顶洞选项 -->
-      <view class="modal-item" catchtap="onSelect" data-index="2">
+      <view class="modal-item" bindtap="onSelect" data-index="2">
         <view class="radio-outer {{selected === 2 ? 'checked' : ''}}">
           <view class="radio-inner" wx:if="{{selected === 2}}"></view>
         </view>

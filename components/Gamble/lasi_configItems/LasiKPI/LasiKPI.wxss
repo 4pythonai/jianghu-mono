@@ -131,7 +131,7 @@
 	align-items: center;
 }
 
-.kpi-value-selector picker {
+.kpi-value-selector .picker-wrapper {
 	display: flex;
 	align-items: center;
 }

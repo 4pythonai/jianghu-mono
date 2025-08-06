@@ -165,8 +165,25 @@ Component({
       console.log('从store加载吃肉配置:', config);
 
       // 解析吃肉数量配置
-      if (eatingRange && typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
-        this.setData({ eatingRange });
+      let parsedEatingRange = null;
+      if (eatingRange) {
+        if (typeof eatingRange === 'string') {
+          try {
+            parsedEatingRange = JSON.parse(eatingRange);
+          } catch (error) {
+            console.error('解析eatingRange JSON字符串失败:', error);
+            parsedEatingRange = {};
+          }
+        } else if (typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
+          parsedEatingRange = eatingRange;
+        } else {
+          console.warn('eatingRange格式不正确:', eatingRange);
+          parsedEatingRange = {};
+        }
+        
+        if (parsedEatingRange) {
+          this.setData({ eatingRange: parsedEatingRange });
+        }
       }
 
       // 解析肉分值计算方式
@@ -346,11 +363,108 @@ Component({
       // 吃肉封顶
       const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
 
+      // 确保eatingRange是正确的对象格式
+      let processedEatingRange = eatingRange;
+      if (typeof eatingRange === 'string') {
+        try {
+          processedEatingRange = JSON.parse(eatingRange);
+        } catch (error) {
+          console.error('解析eatingRange JSON字符串失败:', error);
+          processedEatingRange = {};
+        }
+      } else if (!eatingRange || typeof eatingRange !== 'object') {
+        processedEatingRange = {};
+      }
+
       return {
-        eatingRange,
+        eatingRange: processedEatingRange,
         meatValueConfig,
         meatMaxValue,
       };
+    },
+
+    // 打印当前配置
+    printCurrentConfig() {
+      const config = this.getConfigData();
+      console.log('🎯 [LasiEatmeat] ===== 当前吃肉配置 =====');
+      console.log('🎯 [LasiEatmeat] 配置对象:', config);
+      console.log('🎯 [LasiEatmeat] 吃肉得分配对:', config.eatingRange);
+      console.log('🎯 [LasiEatmeat] 肉分值配置:', config.meatValueConfig);
+      console.log('🎯 [LasiEatmeat] 吃肉封顶:', config.meatMaxValue === 10000000 ? '不封顶' : config.meatMaxValue);
+      console.log('🎯 [LasiEatmeat] 是否启用:', config.eatingRange && config.eatingRange.length > 0);
+      console.log('🎯 [LasiEatmeat] ========================');
+    },
+
+    // 初始化配置数据 - 供UserRuleEdit页面调用
+    initConfigData(configData) {
+      console.log('🎯 [LasiEatmeat] 初始化配置数据:', configData);
+
+      if (!configData) {
+        console.warn('🎯 [LasiEatmeat] 配置数据为空，使用默认值');
+        return;
+      }
+
+      // 从配置数据中提取吃肉相关配置
+      let eatingRange = configData.eatingRange || {};
+      const meatValueConfig = configData.meatValueConfig || 'MEAT_AS_1';
+      const meatMaxValue = configData.meatMaxValue || 10000000;
+
+      // 处理eatingRange，确保它是正确的对象格式
+      if (typeof eatingRange === 'string') {
+        try {
+          eatingRange = JSON.parse(eatingRange);
+        } catch (error) {
+          console.error('解析eatingRange JSON字符串失败:', error);
+          eatingRange = {};
+        }
+      } else if (Array.isArray(eatingRange)) {
+        console.warn('eatingRange是数组格式，转换为对象:', eatingRange);
+        eatingRange = {};
+      }
+
+      // 解析肉分值配置
+      let meatValueOption = 0;
+      let meatScoreValue = 1;
+
+      if (meatValueConfig.startsWith('MEAT_AS_')) {
+        meatValueOption = 0;
+        meatScoreValue = parseInt(meatValueConfig.replace('MEAT_AS_', '')) || 1;
+      } else {
+        switch (meatValueConfig) {
+          case 'SINGLE_DOUBLE':
+            meatValueOption = 1;
+            break;
+          case 'CONTINUE_DOUBLE':
+            meatValueOption = 2;
+            break;
+          case 'DOUBLE_WITH_REWARD':
+            meatValueOption = 3;
+            break;
+          case 'DOUBLE_WITHOUT_REWARD':
+            meatValueOption = 4;
+            break;
+          default:
+            meatValueOption = 0;
+            meatScoreValue = 1;
+        }
+      }
+
+      // 解析封顶配置
+      const topSelected = meatMaxValue === 10000000 ? 0 : 1;
+      const topScoreLimit = meatMaxValue === 10000000 ? 100 : meatMaxValue;
+
+      this.setData({
+        eatingRange,
+        meatValueOption,
+        meatScoreValue,
+        topSelected,
+        topScoreLimit
+      });
+
+      this.updateDisplayValue();
+      this.printCurrentConfig();
+
+      console.log('🎯 [LasiEatmeat] 配置数据初始化完成');
     }
   }
 });

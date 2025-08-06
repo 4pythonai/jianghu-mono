@@ -261,6 +261,46 @@ Component({
             console.log('🎯 [LasiKPI] Store中的lasi_config:', G4PLasiStore.lasi_config);
             console.log('🎯 [LasiKPI] Store中的indicators:', G4PLasiStore.lasi_config?.indicators);
             console.log('🎯 [LasiKPI] ========================');
+        },
+
+        // 初始化配置数据 - 供UserRuleEdit页面调用
+        initConfigData(configData) {
+            console.log('🎯 [LasiKPI] 初始化配置数据:', configData);
+
+            if (!configData) {
+                console.warn('🎯 [LasiKPI] 配置数据为空，使用默认值');
+                return;
+            }
+
+            // 从配置数据中提取KPI相关配置
+            const selectedIndicators = configData.selectedIndicators || ['best', 'worst', 'total'];
+            const kpiValues = configData.kpiValues || {
+                best: 1,
+                worst: 1,
+                total: 1
+            };
+            const totalCalculationType = configData.totalCalculationType || 'add_total';
+
+            // 构建选中状态映射
+            const isSelected = {
+                best: selectedIndicators.includes('best'),
+                worst: selectedIndicators.includes('worst'),
+                total: selectedIndicators.includes('total')
+            };
+
+            this.setData({
+                selectedIndicators,
+                isSelected,
+                kpiValues,
+                totalCalculationType
+            });
+
+            this.calculateTotalScore();
+            this.generateRuleName();
+            this.updateStore();
+            this.printCurrentKpiConfig();
+
+            console.log('🎯 [LasiKPI] 配置数据初始化完成');
         }
     }
 });

@@ -106,15 +106,17 @@ Component({
 
         // 构建配置数据用于格式化
         let badScoreBaseLine = '';
-        if (selectedStart === 0) {
+        const selectedStartNum = Number(selectedStart); // 转换为数字
+        if (selectedStartNum === 0) {
           badScoreBaseLine = `Par+${paScore}`;
-        } else if (selectedStart === 1) {
+        } else if (selectedStartNum === 1) {
           badScoreBaseLine = `DoublePar+${doubleParScore}`;
-        } else if (selectedStart === 2) {
+        } else if (selectedStartNum === 2) {
           badScoreBaseLine = 'NoSub';
         }
 
-        const badScoreMaxLost = selectedMax === 0 ? 10000000 : maxSubScore;
+        const selectedMaxNum = Number(selectedMax); // 转换为数字
+        const badScoreMaxLost = selectedMaxNum === 0 ? 10000000 : maxSubScore;
 
         // 使用工具类格式化
         const displayValue = DisplayFormatter.formatKoufenRule(badScoreBaseLine, badScoreMaxLost);
@@ -195,17 +197,34 @@ Component({
 
     // 事件处理方法
     onSelectStart(e) {
-      this.setData({ selectedStart: e.detail.value });
+      const index = e.currentTarget.dataset.index;
+      console.log('🎯 [E8421Koufen] onSelectStart 被调用，index:', index, '当前状态:', this.data.selectedStart);
+      this.setData({ selectedStart: index });
+      console.log('🎯 [E8421Koufen] selectedStart 已更新为:', index);
       this.updateDisplayValue();
     },
 
     onSelectMax(e) {
-      this.setData({ selectedMax: e.detail.value });
+      // 如果选择了"不扣分"，则禁用封顶和同伴惩罚选项
+      if (Number(this.data.selectedStart) === 2) {
+        console.log('🎯 [E8421Koufen] onSelectMax 被调用，但当前状态为不扣分，忽略操作');
+        return;
+      }
+      const index = e.currentTarget.dataset.index;
+      console.log('🎯 [E8421Koufen] onSelectMax 被调用，index:', index);
+      this.setData({ selectedMax: index });
       this.updateDisplayValue();
     },
 
     onSelectDuty(e) {
-      this.setData({ selectedDuty: e.detail.value });
+      // 如果选择了"不扣分"，则禁用封顶和同伴惩罚选项
+      if (Number(this.data.selectedStart) === 2) {
+        console.log('🎯 [E8421Koufen] onSelectDuty 被调用，但当前状态为不扣分，忽略操作');
+        return;
+      }
+      const index = e.currentTarget.dataset.index;
+      console.log('🎯 [E8421Koufen] onSelectDuty 被调用，index:', index);
+      this.setData({ selectedDuty: index });
       this.updateDisplayValue();
     },
 

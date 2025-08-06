@@ -35,11 +35,10 @@
             <view class="radio-dot {{dutyConfig === 'double_par_plus_x' ? 'selected' : ''}}"></view>
             <text class="rule-text">双帕+</text>
             <picker
-              class="number-picker"
+              class="number-picker {{dutyConfig !== 'double_par_plus_x' ? 'disabled' : ''}}"
               range="{{doubleParPlusRange}}"
               value="{{doubleParPlusValue}}"
               bindchange="onDoubleParPlusChange"
-              disabled="{{dutyConfig !== 'double_par_plus_x'}}"
             >
               <text class="picker-value">{{doubleParPlusValue}}</text>
             </picker>
@@ -53,11 +52,10 @@
             <view class="radio-dot {{dutyConfig === 'par_plus_x' ? 'selected' : ''}}"></view>
             <text class="rule-text">帕+</text>
             <picker
-              class="number-picker"
+              class="number-picker {{dutyConfig !== 'par_plus_x' ? 'disabled' : ''}}"
               range="{{parPlusRange}}"
               value="{{parPlusValue}}"
               bindchange="onParPlusChange"
-              disabled="{{dutyConfig !== 'par_plus_x'}}"
             >
               <text class="picker-value">{{parPlusValue}}</text>
             </picker>
@@ -71,11 +69,10 @@
             <view class="radio-dot {{dutyConfig === 'stroke_diff_x' ? 'selected' : ''}}"></view>
             <text class="rule-text">杆差</text>
             <picker
-              class="number-picker"
+              class="number-picker {{dutyConfig !== 'stroke_diff_x' ? 'disabled' : ''}}"
               range="{{strokeDiffRange}}"
               value="{{strokeDiffValue - 1}}"
               bindchange="onStrokeDiffChange"
-              disabled="{{dutyConfig !== 'stroke_diff_x'}}"
             >
               <text class="picker-value">{{strokeDiffValue}}</text>
             </picker>

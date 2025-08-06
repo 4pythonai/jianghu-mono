@@ -60,6 +60,11 @@
 
 ### 8. 全面测试
 - [x] 修复编辑界面显示值问题
+- [x] 修复4p-lasi组件缺少initConfigData方法的问题
+- [x] 修复CSS选择器问题（标签名选择器、属性选择器）
+- [x] 修复组件缺少printCurrentConfig方法的问题
+- [x] 修复updateGambleRule接口缺少gambleSysName字段的问题
+- [x] 修复eatingRange字段序列化问题
 - [ ] 测试 SysEdit 页面创建规则功能
 - [ ] 测试 UserRuleEdit 页面编辑规则功能
 - [ ] 测试所有组件的回显功能

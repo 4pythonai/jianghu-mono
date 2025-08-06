@@ -231,7 +231,40 @@ Component({
             return this.getCurrentConfig();
         },
 
+        // 初始化配置数据 - 供UserRuleEdit页面调用
+        initConfigData(configData) {
+            console.log('🎯 [LasiRewardConfig] 初始化配置数据:', configData);
 
+            if (!configData) {
+                console.warn('🎯 [LasiRewardConfig] 配置数据为空，使用默认值');
+                return;
+            }
+
+            // 从配置数据中提取奖励相关配置
+            const rewardType = configData.rewardType || 'add';
+            const rewardPreCondition = configData.rewardPreCondition || 'NONE';
+            const rewardPair = configData.rewardPair || [];
+
+            // 根据奖励类型设置对应的奖励项目
+            if (rewardType === 'add') {
+                this.setData({
+                    rewardType,
+                    rewardPreCondition,
+                    addRewardItems: rewardPair
+                });
+            } else {
+                this.setData({
+                    rewardType,
+                    rewardPreCondition,
+                    multiplyRewardItems: rewardPair
+                });
+            }
+
+            this.updateDisplayValue();
+            this.printCurrentConfig();
+
+            console.log('🎯 [LasiRewardConfig] 配置数据初始化完成');
+        },
 
         // 打印当前配置
         printCurrentConfig() {

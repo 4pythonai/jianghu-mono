@@ -61,7 +61,7 @@
       <block wx:for="{{maxOptions}}" wx:key="index">
         <view
           class="modal-item {{selectedStart === 2 ? 'disabled-item' : ''}}"
-          bindtap="{{selectedStart === 2 ? 'noTap' : 'onSelectMax'}}"
+          bindtap="onSelectMax"
           data-index="{{index}}"
         >
           <view class="radio-outer {{selectedMax === index ? 'checked' : ''}}">
@@ -96,7 +96,7 @@
       <block wx:for="{{dutyOptions}}" wx:key="index">
         <view
           class="modal-item {{selectedStart === 2 ? 'disabled-item' : ''}}"
-          bindtap="{{selectedStart === 2 ? 'noTap' : 'onSelectDuty'}}"
+          bindtap="onSelectDuty"
           data-index="{{index}}"
         >
           <view class="radio-outer {{selectedDuty === index ? 'checked' : ''}}">

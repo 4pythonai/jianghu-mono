@@ -111,29 +111,33 @@ Component({
       this.setData({ isDisabled });
     },
 
-    // 计算显示值 - 使用工具类简化
+    // 计算显示值
     updateDisplayValue() {
       if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
-        // 使用工具类格式化显示值
+        // 使用组件内部状态
         const { meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
+        let displayValue = '';
 
-        // 构建配置数据用于格式化
-        let meatValueConfig = '';
+        // 映射英文格式到中文显示
         if (meatValueOption === 0) {
-          meatValueConfig = `MEAT_AS_${meatScoreValue}`;
+          displayValue = `肉算${meatScoreValue}分`;
         } else if (meatValueOption === 1) {
-          meatValueConfig = 'SINGLE_DOUBLE';
+          displayValue = '分值翻倍';
         } else if (meatValueOption === 2) {
-          meatValueConfig = 'CONTINUE_DOUBLE';
+          displayValue = '分值连续翻倍';
+        } else {
+          displayValue = '请配置吃肉规则';
         }
 
-        const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
+        // 添加封顶信息
+        if (meatValueOption === 1 && topSelected === 1) {
+          displayValue += `/${topScoreLimit}分封顶`;
+        } else if (meatValueOption === 1 && topSelected === 0) {
+          displayValue += '/不封顶';
+        }
 
-        // 使用工具类格式化
-        const displayValue = DisplayFormatter.formatMeatRule(meatValueConfig, meatMaxValue);
-
-        console.log('🚨🚨🚨 [E8421Meat] 吃肉规则显示值已更新:', displayValue);
         this.setData({ displayValue });
+        console.log('🎯 [E8421Meat] 吃肉规则显示值已更新:', displayValue);
       } else {
         // 使用Store数据
         const store = G4P8421Store;
@@ -177,26 +181,38 @@ Component({
 
     // 事件处理方法
     onEatValueChange(e) {
-      const { key, value } = e.detail;
+      const key = e.currentTarget.dataset.key;
+      const selectedIndex = e.detail.value;
+      const selectedValue = this.data.eatValueRange[selectedIndex];
+      console.log('🎯 [E8421Meat] 选择吃肉数量:', key, selectedValue);
       const eatingRange = { ...this.data.eatingRange };
-      eatingRange[key] = value;
+      eatingRange[key] = selectedValue;
       this.setData({ eatingRange });
-      this.updateDisplayValue();
     },
 
     onMeatValueChange(e) {
-      this.setData({ meatValueOption: e.detail.value });
-      this.updateDisplayValue();
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      console.log('🎯 [E8421Meat] 选择选项:', index, '当前meatValueOption:', this.data.meatValueOption);
+      this.setData({ meatValueOption: index });
+      console.log('🎯 [E8421Meat] 设置后meatValueOption:', index);
     },
 
     onMeatScoreChange(e) {
-      this.setData({ meatScoreValue: e.detail.value });
-      this.updateDisplayValue();
+      const selectedIndex = e.detail.value;
+      const selectedScore = this.data.meatScoreRange[selectedIndex];
+      console.log('🎯 [E8421Meat] 选择肉分值:', selectedScore);
+      this.setData({ meatScoreValue: selectedScore });
     },
 
     onTopSelect(e) {
-      this.setData({ topSelected: e.detail.value });
-      this.updateDisplayValue();
+      // 如果选择了"分值翻倍"以外的选项，则禁用封顶选项
+      if (Number(this.data.meatValueOption) !== 1) {
+        console.log('🎯 [E8421Meat] onTopSelect 被调用，但当前状态不是分值翻倍，忽略操作');
+        return;
+      }
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      console.log('🎯 [E8421Meat] 选择封顶选项:', index);
+      this.setData({ topSelected: index });
     },
 
     noop() {
@@ -204,8 +220,10 @@ Component({
     },
 
     onTopScoreChange(e) {
-      this.setData({ topScoreLimit: e.detail.value });
-      this.updateDisplayValue();
+      const selectedIndex = e.detail.value;
+      const selectedScore = this.data.topScoreRange[selectedIndex];
+      console.log('🎯 [E8421Meat] 选择封顶分数:', selectedScore);
+      this.setData({ topScoreLimit: selectedScore });
     },
 
     // UI控制方法
@@ -218,8 +236,14 @@ Component({
     },
 
     onConfirm() {
-      this.setData({ visible: false });
+      // 更新显示值
       this.updateDisplayValue();
+      // 关闭弹窗
+      this.setData({ visible: false });
+      // 向父组件传递事件
+      this.triggerEvent('confirm', {
+        value: this.getConfigData()
+      });
     },
 
     // 获取配置数据 - 使用工具类简化

@@ -1,6 +1,5 @@
 @import "/styles/modal.wxss";
 
- 
 .modal-list {
 	width: 100%;
 	border-radius: 24rpx;
@@ -39,7 +38,7 @@
 	border-radius: 50%;
 	background: #4caf7a;
 }
- 
+
 .modal-actions {
 	width: 100%;
 	display: flex;
@@ -68,7 +67,6 @@
 
 .disabled-item {
 	opacity: 0.5;
-	pointer-events: none;
 }
 
 /* 新增样式 */

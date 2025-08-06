@@ -291,6 +291,38 @@ Component({
     // 获取配置数据（供SysEdit页面调用）
     getConfigData() {
       return this.getCurrentConfig();
+    },
+
+    // 初始化配置数据 - 供UserRuleEdit页面调用
+    initConfigData(configData) {
+      console.log('🎯 [LasiKoufen] 初始化配置数据:', configData);
+      
+      if (!configData) {
+        console.warn('🎯 [LasiKoufen] 配置数据为空，使用默认值');
+        return;
+      }
+
+      // 从配置数据中提取包洞相关配置
+      const dutyConfig = configData.dutyConfig || 'NODUTY';
+      const PartnerDutyCondition = configData.PartnerDutyCondition || 'DUTY_DINGTOU';
+      const customValues = configData.customValues || {
+        doubleParPlusValue: 1,
+        parPlusValue: 4,
+        strokeDiffValue: 3
+      };
+
+      this.setData({
+        dutyConfig,
+        PartnerDutyCondition,
+        doubleParPlusValue: customValues.doubleParPlusValue,
+        parPlusValue: customValues.parPlusValue,
+        strokeDiffValue: customValues.strokeDiffValue
+      });
+
+      this.updateDisplayValue();
+      this.printCurrentConfig();
+
+      console.log('🎯 [LasiKoufen] 配置数据初始化完成');
     }
   }
 });

@@ -2,42 +2,42 @@
 
 /* 当弹窗显示时，隐藏底层的input元素 */
 .modal-mask ~ .rule-section {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateZ(-1px);
-  position: relative;
-  z-index: -1;
+	opacity: 0;
+	pointer-events: none;
+	transform: translateZ(-1px);
+	position: relative;
+	z-index: -1;
 }
 
 /* 确保弹窗显示时input元素完全不可见 */
 .modal-mask ~ .rule-section .form-input-simulator {
-  opacity: 0;
-  visibility: hidden;
-  caret-color: transparent;
-  background: transparent;
-  border-color: transparent;
-  position: absolute;
-  left: -9999px;
-  top: -9999px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
+	opacity: 0;
+	visibility: hidden;
+	caret-color: transparent;
+	background: transparent;
+	border-color: transparent;
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
 }
 
 /* 弹窗显示时，确保遮罩层完全覆盖 */
 .modal-mask {
-  z-index: 99999;
-  /* 真机上的额外保障 */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+	z-index: 99999;
+	/* 真机上的额外保障 */
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 /* 弹窗内容层级更高 */
 .modal-content {
-  z-index: 100000;
-  /* 真机上的额外保障 */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+	z-index: 100000;
+	/* 真机上的额外保障 */
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .rule-section {
@@ -130,8 +130,6 @@
 	font-weight: bold;
 }
 
-
-
 /* 弹窗列表 */
 .modal-list {
 	width: 100%;
@@ -210,7 +208,7 @@
 	box-sizing: border-box;
 }
 
-.number-picker[disabled] {
+.number-picker.disabled {
 	border-color: #ccc;
 	background: #f5f5f5;
 	opacity: 0.6;
@@ -223,10 +221,9 @@
 	text-align: center;
 }
 
-.number-picker[disabled] .picker-value {
+.number-picker.disabled .picker-value {
 	color: #999;
 }
-
 
 /* 条件区域 */
 .condition-section {
@@ -272,5 +269,3 @@
 	font-size: 28rpx;
 	color: #222;
 }
-
- 
