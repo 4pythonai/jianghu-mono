@@ -47,7 +47,14 @@ Page({
 
     // 使用传递的规则数据初始化页面
     initializeWithRuleData(ruleData) {
-        console.log('📋 [UserRuleEdit] 使用传递的规则数据初始化:', ruleData);
+        console.log('📋 [UserRuleEdit] 使用传递的规则数据初始化:');
+        console.log('📋 [UserRuleEdit] 传递的完整ruleData:', JSON.stringify(ruleData, null, 2));
+        console.log('📋 [UserRuleEdit] 传递数据的所有属性名:', Object.keys(ruleData));
+        console.log('📋 [UserRuleEdit] 检查传递数据的config字段:');
+        console.log('📋 [UserRuleEdit] ruleData.config:', ruleData.config);
+        console.log('📋 [UserRuleEdit] ruleData.configuration:', ruleData.configuration);
+        console.log('📋 [UserRuleEdit] ruleData.gameConfig:', ruleData.gameConfig);
+        console.log('📋 [UserRuleEdit] ruleData.settings:', ruleData.settings);
 
         // 确定游戏类型
         let gameType = ruleData.gameType || ruleData.gambleSysName;
@@ -90,18 +97,22 @@ Page({
 
             // 调用API获取规则数据
             const apiResponse = await app.api.gamble.getUserGambleRule({ ruleId });
-            console.log('📋 [UserRuleEdit] API返回的规则数据:', apiResponse);
+            console.log('📋 [UserRuleEdit] API完整响应数据:', JSON.stringify(apiResponse, null, 2));
+            console.log('📋 [UserRuleEdit] API响应的data字段:', JSON.stringify(apiResponse?.data, null, 2));
 
             if (!apiResponse || apiResponse.code !== 200 || !apiResponse.data) {
                 throw new Error('规则不存在或获取失败');
             }
 
             const ruleData = apiResponse.data;
+            console.log('📋 [UserRuleEdit] 提取的ruleData:', JSON.stringify(ruleData, null, 2));
+            console.log('📋 [UserRuleEdit] ruleData的所有属性名:', Object.keys(ruleData));
 
             // 确定游戏类型
             let gameType = ruleData.gameType || ruleData.gambleSysName;
-
-            console.log('📋 [UserRuleEdit] API返回数据映射后的游戏类型:', gameType);
+            console.log('📋 [UserRuleEdit] ruleData.gameType:', ruleData.gameType);
+            console.log('📋 [UserRuleEdit] ruleData.gambleSysName:', ruleData.gambleSysName);
+            console.log('📋 [UserRuleEdit] 最终确定的gameType:', gameType);
 
             // 获取游戏配置
             const gameConfig = GameConfig.getGameType(gameType);
@@ -113,6 +124,13 @@ Page({
                 throw new Error(`无效的游戏类型: ${gameType}`);
             }
 
+            // 检查config字段
+            console.log('📋 [UserRuleEdit] 检查config字段存在性:');
+            console.log('📋 [UserRuleEdit] ruleData.config:', ruleData.config);
+            console.log('📋 [UserRuleEdit] ruleData.configuration:', ruleData.configuration);
+            console.log('📋 [UserRuleEdit] ruleData.gameConfig:', ruleData.gameConfig);
+            console.log('📋 [UserRuleEdit] ruleData.settings:', ruleData.settings);
+
             // 设置页面数据
             this.setData({
                 ruleData,
@@ -120,6 +138,8 @@ Page({
                 gameName: gameConfig.name,
                 user_rulename: ruleData.title || ruleData.gambleUserName || ruleData.user_rulename || `${gameConfig.name}规则`
             });
+
+            console.log('📋 [UserRuleEdit] 页面数据设置完成，最终的ruleData:', this.data.ruleData);
 
             // 根据游戏类型加载对应的配置组件
             this.loadConfigComponents(gameType);
@@ -172,18 +192,28 @@ Page({
         this.initConfigComponents();
     },
 
-    // 初始化配置组件数据
+    // 初始化配置组件数据 - 支持扁平化数据结构
     initConfigComponents() {
         const { ruleData, configComponents } = this.data;
-        if (!ruleData || !ruleData.config) return;
+        console.log('📋 [UserRuleEdit] initConfigComponents 调用，ruleData:', ruleData);
+
+        if (!ruleData) {
+            console.error('📋 [UserRuleEdit] 规则数据为空');
+            return;
+        }
 
         // 延迟执行，确保组件已渲染
         setTimeout(() => {
             configComponents.forEach(component => {
+                console.log(`📋 [UserRuleEdit] 尝试初始化组件: ${component.name}`);
                 const componentInstance = this.selectComponent(`#${component.name}`);
+
                 if (componentInstance && componentInstance.initConfigData) {
-                    const configData = ruleData.config[component.name];
-                    componentInstance.initConfigData(configData);
+                    // 直接传递扁平化的规则数据，让组件自己提取需要的字段
+                    console.log(`📋 [UserRuleEdit] 找到组件实例，传递扁平化数据`);
+                    componentInstance.initConfigData(ruleData);
+                } else {
+                    console.error(`📋 [UserRuleEdit] 未找到组件实例或initConfigData方法: ${component.name}`, componentInstance);
                 }
             });
         }, 100);
@@ -230,12 +260,13 @@ Page({
         // 收集所有配置组件的数据
         const configData = this.collectConfigData();
 
-        // 构建更新数据
+        // 构建更新数据 - 使用扁平化结构
         const updateData = {
             id: this.data.ruleId,
-            title: this.data.user_rulename,
-            config: configData,
-            updateTime: new Date().toISOString()
+            gambleUserName: this.data.user_rulename,
+            updateTime: new Date().toISOString(),
+            // 合并配置数据到顶层
+            ...configData
         };
 
         console.log('📋 [UserRuleEdit] 更新规则数据:', updateData);
@@ -271,20 +302,30 @@ Page({
             });
     },
 
-    // 收集配置组件数据
+    // 收集配置组件数据 - 改为扁平化结构
     collectConfigData() {
-        const configData = {};
+        const flatData = {};
 
-        // 遍历所有配置组件，收集数据
+        console.log('📋 [UserRuleEdit] 开始收集配置数据（扁平化），组件列表:', this.data.configComponents);
+
+        // 遍历所有配置组件，收集数据并合并到扁平结构中
         this.data.configComponents.forEach(component => {
+            console.log(`📋 [UserRuleEdit] 正在收集组件 ${component.name} 的数据`);
             const componentInstance = this.selectComponent(`#${component.name}`);
+
             if (componentInstance && componentInstance.getConfigData) {
                 const data = componentInstance.getConfigData();
-                configData[component.name] = data;
+                console.log(`📋 [UserRuleEdit] 组件 ${component.name} 返回数据:`, data);
+
+                // 将组件数据合并到扁平结构中
+                Object.assign(flatData, data);
+            } else {
+                console.warn(`📋 [UserRuleEdit] 组件 ${component.name} 没有 getConfigData 方法`);
             }
         });
 
-        return configData;
+        console.log('📋 [UserRuleEdit] 收集到的扁平化配置数据:', flatData);
+        return flatData;
     },
 
     // 删除规则

@@ -120,16 +120,28 @@ Page({
         // 收集所有配置组件的数据
         const configData = this.collectConfigData();
 
-        // 构建规则数据
+        // 构建规则数据 - 使用扁平化结构
         const ruleData = {
             gambleUserName: this.data.user_rulename,
             gambleSysName: this.data.gameType,
-            config: configData,
+            playersNumber: 4, // 根据游戏类型设置
             type: 'system',
-            createTime: new Date().toISOString()
+            createTime: new Date().toISOString(),
+            // 合并配置数据到顶层
+            ...configData
         };
 
-        console.log('📋 [SysEdit] 保存规则数据:', ruleData);
+        console.log('📋 [SysEdit] 保存规则数据（扁平化结构）:', JSON.stringify(ruleData, null, 2));
+        console.log('📋 [SysEdit] 数据字段对应表结构:');
+        console.log('📋 [SysEdit] - gambleUserName:', ruleData.gambleUserName);
+        console.log('📋 [SysEdit] - gambleSysName:', ruleData.gambleSysName);
+        console.log('📋 [SysEdit] - badScoreBaseLine:', ruleData.badScoreBaseLine);
+        console.log('📋 [SysEdit] - badScoreMaxLost:', ruleData.badScoreMaxLost);
+        console.log('📋 [SysEdit] - dutyConfig:', ruleData.dutyConfig);
+        console.log('📋 [SysEdit] - drawConfig:', ruleData.drawConfig);
+        console.log('📋 [SysEdit] - eatingRange:', ruleData.eatingRange);
+        console.log('📋 [SysEdit] - meatValueConfig:', ruleData.meatValueConfig);
+        console.log('📋 [SysEdit] - meatMaxValue:', ruleData.meatMaxValue);
 
         // 调用API保存规则
         app.api.gamble.addGambleRule(ruleData)
@@ -162,13 +174,13 @@ Page({
             });
     },
 
-    // 收集配置组件数据
+    // 收集配置组件数据 - 改为扁平化结构
     collectConfigData() {
-        const configData = {};
+        const flatData = {};
 
-        console.log('📋 [SysEdit] 开始收集配置数据，组件列表:', this.data.configComponents);
+        console.log('📋 [SysEdit] 开始收集配置数据（扁平化），组件列表:', this.data.configComponents);
 
-        // 遍历所有配置组件，收集数据
+        // 遍历所有配置组件，收集数据并合并到扁平结构中
         for (const component of this.data.configComponents) {
             console.log('📋 [SysEdit] 正在收集组件', component.name, '的数据');
 
@@ -177,15 +189,17 @@ Page({
 
             if (componentInstance?.getConfigData) {
                 const data = componentInstance.getConfigData();
-                configData[component.name] = data;
-                console.log('📋 [SysEdit] 组件', component.name, '数据:', data);
+                console.log('📋 [SysEdit] 组件', component.name, '返回数据:', data);
+
+                // 将组件数据合并到扁平结构中
+                Object.assign(flatData, data);
             } else {
                 console.warn('📋 [SysEdit] 组件', component.name, '没有 getConfigData 方法');
             }
         }
 
-        console.log('📋 [SysEdit] 收集到的所有配置数据:', configData);
-        return configData;
+        console.log('📋 [SysEdit] 收集到的扁平化配置数据:', flatData);
+        return flatData;
     },
 
     // 取消编辑
