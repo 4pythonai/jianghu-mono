@@ -179,12 +179,12 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
 
-        $gamblesysname = $json_paras['gamblesysname'];
-        if ($gamblesysname == '4p-8421') {
+        $gameType = $json_paras['gameType'];
+        if ($gameType == '4p-8421') {
             $insert_data = $this->G4P8421Parser->parserRawData($userid, $json_paras);
         }
 
-        if ($gamblesysname == '4p-lasi') {
+        if ($gameType == '4p-lasi') {
             $insert_data = $this->G4PlasiParser->parserRawData($userid, $json_paras);
         }
 
@@ -298,6 +298,51 @@ class Gamble extends MY_Controller {
             ], JSON_UNESCAPED_UNICODE);
         }
     }
+
+
+
+
+
+
+    /**
+     * 根据参与人数分组获取赌球规则
+     * 返回两人游戏、三人游戏、四人游戏的分组数据
+     */
+    public function getUserGambleRule() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $ruleId = $json_paras['ruleId'];
+
+
+
+        // 查询用户创建的所有赌球规则，只获取需要的字段
+        $query = "SELECT id as userRuleId, 
+                     create_time,
+                     RewardConfig,
+                     drawConfig,
+                     dutyConfig,
+                     eatingRange,
+                     gambleSysName,
+                     gambleUserName,
+                     badScoreMaxLost,
+                     meatMaxValue,
+                     meatValueConfig,
+                     playersNumber,
+                     badScoreBaseLine,
+                     update_time
+                     FROM t_gamble_rules_user 
+                     WHERE id = ? and softdeleted='n'
+                     ORDER BY create_time DESC";
+
+        $rule = $this->db->query($query, [$ruleId])->row_array();
+
+        // 构建返回数据
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '获取成功';
+        $ret['data'] = $rule;
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
 
     public function deleteGambleRule() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
