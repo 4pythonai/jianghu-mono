@@ -31,13 +31,6 @@ Component({
     data: {
     },
 
-    // observers: {
-    //     'players': function (players) {
-    //         this.setData({
-    //             avatarUrls: players?.map(p => p?.avatar) || []
-    //         });
-    //     }
-    // },
 
     methods: {
         _groupPlayersByGroupId(players, gameData) {

@@ -162,16 +162,11 @@ Component({
         // 打印当前配置
         printCurrentConfig() {
             const config = this.getConfigData();
-            console.log('🎯 [LasiDingDong] ===== 当前顶洞配置 =====');
             console.log('🎯 [LasiDingDong] 配置对象:', config);
-            console.log('🎯 [LasiDingDong] 顶洞规则:', config.dingdongConfig);
-            console.log('🎯 [LasiDingDong] 是否启用:', config.dingdongConfig !== 'NoDraw');
-            console.log('🎯 [LasiDingDong] ========================');
         },
 
         // 初始化配置数据 - 供UserRuleEdit页面调用
         initConfigData(configData) {
-            console.log('🎯 [LasiDingDong] 初始化配置数据:', configData);
 
             if (!configData) {
                 console.warn('🎯 [LasiDingDong] 配置数据为空，使用默认值');
@@ -189,7 +184,7 @@ Component({
                 selected = 0;
             } else if (dingdongConfig.startsWith('Diff_')) {
                 selected = 1;
-                selectedDiffScore = parseInt(dingdongConfig.replace('Diff_', '')) || 1;
+                selectedDiffScore = Number.parseInt(dingdongConfig.replace('Diff_', '')) || 1;
             } else if (dingdongConfig === 'NoDraw') {
                 selected = 2;
             }
