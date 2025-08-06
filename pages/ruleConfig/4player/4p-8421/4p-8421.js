@@ -22,6 +22,15 @@ Page({
     // 输出完整Store数据用于调试
     const allData = G4P8421Store.debugAllRulesData();
 
+    console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯 4p-8421 allData:', allData);
+    console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯 4p-8421 allData.badScoreMaxLost:', allData.badScoreMaxLost);
+    console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯 4p-8421 allData.badScoreBaseLine:', allData.badScoreBaseLine);
+    console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯 4p-8421 allData.dutyConfig:', allData.dutyConfig);
+    console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯 4p-8421 allData.drawConfig:', allData.drawConfig);
+    console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯 4p-8421 allData.eatingRange:', allData.eatingRange);
+    console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯 4p-8421 allData.meatValueConfig:', allData.meatValueConfig);
+    console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯 4p-8421 allData.meatMaxValue:', allData.meatMaxValue);
+
     app.api.gamble.addGambleRule(allData).then(res => {
       console.log('添加规则成功:', res);
       wx.showToast({

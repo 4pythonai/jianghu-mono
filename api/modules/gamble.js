@@ -14,6 +14,9 @@ const gamble = {
     // 获取用户游戏规则
     getUserGambleRules: (data, options) => request('/Gamble/getUserGambleRules', data, options),
 
+    // 获取单个游戏规则
+    getUserGambleRule: (data, options) => request('/Gamble/getUserGambleRule', data, options),
+
 
     addRuntimeConfig: (data, options) => request('/Gamble/addRuntimeConfig', data, options),
 

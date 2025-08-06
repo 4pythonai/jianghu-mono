@@ -1,6 +1,6 @@
 // 添加规则组件
 const { ROUTES, GameConfig } = require('../../../../utils/gameConfig.js');
-const gambleAPI = require('../../../../api/modules/gamble.js');
+const app = getApp()
 
 Component({
     properties: {
@@ -154,7 +154,7 @@ Component({
             this.setData({ saving: true });
 
             // 调用真实API保存规则
-            const apiMethod = isEdit ? gambleAPI.updateGambleRule : gambleAPI.addGambleRule;
+            const apiMethod = isEdit ? app.api.gamble.updateGambleRule : app.api.gamble.addGambleRule;
             const apiData = {
                 id: ruleForm.id,
                 title: ruleForm.title,
@@ -273,19 +273,22 @@ Component({
         // 卡片点击跳转规则配置页
         onConfigRule(e) {
             const { title } = e.currentTarget.dataset;
-            console.log(' ⭕️⭕️⭕️⭕️⭕️⭕️⭕️ 卡片点击跳转规则配置页:', title);
+            console.log('📋 [SysRule] 卡片点击跳转规则配置页:', title);
 
-            // 使用统一的路由映射
-                            const routePath = GameConfig.getRoute(title);
-
-            if (routePath) {
-                wx.navigateTo({ url: routePath });
-            } else {
-                wx.showToast({
-                    title: '暂未开放, 敬请期待',
-                    icon: 'none'
-                });
-            }
+            // 跳转到新的SysEdit页面
+            wx.navigateTo({
+                url: `/pages/rules/SysEdit/SysEdit?gameType=${title}`,
+                success: () => {
+                    console.log('📋 [SysRule] 成功跳转到SysEdit页面, 游戏类型:', title);
+                },
+                fail: (err) => {
+                    console.error('📋 [SysRule] 跳转失败:', err);
+                    wx.showToast({
+                        title: '页面跳转失败',
+                        icon: 'none'
+                    });
+                }
+            });
         }
     }
 }); 

@@ -16,7 +16,7 @@
     <view class="modal-title">扣分规则</view>
     <view class="modal-list">
       <!-- 扣分开始条件 -->
-      <block wx:for="{{Sub8421ConfigString}}" wx:key="index">
+      <block wx:for="{{badScoreBaseLine}}" wx:key="index">
         <view class="modal-item" bindtap="onSelectStart" data-index="{{index}}">
           <view class="radio-outer {{selectedStart === index ? 'checked' : ''}}">
             <view class="radio-inner" wx:if="{{selectedStart === index}}"></view>

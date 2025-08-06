@@ -38,9 +38,9 @@ export const G4P8421Store = observable({
     meatMaxValue: 10000000,
 
     // 更新扣分规则的action
-    updateKoufenRule: action(function (max8421SubValue, sub8421ConfigString, dutyConfig) {
-        this.badScoreMaxLost = max8421SubValue;
-        this.badScoreBaseLine = sub8421ConfigString;
+    updateKoufenRule: action(function (badScoreMaxLost, badScoreBaseLine, dutyConfig) {
+        this.badScoreMaxLost = badScoreMaxLost;
+        this.badScoreBaseLine = badScoreBaseLine;
         this.dutyConfig = dutyConfig;
         this.user_rulename = this.generateAbstractName();
     }),

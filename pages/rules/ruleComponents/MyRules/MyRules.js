@@ -1,7 +1,7 @@
 const app = getApp()
 
 // 我的规则组件
-const { USER_RULES, GameConfig } = require('../../../../utils/gameConfig.js');
+const { GameConfig } = require('../../../../utils/gameConfig.js');
 
 Component({
     properties: {
@@ -221,9 +221,41 @@ Component({
         onEditRule(e) {
             const { item, group } = e.detail || e.currentTarget.dataset;
             console.log('📋 [MyRules] 编辑规则:', item, '分组:', group);
+            console.log('📋 [MyRules] 规则数据结构:', {
+                id: item.id,
+                userRuleId: item.userRuleId,
+                gamblesysname: item.gamblesysname,
+                gambleSysName: item.gambleSysName,
+                gambleUserName: item.gambleUserName,
+                user_rulename: item.user_rulename,
+                title: item.title
+            });
 
-            // 通知父组件切换到编辑模式
-            this.triggerEvent('editRule', { rule: item, group: group || 'fourPlayers' });
+            // 添加分组信息到规则数据
+            const ruleDataWithGroup = {
+                ...item,
+                group: group || 'fourPlayers'
+            };
+
+            console.log('📋 [MyRules] 准备传递的规则数据:', ruleDataWithGroup);
+
+            // 编码规则数据
+            const encodedRuleData = encodeURIComponent(JSON.stringify(ruleDataWithGroup));
+
+            // 跳转到UserRuleEdit页面
+            wx.navigateTo({
+                url: `/pages/rules/UserRuleEdit/UserRuleEdit?ruleId=${item.userRuleId || item.id}&ruleData=${encodedRuleData}`,
+                success: () => {
+                    console.log('📋 [MyRules] 成功跳转到UserRuleEdit页面, 规则ID:', item.userRuleId || item.id);
+                },
+                fail: (err) => {
+                    console.error('📋 [MyRules] 跳转失败:', err);
+                    wx.showToast({
+                        title: '页面跳转失败',
+                        icon: 'none'
+                    });
+                }
+            });
         },
 
         // 查看规则详情 - 跳转到运行时配置页面
@@ -282,51 +314,8 @@ Component({
 
         // 将用户规则映射到标准规则类型
         mapUserRuleToRuleType(userRule, group) {
-            // 如果后台已经返回了完整的gambleSysName，直接使用
-            if (userRule.gambleSysName) {
-                console.log(`📋 [MyRules] 使用后台返回的gambleSysName: ${userRule.gambleSysName}`);
-                return userRule.gambleSysName;
-            }
-
-            // 如果没有gambleSysName，则使用旧的映射逻辑
-            const gamblesysname = userRule.gamblesysname || '';
-
-            // 首先根据gamblesysname精确匹配
-            const exactMatch = GameConfig.getUserRule(group, gamblesysname);
-            if (exactMatch) {
-                return exactMatch;
-            }
-
-            // 如果精确匹配失败, 根据规则名称进行模糊匹配
-            const ruleName = (userRule.gambleUserName || userRule.user_rulename || '').toLowerCase();
-
-            if (ruleName.includes('8421')) {
-                return GameConfig.getUserRule(group, '8421');
-            }
-            if (ruleName.includes('比杆') || ruleName.includes('gross')) {
-                return GameConfig.getUserRule(group, 'gross');
-            }
-            if (ruleName.includes('比洞') || ruleName.includes('hole')) {
-                return GameConfig.getUserRule(group, 'hole');
-            }
-            if (ruleName.includes('斗地主') || ruleName.includes('doudizhu')) {
-                return GameConfig.getUserRule(group, 'doudizhu');
-            }
-            if (ruleName.includes('地主婆') || ruleName.includes('dizhupo')) {
-                return GameConfig.getUserRule(group, 'dizhupo');
-            }
-            if (ruleName.includes('拉死') || ruleName.includes('lasi')) {
-                return GameConfig.getUserRule(group, 'lasi');
-            }
-            if (ruleName.includes('3打1') || ruleName.includes('3da1')) {
-                return GameConfig.getUserRule(group, '3da1');
-            }
-            if (ruleName.includes('bestak')) {
-                return GameConfig.getUserRule(group, 'bestak');
-            }
-
-            // 默认返回该组的8421规则
-            return GameConfig.getUserRule(group, '8421') || null;
+            // 直接使用gambleSysName
+            return userRule.gambleSysName;
         },
 
         // 下拉刷新处理

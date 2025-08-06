@@ -20,8 +20,20 @@ Component({
     selectedDiffScore: 1
   },
   attached() {
-    // 组件初始化时, 根据store中的值设置选中状态
-    this.syncSelectedFromStore();
+    console.log('🎯 [Draw8421] 组件加载，模式:', this.properties.mode);
+
+    if (this.properties.mode === 'SysConfig') {
+      // SysConfig模式：使用独立的配置数据，不依赖Store
+      console.log('🎯 [Draw8421] SysConfig模式，使用独立配置');
+      // 使用默认配置初始化，但保持用户之前的选择
+      this.setData({
+        selected: this.data.selected || 0,
+        selectedDiffScore: this.data.selectedDiffScore || 1
+      });
+    } else {
+      // 组件初始化时, 根据store中的值设置选中状态
+      this.syncSelectedFromStore();
+    }
     // 计算显示值
     this.updateDisplayValue();
   },
@@ -29,33 +41,54 @@ Component({
   methods: {
     // 计算显示值
     updateDisplayValue() {
-      const store = G4P8421Store;
       let displayValue = '';
 
-      // 映射英文格式到中文显示
-      if (store.drawConfig) {
-        switch (store.drawConfig) {
-          case 'DrawEqual':
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：使用组件内部数据
+        const { selected, selectedDiffScore } = this.data;
+
+        switch (selected) {
+          case 0:
             displayValue = '得分打平';
             break;
-          case 'Diff_1':
-            displayValue = '得分1分以内';
+          case 1:
+            displayValue = `得分${selectedDiffScore}分以内`;
             break;
-          case 'NoDraw':
+          case 2:
             displayValue = '无顶洞';
             break;
           default:
-            // 处理 Diff_X 格式
-            if (store.drawConfig.startsWith('Diff_')) {
-              const score = store.drawConfig.replace('Diff_', '');
-              displayValue = `得分${score}分以内`;
-            } else {
-              displayValue = store.drawConfig;
-            }
-            break;
+            displayValue = '请配置顶洞规则';
         }
       } else {
-        displayValue = '请配置顶洞规则';
+        // 使用Store数据
+        const store = G4P8421Store;
+
+        // 映射英文格式到中文显示
+        if (store.drawConfig) {
+          switch (store.drawConfig) {
+            case 'DrawEqual':
+              displayValue = '得分打平';
+              break;
+            case 'Diff_1':
+              displayValue = '得分1分以内';
+              break;
+            case 'NoDraw':
+              displayValue = '无顶洞';
+              break;
+            default:
+              // 处理 Diff_X 格式
+              if (store.drawConfig.startsWith('Diff_')) {
+                const score = store.drawConfig.replace('Diff_', '');
+                displayValue = `得分${score}分以内`;
+              } else {
+                displayValue = store.drawConfig;
+              }
+              break;
+          }
+        } else {
+          displayValue = '请配置顶洞规则';
+        }
       }
 
       this.setData({
@@ -105,8 +138,15 @@ Component({
     onShowConfig() {
       // 直接显示弹窗，因为已经用view替代了input
       this.setData({ visible: true });
-      // 只在第一次显示时重新加载配置，避免覆盖用户选择
-      if (this.data.selected === 0 && !G4P8421Store.drawConfig) {
+
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：确保当前状态正确显示
+        console.log('🎯 [Draw8421] SysConfig模式显示配置，当前状态:', {
+          selected: this.data.selected,
+          selectedDiffScore: this.data.selectedDiffScore
+        });
+      } else {
+        // 总是重新加载配置，确保与Store同步
         this.syncSelectedFromStore();
       }
     },
@@ -132,8 +172,14 @@ Component({
         selectedValue = 'NoDraw';
       }
 
-      // 调用store的action更新数据
-      G4P8421Store.updateDingdongRule(selectedValue);
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：不更新Store，只更新显示值
+        console.log('🎯 [Draw8421] SysConfig模式，不更新Store');
+      } else {
+        // 调用store的action更新数据
+        G4P8421Store.updateDingdongRule(selectedValue);
+      }
+
       // 更新显示值
       this.updateDisplayValue();
       // 关闭弹窗
@@ -142,6 +188,23 @@ Component({
       this.triggerEvent('confirm', {
         value: selectedValue
       });
+    },
+
+    // 获取配置数据（供父组件调用）
+    getConfigData() {
+      const { selected, selectedDiffScore } = this.data;
+
+      // 根据选择的选项生成配置值
+      let selectedValue = '';
+      if (selected === 0) {
+        selectedValue = 'DrawEqual';
+      } else if (selected === 1) {
+        selectedValue = `Diff_${selectedDiffScore}`;
+      } else if (selected === 2) {
+        selectedValue = 'NoDraw';
+      }
+
+      return { drawConfig: selectedValue };
     }
   }
 });

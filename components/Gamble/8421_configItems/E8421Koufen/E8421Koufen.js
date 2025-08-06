@@ -2,6 +2,16 @@ import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_842
 
 Component({
   properties: {
+    // 模式：SysConfig | UserEdit
+    mode: {
+      type: String,
+      value: 'SysConfig'
+    },
+    // 配置数据
+    configData: {
+      type: Object,
+      value: null
+    }
   },
   data: {
     // 组件内部状态
@@ -9,7 +19,7 @@ Component({
     displayValue: '请配置扣分规则',
 
     // 扣分开始条件 (badScoreBaseLine)
-    Sub8421ConfigString: ['从帕+X开始扣分', '从双帕+Y开始扣分', '不扣分'],
+    badScoreBaseLine: ['从帕+X开始扣分', '从双帕+Y开始扣分', '不扣分'],
     selectedStart: 0,
 
     // 可编辑的数字变量
@@ -33,10 +43,39 @@ Component({
   // 组件生命周期
   lifetimes: {
     attached() {
-      // 从store获取当前配置并初始化组件状态
-      this.initializeFromStore();
+      console.log('🎯 [E8421Koufen] 组件加载，模式:', this.properties.mode);
+
+      // 根据模式初始化组件
+      if (this.properties.mode === 'UserEdit' && this.properties.configData) {
+        this.initializeFromConfigData(this.properties.configData);
+      } else if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：使用独立的配置数据，不依赖Store
+        console.log('🎯 [E8421Koufen] SysConfig模式，使用独立配置');
+        // 使用默认配置初始化，但保持用户之前的选择
+        this.setData({
+          selectedStart: this.data.selectedStart || 0,
+          selectedMax: this.data.selectedMax || 0,
+          selectedDuty: this.data.selectedDuty || 0,
+          paScore: this.data.paScore || 4,
+          doubleParScore: this.data.doubleParScore || 0,
+          maxSubScore: this.data.maxSubScore || 2
+        });
+      } else {
+        // 从store获取当前配置并初始化组件状态
+        this.initializeFromStore();
+      }
       // 计算显示值
       this.updateDisplayValue();
+    }
+  },
+
+  observers: {
+    // 监听配置数据变化
+    'configData': function (configData) {
+      if (configData && this.properties.mode === 'UserEdit') {
+        this.initializeFromConfigData(configData);
+        this.updateDisplayValue();
+      }
     }
   },
 
@@ -48,42 +87,82 @@ Component({
 
     // 计算显示值
     updateDisplayValue() {
-      const store = G4P8421Store;
       let displayValue = '';
 
-      // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
-      let startText = '';
-      if (store.badScoreBaseLine) {
-        if (store.badScoreBaseLine === 'NoSub') {
-          startText = '不扣分';
-        } else if (store.badScoreBaseLine?.startsWith('Par+')) {
-          const score = store.badScoreBaseLine.replace('Par+', '');
-          startText = `帕+${score}`;
-        } else if (store.badScoreBaseLine?.startsWith('DoublePar+')) {
-          const score = store.badScoreBaseLine.replace('DoublePar+', '');
-          startText = `双帕+${score}`;
-        } else {
-          startText = store.badScoreBaseLine;
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：使用组件内部数据
+        const { selectedStart, selectedMax, paScore, doubleParScore, maxSubScore } = this.data;
+
+        // 格式化扣分开始值
+        let startText = '';
+        switch (selectedStart) {
+          case 0:
+            startText = `帕+${paScore}`;
+            break;
+          case 1:
+            startText = `双帕+${doubleParScore}`;
+            break;
+          case 2:
+            startText = '不扣分';
+            break;
         }
-      }
 
-      // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
-      let fengdingText = '';
-      if (store.badScoreMaxLost === 10000000) {
-        fengdingText = '不封顶';
-      } else if (typeof store.badScoreMaxLost === 'number' && store.badScoreMaxLost < 10000000) {
-        fengdingText = `扣${store.badScoreMaxLost}分封顶`;
-      }
+        // 格式化封顶值
+        let fengdingText = '';
+        if (selectedMax === 0) {
+          fengdingText = '不封顶';
+        } else {
+          fengdingText = `扣${maxSubScore}分封顶`;
+        }
 
-      // 组合显示值
-      if (startText && fengdingText) {
-        displayValue = `${startText}/${fengdingText}`;
-      } else if (startText) {
-        displayValue = startText;
-      } else if (fengdingText) {
-        displayValue = fengdingText;
+        // 组合显示值
+        if (startText && fengdingText) {
+          displayValue = `${startText}/${fengdingText}`;
+        } else if (startText) {
+          displayValue = startText;
+        } else if (fengdingText) {
+          displayValue = fengdingText;
+        } else {
+          displayValue = '请配置扣分规则';
+        }
       } else {
-        displayValue = '请配置扣分规则';
+        // 使用Store数据
+        const store = G4P8421Store;
+
+        // 格式化扣分开始值 - 适配新格式:NoSub, Par+X, DoublePar+X
+        let startText = '';
+        if (store.badScoreBaseLine) {
+          if (store.badScoreBaseLine === 'NoSub') {
+            startText = '不扣分';
+          } else if (store.badScoreBaseLine?.startsWith('Par+')) {
+            const score = store.badScoreBaseLine.replace('Par+', '');
+            startText = `帕+${score}`;
+          } else if (store.badScoreBaseLine?.startsWith('DoublePar+')) {
+            const score = store.badScoreBaseLine.replace('DoublePar+', '');
+            startText = `双帕+${score}`;
+          } else {
+            startText = store.badScoreBaseLine;
+          }
+        }
+
+        // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
+        let fengdingText = '';
+        if (store.badScoreMaxLost === 10000000) {
+          fengdingText = '不封顶';
+        } else if (typeof store.badScoreMaxLost === 'number' && store.badScoreMaxLost < 10000000) {
+          fengdingText = `扣${store.badScoreMaxLost}分封顶`;
+        }
+
+        // 组合显示值
+        if (startText && fengdingText) {
+          displayValue = `${startText}/${fengdingText}`;
+        } else if (startText) {
+          displayValue = startText;
+        } else if (fengdingText) {
+          displayValue = fengdingText;
+        } else {
+          displayValue = '请配置扣分规则';
+        }
       }
 
       this.setData({
@@ -96,22 +175,26 @@ Component({
     // 从store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
-      const max8421SubValue = G4P8421Store.badScoreMaxLost;
+      const badScoreMaxLost = G4P8421Store.badScoreMaxLost;
       const koufenStart = G4P8421Store.badScoreBaseLine;
       const partnerPunishment = G4P8421Store.dutyConfig;
 
-      if (max8421SubValue !== 10000000 || koufenStart || partnerPunishment) {
-        // 解析已保存的配置
-        this.parseStoredConfig({
-          max8421SubValue,
-          koufenStart,
-          partnerPunishment
-        });
-      }
+      console.log('🎯 [E8421Koufen] 从Store初始化配置:', {
+        badScoreMaxLost,
+        koufenStart,
+        partnerPunishment
+      });
+
+      // 总是解析配置，不管是否是默认值
+      this.parseStoredConfig({
+        badScoreMaxLost,
+        koufenStart,
+        partnerPunishment
+      });
     },
     // 解析存储的配置
     parseStoredConfig(config) {
-      const { max8421SubValue, koufenStart, partnerPunishment } = config;
+      const { badScoreMaxLost, koufenStart, partnerPunishment } = config;
       console.log('从store加载配置:', config);
 
       // 解析扣分开始条件 - 新格式:NoSub, Par+X, DoublePar+X
@@ -138,12 +221,12 @@ Component({
       }
 
       // 解析封顶配置 - 新格式:数字, 10000000表示不封顶
-      if (max8421SubValue === 10000000) {
+      if (badScoreMaxLost === 10000000) {
         this.setData({ selectedMax: 0 });
-      } else if (typeof max8421SubValue === 'number' && max8421SubValue < 10000000) {
+      } else if (typeof badScoreMaxLost === 'number' && badScoreMaxLost < 10000000) {
         this.setData({
           selectedMax: 1,
-          maxSubScore: max8421SubValue
+          maxSubScore: badScoreMaxLost
         });
       }
 
@@ -197,8 +280,21 @@ Component({
     },
     onShowConfig() {
       this.setData({ visible: true });
-      // 每次显示时重新加载配置
-      this.initializeFromStore();
+
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：确保当前状态正确显示
+        console.log('🎯 [E8421Koufen] SysConfig模式显示配置，当前状态:', {
+          selectedStart: this.data.selectedStart,
+          selectedMax: this.data.selectedMax,
+          selectedDuty: this.data.selectedDuty,
+          paScore: this.data.paScore,
+          doubleParScore: this.data.doubleParScore,
+          maxSubScore: this.data.maxSubScore
+        });
+      } else {
+        // 每次显示时重新加载配置
+        this.initializeFromStore();
+      }
     },
 
     onCancel() {
@@ -209,21 +305,21 @@ Component({
       const { selectedStart, selectedMax, selectedDuty, paScore, doubleParScore, maxSubScore } = this.data;
 
       // 构建新格式的配置数据
-      let sub8421ConfigString = null;
+      let badScoreBaseLine = null;
       switch (selectedStart) {
         case 0:
-          sub8421ConfigString = `Par+${paScore}`;
+          badScoreBaseLine = `Par+${paScore}`;
           break;
         case 1:
-          sub8421ConfigString = `DoublePar+${doubleParScore}`;
+          badScoreBaseLine = `DoublePar+${doubleParScore}`;
           break;
         case 2:
-          sub8421ConfigString = 'NoSub';
+          badScoreBaseLine = 'NoSub';
           break;
       }
 
       // 封顶配置改为数字格式, 10000000表示不封顶
-      const max8421SubValue = selectedMax === 0 ? 10000000 : maxSubScore;
+      const badScoreMaxLost = selectedMax === 0 ? 10000000 : maxSubScore;
 
       // 同伴惩罚配置改为枚举格式
       let dutyConfig = null;
@@ -239,12 +335,17 @@ Component({
           break;
       }
 
-      // 调用store的action更新数据
-      G4P8421Store.updateKoufenRule(max8421SubValue, sub8421ConfigString, dutyConfig);
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：不更新Store，只更新显示值
+        console.log('🎯 [E8421Koufen] SysConfig模式，不更新Store');
+      } else {
+        // 调用store的action更新数据
+        G4P8421Store.updateKoufenRule(badScoreMaxLost, badScoreBaseLine, dutyConfig);
+      }
 
-      console.log('扣分组件已更新store:', {
-        max8421SubValue,
-        sub8421ConfigString,
+      console.log('扣分组件已更新:', {
+        badScoreMaxLost,
+        badScoreBaseLine,
         dutyConfig,
         customValues: { paScore, doubleParScore, maxSubScore }
       });
@@ -257,8 +358,73 @@ Component({
 
       // 向父组件传递事件
       this.triggerEvent('confirm', {
-        parsedData: { max8421SubValue, sub8421ConfigString, dutyConfig }
+        parsedData: { badScoreMaxLost, badScoreBaseLine, dutyConfig }
       });
+    },
+
+    // 从配置数据初始化（UserEdit模式）
+    initializeFromConfigData(configData) {
+      console.log('📋 [E8421Koufen] 从配置数据初始化:', configData);
+
+      if (!configData) return;
+
+      // 解析配置数据
+      const { badScoreMaxLost, badScoreBaseLine, dutyConfig } = configData;
+
+      // 设置组件状态
+      this.parseStoredConfig({
+        badScoreMaxLost,
+        badScoreBaseLine,
+        dutyConfig
+      });
+    },
+
+    // 获取配置数据（供父组件调用）
+    getConfigData() {
+      const { selectedStart, selectedMax, selectedDuty, paScore, doubleParScore, maxSubScore } = this.data;
+
+      // 构建新格式的配置数据
+      let badScoreBaseLine = null;
+      switch (selectedStart) {
+        case 0:
+          badScoreBaseLine = `Par+${paScore}`;
+          break;
+        case 1:
+          badScoreBaseLine = `DoublePar+${doubleParScore}`;
+          break;
+        case 2:
+          badScoreBaseLine = 'NoSub';
+          break;
+      }
+
+      // 封顶配置改为数字格式, 10000000表示不封顶
+      const badScoreMaxLost = selectedMax === 0 ? 10000000 : maxSubScore;
+
+      // 同伴惩罚配置改为枚举格式
+      let dutyConfig = null;
+      switch (selectedDuty) {
+        case 0:
+          dutyConfig = 'NODUTY';
+          break;
+        case 1:
+          dutyConfig = 'DUTY_DINGTOU';
+          break;
+        case 2:
+          dutyConfig = 'DUTY_NEGATIVE';
+          break;
+      }
+
+      return {
+        badScoreBaseLine: badScoreBaseLine,
+        badScoreMaxLost: badScoreMaxLost,
+        dutyConfig: dutyConfig,
+      };
+    },
+
+    // 初始化配置数据（供父组件调用）
+    initConfigData(configData) {
+      this.initializeFromConfigData(configData);
+      this.updateDisplayValue();
     }
   }
 });

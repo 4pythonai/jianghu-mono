@@ -42,8 +42,28 @@ Component({
   // 组件生命周期
   lifetimes: {
     attached() {
-      // 从store获取当前配置并初始化组件状态
-      this.initializeFromStore();
+      console.log('🎯 [E8421Meat] 组件加载，模式:', this.properties.mode);
+
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：使用独立的配置数据，不依赖Store
+        console.log('🎯 [E8421Meat] SysConfig模式，使用独立配置');
+        // 使用默认配置初始化，但保持用户之前的选择
+        this.setData({
+          eatingRange: this.data.eatingRange || {
+            "BetterThanBirdie": 1,
+            "Birdie": 1,
+            "Par": 1,
+            "WorseThanPar": 1
+          },
+          meatValueOption: this.data.meatValueOption || 0,
+          meatScoreValue: this.data.meatScoreValue || 1,
+          topSelected: this.data.topSelected || 0,
+          topScoreLimit: this.data.topScoreLimit || 3
+        });
+      } else {
+        // 从store获取当前配置并初始化组件状态
+        this.initializeFromStore();
+      }
       // 计算显示值
       this.updateDisplayValue();
       // 检查禁用状态
@@ -74,41 +94,81 @@ Component({
 
     // 计算显示值
     updateDisplayValue() {
-      const store = G4P8421Store;
       let displayValue = '';
 
-      // 格式化吃肉规则显示 - 适配新格式
-      let meatValueText = '';
-      if (store.meatValueConfig) {
-        if (store.meatValueConfig?.startsWith('MEAT_AS_')) {
-          const score = store.meatValueConfig.replace('MEAT_AS_', '');
-          meatValueText = `肉算${score}分`;
-        } else if (store.meatValueConfig === 'SINGLE_DOUBLE') {
-          meatValueText = '分值翻倍';
-        } else if (store.meatValueConfig === 'CONTINUE_DOUBLE') {
-          meatValueText = '分值连续翻倍';
-        } else {
-          meatValueText = store.meatValueConfig;
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：使用组件内部数据
+        const { meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
+
+        // 格式化吃肉规则显示
+        let meatValueText = '';
+        switch (meatValueOption) {
+          case 0:
+            meatValueText = `肉算${meatScoreValue}分`;
+            break;
+          case 1:
+            meatValueText = '分值翻倍';
+            break;
+          case 2:
+            meatValueText = '分值连续翻倍';
+            break;
         }
-      }
 
-      // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
-      let meatMaxText = '';
-      if (store.meatMaxValue === 10000000) {
-        meatMaxText = '不封顶';
-      } else if (typeof store.meatMaxValue === 'number' && store.meatMaxValue < 10000000) {
-        meatMaxText = `${store.meatMaxValue}分封顶`;
-      }
+        // 格式化封顶值
+        let meatMaxText = '';
+        if (topSelected === 0) {
+          meatMaxText = '不封顶';
+        } else {
+          meatMaxText = `${topScoreLimit}分封顶`;
+        }
 
-      // 简化显示, 只显示主要的肉分值计算方式
-      if (meatValueText && meatMaxText) {
-        displayValue = `${meatValueText}/${meatMaxText}`;
-      } else if (meatValueText) {
-        displayValue = meatValueText;
-      } else if (meatMaxText) {
-        displayValue = meatMaxText;
+        // 简化显示, 只显示主要的肉分值计算方式
+        if (meatValueText && meatMaxText) {
+          displayValue = `${meatValueText}/${meatMaxText}`;
+        } else if (meatValueText) {
+          displayValue = meatValueText;
+        } else if (meatMaxText) {
+          displayValue = meatMaxText;
+        } else {
+          displayValue = '请配置吃肉规则';
+        }
       } else {
-        displayValue = '请配置吃肉规则';
+        // 使用Store数据
+        const store = G4P8421Store;
+
+        // 格式化吃肉规则显示 - 适配新格式
+        let meatValueText = '';
+        if (store.meatValueConfig) {
+          if (store.meatValueConfig?.startsWith('MEAT_AS_')) {
+            const score = store.meatValueConfig.replace('MEAT_AS_', '');
+            meatValueText = `肉算${score}分`;
+          } else if (store.meatValueConfig === 'SINGLE_DOUBLE') {
+            meatValueText = '分值翻倍';
+          } else if (store.meatValueConfig === 'CONTINUE_DOUBLE') {
+            meatValueText = '分值连续翻倍';
+          } else {
+            meatValueText = store.meatValueConfig;
+          }
+        }
+
+        // 格式化封顶值 - 适配新格式:数字, 10000000表示不封顶
+        let meatMaxText = '';
+        if (store.meatMaxValue === 10000000) {
+          meatMaxText = '不封顶';
+        } else if (typeof store.meatMaxValue === 'number' && store.meatMaxValue < 10000000) {
+          meatMaxText = `${store.meatMaxValue}分封顶`;
+        }
+
+        // 简化显示, 只显示主要的肉分值计算方式
+        if (meatValueText && meatMaxText) {
+          displayValue = `${meatValueText}/${meatMaxText}`;
+        } else if (meatValueText) {
+          displayValue = meatValueText;
+        } else if (meatMaxText) {
+          displayValue = meatMaxText;
+        } else {
+          displayValue = '请配置吃肉规则';
+        }
       }
 
       this.setData({
@@ -257,6 +317,17 @@ Component({
       }
 
       this.setData({ visible: true });
+
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：确保当前状态正确显示
+        console.log('🎯 [E8421Meat] SysConfig模式显示配置，当前状态:', {
+          eatingRange: this.data.eatingRange,
+          meatValueOption: this.data.meatValueOption,
+          meatScoreValue: this.data.meatScoreValue,
+          topSelected: this.data.topSelected,
+          topScoreLimit: this.data.topScoreLimit
+        });
+      }
     },
 
     onCancel() {
@@ -287,8 +358,13 @@ Component({
       // 吃肉封顶改为数字格式, 10000000表示不封顶
       const meatMaxValue = data.topSelected === 0 ? 10000000 : data.topScoreLimit;
 
-      // 调用store的action更新数据
-      G4P8421Store.updateEatmeatRule(eatingRange, meatValueConfig, meatMaxValue);
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：不更新Store，只更新显示值
+        console.log('🎯 [E8421Meat] SysConfig模式，不更新Store');
+      } else {
+        // 调用store的action更新数据
+        G4P8421Store.updateEatmeatRule(eatingRange, meatValueConfig, meatMaxValue);
+      }
 
       // 更新显示值
       this.updateDisplayValue();
@@ -300,6 +376,34 @@ Component({
       this.triggerEvent('confirm', {
         parsedData: { eatingRange, meatValueConfig, meatMaxValue }
       });
+    },
+
+    // 获取配置数据（供父组件调用）
+    getConfigData() {
+      const { eatingRange, meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
+
+      // 肉分值计算方式
+      let meatValueConfig = null;
+      switch (meatValueOption) {
+        case 0:
+          meatValueConfig = `MEAT_AS_${meatScoreValue}`;
+          break;
+        case 1:
+          meatValueConfig = 'SINGLE_DOUBLE';
+          break;
+        case 2:
+          meatValueConfig = 'CONTINUE_DOUBLE';
+          break;
+      }
+
+      // 吃肉封顶
+      const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
+
+      return {
+        eatingRange,
+        meatValueConfig,
+        meatMaxValue,
+      };
     }
   }
 });

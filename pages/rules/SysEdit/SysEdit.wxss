@@ -1,0 +1,153 @@
+/* 系统规则配置页面样式 */
+.sys-edit-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+/* 页面标题 */
+.page-header {
+  text-align: center;
+  padding: 40rpx 0;
+  color: white;
+}
+
+.header-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+}
+
+.header-subtitle {
+  font-size: 28rpx;
+  opacity: 0.8;
+}
+
+/* 配置表单 */
+.config-form {
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 表单区域 */
+.form-section {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  background: #f8f9fa;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #667eea;
+  background: white;
+}
+
+/* 配置组件区域 */
+.config-components {
+  margin-top: 40rpx;
+}
+
+.component-wrapper {
+  margin-bottom: 40rpx;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.component-title {
+  background: #f8f9fa;
+  padding: 24rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.component-content {
+  padding: 24rpx;
+  background: white;
+}
+
+/* 默认配置组件 */
+.default-config {
+  text-align: center;
+  padding: 60rpx 20rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+/* 底部操作按钮 */
+.bottom-actions {
+  display: flex;
+  gap: 20rpx;
+  padding: 0 20rpx;
+}
+
+.cancel-btn, .save-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cancel-btn {
+  background: #f8f9fa;
+  color: #666;
+}
+
+.cancel-btn:active {
+  background: #e9ecef;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.save-btn:active {
+  opacity: 0.9;
+}
+
+.save-btn[disabled] {
+  opacity: 0.6;
+  background: #ccc;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+  .sys-edit-container {
+    padding: 16rpx;
+  }
+  
+  .config-form {
+    padding: 32rpx;
+  }
+  
+  .header-title {
+    font-size: 44rpx;
+  }
+} 
