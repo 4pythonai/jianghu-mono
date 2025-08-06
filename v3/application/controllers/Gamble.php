@@ -177,15 +177,20 @@ class Gamble extends MY_Controller {
         $this->load->model('sysrule/G4P8421Parser');
         $this->load->model('sysrule/G4PlasiParser');
         $json_paras = json_decode(file_get_contents('php://input'), true);
+        $config = $json_paras['config'];
+
+        $config['gambleSysName'] = $json_paras['gambleSysName'];
+        $config['gambleUserName'] = $json_paras['gambleUserName'];
+
         $userid = $this->getUser();
 
-        $gameType = $json_paras['gameType'];
-        if ($gameType == '4p-8421') {
-            $insert_data = $this->G4P8421Parser->parserRawData($userid, $json_paras);
+        $gambleSysName = $json_paras['gambleSysName'];
+        if ($gambleSysName == '4p-8421') {
+            $insert_data = $this->G4P8421Parser->parserRawData($userid, $config);
         }
 
-        if ($gameType == '4p-lasi') {
-            $insert_data = $this->G4PlasiParser->parserRawData($userid, $json_paras);
+        if ($gambleSysName == '4p-lasi') {
+            $insert_data = $this->G4PlasiParser->parserRawData($userid, $config);
         }
 
 
@@ -202,9 +207,8 @@ class Gamble extends MY_Controller {
                 $ret['data'] = [
                     'rule_id' => $insert_id,
                     'userRuleId' => $insert_id,
-                    'gambleSysName' => $gamblesysname,
+                    'gambleSysName' => $gambleSysName,
                     'gambleUserName' => $json_paras['gambleUserName'] ?? $json_paras['user_rulename'] ?? null,
-                    'playersNumber' => $json_paras['playersNumber'] ?? 4,
                     'creator_id' => $userid
                 ];
 
