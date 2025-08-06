@@ -1,4 +1,6 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
+const { ConfigParser } = require('../../../../utils/configParser');
+const { ConfigConverter } = require('../../../../utils/configConverter');
 
 Component({
   properties: {
@@ -99,20 +101,20 @@ Component({
       if (config.dutyConfig) {
         if (config.dutyConfig.startsWith('DoublePar')) {
           dutyConfig = 'double_par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('DoublePar+', ''));
-          if (!isNaN(value)) {
+          const value = Number.parseInt(config.dutyConfig.replace('DoublePar+', ''));
+          if (!Number.isNaN(value)) {
             doubleParPlusValue = value;
           }
         } else if (config.dutyConfig.startsWith('Par')) {
           dutyConfig = 'par_plus_x';
-          const value = parseInt(config.dutyConfig.replace('Par+', ''));
-          if (!isNaN(value)) {
+          const value = Number.parseInt(config.dutyConfig.replace('Par+', ''));
+          if (!Number.isNaN(value)) {
             parPlusValue = value;
           }
         } else if (config.dutyConfig.startsWith('ScoreDiff')) {
           dutyConfig = 'stroke_diff_x';
-          const value = parseInt(config.dutyConfig.replace('ScoreDiff_', ''));
-          if (!isNaN(value)) {
+          const value = Number.parseInt(config.dutyConfig.replace('ScoreDiff_', ''));
+          if (!Number.isNaN(value)) {
             strokeDiffValue = value;
           }
         }
@@ -208,33 +210,17 @@ Component({
       this.triggerEvent('confirm', config);
     },
 
-    // 获取当前配置
+    // 获取当前配置 - 使用统一的转换工具
     getCurrentConfig() {
-      const { dutyConfig, PartnerDutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = this.data;
-
-      // 构建规则类型字符串，包含数值
-      let ruleTypeString = dutyConfig;
-      switch (dutyConfig) {
-        case 'double_par_plus_x':
-          ruleTypeString = `DoublePar+${doubleParPlusValue}`;
-          break;
-        case 'par_plus_x':
-          ruleTypeString = `Par+${parPlusValue}`;
-          break;
-        case 'stroke_diff_x':
-          ruleTypeString = `ScoreDiff_${strokeDiffValue}`;
-          break;
-      }
-
-      return {
-        dutyConfig: ruleTypeString,
-        PartnerDutyCondition,
-        customValues: {
-          doubleParPlusValue,
-          parPlusValue,
-          strokeDiffValue
-        }
+      const componentState = {
+        dutyConfig: this.data.dutyConfig,
+        PartnerDutyCondition: this.data.PartnerDutyCondition,
+        doubleParPlusValue: this.data.doubleParPlusValue,
+        parPlusValue: this.data.parPlusValue,
+        strokeDiffValue: this.data.strokeDiffValue
       };
+
+      return ConfigConverter.convertLasiKoufenToConfig(componentState);
     },
 
     // 打印当前配置
@@ -312,30 +298,39 @@ Component({
       if (configData.badScoreBaseLine) {
         console.log('🎯 [LasiKoufen] 检测到扁平化数据结构，开始解析');
 
-        // 解析badScoreBaseLine
+        // 使用统一的解析工具类
         let dutyConfig = 'NODUTY';
         let parPlusValue = 4;
         let doubleParPlusValue = 1;
 
         if (configData.badScoreBaseLine === 'NoSub') {
           dutyConfig = 'NODUTY';
-        } else if (configData.badScoreBaseLine.startsWith('Par+')) {
-          dutyConfig = 'Par+';
-          parPlusValue = parseInt(configData.badScoreBaseLine.replace('Par+', '')) || 4;
-        } else if (configData.badScoreBaseLine.startsWith('DoublePar+')) {
-          dutyConfig = 'DoublePar+';
-          doubleParPlusValue = parseInt(configData.badScoreBaseLine.replace('DoublePar+', '')) || 1;
+        } else {
+          // 使用统一的解析工具
+          const parResult = ConfigParser.parseParPlus(configData.badScoreBaseLine);
+          const doubleParResult = ConfigParser.parseDoubleParPlus(configData.badScoreBaseLine);
+
+          if (parResult) {
+            dutyConfig = 'Par+';
+            parPlusValue = parResult.score;
+          } else if (doubleParResult) {
+            dutyConfig = 'DoublePar+';
+            doubleParPlusValue = doubleParResult.score;
+          }
         }
 
         // 解析dutyConfig
         let PartnerDutyCondition = 'DUTY_DINGTOU';
         if (configData.dutyConfig) {
-          if (configData.dutyConfig.startsWith('Par+')) {
+          const parResult = ConfigParser.parseParPlus(configData.dutyConfig);
+          const doubleParResult = ConfigParser.parseDoubleParPlus(configData.dutyConfig);
+
+          if (parResult) {
             PartnerDutyCondition = 'DUTY_PAR';
-            parPlusValue = parseInt(configData.dutyConfig.replace('Par+', '')) || 4;
-          } else if (configData.dutyConfig.startsWith('DoublePar+')) {
+            parPlusValue = parResult.score;
+          } else if (doubleParResult) {
             PartnerDutyCondition = 'DUTY_DOUBLE_PAR';
-            doubleParPlusValue = parseInt(configData.dutyConfig.replace('DoublePar+', '')) || 1;
+            doubleParPlusValue = doubleParResult.score;
           }
         }
 

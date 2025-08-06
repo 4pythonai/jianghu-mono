@@ -1,5 +1,7 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 import { reaction } from 'mobx-miniprogram'
+const { ConfigParser } = require('../../../../utils/configParser');
+const { ConfigConverter } = require('../../../../utils/configConverter');
 
 Component({
   properties: {
@@ -164,26 +166,10 @@ Component({
       const { eatingRange, meatValue, meatMaxValue } = config;
       console.log('从store加载吃肉配置:', config);
 
-      // 解析吃肉数量配置
-      let parsedEatingRange = null;
-      if (eatingRange) {
-        if (typeof eatingRange === 'string') {
-          try {
-            parsedEatingRange = JSON.parse(eatingRange);
-          } catch (error) {
-            console.error('解析eatingRange JSON字符串失败:', error);
-            parsedEatingRange = {};
-          }
-        } else if (typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
-          parsedEatingRange = eatingRange;
-        } else {
-          console.warn('eatingRange格式不正确:', eatingRange);
-          parsedEatingRange = {};
-        }
-        
-        if (parsedEatingRange) {
-          this.setData({ eatingRange: parsedEatingRange });
-        }
+      // 使用统一的解析工具类解析吃肉数量配置
+      const parsedEatingRange = ConfigParser.parseEatingRange(eatingRange);
+      if (parsedEatingRange) {
+        this.setData({ eatingRange: parsedEatingRange });
       }
 
       // 解析肉分值计算方式
@@ -191,9 +177,9 @@ Component({
         let meatValueOption = 0;
         if (meatValue?.startsWith('MEAT_AS_')) {
           meatValueOption = 0;
-          // 解析肉分值
-          const score = Number.parseInt(meatValue.replace('MEAT_AS_', ''));
-          this.setData({ meatScoreValue: score || 1 });
+          // 使用统一的解析工具
+          const meatResult = ConfigParser.parseMeatAs(meatValue);
+          this.setData({ meatScoreValue: meatResult ? meatResult.score : 1 });
         } else if (meatValue === 'SINGLE_DOUBLE') {
           meatValueOption = 1;
         } else if (meatValue === 'CONTINUE_DOUBLE') {
@@ -206,13 +192,14 @@ Component({
         this.setData({ meatValueOption });
       }
 
-      // 解析封顶配置 - 10000000表示不封顶
-      if (meatMaxValue === 10000000) {
+      // 使用统一的解析工具类解析封顶配置
+      const maxResult = ConfigParser.parseMaxValue(meatMaxValue);
+      if (maxResult.isUnlimited) {
         this.setData({ topSelected: 0 });
-      } else if (typeof meatMaxValue === 'number' && meatMaxValue < 10000000) {
+      } else {
         this.setData({
           topSelected: 1,
-          topScoreLimit: meatMaxValue
+          topScoreLimit: maxResult.value
         });
       }
     },
@@ -338,49 +325,20 @@ Component({
 
     // 获取配置数据（供SysEdit页面调用）
     getConfigData() {
-      const { eatingRange, meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
+      return this.getCurrentConfig();
+    },
 
-      // 肉分值计算方式
-      let meatValueConfig = null;
-      switch (meatValueOption) {
-        case 0:
-          meatValueConfig = `MEAT_AS_${meatScoreValue}`;
-          break;
-        case 1:
-          meatValueConfig = 'SINGLE_DOUBLE';
-          break;
-        case 2:
-          meatValueConfig = 'CONTINUE_DOUBLE';
-          break;
-        case 3:
-          meatValueConfig = 'DOUBLE_WITH_REWARD';
-          break;
-        case 4:
-          meatValueConfig = 'DOUBLE_WITHOUT_REWARD';
-          break;
-      }
-
-      // 吃肉封顶
-      const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
-
-      // 确保eatingRange是正确的对象格式
-      let processedEatingRange = eatingRange;
-      if (typeof eatingRange === 'string') {
-        try {
-          processedEatingRange = JSON.parse(eatingRange);
-        } catch (error) {
-          console.error('解析eatingRange JSON字符串失败:', error);
-          processedEatingRange = {};
-        }
-      } else if (!eatingRange || typeof eatingRange !== 'object') {
-        processedEatingRange = {};
-      }
-
-      return {
-        eatingRange: processedEatingRange,
-        meatValueConfig,
-        meatMaxValue,
+    // 获取当前配置 - 使用统一的转换工具
+    getCurrentConfig() {
+      const componentState = {
+        eatingRange: this.data.eatingRange,
+        meatValueOption: this.data.meatValueOption,
+        meatScoreValue: this.data.meatScoreValue,
+        topSelected: this.data.topSelected,
+        topScoreLimit: this.data.topScoreLimit
       };
+
+      return ConfigConverter.convertLasiEatmeatToConfig(componentState);
     },
 
     // 打印当前配置

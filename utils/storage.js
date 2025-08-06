@@ -325,7 +325,7 @@ class StorageManager {
 
         return {
             healthy: usage < 0.8,
-            usage: (usage * 100).toFixed(1) + '%',
+            usage: `${(usage * 100).toFixed(1)}%`,
             recommendation: usage > 0.8 ? '建议清理不必要的数据' : '存储状态良好'
         }
     }

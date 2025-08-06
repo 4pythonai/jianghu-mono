@@ -36,13 +36,14 @@ export const formatKoufenRule = (badScoreBaseLine, badScoreMaxLost) => {
     // 组合显示值
     if (startText && fengdingText) {
         return `${startText}/${fengdingText}`;
-    } else if (startText) {
-        return startText;
-    } else if (fengdingText) {
-        return fengdingText;
-    } else {
-        return '请配置扣分规则';
     }
+    if (startText) {
+        return startText;
+    }
+    if (fengdingText) {
+        return fengdingText;
+    }
+    return '请配置扣分规则';
 };
 
 /**
@@ -102,13 +103,14 @@ export const formatMeatRule = (meatValueConfig, meatMaxValue) => {
     // 组合显示值
     if (meatValueText && meatMaxText) {
         return `${meatValueText}/${meatMaxText}`;
-    } else if (meatValueText) {
-        return meatValueText;
-    } else if (meatMaxText) {
-        return meatMaxText;
-    } else {
-        return '请配置吃肉规则';
     }
+    if (meatValueText) {
+        return meatValueText;
+    }
+    if (meatMaxText) {
+        return meatMaxText;
+    }
+    return '请配置吃肉规则';
 };
 
 /**

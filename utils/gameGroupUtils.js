@@ -14,7 +14,7 @@ export const findUserInGroups = (userid, gameGroups) => {
 
     for (let groupIndex = 0; groupIndex < gameGroups.length; groupIndex++) {
         const group = gameGroups[groupIndex];
-        if (group && group.players) {
+        if (group?.players) {
             const foundPlayer = group.players.find(player =>
                 player !== null && player.userid.toString() === userIdStr
             );
@@ -39,15 +39,15 @@ export const getUserGroupMap = (gameGroups) => {
     const userGroupMap = {};
     const allUserIds = [];
 
-    gameGroups.forEach((group, index) => {
-        if (group && group.players) {
-            group.players.filter(player => player !== null).forEach(player => {
+    for (const [index, group] of gameGroups.entries()) {
+        if (group?.players) {
+            for (const player of group.players.filter(player => player !== null)) {
                 const userId = player.userid.toString();
                 allUserIds.push(userId);
                 userGroupMap[userId] = index + 1; // 记录用户在第几组(从1开始)
-            });
+            }
         }
-    });
+    }
 
     return { userGroupMap, allUserIds };
 };
@@ -301,10 +301,10 @@ export const validateGameGroups = (gameGroups) => {
 
         const validPlayers = group.players.filter(player => player !== null);
 
-        validPlayers.forEach(player => {
+        for (const player of validPlayers) {
             if (!player.userid) {
                 issues.push(`第${groupIndex + 1}组中存在无ID用户`);
-                return;
+                continue;
             }
 
             const userId = player.userid.toString();
@@ -317,7 +317,7 @@ export const validateGameGroups = (gameGroups) => {
             } else {
                 allUserIds.push(userId);
             }
-        });
+        }
     });
 
     return {

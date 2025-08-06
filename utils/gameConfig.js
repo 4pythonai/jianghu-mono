@@ -63,23 +63,6 @@ export const GAME_TYPES = {
     'mp-dabudui': { name: '多人大部队', hasPlayerConfig: false, hasGrouping: true, hasStroking: false }
 };
 
-// 路由映射 - 已迁移到新的SysEdit页面
-export const ROUTES = {
-    '2p-gross': '/pages/rules/SysEdit/SysEdit',
-    '2p-hole': '/pages/rules/SysEdit/SysEdit',
-    '2p-8421': '/pages/rules/SysEdit/SysEdit',
-    '3p-doudizhu': '/pages/rules/SysEdit/SysEdit',
-    '3p-dizhupo': '/pages/rules/SysEdit/SysEdit',
-    '3p-8421': '/pages/rules/SysEdit/SysEdit',
-    '4p-lasi': '/pages/rules/SysEdit/SysEdit',
-    '4p-8421': '/pages/rules/SysEdit/SysEdit',
-    '4p-dizhupo': '/pages/rules/SysEdit/SysEdit',
-    '4p-3da1': '/pages/rules/SysEdit/SysEdit',
-    '4p-bestak': '/pages/rules/SysEdit/SysEdit',
-    'mp-labahua': '/pages/rules/SysEdit/SysEdit',
-    'mp-dabudui': '/pages/rules/SysEdit/SysEdit'
-};
-
 // 用户规则映射
 export const USER_RULES = {
     twoPlayers: { '8421': '2p-8421', 'gross': '2p-gross', 'hole': '2p-hole' },
@@ -122,13 +105,6 @@ export const GameConfig = {
      */
     needsStroking(gameType) {
         return GAME_TYPES[gameType]?.hasStroking;
-    },
-
-    /**
-     * 获取路由地址
-     */
-    getRoute(gameType) {
-        return ROUTES[gameType];
     },
 
     /**
@@ -201,7 +177,6 @@ module.exports = {
     GOLF_SCORE_TYPES,
     MEAT_VALUE_CONFIG_TYPES,
     GAME_TYPES,
-    ROUTES,
     USER_RULES,
     GameTypeManager: GameConfig,
     GAME_TYPE_MAP: GAME_TYPES,

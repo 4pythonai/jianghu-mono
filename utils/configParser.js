@@ -15,9 +15,9 @@ export const parseParPlus = (value) => {
 
     if (value.startsWith('Par+')) {
         const scoreStr = value.replace('Par+', '');
-        const score = parseInt(scoreStr);
+        const score = Number.parseInt(scoreStr);
 
-        if (!isNaN(score)) {
+        if (!Number.isNaN(score)) {
             return {
                 type: 'Par',
                 score: score,
@@ -41,9 +41,9 @@ export const parseDoubleParPlus = (value) => {
 
     if (value.startsWith('DoublePar+')) {
         const scoreStr = value.replace('DoublePar+', '');
-        const score = parseInt(scoreStr);
+        const score = Number.parseInt(scoreStr);
 
-        if (!isNaN(score)) {
+        if (!Number.isNaN(score)) {
             return {
                 type: 'DoublePar',
                 score: score,
@@ -67,9 +67,9 @@ export const parseDiff = (value) => {
 
     if (value.startsWith('Diff_')) {
         const scoreStr = value.replace('Diff_', '');
-        const score = parseInt(scoreStr);
+        const score = Number.parseInt(scoreStr);
 
-        if (!isNaN(score)) {
+        if (!Number.isNaN(score)) {
             return {
                 type: 'Diff',
                 score: score,
@@ -93,9 +93,9 @@ export const parseMeatAs = (value) => {
 
     if (value.startsWith('MEAT_AS_')) {
         const scoreStr = value.replace('MEAT_AS_', '');
-        const score = parseInt(scoreStr);
+        const score = Number.parseInt(scoreStr);
 
-        if (!isNaN(score)) {
+        if (!Number.isNaN(score)) {
             return {
                 type: 'MeatAs',
                 score: score,
@@ -145,7 +145,7 @@ export const parseEatingRange = (value) => {
 export const parseMaxValue = (value) => {
     const numValue = Number(value);
 
-    if (isNaN(numValue)) {
+    if (Number.isNaN(numValue)) {
         return {
             isUnlimited: false,
             value: 0,
@@ -200,9 +200,11 @@ export const parseDrawConfig = (value) => {
 
     if (value === 'DrawEqual') {
         return { type: value, index: 0 };
-    } else if (value === 'NoDraw') {
+    }
+    if (value === 'NoDraw') {
         return { type: value, index: 2 };
-    } else if (value.startsWith('Diff_')) {
+    }
+    if (value.startsWith('Diff_')) {
         const diffResult = parseDiff(value);
         return {
             type: 'Diff',
@@ -233,9 +235,11 @@ export const parseMeatValueConfig = (value) => {
 
     if (value === 'SINGLE_DOUBLE') {
         return { type: value, index: 1 };
-    } else if (value === 'CONTINUE_DOUBLE') {
+    }
+    if (value === 'CONTINUE_DOUBLE') {
         return { type: value, index: 2 };
-    } else if (value.startsWith('MEAT_AS_')) {
+    }
+    if (value.startsWith('MEAT_AS_')) {
         const meatResult = parseMeatAs(value);
         return {
             type: 'MEAT_AS',

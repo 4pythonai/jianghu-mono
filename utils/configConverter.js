@@ -209,12 +209,194 @@ export const convertConfigToE8421Meat = (configData) => {
     // 解析meatValueConfig
     if (meatValueConfig?.startsWith('MEAT_AS_')) {
         state.meatValueOption = 0;
-        const score = parseInt(meatValueConfig.replace('MEAT_AS_', ''));
-        state.meatScoreValue = isNaN(score) ? 1 : score;
+        const score = Number.parseInt(meatValueConfig.replace('MEAT_AS_', ''));
+        state.meatScoreValue = Number.isNaN(score) ? 1 : score;
     } else if (meatValueConfig === 'SINGLE_DOUBLE') {
         state.meatValueOption = 1;
     } else if (meatValueConfig === 'CONTINUE_DOUBLE') {
         state.meatValueOption = 2;
+    } else {
+        state.meatValueOption = 0;
+        state.meatScoreValue = 1;
+    }
+
+    // 解析meatMaxValue
+    const maxValue = Number(meatMaxValue);
+    if (maxValue === 10000000) {
+        state.topSelected = 0;
+    } else {
+        state.topSelected = 1;
+        state.topScoreLimit = maxValue > 0 ? maxValue : 3;
+    }
+
+    return state;
+};
+
+/**
+ * 将LasiKoufen组件状态转换为配置数据
+ * @param {Object} componentState - 组件状态
+ * @returns {Object} 配置数据
+ */
+export const convertLasiKoufenToConfig = (componentState) => {
+    const { dutyConfig, PartnerDutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = componentState;
+
+    // 构建扣分基线
+    let badScoreBaseLine = null;
+    switch (dutyConfig) {
+        case 'NODUTY':
+            badScoreBaseLine = 'NoSub';
+            break;
+        case 'Par+':
+            badScoreBaseLine = `Par+${parPlusValue}`;
+            break;
+        case 'DoublePar+':
+            badScoreBaseLine = `DoublePar+${doubleParPlusValue}`;
+            break;
+    }
+
+    // 构建同伴惩罚配置
+    let dutyConfigValue = null;
+    switch (PartnerDutyCondition) {
+        case 'DUTY_DINGTOU':
+            dutyConfigValue = 'DUTY_DINGTOU';
+            break;
+        case 'DUTY_PAR':
+            dutyConfigValue = `Par+${parPlusValue}`;
+            break;
+        case 'DUTY_DOUBLE_PAR':
+            dutyConfigValue = `DoublePar+${doubleParPlusValue}`;
+            break;
+        default:
+            dutyConfigValue = 'NODUTY';
+    }
+
+    return {
+        badScoreBaseLine,
+        dutyConfig: dutyConfigValue,
+        customValues: {
+            doubleParPlusValue,
+            parPlusValue,
+            strokeDiffValue
+        }
+    };
+};
+
+/**
+ * 将LasiEatmeat组件状态转换为配置数据
+ * @param {Object} componentState - 组件状态
+ * @returns {Object} 配置数据
+ */
+export const convertLasiEatmeatToConfig = (componentState) => {
+    const { eatingRange, meatValueOption, meatScoreValue, topSelected, topScoreLimit } = componentState;
+
+    // 构建肉分值配置
+    let meatValue = null;
+    switch (meatValueOption) {
+        case 0:
+            meatValue = `MEAT_AS_${meatScoreValue}`;
+            break;
+        case 1:
+            meatValue = 'SINGLE_DOUBLE';
+            break;
+        case 2:
+            meatValue = 'CONTINUE_DOUBLE';
+            break;
+        case 3:
+            meatValue = 'DOUBLE_WITH_REWARD';
+            break;
+        case 4:
+            meatValue = 'DOUBLE_WITHOUT_REWARD';
+            break;
+    }
+
+    // 构建封顶配置
+    const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
+
+    return {
+        eatingRange,
+        meatValue,
+        meatMaxValue
+    };
+};
+
+/**
+ * 将配置数据转换为LasiKoufen组件状态
+ * @param {Object} configData - 配置数据
+ * @returns {Object} 组件状态
+ */
+export const convertConfigToLasiKoufen = (configData) => {
+    const { badScoreBaseLine, dutyConfig, customValues } = configData;
+    const state = {};
+
+    // 解析扣分基线
+    if (badScoreBaseLine === 'NoSub') {
+        state.dutyConfig = 'NODUTY';
+    } else if (badScoreBaseLine?.startsWith('Par+')) {
+        state.dutyConfig = 'Par+';
+        const score = parseInt(badScoreBaseLine.replace('Par+', ''));
+        state.parPlusValue = isNaN(score) ? 4 : score;
+    } else if (badScoreBaseLine?.startsWith('DoublePar+')) {
+        state.dutyConfig = 'DoublePar+';
+        const score = parseInt(badScoreBaseLine.replace('DoublePar+', ''));
+        state.doubleParPlusValue = isNaN(score) ? 1 : score;
+    } else {
+        state.dutyConfig = 'NODUTY';
+    }
+
+    // 解析同伴惩罚配置
+    if (dutyConfig?.startsWith('Par+')) {
+        state.PartnerDutyCondition = 'DUTY_PAR';
+        const score = parseInt(dutyConfig.replace('Par+', ''));
+        state.parPlusValue = isNaN(score) ? 4 : score;
+    } else if (dutyConfig?.startsWith('DoublePar+')) {
+        state.PartnerDutyCondition = 'DUTY_DOUBLE_PAR';
+        const score = parseInt(dutyConfig.replace('DoublePar+', ''));
+        state.doubleParPlusValue = isNaN(score) ? 1 : score;
+    } else {
+        state.PartnerDutyCondition = 'DUTY_DINGTOU';
+    }
+
+    // 解析自定义值
+    if (customValues) {
+        state.doubleParPlusValue = customValues.doubleParPlusValue || 1;
+        state.parPlusValue = customValues.parPlusValue || 4;
+        state.strokeDiffValue = customValues.strokeDiffValue || 3;
+    } else {
+        state.doubleParPlusValue = 1;
+        state.parPlusValue = 4;
+        state.strokeDiffValue = 3;
+    }
+
+    return state;
+};
+
+/**
+ * 将配置数据转换为LasiEatmeat组件状态
+ * @param {Object} configData - 配置数据
+ * @returns {Object} 组件状态
+ */
+export const convertConfigToLasiEatmeat = (configData) => {
+    const { eatingRange, meatValue, meatMaxValue } = configData;
+    const state = {};
+
+    // 解析eatingRange
+    if (eatingRange) {
+        state.eatingRange = eatingRange;
+    }
+
+    // 解析meatValue
+    if (meatValue?.startsWith('MEAT_AS_')) {
+        state.meatValueOption = 0;
+        const score = parseInt(meatValue.replace('MEAT_AS_', ''));
+        state.meatScoreValue = isNaN(score) ? 1 : score;
+    } else if (meatValue === 'SINGLE_DOUBLE') {
+        state.meatValueOption = 1;
+    } else if (meatValue === 'CONTINUE_DOUBLE') {
+        state.meatValueOption = 2;
+    } else if (meatValue === 'DOUBLE_WITH_REWARD') {
+        state.meatValueOption = 3;
+    } else if (meatValue === 'DOUBLE_WITHOUT_REWARD') {
+        state.meatValueOption = 4;
     } else {
         state.meatValueOption = 0;
         state.meatScoreValue = 1;
@@ -259,6 +441,36 @@ export const mergeComponentsToConfig = (componentsState) => {
 };
 
 /**
+ * 将多个组件状态合并为完整的配置数据（扩展版）
+ * @param {Object} componentsState - 所有组件的状态
+ * @returns {Object} 完整的配置数据
+ */
+export const mergeAllComponentsToConfig = (componentsState) => {
+    const config = {};
+
+    // 合并8421组件配置
+    if (componentsState.E8421Koufen) {
+        Object.assign(config, convertE8421KoufenToConfig(componentsState.E8421Koufen));
+    }
+    if (componentsState.Draw8421) {
+        Object.assign(config, convertDraw8421ToConfig(componentsState.Draw8421));
+    }
+    if (componentsState.E8421Meat) {
+        Object.assign(config, convertE8421MeatToConfig(componentsState.E8421Meat));
+    }
+
+    // 合并lasi组件配置
+    if (componentsState.LasiKoufen) {
+        Object.assign(config, convertLasiKoufenToConfig(componentsState.LasiKoufen));
+    }
+    if (componentsState.LasiEatmeat) {
+        Object.assign(config, convertLasiEatmeatToConfig(componentsState.LasiEatmeat));
+    }
+
+    return config;
+};
+
+/**
  * 将配置数据转换为组件状态
  * @param {Object} configData - 配置数据
  * @returns {Object} 组件状态对象
@@ -271,17 +483,49 @@ export const convertConfigToComponents = (configData) => {
     };
 };
 
+/**
+ * 将配置数据转换为所有组件状态（扩展版）
+ * @param {Object} configData - 配置数据
+ * @returns {Object} 组件状态对象
+ */
+export const convertConfigToAllComponents = (configData) => {
+    return {
+        // 8421组件
+        E8421Koufen: convertConfigToE8421Koufen(configData),
+        Draw8421: convertConfigToDraw8421(configData),
+        E8421Meat: convertConfigToE8421Meat(configData),
+
+        // lasi组件
+        LasiKoufen: convertConfigToLasiKoufen(configData),
+        LasiEatmeat: convertConfigToLasiEatmeat(configData)
+    };
+};
+
 // 导出所有转换方法
 export const ConfigConverter = {
-    // 组件状态转配置数据
+    // 8421组件状态转配置数据
     convertE8421KoufenToConfig,
     convertDraw8421ToConfig,
     convertE8421MeatToConfig,
-    mergeComponentsToConfig,
 
-    // 配置数据转组件状态
+    // lasi组件状态转配置数据
+    convertLasiKoufenToConfig,
+    convertLasiEatmeatToConfig,
+
+    // 合并方法
+    mergeComponentsToConfig,
+    mergeAllComponentsToConfig,
+
+    // 8421配置数据转组件状态
     convertConfigToE8421Koufen,
     convertConfigToDraw8421,
     convertConfigToE8421Meat,
-    convertConfigToComponents
+
+    // lasi配置数据转组件状态
+    convertConfigToLasiKoufen,
+    convertConfigToLasiEatmeat,
+
+    // 转换方法
+    convertConfigToComponents,
+    convertConfigToAllComponents
 }; 
