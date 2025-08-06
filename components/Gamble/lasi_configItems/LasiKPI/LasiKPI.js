@@ -273,13 +273,40 @@ Component({
             }
 
             // 从配置数据中提取KPI相关配置
-            const selectedIndicators = configData.selectedIndicators || ['best', 'worst', 'total'];
-            const kpiValues = configData.kpiValues || {
+            // 支持三种数据结构：
+            // 1. 直接包含kpi相关字段
+            // 2. 嵌套在kpis字段中的对象
+            // 3. 嵌套在kpis字段中的JSON字符串
+            let kpiConfig = configData;
+            if (configData.kpis) {
+                if (typeof configData.kpis === 'object') {
+                    kpiConfig = configData.kpis;
+                } else if (typeof configData.kpis === 'string') {
+                    try {
+                        kpiConfig = JSON.parse(configData.kpis);
+                        console.log('🎯 [LasiKPI] 成功解析kpis字符串:', kpiConfig);
+                    } catch (error) {
+                        console.error('🎯 [LasiKPI] 解析kpis字符串失败:', error);
+                        kpiConfig = configData;
+                    }
+                }
+            }
+
+            console.log('🎯 [LasiKPI] 提取的KPI配置:', kpiConfig);
+
+            const selectedIndicators = kpiConfig.selectedIndicators || ['best', 'worst', 'total'];
+            const kpiValues = kpiConfig.kpiValues || {
                 best: 1,
                 worst: 1,
                 total: 1
             };
-            const totalCalculationType = configData.totalCalculationType || 'add_total';
+            const totalCalculationType = kpiConfig.totalCalculationType || 'add_total';
+
+            console.log('🎯 [LasiKPI] 解析后的配置:', {
+                selectedIndicators,
+                kpiValues,
+                totalCalculationType
+            });
 
             // 构建选中状态映射
             const isSelected = {

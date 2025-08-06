@@ -296,16 +296,65 @@ Component({
     // 初始化配置数据 - 供UserRuleEdit页面调用
     initConfigData(configData) {
       console.log('🎯 [LasiKoufen] 初始化配置数据:', configData);
-      
+
       if (!configData) {
         console.warn('🎯 [LasiKoufen] 配置数据为空，使用默认值');
         return;
       }
 
       // 从配置数据中提取包洞相关配置
-      const dutyConfig = configData.dutyConfig || 'NODUTY';
-      const PartnerDutyCondition = configData.PartnerDutyCondition || 'DUTY_DINGTOU';
-      const customValues = configData.customValues || {
+      // 支持两种数据结构：
+      // 1. 直接包含包洞相关字段
+      // 2. 从badScoreBaseLine、badScoreMaxLost、dutyConfig等字段解析
+      let koufenConfig = configData;
+
+      // 如果存在badScoreBaseLine字段，说明是扁平化结构，需要解析
+      if (configData.badScoreBaseLine) {
+        console.log('🎯 [LasiKoufen] 检测到扁平化数据结构，开始解析');
+
+        // 解析badScoreBaseLine
+        let dutyConfig = 'NODUTY';
+        let parPlusValue = 4;
+        let doubleParPlusValue = 1;
+
+        if (configData.badScoreBaseLine === 'NoSub') {
+          dutyConfig = 'NODUTY';
+        } else if (configData.badScoreBaseLine.startsWith('Par+')) {
+          dutyConfig = 'Par+';
+          parPlusValue = parseInt(configData.badScoreBaseLine.replace('Par+', '')) || 4;
+        } else if (configData.badScoreBaseLine.startsWith('DoublePar+')) {
+          dutyConfig = 'DoublePar+';
+          doubleParPlusValue = parseInt(configData.badScoreBaseLine.replace('DoublePar+', '')) || 1;
+        }
+
+        // 解析dutyConfig
+        let PartnerDutyCondition = 'DUTY_DINGTOU';
+        if (configData.dutyConfig) {
+          if (configData.dutyConfig.startsWith('Par+')) {
+            PartnerDutyCondition = 'DUTY_PAR';
+            parPlusValue = parseInt(configData.dutyConfig.replace('Par+', '')) || 4;
+          } else if (configData.dutyConfig.startsWith('DoublePar+')) {
+            PartnerDutyCondition = 'DUTY_DOUBLE_PAR';
+            doubleParPlusValue = parseInt(configData.dutyConfig.replace('DoublePar+', '')) || 1;
+          }
+        }
+
+        koufenConfig = {
+          dutyConfig,
+          PartnerDutyCondition,
+          customValues: {
+            doubleParPlusValue,
+            parPlusValue,
+            strokeDiffValue: 3
+          }
+        };
+
+        console.log('🎯 [LasiKoufen] 解析后的配置:', koufenConfig);
+      }
+
+      const dutyConfig = koufenConfig.dutyConfig || 'NODUTY';
+      const PartnerDutyCondition = koufenConfig.PartnerDutyCondition || 'DUTY_DINGTOU';
+      const customValues = koufenConfig.customValues || {
         doubleParPlusValue: 1,
         parPlusValue: 4,
         strokeDiffValue: 3

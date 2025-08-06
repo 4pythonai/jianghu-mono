@@ -241,9 +241,29 @@ Component({
             }
 
             // 从配置数据中提取奖励相关配置
-            const rewardType = configData.rewardType || 'add';
-            const rewardPreCondition = configData.rewardPreCondition || 'NONE';
-            const rewardPair = configData.rewardPair || [];
+            // 支持两种数据结构：
+            // 1. 直接包含奖励相关字段
+            // 2. 嵌套在RewardConfig字段中的JSON字符串
+            let rewardConfig = configData;
+            if (configData.RewardConfig && typeof configData.RewardConfig === 'string') {
+                try {
+                    rewardConfig = JSON.parse(configData.RewardConfig);
+                    console.log('🎯 [LasiRewardConfig] 成功解析RewardConfig字符串:', rewardConfig);
+                } catch (error) {
+                    console.error('🎯 [LasiRewardConfig] 解析RewardConfig字符串失败:', error);
+                    rewardConfig = configData;
+                }
+            }
+
+            const rewardType = rewardConfig.rewardType || 'add';
+            const rewardPreCondition = rewardConfig.rewardPreCondition || 'NONE';
+            const rewardPair = rewardConfig.rewardPair || [];
+
+            console.log('🎯 [LasiRewardConfig] 解析后的配置:', {
+                rewardType,
+                rewardPreCondition,
+                rewardPair
+            });
 
             // 根据奖励类型设置对应的奖励项目
             if (rewardType === 'add') {
