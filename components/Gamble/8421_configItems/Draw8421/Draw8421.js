@@ -1,4 +1,7 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
+import { ConfigParser } from '../../../../utils/configParser.js'
+import { DisplayFormatter } from '../../../../utils/displayFormatter.js'
+import { ConfigConverter } from '../../../../utils/configConverter.js'
 
 Component({
   properties: {
@@ -33,6 +36,11 @@ Component({
     } else if (this.properties.mode === 'UserEdit') {
       // UserEdit模式：等待外部数据初始化，不自动从Store加载
       console.log('🎯 [Draw8421] UserEdit模式，等待外部数据初始化');
+      // 设置默认值，避免显示"请配置顶洞规则"
+      this.setData({
+        selected: 0,
+        selectedDiffScore: 1
+      });
     } else {
       // 默认模式：从store获取当前配置并初始化组件状态
       this.syncSelectedFromStore();
@@ -42,226 +50,104 @@ Component({
   },
 
   methods: {
-    // 计算显示值
+    // 计算显示值 - 使用工具类简化
     updateDisplayValue() {
-      let displayValue = '';
-
       if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
-        // SysConfig和UserEdit模式：使用组件内部数据
+        // 使用工具类格式化显示值
         const { selected, selectedDiffScore } = this.data;
 
-        console.log('🚨🚨🚨 [Draw8421] updateDisplayValue 使用组件内部数据:', {
-          selected,
-          selectedDiffScore
-        });
-
-        switch (selected) {
-          case 0:
-            displayValue = '得分打平';
-            break;
-          case 1:
-            displayValue = `得分${selectedDiffScore}分以内`;
-            break;
-          case 2:
-            displayValue = '无顶洞';
-            break;
-          default:
-            displayValue = '请配置顶洞规则';
+        // 构建配置数据用于格式化
+        let drawConfig = '';
+        if (selected === 0) {
+          drawConfig = 'DrawEqual';
+        } else if (selected === 1) {
+          drawConfig = `Diff_${selectedDiffScore}`;
+        } else if (selected === 2) {
+          drawConfig = 'NoDraw';
         }
+
+        // 使用工具类格式化
+        const displayValue = DisplayFormatter.formatDrawRule(drawConfig);
+
+        console.log('🚨🚨🚨 [Draw8421] 顶洞规则显示值已更新:', displayValue);
+        this.setData({ displayValue });
       } else {
-        // 默认模式：使用Store数据
+        // 使用Store数据
         const store = G4P8421Store;
+        const displayValue = DisplayFormatter.formatDrawRule(store.drawConfig);
 
         console.log('🚨🚨🚨 [Draw8421] updateDisplayValue 使用Store数据');
-
-        // 映射英文格式到中文显示
-        if (store.drawConfig) {
-          switch (store.drawConfig) {
-            case 'DrawEqual':
-              displayValue = '得分打平';
-              break;
-            case 'Diff_1':
-              displayValue = '得分1分以内';
-              break;
-            case 'NoDraw':
-              displayValue = '无顶洞';
-              break;
-            default:
-              // 处理 Diff_X 格式
-              if (store.drawConfig.startsWith('Diff_')) {
-                const score = store.drawConfig.replace('Diff_', '');
-                displayValue = `得分${score}分以内`;
-              } else {
-                displayValue = store.drawConfig;
-              }
-              break;
-          }
-        } else {
-          displayValue = '请配置顶洞规则';
-        }
+        console.log('🚨🚨🚨 [Draw8421] 顶洞规则显示值已更新:', displayValue);
+        this.setData({ displayValue });
       }
+    },
+
+    // 从Store同步选择状态 - 使用工具类简化
+    syncSelectedFromStore() {
+      const store = G4P8421Store;
+      const drawResult = ConfigParser.parseDrawConfig(store.drawConfig);
 
       this.setData({
-        displayValue: displayValue
+        selected: drawResult.index,
+        selectedDiffScore: drawResult.score || 1
       });
-
-      console.log('🚨🚨🚨 [Draw8421] 顶洞规则显示值已更新:', displayValue);
     },
 
-    syncSelectedFromStore() {
-      const currentValue = G4P8421Store.drawConfig;
-      console.log('syncSelectedFromStore被调用，store值:', currentValue);
-      if (currentValue) {
-        if (currentValue === 'DrawEqual') {
-          this.setData({ selected: 0 });
-          console.log('设置selected为0');
-        } else if (currentValue.startsWith('Diff_')) {
-          // 解析分数值
-          const score = Number.parseInt(currentValue.replace('Diff_', ''));
-          this.setData({
-            selected: 1,
-            selectedDiffScore: score || 1
-          });
-          console.log('设置selected为1，分数:', score || 1);
-        } else if (currentValue === 'NoDraw') {
-          this.setData({ selected: 2 });
-          console.log('设置selected为2');
-        }
-      }
-    },
-
+    // 事件处理方法
     onSelect(e) {
-      const index = Number.parseInt(e.currentTarget.dataset.index);
-      console.log('选择选项:', index, '当前selected:', this.data.selected);
-      this.setData({ selected: index });
-      console.log('设置后selected:', index);
+      this.setData({ selected: e.detail.value });
+      this.updateDisplayValue();
     },
 
-    // 分数选择器相关方法
     onDiffScoreChange(e) {
-      const selectedIndex = e.detail.value;
-      const selectedScore = this.data.diffScores[selectedIndex];
-      this.setData({ selectedDiffScore: selectedScore });
-      console.log('选择分数:', selectedScore);
+      this.setData({ selectedDiffScore: e.detail.value });
+      this.updateDisplayValue();
     },
 
+    // UI控制方法
     onShowConfig() {
-      // 直接显示弹窗，因为已经用view替代了input
       this.setData({ visible: true });
-
-      if (this.properties.mode === 'SysConfig') {
-        // SysConfig模式：确保当前状态正确显示
-        console.log('🎯 [Draw8421] SysConfig模式显示配置，当前状态:', {
-          selected: this.data.selected,
-          selectedDiffScore: this.data.selectedDiffScore
-        });
-      } else {
-        // 总是重新加载配置，确保与Store同步
-        this.syncSelectedFromStore();
-      }
     },
 
     onCancel() {
       this.setData({ visible: false });
-      this.triggerEvent('cancel');
     },
 
-    // 阻止事件冒泡的方法
     noTap() {
-      // 空方法，用于阻止事件冒泡
+      // 空方法，用于处理禁用状态下的点击事件
     },
+
     onConfirm() {
-      let selectedValue = '';
-
-      // 根据选择的选项生成配置值
-      if (this.data.selected === 0) {
-        selectedValue = 'DrawEqual';
-      } else if (this.data.selected === 1) {
-        selectedValue = `Diff_${this.data.selectedDiffScore}`;
-      } else if (this.data.selected === 2) {
-        selectedValue = 'NoDraw';
-      }
-
-      if (this.properties.mode === 'SysConfig') {
-        // SysConfig模式：不更新Store，只更新显示值
-        console.log('🎯 [Draw8421] SysConfig模式，不更新Store');
-      } else {
-        // 调用store的action更新数据
-        G4P8421Store.updateDingdongRule(selectedValue);
-      }
-
-      // 更新显示值
-      this.updateDisplayValue();
-      console.log('📋 [Draw8421] 初始化完成，当前状态:', {
-        selected: this.data.selected,
-        selectedDiffScore: this.data.selectedDiffScore,
-        displayValue: this.data.displayValue
-      });
-      // 关闭弹窗
       this.setData({ visible: false });
-      // 向父组件传递事件
-      this.triggerEvent('confirm', {
-        value: selectedValue
-      });
+      this.updateDisplayValue();
     },
 
-    // 获取配置数据（供父组件调用）
+    // 获取配置数据 - 使用工具类简化
     getConfigData() {
-      const { selected, selectedDiffScore } = this.data;
+      const componentState = {
+        selected: this.data.selected,
+        selectedDiffScore: this.data.selectedDiffScore
+      };
 
-      // 根据选择的选项生成配置值
-      let selectedValue = '';
-      if (selected === 0) {
-        selectedValue = 'DrawEqual';
-      } else if (selected === 1) {
-        selectedValue = `Diff_${selectedDiffScore}`;
-      } else if (selected === 2) {
-        selectedValue = 'NoDraw';
-      }
+      // 使用工具类转换组件状态为配置数据
+      const configData = ConfigConverter.convertDraw8421ToConfig(componentState);
 
-      return { drawConfig: selectedValue };
+      console.log('🚨🚨🚨 [Draw8421] 获取配置数据:', configData);
+      return configData;
     },
 
-    // 初始化配置数据（供父组件调用）
+    // 初始化配置数据 - 使用工具类简化
     initConfigData(configData) {
       console.log('🚨🚨🚨 [Draw8421] ========== 开始初始化配置数据 ==========');
       console.log('🚨🚨🚨 [Draw8421] 接收到的configData:', JSON.stringify(configData, null, 2));
 
-      if (!configData) {
-        console.log('🚨🚨🚨 [Draw8421] ❌ configData为空，退出初始化');
-        return;
-      }
+      // 使用工具类转换配置数据为组件状态
+      const componentState = ConfigConverter.convertConfigToDraw8421(configData);
 
-      // 解析 drawConfig 字段
-      const drawConfig = configData.drawConfig;
-      console.log('🚨🚨🚨 [Draw8421] 解析到的drawConfig:', drawConfig);
-      
-      if (drawConfig) {
-        if (drawConfig === 'DrawEqual') {
-          console.log('🚨🚨🚨 [Draw8421] 设置selected为0 (DrawEqual)');
-          this.setData({ selected: 0 });
-        } else if (drawConfig.startsWith('Diff_')) {
-          const score = parseInt(drawConfig.replace('Diff_', ''));
-          console.log('🚨🚨🚨 [Draw8421] 设置selected为1，分数为:', score);
-          this.setData({
-            selected: 1,
-            selectedDiffScore: score || 1
-          });
-        } else if (drawConfig === 'NoDraw') {
-          console.log('🚨🚨🚨 [Draw8421] 设置selected为2 (NoDraw)');
-          this.setData({ selected: 2 });
-        }
-      } else {
-        console.log('🚨🚨🚨 [Draw8421] ❌ 未找到drawConfig字段');
-      }
-
-      // 更新显示值
+      this.setData(componentState);
       this.updateDisplayValue();
-      console.log('🚨🚨🚨 [Draw8421] 初始化完成，当前状态:', {
-        selected: this.data.selected,
-        selectedDiffScore: this.data.selectedDiffScore,
-        displayValue: this.data.displayValue
-      });
+
+      console.log('🚨🚨🚨 [Draw8421] 初始化完成，当前状态:', componentState);
       console.log('🚨🚨🚨 [Draw8421] ========== 初始化配置数据完成 ==========');
     }
   }
