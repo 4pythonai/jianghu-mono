@@ -30,8 +30,11 @@ Component({
         selected: this.data.selected || 0,
         selectedDiffScore: this.data.selectedDiffScore || 1
       });
+    } else if (this.properties.mode === 'UserEdit') {
+      // UserEdit模式：等待外部数据初始化，不自动从Store加载
+      console.log('🎯 [Draw8421] UserEdit模式，等待外部数据初始化');
     } else {
-      // 组件初始化时, 根据store中的值设置选中状态
+      // 默认模式：从store获取当前配置并初始化组件状态
       this.syncSelectedFromStore();
     }
     // 计算显示值
@@ -43,9 +46,14 @@ Component({
     updateDisplayValue() {
       let displayValue = '';
 
-      if (this.properties.mode === 'SysConfig') {
-        // SysConfig模式：使用组件内部数据
+      if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
+        // SysConfig和UserEdit模式：使用组件内部数据
         const { selected, selectedDiffScore } = this.data;
+
+        console.log('🚨🚨🚨 [Draw8421] updateDisplayValue 使用组件内部数据:', {
+          selected,
+          selectedDiffScore
+        });
 
         switch (selected) {
           case 0:
@@ -61,8 +69,10 @@ Component({
             displayValue = '请配置顶洞规则';
         }
       } else {
-        // 使用Store数据
+        // 默认模式：使用Store数据
         const store = G4P8421Store;
+
+        console.log('🚨🚨🚨 [Draw8421] updateDisplayValue 使用Store数据');
 
         // 映射英文格式到中文显示
         if (store.drawConfig) {
@@ -95,7 +105,7 @@ Component({
         displayValue: displayValue
       });
 
-      console.log('顶洞规则显示值已更新:', displayValue);
+      console.log('🚨🚨🚨 [Draw8421] 顶洞规则显示值已更新:', displayValue);
     },
 
     syncSelectedFromStore() {
@@ -182,6 +192,11 @@ Component({
 
       // 更新显示值
       this.updateDisplayValue();
+      console.log('📋 [Draw8421] 初始化完成，当前状态:', {
+        selected: this.data.selected,
+        selectedDiffScore: this.data.selectedDiffScore,
+        displayValue: this.data.displayValue
+      });
       // 关闭弹窗
       this.setData({ visible: false });
       // 向父组件传递事件
@@ -205,6 +220,49 @@ Component({
       }
 
       return { drawConfig: selectedValue };
+    },
+
+    // 初始化配置数据（供父组件调用）
+    initConfigData(configData) {
+      console.log('🚨🚨🚨 [Draw8421] ========== 开始初始化配置数据 ==========');
+      console.log('🚨🚨🚨 [Draw8421] 接收到的configData:', JSON.stringify(configData, null, 2));
+
+      if (!configData) {
+        console.log('🚨🚨🚨 [Draw8421] ❌ configData为空，退出初始化');
+        return;
+      }
+
+      // 解析 drawConfig 字段
+      const drawConfig = configData.drawConfig;
+      console.log('🚨🚨🚨 [Draw8421] 解析到的drawConfig:', drawConfig);
+      
+      if (drawConfig) {
+        if (drawConfig === 'DrawEqual') {
+          console.log('🚨🚨🚨 [Draw8421] 设置selected为0 (DrawEqual)');
+          this.setData({ selected: 0 });
+        } else if (drawConfig.startsWith('Diff_')) {
+          const score = parseInt(drawConfig.replace('Diff_', ''));
+          console.log('🚨🚨🚨 [Draw8421] 设置selected为1，分数为:', score);
+          this.setData({
+            selected: 1,
+            selectedDiffScore: score || 1
+          });
+        } else if (drawConfig === 'NoDraw') {
+          console.log('🚨🚨🚨 [Draw8421] 设置selected为2 (NoDraw)');
+          this.setData({ selected: 2 });
+        }
+      } else {
+        console.log('🚨🚨🚨 [Draw8421] ❌ 未找到drawConfig字段');
+      }
+
+      // 更新显示值
+      this.updateDisplayValue();
+      console.log('🚨🚨🚨 [Draw8421] 初始化完成，当前状态:', {
+        selected: this.data.selected,
+        selectedDiffScore: this.data.selectedDiffScore,
+        displayValue: this.data.displayValue
+      });
+      console.log('🚨🚨🚨 [Draw8421] ========== 初始化配置数据完成 ==========');
     }
   }
 });

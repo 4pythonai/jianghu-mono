@@ -195,27 +195,33 @@ Page({
     // 初始化配置组件数据 - 支持扁平化数据结构
     initConfigComponents() {
         const { ruleData, configComponents } = this.data;
-        console.log('📋 [UserRuleEdit] initConfigComponents 调用，ruleData:', ruleData);
+        console.log('🚨🚨🚨 [UserRuleEdit] ========== 开始初始化组件 ==========');
+        console.log('🚨🚨🚨 [UserRuleEdit] ruleData:', JSON.stringify(ruleData, null, 2));
+        console.log('🚨🚨🚨 [UserRuleEdit] configComponents:', configComponents);
 
         if (!ruleData) {
-            console.error('📋 [UserRuleEdit] 规则数据为空');
+            console.error('🚨🚨🚨 [UserRuleEdit] 规则数据为空');
             return;
         }
 
         // 延迟执行，确保组件已渲染
         setTimeout(() => {
+            console.log('🚨🚨🚨 [UserRuleEdit] 开始遍历组件，延迟100ms后执行');
             configComponents.forEach(component => {
-                console.log(`📋 [UserRuleEdit] 尝试初始化组件: ${component.name}`);
+                console.log(`🚨🚨🚨 [UserRuleEdit] 正在处理组件: ${component.name}`);
                 const componentInstance = this.selectComponent(`#${component.name}`);
+                console.log(`🚨🚨🚨 [UserRuleEdit] 组件实例:`, componentInstance);
 
                 if (componentInstance && componentInstance.initConfigData) {
-                    // 直接传递扁平化的规则数据，让组件自己提取需要的字段
-                    console.log(`📋 [UserRuleEdit] 找到组件实例，传递扁平化数据`);
+                    console.log(`🚨🚨🚨 [UserRuleEdit] ✅ 找到组件实例和initConfigData方法，开始传递数据`);
+                    console.log(`🚨🚨🚨 [UserRuleEdit] 传递给 ${component.name} 的数据:`, ruleData);
                     componentInstance.initConfigData(ruleData);
+                    console.log(`🚨🚨🚨 [UserRuleEdit] ✅ ${component.name} 数据传递完成`);
                 } else {
-                    console.error(`📋 [UserRuleEdit] 未找到组件实例或initConfigData方法: ${component.name}`, componentInstance);
+                    console.error(`🚨🚨🚨 [UserRuleEdit] ❌ 未找到组件实例或initConfigData方法: ${component.name}`, componentInstance);
                 }
             });
+            console.log('🚨🚨🚨 [UserRuleEdit] ========== 组件初始化完成 ==========');
         }, 100);
     },
 
@@ -272,7 +278,7 @@ Page({
         console.log('📋 [UserRuleEdit] 更新规则数据:', updateData);
 
         // 调用API更新规则
-        gambleAPI.updateGambleRule(updateData)
+        app.api.gamble.updateGambleRule(updateData)
             .then(res => {
                 console.log('📋 [UserRuleEdit] 更新成功:', res);
                 wx.showToast({
@@ -347,7 +353,7 @@ Page({
     deleteRule() {
         this.setData({ saving: true });
 
-        gambleAPI.deleteGambleRule(this.data.ruleId)
+        app.api.gamble.deleteGambleRule(this.data.ruleId)
             .then(res => {
                 console.log('📋 [UserRuleEdit] 删除成功:', res);
                 wx.showToast({

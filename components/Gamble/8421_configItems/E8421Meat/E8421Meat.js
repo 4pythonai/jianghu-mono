@@ -60,8 +60,11 @@ Component({
           topSelected: this.data.topSelected || 0,
           topScoreLimit: this.data.topScoreLimit || 3
         });
+      } else if (this.properties.mode === 'UserEdit') {
+        // UserEdit模式：等待外部数据初始化，不自动从Store加载
+        console.log('🎯 [E8421Meat] UserEdit模式，等待外部数据初始化');
       } else {
-        // 从store获取当前配置并初始化组件状态
+        // 默认模式：从store获取当前配置并初始化组件状态
         this.initializeFromStore();
       }
       // 计算显示值
@@ -96,9 +99,16 @@ Component({
     updateDisplayValue() {
       let displayValue = '';
 
-      if (this.properties.mode === 'SysConfig') {
-        // SysConfig模式：使用组件内部数据
+      if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
+        // SysConfig和UserEdit模式：使用组件内部数据
         const { meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
+
+        console.log('🚨🚨🚨 [E8421Meat] updateDisplayValue 使用组件内部数据:', {
+          meatValueOption,
+          meatScoreValue,
+          topSelected,
+          topScoreLimit
+        });
 
         // 格式化吃肉规则显示
         let meatValueText = '';
@@ -133,8 +143,10 @@ Component({
           displayValue = '请配置吃肉规则';
         }
       } else {
-        // 使用Store数据
+        // 默认模式：使用Store数据
         const store = G4P8421Store;
+
+        console.log('🚨🚨🚨 [E8421Meat] updateDisplayValue 使用Store数据');
 
         // 格式化吃肉规则显示 - 适配新格式
         let meatValueText = '';
@@ -174,6 +186,8 @@ Component({
       this.setData({
         displayValue: displayValue
       });
+
+      console.log('🚨🚨🚨 [E8421Meat] 吃肉规则显示值已更新:', displayValue);
     },
 
     // 从store初始化配置
@@ -368,6 +382,14 @@ Component({
 
       // 更新显示值
       this.updateDisplayValue();
+      console.log('📋 [E8421Meat] 初始化完成，当前状态:', {
+        eatingRange: this.data.eatingRange,
+        meatValueOption: this.data.meatValueOption,
+        meatScoreValue: this.data.meatScoreValue,
+        topSelected: this.data.topSelected,
+        topScoreLimit: this.data.topScoreLimit,
+        displayValue: this.data.displayValue
+      });
 
       // 关闭弹窗
       this.setData({ visible: false });
@@ -404,6 +426,90 @@ Component({
         meatValueConfig,
         meatMaxValue,
       };
+    },
+
+    // 初始化配置数据（供父组件调用）
+    initConfigData(configData) {
+      console.log('🚨🚨🚨 [E8421Meat] ========== 开始初始化配置数据 ==========');
+      console.log('🚨🚨🚨 [E8421Meat] 接收到的configData:', JSON.stringify(configData, null, 2));
+
+      if (!configData) {
+        console.log('🚨🚨🚨 [E8421Meat] ❌ configData为空，退出初始化');
+        return;
+      }
+
+      // 解析 eatingRange 字段
+      const eatingRange = configData.eatingRange;
+      console.log('🚨🚨🚨 [E8421Meat] 解析到的eatingRange:', eatingRange);
+      if (eatingRange) {
+        // 如果是字符串，尝试解析JSON
+        if (typeof eatingRange === 'string') {
+          try {
+            const parsedRange = JSON.parse(eatingRange);
+            console.log('🚨🚨🚨 [E8421Meat] 解析JSON成功，设置eatingRange:', parsedRange);
+            this.setData({ eatingRange: parsedRange });
+          } catch (e) {
+            console.error('🚨🚨🚨 [E8421Meat] ❌ 解析eatingRange失败:', e);
+          }
+        } else {
+          console.log('🚨🚨🚨 [E8421Meat] 直接设置eatingRange:', eatingRange);
+          this.setData({ eatingRange });
+        }
+      } else {
+        console.log('🚨🚨🚨 [E8421Meat] ❌ 未找到eatingRange字段');
+      }
+
+      // 解析 meatValueConfig 字段
+      const meatValueConfig = configData.meatValueConfig;
+      console.log('🚨🚨🚨 [E8421Meat] 解析到的meatValueConfig:', meatValueConfig);
+      if (meatValueConfig) {
+        if (meatValueConfig.startsWith('MEAT_AS_')) {
+          const score = parseInt(meatValueConfig.replace('MEAT_AS_', ''));
+          console.log('🚨🚨🚨 [E8421Meat] 设置meatValueOption为0，meatScoreValue为:', score);
+          this.setData({
+            meatValueOption: 0,
+            meatScoreValue: score || 1
+          });
+        } else if (meatValueConfig === 'SINGLE_DOUBLE') {
+          console.log('🚨🚨🚨 [E8421Meat] 设置meatValueOption为1 (SINGLE_DOUBLE)');
+          this.setData({ meatValueOption: 1 });
+        } else if (meatValueConfig === 'CONTINUE_DOUBLE') {
+          console.log('🚨🚨🚨 [E8421Meat] 设置meatValueOption为2 (CONTINUE_DOUBLE)');
+          this.setData({ meatValueOption: 2 });
+        }
+      } else {
+        console.log('🚨🚨🚨 [E8421Meat] ❌ 未找到meatValueConfig字段');
+      }
+
+      // 解析 meatMaxValue 字段
+      const meatMaxValue = configData.meatMaxValue;
+      console.log('🚨🚨🚨 [E8421Meat] 解析到的meatMaxValue:', meatMaxValue);
+      if (meatMaxValue !== undefined) {
+        if (meatMaxValue === 10000000) {
+          console.log('🚨🚨🚨 [E8421Meat] 设置topSelected为0 (不封顶)');
+          this.setData({ topSelected: 0 });
+        } else {
+          console.log('🚨🚨🚨 [E8421Meat] 设置topSelected为1，topScoreLimit为:', meatMaxValue);
+          this.setData({
+            topSelected: 1,
+            topScoreLimit: meatMaxValue
+          });
+        }
+      } else {
+        console.log('🚨🚨🚨 [E8421Meat] ❌ 未找到meatMaxValue字段');
+      }
+
+      // 更新显示值
+      this.updateDisplayValue();
+      console.log('🚨🚨🚨 [E8421Meat] 初始化完成，当前状态:', {
+        eatingRange: this.data.eatingRange,
+        meatValueOption: this.data.meatValueOption,
+        meatScoreValue: this.data.meatScoreValue,
+        topSelected: this.data.topSelected,
+        topScoreLimit: this.data.topScoreLimit,
+        displayValue: this.data.displayValue
+      });
+      console.log('🚨🚨🚨 [E8421Meat] ========== 初始化配置数据完成 ==========');
     }
   }
 });

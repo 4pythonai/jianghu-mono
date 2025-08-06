@@ -1,7 +1,7 @@
 //  runtimeStore
 
+const app = getApp()
 import { observable, action } from 'mobx-miniprogram'
-import gambleApi from '../api/modules/gamble'
 
 /**
  * 运行时配置Store
@@ -62,7 +62,7 @@ export const runtimeStore = observable({
 
         try {
             const params = { groupId: groupId };
-            const res = await gambleApi.listRuntimeConfig(params, {
+            const res = await app.api.gamble.listRuntimeConfig(params, {
                 loadingTitle: '加载游戏配置...',
                 loadingMask: false // 不显示遮罩, 避免影响用户体验
             });
