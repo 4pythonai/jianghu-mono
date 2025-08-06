@@ -1,27 +1,2 @@
-<view class="rule-config-bg">
-  <view class="rule-config-card">
-    <!-- 规则名称 -->
-    <view class="form-label">规则名称</view>
-    <input class="form-input" model:value="{{user_rulename}}" bindinput="onRuleNameInput" />
-
-    <!-- 扣分规则 -->
-    <view class="spec-item-wrapper">
-      <E8421Koufen />
-    </view>
-
-    <!-- 顶洞规则 -->
-    <view class="spec-item-wrapper">
-      <Draw8421 />
-    </view>
-
-    <!-- 吃肉规则 -->
-    <view class="spec-item-wrapper">
-      <E8421Meat />
-    </view>
-
-    <!-- 底部按钮 -->
-    <view class="spec-item-wrapper">
-      <button class="add-btn" bindtap="onAddToMyRules">添加至我的规则</button>
-    </view>
-  </view>
-</view>
+<!--pages/ruleConfig/4player/4p-8421/4p-8421.wxml-->
+<text>pages/ruleConfig/4player/4p-8421/4p-8421.wxml</text>

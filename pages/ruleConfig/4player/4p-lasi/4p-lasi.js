@@ -1,102 +1,66 @@
-import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
-import { reaction } from 'mobx-miniprogram'
-const app = getApp()
-
+// pages/ruleConfig/4player/4p-lasi/4p-lasi.js
 Page({
-    // 存储reaction清理函数
-    _storeReactions: null,
-    data: {
-        user_rulename: ''
-    },
 
-    // 规则名称输入事件
-    onRuleNameInput(e) {
-        const value = e.detail.value;
-        this.setData({ user_rulename: value });
-        G4PLasiStore.updateUserRulename(value);
-        console.log('规则名称已更新:', value);
-    },
+  /**
+   * 页面的初始数据
+   */
+  data: {
 
-    onAddLasiToMyRules() {
-        // 输出完整Store数据用于调试
-        const allData = G4PLasiStore.debugAllRulesData();
+  },
 
-        console.log('💋💋💋💋💋💋💋💋💋💋 allData.lasi_config:', allData);
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad(options) {
 
-        if (allData.lasi_config.indicators.length === 0) {
-            wx.showToast({
-                title: '请至少选择一个KPI指标',
-                icon: 'none',
-                duration: 1500
-            });
-            return;
-        }
+  },
 
-        console.log('💋💋💋💋💋💋💋💋💋💋allData', allData);
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady() {
 
-        app.api.gamble.addGambleRule(allData).then(res => {
-            console.log('添加规则成功:', res);
-            wx.showToast({
-                title: '已添加至我的规则',
-                icon: 'success',
-                duration: 1500,
-                success: () => {
-                    // Toast显示完成后跳转到规则页面
-                    setTimeout(() => {
-                        wx.navigateTo({
-                            url: '/pages/rules/rules'
-                        });
-                    }, 1000);
-                }
-            });
+  },
 
-        }).catch(err => {
-            console.error('添加规则失败:', err);
-            wx.showToast({
-                title: '添加规则失败',
-                icon: 'none',
-                duration: 1000
-            });
-        });
-    },
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
 
-    // KPI配置变化事件处理
-    onKpiConfigChange(e) {
-        // 通知奖励配置组件更新
-        const lasiRewardComponent = this.selectComponent('#LasiReward');
-        if (lasiRewardComponent) {
-            lasiRewardComponent.onKpiConfigChange();
-        }
-    },
+  },
 
-    onLoad() {
-        // 4人拉丝规则配置页
-        console.log('4P-lasi 规则配置页面加载完成');
+  /**
+   * 生命周期函数--监听页面隐藏
+   */
+  onHide() {
 
-        // 初始化显示值
-        this.setData({
-            user_rulename: G4PLasiStore.user_rulename
-        });
+  },
 
-        // 监听Store变化
-        this._storeReactions = [
-            reaction(
-                () => G4PLasiStore.user_rulename,
-                (value) => {
-                    this.setData({ user_rulename: value });
-                    // console.log('Store规则名称变化:', value);
-                }
-            ),
-        ];
-    },
+  /**
+   * 生命周期函数--监听页面卸载
+   */
+  onUnload() {
 
-    onUnload() {
-        // 清理reactions
-        if (this._storeReactions) {
-            for (const dispose of this._storeReactions) {
-                dispose?.();
-            }
-            this._storeReactions = null;
-        }
-    }
-});
+  },
+
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh() {
+
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {
+
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage() {
+
+  }
+})

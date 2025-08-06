@@ -63,21 +63,21 @@ export const GAME_TYPES = {
     'mp-dabudui': { name: '多人大部队', hasPlayerConfig: false, hasGrouping: true, hasStroking: false }
 };
 
-// 路由映射
+// 路由映射 - 已迁移到新的SysEdit页面
 export const ROUTES = {
-    '2p-gross': '/pages/ruleConfig/2player/2p-gross/2p-gross',
-    '2p-hole': '/pages/ruleConfig/2player/2p-hole/2p-hole',
-    '2p-8421': '/pages/ruleConfig/2player/2p-8421/2p-8421',
-    '3p-doudizhu': '/pages/ruleConfig/3player/3p-doudizhu/3p-doudizhu',
-    '3p-dizhupo': '/pages/ruleConfig/3player/3p-dizhupo/3p-dizhupo',
-    '3p-8421': '/pages/ruleConfig/3player/3p-8421/3p-8421',
-    '4p-lasi': '/pages/ruleConfig/4player/4p-lasi/4p-lasi',
-    '4p-8421': '/pages/ruleConfig/4player/4p-8421/4p-8421',
-    '4p-dizhupo': '/pages/ruleConfig/4player/4p-dizhupo/4p-dizhupo',
-    '4p-3da1': '/pages/ruleConfig/4player/4p-3da1/4p-3da1',
-    '4p-bestak': '/pages/ruleConfig/4player/4p-bestak/4p-bestak',
-    'mp-labahua': '/pages/ruleConfig/mplayer/mp-labahua/mp-labahua',
-    'mp-dabudui': '/pages/ruleConfig/mplayer/mp-dabudui/mp-dabudui'
+    '2p-gross': '/pages/rules/SysEdit/SysEdit',
+    '2p-hole': '/pages/rules/SysEdit/SysEdit',
+    '2p-8421': '/pages/rules/SysEdit/SysEdit',
+    '3p-doudizhu': '/pages/rules/SysEdit/SysEdit',
+    '3p-dizhupo': '/pages/rules/SysEdit/SysEdit',
+    '3p-8421': '/pages/rules/SysEdit/SysEdit',
+    '4p-lasi': '/pages/rules/SysEdit/SysEdit',
+    '4p-8421': '/pages/rules/SysEdit/SysEdit',
+    '4p-dizhupo': '/pages/rules/SysEdit/SysEdit',
+    '4p-3da1': '/pages/rules/SysEdit/SysEdit',
+    '4p-bestak': '/pages/rules/SysEdit/SysEdit',
+    'mp-labahua': '/pages/rules/SysEdit/SysEdit',
+    'mp-dabudui': '/pages/rules/SysEdit/SysEdit'
 };
 
 // 用户规则映射
