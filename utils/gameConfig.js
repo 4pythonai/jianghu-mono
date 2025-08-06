@@ -19,6 +19,26 @@ export const GOLF_SCORE_TYPES = {
     KEYS: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar']
 };
 
+// 肉分值配置类型
+export const MEAT_VALUE_CONFIG_TYPES = {
+    DOUBLE_WITH_REWARD: 'DOUBLE_WITH_REWARD',
+    DOUBLE_WITHOUT_REWARD: 'DOUBLE_WITHOUT_REWARD',
+    SINGLE_DOUBLE: 'SINGLE_DOUBLE',
+    CONTINUE_DOUBLE: 'CONTINUE_DOUBLE',
+
+    LABELS: {
+        'DOUBLE_WITH_REWARD': '分值翻倍(含奖励)',
+        'DOUBLE_WITHOUT_REWARD': '分值翻倍(不含奖励)',
+        'SINGLE_DOUBLE': '分值翻倍',
+        'CONTINUE_DOUBLE': '分值连续翻倍'
+    },
+
+    // 获取显示文本
+    getLabel(type) {
+        return this.LABELS[type] || type;
+    }
+};
+
 // 游戏类型配置
 export const GAME_TYPES = {
     // 2人游戏
@@ -179,6 +199,7 @@ export const GameConstantsUtils = GameConfig;
 module.exports = {
     GameConfig,
     GOLF_SCORE_TYPES,
+    MEAT_VALUE_CONFIG_TYPES,
     GAME_TYPES,
     ROUTES,
     USER_RULES,

@@ -1,7 +1,7 @@
 /**
  * 4p-lasi 规则解析器
  */
-const { GOLF_SCORE_TYPES } = require('../gameConfig.js')
+const { GOLF_SCORE_TYPES, MEAT_VALUE_CONFIG_TYPES } = require('../gameConfig.js')
 
 /**
  * 解析扣分配置
@@ -79,17 +79,17 @@ function parseEatmeatConfig(item) {
         } else {
             // 处理其他格式
             switch (meatValueConfig) {
-                case 'DOUBLE_WITH_REWARD':
-                    detail += '，分值翻倍(含奖励)';
+                case MEAT_VALUE_CONFIG_TYPES.DOUBLE_WITH_REWARD:
+                    detail += `，${MEAT_VALUE_CONFIG_TYPES.getLabel('DOUBLE_WITH_REWARD')}`;
                     break;
-                case 'DOUBLE_WITHOUT_REWARD':
-                    detail += '，分值翻倍(不含奖励)';
+                case MEAT_VALUE_CONFIG_TYPES.DOUBLE_WITHOUT_REWARD:
+                    detail += `，${MEAT_VALUE_CONFIG_TYPES.getLabel('DOUBLE_WITHOUT_REWARD')}`;
                     break;
-                case 'SINGLE_DOUBLE': // 兼容旧格式
-                    detail += '，分值翻倍(含奖励)';
+                case MEAT_VALUE_CONFIG_TYPES.SINGLE_DOUBLE:
+                    detail += `，${MEAT_VALUE_CONFIG_TYPES.getLabel('SINGLE_DOUBLE')}`;
                     break;
-                case 'CONTINUE_DOUBLE': // 兼容旧格式
-                    detail += '，分值翻倍(不含奖励)';
+                case MEAT_VALUE_CONFIG_TYPES.CONTINUE_DOUBLE:
+                    detail += `，${MEAT_VALUE_CONFIG_TYPES.getLabel('CONTINUE_DOUBLE')}`;
                     break;
                 default:
                     // 如果是不认识的格式，直接显示原值

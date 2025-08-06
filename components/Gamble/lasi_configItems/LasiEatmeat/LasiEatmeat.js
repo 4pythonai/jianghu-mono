@@ -88,6 +88,10 @@ Component({
           meatValueText = '分值翻倍(含奖励)';
         } else if (store.meatValueConfig === 'DOUBLE_WITHOUT_REWARD') {
           meatValueText = '分值翻倍(不含奖励)';
+        } else if (store.meatValueConfig === 'SINGLE_DOUBLE') {
+          meatValueText = '分值翻倍';
+        } else if (store.meatValueConfig === 'CONTINUE_DOUBLE') {
+          meatValueText = '分值连续翻倍';
         } else {
           meatValueText = store.meatValueConfig;
         }
@@ -173,10 +177,14 @@ Component({
           // 解析肉分值
           const score = Number.parseInt(meatValue.replace('MEAT_AS_', ''));
           this.setData({ meatScoreValue: score || 1 });
-        } else if (meatValue === 'DOUBLE_WITH_REWARD') {
+        } else if (meatValue === 'SINGLE_DOUBLE') {
           meatValueOption = 1;
-        } else if (meatValue === 'DOUBLE_WITHOUT_REWARD') {
+        } else if (meatValue === 'CONTINUE_DOUBLE') {
           meatValueOption = 2;
+        } else if (meatValue === 'DOUBLE_WITH_REWARD') {
+          meatValueOption = 3;
+        } else if (meatValue === 'DOUBLE_WITHOUT_REWARD') {
+          meatValueOption = 4;
         }
         this.setData({ meatValueOption });
       }
@@ -280,9 +288,15 @@ Component({
           meatValueConfig = `MEAT_AS_${data.meatScoreValue}`; // 动态生成MEAT_AS_X格式
           break;
         case 1:
-          meatValueConfig = 'DOUBLE_WITH_REWARD';
+          meatValueConfig = 'SINGLE_DOUBLE';
           break;
         case 2:
+          meatValueConfig = 'CONTINUE_DOUBLE';
+          break;
+        case 3:
+          meatValueConfig = 'DOUBLE_WITH_REWARD';
+          break;
+        case 4:
           meatValueConfig = 'DOUBLE_WITHOUT_REWARD';
           break;
       }
@@ -316,9 +330,15 @@ Component({
           meatValueConfig = `MEAT_AS_${meatScoreValue}`;
           break;
         case 1:
-          meatValueConfig = 'DOUBLE_WITH_REWARD';
+          meatValueConfig = 'SINGLE_DOUBLE';
           break;
         case 2:
+          meatValueConfig = 'CONTINUE_DOUBLE';
+          break;
+        case 3:
+          meatValueConfig = 'DOUBLE_WITH_REWARD';
+          break;
+        case 4:
           meatValueConfig = 'DOUBLE_WITHOUT_REWARD';
           break;
       }
