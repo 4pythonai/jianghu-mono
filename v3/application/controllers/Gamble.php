@@ -177,10 +177,8 @@ class Gamble extends MY_Controller {
         $this->load->model('sysrule/G4P8421Parser');
         $this->load->model('sysrule/G4PlasiParser');
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $config = $json_paras['config'];
+        $config = $json_paras;
 
-        $config['gambleSysName'] = $json_paras['gambleSysName'];
-        $config['gambleUserName'] = $json_paras['gambleUserName'];
 
         $userid = $this->getUser();
 
@@ -227,6 +225,39 @@ class Gamble extends MY_Controller {
         }
     }
 
+    public function updateGambleRule() {
+
+        $this->load->model('sysrule/G4P8421Parser');
+        $this->load->model('sysrule/G4PlasiParser');
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $id = $json_paras['id'];
+        $config = $json_paras;
+
+
+        $userid = $this->getUser();
+
+        $gambleSysName = $json_paras['gambleSysName'];
+        if ($gambleSysName == '4p-8421') {
+            $udpate_data = $this->G4P8421Parser->parserRawData($userid, $config);
+        }
+
+        if ($gambleSysName == '4p-lasi') {
+            $udpate_data = $this->G4PlasiParser->parserRawData($userid, $config);
+        }
+
+
+
+
+        // 插入数据
+        $this->db->where('id', $id)->update('t_gamble_rules_user', $udpate_data);
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '修改规则成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
+
     /**
      * 根据参与人数分组获取赌球规则
      * 返回两人游戏、三人游戏、四人游戏的分组数据
@@ -240,6 +271,7 @@ class Gamble extends MY_Controller {
             // 查询用户创建的所有赌球规则，只获取需要的字段
             $query = "SELECT id as userRuleId, 
                      create_time,
+                     kpis,
                      RewardConfig,
                      drawConfig,
                      dutyConfig,
@@ -322,6 +354,7 @@ class Gamble extends MY_Controller {
         $query = "SELECT id as userRuleId, 
                      create_time,
                      RewardConfig,
+                     kpis,
                      drawConfig,
                      dutyConfig,
                      eatingRange,

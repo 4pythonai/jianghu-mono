@@ -20,15 +20,15 @@ class G4P8421Parser  extends CI_Model {
             'gambleSysName' => $gambleSysName,
             'gambleUserName' => $gambleUserName,
             'playersNumber' => 4,
-            'badScoreBaseLine' => $config['E8421Koufen']['badScoreBaseLine'] ?? 'Par+4',
-            'badScoreMaxLost' => $config['E8421Koufen']['badScoreMaxLost'] ?? 10000000,
-            'dutyConfig' => $config['E8421Koufen']['dutyConfig'],
+            'badScoreBaseLine' => $config['badScoreBaseLine'],
+            'badScoreMaxLost' => $config['badScoreMaxLost'] ?? 10000000,
+            'dutyConfig' => $config['dutyConfig'],
 
-            'drawConfig' => $config['Draw8421']['drawConfig'],
+            'drawConfig' => $config['drawConfig'],
 
-            'eatingRange' =>  json_encode($config['E8421Meat']['eatingRange'], JSON_UNESCAPED_UNICODE),
-            'meatValueConfig' => $config['E8421Meat']['meatValueConfig'],
-            'meatMaxValue' => $config['E8421Meat']['meatMaxValue'],
+            'eatingRange' =>  json_encode($config['eatingRange'], JSON_UNESCAPED_UNICODE),
+            'meatValueConfig' => $config['meatValueConfig'],
+            'meatMaxValue' => $config['meatMaxValue'],
         ];
 
 

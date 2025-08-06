@@ -11,9 +11,42 @@ class G4PlasiParser  extends CI_Model {
   public function parserRawData($userid, $config) {
 
 
-    // debug($config);
     $gambleSysName = $config['gambleSysName'];
     $gambleUserName = $config['gambleUserName'];
+
+    $_reward = [];
+    $_reward['rewardPair'] = $config['RewardConfig']['rewardPair'];
+    $_reward['rewardPreCondition'] = $config['RewardConfig']['rewardPreCondition'];
+    $_reward['rewardType'] = $config['RewardConfig']['rewardType'];
+
+
+
+
+    $_kpis = [];
+
+    // debug($config['kpis']);
+    // die;
+
+    // if $config['kpis'] is string ,convet to array 
+    if (is_string($config['kpis'])) {
+      $config['kpis'] = json_decode($config['kpis'], true);
+    }
+
+    $_kpis['kpiValues'] = $config['kpis']['kpiValues'];
+
+
+
+    $_kpis['indicators'] = $config['kpis']['indicators'];
+    $_kpis['totalCalculationType'] = $config['kpis']['totalCalculationType'];
+
+    // indicators
+
+    // 
+
+    //     rewardPair: [{scoreName: "Par", rewardValue: 0}, {scoreName: "Birdie", rewardValue: 1},…]
+    // rewardPreCondition: "total_win"
+    // rewardType: "add"
+
 
     // 准备插入数据
     $insert_data = [
@@ -22,21 +55,20 @@ class G4PlasiParser  extends CI_Model {
       'gambleUserName' => $gambleUserName,
       'playersNumber' => 4, // 默认4人
 
-      'RewardConfig' => json_encode($config['LasiRewardConfig']),
+      'RewardConfig' => json_encode($_reward),
 
-      'dutyConfig' => $config['LasiKoufen']['dutyConfig'],
-      'PartnerDutyCondition' => $config['LasiKoufen']['PartnerDutyCondition'],
+      'dutyConfig' => $config['dutyConfig'],
+      'PartnerDutyCondition' => $config['PartnerDutyCondition'],
 
       'badScoreBaseLine' => 'Par+4', // 默认值
       'badScoreMaxLost' => 10000000, // 默认值
-      'drawConfig' => $config['LasiDingDong']['dingdongConfig'],
-      'meatValueConfig' => $config['LasiEatmeat']['meatValueConfig'],
-      'meatMaxValue' => $config['LasiEatmeat']['meatMaxValue'],
-      'eatingRange' => json_encode($config['LasiEatmeat']['eatingRange'] ?? []),
-      'kpis' => json_encode($config['LasiKPI'] ?? []),
+      'drawConfig' => $config['drawConfig'],
+      'meatValueConfig' => $config['meatValueConfig'],
+      'meatMaxValue' => $config['meatMaxValue'],
+      'eatingRange' => json_encode($config['eatingRange'] ?? []),
+      'kpis' => json_encode($_kpis),
 
     ];
-    // debug($insert_data);
     return $insert_data;
   }
 }
