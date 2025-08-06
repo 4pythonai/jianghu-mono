@@ -1,7 +1,6 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import { ConfigParser } from '../../../../utils/configParser.js'
-import { DisplayFormatter } from '../../../../utils/displayFormatter.js'
-import { ConfigConverter } from '../../../../utils/configConverter.js'
+import configManager from '../../../../utils/configManager.js'
+import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
 
 Component({
   properties: {
@@ -119,7 +118,7 @@ Component({
         const badScoreMaxLost = selectedMaxNum === 0 ? 10000000 : maxSubScore;
 
         // 使用工具类格式化
-        const displayValue = DisplayFormatter.formatKoufenRule(badScoreBaseLine, badScoreMaxLost);
+        const displayValue = ruleFormatter.formatKoufenRule(badScoreBaseLine, badScoreMaxLost);
 
         this.setData({ displayValue });
       } else {
@@ -165,21 +164,21 @@ Component({
         selectedStart = 2;
       } else if (config.badScoreBaseLine?.startsWith('Par+')) {
         selectedStart = 0;
-        const result = ConfigParser.parseParPlus(config.badScoreBaseLine);
+        const result = configManager.parseParPlus(config.badScoreBaseLine);
         paScore = result ? result.score : 4;
       } else if (config.badScoreBaseLine?.startsWith('DoublePar+')) {
         selectedStart = 1;
-        const result = ConfigParser.parseDoubleParPlus(config.badScoreBaseLine);
+        const result = configManager.parseDoubleParPlus(config.badScoreBaseLine);
         doubleParScore = result ? result.score : 0;
       }
 
       // 使用工具类解析封顶配置
-      const maxResult = ConfigParser.parseMaxValue(config.badScoreMaxLost);
+      const maxResult = configManager.parseMaxValue(config.badScoreMaxLost);
       const selectedMax = maxResult.isUnlimited ? 0 : 1;
       const maxSubScore = maxResult.isUnlimited ? 2 : maxResult.value;
 
       // 使用工具类解析同伴惩罚配置
-      const dutyResult = ConfigParser.parseDutyConfig(config.dutyConfig);
+      const dutyResult = configManager.parseDutyConfig(config.dutyConfig);
       const selectedDuty = dutyResult.index;
 
       this.setData({
@@ -258,7 +257,7 @@ Component({
     initializeFromConfigData(configData) {
 
       // 使用工具类转换配置数据为组件状态
-      const componentState = ConfigConverter.convertConfigToE8421Koufen(configData);
+      const componentState = configManager.convertConfigToE8421Koufen(configData);
 
       this.setData(componentState);
     },
@@ -275,7 +274,7 @@ Component({
       };
 
       // 使用工具类转换组件状态为配置数据
-      const configData = ConfigConverter.convertE8421KoufenToConfig(componentState);
+      const configData = configManager.convertE8421KoufenToConfig(componentState);
 
       return configData;
     },

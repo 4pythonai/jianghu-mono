@@ -1,6 +1,5 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
-const { ConfigParser } = require('../../../../utils/configParser');
-const { ConfigConverter } = require('../../../../utils/configConverter');
+const configManager = require('../../../../utils/configManager.js');
 
 Component({
   properties: {
@@ -220,7 +219,7 @@ Component({
         strokeDiffValue: this.data.strokeDiffValue
       };
 
-      return ConfigConverter.convertLasiKoufenToConfig(componentState);
+      return configManager.convertLasiKoufenToConfig(componentState);
     },
 
     // 打印当前配置
@@ -307,8 +306,8 @@ Component({
           dutyConfig = 'NODUTY';
         } else {
           // 使用统一的解析工具
-          const parResult = ConfigParser.parseParPlus(configData.badScoreBaseLine);
-          const doubleParResult = ConfigParser.parseDoubleParPlus(configData.badScoreBaseLine);
+          const parResult = configManager.parseParPlus(configData.badScoreBaseLine);
+          const doubleParResult = configManager.parseDoubleParPlus(configData.badScoreBaseLine);
 
           if (parResult) {
             dutyConfig = 'Par+';
@@ -322,8 +321,8 @@ Component({
         // 解析dutyConfig
         let PartnerDutyCondition = 'DUTY_DINGTOU';
         if (configData.dutyConfig) {
-          const parResult = ConfigParser.parseParPlus(configData.dutyConfig);
-          const doubleParResult = ConfigParser.parseDoubleParPlus(configData.dutyConfig);
+          const parResult = configManager.parseParPlus(configData.dutyConfig);
+          const doubleParResult = configManager.parseDoubleParPlus(configData.dutyConfig);
 
           if (parResult) {
             PartnerDutyCondition = 'DUTY_PAR';

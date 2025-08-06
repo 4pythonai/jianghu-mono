@@ -3,9 +3,8 @@
  * 为所有配置组件提供通用的功能
  */
 
-import { ConfigParser } from '../../utils/configParser.js';
-import { DisplayFormatter } from '../../utils/displayFormatter.js';
-import { ConfigConverter } from '../../utils/configConverter.js';
+import configManager from '../../utils/configManager.js';
+import ruleFormatter from '../../utils/formatters/ruleFormatter.js';
 
 /**
  * 基础配置组件类
@@ -158,4 +157,4 @@ export function createBaseConfigComponent(
 }
 
 // 导出工具类，方便子类使用
-export { ConfigParser, DisplayFormatter, ConfigConverter }; 
+export { configManager as ConfigParser, ruleFormatter as DisplayFormatter, configManager as ConfigConverter }; 

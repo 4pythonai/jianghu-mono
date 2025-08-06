@@ -1,8 +1,7 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 import { reaction } from 'mobx-miniprogram'
-import { ConfigParser } from '../../../../utils/configParser.js'
-import { DisplayFormatter } from '../../../../utils/displayFormatter.js'
-import { ConfigConverter } from '../../../../utils/configConverter.js'
+import configManager from '../../../../utils/configManager.js'
+import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
 
 Component({
   properties: {
@@ -141,7 +140,7 @@ Component({
       } else {
         // 使用Store数据
         const store = G4P8421Store;
-        const displayValue = DisplayFormatter.formatMeatRule(store.meatValueConfig, store.meatMaxValue);
+        const displayValue = ruleFormatter.formatMeatRule(store.meatValueConfig, store.meatMaxValue);
 
         this.setData({ displayValue });
       }
@@ -157,20 +156,20 @@ Component({
     // 解析存储的配置 - 使用工具类简化
     parseStoredConfig(config) {
       // 使用工具类解析eatingRange
-      const eatingRange = ConfigParser.parseEatingRange(config.eatingRange);
+      const eatingRange = configManager.parseEatingRange(config.eatingRange);
       if (eatingRange) {
         this.setData({ eatingRange });
       }
 
       // 使用工具类解析meatValueConfig
-      const meatResult = ConfigParser.parseMeatValueConfig(config.meatValueConfig);
+      const meatResult = configManager.parseMeatValueConfig(config.meatValueConfig);
       this.setData({
         meatValueOption: meatResult.index,
         meatScoreValue: meatResult.score
       });
 
       // 使用工具类解析meatMaxValue
-      const maxResult = ConfigParser.parseMaxValue(config.meatMaxValue);
+      const maxResult = configManager.parseMaxValue(config.meatMaxValue);
       this.setData({
         topSelected: maxResult.isUnlimited ? 0 : 1,
         topScoreLimit: maxResult.isUnlimited ? 3 : maxResult.value
@@ -255,7 +254,7 @@ Component({
       };
 
       // 使用工具类转换组件状态为配置数据
-      const configData = ConfigConverter.convertE8421MeatToConfig(componentState);
+      const configData = configManager.convertE8421MeatToConfig(componentState);
 
       return configData;
     },
@@ -264,7 +263,7 @@ Component({
     initConfigData(configData) {
 
       // 使用工具类转换配置数据为组件状态
-      const componentState = ConfigConverter.convertConfigToE8421Meat(configData);
+      const componentState = configManager.convertConfigToE8421Meat(configData);
 
       this.setData(componentState);
       this.updateDisplayValue();

@@ -4,7 +4,7 @@
  */
 const { holeRangeStore } = require('../../../stores/holeRangeStore');
 const { GameConfig } = require('../../../utils/gameConfig');
-const ConfigDataProcessor = require('../../../utils/configDataProcessor');
+const configManager = require('../../../utils/configManager');
 
 const app = getApp();
 
@@ -18,7 +18,7 @@ const BaseConfig = {
     initializePageData(options, pageContext) {
         try {
             // 处理传入的数据
-            const processedData = ConfigDataProcessor.processIncomingData(options);
+            const processedData = configManager.processIncomingData(options);
 
             // 设置页面数据
             const setDataObj = {
@@ -262,7 +262,7 @@ const BaseConfig = {
      * @returns {Promise} 保存结果
      */
     async saveConfig(runtimeConfig, gameId, groupId, configId, pageContext, isEdit = false) {
-        const saveData = ConfigDataProcessor.prepareSaveData(runtimeConfig, isEdit, configId);
+        const saveData = configManager.prepareSaveData(runtimeConfig, isEdit, configId);
 
         pageContext.setData({ loading: true });
 

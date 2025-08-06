@@ -1,7 +1,6 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 import { reaction } from 'mobx-miniprogram'
-const { ConfigParser } = require('../../../../utils/configParser');
-const { ConfigConverter } = require('../../../../utils/configConverter');
+const configManager = require('../../../../utils/configManager.js');
 
 Component({
   properties: {
@@ -167,7 +166,7 @@ Component({
       console.log('从store加载吃肉配置:', config);
 
       // 使用统一的解析工具类解析吃肉数量配置
-      const parsedEatingRange = ConfigParser.parseEatingRange(eatingRange);
+      const parsedEatingRange = configManager.parseEatingRange(eatingRange);
       if (parsedEatingRange) {
         this.setData({ eatingRange: parsedEatingRange });
       }
@@ -178,7 +177,7 @@ Component({
         if (meatValue?.startsWith('MEAT_AS_')) {
           meatValueOption = 0;
           // 使用统一的解析工具
-          const meatResult = ConfigParser.parseMeatAs(meatValue);
+          const meatResult = configManager.parseMeatAs(meatValue);
           this.setData({ meatScoreValue: meatResult ? meatResult.score : 1 });
         } else if (meatValue === 'SINGLE_DOUBLE') {
           meatValueOption = 1;
@@ -193,7 +192,7 @@ Component({
       }
 
       // 使用统一的解析工具类解析封顶配置
-      const maxResult = ConfigParser.parseMaxValue(meatMaxValue);
+      const maxResult = configManager.parseMaxValue(meatMaxValue);
       if (maxResult.isUnlimited) {
         this.setData({ topSelected: 0 });
       } else {
@@ -338,7 +337,7 @@ Component({
         topScoreLimit: this.data.topScoreLimit
       };
 
-      return ConfigConverter.convertLasiEatmeatToConfig(componentState);
+      return configManager.convertLasiEatmeatToConfig(componentState);
     },
 
     // 打印当前配置

@@ -1,5 +1,6 @@
 /**
  * 赌博规则解析器总控
+ * 使用重构后的规则解析器
  */
 
 import { parse4P8421Config } from './ruleParser/Parser4p8421.js';

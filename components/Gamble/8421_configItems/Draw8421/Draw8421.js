@@ -1,7 +1,6 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import { ConfigParser } from '../../../../utils/configParser.js'
-import { DisplayFormatter } from '../../../../utils/displayFormatter.js'
-import { ConfigConverter } from '../../../../utils/configConverter.js'
+import configManager from '../../../../utils/configManager.js'
+import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
 
 Component({
   properties: {
@@ -70,13 +69,13 @@ Component({
         console.log('🎯 [Draw8421] updateDisplayValue - 构建的drawConfig:', drawConfig);
 
         // 使用工具类格式化
-        const displayValue = DisplayFormatter.formatDrawRule(drawConfig);
+        const displayValue = ruleFormatter.formatDrawRule(drawConfig);
 
         this.setData({ displayValue });
       } else {
         // 使用Store数据
         const store = G4P8421Store;
-        const displayValue = DisplayFormatter.formatDrawRule(store.drawConfig);
+        const displayValue = ruleFormatter.formatDrawRule(store.drawConfig);
 
         this.setData({ displayValue });
       }
@@ -85,7 +84,7 @@ Component({
     // 从Store同步选择状态 - 使用工具类简化
     syncSelectedFromStore() {
       const store = G4P8421Store;
-      const drawResult = ConfigParser.parseDrawConfig(store.drawConfig);
+      const drawResult = configManager.parseDrawConfig(store.drawConfig);
 
       this.setData({
         selected: drawResult.index,
@@ -151,7 +150,7 @@ Component({
       };
 
       // 使用工具类转换组件状态为配置数据
-      const configData = ConfigConverter.convertDraw8421ToConfig(componentState);
+      const configData = configManager.convertDraw8421ToConfig(componentState);
 
       return configData;
     },
@@ -160,7 +159,7 @@ Component({
     initConfigData(configData) {
 
       // 使用工具类转换配置数据为组件状态
-      const componentState = ConfigConverter.convertConfigToDraw8421(configData);
+      const componentState = configManager.convertConfigToDraw8421(configData);
 
       this.setData(componentState);
       this.updateDisplayValue();
