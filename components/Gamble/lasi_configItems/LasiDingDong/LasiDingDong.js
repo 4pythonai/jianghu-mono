@@ -155,7 +155,7 @@ Component({
             }
 
             return {
-                dingdongConfig: selectedValue,
+                drawConfig: selectedValue,
             };
         },
 

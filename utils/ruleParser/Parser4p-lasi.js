@@ -54,7 +54,7 @@ function parseEatmeatConfig(item) {
 
     if (eatingRange) {
         let eatRangeObj = null;
-        
+
         // 处理eatingRange，可能是字符串或对象
         if (typeof eatingRange === 'string') {
             try {
@@ -210,7 +210,6 @@ function parseRewardConfig(item) {
 function parse4PLasiConfig(item) {
     if (!item) return {};
 
-    console.log("拉丝item++++", item.RewardConfig)
 
     const details = {
         koufen: '无',
@@ -233,7 +232,6 @@ function parse4PLasiConfig(item) {
         if (drawDetail) details.draw = drawDetail;
     }
 
-    // RewardConfig: "{"rewardType":"add","rewardPreCondition":"total_not_fail","rewardPair":[{"scoreName":"Par","rewardValue":1},{"scoreName":"Birdie","rewardValue":2},{"scoreName":"Eagle","rewardValue":3},{"scoreName":"Albatross\/HIO","rewardValue":4}]}"
 
     if (item.RewardConfig) {
         const rewardDetail = parseRewardConfig(item);

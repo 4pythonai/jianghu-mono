@@ -228,7 +228,10 @@ Component({
 
         // 获取配置数据（供SysEdit页面调用）
         getConfigData() {
-            return this.getCurrentConfig();
+            const config = this.getCurrentConfig();
+            return {
+                RewardConfig: config // 直接返回对象，供后台直接使用
+            };
         },
 
         // 初始化配置数据 - 供UserRuleEdit页面调用
@@ -243,15 +246,20 @@ Component({
             // 从配置数据中提取奖励相关配置
             // 支持两种数据结构：
             // 1. 直接包含奖励相关字段
-            // 2. 嵌套在RewardConfig字段中的JSON字符串
+            // 2. 嵌套在RewardConfig字段中的对象或JSON字符串
             let rewardConfig = configData;
-            if (configData.RewardConfig && typeof configData.RewardConfig === 'string') {
-                try {
-                    rewardConfig = JSON.parse(configData.RewardConfig);
-                    console.log('🎯 [LasiRewardConfig] 成功解析RewardConfig字符串:', rewardConfig);
-                } catch (error) {
-                    console.error('🎯 [LasiRewardConfig] 解析RewardConfig字符串失败:', error);
-                    rewardConfig = configData;
+            if (configData.RewardConfig) {
+                if (typeof configData.RewardConfig === 'string') {
+                    try {
+                        rewardConfig = JSON.parse(configData.RewardConfig);
+                        console.log('🎯 [LasiRewardConfig] 成功解析RewardConfig字符串:', rewardConfig);
+                    } catch (error) {
+                        console.error('🎯 [LasiRewardConfig] 解析RewardConfig字符串失败:', error);
+                        rewardConfig = configData;
+                    }
+                } else if (typeof configData.RewardConfig === 'object') {
+                    rewardConfig = configData.RewardConfig;
+                    console.log('🎯 [LasiRewardConfig] 使用RewardConfig对象:', rewardConfig);
                 }
             }
 

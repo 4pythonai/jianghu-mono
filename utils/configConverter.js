@@ -272,6 +272,7 @@ export const convertLasiKoufenToConfig = (componentState) => {
 
     return {
         badScoreBaseLine,
+        badScoreMaxLost: 10000000, // 添加默认的封顶配置
         dutyConfig: dutyConfigValue,
         PartnerDutyCondition: PartnerDutyCondition,
         customValues: {
@@ -315,7 +316,7 @@ export const convertLasiEatmeatToConfig = (componentState) => {
 
     return {
         eatingRange,
-        meatValue,
+        meatValueConfig: meatValue, // 修正字段名
         meatMaxValue
     };
 };

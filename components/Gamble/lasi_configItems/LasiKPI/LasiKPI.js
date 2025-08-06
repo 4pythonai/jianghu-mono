@@ -235,9 +235,11 @@ Component({
             const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
 
             return {
-                selectedIndicators,
-                kpiValues,
-                totalCalculationType,
+                lasi_config: {
+                    indicators: selectedIndicators,
+                    kpiValues,
+                    totalCalculationType
+                }
             };
         },
 
@@ -294,7 +296,8 @@ Component({
 
             console.log('🎯 [LasiKPI] 提取的KPI配置:', kpiConfig);
 
-            const selectedIndicators = kpiConfig.selectedIndicators || ['best', 'worst', 'total'];
+            // 支持两种字段名：selectedIndicators 和 indicators
+            const selectedIndicators = kpiConfig.selectedIndicators || kpiConfig.indicators || ['best', 'worst', 'total'];
             const kpiValues = kpiConfig.kpiValues || {
                 best: 1,
                 worst: 1,
