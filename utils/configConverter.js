@@ -273,6 +273,7 @@ export const convertLasiKoufenToConfig = (componentState) => {
     return {
         badScoreBaseLine,
         dutyConfig: dutyConfigValue,
+        PartnerDutyCondition: PartnerDutyCondition,
         customValues: {
             doubleParPlusValue,
             parPlusValue,
