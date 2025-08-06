@@ -157,9 +157,9 @@ Component({
             const apiMethod = isEdit ? app.api.gamble.updateGambleRule : app.api.gamble.addGambleRule;
             const apiData = {
                 id: ruleForm.id,
-                title: ruleForm.title,
+                gambleUserName: ruleForm.title,
                 description: ruleForm.description,
-                type: ruleForm.type
+                gambleSysName: ruleForm.type
             };
 
             apiMethod(apiData).then(res => {

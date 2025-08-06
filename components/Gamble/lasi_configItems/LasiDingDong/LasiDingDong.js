@@ -138,6 +138,25 @@ Component({
             this.triggerEvent('confirm', {
                 value: selectedValue
             });
+        },
+
+        // 获取配置数据（供SysEdit页面调用）
+        getConfigData() {
+            const { selected, selectedDiffScore } = this.data;
+
+            // 根据选择的选项生成配置值
+            let selectedValue = '';
+            if (selected === 0) {
+                selectedValue = 'DrawEqual';
+            } else if (selected === 1) {
+                selectedValue = `Diff_${selectedDiffScore}`;
+            } else if (selected === 2) {
+                selectedValue = 'NoDraw';
+            }
+
+            return {
+                dingdongConfig: selectedValue,
+            };
         }
     }
 });

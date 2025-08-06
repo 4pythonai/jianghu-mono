@@ -230,6 +230,17 @@ Component({
             return result;
         },
 
+        // 获取配置数据（供SysEdit页面调用）
+        getConfigData() {
+            const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
+
+            return {
+                selectedIndicators,
+                kpiValues,
+                totalCalculationType,
+            };
+        },
+
         // 打印当前KPI配置
         printCurrentKpiConfig() {
             const { selectedIndicators, kpiValues, totalCalculationType, totalScore } = this.data;

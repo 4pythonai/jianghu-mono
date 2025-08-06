@@ -286,6 +286,11 @@ Component({
 
       this.updateDisplayValue();
       this.printCurrentConfig();
+    },
+
+    // 获取配置数据（供SysEdit页面调用）
+    getConfigData() {
+      return this.getCurrentConfig();
     }
   }
 });

@@ -226,6 +226,11 @@ Component({
             G4PLasiStore.updateRewardConfig(config);
         },
 
+        // 获取配置数据（供SysEdit页面调用）
+        getConfigData() {
+            return this.getCurrentConfig();
+        },
+
 
 
         // 打印当前配置

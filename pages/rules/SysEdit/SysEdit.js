@@ -122,8 +122,8 @@ Page({
 
         // 构建规则数据
         const ruleData = {
-            title: this.data.user_rulename,
-            gameType: this.data.gameType,
+            gambleUserName: this.data.user_rulename,
+            gambleSysName: this.data.gameType,
             config: configData,
             type: 'system',
             createTime: new Date().toISOString()
@@ -170,17 +170,17 @@ Page({
 
         // 遍历所有配置组件，收集数据
         for (const component of this.data.configComponents) {
-            console.log(`📋 [SysEdit] 正在收集组件 ${component.name} 的数据`);
+            console.log('📋 [SysEdit] 正在收集组件', component.name, '的数据');
 
             const componentInstance = this.selectComponent(`#${component.name}`);
-            console.log(`📋 [SysEdit] 组件实例:`, componentInstance);
+            console.log('📋 [SysEdit] 组件实例:', componentInstance);
 
             if (componentInstance?.getConfigData) {
                 const data = componentInstance.getConfigData();
                 configData[component.name] = data;
-                console.log(`📋 [SysEdit] 组件 ${component.name} 数据:`, data);
+                console.log('📋 [SysEdit] 组件', component.name, '数据:', data);
             } else {
-                console.warn(`📋 [SysEdit] 组件 ${component.name} 没有 getConfigData 方法`);
+                console.warn('📋 [SysEdit] 组件', component.name, '没有 getConfigData 方法');
             }
         }
 

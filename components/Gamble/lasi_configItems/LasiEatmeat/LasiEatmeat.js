@@ -303,6 +303,34 @@ Component({
       this.triggerEvent('confirm', {
         parsedData: { eatingRange, meatValueConfig, meatMaxValue }
       });
+    },
+
+    // 获取配置数据（供SysEdit页面调用）
+    getConfigData() {
+      const { eatingRange, meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
+
+      // 肉分值计算方式
+      let meatValueConfig = null;
+      switch (meatValueOption) {
+        case 0:
+          meatValueConfig = `MEAT_AS_${meatScoreValue}`;
+          break;
+        case 1:
+          meatValueConfig = 'DOUBLE_WITH_REWARD';
+          break;
+        case 2:
+          meatValueConfig = 'DOUBLE_WITHOUT_REWARD';
+          break;
+      }
+
+      // 吃肉封顶
+      const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
+
+      return {
+        eatingRange,
+        meatValueConfig,
+        meatMaxValue,
+      };
     }
   }
 });
