@@ -72,15 +72,12 @@ Component({
         // 使用工具类格式化
         const displayValue = DisplayFormatter.formatDrawRule(drawConfig);
 
-        console.log('🚨🚨🚨 [Draw8421] 顶洞规则显示值已更新:', displayValue);
         this.setData({ displayValue });
       } else {
         // 使用Store数据
         const store = G4P8421Store;
         const displayValue = DisplayFormatter.formatDrawRule(store.drawConfig);
 
-        console.log('🚨🚨🚨 [Draw8421] updateDisplayValue 使用Store数据');
-        console.log('🚨🚨🚨 [Draw8421] 顶洞规则显示值已更新:', displayValue);
         this.setData({ displayValue });
       }
     },
@@ -156,14 +153,11 @@ Component({
       // 使用工具类转换组件状态为配置数据
       const configData = ConfigConverter.convertDraw8421ToConfig(componentState);
 
-      console.log('🚨🚨🚨 [Draw8421] 获取配置数据:', configData);
       return configData;
     },
 
     // 初始化配置数据 - 使用工具类简化
     initConfigData(configData) {
-      console.log('🚨🚨🚨 [Draw8421] ========== 开始初始化配置数据 ==========');
-      console.log('🚨🚨🚨 [Draw8421] 接收到的configData:', JSON.stringify(configData, null, 2));
 
       // 使用工具类转换配置数据为组件状态
       const componentState = ConfigConverter.convertConfigToDraw8421(configData);
@@ -171,8 +165,6 @@ Component({
       this.setData(componentState);
       this.updateDisplayValue();
 
-      console.log('🚨🚨🚨 [Draw8421] 初始化完成，当前状态:', componentState);
-      console.log('🚨🚨🚨 [Draw8421] ========== 初始化配置数据完成 ==========');
     }
   }
 });

@@ -33,20 +33,6 @@
       <view class="modal-divider"></view>
       <view class="eat-row">肉的分值</view>
 
-      <view class="modal-item" bindtap="onMeatValueChange" data-index="1">
-        <view class="radio-outer {{meatValueOption === 1 ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{meatValueOption === 1}}"></view>
-        </view>
-        <text>分值翻倍</text>
-      </view>
-
-      <view class="modal-item" bindtap="onMeatValueChange" data-index="2">
-        <view class="radio-outer {{meatValueOption === 2 ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{meatValueOption === 2}}"></view>
-        </view>
-        <text>分值连续翻倍</text>
-      </view>
-
       <view class="modal-item" bindtap="onMeatValueChange" data-index="3">
         <view class="radio-outer {{meatValueOption === 3 ? 'checked' : ''}}">
           <view class="radio-inner" wx:if="{{meatValueOption === 3}}"></view>

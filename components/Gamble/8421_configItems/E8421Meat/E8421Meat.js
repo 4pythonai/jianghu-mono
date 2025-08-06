@@ -143,8 +143,6 @@ Component({
         const store = G4P8421Store;
         const displayValue = DisplayFormatter.formatMeatRule(store.meatValueConfig, store.meatMaxValue);
 
-        console.log('🚨🚨🚨 [E8421Meat] updateDisplayValue 使用Store数据');
-        console.log('🚨🚨🚨 [E8421Meat] 吃肉规则显示值已更新:', displayValue);
         this.setData({ displayValue });
       }
     },
@@ -259,14 +257,11 @@ Component({
       // 使用工具类转换组件状态为配置数据
       const configData = ConfigConverter.convertE8421MeatToConfig(componentState);
 
-      console.log('🚨🚨🚨 [E8421Meat] 获取配置数据:', configData);
       return configData;
     },
 
     // 初始化配置数据 - 使用工具类简化
     initConfigData(configData) {
-      console.log('🚨🚨🚨 [E8421Meat] ========== 开始初始化配置数据 ==========');
-      console.log('🚨🚨🚨 [E8421Meat] 接收到的configData:', JSON.stringify(configData, null, 2));
 
       // 使用工具类转换配置数据为组件状态
       const componentState = ConfigConverter.convertConfigToE8421Meat(configData);
@@ -274,8 +269,6 @@ Component({
       this.setData(componentState);
       this.updateDisplayValue();
 
-      console.log('🚨🚨🚨 [E8421Meat] 初始化完成，当前状态:', componentState);
-      console.log('🚨🚨🚨 [E8421Meat] ========== 初始化配置数据完成 ==========');
     }
   }
 });

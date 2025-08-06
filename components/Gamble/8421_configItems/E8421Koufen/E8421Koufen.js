@@ -121,7 +121,6 @@ Component({
         // 使用工具类格式化
         const displayValue = DisplayFormatter.formatKoufenRule(badScoreBaseLine, badScoreMaxLost);
 
-        console.log('🚨🚨🚨 [E8421Koufen] 扣分规则显示值已更新:', displayValue);
         this.setData({ displayValue });
       } else {
         // 使用Store数据
@@ -144,8 +143,6 @@ Component({
           displayValue += `/扣${store.badScoreMaxLost}分封顶`;
         }
 
-        console.log('🚨🚨🚨 [E8421Koufen] updateDisplayValue 使用Store数据');
-        console.log('🚨🚨🚨 [E8421Koufen] 扣分规则显示值已更新:', displayValue);
         this.setData({ displayValue });
       }
     },
@@ -259,13 +256,11 @@ Component({
 
     // 从配置数据初始化 - 使用工具类简化
     initializeFromConfigData(configData) {
-      console.log('🚨🚨🚨 [E8421Koufen] 从配置数据初始化:', configData);
 
       // 使用工具类转换配置数据为组件状态
       const componentState = ConfigConverter.convertConfigToE8421Koufen(configData);
 
       this.setData(componentState);
-      console.log('🚨🚨🚨 [E8421Koufen] 初始化完成，当前组件状态:', componentState);
     },
 
     // 获取配置数据 - 使用工具类简化
@@ -282,7 +277,6 @@ Component({
       // 使用工具类转换组件状态为配置数据
       const configData = ConfigConverter.convertE8421KoufenToConfig(componentState);
 
-      console.log('🚨🚨🚨 [E8421Koufen] 获取配置数据:', configData);
       return configData;
     },
 

@@ -11,9 +11,9 @@
     <!-- 规则名称 -->
     <view class="form-section">
       <view class="form-label">规则名称</view>
-      <input 
-        class="form-input" 
-        value="{{user_rulename}}" 
+      <input
+        class="form-input"
+        value="{{user_rulename}}"
         bindinput="onRuleNameInput"
         placeholder="请输入规则名称"
         maxlength="50"
@@ -24,51 +24,38 @@
     <view class="config-components">
       <block wx:for="{{configComponents}}" wx:key="name">
         <view class="component-wrapper">
-          <view class="component-title">{{item.title}}</view>
           <!-- 动态加载配置组件 -->
           <view class="component-content">
             <!-- 4p-8421 配置组件 -->
             <block wx:if="{{gameType === '4p-8421'}}">
-              <E8421Koufen 
+              <E8421Koufen
                 wx:if="{{item.name === 'E8421Koufen'}}"
                 id="{{item.name}}"
                 mode="SysConfig"
               />
-              <Draw8421 
-                wx:if="{{item.name === 'Draw8421'}}"
-                id="{{item.name}}"
-                mode="SysConfig"
-              />
-              <E8421Meat 
-                wx:if="{{item.name === 'E8421Meat'}}"
-                id="{{item.name}}"
-                mode="SysConfig"
-              />
+              <Draw8421 wx:if="{{item.name === 'Draw8421'}}" id="{{item.name}}" mode="SysConfig" />
+              <E8421Meat wx:if="{{item.name === 'E8421Meat'}}" id="{{item.name}}" mode="SysConfig" />
             </block>
 
             <!-- 4p-lasi 配置组件 -->
             <block wx:elif="{{gameType === '4p-lasi'}}">
-              <LasiKoufen 
+              <LasiKoufen
                 wx:if="{{item.name === 'LasiKoufen'}}"
                 id="{{item.name}}"
                 mode="SysConfig"
               />
-              <LasiKPI 
-                wx:if="{{item.name === 'LasiKPI'}}"
-                id="{{item.name}}"
-                mode="SysConfig"
-              />
-              <LasiRewardConfig 
+              <LasiKPI wx:if="{{item.name === 'LasiKPI'}}" id="{{item.name}}" mode="SysConfig" />
+              <LasiRewardConfig
                 wx:if="{{item.name === 'LasiRewardConfig'}}"
                 id="{{item.name}}"
                 mode="SysConfig"
               />
-              <LasiEatmeat 
+              <LasiEatmeat
                 wx:if="{{item.name === 'LasiEatmeat'}}"
                 id="{{item.name}}"
                 mode="SysConfig"
               />
-              <LasiDingDong 
+              <LasiDingDong
                 wx:if="{{item.name === 'LasiDingDong'}}"
                 id="{{item.name}}"
                 mode="SysConfig"
@@ -89,20 +76,12 @@
 
   <!-- 底部操作按钮 -->
   <view class="bottom-actions">
-    <button 
-      class="cancel-btn" 
-      bindtap="onCancel"
-      disabled="{{saving}}"
-    >
-      取消
-    </button>
-    <button 
-      class="save-btn" 
+    <button class="cancel-btn" bindtap="onCancel" disabled="{{saving}}">取消</button>
+    <button
+      class="save-btn"
       bindtap="onSaveRule"
       loading="{{saving}}"
       disabled="{{saving}}"
-    >
-      {{saving ? '保存中...' : '保存规则'}}
-    </button>
+    >{{saving ? '保存中...' : '保存规则'}}</button>
   </view>
-</view> 
+</view>

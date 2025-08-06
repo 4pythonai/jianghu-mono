@@ -47,17 +47,9 @@ Page({
 
     // 使用传递的规则数据初始化页面
     initializeWithRuleData(ruleData) {
-        console.log('📋 [UserRuleEdit] 使用传递的规则数据初始化:');
-        console.log('📋 [UserRuleEdit] 传递的完整ruleData:', JSON.stringify(ruleData, null, 2));
-        console.log('📋 [UserRuleEdit] 传递数据的所有属性名:', Object.keys(ruleData));
-        console.log('📋 [UserRuleEdit] 检查传递数据的config字段:');
-        console.log('📋 [UserRuleEdit] ruleData.config:', ruleData.config);
-        console.log('📋 [UserRuleEdit] ruleData.configuration:', ruleData.configuration);
-        console.log('📋 [UserRuleEdit] ruleData.gameConfig:', ruleData.gameConfig);
-        console.log('📋 [UserRuleEdit] ruleData.settings:', ruleData.settings);
 
         // 确定游戏类型
-        let gameType = ruleData.gameType || ruleData.gambleSysName;
+        const gameType = ruleData.gameType || ruleData.gambleSysName;
 
         console.log('📋 [UserRuleEdit] 映射后的游戏类型:', gameType);
 
@@ -97,22 +89,15 @@ Page({
 
             // 调用API获取规则数据
             const apiResponse = await app.api.gamble.getUserGambleRule({ ruleId });
-            console.log('📋 [UserRuleEdit] API完整响应数据:', JSON.stringify(apiResponse, null, 2));
-            console.log('📋 [UserRuleEdit] API响应的data字段:', JSON.stringify(apiResponse?.data, null, 2));
 
             if (!apiResponse || apiResponse.code !== 200 || !apiResponse.data) {
                 throw new Error('规则不存在或获取失败');
             }
 
             const ruleData = apiResponse.data;
-            console.log('📋 [UserRuleEdit] 提取的ruleData:', JSON.stringify(ruleData, null, 2));
-            console.log('📋 [UserRuleEdit] ruleData的所有属性名:', Object.keys(ruleData));
 
             // 确定游戏类型
-            let gameType = ruleData.gameType || ruleData.gambleSysName;
-            console.log('📋 [UserRuleEdit] ruleData.gameType:', ruleData.gameType);
-            console.log('📋 [UserRuleEdit] ruleData.gambleSysName:', ruleData.gambleSysName);
-            console.log('📋 [UserRuleEdit] 最终确定的gameType:', gameType);
+            const gameType = ruleData.gameType || ruleData.gambleSysName;
 
             // 获取游戏配置
             const gameConfig = GameConfig.getGameType(gameType);
@@ -125,11 +110,6 @@ Page({
             }
 
             // 检查config字段
-            console.log('📋 [UserRuleEdit] 检查config字段存在性:');
-            console.log('📋 [UserRuleEdit] ruleData.config:', ruleData.config);
-            console.log('📋 [UserRuleEdit] ruleData.configuration:', ruleData.configuration);
-            console.log('📋 [UserRuleEdit] ruleData.gameConfig:', ruleData.gameConfig);
-            console.log('📋 [UserRuleEdit] ruleData.settings:', ruleData.settings);
 
             // 设置页面数据
             this.setData({
@@ -139,7 +119,6 @@ Page({
                 user_rulename: ruleData.title || ruleData.gambleUserName || ruleData.user_rulename || `${gameConfig.name}规则`
             });
 
-            console.log('📋 [UserRuleEdit] 页面数据设置完成，最终的ruleData:', this.data.ruleData);
 
             // 根据游戏类型加载对应的配置组件
             this.loadConfigComponents(gameType);
@@ -195,33 +174,20 @@ Page({
     // 初始化配置组件数据 - 支持扁平化数据结构
     initConfigComponents() {
         const { ruleData, configComponents } = this.data;
-        console.log('🚨🚨🚨 [UserRuleEdit] ========== 开始初始化组件 ==========');
-        console.log('🚨🚨🚨 [UserRuleEdit] ruleData:', JSON.stringify(ruleData, null, 2));
-        console.log('🚨🚨🚨 [UserRuleEdit] configComponents:', configComponents);
 
         if (!ruleData) {
-            console.error('🚨🚨🚨 [UserRuleEdit] 规则数据为空');
             return;
         }
 
         // 延迟执行，确保组件已渲染
         setTimeout(() => {
-            console.log('🚨🚨🚨 [UserRuleEdit] 开始遍历组件，延迟100ms后执行');
-            configComponents.forEach(component => {
-                console.log(`🚨🚨🚨 [UserRuleEdit] 正在处理组件: ${component.name}`);
+            for (const component of configComponents) {
                 const componentInstance = this.selectComponent(`#${component.name}`);
-                console.log(`🚨🚨🚨 [UserRuleEdit] 组件实例:`, componentInstance);
 
-                if (componentInstance && componentInstance.initConfigData) {
-                    console.log(`🚨🚨🚨 [UserRuleEdit] ✅ 找到组件实例和initConfigData方法，开始传递数据`);
-                    console.log(`🚨🚨🚨 [UserRuleEdit] 传递给 ${component.name} 的数据:`, ruleData);
+                if (componentInstance?.initConfigData) {
                     componentInstance.initConfigData(ruleData);
-                    console.log(`🚨🚨🚨 [UserRuleEdit] ✅ ${component.name} 数据传递完成`);
-                } else {
-                    console.error(`🚨🚨🚨 [UserRuleEdit] ❌ 未找到组件实例或initConfigData方法: ${component.name}`, componentInstance);
                 }
-            });
-            console.log('🚨🚨🚨 [UserRuleEdit] ========== 组件初始化完成 ==========');
+            }
         }, 100);
     },
 
@@ -291,9 +257,7 @@ Page({
                 setTimeout(() => {
                     const pages = getCurrentPages();
                     const prevPage = pages[pages.length - 2];
-                    if (prevPage && prevPage.onShow) {
-                        prevPage.onShow();
-                    }
+                    prevPage?.onShow?.();
                     wx.navigateBack();
                 }, 1500);
             })
@@ -316,17 +280,17 @@ Page({
         console.log('📋 [UserRuleEdit] 开始收集配置数据（扁平化），组件列表:', this.data.configComponents);
 
         // 遍历所有配置组件，收集数据并合并到扁平结构中
-        this.data.configComponents.forEach(component => {
-            console.log(`📋 [UserRuleEdit] 正在收集组件 ${component.name} 的数据`);
+        for (const component of this.data.configComponents) {
+            console.log('📋 [UserRuleEdit] 正在收集组件', component.name, '的数据');
             const componentInstance = this.selectComponent(`#${component.name}`);
 
-            if (componentInstance && componentInstance.getConfigData) {
+            if (componentInstance?.getConfigData) {
                 const data = componentInstance.getConfigData();
-                console.log(`📋 [UserRuleEdit] 组件 ${component.name} 返回数据:`, data);
+                console.log('📋 [UserRuleEdit] 组件', component.name, '返回数据:', data);
 
                 // 检查eatingRange字段的特殊处理
                 if (data.eatingRange) {
-                    console.log(`📋 [UserRuleEdit] 检测到eatingRange字段:`, {
+                    console.log('📋 [UserRuleEdit] 检测到eatingRange字段:', {
                         type: typeof data.eatingRange,
                         isArray: Array.isArray(data.eatingRange),
                         value: data.eatingRange,
@@ -337,15 +301,15 @@ Page({
                 // 将组件数据合并到扁平结构中
                 Object.assign(flatData, data);
             } else {
-                console.warn(`📋 [UserRuleEdit] 组件 ${component.name} 没有 getConfigData 方法`);
+                console.warn('📋 [UserRuleEdit] 组件', component.name, '没有 getConfigData 方法');
             }
-        });
+        }
 
         console.log('📋 [UserRuleEdit] 收集到的扁平化配置数据:', flatData);
 
         // 最终检查eatingRange字段
         if (flatData.eatingRange) {
-            console.log(`📋 [UserRuleEdit] 最终eatingRange字段检查:`, {
+            console.log('📋 [UserRuleEdit] 最终eatingRange字段检查:', {
                 type: typeof flatData.eatingRange,
                 isArray: Array.isArray(flatData.eatingRange),
                 value: flatData.eatingRange,
@@ -387,9 +351,7 @@ Page({
                 setTimeout(() => {
                     const pages = getCurrentPages();
                     const prevPage = pages[pages.length - 2];
-                    if (prevPage && prevPage.onShow) {
-                        prevPage.onShow();
-                    }
+                    prevPage?.onShow?.();
                     wx.navigateBack();
                 }, 1500);
             })

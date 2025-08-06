@@ -24,7 +24,6 @@
     <view class="config-components">
       <block wx:for="{{configComponents}}" wx:key="name">
         <view class="component-wrapper">
-          <view class="component-title">{{item.title}}</view>
           <!-- 动态加载配置组件 -->
           <view class="component-content">
             <!-- 4p-8421 配置组件 -->

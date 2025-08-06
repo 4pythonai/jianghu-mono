@@ -37,16 +37,12 @@ export class BaseConfigComponent {
             return;
         }
 
-        console.log(`🚨🚨🚨 [${this.componentName}] ========== 开始初始化配置数据 ==========`);
-        console.log(`🚨🚨🚨 [${this.componentName}] 接收到的configData:`, JSON.stringify(configData, null, 2));
 
         try {
             // 子类必须实现这个方法
             this.parseConfigData(configData);
             this.isInitialized = true;
 
-            console.log(`🚨🚨🚨 [${this.componentName}] 初始化完成，当前组件状态:`, this.getComponentState());
-            console.log(`🚨🚨🚨 [${this.componentName}] ========== 初始化配置数据完成 ==========`);
         } catch (error) {
             console.error(`❌ [${this.componentName}] 初始化配置数据失败:`, error);
             this.handleInitError(error);
