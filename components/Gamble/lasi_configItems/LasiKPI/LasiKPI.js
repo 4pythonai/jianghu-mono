@@ -234,12 +234,13 @@ Component({
         getConfigData() {
             const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
 
+            // 返回扁平化的数据结构，与UserRuleEdit的collectConfigData方法兼容
             return {
-                lasi_config: {
+                kpis: JSON.stringify({
                     indicators: selectedIndicators,
                     kpiValues,
                     totalCalculationType
-                }
+                })
             };
         },
 
