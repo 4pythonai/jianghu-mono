@@ -1,12 +1,19 @@
 // HoleRangeSelector 组件 - 起点洞与终点洞选择器
 
 import { holeRangeStore } from '../../../../stores/holeRangeStore';
+import { gameStore } from '../../../../stores/gameStore';
 import { autorun } from 'mobx-miniprogram';
+import { toJS } from 'mobx-miniprogram';
 
 Component({
     lifetimes: {
         attached() {
             const { holeList, startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
+            console.log(" GAME 🅰️🅱️🆎🅾️🆑++++", toJS(gameStore.gameData.holeList));
+
+            console.log("🅰️🅱️🆎🅾️🆑++++", toJS(holeList));
+
+
             this.updateHoleDisplay(holeList, startHoleindex, endHoleindex, roadLength);
             this.disposer = autorun(() => {
                 const { holeList, startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();

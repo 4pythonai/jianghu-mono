@@ -27,7 +27,9 @@
 <RealHolePlayListSetter
   wx:if="{{ifShowModal}}"
   startHoleindex="{{startHoleindex}}"
+  holeList="{{holeList}}"
   endHoleindex="{{endHoleindex}}"
+  roadLength="{{roadLength}}"
   selectType="{{selectType}}"
   bind:cancel="onModalCancel"
 />

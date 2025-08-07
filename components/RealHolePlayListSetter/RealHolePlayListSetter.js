@@ -17,6 +17,12 @@ Component({
             type: Number,
             value: null
         },
+
+        roadLength: {
+            type: Number,
+            value: 0
+        },
+
         // 新增属性：选择类型（start/end）
         selectType: {
             type: String,
