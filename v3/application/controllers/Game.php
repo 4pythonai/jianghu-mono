@@ -92,6 +92,13 @@ class Game extends MY_Controller {
         $ret = [];
         $ret['code'] = 200;
         $ret['message'] = '球场/半场更新成功';
+
+        //  更新这个比赛的洞序
+
+        $holeList = $this->MDetailGame->getHoleListByGameId($gameid);
+        $this->db->where('id', $gameid);
+        $this->db->update('t_game', ['holePlayList' => json_encode($holeList)]);
+
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 

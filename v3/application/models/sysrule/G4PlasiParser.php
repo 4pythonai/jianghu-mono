@@ -53,10 +53,8 @@ class G4PlasiParser  extends CI_Model {
       'creator_id' => $userid,
       'gambleSysName' => $gambleSysName,
       'gambleUserName' => $gambleUserName,
-      'playersNumber' => 4, // 默认4人
-
+      'playersNumber' => $config['playersNumber'],
       'RewardConfig' => json_encode($_reward),
-
       'dutyConfig' => $config['dutyConfig'],
       'PartnerDutyCondition' => $config['PartnerDutyCondition'],
 

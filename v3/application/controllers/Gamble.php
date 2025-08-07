@@ -76,6 +76,7 @@ class Gamble extends MY_Controller {
                 'holePlayList' => $holePlayListString,
                 'startHoleindex' => $startHoleindex,
                 'endHoleindex' => $endHoleindex,
+                'roadLength' => count($holePlayList),
                 'stroking_config' => $stroking_config
             ];
 
@@ -126,6 +127,7 @@ class Gamble extends MY_Controller {
 
         $startHoleindex = $json_paras['holePlayList'][0]['hindex'];
         $endHoleindex = $json_paras['holePlayList'][count($json_paras['holePlayList']) - 1]['hindex'];
+        $roadLength = count($json_paras['holePlayList']);
 
         $holePlayListString = implode(',', array_column($json_paras['holePlayList'], 'hindex'));
         $json_paras['holePlayList'] = $holePlayListString;
@@ -150,6 +152,7 @@ class Gamble extends MY_Controller {
             'holePlayList' => $json_paras['holePlayList'],
             'startHoleindex' => $startHoleindex,
             'endHoleindex' => $endHoleindex,
+            'roadLength' => $roadLength,
             'creator_id' => $json_paras['creator_id']
         ];
 

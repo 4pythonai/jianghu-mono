@@ -19,7 +19,7 @@ class G4P8421Parser  extends CI_Model {
             'creator_id' => $userid,
             'gambleSysName' => $gambleSysName,
             'gambleUserName' => $gambleUserName,
-            'playersNumber' => 4,
+            'playersNumber' => $config['playersNumber'],
             'badScoreBaseLine' => $config['badScoreBaseLine'],
             'badScoreMaxLost' => $config['badScoreMaxLost'] ?? 10000000,
             'dutyConfig' => $config['dutyConfig'],

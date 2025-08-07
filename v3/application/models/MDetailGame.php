@@ -27,7 +27,8 @@ class MDetailGame  extends CI_Model {
         $players = $this->getPlayers($game_id);
 
         // 获取球洞列表
-        $holeList = $this->getHoleListByGameId($game_id);
+        // $holeList = $this->getHoleListByGameId($game_id);
+        $holeList = json_decode($game_info['holeList'], true);
 
 
         // 获取游戏分组信息
@@ -110,6 +111,7 @@ class MDetailGame  extends CI_Model {
                 privacy_password,
                 creatorid,
                 name as game_name,
+                holeList,
                 open_time as game_start,
                 create_time
             FROM t_game
