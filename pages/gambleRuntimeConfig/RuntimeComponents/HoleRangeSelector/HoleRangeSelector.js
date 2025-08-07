@@ -27,7 +27,6 @@ Component({
             type: null, // 允许任何类型
             value: null,
             observer: function (newVal, oldVal) {
-                console.log('🕳️ [HoleRangeSelector] startHoleindex 属性变化:', { newVal, oldVal, type: typeof newVal });
                 // 直接更新组件数据
                 if (newVal !== oldVal) {
                     const numVal = newVal ? Number(newVal) : null;
@@ -41,10 +40,6 @@ Component({
 
     lifetimes: {
         attached() {
-            console.log('🕳️ [HoleRangeSelector] 组件初始化，属性值:', {
-                roadLength: this.properties.roadLength,
-                startHoleindex: this.properties.startHoleindex
-            });
 
             // 直接从 gameStore 获取洞数据
             const holeList = gameStore.gameData?.holeList || [];
@@ -90,47 +85,24 @@ Component({
             // 确保参数是数字类型
             const numStartHoleindex = startHoleindex ? Number(startHoleindex) : null;
             const numRoadLength = roadLength ? Number(roadLength) : 0;
-
-            console.log("🕳️ [HoleRangeSelector] updateHoleDisplay 参数:", {
-                startHoleindex: numStartHoleindex,
-                roadLength: numRoadLength,
-                holeListLength: holeList?.length,
-                holeList: holeList?.slice(0, 3) // 只显示前3个洞的信息
-            });
-
-            // 检查 holeList 的结构
-            if (holeList && holeList.length > 0) {
-                console.log("🕳️ [HoleRangeSelector] 第一个洞的结构:", holeList[0]);
-                console.log("🕳️ [HoleRangeSelector] 所有洞的 hindex:", holeList.map(h => h.hindex));
-            }
-
             const startHole = numStartHoleindex && holeList.length ?
                 holeList.find(hole => hole.hindex === numStartHoleindex) : null;
 
-            console.log("🕳️ [HoleRangeSelector] 找到的 startHole:", startHole);
 
             // 将 holeList 当作环形结构，从 startHoleindex 开始往后寻找第 roadLength 个洞作为 endHole
             let endHole = null;
             if (numStartHoleindex && holeList.length && numRoadLength > 0) {
                 const startIndex = holeList.findIndex(hole => hole.hindex === numStartHoleindex);
-                console.log("🕳️ [HoleRangeSelector] startIndex:", startIndex);
                 if (startIndex !== -1) {
                     // 计算结束洞的索引（环形结构）
                     const endIndex = (startIndex + numRoadLength - 1) % holeList.length;
                     endHole = holeList[endIndex];
-                    console.log("🕳️ [HoleRangeSelector] endIndex:", endIndex, "endHole:", endHole);
                 }
             }
 
             // 保留当前的 ifShowModal 状态，避免被覆盖
             const currentIfShowModal = this.data.ifShowModal;
 
-            console.log("🕳️ [HoleRangeSelector] 设置数据:", {
-                startHole: startHole?.holename,
-                endHole: endHole?.holename,
-                roadLength: numRoadLength,
-                ifShowModal: currentIfShowModal
-            });
 
             this.setData({
                 holeList,
@@ -150,12 +122,6 @@ Component({
             const startHoleindex = this.properties.startHoleindex ? Number(this.properties.startHoleindex) : null;
             const roadLength = this.properties.roadLength ? Number(this.properties.roadLength) : 0;
 
-            console.log('🕳️ [HoleRangeSelector] 点击起始洞，设置模态框:', {
-                ifShowModal: true,
-                startHoleindex,
-                selectType: dataType,
-                roadLength
-            });
 
             // 强制设置模态框为显示状态
             this.setData({
@@ -165,8 +131,6 @@ Component({
                 roadLength
             });
 
-            // 添加调试信息
-            console.log('🕳️ [HoleRangeSelector] setData 后检查 ifShowModal:', this.data.ifShowModal);
         },
 
         onSelectEndModal(e) {
@@ -177,12 +141,6 @@ Component({
             const startHoleindex = this.properties.startHoleindex ? Number(this.properties.startHoleindex) : null;
             const roadLength = this.properties.roadLength ? Number(this.properties.roadLength) : 0;
 
-            console.log('🕳️ [HoleRangeSelector] 点击终止洞，设置模态框:', {
-                ifShowModal: true,
-                startHoleindex,
-                selectType: dataType,
-                roadLength
-            });
 
             // 强制设置模态框为显示状态
             this.setData({
@@ -192,8 +150,6 @@ Component({
                 roadLength
             });
 
-            // 添加调试信息
-            console.log('🕳️ [HoleRangeSelector] setData 后检查 ifShowModal:', this.data.ifShowModal);
         },
 
         onModalCancel(e) {
@@ -206,7 +162,6 @@ Component({
          */
         onModalConfirm(e) {
             const result = e.detail;
-            console.log('🕳️ [HoleRangeSelector] 收到洞顺序确认:', result);
 
             // 更新holeRangeStore
             if (result.holePlayList) {
@@ -240,13 +195,6 @@ Component({
             // 从 properties 获取最新的参数值，并确保类型转换
             const startHoleindex = this.properties.startHoleindex ? Number(this.properties.startHoleindex) : null;
             const roadLength = this.properties.roadLength ? Number(this.properties.roadLength) : 0;
-
-            console.log('🕳️ [HoleRangeSelector] updateHoleDisplayFromProperties:', {
-                startHoleindex,
-                roadLength,
-                holeListLength: holeList.length
-            });
-
             this.updateHoleDisplay(holeList, startHoleindex, roadLength);
         },
 
@@ -265,12 +213,6 @@ Component({
                     endHoleindex = this.data.holeList[endIndex]?.hindex;
                 }
             }
-
-            console.log('🕳️ [HoleRangeSelector] getConfig 返回数据:', {
-                startHoleindex,
-                endHoleindex,
-                roadLength,
-            });
 
             return {
                 startHoleindex: startHoleindex,

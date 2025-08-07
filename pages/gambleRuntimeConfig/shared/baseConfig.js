@@ -90,7 +90,6 @@ const BaseConfig = {
             'runtimeConfig.playerIndicatorConfig': defaultConfig.playerIndicatorConfig
         });
 
-        console.log('[BaseConfig] 默认配置已设置到页面');
 
         // 强制检查8421配置是否为空，如果为空则重新初始化
         const is8421Game = processedData.gambleSysName && (
@@ -101,7 +100,6 @@ const BaseConfig = {
         if (is8421Game) {
             // 直接检查生成的默认配置，而不是从页面数据中获取
             if (!defaultConfig.playerIndicatorConfig || Object.keys(defaultConfig.playerIndicatorConfig).length === 0) {
-                console.warn('[BaseConfig] 检测到生成的8421配置为空，强制重新初始化');
 
                 // 重新获取默认配置
                 const retryConfig = GameConfig.getDefaultConfig(
@@ -113,7 +111,6 @@ const BaseConfig = {
                     'runtimeConfig.playerIndicatorConfig': retryConfig.playerIndicatorConfig
                 });
 
-                console.log('[BaseConfig] 强制重新初始化8421配置完成:', retryConfig.playerIndicatorConfig);
             } else {
                 console.log('[BaseConfig] 8421配置已正确生成:', defaultConfig.playerIndicatorConfig);
             }
@@ -129,21 +126,12 @@ const BaseConfig = {
      * @param {Object} pageContext 页面上下文
      */
     loadEditConfig(editConfig, pageContext) {
-        console.log('[BaseConfig] 开始加载编辑配置:', editConfig);
-        console.log('[BaseConfig] 编辑配置字段详情:', {
-            hasRedBlueConfig: 'red_blue_config' in editConfig,
-            redBlueConfigValue: editConfig.red_blue_config,
-            redBlueConfigType: typeof editConfig.red_blue_config,
-            redBlueConfigLength: editConfig.red_blue_config?.length,
-            allKeys: Object.keys(editConfig)
-        });
 
         // 加载分组配置
         if (editConfig.red_blue_config !== undefined && editConfig.red_blue_config !== null) {
             pageContext.setData({
                 'runtimeConfig.red_blue_config': editConfig.red_blue_config
             });
-            console.log('[BaseConfig] 分组配置加载:', editConfig.red_blue_config);
         } else {
             console.log('[BaseConfig] 分组配置为空或未定义');
         }
@@ -261,19 +249,6 @@ const BaseConfig = {
         try {
             const apiMethod = isEdit ? 'updateRuntimeConfig' : 'addRuntimeConfig';
 
-            console.log('[BaseConfig] 保存配置调试信息:', {
-                configId,
-                configIdType: typeof configId,
-                isEdit,
-                apiMethod,
-                gameId,
-                groupId,
-                groupIdType: typeof groupId,
-                hasGroupId: !!groupId,
-                saveDataKeys: Object.keys(saveData),
-                hasId: !!saveData.id,
-                id: saveData.id
-            });
 
             const res = await app.api.gamble[apiMethod](saveData);
             if (res.code === 200) {

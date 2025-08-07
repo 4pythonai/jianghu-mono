@@ -79,20 +79,9 @@ Component({
             // 确保参数是数字类型
             const numStartHoleindex = startHoleindex ? Number(startHoleindex) : null;
             const numRoadLength = roadLength ? Number(roadLength) : 0;
-
-            // 如果没有指定起始洞，使用第一个洞
             const actualStartHoleindex = numStartHoleindex || holeList[0].hindex;
-
-            // 如果没有指定道路长度，使用所有洞
             const actualRoadLength = numRoadLength || holeList.length;
 
-            console.log('🕳️ [RealHolePlayListSetter] 计算洞范围:', {
-                startHoleindex: numStartHoleindex,
-                roadLength: numRoadLength,
-                actualStartHoleindex,
-                actualRoadLength,
-                holeListLength: holeList.length
-            });
 
             // 找到起始洞在holeList中的位置
             const startIndex = holeList.findIndex(hole => hole.hindex === actualStartHoleindex);
@@ -169,7 +158,6 @@ Component({
 
             if (selectType === 'start') {
                 const hindex = Number(e.currentTarget.dataset.hindex);
-                console.log('🕳️ 选择起始洞:', hindex);
 
                 // 重新构建holePlayList，以选中的洞为起始
                 const newHolePlayList = this.calculateHolePlayList(this.properties.holeList, hindex, this.properties.roadLength);
@@ -185,7 +173,6 @@ Component({
 
             if (selectType === 'end') {
                 const hindex = Number(e.currentTarget.dataset.hindex);
-                console.log('🕳️ 选择终止洞:', hindex);
 
                 // 在displayHoleList中找到终止洞的位置
                 const endIndex = this.data.displayHoleList.findIndex(hole => hole.hindex === hindex);
@@ -197,9 +184,6 @@ Component({
 
                 // 从displayHoleList中获取从开始到终止洞的所有洞
                 const selectedHoles = this.data.displayHoleList.slice(0, endIndex + 1);
-
-                console.log('🕳️ 选择的洞:', selectedHoles.map(h => ({ hindex: h.hindex, holename: h.holename, inPlaylist: h.inPlaylist })));
-
                 // 重新构建显示列表，保持选中状态
                 const newDisplayHoleList = this.data.displayHoleList.map((hole, index) => ({
                     ...hole,
@@ -220,14 +204,6 @@ Component({
                 startHoleindex: this.data.holePlayList[0]?.hindex,
                 roadLength: this.data.holePlayList.length
             };
-
-            console.log('🕳️ [RealHolePlayListSetter] 确认洞顺序:', result);
-            console.log('🕳️ [RealHolePlayListSetter] 调试信息:', {
-                holePlayListLength: this.data.holePlayList?.length,
-                startHoleindex: result.startHoleindex,
-                roadLength: result.roadLength,
-                roadLengthType: typeof result.roadLength
-            });
 
             this.triggerEvent('confirm', result);
             this.triggerEvent('cancel');
