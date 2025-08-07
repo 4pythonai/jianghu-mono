@@ -1,7 +1,7 @@
 /* 用户规则编辑页面样式 */
 .user-rule-edit-container {
 	min-height: 100vh;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: #f5f5f5;
 	padding: 20rpx;
 	box-sizing: border-box;
 }
@@ -10,7 +10,7 @@
 .page-header {
 	text-align: center;
 	padding: 40rpx 0;
-	color: white;
+	color: #333;
 }
 
 .header-title {
@@ -21,7 +21,7 @@
 
 .header-subtitle {
 	font-size: 28rpx;
-	opacity: 0.8;
+	color: #666;
 }
 
 /* 配置表单 */
@@ -57,7 +57,7 @@
 }
 
 .form-input:focus {
-	border-color: #667eea;
+	border-color: #4caf50;
 	background: white;
 }
 
@@ -94,7 +94,7 @@
 .save-btn {
 	flex: 1;
 	height: 88rpx;
-	border-radius: 44rpx;
+	border-radius: 16rpx;
 	font-size: 28rpx;
 	font-weight: 600;
 	border: none;
@@ -119,22 +119,25 @@
 }
 
 .cancel-btn {
-	background: #f8f9fa;
+	background: white;
 	color: #666;
+	border: 2rpx solid #ddd;
 	flex: 1;
 }
 
 .cancel-btn:active {
-	background: #e9ecef;
+	background: #f8f9fa;
+	border-color: #ccc;
 }
 
 .cancel-btn[disabled] {
 	opacity: 0.6;
 	background: #ccc;
+	border-color: #ccc;
 }
 
 .save-btn {
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
 	color: white;
 	flex: 1.2;
 }
