@@ -85,7 +85,7 @@ Page({
             gameDataString = JSON.stringify(holeListInfo, null, 2);
         }
 
-        console.log('[🔴🔴🔴🔴🔴 holeListInfo:', gameDataString);
+        console.log('[🔴🔴🔴🔴🔴 gameDataString:holeListInfo:', gameDataString);
 
         // 直接设置配置数据
         this.setData({
