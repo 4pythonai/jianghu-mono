@@ -2,7 +2,7 @@
 <view class="sys-edit-container">
   <!-- 页面标题 -->
   <view class="page-header">
-    <view class="header-title">{{gameName}}规则配置</view>
+    <view class="header-title">{{_gambleSysName}}规则配置</view>
     <view class="header-subtitle">配置新的系统规则</view>
   </view>
 
@@ -13,7 +13,7 @@
       <view class="form-label">规则名称</view>
       <input
         class="form-input"
-        value="{{user_rulename}}"
+        value="{{_gambleUserName}}"
         bindinput="onRuleNameInput"
         placeholder="请输入规则名称"
         maxlength="50"
@@ -27,7 +27,7 @@
           <!-- 动态加载配置组件 -->
           <view class="component-content">
             <!-- 4p-8421 配置组件 -->
-            <block wx:if="{{gameType === '4p-8421'}}">
+            <block wx:if="{{_gambleSysName === '4p-8421'}}">
               <E8421Koufen
                 wx:if="{{item.name === 'E8421Koufen'}}"
                 id="{{item.name}}"
@@ -38,7 +38,7 @@
             </block>
 
             <!-- 4p-lasi 配置组件 -->
-            <block wx:elif="{{gameType === '4p-lasi'}}">
+            <block wx:elif="{{_gambleSysName === '4p-lasi'}}">
               <LasiKoufen
                 wx:if="{{item.name === 'LasiKoufen'}}"
                 id="{{item.name}}"

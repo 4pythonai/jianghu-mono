@@ -159,7 +159,8 @@ Component({
                 id: ruleForm.id,
                 gambleUserName: ruleForm.title,
                 description: ruleForm.description,
-                gambleSysName: ruleForm.type
+                gambleSysName: ruleForm.type,
+                playersNumber: ruleForm.playersNumber // 直接使用后台字段
             };
 
             apiMethod(apiData).then(res => {
@@ -224,6 +225,8 @@ Component({
                 }
             });
         },
+
+
 
         // 卡片点击跳转运行时配置页
         onRunTimeConfig(e) {

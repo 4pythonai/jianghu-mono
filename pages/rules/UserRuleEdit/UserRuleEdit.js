@@ -6,9 +6,8 @@ Page({
     data: {
         ruleId: '', // 规则ID
         ruleData: null, // 规则数据
-        gameType: '', // 游戏类型
-        gameName: '', // 游戏名称
-        user_rulename: '', // 规则名称
+        _gambleSysName: '',
+        _gambleUserName: '',
         saving: false, // 保存状态
         configComponents: [] // 配置组件列表
     },
@@ -49,35 +48,34 @@ Page({
     initializeWithRuleData(ruleData) {
 
         // 确定游戏类型
-        const gameType = ruleData.gameType || ruleData.gambleSysName;
+        const _gambleSysName = ruleData.gambleSysName;
 
-        console.log('📋 [UserRuleEdit] 映射后的游戏类型:', gameType);
+        console.log('📋 [UserRuleEdit] 映射后的游戏类型:', _gambleSysName);
 
         // 获取游戏配置
-        const gameConfig = GameConfig.getGameType(gameType);
+        const gameConfig = GameConfig.getGameType(_gambleSysName);
         console.log('📋 [UserRuleEdit] 获取到的游戏配置:', gameConfig);
 
         if (!gameConfig) {
-            console.error('📋 [UserRuleEdit] 无效的游戏类型:', gameType);
+            console.error('📋 [UserRuleEdit] 无效的游戏类型:', _gambleSysName);
             console.error('📋 [UserRuleEdit] 原始规则数据:', ruleData);
             wx.showToast({
-                title: `无效的游戏类型: ${gameType}`,
+                title: `无效的游戏类型: ${_gambleSysName}`,
                 icon: 'none'
             });
             setTimeout(() => wx.navigateBack(), 1500);
             return;
         }
 
-        // 设置页面数据
+        // 设置页面数据 gambleUserName
         this.setData({
             ruleData,
-            gameType: gameType,
-            gameName: gameConfig.name,
-            user_rulename: ruleData.title || ruleData.gambleUserName || ruleData.user_rulename || `${gameConfig.name}规则`
+            _gambleSysName: _gambleSysName,
+            _gambleUserName: ruleData.gambleUserName
         });
 
         // 根据游戏类型加载对应的配置组件
-        this.loadConfigComponents(gameType);
+        this.loadConfigComponents(_gambleSysName);
     },
 
     // 加载规则数据
@@ -97,16 +95,16 @@ Page({
             const ruleData = apiResponse.data;
 
             // 确定游戏类型
-            const gameType = ruleData.gameType || ruleData.gambleSysName;
+            const _gambleSysName = ruleData.gambleSysName;
 
             // 获取游戏配置
-            const gameConfig = GameConfig.getGameType(gameType);
+            const gameConfig = GameConfig.getGameType(_gambleSysName);
             console.log('📋 [UserRuleEdit] API返回数据获取到的游戏配置:', gameConfig);
 
             if (!gameConfig) {
-                console.error('📋 [UserRuleEdit] API返回数据无效的游戏类型:', gameType);
+                console.error('📋 [UserRuleEdit] API返回数据无效的游戏类型:', _gambleSysName);
                 console.error('📋 [UserRuleEdit] API返回的原始数据:', ruleData);
-                throw new Error(`无效的游戏类型: ${gameType}`);
+                throw new Error(`无效的游戏类型: ${_gambleSysName}`);
             }
 
             // 检查config字段
@@ -114,14 +112,14 @@ Page({
             // 设置页面数据
             this.setData({
                 ruleData,
-                gameType: gameType,
+                _gambleSysName: _gambleSysName,
                 gameName: gameConfig.name,
-                user_rulename: ruleData.title || ruleData.gambleUserName || ruleData.user_rulename || `${gameConfig.name}规则`
+                _gambleUserName: ruleData.gambleUserName
             });
 
 
             // 根据游戏类型加载对应的配置组件
-            this.loadConfigComponents(gameType);
+            this.loadConfigComponents(_gambleSysName);
 
         } catch (error) {
             console.error('📋 [UserRuleEdit] 加载规则数据失败:', error);
@@ -136,11 +134,11 @@ Page({
     },
 
     // 根据游戏类型加载配置组件
-    loadConfigComponents(gameType) {
+    loadConfigComponents(_gambleSysName) {
         let components = [];
 
         // 根据游戏类型确定需要的配置组件
-        switch (gameType) {
+        switch (_gambleSysName) {
             case '4p-8421':
                 components = [
                     { name: 'E8421Koufen', title: '扣分规则' },
@@ -194,15 +192,15 @@ Page({
     // 规则名称输入事件
     onRuleNameInput(e) {
         const value = e.detail.value;
-        this.setData({ user_rulename: value });
+        this.setData({ _gambleUserName: value });
         console.log('📋 [UserRuleEdit] 规则名称已更新:', value);
     },
 
     // 验证表单
     validateForm() {
-        const { user_rulename } = this.data;
+        const { _gambleUserName } = this.data;
 
-        if (!user_rulename || user_rulename.trim() === '') {
+        if (!_gambleUserName || _gambleUserName.trim() === '') {
             wx.showToast({
                 title: '请输入规则名称',
                 icon: 'none'
@@ -210,7 +208,7 @@ Page({
             return false;
         }
 
-        if (user_rulename.trim().length < 2) {
+        if (_gambleUserName.trim().length < 2) {
             wx.showToast({
                 title: '规则名称至少2个字符',
                 icon: 'none'
@@ -235,10 +233,10 @@ Page({
         // 构建更新数据 - 使用扁平化结构
         const updateData = {
             id: this.data.ruleId,
-            gambleUserName: this.data.user_rulename,
-            gambleSysName: this.data.gameType, // 添加游戏系统名称
+            gambleUserName: this.data._gambleUserName,
+            gambleSysName: this.data._gambleSysName,
+            playersNumber: this.data.ruleData?.playersNumber, // 直接使用后台字段
             updateTime: new Date().toISOString(),
-            // 合并配置数据到顶层
             ...configData
         };
 
@@ -379,6 +377,8 @@ Page({
             }
         });
     },
+
+
 
     // 页面卸载
     onUnload() {

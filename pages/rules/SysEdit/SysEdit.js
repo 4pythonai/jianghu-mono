@@ -4,9 +4,8 @@ const app = getApp()
 
 Page({
     data: {
-        gameType: '', // 游戏类型，如 '4p-8421'
-        gameName: '', // 游戏名称
-        user_rulename: '', // 规则名称
+        _gambleSysName: '', // 游戏类型，如 '4p-8421'
+        _gambleUserName: '', // 规则名称  gambleUserName
         saving: false, // 保存状态
         configComponents: [] // 配置组件列表
     },
@@ -37,9 +36,8 @@ Page({
 
         // 设置页面数据
         this.setData({
-            gameType,
-            gameName: gameConfig.name,
-            user_rulename: `${gameConfig.name}规则`
+            _gambleSysName: gameType,
+            _gambleUserName: `${gameConfig.name}规则`
         });
 
         // 根据游戏类型加载对应的配置组件
@@ -47,11 +45,11 @@ Page({
     },
 
     // 根据游戏类型加载配置组件
-    loadConfigComponents(gameType) {
+    loadConfigComponents(_gambleSysName) {
         let components = [];
 
         // 根据游戏类型确定需要的配置组件
-        switch (gameType) {
+        switch (_gambleSysName) {
             case '4p-8421':
                 components = [
                     { name: 'E8421Koufen', title: '扣分规则' },
@@ -82,15 +80,15 @@ Page({
     // 规则名称输入事件
     onRuleNameInput(e) {
         const value = e.detail.value;
-        this.setData({ user_rulename: value });
+        this.setData({ _gambleUserName: value });
         console.log('📋 [SysEdit] 规则名称已更新:', value);
     },
 
     // 验证表单
     validateForm() {
-        const { user_rulename } = this.data;
+        const { _gambleUserName } = this.data;
 
-        if (!user_rulename || user_rulename.trim() === '') {
+        if (!_gambleUserName || _gambleUserName.trim() === '') {
             wx.showToast({
                 title: '请输入规则名称',
                 icon: 'none'
@@ -98,7 +96,7 @@ Page({
             return false;
         }
 
-        if (user_rulename.trim().length < 2) {
+        if (_gambleUserName.trim().length < 2) {
             wx.showToast({
                 title: '规则名称至少2个字符',
                 icon: 'none'
@@ -122,12 +120,11 @@ Page({
 
         // 构建规则数据 - 使用扁平化结构
         const ruleData = {
-            gambleUserName: this.data.user_rulename,
-            gambleSysName: this.data.gameType,
-            playersNumber: 4, // 根据游戏类型设置
+            gambleUserName: this.data._gambleUserName,
+            gambleSysName: this.data._gambleSysName,
+            playersNumber: 4, // 默认4人，后台会根据游戏类型处理
             type: 'system',
             createTime: new Date().toISOString(),
-            // 合并配置数据到顶层
             ...configData
         };
 
@@ -214,6 +211,8 @@ Page({
             }
         });
     },
+
+
 
     // 页面卸载
     onUnload() {

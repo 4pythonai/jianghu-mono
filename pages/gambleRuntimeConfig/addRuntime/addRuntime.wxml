@@ -40,7 +40,7 @@
 
     <!-- 让杆置 -->
     <view class="section">
-      <view class="section" wx:if="{{needsGrouping}}">
+      <view class="section" wx:if="{{needsStroking}}">
         <Stroking
           players="{{players}}"
           strokingConfig="{{runtimeConfig.stroking_config}}"
