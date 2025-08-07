@@ -61,40 +61,29 @@ Component({
             app.api.gamble.getUserGambleRules().then(res => {
                 console.log('📋 [MyRules] 获取用户规则成功:', res);
 
-
                 if (res.code === 200 && res.userRules) {
-                    // 预处理规则数据，为每个规则添加gambleSysName
-                    const processedRules = {
-                        twoPlayers: this.processRulesWithSysName(res.userRules.twoPlayers || [], 'twoPlayers'),
-                        threePlayers: this.processRulesWithSysName(res.userRules.threePlayers || [], 'threePlayers'),
-                        fourPlayers: this.processRulesWithSysName(res.userRules.fourPlayers || [], 'fourPlayers')
+                    // 直接使用API返回的数据
+                    const myRules = {
+                        twoPlayers: res.userRules.twoPlayers || [],
+                        threePlayers: res.userRules.threePlayers || [],
+                        fourPlayers: res.userRules.fourPlayers || []
                     };
 
                     // 计算统计信息
                     const total = {
-                        twoPlayers: processedRules.twoPlayers.length,
-                        threePlayers: processedRules.threePlayers.length,
-                        fourPlayers: processedRules.fourPlayers.length,
-                        overall: processedRules.twoPlayers.length + processedRules.threePlayers.length + processedRules.fourPlayers.length
+                        twoPlayers: myRules.twoPlayers.length,
+                        threePlayers: myRules.threePlayers.length,
+                        fourPlayers: myRules.fourPlayers.length,
+                        overall: myRules.twoPlayers.length + myRules.threePlayers.length + myRules.fourPlayers.length
                     };
 
                     this.setData({
-                        myRules: processedRules,
-                        total: total,
+                        myRules,
+                        total,
                         loading: false
                     });
 
-                    // 调试信息
-                    console.log('📋 [MyRules] 设置数据完成:');
-                    console.log('📋 [MyRules] fourPlayers规则数量:', processedRules.fourPlayers.length);
-                    console.log('📋 [MyRules] total统计:', total);
-                    processedRules.fourPlayers.forEach((rule, index) => {
-                        console.log(`📋 [MyRules] 规则${index + 1}:`, {
-                            name: rule.gambleUserName || rule.user_rulename,
-                            gambleSysName: rule.gambleSysName,
-                            gamblesysname: rule.gamblesysname
-                        });
-                    });
+                    console.log('📋 [MyRules] 设置数据完成:', total);
                 } else {
                     console.error('📋 [MyRules] API返回错误:', res);
                     this.handleLoadError('获取规则失败');
@@ -102,18 +91,6 @@ Component({
             }).catch(err => {
                 console.error('📋 [MyRules] 获取用户规则失败:', err);
                 this.handleLoadError('网络错误, 请重试');
-            });
-        },
-
-        // 为规则数据添加gambleSysName
-        processRulesWithSysName(rules, group) {
-            return rules.map(rule => {
-                const gambleSysName = this.mapUserRuleToRuleType(rule, group);
-                console.log(`📋 [MyRules] 规则 "${rule.gambleUserName || rule.user_rulename}" 映射为: ${gambleSysName}`);
-                return {
-                    ...rule,
-                    gambleSysName: gambleSysName
-                };
             });
         },
 
@@ -143,33 +120,15 @@ Component({
 
         // 长按规则处理
         onLongPressRule(e) {
-            const { id, group, item } = e.detail || e.currentTarget.dataset;
-
-            if (!id || !group) {
-                wx.showToast({
-                    title: '操作失败, 参数错误',
-                    icon: 'none'
-                });
-                return;
-            }
-
-            // 如果没有group参数，默认为fourPlayers
+            const { id, group } = e.detail || e.currentTarget.dataset;
             const targetGroup = group || 'fourPlayers';
 
-            const rules = this.data.myRules[targetGroup] || [];
+            const rules = this.data.myRules[targetGroup];
             const rule = rules.find(r => r.userRuleId === id);
-
-            if (!rule) {
-                wx.showToast({
-                    title: '操作失败, 规则不存在',
-                    icon: 'none'
-                });
-                return;
-            }
 
             wx.showModal({
                 title: '确认删除',
-                content: `确定要删除规则"${rule.gambleUserName || rule.user_rulename || rule.title}"吗？`,
+                content: `确定要删除规则"${rule.gambleUserName}"吗？`,
                 success: (res) => {
                     if (res.confirm) {
                         this.deleteRule(id, targetGroup);
@@ -186,9 +145,6 @@ Component({
                 // 从列表中移除
                 const newRules = { ...this.data.myRules };
                 newRules[group] = newRules[group].filter(r => r.userRuleId !== id);
-
-                // 重新计算gambleSysName（虽然删除后不需要，但保持数据一致性）
-                newRules[group] = this.processRulesWithSysName(newRules[group], group);
 
                 // 更新统计
                 const newTotal = { ...this.data.total };
@@ -220,16 +176,7 @@ Component({
         // 编辑规则
         onEditRule(e) {
             const { item, group } = e.detail || e.currentTarget.dataset;
-            console.log('📋 [MyRules] 编辑规则:', item, '分组:', group);
-            console.log('📋 [MyRules] 规则数据结构:', {
-                id: item.id,
-                userRuleId: item.userRuleId,
-                gamblesysname: item.gamblesysname,
-                gambleSysName: item.gambleSysName,
-                gambleUserName: item.gambleUserName,
-                user_rulename: item.user_rulename,
-                title: item.title
-            });
+            console.log('📋 [MyRules] 编辑规则:', item.gambleUserName);
 
             // 添加分组信息到规则数据
             const ruleDataWithGroup = {
@@ -237,16 +184,14 @@ Component({
                 group: group || 'fourPlayers'
             };
 
-            console.log('📋 [MyRules] 准备传递的规则数据:', ruleDataWithGroup);
-
             // 编码规则数据
             const encodedRuleData = encodeURIComponent(JSON.stringify(ruleDataWithGroup));
 
             // 跳转到UserRuleEdit页面
             wx.navigateTo({
-                url: `/pages/rules/UserRuleEdit/UserRuleEdit?ruleId=${item.userRuleId || item.id}&ruleData=${encodedRuleData}`,
+                url: `/pages/rules/UserRuleEdit/UserRuleEdit?ruleId=${item.userRuleId}&ruleData=${encodedRuleData}`,
                 success: () => {
-                    console.log('📋 [MyRules] 成功跳转到UserRuleEdit页面, 规则ID:', item.userRuleId || item.id);
+                    console.log('📋 [MyRules] 成功跳转到UserRuleEdit页面');
                 },
                 fail: (err) => {
                     console.error('📋 [MyRules] 跳转失败:', err);
@@ -264,33 +209,24 @@ Component({
             const { gameStore } = require('../../../../stores/gameStore');
             const { holeRangeStore } = require('../../../../stores/holeRangeStore');
 
-            // 直接使用已经计算好的gambleSysName
             const gambleSysName = item.gambleSysName;
-            console.log(`📋 [MyRules] 查看规则 "${item.gambleUserName || item.user_rulename}", 使用预计算的gambleSysName: ${gambleSysName}`);
-
-            if (!gambleSysName) {
-                wx.showToast({
-                    title: '无法识别规则类型',
-                    icon: 'none'
-                });
-                return;
-            }
+            console.log(`📋 [MyRules] 查看规则 "${item.gambleUserName}", 类型: ${gambleSysName}`);
 
             // 从 holeRangeStore 获取洞数据
             const { holeList, holePlayList } = holeRangeStore.getState();
 
-            // 准备传递给运行时配置页面的数据(简化版, 减少URL长度)
+            // 准备传递给运行时配置页面的数据
             const runtimeConfigData = {
-                gambleSysName: gambleSysName,
-                gameId: gameStore.gameid || null,
-                playerCount: gameStore.players?.length,
-                holeCount: holeList?.length,
-                userRuleId: item.userRuleId || null,
-                holePlayList: holePlayList || [],
-                holeList: holeList || [],
-                userRuleName: item.gambleUserName || item.user_rulename || item.title,
-                fromUserRule: true, // 标识这是从用户规则进入的
-                userRule: item // 传递完整的用户规则对象
+                gambleSysName,
+                gameId: gameStore.gameid,
+                playerCount: gameStore.players.length,
+                holeCount: holeList.length,
+                userRuleId: item.userRuleId,
+                holePlayList,
+                holeList,
+                userRuleName: item.gambleUserName,
+                fromUserRule: true,
+                userRule: item
             };
 
             // 编码传递的数据
@@ -300,7 +236,7 @@ Component({
             wx.navigateTo({
                 url: `/pages/gambleRuntimeConfig/addRuntime/addRuntime?data=${encodedData}`,
                 success: () => {
-                    console.log('🎮 成功跳转到运行时配置页面, 用户规则:', item.gambleUserName || item.user_rulename);
+                    console.log('🎮 成功跳转到运行时配置页面');
                 },
                 fail: (err) => {
                     console.error('🎮 跳转失败:', err);
@@ -310,12 +246,6 @@ Component({
                     });
                 }
             });
-        },
-
-        // 将用户规则映射到标准规则类型
-        mapUserRuleToRuleType(userRule, group) {
-            // 直接使用gambleSysName
-            return userRule.gambleSysName;
         },
 
         // 下拉刷新处理

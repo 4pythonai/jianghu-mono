@@ -33,7 +33,7 @@ Component({
         'gambleSysName, userRule': function (gambleSysName, userRule) {
             RuntimeComponentsUtils.logger.log('SUMMARY', '规则属性变化', {
                 gambleSysName: gambleSysName,
-                userRule: userRule?.gambleUserName || userRule?.user_rulename
+                userRule: userRule?.gambleUserName
             });
 
             // 更新显示名称
@@ -71,7 +71,6 @@ Component({
             // 如果有用户规则, 优先显示用户规则名称
             if (this.data.userRule) {
                 displayName = this.data.userRule.gambleUserName ||
-                    this.data.userRule.user_rulename ||
                     this.data.userRule.title ||
                     '用户自定义规则';
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用用户规则名称', displayName);
