@@ -43,8 +43,14 @@ Component({
          * @param {number} endHoleindex 终止洞索引
          */
         updateHoleDisplay(holeList, startHoleindex, endHoleindex, roadLength) {
+
+            console.log("startHoleindex", startHoleindex);
+            console.log("endHoleindex", endHoleindex);
+            console.log("roadLength", roadLength);
+
             const startHole = startHoleindex && holeList.length ?
                 holeList.find(hole => hole.hindex === startHoleindex) : null;
+
             const endHole = endHoleindex && holeList.length ?
                 holeList.find(hole => hole.hindex === endHoleindex) : null;
 
