@@ -136,7 +136,7 @@
     </view>
 
     <view class="modal-actions">
-      <button class="modal-btn cancel" bind:tap="handleClear" disabled="{{isSaving}}">清除</button>
+      <button class="modal-btn cancel" bind:tap="handleClear" disabled="{{isSaving}}">关闭</button>
       <button
         class="modal-btn confirm"
         bind:tap="handleConfirm"

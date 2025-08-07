@@ -246,42 +246,9 @@ Component({
         },
 
         handleClear() {
-            // 🔧 防止在保存过程中执行清除操作
-            if (this.data.isSaving) {
-                wx.showToast({ title: '请稍后再试', icon: 'none' });
-                return;
-            }
+            this.hide();
+            // 关闭弹窗
 
-            wx.showModal({
-                title: '确认清除',
-                content: '确定要清除本洞所有人的成绩吗？',
-                success: async (res) => {
-                    if (res.confirm) {
-                        // 🔧 再次检查保存状态, 防止用户在弹窗期间触发了其他保存操作
-                        if (this.data.isSaving) {
-                            wx.showToast({ title: '请稍后再试', icon: 'none' });
-                            return;
-                        }
-
-                        const clearedScores = this.data.localScores.map(item => ({
-                            ...item,
-                            score: 0,
-                            putts: 0,
-                            penalty_strokes: 0,
-                            sand_save: 0,
-                        }));
-                        this.setData({ localScores: clearedScores });
-
-                        try {
-                            const saveResult = await this._saveChanges();
-                            if (saveResult !== false) {
-                                this.hide(); // 只有保存成功才关闭面板
-                            }
-                        } catch (error) {
-                        }
-                    }
-                }
-            });
         },
 
         async handleMaskClick() {

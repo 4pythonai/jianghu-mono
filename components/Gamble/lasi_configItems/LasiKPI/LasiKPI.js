@@ -258,12 +258,6 @@ Component({
 
             // 打印配置结果数组
             const configResult = this.getConfigResult();
-            console.log('🎯 [LasiKPI] 配置结果数组:', configResult);
-
-            // 打印Store中的实际数据
-            console.log('🎯 [LasiKPI] Store中的lasi_config:', G4PLasiStore.lasi_config);
-            console.log('🎯 [LasiKPI] Store中的indicators:', G4PLasiStore.lasi_config?.indicators);
-            console.log('🎯 [LasiKPI] ========================');
         },
 
         // 初始化配置数据 - 供UserRuleEdit页面调用

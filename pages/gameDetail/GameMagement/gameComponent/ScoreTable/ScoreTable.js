@@ -20,7 +20,6 @@ Component({
 
     lifetimes: {
         attached() {
-            console.log('ScoreTable attached, gameStore.red_blue:', gameStore.red_blue);
             try {
                 // ** 核心:创建 Store 和 Component 的绑定 **
                 this.storeBindings = createStoreBindings(this, {
@@ -52,7 +51,6 @@ Component({
                 // 数据加载后滚动到最左侧
                 this.scrollToLeft();
 
-                console.log('📊 [ScoreTable] 组件已挂载，绑定创建成功');
             } catch (error) {
                 console.error('❌ [ScoreTable] 组件挂载失败:', error);
             }
@@ -69,7 +67,6 @@ Component({
                 if (this.scoreStoreBindings) {
                     this.scoreStoreBindings.destroyStoreBindings();
                 }
-                console.log('📊 [ScoreTable] 组件已卸载，绑定已清理');
             } catch (error) {
                 console.error('❌ [ScoreTable] 组件卸载时出错:', error);
             }
@@ -104,7 +101,6 @@ Component({
                     return { ...cell, colorTag };
                 });
             });
-            console.log('🟡 displayScores:', displayScores);
             // 计算总分栏，保证和表格主体一致
             const displayTotals = displayScores.map(playerArr =>
                 playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
@@ -161,14 +157,7 @@ Component({
                         }
                     }
 
-                    console.log(`📊 [ScoreTable] 数据更新: ${playerCount}个玩家, ${holeCount}个洞, 有效数据: ${validData}, 缺失数据: ${missingData}`);
 
-                    if (hasRealData) {
-                        console.log('📊 [ScoreTable] 检测到分数数据更新, 界面应该同步');
-                        console.log('📊 [ScoreTable] 变化的格子:', changedCells.slice(0, 5)); // 只显示前5个
-                    } else {
-                        console.log('📊 [ScoreTable] 监听到变化但都是初始数据(0分)');
-                    }
 
                     // 如果缺失数据过多，发出警告
                     if (missingData > 0) {
@@ -189,7 +178,6 @@ Component({
                     return;
                 }
 
-                console.log('📊 [ScoreTable] players变化检测:', newPlayers?.length);
                 if (newPlayers?.length > 0) {
                     console.log('📊 [ScoreTable] 玩家数据示例:', newPlayers[0]);
                 }
@@ -206,7 +194,6 @@ Component({
                     return;
                 }
 
-                console.log('📊 [ScoreTable] holeList变化检测:', newHoles?.length);
                 if (newHoles?.length > 0) {
                     console.log('📊 [ScoreTable] 球洞数据示例:', newHoles[0]);
                 }
