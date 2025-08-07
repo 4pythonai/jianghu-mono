@@ -216,7 +216,7 @@ Component({
                 holeRangeStore.setRoadLength(result.roadLength);
             }
             if (result.startHoleindex) {
-                holeRangeStore.setHoleRange(result.startHoleindex);
+                holeRangeStore.setStartIndex(result.startHoleindex);
             }
 
             // 更新组件显示数据
@@ -254,9 +254,7 @@ Component({
         getConfig() {
             const { startHoleindex, roadLength } = this.data;
 
-            // 从 holeRangeStore 获取 holePlayListStr
             const { holePlayList } = holeRangeStore.getState();
-            const holePlayListStr = holePlayList.map(hole => hole.hindex).join(',');
 
             // 计算结束洞索引
             let endHoleindex = null;
@@ -272,14 +270,12 @@ Component({
                 startHoleindex,
                 endHoleindex,
                 roadLength,
-                holePlayListStr
             });
 
             return {
                 startHoleindex: startHoleindex,
                 endHoleindex: endHoleindex,
                 roadLength: roadLength,
-                holePlayListStr: holePlayListStr
             };
         }
     }

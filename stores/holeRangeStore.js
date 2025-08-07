@@ -42,7 +42,7 @@ export const holeRangeStore = observable({
      * 设置洞范围（参与游戏的洞）
      * @param {number} startHoleindex 起始洞索引
      */
-    setHoleRange: action(function (startHoleindex) {
+    setStartIndex: action(function (startHoleindex) {
         console.log('🕳️ [holeRangeStore] 设置起始洞:', startHoleindex);
         this.scoreStartIndex = Number.parseInt(startHoleindex);
     }),
@@ -61,49 +61,7 @@ export const holeRangeStore = observable({
         this.roadLength = newHolePlayList.length;
     }),
 
-    /**
-     * 从字符串解析并设置洞顺序列表
-     * @param {string} holePlayListStr 洞顺序字符串，格式："1,2,3,4"
-     */
-    setHolePlayListFromString: action(function (holePlayListStr) {
-        console.log('🕳️ [holeRangeStore] 从字符串解析洞顺序:', holePlayListStr);
 
-        if (!holePlayListStr || typeof holePlayListStr !== 'string') {
-            console.warn('🕳️ [holeRangeStore] 无效的洞顺序字符串');
-            return;
-        }
-
-        try {
-            // 解析洞索引字符串
-            const holeIndexes = holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
-
-            // 根据索引查找对应的洞数据
-            const newHolePlayList = holeIndexes.map(hindex => {
-                const hole = this.holeList.find(h => h.hindex === hindex);
-                if (!hole) {
-                    console.warn(`🕳️ [holeRangeStore] 找不到洞索引 ${hindex} 的数据`);
-                    return null;
-                }
-                return hole;
-            }).filter(hole => hole);
-
-            // 更新洞顺序列表
-            this.updateHolePlayList(newHolePlayList);
-
-            console.log('🕳️ [holeRangeStore] 洞顺序解析完成:', {
-                originalString: holePlayListStr,
-                parsedHoles: newHolePlayList.length,
-                roadLength: this.roadLength
-            });
-
-        } catch (error) {
-            console.error('🕳️ [holeRangeStore] 解析洞顺序字符串失败:', error);
-        }
-    }),
-
-    /**
-     * 重置洞范围到默认状态
-     */
     resetHoleRange: action(function () {
         console.log('🕳️ [holeRangeStore] 重置洞范围到默认状态');
 

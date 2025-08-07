@@ -220,19 +220,11 @@ const BaseConfig = {
             'runtimeConfig.playerIndicatorConfig': val8421Config
         });
 
-        // 加载洞范围配置
-        if (editConfig.holePlayListStr) {
-            // 使用 holeRangeStore 设置洞顺序
-            holeRangeStore.setHolePlayListFromString(editConfig.holePlayListStr);
-        }
 
         // 加载起始洞和结束洞索引配置
-        if (editConfig.startHoleindex !== undefined && editConfig.endHoleindex !== undefined) {
+        if (editConfig.startHoleindex !== undefined) {
             const startHoleindex = Number.parseInt(editConfig.startHoleindex);
-            const endHoleindex = Number.parseInt(editConfig.endHoleindex);
-
-            // 使用 holeRangeStore 设置洞范围
-            holeRangeStore.setHoleRange(startHoleindex, endHoleindex);
+            holeRangeStore.setStartIndex(startHoleindex);
         }
 
         console.log('[BaseConfig] 编辑配置加载完成');

@@ -131,7 +131,6 @@ Page({
                     'runtimeConfig.startHoleindex': holeConfig.startHoleindex,
                     'runtimeConfig.endHoleindex': holeConfig.endHoleindex,
                     'runtimeConfig.roadLength': holeConfig.roadLength,
-                    'runtimeConfig.holePlayListStr': holeConfig.holePlayListStr
                 });
             }
         }
