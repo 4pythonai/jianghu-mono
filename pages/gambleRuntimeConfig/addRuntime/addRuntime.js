@@ -18,6 +18,7 @@ Page({
         userRule: null,
         needsPlayerConfig: false,
         needsGrouping: false,
+        needsStroking: false,
 
         runtimeConfig: {
             gameid: null,           // 游戏ID
@@ -57,6 +58,7 @@ Page({
             const { gambleSysName } = this.data;
             const needsPlayerConfig = GameConfig.needsPlayerConfig(gambleSysName);
             const needsGrouping = GameConfig.needsGrouping(gambleSysName);
+            const needsStroking = GameConfig.needsStroking(gambleSysName);
 
             // 获取 gameStore 中的 gameData
             const gameData = toJS(gameStore.gameData);
@@ -67,7 +69,7 @@ Page({
 
             // 只提取 holeList 中的 hindex, holename, unique_key
             let gameDataString = '';
-            if (gameData && gameData.holeList && Array.isArray(gameData.holeList)) {
+            if (gameData?.holeList && Array.isArray(gameData.holeList)) {
                 const holeListInfo = gameData.holeList.map(hole => ({
                     hindex: hole.hindex,
                     holename: hole.holename,
@@ -79,62 +81,22 @@ Page({
             this.setData({
                 needsPlayerConfig: needsPlayerConfig,
                 needsGrouping: needsGrouping,
+                needsStroking: needsStroking,
                 gameData: gameData,
                 gameDataType: gameDataType,
                 gameDataString: gameDataString
             });
 
         }, 100);
-
     },
 
-    // stroking_config 事件处理
-    saveStroking(e) {
-        const { config } = e.detail;
-        console.log('[AddRuntime] Stroking配置变更:', config);
-
-        this.setData({
-            'runtimeConfig.stroking_config': config
-        });
-    },
-
-
-
-
-    // 分组配置事件
-    onGroupingConfigChange(e) {
-        const { red_blue_config, bootstrap_order } = e.detail;
-        console.log('[AddRuntime] 分组配置变更:', { red_blue_config, bootstrap_order });
-
-        // 确保bootstrap_order是数字数组
-        const playerIds = bootstrap_order.map(id => Number.parseInt(id));
-
-        this.setData({
-            'runtimeConfig.red_blue_config': red_blue_config,
-            'runtimeConfig.bootstrap_order': playerIds
-        });
-    },
-
-    // 排名配置事件
-    onRankingConfigChange(e) {
-        const { ranking_tie_resolve_config } = e.detail;
-
-        this.setData({
-            'runtimeConfig.ranking_tie_resolve_config': ranking_tie_resolve_config
-        });
-    },
-
-    // 8421配置事件
-    onVal8421ConfigChange(e) {
-        const { val8421Config } = e.detail;
-        this.setData({
-            'runtimeConfig.playerIndicatorConfig': val8421Config
-        });
-    },
 
     // 确认配置
     onConfirmConfig() {
         const { runtimeConfig, gambleSysName, gameId, players } = this.data;
+
+        // 从各个组件收集最新配置
+        this.collectAllConfigs();
 
         // 打印完整配置信息
         console.log('[AddRuntime] 准备保存配置:');
@@ -155,6 +117,67 @@ Page({
 
         // 保存配置
         this.saveConfig();
+    },
+
+    // 收集所有组件的配置
+    collectAllConfigs() {
+        // 从洞范围选择器获取配置
+        const holeRangeSelector = this.selectComponent('#holeRangeSelector');
+        if (holeRangeSelector) {
+            const holeConfig = holeRangeSelector.getConfig();
+            if (holeConfig) {
+                this.setData({
+                    'runtimeConfig.startHoleindex': holeConfig.startHoleindex,
+                    'runtimeConfig.endHoleindex': holeConfig.endHoleindex,
+                    'runtimeConfig.holePlayListStr': holeConfig.holePlayListStr
+                });
+            }
+        }
+
+        // 从让杆配置组件获取配置
+        const stroking = this.selectComponent('#stroking');
+        if (stroking && this.data.needsStroking) {
+            const strokingConfig = stroking.getConfig();
+            if (strokingConfig) {
+                this.setData({
+                    'runtimeConfig.stroking_config': strokingConfig
+                });
+            }
+        }
+
+        // 从8421球员配置组件获取配置
+        const playerIndicator = this.selectComponent('#playerIndicator');
+        if (playerIndicator) {
+            const playerConfig = playerIndicator.getConfig();
+            if (playerConfig) {
+                this.setData({
+                    'runtimeConfig.playerIndicatorConfig': playerConfig
+                });
+            }
+        }
+
+        // 从分组配置组件获取配置
+        const redBlueConfig = this.selectComponent('#redBlueConfig');
+        if (redBlueConfig) {
+            const groupConfig = redBlueConfig.getConfig();
+            if (groupConfig) {
+                this.setData({
+                    'runtimeConfig.red_blue_config': groupConfig.red_blue_config,
+                    'runtimeConfig.bootstrap_order': groupConfig.bootstrap_order
+                });
+            }
+        }
+
+        // 从排名配置组件获取配置
+        const rankConfig = this.selectComponent('#rankConfig');
+        if (rankConfig) {
+            const rankingConfig = rankConfig.getConfig();
+            if (rankingConfig) {
+                this.setData({
+                    'runtimeConfig.ranking_tie_resolve_config': rankingConfig
+                });
+            }
+        }
     },
 
     // 保存配置
@@ -185,7 +208,6 @@ Page({
     // 取消配置
     onCancelConfig() {
         BaseConfig.onCancelConfig(this);
-    },
-
+    }
 
 }); 

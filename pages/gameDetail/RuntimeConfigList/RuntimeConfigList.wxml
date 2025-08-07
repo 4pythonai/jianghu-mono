@@ -50,7 +50,7 @@
         <text class="config-value">{{ item.startHoleindex }}/{{ item.endHoleindex }}</text>
       </view>
       <view class="config-row" wx:if="{{ item.endHoleindex }}">
-        <text class="config-label">长度:</text>
+        <text class="config-label">长度(roadLength):</text>
         <text class="config-value">{{ item.roadLength }}</text>
       </view>
     </view>

@@ -278,6 +278,14 @@ Component({
                 'dragState.offsetY': 0,
                 'dragState.direction': 0
             });
+        },
+
+        // 获取当前配置（用于外部收集配置）
+        getConfig() {
+            return {
+                red_blue_config: this.data.red_blue_config,
+                bootstrap_order: this.convertToUserIds(this.data.bootstrap_order)
+            };
         }
     }
 }); 

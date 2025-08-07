@@ -310,33 +310,13 @@ Page({
     // 处理运行时配置项点击事件 - 跳转到配置页面
     onRuntimeItemClick(e) {
         const { config, index } = e.currentTarget.dataset;
-        const gameId = this.data.gameId || gameStore.gameid;
 
-        console.log('🎮 点击配置详情按钮:', { config, index, gameId });
-
-        if (!config) {
-            console.error('🎮 配置数据为空');
-            wx.showToast({
-                title: '配置数据错误',
-                icon: 'none'
-            });
-            return;
-        }
+        console.log(' 🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓 ')
+        console.log(config);
+        console.log(' 🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓 ')
 
         // 简化：只传递配置ID
-        wx.navigateTo({
-            url: `/pages/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}`,
-            success: () => {
-                console.log('🎮 成功跳转到配置编辑页面');
-            },
-            fail: (err) => {
-                console.error('🎮 跳转到配置编辑页面失败:', err);
-                wx.showToast({
-                    title: '页面跳转失败',
-                    icon: 'none'
-                });
-            }
-        });
+        wx.navigateTo({ url: `/pages/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}` });
     },
 
     // 游戏设置相关事件处理

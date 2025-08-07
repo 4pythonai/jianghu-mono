@@ -38,14 +38,6 @@ export const holeRangeStore = observable({
             this.scoreStartIndex = normalizedHoles[0].hindex;
             this.scoreEndIndex = normalizedHoles[normalizedHoles.length - 1].hindex;
         }
-
-        console.log('⭕️⭕️ [holeRangeStore] 洞数据初始化完成:⭕️⭕️', {
-            holeListLength: this.holeList.length,
-            holePlayListLength: this.holePlayList.length,
-            scoreStartIndex: this.scoreStartIndex,
-            scoreEndIndex: this.scoreEndIndex,
-            roadLength: this.roadLength
-        });
     }),
 
     /**
@@ -53,25 +45,17 @@ export const holeRangeStore = observable({
      * @param {number} startHoleindex 起始洞索引
      * @param {number} endHoleindex 结束洞索引
      */
-    setHoleRange: action(function (startHoleindex, endHoleindex) {
-        console.log('⭕️⭕️⭕️⭕️  [holeRangeStore] 设置洞范围:', { startHoleindex, endHoleindex });
+    setHoleRange: action(function (start, end) {
+        console.log('⭕️⭕️⭕️⭕️  [holeRangeStore] 设置洞范围:', { start, end });
 
-        if (startHoleindex === undefined || endHoleindex === undefined) {
+        if (start === undefined || end === undefined) {
             console.warn(' ⭕️⭕️  [holeRangeStore] 无效的洞范围参数');
             return;
         }
 
-        this.scoreStartIndex = Number.parseInt(startHoleindex);
-        this.scoreEndIndex = Number.parseInt(endHoleindex);
+        this.scoreStartIndex = Number.parseInt(start);
+        this.scoreEndIndex = Number.parseInt(end);
 
-        // 计算并设置 roadLength - 当前范围内的洞数量
-        // const currentRangeHoles = this.getCurrentRangeHoles();
-
-        console.log('⭕️⭕️⭕️⭕️ [holeRangeStore] 洞范围设置完成:', {
-            scoreStartIndex: this.scoreStartIndex,
-            scoreEndIndex: this.scoreEndIndex,
-            roadLength: this.roadLength
-        });
     }),
 
     setRoadLength: action(function (roadLength) {
@@ -84,21 +68,48 @@ export const holeRangeStore = observable({
      * @param {Array} newHolePlayList 新的洞顺序列表
      */
     updateHolePlayList: action(function (newHolePlayList) {
-
-        // if (!newHolePlayList || !Array.isArray(newHolePlayList)) {
-        //     console.warn('⭕️⭕️ ⭕️⭕️ [holeRangeStore] 无效的洞顺序列表');
-        //     return;
-        // }
-
         this.holePlayList = [...newHolePlayList];
-
-        // 自动更新 roadLength - 使用洞顺序列表的长度
         this.roadLength = newHolePlayList.length;
+    }),
 
-        console.log(' ⭕️⭕️ ⭕️⭕️ [holeRangeStore] 洞顺序列表更新完成:', {
-            totalHoles: newHolePlayList.length,
-            roadLength: this.roadLength
-        });
+    /**
+     * 从字符串解析并设置洞顺序列表
+     * @param {string} holePlayListStr 洞顺序字符串，格式："1,2,3,4"
+     */
+    setHolePlayListFromString: action(function (holePlayListStr) {
+        console.log('🕳️ [holeRangeStore] 从字符串解析洞顺序:', holePlayListStr);
+
+        if (!holePlayListStr || typeof holePlayListStr !== 'string') {
+            console.warn('🕳️ [holeRangeStore] 无效的洞顺序字符串');
+            return;
+        }
+
+        try {
+            // 解析洞索引字符串
+            const holeIndexes = holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
+
+            // 根据索引查找对应的洞数据
+            const newHolePlayList = holeIndexes.map(hindex => {
+                const hole = this.holeList.find(h => h.hindex === hindex);
+                if (!hole) {
+                    console.warn(`🕳️ [holeRangeStore] 找不到洞索引 ${hindex} 的数据`);
+                    return null;
+                }
+                return hole;
+            }).filter(hole => hole);
+
+            // 更新洞顺序列表
+            this.updateHolePlayList(newHolePlayList);
+
+            console.log('🕳️ [holeRangeStore] 洞顺序解析完成:', {
+                originalString: holePlayListStr,
+                parsedHoles: newHolePlayList.length,
+                roadLength: this.roadLength
+            });
+
+        } catch (error) {
+            console.error('🕳️ [holeRangeStore] 解析洞顺序字符串失败:', error);
+        }
     }),
 
 

@@ -76,7 +76,7 @@ Page({
 
         // 只提取 holeList 中的 hindex, holename, unique_key
         let gameDataString = '';
-        if (gameData && gameData.holeList && Array.isArray(gameData.holeList)) {
+        if (gameData?.holeList && Array.isArray(gameData.holeList)) {
             const holeListInfo = gameData.holeList.map(hole => ({
                 hindex: hole.hindex,
                 holename: hole.holename,
@@ -123,65 +123,24 @@ Page({
 
         // 根据 holePlayListStr 重新设置 holeRangeStore 中的洞顺序
         if (config.holePlayListStr) {
-            try {
-                console.log('[EditRuntime] 解析 holePlayListStr:', {
-                    holePlayListStr: config.holePlayListStr
-                });
-
-                // 解析洞索引字符串并更新 holePlayList
-                const holeIndexes = config.holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
-                const newHolePlayList = holeIndexes.map(hindex => {
-                    const hole = holeRangeStore.holeList.find(h => h.hindex === hindex);
-                    return hole || { hindex, holename: `B${hindex}` };
-                }).filter(hole => hole);
-
-                holeRangeStore.updateHolePlayList(newHolePlayList);
-
-            } catch (error) {
-                console.error('[EditRuntime] 解析 holePlayListStr 失败:', error);
-            }
+            console.log('[EditRuntime] 加载洞顺序配置:', config.holePlayListStr);
+            // 让 holeRangeStore 自己处理数据解析
+            holeRangeStore.setHolePlayListFromString(config.holePlayListStr);
         }
 
         console.log('[EditRuntime] 页面初始化成功');
     },
 
-    // 分组配置事件
-    onGroupingConfigChange(e) {
-        const { red_blue_config, bootstrap_order } = e.detail;
-        console.log('[EditRuntime] 分组配置变更:', { red_blue_config, bootstrap_order });
 
-        // 确保bootstrap_order是数字数组
-        const playerIds = bootstrap_order.map(id => Number.parseInt(id));
 
-        this.setData({
-            'runtimeConfig.red_blue_config': red_blue_config,
-            'runtimeConfig.bootstrap_order': playerIds
-        });
-    },
 
-    // 排名配置事件
-    onRankingConfigChange(e) {
-        const { ranking_tie_resolve_config } = e.detail;
-        console.log('[EditRuntime] 排名配置变更:', ranking_tie_resolve_config);
-
-        this.setData({
-            'runtimeConfig.ranking_tie_resolve_config': ranking_tie_resolve_config
-        });
-    },
-
-    // 8421配置事件
-    onVal8421ConfigChange(e) {
-        const { val8421Config } = e.detail;
-        console.log('[EditRuntime] 8421配置变更:', val8421Config);
-
-        this.setData({
-            'runtimeConfig.playerIndicatorConfig': val8421Config
-        });
-    },
 
     // 确认配置
     onConfirmConfig() {
         const { runtimeConfig, gambleSysName, gameId, configId, players } = this.data;
+
+        // 从各个组件收集最新配置
+        this.collectAllConfigs();
 
         console.log('[EditRuntime] 确认配置:', {
             runtimeConfig,
@@ -198,6 +157,56 @@ Page({
 
         // 保存配置
         this.saveConfig();
+    },
+
+    // 收集所有组件的配置
+    collectAllConfigs() {
+        // 从洞范围选择器获取配置
+        const holeRangeSelector = this.selectComponent('#holeRangeSelector');
+        if (holeRangeSelector) {
+            const holeConfig = holeRangeSelector.getConfig();
+            if (holeConfig) {
+                this.setData({
+                    'runtimeConfig.startHoleindex': holeConfig.startHoleindex,
+                    'runtimeConfig.endHoleindex': holeConfig.endHoleindex,
+                    'runtimeConfig.holePlayListStr': holeConfig.holePlayListStr
+                });
+            }
+        }
+
+        // 从8421球员配置组件获取配置
+        const playerIndicator = this.selectComponent('#playerIndicator');
+        if (playerIndicator) {
+            const playerConfig = playerIndicator.getConfig();
+            if (playerConfig) {
+                this.setData({
+                    'runtimeConfig.playerIndicatorConfig': playerConfig
+                });
+            }
+        }
+
+        // 从分组配置组件获取配置
+        const redBlueConfig = this.selectComponent('#redBlueConfig');
+        if (redBlueConfig) {
+            const groupConfig = redBlueConfig.getConfig();
+            if (groupConfig) {
+                this.setData({
+                    'runtimeConfig.red_blue_config': groupConfig.red_blue_config,
+                    'runtimeConfig.bootstrap_order': groupConfig.bootstrap_order
+                });
+            }
+        }
+
+        // 从排名配置组件获取配置
+        const rankConfig = this.selectComponent('#rankConfig');
+        if (rankConfig) {
+            const rankingConfig = rankConfig.getConfig();
+            if (rankingConfig) {
+                this.setData({
+                    'runtimeConfig.ranking_tie_resolve_config': rankingConfig
+                });
+            }
+        }
     },
 
     // 保存配置

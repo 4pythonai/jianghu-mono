@@ -150,10 +150,13 @@ Component({
                 config: newConfig
             });
 
-            // 触发变更事件
-            this.triggerEvent('change', {
+            // 更新组件内部数据
+            this.setData({
                 val8421Config: newVal8421Config
             });
+
+            // 更新球员配置显示
+            this.updatePlayersWithConfig();
 
             this.onCancel();
         },
@@ -167,6 +170,17 @@ Component({
                 selectedPreset: '',
                 customInput: ''
             });
+        },
+
+        // 防止点击弹框内容时关闭弹框
+        preventClose() {
+            // 空方法，用于阻止事件冒泡
+            return;
+        },
+
+        // 获取当前配置（用于外部收集配置）
+        getConfig() {
+            return this.data.val8421Config || {};
         },
 
 

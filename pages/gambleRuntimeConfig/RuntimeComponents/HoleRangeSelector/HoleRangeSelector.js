@@ -93,6 +93,21 @@ Component({
 
         onModalCancel(e) {
             this.setData({ ifShowModal: false });
+        },
+
+        // 获取当前配置（用于外部收集配置）
+        getConfig() {
+            const { startHoleindex, endHoleindex } = this.data;
+
+            // 从 holeRangeStore 获取 holePlayListStr
+            const { holePlayList } = holeRangeStore.getState();
+            const holePlayListStr = holePlayList.map(hole => hole.hindex).join(',');
+
+            return {
+                startHoleindex: startHoleindex,
+                endHoleindex: endHoleindex,
+                holePlayListStr: holePlayListStr
+            };
         }
     }
 }); 

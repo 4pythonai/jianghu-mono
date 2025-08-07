@@ -383,6 +383,32 @@ Component({
         /**
          * 空事件处理
          */
-        noTap() { }
+        noTap() { },
+
+        /**
+         * 获取当前配置（用于外部收集配置）
+         */
+        getConfig() {
+            // 保存当前用户的临时配置
+            this.saveCurrentTempConfig();
+
+            // 获取所有有效的临时配置
+            const validTempConfigs = this.getValidConfigs(Object.values(this.data.tempConfigs));
+
+            // 合并现有配置和新配置
+            const existingConfigs = this.properties.strokingConfig || [];
+            const updatedConfigs = [...existingConfigs];
+
+            for (const tempConfig of validTempConfigs) {
+                const index = updatedConfigs.findIndex(c => c.userid === tempConfig.userid);
+                if (index >= 0) {
+                    updatedConfigs[index] = tempConfig;
+                } else {
+                    updatedConfigs.push(tempConfig);
+                }
+            }
+
+            return this.getValidConfigs(updatedConfigs);
+        }
     }
 });

@@ -38,47 +38,46 @@
     <!-- 洞范围选择 -->
     <view class="section">
       <view class="section-label">选择球洞范围</view>
-      <HoleRangeSelector />
+      <HoleRangeSelector id="holeRangeSelector" />
     </view>
 
-    <!-- 让杆置 -->
-    <view class="section">
-      <view class="section" wx:if="{{needsStroking}}">
-        <Stroking
-          players="{{players}}"
-          strokingConfig="{{runtimeConfig.stroking_config}}"
-          bind:saveStroking="saveStroking"
-        />
-      </view>
+    <!-- 让杆配置 -->
+    <view class="section" wx:if="{{needsStroking}}">
+      <view class="section-label">让杆配置</view>
+      <Stroking
+        id="stroking"
+        players="{{players}}"
+        strokingConfig="{{runtimeConfig.stroking_config}}"
+      />
     </view>
 
+    <!-- 8421球员配置 -->
     <view class="section" wx:if="{{needsPlayerConfig}}">
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator
+        id="playerIndicator"
         players="{{players}}"
         val8421Config="{{runtimeConfig.playerIndicatorConfig}}"
-        bind:change="onVal8421ConfigChange"
       />
     </view>
 
     <!-- 分组配置 -->
-    <view class="section">
-      <view class="section" wx:if="{{needsGrouping}}">
-        <RedBlueConfig
-          players="{{players}}"
-          initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
-          initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
-          bind:change="onGroupingConfigChange"
-        />
-      </view>
+    <view class="section" wx:if="{{needsGrouping}}">
+      <view class="section-label">分组配置</view>
+      <RedBlueConfig
+        id="redBlueConfig"
+        players="{{players}}"
+        initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+        initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+      />
     </view>
 
     <!-- 排名配置 -->
     <view class="section">
       <view class="section-label">排名规则</view>
       <RankConflictResolver
+        id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
-        bind:change="onRankingConfigChange"
       />
     </view>
   </view>

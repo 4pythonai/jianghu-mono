@@ -36,26 +36,28 @@
     <!-- 洞范围选择 -->
     <view class="section">
       <view class="section-label">选择洞范围</view>
-      <HoleRangeSelector />
+      <HoleRangeSelector id="holeRangeSelector" />
     </view>
 
     <!-- 8421球员配置 -->
     <view class="section" wx:if="{{gambleSysName.indexOf('8421') !== -1}}">
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator
+        id="playerIndicator"
         players="{{players}}"
         val8421Config="{{runtimeConfig.playerIndicatorConfig}}"
-        bind:change="onVal8421ConfigChange"
       />
     </view>
 
     <!-- 分组配置 -->
+    <!-- bind:change="onGroupingConfigChange" -->
+
     <view class="section">
       <RedBlueConfig
+        id="redBlueConfig"
         players="{{players}}"
         initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
         initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
-        bind:change="onGroupingConfigChange"
       />
     </view>
 
@@ -63,8 +65,8 @@
     <view class="section">
       <view class="section-label">排名规则</view>
       <RankConflictResolver
+        id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
-        bind:change="onRankingConfigChange"
       />
     </view>
   </view>

@@ -96,6 +96,10 @@ Component({
             });
         },
 
-
+        // 获取当前配置（用于外部收集配置）
+        getConfig() {
+            const selectedOption = this.data.rankingOptions[this.data.selectedIndex];
+            return selectedOption ? selectedOption.value : this.data.selectedConfig;
+        }
     }
 }); 

@@ -21,6 +21,16 @@ Component({
         selectType: {
             type: String,
             value: null
+        },
+        // 新增属性：外部传入的洞顺序字符串
+        holePlayListStr: {
+            type: String,
+            value: '',
+            observer: function (newVal) {
+                if (newVal) {
+                    this.loadExternalHolePlayList(newVal);
+                }
+            }
         }
     },
 
@@ -251,6 +261,50 @@ Component({
             console.log('🕳️ [RealHolePlayListSetter] holeRangeStore.roadLength 将自动更新为:', this.data.holePlayList.length);
 
             this.triggerEvent('cancel');
+        },
+
+        /**
+         * 加载外部传入的洞顺序数据
+         * @param {string} holePlayListStr 洞顺序字符串
+         */
+        loadExternalHolePlayList(holePlayListStr) {
+            console.log('🕳️ [RealHolePlayListSetter] 加载外部洞顺序数据:', holePlayListStr);
+
+            if (!holePlayListStr || typeof holePlayListStr !== 'string') {
+                console.warn('🕳️ [RealHolePlayListSetter] 无效的洞顺序字符串');
+                return;
+            }
+
+            try {
+                // 解析洞索引字符串
+                const holeIndexes = holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
+
+                // 根据索引查找对应的洞数据
+                const newHolePlayList = holeIndexes.map(hindex => {
+                    const hole = this.data.holeList.find(h => h.hindex === hindex);
+                    if (!hole) {
+                        console.warn(`🕳️ [RealHolePlayListSetter] 找不到洞索引 ${hindex} 的数据`);
+                        return null;
+                    }
+                    return hole;
+                }).filter(hole => hole);
+
+                // 更新组件内部状态
+                const newDisplayHoleList = this.buildDisplayHoleList(this.data.holeList, newHolePlayList);
+
+                this.setData({
+                    holePlayList: newHolePlayList,
+                    displayHoleList: newDisplayHoleList
+                });
+
+                console.log('🕳️ [RealHolePlayListSetter] 外部洞顺序数据加载完成:', {
+                    originalString: holePlayListStr,
+                    parsedHoles: newHolePlayList.length
+                });
+
+            } catch (error) {
+                console.error('🕳️ [RealHolePlayListSetter] 解析外部洞顺序数据失败:', error);
+            }
         },
 
         onCancel() {
