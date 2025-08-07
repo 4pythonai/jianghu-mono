@@ -27,7 +27,6 @@ export const gameStore = observable({
     error: null,         // 错误信息
     isSaving: false,     // 保存状态
 
-    // holePlayList: [],
 
 
 
@@ -194,8 +193,5 @@ export const gameStore = observable({
         return holeRangeStore.holeList;
     },
 
-    get getHolePlayList() {
-        return holeRangeStore.holePlayList;
-    },
 
 }); 

@@ -38,7 +38,7 @@ Component({
             this.initData();
             this.disposer = autorun(() => {
                 const { players } = gameStore.getState();
-                const holeList = gameStore.getHolePlayList || [];
+                const holeList = gameStore.getHoleList || [];
                 this.setData({ players, holeList });
                 if (players?.length > 0) this.refreshUI();
             });
@@ -54,7 +54,7 @@ Component({
          */
         initData() {
             const { players } = gameStore.getState();
-            const holeList = gameStore.getHolePlayList || [];
+            const holeList = gameStore.getHoleList || [];
             this.setData({ players, holeList });
             this.refreshUI();
         },
