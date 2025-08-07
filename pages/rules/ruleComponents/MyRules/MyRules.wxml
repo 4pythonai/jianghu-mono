@@ -19,47 +19,54 @@
           <text class="group-title">4人游戏</text>
         </view>
         <view class="group-list">
-          <!-- 调试信息 -->
-          <view
+          <RuleCard
             wx:for="{{ myRules.fourPlayers }}"
             wx:key="id"
-            style="background: #f0f0f0; padding: 10rpx; margin: 5rpx; font-size: 24rpx;"
-          >
-            <text>调试: {{ item.gambleUserName || item.user_rulename }} - gambleSysName: {{ item.gambleSysName }}</text>
-          </view>
+            class="group-list-item"
+            item="{{ item }}"
+            bind:editRule="onEditRule"
+            bind:viewRule="onViewRule"
+            bind:longPressRule="onLongPressRule"
+            showEdit="{{true}}"
+          />
+        </view>
+      </view>
 
-          <!-- 类似 React 的 map 循环渲染 -->
-          <block wx:for="{{ myRules.fourPlayers }}" wx:key="id">
-            <!-- 根据 gambleSysName 动态选择组件 -->
-            <Rule4P8421
-              wx:if="{{ item.gambleSysName === '4p-8421' }}"
-              class="group-list-item"
-              item="{{ item }}"
-              bind:editRule="onEditRule"
-              bind:viewRule="onViewRule"
-              bind:longPressRule="onLongPressRule"
-              showEdit="{{true}}"
-            />
-            <Rule4PLasi
-              wx:elif="{{ item.gambleSysName === '4p-lasi' }}"
-              class="group-list-item"
-              item="{{ item }}"
-              bind:editRule="onEditRule"
-              bind:viewRule="onViewRule"
-              bind:longPressRule="onLongPressRule"
-              showEdit="{{true}}"
-            />
-            <!-- 如果没有匹配的组件，显示默认信息 -->
-            <view
-              wx:else
-              style="background: #ffebee; padding: 20rpx; margin: 10rpx; border-radius: 8rpx;"
-            >
-              <text style="color: #d32f2f;">未匹配的规则类型: {{ item.gambleSysName }}</text>
-              <text
-                style="display: block; margin-top: 10rpx;"
-              >规则名称: {{ item.gambleUserName || item.user_rulename }}</text>
-            </view>
-          </block>
+      <!-- 3人游戏规则 -->
+      <view wx:if="{{ total.threePlayers > 0 }}" class="rules-group">
+        <view class="group-header">
+          <text class="group-title">3人游戏</text>
+        </view>
+        <view class="group-list">
+          <RuleCard
+            wx:for="{{ myRules.threePlayers }}"
+            wx:key="id"
+            class="group-list-item"
+            item="{{ item }}"
+            bind:editRule="onEditRule"
+            bind:viewRule="onViewRule"
+            bind:longPressRule="onLongPressRule"
+            showEdit="{{true}}"
+          />
+        </view>
+      </view>
+
+      <!-- 2人游戏规则 -->
+      <view wx:if="{{ total.twoPlayers > 0 }}" class="rules-group">
+        <view class="group-header">
+          <text class="group-title">2人游戏</text>
+        </view>
+        <view class="group-list">
+          <RuleCard
+            wx:for="{{ myRules.twoPlayers }}"
+            wx:key="id"
+            class="group-list-item"
+            item="{{ item }}"
+            bind:editRule="onEditRule"
+            bind:viewRule="onViewRule"
+            bind:longPressRule="onLongPressRule"
+            showEdit="{{true}}"
+          />
         </view>
       </view>
     </view>
