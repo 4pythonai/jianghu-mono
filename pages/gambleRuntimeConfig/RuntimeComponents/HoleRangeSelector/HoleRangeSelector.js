@@ -215,8 +215,18 @@ Component({
             if (result.roadLength) {
                 holeRangeStore.setRoadLength(result.roadLength);
             }
-            if (result.startHoleindex && result.endHoleindex) {
-                holeRangeStore.setHoleRange(result.startHoleindex, result.endHoleindex);
+            if (result.startHoleindex) {
+                holeRangeStore.setHoleRange(result.startHoleindex);
+            }
+
+            // 更新组件显示数据
+            if (result.startHoleindex && result.roadLength) {
+                const holeList = this.data.holeList;
+                const startHoleindex = Number(result.startHoleindex);
+                const roadLength = Number(result.roadLength);
+
+                // 重新计算并更新显示
+                this.updateHoleDisplay(holeList, startHoleindex, roadLength);
             }
 
             this.setData({ ifShowModal: false });
@@ -242,11 +252,28 @@ Component({
 
         // 获取当前配置（用于外部收集配置）
         getConfig() {
-            const { startHoleindex, endHoleindex } = this.data;
+            const { startHoleindex, roadLength } = this.data;
 
             // 从 holeRangeStore 获取 holePlayListStr
             const { holePlayList } = holeRangeStore.getState();
             const holePlayListStr = holePlayList.map(hole => hole.hindex).join(',');
+
+            // 计算结束洞索引
+            let endHoleindex = null;
+            if (startHoleindex && this.data.holeList.length > 0 && roadLength > 0) {
+                const startIndex = this.data.holeList.findIndex(hole => hole.hindex === startHoleindex);
+                if (startIndex !== -1) {
+                    const endIndex = (startIndex + roadLength - 1) % this.data.holeList.length;
+                    endHoleindex = this.data.holeList[endIndex]?.hindex;
+                }
+            }
+
+            console.log('🕳️ [HoleRangeSelector] getConfig 返回数据:', {
+                startHoleindex,
+                endHoleindex,
+                roadLength,
+                holePlayListStr
+            });
 
             return {
                 startHoleindex: startHoleindex,

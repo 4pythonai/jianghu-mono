@@ -41,11 +41,10 @@ export const holeRangeStore = observable({
     /**
      * 设置洞范围（参与游戏的洞）
      * @param {number} startHoleindex 起始洞索引
-     * @param {number} endHoleindex 结束洞索引
      */
-    setHoleRange: action(function (start) {
-        this.scoreStartIndex = Number.parseInt(start);
-
+    setHoleRange: action(function (startHoleindex) {
+        console.log('🕳️ [holeRangeStore] 设置起始洞:', startHoleindex);
+        this.scoreStartIndex = Number.parseInt(startHoleindex);
     }),
 
     setRoadLength: action(function (roadLength) {
