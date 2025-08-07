@@ -1,6 +1,4 @@
 // RealHolePlayListSetter
-import { gameStore } from '../../stores/gameStore';
-import { toJS } from 'mobx-miniprogram';
 
 Component({
     options: {
@@ -8,6 +6,16 @@ Component({
     },
 
     properties: {
+        // 洞列表数据
+        holeList: {
+            type: Array,
+            value: [],
+            observer: function (newVal) {
+                if (newVal && newVal.length > 0) {
+                    this.initializeData();
+                }
+            }
+        },
         // 起始洞索引
         startHoleindex: {
             type: Number,
@@ -36,7 +44,6 @@ Component({
     },
 
     data: {
-        holeList: [],           // 所有洞的列表（从gameStore获取）
         holePlayList: [],       // 游戏顺序的洞列表
         displayHoleList: [],    // 用于显示的洞列表（包含所有洞，按顺序排列）
     },
@@ -52,13 +59,8 @@ Component({
          * 初始化数据
          */
         initializeData() {
-            // 从 gameStore 获取洞数据
-            const gameData = toJS(gameStore.gameData);
-            let plainHoleList = [];
-
-            if (gameData?.holeList) {
-                plainHoleList = gameData.holeList;
-            }
+            // 使用传入的 holeList 属性
+            const plainHoleList = this.properties.holeList || [];
 
             // 根据起始洞和道路长度计算洞范围
             const holePlayList = this.calculateHolePlayList(plainHoleList, this.properties.startHoleindex, this.properties.roadLength);
@@ -67,7 +69,6 @@ Component({
             const displayHoleList = this.buildDisplayHoleList(plainHoleList, holePlayList);
 
             this.setData({
-                holeList: plainHoleList,
                 holePlayList: holePlayList,
                 displayHoleList: displayHoleList
             });
@@ -169,10 +170,10 @@ Component({
                 console.log('🕳️ 选择起始洞:', hindex);
 
                 // 重新构建holePlayList，以选中的洞为起始
-                const newHolePlayList = this.calculateHolePlayList(this.data.holeList, hindex, this.properties.roadLength);
+                const newHolePlayList = this.calculateHolePlayList(this.properties.holeList, hindex, this.properties.roadLength);
 
                 // 重新构建显示列表
-                const newDisplayHoleList = this.buildDisplayHoleList(this.data.holeList, newHolePlayList);
+                const newDisplayHoleList = this.buildDisplayHoleList(this.properties.holeList, newHolePlayList);
 
                 this.setData({
                     holePlayList: newHolePlayList,
@@ -243,7 +244,7 @@ Component({
 
                 // 根据索引查找对应的洞数据
                 const newHolePlayList = holeIndexes.map(hindex => {
-                    const hole = this.data.holeList.find(h => h.hindex === hindex);
+                    const hole = this.properties.holeList.find(h => h.hindex === hindex);
                     if (!hole) {
                         console.warn(`🕳️ [RealHolePlayListSetter] 找不到洞索引 ${hindex} 的数据`);
                         return null;
@@ -252,7 +253,7 @@ Component({
                 }).filter(hole => hole);
 
                 // 更新组件内部状态
-                const newDisplayHoleList = this.buildDisplayHoleList(this.data.holeList, newHolePlayList);
+                const newDisplayHoleList = this.buildDisplayHoleList(this.properties.holeList, newHolePlayList);
 
                 this.setData({
                     holePlayList: newHolePlayList,
