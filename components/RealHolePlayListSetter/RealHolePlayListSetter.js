@@ -18,12 +18,12 @@ Component({
         },
         // 起始洞索引
         startHoleindex: {
-            type: Number,
+            type: null, // 允许任何类型
             value: null
         },
         // 道路长度（洞数量）
         roadLength: {
-            type: Number,
+            type: null, // 允许任何类型
             value: 0
         },
         // 选择类型（start/end）
@@ -76,11 +76,23 @@ Component({
                 return [];
             }
 
+            // 确保参数是数字类型
+            const numStartHoleindex = startHoleindex ? Number(startHoleindex) : null;
+            const numRoadLength = roadLength ? Number(roadLength) : 0;
+
             // 如果没有指定起始洞，使用第一个洞
-            const actualStartHoleindex = startHoleindex || holeList[0].hindex;
+            const actualStartHoleindex = numStartHoleindex || holeList[0].hindex;
 
             // 如果没有指定道路长度，使用所有洞
-            const actualRoadLength = roadLength || holeList.length;
+            const actualRoadLength = numRoadLength || holeList.length;
+
+            console.log('🕳️ [RealHolePlayListSetter] 计算洞范围:', {
+                startHoleindex: numStartHoleindex,
+                roadLength: numRoadLength,
+                actualStartHoleindex,
+                actualRoadLength,
+                holeListLength: holeList.length
+            });
 
             // 找到起始洞在holeList中的位置
             const startIndex = holeList.findIndex(hole => hole.hindex === actualStartHoleindex);
@@ -206,7 +218,6 @@ Component({
             const result = {
                 holePlayList: this.data.holePlayList,
                 startHoleindex: this.data.holePlayList[0]?.hindex,
-                endHoleindex: this.data.holePlayList[this.data.holePlayList.length - 1]?.hindex,
                 roadLength: this.data.holePlayList.length
             };
 
@@ -214,7 +225,6 @@ Component({
             console.log('🕳️ [RealHolePlayListSetter] 调试信息:', {
                 holePlayListLength: this.data.holePlayList?.length,
                 startHoleindex: result.startHoleindex,
-                endHoleindex: result.endHoleindex,
                 roadLength: result.roadLength,
                 roadLengthType: typeof result.roadLength
             });

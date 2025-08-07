@@ -60,6 +60,12 @@ Page({
         }
 
         console.log('[⭕️⭕️⭕️⭕️] 赌博配置::::', toJS(config));
+        console.log('[🔍🔍🔍🔍] 洞范围配置详情:', {
+            startHoleindex: config.startHoleindex,
+            startHoleindexType: typeof config.startHoleindex,
+            roadLength: config.roadLength,
+            roadLengthType: typeof config.roadLength
+        });
 
         // 从 gameStore 获取玩家数据
         const players = gameStore.players || [];
@@ -110,17 +116,24 @@ Page({
             'runtimeConfig.playerIndicatorConfig': config.val8421_config_parsed || config.playerIndicatorConfig || {}
         });
 
+        // 添加调试信息，检查 setData 后的数据
+        console.log('[🔍🔍🔍🔍] setData 后的页面数据:', {
+            configStartHoleindex: this.data.config?.startHoleindex,
+            configRoadLength: this.data.config?.roadLength,
+            configExists: !!this.data.config
+        });
+
         // 设置 holeRangeStore 中的洞范围配置
         if (config.startHoleindex !== undefined) {
             holeRangeStore.setHoleRange(Number.parseInt(config.startHoleindex));
         }
 
-        // 根据 holePlayListStr 重新设置 holeRangeStore 中的洞顺序
-        if (config.holePlayListStr) {
-            console.log('[EditRuntime] 加载洞顺序配置:', config.holePlayListStr);
-            // 让 holeRangeStore 自己处理数据解析
-            holeRangeStore.setHolePlayListFromString(config.holePlayListStr);
-        }
+        // // 根据 holePlayListStr 重新设置 holeRangeStore 中的洞顺序
+        // if (config.holePlayListStr) {
+        //     console.log('[EditRuntime] 加载洞顺序配置:', config.holePlayListStr);
+        //     // 让 holeRangeStore 自己处理数据解析
+        //     holeRangeStore.setHolePlayListFromString(config.holePlayListStr);
+        // }
 
         console.log('[EditRuntime] 页面初始化成功');
     },
@@ -206,18 +219,7 @@ Page({
     // 保存配置
     async saveConfig() {
         const { runtimeConfig, gameId, groupId, configId } = this.data;
-
-        console.log('[EditRuntime] 保存配置，数据检查:', {
-            configId,
-            configIdType: typeof configId,
-            hasConfigId: !!configId,
-            gameId,
-            groupId,
-            runtimeConfigKeys: Object.keys(runtimeConfig)
-        });
-
         const result = await BaseConfig.saveConfig(runtimeConfig, gameId, groupId, configId, this, true);
-
         if (result.success) {
             console.log('[EditRuntime] 配置更新成功');
         } else {

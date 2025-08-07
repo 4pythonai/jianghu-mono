@@ -36,7 +36,16 @@
     <!-- 洞范围选择 -->
     <view class="section">
       <view class="section-label">选择洞范围</view>
-      <HoleRangeSelector id="holeRangeSelector" />
+      <!-- 调试信息 -->
+      <view class="debug-info">
+        <text>config.roadLength: {{config.roadLength}}</text>
+        <text>config.startHoleindex: {{config.startHoleindex}}</text>
+      </view>
+      <HoleRangeSelector
+        id="holeRangeSelector"
+        roadLength="{{config.roadLength}}"
+        startHoleindex="{{config.startHoleindex}}"
+      />
     </view>
 
     <!-- 8421球员配置 -->
