@@ -10,8 +10,8 @@ export const holeRangeStore = observable({
     // ---- 洞相关状态 ----
     holeList: [],           // 洞信息列表（原始洞数据）
     holePlayList: [],       // 洞顺序列表（按游戏顺序排列）
-    startHoleindex: null,   // 参与游戏的第一个洞索引
-    endHoleindex: null,     // 参与游戏的最后一个洞索引
+    scoreStartIndex: null,
+    scoreEndIndex: null,
     roadLength: 0,
 
     /**
@@ -35,15 +35,15 @@ export const holeRangeStore = observable({
 
         // 设置默认的起始和结束洞索引
         if (normalizedHoles.length > 0) {
-            this.startHoleindex = normalizedHoles[0].hindex;
-            this.endHoleindex = normalizedHoles[normalizedHoles.length - 1].hindex;
+            this.scoreStartIndex = normalizedHoles[0].hindex;
+            this.scoreEndIndex = normalizedHoles[normalizedHoles.length - 1].hindex;
         }
 
         console.log('⭕️⭕️ [holeRangeStore] 洞数据初始化完成:⭕️⭕️', {
             holeListLength: this.holeList.length,
             holePlayListLength: this.holePlayList.length,
-            startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex,
+            scoreStartIndex: this.scoreStartIndex,
+            scoreEndIndex: this.scoreEndIndex,
             roadLength: this.roadLength
         });
     }),
@@ -61,15 +61,15 @@ export const holeRangeStore = observable({
             return;
         }
 
-        this.startHoleindex = Number.parseInt(startHoleindex);
-        this.endHoleindex = Number.parseInt(endHoleindex);
+        this.scoreStartIndex = Number.parseInt(startHoleindex);
+        this.scoreEndIndex = Number.parseInt(endHoleindex);
 
         // 计算并设置 roadLength - 当前范围内的洞数量
         // const currentRangeHoles = this.getCurrentRangeHoles();
 
         console.log('⭕️⭕️⭕️⭕️ [holeRangeStore] 洞范围设置完成:', {
-            startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex,
+            scoreStartIndex: this.scoreStartIndex,
+            scoreEndIndex: this.scoreEndIndex,
             roadLength: this.roadLength
         });
     }),
@@ -111,8 +111,8 @@ export const holeRangeStore = observable({
         return {
             holeList: this.holeList,
             holePlayList: this.holePlayList,
-            startHoleindex: this.startHoleindex,
-            endHoleindex: this.endHoleindex,
+            startHoleindex: this.scoreStartIndex,
+            endHoleindex: this.scoreEndIndex,
             roadLength: this.roadLength
         };
     }
