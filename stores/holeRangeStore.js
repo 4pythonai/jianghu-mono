@@ -65,7 +65,7 @@ export const holeRangeStore = observable({
         this.endHoleindex = Number.parseInt(endHoleindex);
 
         // 计算并设置 roadLength - 当前范围内的洞数量
-        const currentRangeHoles = this.getCurrentRangeHoles();
+        // const currentRangeHoles = this.getCurrentRangeHoles();
 
         console.log('⭕️⭕️⭕️⭕️ [holeRangeStore] 洞范围设置完成:', {
             startHoleindex: this.startHoleindex,
@@ -101,24 +101,6 @@ export const holeRangeStore = observable({
             roadLength: this.roadLength
         });
     }),
-
-    /**
-     * 获取当前范围的洞列表（动态计算）
-     * @returns {Array} 当前范围的洞列表
-     */
-    getCurrentRangeHoles() {
-        if (this.startHoleindex === null || this.endHoleindex === null) {
-            return [];
-        }
-
-        const minIndex = Math.min(this.startHoleindex, this.endHoleindex);
-        const maxIndex = Math.max(this.startHoleindex, this.endHoleindex);
-
-        return this.holePlayList.filter(hole => {
-            const hindex = hole.hindex;
-            return hindex >= minIndex && hindex <= maxIndex;
-        });
-    },
 
 
 
