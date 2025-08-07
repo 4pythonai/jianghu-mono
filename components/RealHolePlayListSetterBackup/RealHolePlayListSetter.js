@@ -63,7 +63,6 @@ Component({
                         plainHoleList = gameData.holeList;
 
                         // 初始化 holeRangeStore
-                        holeRangeStore.initializeHoles(plainHoleList);
                         plainHolePlayList = toJS(holeRangeStore.holePlayList);
                     }
                 } catch (error) {
@@ -81,9 +80,6 @@ Component({
                     { hindex: 18, holename: 'B18', unique_key: 'hole_18' }
                 ];
                 plainHolePlayList = [...plainHoleList];
-
-                // 初始化 holeRangeStore
-                holeRangeStore.initializeHoles(plainHoleList);
             }
 
             // 构建显示列表：包含所有洞，按holePlayList的顺序排列

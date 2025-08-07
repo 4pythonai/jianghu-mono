@@ -28,8 +28,8 @@
   wx:if="{{ifShowModal}}"
   holeList="{{holeList}}"
   startHoleindex="{{startHoleindex}}"
-  endHoleindex="{{endHoleindex}}"
   roadLength="{{roadLength}}"
   selectType="{{selectType}}"
   bind:cancel="onModalCancel"
+  bind:confirm="onModalConfirm"
 />

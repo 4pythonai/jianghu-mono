@@ -8,8 +8,9 @@ import { toJS } from 'mobx-miniprogram';
 Component({
     lifetimes: {
         attached() {
-            const { holeList, startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
-            console.log(" GAME 🅰️🅱️🆎🅾️🆑++++", toJS(gameStore.gameData.holeList));
+            const { startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
+            const { holeList } = gameStore.getState();
+            console.log(" GAME 🅰️🅱️🆎🅾️🆑++++", toJS(gameStore.gameData?.holeList));
 
             console.log("🅰️🅱️🆎🅾️🆑++++", toJS(holeList));
 
@@ -80,17 +81,40 @@ Component({
             const dataType = e.currentTarget.dataset.type;
 
             // 从holeRangeStore获取当前的起始洞和结束洞索引
-            const { startHoleindex, endHoleindex } = holeRangeStore.getState();
+            const { startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
 
             this.setData({
                 ifShowModal: true,
                 startHoleindex,
                 endHoleindex,
                 selectType: dataType,
+                roadLength
             });
         },
 
         onModalCancel(e) {
+            this.setData({ ifShowModal: false });
+        },
+
+        /**
+         * 处理RealHolePlayListSetter的确认事件
+         * @param {Object} e 事件对象
+         */
+        onModalConfirm(e) {
+            const result = e.detail;
+            console.log('🕳️ [HoleRangeSelector] 收到洞顺序确认:', result);
+
+            // 更新holeRangeStore
+            if (result.holePlayList) {
+                holeRangeStore.updateHolePlayList(result.holePlayList);
+            }
+            if (result.roadLength) {
+                holeRangeStore.setRoadLength(result.roadLength);
+            }
+            if (result.startHoleindex && result.endHoleindex) {
+                holeRangeStore.setHoleRange(result.startHoleindex, result.endHoleindex);
+            }
+
             this.setData({ ifShowModal: false });
         },
 

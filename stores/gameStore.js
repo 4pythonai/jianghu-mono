@@ -72,7 +72,6 @@ export const gameStore = observable({
         this.gameData = gameInfo;
         this.players = players;  // 注意:这里是过滤后的玩家
         this.groupId = groupId;  // 存储当前分组ID
-        holeRangeStore.initializeHoles(holeList);
     }),
 
 

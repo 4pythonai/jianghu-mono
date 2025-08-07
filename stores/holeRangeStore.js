@@ -14,31 +14,7 @@ export const holeRangeStore = observable({
     scoreEndIndex: null,
     roadLength: 0,
 
-    /**
-     * 初始化洞数据
-     * @param {Array} holeList 原始洞数据
-     */
-    initializeHoles: action(function (holeList) {
-        console.log('🕳️ [holeRangeStore] 初始化洞数据:', holeList?.length);
 
-        if (!holeList || !Array.isArray(holeList)) {
-            console.warn('🕳️ [holeRangeStore] 无效的洞数据');
-            return;
-        }
-
-        // 标准化洞数据
-        const normalizedHoles = holeList.map((h, index) => normalizeHole(h, index + 1));
-
-        this.holeList = normalizedHoles;
-        this.holePlayList = JSON.parse(JSON.stringify(normalizedHoles));
-        this.roadLength = normalizedHoles.length;
-
-        // 设置默认的起始和结束洞索引
-        if (normalizedHoles.length > 0) {
-            this.scoreStartIndex = normalizedHoles[0].hindex;
-            this.scoreEndIndex = normalizedHoles[normalizedHoles.length - 1].hindex;
-        }
-    }),
 
     /**
      * 设置洞范围（参与游戏的洞）
@@ -112,8 +88,24 @@ export const holeRangeStore = observable({
         }
     }),
 
+    /**
+     * 重置洞范围到默认状态
+     */
+    // resetHoleRange: action(function () {
+    //     console.log('🕳️ [holeRangeStore] 重置洞范围到默认状态');
 
-
+    //     if (this.holeList.length > 0) {
+    //         this.scoreStartIndex = this.holeList[0].hindex;
+    //         this.scoreEndIndex = this.holeList[this.holeList.length - 1].hindex;
+    //         this.roadLength = this.holeList.length;
+    //         this.holePlayList = JSON.parse(JSON.stringify(this.holeList));
+    //     } else {
+    //         this.scoreStartIndex = null;
+    //         this.scoreEndIndex = null;
+    //         this.roadLength = 0;
+    //         this.holePlayList = [];
+    //     }
+    // }),
 
     /**
      * 获取当前状态

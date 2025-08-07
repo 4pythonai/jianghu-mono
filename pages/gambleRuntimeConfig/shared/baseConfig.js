@@ -244,7 +244,7 @@ const BaseConfig = {
      */
     initializeHoleRangeConfig(pageContext) {
         // 使用 holeRangeStore 重置洞范围到默认状态
-        holeRangeStore.resetHoleRange();
+        // holeRangeStore.resetHoleRange();
 
         console.log('[BaseConfig] 洞范围配置初始化完成');
     },
