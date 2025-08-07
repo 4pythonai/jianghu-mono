@@ -9,13 +9,6 @@ const RuntimeComponentsUtils = {
             "Par+1": 2,
             "Par+2": 1
         },
-        LOG_PREFIXES: {
-            HOLE_RANGE: '🕳️ [HoleRangeSelector]',
-            PLAYER_INDICATOR: '🎯 [PlayerIndicator]',
-            RANKING_SELECTOR: '🏆 [RankConflictResolver]',
-            RED_BLUE_CONFIG: '🔴🔵 [RedBlueConfig]',
-            SUMMARY: '📋 [Summary]'
-        }
     },
 
     // 头像处理工具
@@ -142,31 +135,8 @@ const RuntimeComponentsUtils = {
          * @param {string} message - 消息
          * @param {*} data - 数据对象
          */
-        log(component, message, data = null) {
-            // const prefix = RuntimeComponentsUtils.CONSTANTS.LOG_PREFIXES[component] || `[${component}]`;
-
-            // if (data !== null) {
-            //     console.log(`${prefix} ${message}:`, data);
-            // } else {
-            //     console.log(`${prefix} ${message}`);
-            // }
-        },
-
-        /**
-         * 错误日志记录
-         * @param {string} component - 组件名称
-         * @param {string} message - 错误消息
-         * @param {*} error - 错误对象
-         */
-        error(component, message, error = null) {
-            const prefix = RuntimeComponentsUtils.CONSTANTS.LOG_PREFIXES[component] || `[${component}]`;
-
-            if (error !== null) {
-                console.error(`${prefix} ${message}:`, error);
-            } else {
-                console.error(`${prefix} ${message}`);
-            }
-        }
+        log(component, message, data = null) { },
+        error(component, message, error = null) { }
     },
 
 

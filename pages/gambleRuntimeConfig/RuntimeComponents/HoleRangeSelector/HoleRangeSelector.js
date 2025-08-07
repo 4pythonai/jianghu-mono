@@ -40,14 +40,6 @@ Component({
             const endHole = endHoleindex && holeList.length ?
                 holeList.find(hole => hole.hindex === endHoleindex) : null;
 
-            console.log(' 🛑🛑  HoleRangeSelector updateHoleDisplay:', {
-                holeListLength: holeList.length,
-                startHoleindex,
-                endHoleindex,
-                startHole: startHole ? { hindex: startHole.hindex, holename: startHole.holename } : null,
-                endHole: endHole ? { hindex: endHole.hindex, holename: endHole.holename } : null,
-                roadLength: roadLength
-            });
 
             this.setData({
                 holeList,

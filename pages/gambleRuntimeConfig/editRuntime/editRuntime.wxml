@@ -50,7 +50,6 @@
     </view>
 
     <!-- 分组配置 -->
-    <!-- bind:change="onGroupingConfigChange" -->
 
     <view class="section">
       <RedBlueConfig
