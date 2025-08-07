@@ -1,7 +1,7 @@
 <view class="runtime-config-container">
   <!-- 调试信息 -->
 
-  <Rule4P8421 item="{{config.spec}}" showEdit="{{false}}" />
+  <RuleCard item="{{config.spec}}" showEdit="{{false}}" />
 
   <!-- 错误状态 -->
   <view class="error-container" wx:if="{{error}}">
