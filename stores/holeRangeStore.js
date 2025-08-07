@@ -9,7 +9,6 @@ import { normalizeHole } from '../utils/gameUtils'
 export const holeRangeStore = observable({
     // ---- 洞相关状态 ----
     holeList: [],           // 洞信息列表（原始洞数据）
-    holePlayList: [],       // 洞顺序列表（按游戏顺序排列）
     scoreStartIndex: null,
     roadLength: 0,
 
@@ -29,7 +28,6 @@ export const holeRangeStore = observable({
         const normalizedHoles = holeList.map((h, index) => normalizeHole(h, index + 1));
 
         this.holeList = normalizedHoles;
-        this.holePlayList = JSON.parse(JSON.stringify(normalizedHoles));
         this.roadLength = normalizedHoles.length;
 
 
@@ -52,14 +50,6 @@ export const holeRangeStore = observable({
         this.roadLength = roadLength;
     }),
 
-    /**
-     * 更新洞顺序列表（用于拖拽排序后）
-     * @param {Array} newHolePlayList 新的洞顺序列表
-     */
-    updateHolePlayList: action(function (newHolePlayList) {
-        this.holePlayList = [...newHolePlayList];
-        this.roadLength = newHolePlayList.length;
-    }),
 
 
     resetHoleRange: action(function () {
@@ -68,11 +58,9 @@ export const holeRangeStore = observable({
         if (this.holeList.length > 0) {
             this.scoreStartIndex = this.holeList[0].hindex;
             this.roadLength = this.holeList.length;
-            this.holePlayList = JSON.parse(JSON.stringify(this.holeList));
         } else {
             this.scoreStartIndex = null;
             this.roadLength = 0;
-            this.holePlayList = [];
         }
     }),
 
@@ -82,7 +70,6 @@ export const holeRangeStore = observable({
     getState() {
         return {
             holeList: this.holeList,
-            holePlayList: this.holePlayList,
             startHoleindex: this.scoreStartIndex,
             roadLength: this.roadLength
         };

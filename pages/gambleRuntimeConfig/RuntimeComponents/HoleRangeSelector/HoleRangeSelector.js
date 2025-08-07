@@ -161,15 +161,14 @@ Component({
          * @param {Object} e 事件对象
          */
         onModalConfirm(e) {
+            console.log(' ❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌ [HoleRangeSelector] 收到洞顺序确认:', e.detail);
             const result = e.detail;
 
-            // 更新holeRangeStore
-            if (result.holePlayList) {
-                holeRangeStore.updateHolePlayList(result.holePlayList);
-            }
+
             if (result.roadLength) {
                 holeRangeStore.setRoadLength(result.roadLength);
             }
+
             if (result.startHoleindex) {
                 holeRangeStore.setStartIndex(result.startHoleindex);
             }
@@ -201,9 +200,6 @@ Component({
         // 获取当前配置（用于外部收集配置）
         getConfig() {
             const { startHoleindex, roadLength } = this.data;
-
-            const { holePlayList } = holeRangeStore.getState();
-
             // 计算结束洞索引
             let endHoleindex = null;
             if (startHoleindex && this.data.holeList.length > 0 && roadLength > 0) {

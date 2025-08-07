@@ -292,7 +292,6 @@ Page({
             gambleid: gambleid,
             gambleSysName: config.gambleSysName || '',
             userRuleName: config.gambleUserName || '',
-            holePlayList: config.holePlayList || [],
             playerCount: config.player8421Count || 0
         };
 
