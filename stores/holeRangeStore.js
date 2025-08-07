@@ -84,12 +84,11 @@ export const holeRangeStore = observable({
      * @param {Array} newHolePlayList 新的洞顺序列表
      */
     updateHolePlayList: action(function (newHolePlayList) {
-        console.log(' ⭕️⭕️ ⭕️⭕️ [holeRangeStore] 更新洞顺序列表:', newHolePlayList);
 
-        if (!newHolePlayList || !Array.isArray(newHolePlayList)) {
-            console.warn('⭕️⭕️ ⭕️⭕️ [holeRangeStore] 无效的洞顺序列表');
-            return;
-        }
+        // if (!newHolePlayList || !Array.isArray(newHolePlayList)) {
+        //     console.warn('⭕️⭕️ ⭕️⭕️ [holeRangeStore] 无效的洞顺序列表');
+        //     return;
+        // }
 
         this.holePlayList = [...newHolePlayList];
 

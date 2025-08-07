@@ -29,7 +29,7 @@ Component({
                 }
             });
 
-            this.updateHolePlayList();
+            this.updateKIcoHolesList();
             this.loadExistingMultipliers();
         },
         detached() {
@@ -45,7 +45,7 @@ Component({
 
     methods: {
         // 更新洞序列表
-        updateHolePlayList() {
+        updateKIcoHolesList() {
             const config = this.data.runtimeConfigs?.[0];
             if (!config?.holePlayListStr) {
                 this.setData({ holePlayList: [] });
