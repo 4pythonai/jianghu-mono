@@ -47,25 +47,15 @@ Component({
         // 更新洞序列表
         updateKIcoHolesList() {
             const config = this.data.runtimeConfigs?.[0];
-            if (!config?.holePlayListStr) {
-                this.setData({ holePlayList: [] });
-                return;
-            }
+            const holeIndexes = config.holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
+            const allHoles = gameStore.gameData?.holeList || [];
+            const holePlayList = holeIndexes.map(hindex => {
+                const hole = allHoles.find(h => h.hindex === hindex);
+                return hole || { hindex, holename: `洞${hindex}` };
+            }).filter(hole => hole);
 
-            try {
-                const holeIndexes = config.holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
-                const allHoles = gameStore.gameData?.holeList || [];
+            this.setData({ holePlayList });
 
-                const holePlayList = holeIndexes.map(hindex => {
-                    const hole = allHoles.find(h => h.hindex === hindex);
-                    return hole || { hindex, holename: `洞${hindex}` };
-                }).filter(hole => hole);
-
-                this.setData({ holePlayList });
-            } catch (e) {
-                console.error('[kickoff] 解析洞序失败:', e);
-                this.setData({ holePlayList: [] });
-            }
         },
 
         // 加载现有的倍数配置
