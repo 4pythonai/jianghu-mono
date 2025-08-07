@@ -51,6 +51,19 @@
 	margin-top: 0;
 }
 
+/* 洞数量显示样式 */
+.hole-count {
+	font-size: 32rpx;
+	color: #4caf50;
+	font-weight: bold;
+	background-color: #e8f5e8;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	border: 2rpx solid #4caf50;
+	text-align: center;
+	min-width: 80rpx;
+}
+
 /* 提示信息 */
 .hint-text {
 	text-align: center;
@@ -81,6 +94,12 @@
 
 	.hole-number {
 		font-size: 32rpx;
+	}
+
+	.hole-count {
+		font-size: 28rpx;
+		padding: 6rpx 12rpx;
+		min-width: 70rpx;
 	}
 
 	.hint-text-inner {

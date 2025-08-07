@@ -5,6 +5,8 @@
 const BaseConfig = require('../shared/baseConfig');
 const ConfigValidator = require('../shared/configValidator');
 const { GameConfig } = require('../../../utils/gameConfig');
+const { gameStore } = require('../../../stores/gameStore');
+const { toJS } = require('mobx-miniprogram');
 
 Page({
     data: {
@@ -32,7 +34,11 @@ Page({
 
         // 页面状态
         loading: false,
-        error: null
+        error: null,
+
+        // 调试信息字段
+        gameDataType: '',
+        gameDataString: ''
     },
 
     onLoad(options) {
@@ -52,14 +58,30 @@ Page({
             const needsPlayerConfig = GameConfig.needsPlayerConfig(gambleSysName);
             const needsGrouping = GameConfig.needsGrouping(gambleSysName);
 
-            console.log('[AddRuntime] 初始化完成:');
-            console.log('- 游戏系统名称:', gambleSysName);
-            console.log('- 需要球员配置:', needsPlayerConfig);
-            console.log('- 需要分组:', needsGrouping);
+            // 获取 gameStore 中的 gameData
+            const gameData = toJS(gameStore.gameData);
+            console.log('[AddRuntime] gameStore.gameData:', gameData);
+
+            // 计算调试信息
+            const gameDataType = typeof gameData;
+
+            // 只提取 holeList 中的 hindex, holename, unique_key
+            let gameDataString = '';
+            if (gameData && gameData.holeList && Array.isArray(gameData.holeList)) {
+                const holeListInfo = gameData.holeList.map(hole => ({
+                    hindex: hole.hindex,
+                    holename: hole.holename,
+                    unique_key: hole.unique_key
+                }));
+                gameDataString = JSON.stringify(holeListInfo, null, 2);
+            }
 
             this.setData({
                 needsPlayerConfig: needsPlayerConfig,
-                needsGrouping: needsGrouping
+                needsGrouping: needsGrouping,
+                gameData: gameData,
+                gameDataType: gameDataType,
+                gameDataString: gameDataString
             });
 
         }, 100);

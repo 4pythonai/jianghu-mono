@@ -19,6 +19,9 @@
         data-type="end"
       >{{endHole ? endHole.holename : ''}}</view>
     </view>
+    <!-- 洞数量显示 -->
+    <view class="selector-label">洞数量</view>
+    <view class="hole-count">{{roadLength}}个</view>
   </view>
 </view>
 <RealHolePlayListSetter

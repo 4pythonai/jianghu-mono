@@ -1,5 +1,4 @@
 // RealHolePlayListSetter
-import { gameStore } from '../../stores/gameStore';
 import { holeRangeStore } from '../../stores/holeRangeStore';
 import { toJS } from 'mobx-miniprogram';
 
@@ -36,9 +35,40 @@ Component({
             // 从 holeRangeStore 获取洞数据
             const { holeList, holePlayList } = holeRangeStore.getState();
 
-            // 使用 toJS 转换 observable 对象为普通对象
-            const plainHoleList = toJS(holeList);
-            const plainHolePlayList = toJS(holePlayList);
+            // 如果 holeRangeStore 中没有数据，尝试从 gameStore 获取
+            let plainHoleList = toJS(holeList);
+            let plainHolePlayList = toJS(holePlayList);
+
+            if (!plainHoleList || plainHoleList.length === 0) {
+                try {
+                    const { gameStore } = require('../../stores/gameStore');
+                    const gameData = toJS(gameStore.gameData);
+                    if (gameData && gameData.holeList) {
+                        plainHoleList = gameData.holeList;
+
+                        // 初始化 holeRangeStore
+                        holeRangeStore.initializeHoles(plainHoleList);
+                        plainHolePlayList = toJS(holeRangeStore.holePlayList);
+                    }
+                } catch (error) {
+                    console.error('[RealHolePlayListSetter] 从 gameStore 获取数据失败:', error);
+                }
+            }
+
+            // 如果还是没有数据，创建默认的洞列表
+            if (!plainHoleList || plainHoleList.length === 0) {
+                plainHoleList = [
+                    { hindex: 14, holename: 'B14', unique_key: 'hole_14' },
+                    { hindex: 15, holename: 'B15', unique_key: 'hole_15' },
+                    { hindex: 16, holename: 'B16', unique_key: 'hole_16' },
+                    { hindex: 17, holename: 'B17', unique_key: 'hole_17' },
+                    { hindex: 18, holename: 'B18', unique_key: 'hole_18' }
+                ];
+                plainHolePlayList = [...plainHoleList];
+
+                // 初始化 holeRangeStore
+                holeRangeStore.initializeHoles(plainHoleList);
+            }
 
             // 构建显示列表：包含所有洞，按holePlayList的顺序排列
             const displayHoleList = this.buildDisplayHoleList(plainHoleList, plainHolePlayList);
@@ -48,6 +78,8 @@ Component({
                 holePlayList: plainHolePlayList,
                 displayHoleList
             });
+
+
         },
     },
 
@@ -108,6 +140,8 @@ Component({
         onSelectHole(e) {
             const selectType = this.properties.selectType; // 获取选择类型
 
+
+
             if (selectType === 'start') {
                 const hindex = Number(e.currentTarget.dataset.hindex);
                 console.log('🕳️ 选择起始洞:', hindex);
@@ -131,6 +165,10 @@ Component({
                 // 实现终止洞的逻辑
                 const newHolePlayList = this.buildHolePlayListToEnd(hindex);
                 console.log('🕳️ 新的holePlayList:', newHolePlayList.map(h => ({ hindex: h.hindex, holename: h.holename })));
+
+                // holeRangeStore 
+                holeRangeStore.setRoadLength(newHolePlayList.length);
+
 
                 // 重新构建显示列表
                 const newDisplayHoleList = this.buildDisplayHoleList(this.data.holeList, newHolePlayList);
@@ -189,7 +227,7 @@ Component({
             // 从displayHoleList中获取从开始到终止洞的所有洞（包括灰色的洞）
             const selectedHoles = displayHoleList.slice(0, endIndex + 1);
 
-            console.log('🕳️ 选择的洞（包含灰色洞）:', selectedHoles.map(h => ({ hindex: h.hindex, holename: h.holename, inPlaylist: h.inPlaylist })));
+            console.log('🕳️ 选择的洞:', selectedHoles.map(h => ({ hindex: h.hindex, holename: h.holename, inPlaylist: h.inPlaylist })));
 
             return selectedHoles;
         },
@@ -199,6 +237,7 @@ Component({
 
             // 1. 更新 holePlayList（保持完整的洞顺序）
             holeRangeStore.updateHolePlayList(this.data.holePlayList);
+            holeRangeStore.setRoadLength(this.data.holePlayList.length);
 
             // 2. 设置洞范围（使用holePlayList的第一个和最后一个洞）
             if (this.data.holePlayList.length > 0) {
@@ -206,6 +245,10 @@ Component({
                 const endHoleindex = this.data.holePlayList[this.data.holePlayList.length - 1].hindex;
                 holeRangeStore.setHoleRange(startHoleindex, endHoleindex);
             }
+
+            // 3. 记录洞顺序信息
+            console.log('🕳️ [RealHolePlayListSetter] 确认洞顺序，洞数量:', this.data.holePlayList.length);
+            console.log('🕳️ [RealHolePlayListSetter] holeRangeStore.roadLength 将自动更新为:', this.data.holePlayList.length);
 
             this.triggerEvent('cancel');
         },

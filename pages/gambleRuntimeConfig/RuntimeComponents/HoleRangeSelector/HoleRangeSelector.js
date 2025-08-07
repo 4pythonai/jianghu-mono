@@ -6,11 +6,11 @@ import { autorun } from 'mobx-miniprogram';
 Component({
     lifetimes: {
         attached() {
-            const { holeList, startHoleindex, endHoleindex } = holeRangeStore.getState();
-            this.updateHoleDisplay(holeList, startHoleindex, endHoleindex);
+            const { holeList, startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
+            this.updateHoleDisplay(holeList, startHoleindex, endHoleindex, roadLength);
             this.disposer = autorun(() => {
-                const { holeList, startHoleindex, endHoleindex } = holeRangeStore.getState();
-                this.updateHoleDisplay(holeList, startHoleindex, endHoleindex);
+                const { holeList, startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
+                this.updateHoleDisplay(holeList, startHoleindex, endHoleindex, roadLength);
             });
         },
         detached() {
@@ -24,7 +24,8 @@ Component({
         endHoleindex: null,
         selectType: null, // 新增：记录当前选择类型（start/end）
         startHole: null,  // 起始洞信息
-        endHole: null     // 终止洞信息
+        endHole: null,     // 终止洞信息
+        roadLength: 0
     },
     methods: {
         /**
@@ -33,18 +34,19 @@ Component({
          * @param {number} startHoleindex 起始洞索引
          * @param {number} endHoleindex 终止洞索引
          */
-        updateHoleDisplay(holeList, startHoleindex, endHoleindex) {
+        updateHoleDisplay(holeList, startHoleindex, endHoleindex, roadLength) {
             const startHole = startHoleindex && holeList.length ?
                 holeList.find(hole => hole.hindex === startHoleindex) : null;
             const endHole = endHoleindex && holeList.length ?
                 holeList.find(hole => hole.hindex === endHoleindex) : null;
 
-            console.log('🕳️ HoleRangeSelector updateHoleDisplay:', {
+            console.log(' 🛑🛑  HoleRangeSelector updateHoleDisplay:', {
                 holeListLength: holeList.length,
                 startHoleindex,
                 endHoleindex,
                 startHole: startHole ? { hindex: startHole.hindex, holename: startHole.holename } : null,
-                endHole: endHole ? { hindex: endHole.hindex, holename: endHole.holename } : null
+                endHole: endHole ? { hindex: endHole.hindex, holename: endHole.holename } : null,
+                roadLength: roadLength
             });
 
             this.setData({
@@ -52,7 +54,8 @@ Component({
                 startHoleindex,
                 endHoleindex,
                 startHole,
-                endHole
+                endHole,
+                roadLength
             });
         },
 
@@ -61,14 +64,15 @@ Component({
             const dataType = e.currentTarget.dataset.type;
 
             // 从holeRangeStore获取当前的起始洞和结束洞索引
-            const { startHoleindex, endHoleindex } = holeRangeStore.getState();
+            const { startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
 
 
             this.setData({
                 ifShowModal: true,
                 startHoleindex,
                 endHoleindex,
-                selectType: dataType // 传递选择类型
+                selectType: dataType,
+                roadLength
             });
         },
 
@@ -83,7 +87,7 @@ Component({
                 ifShowModal: true,
                 startHoleindex,
                 endHoleindex,
-                selectType: dataType // 传递选择类型
+                selectType: dataType,
             });
         },
 

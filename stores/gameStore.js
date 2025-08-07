@@ -27,6 +27,8 @@ export const gameStore = observable({
     error: null,         // 错误信息
     isSaving: false,     // 保存状态
 
+    // holePlayList: [],
+
 
 
     // 根据 groupId 过滤玩家
@@ -131,14 +133,6 @@ export const gameStore = observable({
                 this.red_blue = res.red_blue || [];
                 this.kickConfigs = res.kickConfigs || []; // 存储运行时倍数
 
-                // 调试信息
-                console.log('[gameStore] fetchGameDetail - API 返回数据:', {
-                    hasGameDetail: !!res.game_detail,
-                    hasRedBlue: !!res.red_blue,
-                    hasKickConfigs: !!res.kickConfigs,
-                    kickConfigsData: res.kickConfigs
-                });
-                console.log('[gameStore] fetchGameDetail - 设置后的 kickConfigs:', this.kickConfigs);
 
                 return res; // 关键：返回原始接口数据，包含red_blue
             }

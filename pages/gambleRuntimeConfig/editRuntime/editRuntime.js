@@ -31,7 +31,11 @@ Page({
 
         // 页面状态
         loading: false,
-        error: null
+        error: null,
+
+        // 调试信息字段
+        gameDataType: '',
+        gameDataString: ''
     },
 
     onLoad(options) {
@@ -63,6 +67,26 @@ Page({
             players: players.map(p => ({ userid: p.userid, nickname: p.nickname }))
         });
 
+        // 获取 gameStore 中的 gameData
+        const gameData = toJS(gameStore.gameData);
+        console.log('[🔴🔴🔴🔴🔴 EditRuntime] gameStore.gameData:', gameData);
+
+        // 计算调试信息
+        const gameDataType = typeof gameData;
+
+        // 只提取 holeList 中的 hindex, holename, unique_key
+        let gameDataString = '';
+        if (gameData && gameData.holeList && Array.isArray(gameData.holeList)) {
+            const holeListInfo = gameData.holeList.map(hole => ({
+                hindex: hole.hindex,
+                holename: hole.holename,
+                unique_key: hole.unique_key
+            }));
+            gameDataString = JSON.stringify(holeListInfo, null, 2);
+        }
+
+        console.log('[🔴🔴🔴🔴🔴 holeListInfo:', gameDataString);
+
         // 直接设置配置数据
         this.setData({
             config: config,
@@ -71,6 +95,9 @@ Page({
             gameId: config.gameid,
             groupId: config.groupid, // 添加 groupId 到页面数据
             players: players,
+            gameData: gameData, // 添加 gameData
+            gameDataType: gameDataType,
+            gameDataString: gameDataString,
             'runtimeConfig.gameid': config.gameid,
             'runtimeConfig.groupid': config.groupid,
             'runtimeConfig.userRuleId': config.userRuleId,

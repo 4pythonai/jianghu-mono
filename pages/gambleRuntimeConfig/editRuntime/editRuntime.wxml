@@ -1,5 +1,17 @@
 <view class="runtime-config-container">
   <!-- 调试信息 -->
+  <view class="debug-info">
+    <text>调试信息:</text>
+    <text>gambleSysName: {{gambleSysName}}</text>
+    <text>gameId: {{gameId}}</text>
+    <text>configId: {{configId}}</text>
+    <text>players: {{players.length}}人</text>
+    <text>gameData存在: {{gameData ? '是' : '否'}}</text>
+    <text>gameData类型: {{gameDataType}}</text>
+    <text>holeList信息: {{gameDataString}}</text>
+    <text>error: {{error}}</text>
+    <text>loading: {{loading}}</text>
+  </view>
 
   <RuleCard item="{{config.spec}}" showEdit="{{false}}" />
 
