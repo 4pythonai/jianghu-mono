@@ -1,0 +1,27 @@
+<!-- RealHolePlayListSetter -->
+
+<view>
+  <view class="modal-mask" bindtap="onHideModal"></view>
+  <view class="modal-content">
+    <view class="modal-title">设置洞序</view>
+    <view class="hole-list">
+      <block wx:for="{{displayHoleList}}" wx:key="hindex">
+        <view
+          class="hole-item {{index === 0 ? 'active' : ''}} {{item.inPlaylist ? 'in-playlist' : 'not-in-playlist'}}"
+          bindtap="onSelectHole"
+          data-index="{{index}}"
+          data-holename="{{item.holename}}"
+          data-hindex="{{item.hindex}}"
+        >
+          <text class="hole-item-text">{{item.holename}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="spliter"></view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirmHoleOrder">确定</button>
+    </view>
+  </view>
+</view>
