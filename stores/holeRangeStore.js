@@ -11,7 +11,6 @@ export const holeRangeStore = observable({
     holeList: [],           // 洞信息列表（原始洞数据）
     holePlayList: [],       // 洞顺序列表（按游戏顺序排列）
     scoreStartIndex: null,
-    scoreEndIndex: null,
     roadLength: 0,
 
     /**
@@ -33,10 +32,9 @@ export const holeRangeStore = observable({
         this.holePlayList = JSON.parse(JSON.stringify(normalizedHoles));
         this.roadLength = normalizedHoles.length;
 
-        // 设置默认的起始和结束洞索引
+
         if (normalizedHoles.length > 0) {
             this.scoreStartIndex = normalizedHoles[0].hindex;
-            this.scoreEndIndex = normalizedHoles[normalizedHoles.length - 1].hindex;
         }
     }),
 
@@ -45,16 +43,8 @@ export const holeRangeStore = observable({
      * @param {number} startHoleindex 起始洞索引
      * @param {number} endHoleindex 结束洞索引
      */
-    setHoleRange: action(function (start, end) {
-        console.log('⭕️⭕️⭕️⭕️  [holeRangeStore] 设置洞范围:', { start, end });
-
-        if (start === undefined || end === undefined) {
-            console.warn(' ⭕️⭕️  [holeRangeStore] 无效的洞范围参数');
-            return;
-        }
-
+    setHoleRange: action(function (start) {
         this.scoreStartIndex = Number.parseInt(start);
-        this.scoreEndIndex = Number.parseInt(end);
 
     }),
 
@@ -120,12 +110,10 @@ export const holeRangeStore = observable({
 
         if (this.holeList.length > 0) {
             this.scoreStartIndex = this.holeList[0].hindex;
-            this.scoreEndIndex = this.holeList[this.holeList.length - 1].hindex;
             this.roadLength = this.holeList.length;
             this.holePlayList = JSON.parse(JSON.stringify(this.holeList));
         } else {
             this.scoreStartIndex = null;
-            this.scoreEndIndex = null;
             this.roadLength = 0;
             this.holePlayList = [];
         }
@@ -139,7 +127,6 @@ export const holeRangeStore = observable({
             holeList: this.holeList,
             holePlayList: this.holePlayList,
             startHoleindex: this.scoreStartIndex,
-            endHoleindex: this.scoreEndIndex,
             roadLength: this.roadLength
         };
     }

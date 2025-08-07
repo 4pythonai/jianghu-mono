@@ -8,17 +8,17 @@ import { toJS } from 'mobx-miniprogram';
 Component({
     lifetimes: {
         attached() {
-            const { startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
+            const { startHoleindex, roadLength } = holeRangeStore.getState();
             const { holeList } = gameStore.getState();
             console.log(" GAME 🅰️🅱️🆎🅾️🆑++++", toJS(gameStore.gameData?.holeList));
 
             console.log("🅰️🅱️🆎🅾️🆑++++", toJS(holeList));
 
 
-            this.updateHoleDisplay(holeList, startHoleindex, endHoleindex, roadLength);
+            this.updateHoleDisplay(holeList, startHoleindex, roadLength);
             this.disposer = autorun(() => {
-                const { holeList, startHoleindex, endHoleindex, roadLength } = holeRangeStore.getState();
-                this.updateHoleDisplay(holeList, startHoleindex, endHoleindex, roadLength);
+                const { holeList, startHoleindex, roadLength } = holeRangeStore.getState();
+                this.updateHoleDisplay(holeList, startHoleindex, roadLength);
             });
         },
         detached() {
@@ -40,25 +40,30 @@ Component({
          * 更新洞显示信息
          * @param {Array} holeList 洞列表
          * @param {number} startHoleindex 起始洞索引
-         * @param {number} endHoleindex 终止洞索引
+         * @param {number} roadLength 长度
          */
-        updateHoleDisplay(holeList, startHoleindex, endHoleindex, roadLength) {
+        updateHoleDisplay(holeList, startHoleindex, roadLength) {
 
             console.log("startHoleindex", startHoleindex);
-            console.log("endHoleindex", endHoleindex);
             console.log("roadLength", roadLength);
 
             const startHole = startHoleindex && holeList.length ?
                 holeList.find(hole => hole.hindex === startHoleindex) : null;
 
-            const endHole = endHoleindex && holeList.length ?
-                holeList.find(hole => hole.hindex === endHoleindex) : null;
-
+            // 将 holeList 当作环形结构，从 startHoleindex 开始往后寻找第 roadLength 个洞作为 endHole
+            let endHole = null;
+            if (startHoleindex && holeList.length && roadLength > 0) {
+                const startIndex = holeList.findIndex(hole => hole.hindex === startHoleindex);
+                if (startIndex !== -1) {
+                    // 计算结束洞的索引（环形结构）
+                    const endIndex = (startIndex + roadLength - 1) % holeList.length;
+                    endHole = holeList[endIndex];
+                }
+            }
 
             this.setData({
                 holeList,
                 startHoleindex,
-                endHoleindex,
                 startHole,
                 endHole,
                 roadLength

@@ -51,6 +51,7 @@ Page({
 
         // 从 runtimeStore 中查找对应的配置
         const config = runtimeStore.runtimeConfigs.find(c => c.id === configId);
+
         if (!config) {
             this.setData({
                 error: '未找到配置数据'
@@ -58,7 +59,7 @@ Page({
             return;
         }
 
-        console.log('[⭕️⭕️⭕️⭕️] Spect:', toJS(config.spec));
+        console.log('[⭕️⭕️⭕️⭕️] 赌博配置::::', toJS(config));
 
         // 从 gameStore 获取玩家数据
         const players = gameStore.players || [];
@@ -110,15 +111,8 @@ Page({
         });
 
         // 设置 holeRangeStore 中的洞范围配置
-        if (config.startHoleindex !== undefined && config.endHoleindex !== undefined) {
-            holeRangeStore.setHoleRange(
-                Number.parseInt(config.startHoleindex),
-                Number.parseInt(config.endHoleindex)
-            );
-            console.log('[EditRuntime] 设置洞范围配置:', {
-                startHoleindex: holeRangeStore.startHoleindex,
-                endHoleindex: holeRangeStore.endHoleindex
-            });
+        if (config.startHoleindex !== undefined) {
+            holeRangeStore.setHoleRange(Number.parseInt(config.startHoleindex));
         }
 
         // 根据 holePlayListStr 重新设置 holeRangeStore 中的洞顺序
