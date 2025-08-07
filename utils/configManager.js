@@ -388,12 +388,12 @@ class ConfigManager {
             state.selectedStart = 2;
         } else if (badScoreBaseLine?.startsWith('Par+')) {
             state.selectedStart = 0;
-            const score = parseInt(badScoreBaseLine.replace('Par+', ''));
-            state.paScore = isNaN(score) ? 4 : score;
+            const score = Number.parseInt(badScoreBaseLine.replace('Par+', ''));
+            state.paScore = Number.isNaN(score) ? 4 : score;
         } else if (badScoreBaseLine?.startsWith('DoublePar+')) {
             state.selectedStart = 1;
-            const score = parseInt(badScoreBaseLine.replace('DoublePar+', ''));
-            state.doubleParScore = isNaN(score) ? 0 : score;
+            const score = Number.parseInt(badScoreBaseLine.replace('DoublePar+', ''));
+            state.doubleParScore = Number.isNaN(score) ? 0 : score;
         } else {
             state.selectedStart = 0;
             state.paScore = 4;
@@ -441,8 +441,8 @@ class ConfigManager {
             state.selected = 2;
         } else if (drawConfig?.startsWith('Diff_')) {
             state.selected = 1;
-            const score = parseInt(drawConfig.replace('Diff_', ''));
-            state.selectedDiffScore = isNaN(score) ? 1 : score;
+            const score = Number.parseInt(drawConfig.replace('Diff_', ''));
+            state.selectedDiffScore = Number.isNaN(score) ? 1 : score;
         } else {
             state.selected = 0;
             state.selectedDiffScore = 1;
@@ -836,12 +836,12 @@ class ConfigManager {
             state.dutyConfig = 'NODUTY';
         } else if (badScoreBaseLine?.startsWith('Par+')) {
             state.dutyConfig = 'Par+';
-            const score = parseInt(badScoreBaseLine.replace('Par+', ''));
-            state.parPlusValue = isNaN(score) ? 4 : score;
+            const score = Number.parseInt(badScoreBaseLine.replace('Par+', ''));
+            state.parPlusValue = Number.isNaN(score) ? 4 : score;
         } else if (badScoreBaseLine?.startsWith('DoublePar+')) {
             state.dutyConfig = 'DoublePar+';
-            const score = parseInt(badScoreBaseLine.replace('DoublePar+', ''));
-            state.doubleParPlusValue = isNaN(score) ? 1 : score;
+            const score = Number.parseInt(badScoreBaseLine.replace('DoublePar+', ''));
+            state.doubleParPlusValue = Number.isNaN(score) ? 1 : score;
         } else {
             state.dutyConfig = 'NODUTY';
         }
@@ -849,12 +849,12 @@ class ConfigManager {
         // 解析同伴惩罚配置
         if (dutyConfig?.startsWith('Par+')) {
             state.PartnerDutyCondition = 'DUTY_PAR';
-            const score = parseInt(dutyConfig.replace('Par+', ''));
-            state.parPlusValue = isNaN(score) ? 4 : score;
+            const score = Number.parseInt(dutyConfig.replace('Par+', ''));
+            state.parPlusValue = Number.isNaN(score) ? 4 : score;
         } else if (dutyConfig?.startsWith('DoublePar+')) {
             state.PartnerDutyCondition = 'DUTY_DOUBLE_PAR';
-            const score = parseInt(dutyConfig.replace('DoublePar+', ''));
-            state.doubleParPlusValue = isNaN(score) ? 1 : score;
+            const score = Number.parseInt(dutyConfig.replace('DoublePar+', ''));
+            state.doubleParPlusValue = Number.isNaN(score) ? 1 : score;
         } else {
             state.PartnerDutyCondition = 'DUTY_DINGTOU';
         }
@@ -890,8 +890,8 @@ class ConfigManager {
         // 解析meatValueConfig
         if (meatValueConfig?.startsWith('MEAT_AS_')) {
             state.meatValueOption = 0;
-            const score = parseInt(meatValueConfig.replace('MEAT_AS_', ''));
-            state.meatScoreValue = isNaN(score) ? 1 : score;
+            const score = Number.parseInt(meatValueConfig.replace('MEAT_AS_', ''));
+            state.meatScoreValue = Number.isNaN(score) ? 1 : score;
         } else if (meatValueConfig === 'SINGLE_DOUBLE') {
             state.meatValueOption = 1;
         } else if (meatValueConfig === 'CONTINUE_DOUBLE') {

@@ -385,7 +385,7 @@ Component({
 
       if (meatValueConfig.startsWith('MEAT_AS_')) {
         meatValueOption = 0;
-        meatScoreValue = parseInt(meatValueConfig.replace('MEAT_AS_', '')) || 1;
+        meatScoreValue = Number.parseInt(meatValueConfig.replace('MEAT_AS_', '')) || 1;
       } else {
         switch (meatValueConfig) {
           case 'SINGLE_DOUBLE':

@@ -27,7 +27,7 @@ Page({
     // Tab切换方法
     onTabChange(e) {
         const { index } = e.currentTarget.dataset;
-        const tabIndex = parseInt(index); // 确保转换为数字
+        const tabIndex = Number.parseInt(index); // 确保转换为数字
         console.log('📋 [Rules] 切换到tab:', tabIndex, '(原始值:', index, ')');
 
         this.setData({
