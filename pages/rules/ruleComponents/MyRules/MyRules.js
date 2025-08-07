@@ -213,7 +213,7 @@ Component({
             console.log(`📋 [MyRules] 查看规则 "${item.gambleUserName}", 类型: ${gambleSysName}`);
 
             // 从 holeRangeStore 获取洞数据
-            const { holeList, holePlayList } = holeRangeStore.getState();
+            const { holeList } = holeRangeStore.getState();
 
             // 准备传递给运行时配置页面的数据
             const runtimeConfigData = {
@@ -222,7 +222,6 @@ Component({
                 playerCount: gameStore.players.length,
                 holeCount: holeList.length,
                 userRuleId: item.userRuleId,
-                holePlayList,
                 holeList,
                 userRuleName: item.gambleUserName,
                 fromUserRule: true,

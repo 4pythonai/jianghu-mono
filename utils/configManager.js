@@ -660,13 +660,12 @@ class ConfigManager {
      */
     prepareSaveData(runtimeConfig, isEdit, configId = '') {
         // 从 holeRangeStore 获取洞数据
-        const { holeList, holePlayList, startHoleindex, roadLength } = holeRangeStore.getState();
+        const { holeList, startHoleindex, roadLength } = holeRangeStore.getState();
 
 
         const saveData = {
             ...runtimeConfig,
             holeList,
-            holePlayList,
             startHoleindex,
             roadLength,
         };
