@@ -529,13 +529,12 @@ class ConfigManager {
             const gameTypeData = this.processGameTypeData(decodedData);
 
             // 处理洞范围数据
-            const holeData = this.processHoleData(decodedData);
+            // ...holeData,
 
             // 合并所有数据
             const processedData = {
                 ...baseData,
                 ...gameTypeData,
-                ...holeData,
                 editConfig: decodedData,  // 整个 decodedData 就是编辑配置
                 configId: decodedData.id || ''  // 从配置对象中获取 id
             };
@@ -612,19 +611,7 @@ class ConfigManager {
         };
     }
 
-    /**
-     * 处理洞范围数据
-     * @param {Object} decodedData 解析后的数据
-     * @returns {Object} 洞范围数据
-     */
-    processHoleData(decodedData) {
-        // 从 holeRangeStore 获取洞数据
-        const { holePlayList } = holeRangeStore.getState();
 
-        return {
-            holePlayList
-        };
-    }
 
     /**
      * 验证配置数据
@@ -675,11 +662,6 @@ class ConfigManager {
         // 从 holeRangeStore 获取洞数据
         const { holeList, holePlayList, startHoleindex, roadLength } = holeRangeStore.getState();
 
-        console.log('🕳️ [ConfigManager] 准备保存数据，从 holeRangeStore 获取:', {
-            startHoleindex,
-            roadLength,
-            holePlayListLength: holePlayList?.length
-        });
 
         const saveData = {
             ...runtimeConfig,
@@ -694,12 +676,6 @@ class ConfigManager {
             saveData.id = configId;
         }
 
-        console.log('🕳️ [ConfigManager] 最终保存数据:', {
-            startHoleindex: saveData.startHoleindex,
-            roadLength: saveData.roadLength,
-            hasHoleList: !!saveData.holeList,
-            hasHolePlayList: !!saveData.holePlayList
-        });
 
         return saveData;
     }
