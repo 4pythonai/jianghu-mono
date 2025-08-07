@@ -122,18 +122,6 @@ export const holeRangeStore = observable({
 
 
 
-    /**
-     * 清空所有洞数据
-     */
-    clear: action(function () {
-        console.log('🕳️ [holeRangeStore] 清空洞数据');
-
-        this.holeList = [];
-        this.holePlayList = [];
-        this.startHoleindex = null;
-        this.endHoleindex = null;
-        this.roadLength = 0;
-    }),
 
     /**
      * 获取当前状态
