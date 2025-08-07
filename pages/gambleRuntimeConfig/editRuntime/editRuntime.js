@@ -59,24 +59,12 @@ Page({
             return;
         }
 
-        console.log('[⭕️⭕️⭕️⭕️] 赌博配置::::', toJS(config));
-        console.log('[🔍🔍🔍🔍] 洞范围配置详情:', {
-            startHoleindex: config.startHoleindex,
-            startHoleindexType: typeof config.startHoleindex,
-            roadLength: config.roadLength,
-            roadLengthType: typeof config.roadLength
-        });
 
         // 从 gameStore 获取玩家数据
         const players = gameStore.players || [];
-        console.log('[EditRuntime] 获取玩家数据:', {
-            playersCount: players.length,
-            players: players.map(p => ({ userid: p.userid, nickname: p.nickname }))
-        });
 
         // 获取 gameStore 中的 gameData
         const gameData = toJS(gameStore.gameData);
-        console.log('[🔴🔴🔴🔴🔴 EditRuntime] gameStore.gameData:', gameData);
 
         // 计算调试信息
         const gameDataType = typeof gameData;
@@ -92,7 +80,6 @@ Page({
             gameDataString = JSON.stringify(holeListInfo, null, 2);
         }
 
-        console.log('[🔴🔴🔴🔴🔴 gameDataString:holeListInfo:', gameDataString);
 
         // 直接设置配置数据
         this.setData({

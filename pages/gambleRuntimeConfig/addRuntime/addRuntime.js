@@ -69,6 +69,7 @@ Page({
 
             // 只提取 holeList 中的 hindex, holename, unique_key
             let gameDataString = '';
+            let roadLength = 0;
             if (gameData?.holeList && Array.isArray(gameData.holeList)) {
                 const holeListInfo = gameData.holeList.map(hole => ({
                     hindex: hole.hindex,
@@ -76,9 +77,16 @@ Page({
                     unique_key: hole.unique_key
                 }));
                 gameDataString = JSON.stringify(holeListInfo, null, 2);
+                roadLength = gameData.holeList.length;
+            }
+
+            const config = {
+                startHoleindex: 1,
+                roadLength: roadLength,
             }
 
             this.setData({
+                config: config,
                 needsPlayerConfig: needsPlayerConfig,
                 needsGrouping: needsGrouping,
                 needsStroking: needsStroking,
@@ -97,18 +105,6 @@ Page({
 
         // 从各个组件收集最新配置
         this.collectAllConfigs();
-
-        // 打印完整配置信息
-        console.log('[AddRuntime] 准备保存配置:');
-        console.log('- 游戏系统名称:', gambleSysName);
-        console.log('- 游戏ID:', gameId);
-        console.log('- 玩家数量:', players.length);
-        console.log('- 完整运行时配置:', runtimeConfig);
-        console.log('- Stroking配置:', runtimeConfig.stroking_config);
-        console.log('- 分组配置:', runtimeConfig.red_blue_config);
-        console.log('- 启动顺序:', runtimeConfig.bootstrap_order);
-        console.log('- 排名配置:', runtimeConfig.ranking_tie_resolve_config);
-        console.log('- 球员指标配置:', runtimeConfig.playerIndicatorConfig);
 
         // 验证配置
         if (!ConfigValidator.validateAndShow(runtimeConfig, players, gambleSysName)) {

@@ -38,7 +38,12 @@
     <!-- 洞范围选择 -->
     <view class="section">
       <view class="section-label">选择球洞范围</view>
-      <HoleRangeSelector id="holeRangeSelector" />
+
+      <HoleRangeSelector
+        id="holeRangeSelector"
+        roadLength="{{config.roadLength}}"
+        startHoleindex="{{config.startHoleindex}}"
+      />
     </view>
 
     <!-- 让杆配置 -->
