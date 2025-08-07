@@ -23,9 +23,11 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
     private $holes;
+
     private $bootStrapOrder; //出发顺序,即参与赌球的人员的初始排名,因为没有比赛成绩,所以要硬性规定下
     private $startHoleindex;   // 第一个参与计算的洞的index,因为要支持从某个洞开始赌球
-    private $endHoleindex;    // 最后一个参与计算的洞的index,因为要支持从某个洞开始赌球
+    private $roadLength; // 路长
+
     private $scores;           // 记分
     private $attenders;  // 参与赌球的人员
     private $redBlueConfig;  // 分组配置
@@ -65,9 +67,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         // 运行时配置
         $_config_row = $this->MRuntimeConfig->getGambleConfig($this->gambleid);
 
-
-        $this->holes =  $this->MGambleDataFactory->getHoleOrderArrayByHolePlayList($this->gameid, $_config_row['holePlayList']);
-        $this->scores = $this->MGambleDataFactory->getScoresOrderByHolePlayList($this->gameid, $this->groupid, $_config_row['holePlayList']);
+        $this->holes =  $this->MGambleDataFactory->getHoleOrderArrayByHolePlayList($this->gameid,  $_config_row['startHoleindex'], $_config_row['roadLength']);
+        $this->scores = $this->MGambleDataFactory->getScoresOrderByHolePlayList($this->gameid, $_config_row['startHoleindex'], $_config_row['roadLength']);
         $this->group_info = $this->MGame->m_get_group_info($this->groupid);
 
 
@@ -84,8 +85,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->stroking_config =  json_decode($_config_row['stroking_config'], true);
         $this->meatValueConfig = $_config_row['meatValueConfig'];
         $this->meatMaxValue = $_config_row['meatMaxValue'];
+
         $this->startHoleindex = $_config_row['startHoleindex'];
-        $this->endHoleindex = $_config_row['endHoleindex'];
+        $this->roadLength = $_config_row['roadLength'];
+
         $this->redBlueConfig = $_config_row['red_blue_config'];
 
         $this->kickConfig = $_config_row['kickConfig'];
@@ -108,7 +111,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     // 得到需要计算的洞（合并了范围筛选和有用洞筛选功能）
     public function setUsefullHoles() {
         // 先筛选出指定范围的洞
-        $_rangedHoles = $this->MGambleDataFactory->getRangedHoles($this->context->holes, $this->context->startHoleindex, $this->context->endHoleindex);
+        $_rangedHoles = $this->MGambleDataFactory->getRangedHoles($this->context->holes, $this->context->startHoleindex, $this->context->roadLength);
 
         // 再从范围洞中筛选出有用的洞
         $tmp = $this->MGambleDataFactory->getUsefulHoles($_rangedHoles, $this->context->scores);
@@ -179,7 +182,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'drawConfig' => $this->context->drawConfig,
             // 'holes' => $this->context->holes,
             'startHoleindex' => $this->context->startHoleindex,
-            'endHoleindex' => $this->context->endHoleindex,
             'meat_pool' => $this->context->meat_pool,
             'donation_pool' => $this->context->donation_pool,
             // 'scores' => $this->context->scores,
@@ -194,6 +196,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'bigWind' => $this->context->bigWind,
             'group_info' => $this->context->group_info,
             'useful_holes' => $this->context->usefulHoles, // 实际的计算结果,
+            'roadLength' => $this->context->roadLength,
         ];
 
         // debug("+++++++++++++++++++++");
@@ -238,9 +241,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         return $this->startHoleindex;
     }
 
-    public function getEndHoleindex() {
-        return $this->endHoleindex;
-    }
+
 
     public function getScores() {
         return $this->scores;
@@ -317,5 +318,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getBigWind() {
         return $this->bigWind;
+    }
+
+    public function getRoadLength() {
+        return $this->roadLength;
     }
 }

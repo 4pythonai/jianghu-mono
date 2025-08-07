@@ -26,7 +26,6 @@ class Gamble extends MY_Controller {
 
         $rangeHolePlayList = $json_paras['holePlayList'];
         $startHoleindex = $rangeHolePlayList[0]['hindex'];
-        $endHoleindex = $rangeHolePlayList[count($rangeHolePlayList) - 1]['hindex'];
 
         try {
             // 获取必需参数
@@ -75,7 +74,6 @@ class Gamble extends MY_Controller {
                 'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score',
                 'holePlayList' => $holePlayListString,
                 'startHoleindex' => $startHoleindex,
-                'endHoleindex' => $endHoleindex,
                 'roadLength' => count($holePlayList),
                 'stroking_config' => $stroking_config
             ];
@@ -126,7 +124,6 @@ class Gamble extends MY_Controller {
 
 
         $startHoleindex = $json_paras['holePlayList'][0]['hindex'];
-        $endHoleindex = $json_paras['holePlayList'][count($json_paras['holePlayList']) - 1]['hindex'];
         $roadLength = count($json_paras['holePlayList']);
 
         $holePlayListString = implode(',', array_column($json_paras['holePlayList'], 'hindex'));
@@ -151,7 +148,6 @@ class Gamble extends MY_Controller {
             'playerIndicatorConfig' => $json_paras['playerIndicatorConfig'],
             'holePlayList' => $json_paras['holePlayList'],
             'startHoleindex' => $startHoleindex,
-            'endHoleindex' => $endHoleindex,
             'roadLength' => $roadLength,
             'creator_id' => $json_paras['creator_id']
         ];

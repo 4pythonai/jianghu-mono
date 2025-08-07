@@ -16,7 +16,6 @@ class GambleContext extends CI_Model {
     public $userid;
     public $holes;
     public $startHoleindex;
-    public $endHoleindex;
     public $scores;
     public $group_info;
     public $usefulHoles;
@@ -37,6 +36,7 @@ class GambleContext extends CI_Model {
     public $kickConfig;
     public $donationCfg;
     public $bigWind;
+    public $roadLength;
 
 
     public $meat_pool = []; // 肉池管理
@@ -63,7 +63,6 @@ class GambleContext extends CI_Model {
         'userid' => 'getUserid',
         'holes' => 'getHoles',
         'startHoleindex' => 'getStartHoleindex',
-        'endHoleindex' => 'getEndHoleindex',
         'scores' => 'getScores',
         'group_info' => 'getGroupInfo',
         'usefulHoles' => 'getUsefulHoles',
@@ -84,6 +83,7 @@ class GambleContext extends CI_Model {
         'kickConfig' => 'getKickConfig',
         'donationCfg' => 'getDonationCfg',
         'bigWind' => 'getBigWind',
+        'roadLength' => 'getRoadLength',
     ];
 
     /**

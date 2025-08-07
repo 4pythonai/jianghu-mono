@@ -8,34 +8,22 @@ class MGambleDataFactory extends CI_Model {
 
   // 根据实际打球顺序排序
 
-  public function getHoleOrderArrayByHolePlayList($gameid, $holePlayListString) {
+  public function getHoleOrderArrayByHolePlayList($gameid, $startHoleindex, $roadLength) {
     $holes = $this->MDetailGame->getGameHoles($gameid);
 
-
-    $hindexArray = explode(',', $holePlayListString);
-    $afterOrder = [];
-
-    // 根据 hindexArray 的顺序重排 holes
-    foreach ($hindexArray as $hindex) {
-      foreach ($holes as $hole) {
-        if ($hole['hindex'] == $hindex) {
-          $afterOrder[] = $hole;
-          break;
-        }
-      }
-    }
-
-    return $afterOrder;
+    // 使用环形结构获取指定范围的球洞
+    return $this->getRangedHoles($holes, $startHoleindex, $roadLength);
   }
 
 
-  public function getScoresOrderByHolePlayList($gameid, $groupid, $holePlayListString) {
+  public function getScoresOrderByHolePlayList($gameid, $startHoleindex, $roadLength) {
     $scores  = $this->getHoleScore($gameid);
-    $hindexArray = explode(',', $holePlayListString);
+    $holes = $this->getHoleOrderArrayByHolePlayList($gameid, $startHoleindex, $roadLength);
+
     $afterOrder = [];
-    foreach ($hindexArray as $hindex) {
+    foreach ($holes as $one) {
       foreach ($scores as $score) {
-        if ($score['hindex'] == $hindex) {
+        if ($score['hindex'] == $one['hindex']) {
           $afterOrder[] = $score;
           break;
         }
@@ -136,25 +124,27 @@ class MGambleDataFactory extends CI_Model {
     return $useful_holes;
   }
 
-  public function getRangedHoles($holes, $startHoleindex, $endHoleindex) {
+  public function getRangedHoles($holes, $startHoleindex, $roadLength) {
     $ranged = [];
-    $started = false;
+    $totalHoles = count($holes);
 
-    foreach ($holes as $hole) {
-      // 找到起始球洞
+    // 首先找到起始球洞的位置
+    $startIndex = -1;
+    foreach ($holes as $index => $hole) {
       if ($hole['hindex'] == $startHoleindex) {
-        $started = true;
-      }
-
-      // 如果已经开始收集，则添加到结果中
-      if ($started) {
-        $ranged[] = $hole;
-      }
-
-      // 找到结束球洞，停止收集
-      if ($started && $hole['hindex'] == $endHoleindex) {
+        $startIndex = $index;
         break;
       }
+    }
+
+    if ($startIndex === -1) {
+      return $ranged; // 如果找不到起始球洞，返回空数组
+    }
+
+    // 从起始位置开始，收集指定数量的球洞（环形结构）
+    for ($i = 0; $i < $roadLength; $i++) {
+      $currentIndex = ($startIndex + $i) % $totalHoles; // 环形索引
+      $ranged[] = $holes[$currentIndex];
     }
 
     return $ranged;
