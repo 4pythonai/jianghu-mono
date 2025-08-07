@@ -24,8 +24,7 @@ class Gamble extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
 
-        $rangeHolePlayList = $json_paras['holePlayList'];
-        $startHoleindex = $rangeHolePlayList[0]['hindex'];
+        $startHoleindex = $json_paras['startHoleindex'];
 
         try {
             // 获取必需参数
@@ -41,13 +40,6 @@ class Gamble extends MY_Controller {
                 return;
             }
 
-            $holePlayList = $json_paras['holePlayList'];
-            $hindexArr = [];
-            foreach ($holePlayList as $hole) {
-                $hindexArr[] = $hole['hindex'];
-            }
-            $holePlayListString = implode(',', $hindexArr);
-            // 准备插入数据
 
             if (isset($json_paras['stroking_config']) && !empty($json_paras['stroking_config'])) {
                 $stroking_config = json_encode($json_paras['stroking_config'], JSON_UNESCAPED_UNICODE);
@@ -72,9 +64,8 @@ class Gamble extends MY_Controller {
                 'bootstrap_order' => isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
                 'attenders' =>   isset($json_paras['bootstrap_order']) ? json_encode($json_paras['bootstrap_order'], JSON_UNESCAPED_UNICODE) : null,
                 'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'] ?? 'score.win_loss.reverse_score',
-                'holePlayList' => $holePlayListString,
                 'startHoleindex' => $startHoleindex,
-                'roadLength' => count($holePlayList),
+                'roadLength' => $json_paras['roadLength'],
                 'stroking_config' => $stroking_config
             ];
 
@@ -123,11 +114,12 @@ class Gamble extends MY_Controller {
         $json_paras['playerIndicatorConfig'] = $playerIndicatorConfig;
 
 
-        $startHoleindex = $json_paras['holePlayList'][0]['hindex'];
-        $roadLength = count($json_paras['holePlayList']);
+        $startHoleindex = $json_paras['startHoleindex'];
+        $roadLength = intval($json_paras['roadLength']);
 
-        $holePlayListString = implode(',', array_column($json_paras['holePlayList'], 'hindex'));
-        $json_paras['holePlayList'] = $holePlayListString;
+
+        // $holePlayListString = implode(',', array_column($json_paras['holePlayList'], 'hindex'));
+        // $json_paras['holePlayList'] = $holePlayListString;
         $json_paras['bootstrap_order'] = $bootstrap_order;
 
         // 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
@@ -146,7 +138,7 @@ class Gamble extends MY_Controller {
             'bootstrap_order' => $json_paras['bootstrap_order'],
             'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'],
             'playerIndicatorConfig' => $json_paras['playerIndicatorConfig'],
-            'holePlayList' => $json_paras['holePlayList'],
+            // 'holePlayList' => $json_paras['holePlayList'],
             'startHoleindex' => $startHoleindex,
             'roadLength' => $roadLength,
             'creator_id' => $json_paras['creator_id']
