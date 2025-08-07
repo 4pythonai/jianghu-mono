@@ -673,19 +673,34 @@ class ConfigManager {
      */
     prepareSaveData(runtimeConfig, isEdit, configId = '') {
         // 从 holeRangeStore 获取洞数据
-        const { holeList, holePlayList, startHoleindex } = holeRangeStore.getState();
+        const { holeList, holePlayList, startHoleindex, roadLength } = holeRangeStore.getState();
+
+        console.log('🕳️ [ConfigManager] 准备保存数据，从 holeRangeStore 获取:', {
+            startHoleindex,
+            roadLength,
+            holePlayListLength: holePlayList?.length
+        });
 
         const saveData = {
             ...runtimeConfig,
             holeList,
             holePlayList,
             startHoleindex,
+            roadLength,
         };
 
         // 如果是编辑模式，添加配置ID
         if (isEdit) {
             saveData.id = configId;
         }
+
+        console.log('🕳️ [ConfigManager] 最终保存数据:', {
+            startHoleindex: saveData.startHoleindex,
+            roadLength: saveData.roadLength,
+            hasHoleList: !!saveData.holeList,
+            hasHolePlayList: !!saveData.holePlayList
+        });
+
         return saveData;
     }
 

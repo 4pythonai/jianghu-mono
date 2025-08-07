@@ -126,9 +126,11 @@ Page({
         if (holeRangeSelector) {
             const holeConfig = holeRangeSelector.getConfig();
             if (holeConfig) {
+                console.log('🕳️ [AddRuntime] 收集洞范围配置:', holeConfig);
                 this.setData({
                     'runtimeConfig.startHoleindex': holeConfig.startHoleindex,
                     'runtimeConfig.endHoleindex': holeConfig.endHoleindex,
+                    'runtimeConfig.roadLength': holeConfig.roadLength,
                     'runtimeConfig.holePlayListStr': holeConfig.holePlayListStr
                 });
             }

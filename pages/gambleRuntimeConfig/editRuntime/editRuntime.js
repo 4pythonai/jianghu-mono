@@ -128,6 +128,11 @@ Page({
             holeRangeStore.setHoleRange(Number.parseInt(config.startHoleindex));
         }
 
+        // 设置 holeRangeStore 中的道路长度配置
+        if (config.roadLength !== undefined) {
+            holeRangeStore.setRoadLength(Number.parseInt(config.roadLength));
+        }
+
         // // 根据 holePlayListStr 重新设置 holeRangeStore 中的洞顺序
         // if (config.holePlayListStr) {
         //     console.log('[EditRuntime] 加载洞顺序配置:', config.holePlayListStr);
@@ -173,9 +178,11 @@ Page({
         if (holeRangeSelector) {
             const holeConfig = holeRangeSelector.getConfig();
             if (holeConfig) {
+                console.log('🕳️ [EditRuntime] 收集洞范围配置:', holeConfig);
                 this.setData({
                     'runtimeConfig.startHoleindex': holeConfig.startHoleindex,
                     'runtimeConfig.endHoleindex': holeConfig.endHoleindex,
+                    'runtimeConfig.roadLength': holeConfig.roadLength,
                     'runtimeConfig.holePlayListStr': holeConfig.holePlayListStr
                 });
             }

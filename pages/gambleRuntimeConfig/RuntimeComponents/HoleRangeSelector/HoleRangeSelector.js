@@ -278,6 +278,7 @@ Component({
             return {
                 startHoleindex: startHoleindex,
                 endHoleindex: endHoleindex,
+                roadLength: roadLength,
                 holePlayListStr: holePlayListStr
             };
         }
