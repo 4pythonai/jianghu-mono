@@ -20,8 +20,8 @@ export const G4PLasiStore = observable({
     meatValueConfig: 'MEAT_AS_1',
     meatMaxValue: 10000000,
 
-    gamblesysname: '4p-lasi',
-    user_rulename: '四人拉丝',
+    gambleSysName: '4p-lasi',
+    gambleUserName: '四人拉丝',
     creator_id: null,
 
     // 拉丝配置
@@ -57,19 +57,19 @@ export const G4PLasiStore = observable({
     // 更新拉丝配置的action
     updateLasiConfig: action(function (config) {
         this.lasi_config = { ...this.lasi_config, ...config };
-        this.user_rulename = this.generateAbstractName();
+        this.gambleUserName = this.generateAbstractName();
     }),
 
     // 更新奖励规则的action
     updateRewardConfig: action(function (config) {
         this.RewardConfig = { ...this.RewardConfig, ...config };
-        this.user_rulename = this.generateAbstractName();
+        this.gambleUserName = this.generateAbstractName();
     }),
 
     // 更新顶洞规则的action
     updateDingdongConfig: action(function (config) {
         this.lasi_dingdong_config = config;
-        this.user_rulename = this.generateAbstractName();
+        this.gambleUserName = this.generateAbstractName();
     }),
 
 
@@ -79,18 +79,18 @@ export const G4PLasiStore = observable({
         this.eatingRange = eatingRange;
         this.meatValueConfig = meatValueConfig;
         this.meatMaxValue = meatMaxValue;
-        this.user_rulename = this.generateAbstractName();
+        this.gambleUserName = this.generateAbstractName();
     }),
 
     // 更新包洞规则的action
     updateBaodongConfig: action(function (config) {
         this.lasi_baodong_config = { ...this.lasi_baodong_config, ...config };
-        this.user_rulename = this.generateAbstractName();
+        this.gambleUserName = this.generateAbstractName();
     }),
 
     // 更新规则名称的action
     updateUserRulename: action(function (name) {
-        this.user_rulename = name;
+        this.gambleUserName = name;
     }),
 
     // 重置所有规则的action
@@ -125,8 +125,8 @@ export const G4PLasiStore = observable({
     debugAllRulesData: action(function () {
         const gambleConfig = {
             gameid: gameStore.gameid,
-            user_rulename: this.user_rulename,
-            gamblesysname: this.gamblesysname,
+            gambleUserName: this.gambleUserName,
+            gambleSysName: this.gambleSysName,
             creator_id: this.creator_id,
             lasi_config: this.lasi_config,
             RewardConfig: this.RewardConfig,

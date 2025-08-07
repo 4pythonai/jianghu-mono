@@ -7,8 +7,8 @@ export const G4P8421Store = observable({
         return `规则_${Math.floor(Math.random() * 10000)}`;
     },
 
-    gamblesysname: '4p-8421',
-    user_rulename: '4p-8421',
+    gambleSysName: '4p-8421',
+    gambleUserName: '4p-8421',
     creator_id: null,
 
     // 封顶配置: 数字类型, 如 2 表示扣2分封顶, 10000000 表示不封顶
@@ -42,13 +42,13 @@ export const G4P8421Store = observable({
         this.badScoreMaxLost = badScoreMaxLost;
         this.badScoreBaseLine = badScoreBaseLine;
         this.dutyConfig = dutyConfig;
-        this.user_rulename = this.generateAbstractName();
+        this.gambleUserName = this.generateAbstractName();
     }),
 
     // 更新顶洞规则的action
     updateDingdongRule: action(function (drawConfig) {
         this.drawConfig = drawConfig;
-        this.user_rulename = this.generateAbstractName();
+        this.gambleUserName = this.generateAbstractName();
     }),
 
     // 更新吃肉规则的action
@@ -56,12 +56,12 @@ export const G4P8421Store = observable({
         this.eatingRange = eatingRange;
         this.meatValueConfig = meatValueConfig;
         this.meatMaxValue = meatMaxValue;
-        this.user_rulename = this.generateAbstractName();
+        this.gambleUserName = this.generateAbstractName();
     }),
 
     // 更新规则名称的action
     updateUserRulename: action(function (name) {
-        this.user_rulename = name;
+        this.gambleUserName = name;
     }),
 
     // 重置所有规则的action
@@ -84,8 +84,8 @@ export const G4P8421Store = observable({
     debugAllRulesData: action(function () {
         const gambleConfig = {
             gameid: gameStore.gameid,
-            user_rulename: this.user_rulename,
-            gamblesysname: this.gamblesysname,
+            gambleUserName: this.gambleUserName,
+            gambleSysName: this.gambleSysName,
             creator_id: this.creator_id,
             badScoreMaxLost: this.badScoreMaxLost,
             badScoreBaseLine: this.badScoreBaseLine,
