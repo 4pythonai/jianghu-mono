@@ -2,28 +2,28 @@
   <view class="modal-content" catchtap="noop">
     <view class="modal-title">跳洞设置</view>
 
-    <view class="hole-list">
+    <view class="hole-list" catchtouchmove="noop">
       <block wx:for="{{holePlayList}}" wx:key="index">
         <view
           class="hole-item {{index === 0 ? 'active' : ''}} {{item.isInsertPreview ? 'insert-preview' : ''}}"
-          bindtouchstart="onTouchStart"
-          bindtouchmove="onTouchMove"
-          bindtouchend="onTouchEnd"
+          catchtouchstart="onTouchStart"
+          catchtouchmove="onTouchMove"
+          catchtouchend="onTouchEnd"
           data-index="{{index}}"
           data-hindex="{{item.hindex}}"
         >
           <text class="hole-item-text" wx:if="{{!item.isInsertPreview}}">{{item.holename}}</text>
         </view>
       </block>
-    </view>
 
-    <!-- 被拖拽的球 -->
-    <view
-      class="picked-item {{pickedItem.isDragging ? 'dragging' : ''}}"
-      wx:if="{{pickedItem}}"
-      style="left: {{pickedItemPosition.x + dragOffset.x}}px; top: {{pickedItemPosition.y + dragOffset.y}}px; z-index: 1000;"
-    >
-      <text class="hole-item-text">{{pickedItem.holename}}</text>
+      <!-- 被拖拽的球 -->
+      <view
+        class="picked-item {{pickedItem.isDragging ? 'dragging' : ''}}"
+        wx:if="{{pickedItem}}"
+        style="left: {{pickedItemPosition.x + dragOffset.x}}px; top: {{pickedItemPosition.y + dragOffset.y}}px; z-index: 1000;"
+      >
+        <text class="hole-item-text">{{pickedItem.holename}}</text>
+      </view>
     </view>
 
     <!-- 拖拽提示区域 -->

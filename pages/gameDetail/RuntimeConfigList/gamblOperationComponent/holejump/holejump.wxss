@@ -31,6 +31,9 @@
 	gap: 16rpx 8rpx;
 	margin-bottom: 32rpx;
 	width: 100%;
+	overflow: hidden;
+	touch-action: none;
+	position: relative;
 }
 
 .hole-item {
@@ -78,7 +81,7 @@
 }
 
 .picked-item {
-	position: fixed;
+	position: absolute;
 	pointer-events: none;
 	opacity: 0.9;
 	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
