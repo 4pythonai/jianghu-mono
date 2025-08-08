@@ -25,94 +25,39 @@
 	padding-left: 16rpx;
 }
 
-.hole-list {
-	display: grid;
-	grid-template-columns: repeat(9, 1fr);
-	gap: 16rpx 8rpx;
+.move-area {
 	margin-bottom: 32rpx;
 	width: 100%;
-	overflow: hidden;
-	touch-action: none;
-	position: relative;
-}
-
-.hole-item {
-	width: 100%;
-	padding-top: 100%; /* 保证宽高比1:1 */
-	position: relative;
-	border-radius: 50%;
-	background: #27ae60; /* 绿色 */
-	border: 2rpx solid #eee;
+	height: 180rpx; /* 固定高度：两行 × 70rpx + 球高65rpx + 边距 */
+	background: #f8f9fa;
+	border-radius: 12rpx;
+	padding: 0;
 	box-sizing: border-box;
-	margin: 0;
-	overflow: hidden;
-	transition: all 0.2s ease;
-	cursor: pointer;
+	overflow: hidden; /* 防止拖拽时高度变化 */
+	position: relative;
 }
 
-.hole-item.dragging {
+.one-hole.dragging {
 	opacity: 0.8;
 	transform: scale(1.1);
 	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
 	z-index: 1000;
 }
 
-.hole-item.insert-preview {
-	background: rgba(39, 174, 96, 0.2); /* 更淡的绿色 */
-	border: 2rpx dashed rgba(39, 174, 96, 0.5); /* 虚线边框 */
+.one-hole.insert-preview {
+	background: rgba(39, 174, 96, 0.2);
+	border: 2rpx dashed rgba(39, 174, 96, 0.5);
 	opacity: 0.6;
 	transform: scale(0.95);
 	transition: all 0.2s ease;
 }
 
 .hole-item-text {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	font-size: 28rpx;
-	color: #fff; /* 白字 */
-	white-space: nowrap;
-	text-overflow: ellipsis;
-}
-
-.picked-item {
-	position: absolute;
-	pointer-events: none;
-	opacity: 0.9;
-	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
-	width: 60rpx; /* 固定宽度，与网格单元格大小匹配 */
-	height: 60rpx; /* 固定高度，保持圆形 */
-	border-radius: 50%;
-	background: #27ae60;
-	border: 2rpx solid #eee;
-	box-sizing: border-box;
-	overflow: hidden;
-	z-index: 1000;
-	transform: translate(-50%, -50%); /* 让球以中心点定位 */
-}
-
-.picked-item.dragging {
-	transform: scale(1.1);
-}
-
-.picked-item .hole-item-text {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	font-size: 24rpx; /* 适配60rpx的球 */
 	color: #fff;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	text-align: center;
 }
 
 .drag-hint {
@@ -127,4 +72,26 @@
 .drag-hint text {
 	color: #0066cc;
 	font-size: 26rpx;
+}
+
+.move-area {
+	border: 1rpx solid red;
+	width: 100%; /* 恢复100%宽度 */
+	height: 200rpx; /* movable-area需要固定高度 */
+}
+
+.one-hole {
+	width: 65rpx;
+	height: 65rpx;
+	margin: 5rpx;
+	border-radius: 50%;
+	background: #27ae60;
+	border: 2rpx solid #eee;
+	box-sizing: border-box;
+	overflow: hidden;
+	transition: all 0.2s ease;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }

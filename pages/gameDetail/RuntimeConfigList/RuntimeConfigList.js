@@ -448,6 +448,21 @@ Page({
         this.setData({ isHolejumpVisible: false });
     },
 
+    onHolejumpComplete(e) {
+        const { holePlayList } = e.detail;
+        console.log('跳洞设置完成，新的洞序:', holePlayList);
+
+        // 这里可以处理新的洞序数据
+        // 例如：保存到服务器、更新本地状态等
+
+        wx.showToast({
+            title: '跳洞设置已保存',
+            icon: 'success'
+        });
+
+        this.setData({ isHolejumpVisible: false });
+    },
+
     onStartholeClick() {
         this.setData({ isStartholeVisible: true });
     },

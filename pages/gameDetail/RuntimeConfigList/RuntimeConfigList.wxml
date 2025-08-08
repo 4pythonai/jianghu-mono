@@ -161,6 +161,7 @@
     wx:if="{{isHolejumpVisible}}"
     runtimeConfigs="{{runtimeConfigs}}"
     bind:close="onHolejumpClose"
+    bind:complete="onHolejumpComplete"
   />
   <starthole
     wx:if="{{isStartholeVisible}}"
