@@ -113,7 +113,7 @@ Component({
 		 *  初始化获取 dom 信息
 		 */
 		initDom() {
-			let {windowWidth, windowHeight, platform, SDKVersion} = wx.getSystemInfoSync();
+			let { windowWidth, windowHeight, platform, SDKVersion } = wx.getSystemInfoSync();
 			let remScale = (windowWidth || 375) / 375;
 
 			this.data.pageMetaSupport = compareVersion(SDKVersion, '2.9.0') >= 0;
@@ -124,7 +124,7 @@ Component({
 			baseData.realTopSize = this.data.topSize * remScale / 2;
 			baseData.realBottomSize = this.data.bottomSize * remScale / 2;
 			baseData.columns = this.data.columns;
-			baseData.rows =  this.data.rows;
+			baseData.rows = this.data.rows;
 
 			const query = this.createSelectorQuery();
 			query.select(".item").boundingClientRect();
@@ -155,17 +155,17 @@ Component({
 		 */
 		init() {
 			// 初始必须为true以绑定wxs中的函数,
-			this.setData({dragging: true});
+			this.setData({ dragging: true });
 
 			let delItem = (item, extraNode) => ({
-				id: item.dragId,
+				id: item.hindex,
 				extraNode: extraNode,
 				fixed: item.fixed,
 				slot: item.slot,
 				data: item
 			});
 
-			let {listData, extraNodes} = this.data;
+			let { listData, extraNodes } = this.data;
 			let _list = [], _before = [], _after = [], destBefore = [], destAfter = [];
 
 			extraNodes.forEach((item, index) => {

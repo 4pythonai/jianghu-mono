@@ -1,7 +1,0 @@
-{
-	"disableScroll": true,
-	"usingComponents": {
-		"tab": "../../components/tab/index",
-		"scroll": "../../components/scroll/index"
-	}
-}
