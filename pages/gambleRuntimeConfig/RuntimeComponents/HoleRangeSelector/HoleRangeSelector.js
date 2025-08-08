@@ -160,7 +160,7 @@ Component({
          * 处理RealHolePlayListSetter的确认事件
          * @param {Object} e 事件对象
          */
-        onModalConfirm(e) {
+        onHoleOrderConfirm(e) {
             console.log(' ❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌ [HoleRangeSelector] 收到洞顺序确认:', e.detail);
             const result = e.detail;
 

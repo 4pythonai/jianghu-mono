@@ -1,6 +1,6 @@
-import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../../../../stores/gameStore';
-import { toJS } from 'mobx-miniprogram';
+
+const app = getApp();
 Component({
     properties: {
         // 传入的 runtimeConfigs 列表
@@ -18,16 +18,25 @@ Component({
     data: {
         holeList: [],
         ifShowModal: false,
+        startHoleindex: 1, // 起始洞索引
+        roadLength: 9,     // 道路长度
     },
 
 
     lifetimes: {
         attached() {
-
             // 直接从 gameStore 获取洞数据
             const holeList = gameStore.gameData?.holeList || [];
 
-            this.setData({ holeList });
+            // 设置起始洞索引和道路长度
+            const startHoleindex = holeList.length > 0 ? holeList[0].hindex : 1;
+            const roadLength = holeList.length || 9;
+
+            this.setData({
+                holeList,
+                startHoleindex,
+                roadLength
+            });
 
         },
         detached() {
@@ -57,10 +66,28 @@ Component({
         },
 
         // RealHolePlayListSetter 确认事件
-        onModalConfirm(e) {
+        async onHoleOrderConfirm(e) {
             console.log('[starthole] 确认选择:', e.detail);
+            console.log("gameid", gameStore.gameid);
+            const res = await app.api.gamble.changeStartHole({
+                gameid: gameStore.gameid,
+                holeList: e.detail.holePlayList
+            })
+            console.log("res", res);
+            if (res.code === 200) {
+                wx.showToast({
+                    title: '出发洞设置成功',
+                    icon: 'success'
+                })
+                await gameStore.fetchGameDetail(gameStore.gameid, gameStore.groupId);
+
+                // gameStore.gameData.holeList = e.detail.holePlayList;
+
+                this.triggerEvent('close');
+            }
             // 这里可以处理确认逻辑
-            this.triggerEvent('close');
+            // this.triggerEvent('close');
+
         }
     }
 });

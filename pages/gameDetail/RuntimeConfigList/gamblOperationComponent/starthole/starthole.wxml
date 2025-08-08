@@ -3,9 +3,9 @@
   holeList="{{holeList}}"
   title="调整出发洞"
   scene="starthole"
-  startHoleindex="1"
-  roadLength="{{9}}"
+  startHoleindex="{{startHoleindex}}"
+  roadLength="{{roadLength}}"
   selectType="start"
   bind:cancel="onModalCancel"
-  bind:confirm="onModalConfirm"
+  bind:confirm="onHoleOrderConfirm"
 />

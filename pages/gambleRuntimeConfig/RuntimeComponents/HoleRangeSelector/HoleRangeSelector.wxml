@@ -33,5 +33,5 @@
   roadLength="{{roadLength}}"
   selectType="{{selectType}}"
   bind:cancel="onModalCancel"
-  bind:confirm="onModalConfirm"
+  bind:confirm="onHoleOrderConfirm"
 />

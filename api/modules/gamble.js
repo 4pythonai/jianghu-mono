@@ -40,6 +40,10 @@ const gamble = {
 
     getGambleSummary: (data, options) => request('/Audit/getGambleSummary', data, options),
 
+
+    changeStartHole: (data, options) => request('/Gamble/changeStartHole', data, options),
+
+
 }
 
 export default gamble

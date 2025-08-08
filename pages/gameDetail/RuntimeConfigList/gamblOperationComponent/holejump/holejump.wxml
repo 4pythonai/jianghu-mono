@@ -2,16 +2,6 @@
   <view class="modal-content" catchtap="noop">
     <view class="modal-title">跳洞设置</view>
 
-    <view class="section">
-      <RuntimeConfigSelector
-        runtimeConfigs="{{runtimeConfigs}}"
-        selectedIdList="{{selectedIdList}}"
-        title="请选择跳洞的游戏"
-        bind:checkboxChange="onCheckboxChange"
-      />
-    </view>
-
-    <view class="section-title">请选择洞号</view>
     <view class="hole-list">
       <block wx:for="{{holePlayList}}" wx:key="index">
         <view
