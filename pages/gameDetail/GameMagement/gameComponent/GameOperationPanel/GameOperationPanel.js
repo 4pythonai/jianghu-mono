@@ -7,7 +7,7 @@ Component({
      */
     data: {
         isOperatonPanelVisible: false, // 控制面板显示/隐藏
-        gameId: null,     // 游戏ID
+        gameid: null,     // 游戏ID
     },
 
     /**
@@ -52,7 +52,7 @@ Component({
                             try {
                                 // 调用取消比赛API
                                 const result = await gameApi.cancelGame({
-                                    gameid: this.data.gameId
+                                    gameid: this.data.gameid
                                 }, {
                                     loadingTitle: '取消比赛中...',
                                     loadingMask: true
@@ -94,7 +94,7 @@ Component({
                             try {
                                 // 调用结束比赛API
                                 const result = await gameApi.finishGame({
-                                    gameid: this.data.gameId
+                                    gameid: this.data.gameid
                                 }, {
                                     loadingTitle: '结束比赛中...',
                                     loadingMask: true
@@ -140,7 +140,7 @@ Component({
 
                 // 跳转到对应页面并传递gameId
                 wx.navigateTo({
-                    url: `${pageRoutes[option]}?gameId=${this.data.gameId}`,
+                    url: `${pageRoutes[option]}?gameid=${this.data.gameid}`,
                     success: () => {
                         console.log(`🎮 [GameOperationPanel] 成功跳转到${option}页面`);
                     },

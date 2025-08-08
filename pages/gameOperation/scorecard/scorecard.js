@@ -1,19 +1,19 @@
 Page({
     data: {
-        gameId: null,
+        gameid: null,
         webviewUrl: 'https://qiaoyincapital.com/v3/index.php/ScoreCard?gameid=',
         showWebView: true
     },
 
     onLoad(options) {
-        const gameId = options?.gameId;
-        console.log('📊 [Scorecard] 页面加载', { gameId });
+        const gameid = options?.gameid;
+        console.log('📊 [Scorecard] 页面加载', { gameid });
 
         // 动态构建webview URL
-        const finalWebviewUrl = `${this.data.webviewUrl}${gameId || ''}`;
+        const finalWebviewUrl = `${this.data.webviewUrl}${gameid || ''}`;
 
         this.setData({
-            gameId: gameId || '未获取到gameId',
+            gameid: gameid || '未获取到gameId',
             webviewUrl: finalWebviewUrl
         });
 

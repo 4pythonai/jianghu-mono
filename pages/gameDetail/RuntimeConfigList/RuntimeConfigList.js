@@ -8,7 +8,7 @@ const app = getApp();
 Page({
     data: {
         // 页面参数
-        gameId: '',
+        gameid: '',
         groupid: '',
         players: [],
 
@@ -54,7 +54,7 @@ Page({
         console.log('[RuntimeConfigList] 页面加载，参数:', options);
 
         // 解析页面参数
-        const gameId = options?.gameId || '';
+        const gameid = options?.gameid || '';
         const groupid = options?.groupid || '';
         let players = [];
 
@@ -66,7 +66,7 @@ Page({
             }
         }
 
-        this.setData({ gameId, groupid, players });
+        this.setData({ gameid, groupid, players });
 
         // 绑定store
         this.gameStoreBindings = createStoreBindings(this, {
@@ -132,7 +132,7 @@ Page({
 
     // 刷新运行时配置 - 优化后的方法
     refreshRuntimeConfig() {
-        const gameId = this.data.gameId || gameStore.gameid;
+        const gameid = this.data.gameid || gameStore.gameid;
         const groupid = this.data.groupid || gameStore.groupid;
 
 
@@ -181,7 +181,7 @@ Page({
 
     // 静默刷新运行时配置 - 不显示加载状态，用于后台数据更新
     silentRefreshRuntimeConfig() {
-        const gameId = this.data.gameId || gameStore.gameid;
+        const gameid = this.data.gameid || gameStore.gameid;
         const groupid = this.data.groupid || gameStore.groupid;
 
         if (!groupid) {
@@ -274,7 +274,7 @@ Page({
     // 处理配置项点击事件 - 跳转到结果页面
     handleGotoResult(e) {
         const { config, index } = e.currentTarget.dataset;
-        const gameId = this.data.gameId || gameStore.gameid;
+        const gameid = this.data.gameid || gameStore.gameid;
 
         if (!config) {
             console.error('🎮 配置数据为空');
@@ -288,7 +288,7 @@ Page({
         // 构建跳转参数 - 使用运行时配置的ID作为gambleid
         const gambleid = config.id;
         const params = {
-            gameId: gameId,
+            gameid: gameid,
             gambleid: gambleid,
             gambleSysName: config.gambleSysName || '',
             userRuleName: config.gambleUserName || '',

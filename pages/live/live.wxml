@@ -6,37 +6,41 @@
   <!-- Tab切换区域 -->
   <view class="tab-container">
     <view class="tab-header">
-      <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-index="0">
-        我的比赛
-      </view>
-      <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-index="1">
-        广场
-      </view>
+      <view
+        class="tab-item {{currentTab === 0 ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-index="0"
+      >我的比赛</view>
+      <view
+        class="tab-item {{currentTab === 1 ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-index="1"
+      >广场</view>
     </view>
     <!-- Tab内容区域 -->
     <view class="tab-content">
       <view class="tab-pane" hidden="{{currentTab !== 0}}">
         <block wx:for="{{games}}" wx:key="game_id">
-          <GameItem 
-            gameName="{{item.game_name}}" 
-            course="{{item.course}}" 
-            players="{{item.players}}" 
-            watchersNumber="{{item.watchers_number}}" 
-            gameStart="{{item.game_start}}" 
-            completedHoles="{{item.completed_holes}}" 
-            holeList="{{item.holeList}}" 
+          <GameItem
+            gameName="{{item.game_name}}"
+            course="{{item.course}}"
+            players="{{item.players}}"
+            watchersNumber="{{item.watchers_number}}"
+            gameStart="{{item.game_start}}"
+            completedHoles="{{item.completed_holes}}"
+            holeList="{{item.holeList}}"
             starType="yellow"
-            gameId="{{item.game_id}}"
+            gameid="{{item.game_id}}"
             groups="{{item.groups}}"
             groupid="{{item.groupid || ''}}"
-            group_name="{{item.group_name || ''}}" />
+            group_name="{{item.group_name || ''}}"
+          />
         </block>
       </view>
       <view class="tab-pane" hidden="{{currentTab !== 1}}">
         <!-- 广场内容 -->
         icon-location
-        <view class="iconfont icon-location" />
-        bbb
+        <view class="iconfont icon-location" />bbb
         <view class="content-placeholder">广场内容区域</view>
       </view>
     </view>

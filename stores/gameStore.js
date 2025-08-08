@@ -110,17 +110,17 @@ export const gameStore = observable({
     }),
 
     // 从API获取并初始化游戏数据
-    fetchGameDetail: action(async function (gameId, groupid = null) {
+    fetchGameDetail: action(async function (gameid, groupid = null) {
         if (this.loading) return; // 防止重复加载
 
         this.loading = true;
         this.error = null;
-        this.gameid = gameId;
+        this.gameid = gameid;
         this.groupid = groupid;  // 存储分组ID
 
         try {
             // 构建请求参数
-            const params = { gameId };
+            const params = { gameid };
             params.groupid = groupid;
 
             const res = await gameApi.getGameDetail(params, {

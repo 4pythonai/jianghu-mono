@@ -12,7 +12,7 @@ Page({
     data: {
         // 传递的数据
         gambleSysName: '',
-        gameId: null,
+        gameid: null,
         players: [],
         gameData: null,
         userRule: null,
@@ -101,7 +101,7 @@ Page({
 
     // 确认配置
     onConfirmConfig() {
-        const { runtimeConfig, gambleSysName, gameId, players } = this.data;
+        const { runtimeConfig, gambleSysName, gameid, players } = this.data;
 
         // 从各个组件收集最新配置
         this.collectAllConfigs();
@@ -179,16 +179,16 @@ Page({
 
     // 保存配置
     async saveConfig() {
-        const { runtimeConfig, gameId, groupid } = this.data;
+        const { runtimeConfig, gameid, groupid } = this.data;
 
         console.log('[AddRuntime] 保存配置，参数检查:', {
-            gameId,
+            gameid,
             groupid,
             groupIdType: typeof groupid,
             hasGroupId: !!groupid
         });
 
-        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, groupid, '', this, false);
+        const result = await BaseConfig.saveConfig(runtimeConfig, gameid, groupid, '', this, false);
 
         if (result.success) {
             console.log('[AddRuntime] 配置保存成功');

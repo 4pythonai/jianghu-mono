@@ -80,7 +80,7 @@ Page({
 
     data: {
         uuid: '', // 游戏唯一标识符(调试用)
-        gameId: null, // 服务端返回的游戏ID
+        gameid: null, // 服务端返回的游戏ID
         gameCreated: false, // 标记游戏是否已创建
         selectedCourse: null, // 选中的球场信息
         selectedCourt: null,   // 选中的半场信息
@@ -589,12 +589,12 @@ Page({
      * 点击“开始计分”按钮, 跳转到 gameDetail 记分界面
      */
     onStartScoring() {
-        if (!this.data.gameId) {
+        if (!this.data.gameid) {
             wx.showToast({ title: '请先创建比赛', icon: 'none' });
             return;
         }
         wx.navigateTo({
-            url: `/pages/gameDetail/gameDetail?gameId=${this.data.gameId}`
+            url: `/pages/gameDetail/gameDetail?gameid=${this.data.gameid}`
         });
     },
 
@@ -615,13 +615,13 @@ Page({
             })
 
             if (result?.code === 200) {
-                const gameId = result.data?.game_id || result.game_id || null;
+                const gameid = result.gameid || null;
                 this.setData({
                     gameCreated: true,
-                    gameId
+                    gameid
                 })
                 console.log('✅ 空白游戏创建成功:', result)
-                console.log('📝 服务器返回的gameid:', gameId)
+                console.log('📝 服务器返回的gameid:', gameid)
             } else {
                 console.error('❌ 空白游戏创建失败:', result)
             }

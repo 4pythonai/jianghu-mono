@@ -10,7 +10,7 @@ Component({
             type: String,
             value: 'gray' // gray或yellow
         },
-        gameId: {
+        gameid: {
             type: String,
             value: ''
         },
@@ -89,7 +89,7 @@ Component({
         },
 
         onMatchItemTap() {
-            const { gameId, gameName, course, players } = this.properties;
+            const { gameid, gameName, course, players } = this.properties;
 
             const processedGroups = this._groupPlayersByGroupId(players, this.properties);
 
@@ -98,31 +98,31 @@ Component({
             if (!processedGroups || processedGroups.length === 0) {
                 console.warn('⚠️ 游戏没有分组数据, 直接进入游戏详情');
                 wx.navigateTo({
-                    url: `/pages/gameDetail/gameDetail?gameId=${gameId}`
+                    url: `/pages/gameDetail/gameDetail?gameid=${gameid}`
                 });
                 return;
             }
 
             if (processedGroups.length === 1) {
                 const groupid = processedGroups[0]?.groupid;
-                console.log('📍 单组游戏, 直接进入详情页面', { gameId, groupid });
+                console.log('📍 单组游戏, 直接进入详情页面', { gameid, groupid });
                 wx.navigateTo({
-                    url: `/pages/gameDetail/gameDetail?gameId=${gameId}&groupid=${groupid}`
+                    url: `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}`
                 });
             } else {
-                console.log('📋 多组游戏, 进入分组列表页面', { gameId, groupsCount: processedGroups.length });
+                console.log('📋 多组游戏, 进入分组列表页面', { gameid, groupsCount: processedGroups.length });
 
                 const app = getApp();
                 app.globalData = app.globalData || {};
                 app.globalData.currentGameGroups = {
-                    gameId,
+                    gameid,
                     gameName,
                     course,
                     groups: processedGroups
                 };
 
                 wx.navigateTo({
-                    url: `/pages/groupsList/groupsList?gameId=${gameId}`
+                    url: `/pages/groupsList/groupsList?gameid=${gameid}`
                 });
             }
         }

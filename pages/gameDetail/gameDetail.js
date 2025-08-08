@@ -3,7 +3,7 @@ import { gameStore } from '../../stores/gameStore'
 
 Page({
     data: {
-        gameId: '',
+        gameid: '',
         groupid: '',
         currentTab: 0,
     },
@@ -14,19 +14,19 @@ Page({
             fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes', 'red_blue'],
             actions: ['fetchGameDetail'], // 添加fetchGameDetail action
         });
-        const gameId = options?.gameId;
+        const gameid = options?.gameid;
         const groupid = options?.groupid;
         const tab = options?.tab;
 
         // 设置初始tab，如果传入了tab参数则使用，否则默认为0
         const currentTab = tab !== undefined ? Number.parseInt(tab) : 0;
-        this.setData({ gameId, groupid, currentTab });
+        this.setData({ gameid, groupid, currentTab });
 
-        console.log('[gameDetail] 页面加载，参数:', { gameId, groupid, tab, currentTab });
+        console.log('[gameDetail] 页面加载，参数:', { gameid, groupid, tab, currentTab });
 
         // 主动加载游戏数据
-        if (gameId) {
-            this.fetchGameDetail(gameId, groupid);
+        if (gameid) {
+            this.fetchGameDetail(gameid, groupid);
         }
 
         // 延迟刷新当前tab数据，确保组件已经挂载
@@ -53,15 +53,15 @@ Page({
     onShow() {
         console.log('[gameDetail] 页面显示，当前数据:', {
             gameData: this.data.gameData,
-            gameId: this.data.gameId,
+            gameid: this.data.gameid,
             groupid: this.data.groupid
         });
         this.refreshCurrentTab();
     },
 
     refreshCurrentTab() {
-        const { currentTab, gameId, groupid } = this.data;
-        console.log('[gameDetail] 刷新当前tab:', { currentTab, gameId, groupid });
+        const { currentTab, gameid, groupid } = this.data;
+        console.log('[gameDetail] 刷新当前tab:', { currentTab, gameid, groupid });
 
         if (currentTab === 0) {
             const component = this.selectComponent('#gameMagement');

@@ -243,7 +243,7 @@ Component({
             // 准备传递给运行时配置页面的数据(简化版)
             const runtimeConfigData = {
                 gambleSysName: title,
-                gameId: gameStore.gameid || null,
+                gameid: gameStore.gameid || null,
                 playerCount: gameStore.players?.length || 0,
                 holeCount: holeList?.length || 18,
                 fromUserRule: false, // 标识这是从系统规则进入的,

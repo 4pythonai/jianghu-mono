@@ -218,7 +218,7 @@ Component({
             // 准备传递给运行时配置页面的数据
             const runtimeConfigData = {
                 gambleSysName,
-                gameId: gameStore.gameid,
+                gameid: gameStore.gameid,
                 playerCount: gameStore.players.length,
                 holeCount: holeList.length,
                 userRuleId: item.userRuleId,

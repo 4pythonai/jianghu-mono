@@ -3,7 +3,7 @@
   <view class="debug-info">
     <text>调试信息:</text>
     <text>gambleSysName: {{gambleSysName}}</text>
-    <text>gameId: {{gameId}}</text>
+    <text>gameid: {{gameid}}</text>
     <text>configId: {{configId}}</text>
     <text>players: {{players.length}}人</text>
     <text>gameData存在: {{gameData ? '是' : '否'}}</text>

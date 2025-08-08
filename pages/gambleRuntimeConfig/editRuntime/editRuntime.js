@@ -13,7 +13,7 @@ Page({
     data: {
         // 传递的数据
         gambleSysName: '',
-        gameId: null,
+        gameid: null,
         configId: '',
         players: [],
 
@@ -86,7 +86,7 @@ Page({
             config: config,
             configId: configId,
             gambleSysName: config.gambleSysName,
-            gameId: config.gameid,
+            gameid: config.gameid,
             groupid: config.groupid, // 添加 groupid 到页面数据
             players: players,
             gameData: gameData, // 添加 gameData
@@ -130,7 +130,7 @@ Page({
 
     // 确认配置
     onConfirmConfig() {
-        const { runtimeConfig, gambleSysName, gameId, configId, players } = this.data;
+        const { runtimeConfig, gambleSysName, gameid, configId, players } = this.data;
 
         // 从各个组件收集最新配置
         this.collectAllConfigs();
@@ -138,7 +138,7 @@ Page({
         console.log('[EditRuntime] 确认配置:', {
             runtimeConfig,
             gambleSysName,
-            gameId,
+            gameid,
             configId,
             playerCount: players.length
         });
@@ -205,8 +205,8 @@ Page({
 
     // 保存配置
     async saveConfig() {
-        const { runtimeConfig, gameId, groupid, configId } = this.data;
-        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, groupid, configId, this, true);
+        const { runtimeConfig, gameid, groupid, configId } = this.data;
+        const result = await BaseConfig.saveConfig(runtimeConfig, gameid, groupid, configId, this, true);
         if (result.success) {
             console.log('[EditRuntime] 配置更新成功');
         } else {

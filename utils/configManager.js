@@ -556,7 +556,7 @@ class ConfigManager {
         const gameData = gameStore.gameData || null;
 
         console.log('[ConfigManager] 获取基础游戏数据:', {
-            gameId: gameStore.gameid,
+            gameid: gameStore.gameid,
             groupid: gameStore.groupid,
             groupIdType: typeof gameStore.groupid,
             hasGroupId: !!gameStore.groupid
@@ -565,7 +565,7 @@ class ConfigManager {
         return {
             players,
             gameData,
-            gameId: gameStore.gameid,
+            gameid: gameStore.gameid,
             groupid: gameStore.groupid
         };
     }

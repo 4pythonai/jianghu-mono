@@ -23,13 +23,13 @@ const BaseConfig = {
             // 设置页面数据
             const setDataObj = {
                 gambleSysName: processedData.gambleSysName,
-                gameId: processedData.gameId,
+                gameid: processedData.gameid,
                 groupid: processedData.groupid, // 添加 groupid 到页面数据
                 configId: processedData.configId || '',
                 players: processedData.players,
                 gameData: processedData.gameData,
                 userRule: processedData.userRule,
-                'runtimeConfig.gameid': processedData.gameId,
+                'runtimeConfig.gameid': processedData.gameid,
                 'runtimeConfig.groupid': processedData.groupid,
                 'runtimeConfig.userRuleId': processedData.userRuleId,
                 'runtimeConfig.gambleSysName': processedData.gambleSysName,
@@ -234,14 +234,14 @@ const BaseConfig = {
     /**
      * 保存配置
      * @param {Object} runtimeConfig 运行时配置
-     * @param {string} gameId 游戏ID
+     * @param {string} gameid 游戏ID
      * @param {string} groupid 分组ID
      * @param {string} configId 配置ID
      * @param {Object} pageContext 页面上下文
      * @param {boolean} isEdit 是否为编辑模式
      * @returns {Promise} 保存结果
      */
-    async saveConfig(runtimeConfig, gameId, groupid, configId, pageContext, isEdit = false) {
+    async saveConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit = false) {
         const saveData = configManager.prepareSaveData(runtimeConfig, isEdit, configId);
 
         pageContext.setData({ loading: true });
@@ -259,7 +259,7 @@ const BaseConfig = {
 
                 setTimeout(() => {
                     wx.navigateTo({
-                        url: `/pages/gameDetail/gameDetail?gameId=${gameId}&groupid=${groupid}&tab=2`
+                        url: `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`
                     });
                 }, 1500);
 

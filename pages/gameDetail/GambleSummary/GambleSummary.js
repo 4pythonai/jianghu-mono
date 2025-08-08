@@ -2,7 +2,7 @@ import gamble from '../../../api/modules/gamble.js'
 
 Component({
     properties: {
-        gameId: {
+        gameid: {
             type: String,
             value: ''
         },
@@ -22,17 +22,17 @@ Component({
     lifetimes: {
         attached() {
             // 只有在属性已经设置的情况下才执行
-            const { gameId, groupid } = this.properties;
-            if (gameId && groupid) {
+            const { gameid, groupid } = this.properties;
+            if (gameid && groupid) {
                 this.fetchGambleSummary();
             }
         }
     },
 
     observers: {
-        'gameId': function (gameId) {
-            console.log('[GambleSummary] gameId 属性变化:', gameId);
-            if (gameId) {
+        'gameid': function (gameid) {
+            console.log('[GambleSummary] gameid 属性变化:', gameid);
+            if (gameid) {
                 this.fetchGambleSummary();
             }
         },
@@ -49,20 +49,20 @@ Component({
          * 获取赌博汇总数据
          */
         async fetchGambleSummary() {
-            const { gameId, groupid } = this.properties;
+            const { gameid, groupid } = this.properties;
 
-            if (!gameId || !groupid) {
+            if (!gameid || !groupid) {
                 return;
             }
 
             // 检查是否与上次请求参数相同，避免重复请求
-            const currentParams = `${gameId}-${groupid}`;
+            const currentParams = `${gameid}-${groupid}`;
             if (this.data.lastFetchParams === currentParams && this.data.loading) {
                 console.log('[GambleSummary] 避免重复请求，参数相同:', currentParams);
                 return;
             }
 
-            console.log('[GambleSummary] 开始请求数据:', { gameId, groupid });
+            console.log('[GambleSummary] 开始请求数据:', { gameid, groupid });
             this.setData({
                 loading: true,
                 lastFetchParams: currentParams
@@ -71,7 +71,7 @@ Component({
             try {
                 // 调用API获取赌博汇总数据
                 const result = await gamble.getGambleSummary({
-                    gameId: gameId,
+                    gameid: gameid,
                     groupid: groupid
                 });
 
@@ -106,10 +106,10 @@ Component({
          * 导航栏图标按钮点击事件
          */
         onIconClick() {
-            const gameId = this.properties.gameId;
+            const gameid = this.properties.gameid;
             const groupid = this.properties.groupid;
             wx.navigateTo({
-                url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameId=${gameId}&groupid=${groupid}`,
+                url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`,
             });
         },
 

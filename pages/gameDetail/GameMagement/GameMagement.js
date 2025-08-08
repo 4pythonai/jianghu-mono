@@ -5,7 +5,7 @@ Component({
         isGameOperationPanelVisible: false // 用于控制 GameOperationPanel 显示
     },
     properties: {
-        gameId: String,
+        gameid: String,
         groupid: String
     },
     methods: {
@@ -37,7 +37,7 @@ Component({
             // 调用组件的 show 方法
             const gameOperationPanel = this.selectComponent('#gameOperationPanel');
             if (gameOperationPanel) {
-                gameOperationPanel.show({ gameId: this.data.gameId });
+                gameOperationPanel.show({ gameid: this.data.gameid });
             } else {
                 console.error('无法找到 #gameOperationPanel 组件');
             }
@@ -96,11 +96,11 @@ Component({
         },
 
         fetchGameDetail() {
-            const { gameId, groupid } = this.data;
-            console.log('[GameMagement] fetchGameDetail called', { gameId, groupid });
-            if (!gameId) return;
+            const { gameid, groupid } = this.data;
+            console.log('[GameMagement] fetchGameDetail called', { gameid, groupid });
+            if (!gameid) return;
             // 直接调用gameStore，不需要在组件中再次设置red_blue
-            gameStore.fetchGameDetail(gameId, groupid);
+            gameStore.fetchGameDetail(gameid, groupid);
         }
     }
 }); 

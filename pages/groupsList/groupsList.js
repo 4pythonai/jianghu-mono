@@ -3,7 +3,7 @@ const app = getApp()
 
 Page({
     data: {
-        gameId: '',
+        gameid: '',
         gameName: '',
         course: '',
         groups: [],
@@ -12,12 +12,12 @@ Page({
     },
 
     onLoad(options) {
-        const { gameId } = options;
-        if (gameId) {
-            this.setData({ gameId });
-            this.loadGameGroupsFromGlobal(gameId);
+        const { gameid } = options;
+        if (gameid) {
+            this.setData({ gameid });
+            this.loadGameGroupsFromGlobal(gameid);
         } else {
-            console.error('❌ 缺少 gameId 参数');
+            console.error('❌ 缺少 gameid 参数');
             wx.showToast({
                 title: '参数错误',
                 icon: 'none'
@@ -30,14 +30,14 @@ Page({
     },
 
     // 从全局数据获取分组信息
-    loadGameGroupsFromGlobal(gameId) {
+    loadGameGroupsFromGlobal(gameid) {
         try {
             this.setData({ loading: true, error: null });
 
             // 从全局数据获取 groups 信息
             const globalData = app.globalData?.currentGameGroups;
 
-            if (globalData?.gameId === gameId && globalData?.groups) {
+            if (globalData?.gameid === gameid && globalData?.groups) {
                 console.log('✅ 从全局数据获取分组信息:', globalData);
 
                 this.setData({
@@ -77,12 +77,12 @@ Page({
     // 点击分组, 进入计分页面
     onGroupTap(e) {
         const { groupid, groupName } = e.currentTarget.dataset;
-        const { gameId } = this.data;
+        const { gameid } = this.data;
 
-        console.log('📝 选择分组:', { gameId, groupid, groupName });
+        console.log('📝 选择分组:', { gameid, groupid, groupName });
 
         wx.navigateTo({
-            url: `/pages/gameDetail/gameDetail?gameId=${gameId}&groupid=${groupid}`
+            url: `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}`
         });
     },
 

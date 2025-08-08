@@ -160,7 +160,7 @@ Component({
                     hindex
                 }));
                 const apiData = {
-                    gameId: this.data.gameid,
+                    gameid: this.data.gameid,
                     hindex,
                     groupid: this.data.groupid, // 添加分组ID
                     holeUniqueKey: holeUniqueKeyForAPI, // 使用 unique_key 作为洞的唯一标识

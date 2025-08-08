@@ -1,7 +1,7 @@
 Page({
     data: {
         // 页面参数
-        gameId: '',
+        gameid: '',
         gambleid: '',
         gambleSysName: '',
         userRuleName: '',
@@ -26,7 +26,7 @@ Page({
 
         // 解析页面参数
         this.setData({
-            gameId: options.gameId || '',
+            gameid: options.gameid || '',
             gambleid: gambleid,
             gambleSysName: options.gambleSysName || '',
             userRuleName: options.userRuleName || '',

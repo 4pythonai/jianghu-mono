@@ -5,13 +5,13 @@
 </view>
 <!-- 记分 -->
 <view hidden="{{currentTab !== 0}}">
-  <GameMagement id="gameMagement" gameId="{{gameId}}" groupid="{{groupid}}" />
+  <GameMagement id="gameMagement" gameid="{{gameid}}" groupid="{{groupid}}" />
 </view>
 <!-- 互动 -->
 <view class="tab-content" hidden="{{currentTab !== 1}}">
-  <BBS id="bbsComponent" gameId="{{gameData.gameid || ''}}" />
+  <BBS id="bbsComponent" gameid="{{gameData.gameid || ''}}" />
 </view>
 <!-- 赌博相关 -->
 <view class="tab-content" hidden="{{currentTab !== 2}}" style="width: 100%; padding: 0;">
-  <GambleSummary gameId="{{gameId}}" groupid="{{groupid}}" id="GambleSummary" />
+  <GambleSummary gameid="{{gameid}}" groupid="{{groupid}}" id="GambleSummary" />
 </view>

@@ -1,14 +1,14 @@
 Page({
     data: {
-        gameId: null
+        gameid: null
     },
 
     onLoad(options) {
-        const gameId = options?.gameId;
-        console.log('🎯 [Poster] 页面加载', { gameId });
-        
+        const gameid = options?.gameid;
+        console.log('🎯 [Poster] 页面加载', { gameid });
+
         this.setData({
-            gameId: gameId || '未获取到gameId'
+            gameid: gameid || '未获取到gameId'
         });
     },
 
