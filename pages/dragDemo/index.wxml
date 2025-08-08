@@ -4,12 +4,12 @@
 <view style="margin: 4rpx;">
   <drag
     id="drag"
-    generic:item="drag-item"
+    generic:item="holeItem"
     bind:click="itemClick"
     bind:change="change"
     bind:sortend="sortEnd"
     bind:scroll="scroll"
-    item-wrap-class="drag-item-wrap"
+    item-wrap-class="holeItem-wrap"
     extra-nodes="{{extraNodes}}"
     list-data="{{listData}}"
     columns="9"
