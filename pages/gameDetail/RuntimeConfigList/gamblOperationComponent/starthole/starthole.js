@@ -79,7 +79,7 @@ Component({
                     title: '出发洞设置成功',
                     icon: 'success'
                 })
-                await gameStore.fetchGameDetail(gameStore.gameid, gameStore.groupId);
+                await gameStore.fetchGameDetail(gameStore.gameid, gameStore.groupid);
 
                 // gameStore.gameData.holeList = e.detail.holePlayList;
 

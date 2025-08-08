@@ -54,14 +54,14 @@ export const runtimeStore = observable({
         }
     }),
 
-    fetchRuntimeConfigs: action(async function (groupId) {
+    fetchRuntimeConfigs: action(async function (groupid) {
         if (this.loadingRuntimeConfig) return; // 防止重复加载
 
         this.loadingRuntimeConfig = true;
         this.runtimeConfigError = null;
 
         try {
-            const params = { groupId: groupId };
+            const params = { groupid: groupid };
             const res = await app.api.gamble.listRuntimeConfig(params, {
                 loadingTitle: '加载游戏配置...',
                 loadingMask: false // 不显示遮罩, 避免影响用户体验

@@ -557,16 +557,16 @@ class ConfigManager {
 
         console.log('[ConfigManager] 获取基础游戏数据:', {
             gameId: gameStore.gameid,
-            groupId: gameStore.groupId,
-            groupIdType: typeof gameStore.groupId,
-            hasGroupId: !!gameStore.groupId
+            groupid: gameStore.groupid,
+            groupIdType: typeof gameStore.groupid,
+            hasGroupId: !!gameStore.groupid
         });
 
         return {
             players,
             gameData,
             gameId: gameStore.gameid,
-            groupId: gameStore.groupId
+            groupid: gameStore.groupid
         };
     }
 

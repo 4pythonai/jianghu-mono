@@ -23,9 +23,9 @@
     <view
       class="group-item"
       wx:for="{{groups}}"
-      wx:key="groupId"
+      wx:key="groupid"
       bindtap="onGroupTap"
-      data-group-id="{{item.groupId}}"
+      data-group-id="{{item.groupid}}"
       data-group-name="{{item.groupName}}"
     >
       <!-- 分组标题 -->

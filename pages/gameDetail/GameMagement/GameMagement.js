@@ -6,7 +6,7 @@ Component({
     },
     properties: {
         gameId: String,
-        groupId: String
+        groupid: String
     },
     methods: {
         onCellClick(e) {
@@ -96,11 +96,11 @@ Component({
         },
 
         fetchGameDetail() {
-            const { gameId, groupId } = this.data;
-            console.log('[GameMagement] fetchGameDetail called', { gameId, groupId });
+            const { gameId, groupid } = this.data;
+            console.log('[GameMagement] fetchGameDetail called', { gameId, groupid });
             if (!gameId) return;
             // 直接调用gameStore，不需要在组件中再次设置red_blue
-            gameStore.fetchGameDetail(gameId, groupId);
+            gameStore.fetchGameDetail(gameId, groupid);
         }
     }
 }); 

@@ -36,7 +36,7 @@
         wx:if="{{(!gambleResults || gambleResults.length === 0) && !loading}}"
       >
         <view class="no-gamble-container">
-          <view class="summary-title">汇总待开发[gameID:{{gameId}}][groupID:{{groupId}}]</view>
+          <view class="summary-title">汇总待开发[gameID:{{gameId}}][groupID:{{groupid}}]</view>
           <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
           <text class="empty-hint">暂无游戏配置</text>
           <!-- 按钮区域 -->

@@ -44,25 +44,25 @@ Component({
             const groupMap = new Map();
 
             for (const player of players) {
-                const groupId = player?.groupid || player?.group_id;
-                if (!groupId) {
+                const groupid = player?.groupid;
+                if (!groupid) {
                     console.warn('⚠️ 玩家缺少 groupid:', player);
                     continue;
                 }
 
-                if (!groupMap.has(groupId)) {
+                if (!groupMap.has(groupid)) {
                     let groupName = '';
 
                     if (gameData.groups && Array.isArray(gameData.groups)) {
                         const groupInfo = gameData.groups.find(g =>
-                            String(g.groupid || g.group_id || g.id) === String(groupId)
+                            String(g.groupid) === String(groupid)
                         );
                         if (groupInfo) {
                             groupName = groupInfo.group_name || groupInfo.groupName || groupInfo.name;
                         }
                     }
 
-                    if (!groupName && gameData.group_name && String(gameData.groupid) === String(groupId)) {
+                    if (!groupName && gameData.group_name && String(gameData.groupid) === String(groupid)) {
                         groupName = gameData.group_name;
                     }
 
@@ -70,16 +70,16 @@ Component({
                         groupName = `第${groupMap.size + 1}组`;
                     }
 
-                    console.log(`📝 分组 ${groupId} 名称: "${groupName}"`);
+                    console.log(`📝 分组 ${groupid} 名称: "${groupName}"`);
 
-                    groupMap.set(groupId, {
-                        groupId: String(groupId),
+                    groupMap.set(groupid, {
+                        groupid: String(groupid),
                         groupName: groupName,
                         players: []
                     });
                 }
 
-                groupMap.get(groupId).players.push(player);
+                groupMap.get(groupid).players.push(player);
             }
 
             const groupsArray = Array.from(groupMap.values());
@@ -104,10 +104,10 @@ Component({
             }
 
             if (processedGroups.length === 1) {
-                const groupId = processedGroups[0]?.groupId;
-                console.log('📍 单组游戏, 直接进入详情页面', { gameId, groupId });
+                const groupid = processedGroups[0]?.groupid;
+                console.log('📍 单组游戏, 直接进入详情页面', { gameId, groupid });
                 wx.navigateTo({
-                    url: `/pages/gameDetail/gameDetail?gameId=${gameId}&groupId=${groupId}`
+                    url: `/pages/gameDetail/gameDetail?gameId=${gameId}&groupid=${groupid}`
                 });
             } else {
                 console.log('📋 多组游戏, 进入分组列表页面', { gameId, groupsCount: processedGroups.length });

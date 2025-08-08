@@ -179,16 +179,16 @@ Page({
 
     // 保存配置
     async saveConfig() {
-        const { runtimeConfig, gameId, groupId } = this.data;
+        const { runtimeConfig, gameId, groupid } = this.data;
 
         console.log('[AddRuntime] 保存配置，参数检查:', {
             gameId,
-            groupId,
-            groupIdType: typeof groupId,
-            hasGroupId: !!groupId
+            groupid,
+            groupIdType: typeof groupid,
+            hasGroupId: !!groupid
         });
 
-        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, groupId, '', this, false);
+        const result = await BaseConfig.saveConfig(runtimeConfig, gameId, groupid, '', this, false);
 
         if (result.success) {
             console.log('[AddRuntime] 配置保存成功');

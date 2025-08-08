@@ -17,7 +17,7 @@ import { holeRangeStore } from './holeRangeStore'
 export const gameStore = observable({
 
     gameid: null,
-    groupId: null,
+    groupid: null,
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
     red_blue: [],        // 红蓝分组数据
@@ -30,16 +30,16 @@ export const gameStore = observable({
 
 
 
-    // 根据 groupId 过滤玩家
-    _filterPlayersByGroup: action((players, groupId) => {
-        if (!groupId) {
-            console.log(' [Store] 无 groupId, 返回所有玩家');
+    // 根据 groupid 过滤玩家
+    _filterPlayersByGroup: action((players, groupid) => {
+        if (!groupid) {
+            console.log(' [Store] 无 groupid, 返回所有玩家');
             return players;
         }
 
         const filteredPlayers = players.filter(player => {
             const playerGroupId = String(player.groupid);
-            const targetGroupId = String(groupId);
+            const targetGroupId = String(groupid);
             return playerGroupId === targetGroupId;
         });
 
@@ -47,10 +47,10 @@ export const gameStore = observable({
     }),
 
 
-    _processGameData: action(function (gameInfo, groupId = null) {
+    _processGameData: action(function (gameInfo, groupid = null) {
 
         const allPlayers = (gameInfo.players || []).map(p => normalizePlayer(p));
-        const players = this._filterPlayersByGroup(allPlayers, groupId);
+        const players = this._filterPlayersByGroup(allPlayers, groupid);
         const holeList = (gameInfo.holeList || []).map((h, index) => normalizeHole(h, index + 1));
         const scoreMap = new Map();
         for (const s of gameInfo.scores || []) {
@@ -70,7 +70,7 @@ export const gameStore = observable({
         // 先更新基础数据
         this.gameData = gameInfo;
         this.players = players;  // 注意:这里是过滤后的玩家
-        this.groupId = groupId;  // 存储当前分组ID
+        this.groupid = groupid;  // 存储当前分组ID
 
         // 初始化 holeRangeStore 的洞数据
         holeRangeStore.initializeHoles(holeList);
@@ -110,18 +110,18 @@ export const gameStore = observable({
     }),
 
     // 从API获取并初始化游戏数据
-    fetchGameDetail: action(async function (gameId, groupId = null) {
+    fetchGameDetail: action(async function (gameId, groupid = null) {
         if (this.loading) return; // 防止重复加载
 
         this.loading = true;
         this.error = null;
         this.gameid = gameId;
-        this.groupId = groupId;  // 存储分组ID
+        this.groupid = groupid;  // 存储分组ID
 
         try {
             // 构建请求参数
             const params = { gameId };
-            params.groupId = groupId;
+            params.groupid = groupid;
 
             const res = await gameApi.getGameDetail(params, {
                 loadingTitle: '加载比赛详情...',
@@ -130,7 +130,7 @@ export const gameStore = observable({
 
             if (res?.code === 200 && res.game_detail) {
                 // ** 调用私有方法处理数据 **
-                this._processGameData(res.game_detail, groupId);
+                this._processGameData(res.game_detail, groupid);
                 this.red_blue = res.red_blue || [];
                 this.kickConfigs = res.kickConfigs || []; // 存储运行时倍数
 
@@ -176,7 +176,7 @@ export const gameStore = observable({
             players: this.players,
             scores: this.scores,
             gameData: this.gameData,
-            groupId: this.groupId,
+            groupid: this.groupid,
             gameid: this.gameid,
             loading: this.loading,
             error: this.error,

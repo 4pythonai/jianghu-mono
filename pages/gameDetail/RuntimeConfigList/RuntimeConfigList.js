@@ -9,7 +9,7 @@ Page({
     data: {
         // 页面参数
         gameId: '',
-        groupId: '',
+        groupid: '',
         players: [],
 
         // 模块内部数据
@@ -55,7 +55,7 @@ Page({
 
         // 解析页面参数
         const gameId = options?.gameId || '';
-        const groupId = options?.groupId || '';
+        const groupid = options?.groupid || '';
         let players = [];
 
         if (options?.players) {
@@ -66,7 +66,7 @@ Page({
             }
         }
 
-        this.setData({ gameId, groupId, players });
+        this.setData({ gameId, groupid, players });
 
         // 绑定store
         this.gameStoreBindings = createStoreBindings(this, {
@@ -133,18 +133,18 @@ Page({
     // 刷新运行时配置 - 优化后的方法
     refreshRuntimeConfig() {
         const gameId = this.data.gameId || gameStore.gameid;
-        const groupId = this.data.groupId || gameStore.groupId;
+        const groupid = this.data.groupid || gameStore.groupid;
 
 
-        if (!groupId) {
-            console.error('[RuntimeConfigList] groupId 为空，无法刷新配置');
+        if (!groupid) {
+            console.error('[RuntimeConfigList] groupid 为空，无法刷新配置');
             return;
         }
 
         // 设置加载状态
         this.setData({ loading: true });
 
-        runtimeStore.fetchRuntimeConfigs(groupId)
+        runtimeStore.fetchRuntimeConfigs(groupid)
             .then((result) => {
 
                 // 强制触发一次更新，确保数据同步
@@ -182,10 +182,10 @@ Page({
     // 静默刷新运行时配置 - 不显示加载状态，用于后台数据更新
     silentRefreshRuntimeConfig() {
         const gameId = this.data.gameId || gameStore.gameid;
-        const groupId = this.data.groupId || gameStore.groupId;
+        const groupid = this.data.groupid || gameStore.groupid;
 
-        if (!groupId) {
-            console.error('[RuntimeConfigList] groupId 为空，无法静默刷新配置');
+        if (!groupid) {
+            console.error('[RuntimeConfigList] groupid 为空，无法静默刷新配置');
             return;
         }
 
@@ -198,7 +198,7 @@ Page({
             const scrollTop = res[0]?.scrollTop || 0;
             console.log('[RuntimeConfigList] 记录当前滚动位置:', scrollTop);
 
-            runtimeStore.fetchRuntimeConfigs(groupId)
+            runtimeStore.fetchRuntimeConfigs(groupid)
                 .then((result) => {
                     console.log('[RuntimeConfigList] 静默刷新成功');
                     // 强制触发一次更新，确保数据同步

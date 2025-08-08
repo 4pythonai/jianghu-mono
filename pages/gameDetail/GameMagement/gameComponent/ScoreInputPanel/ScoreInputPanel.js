@@ -29,7 +29,7 @@ Component({
         attached() {
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
-                fields: ['gameid', 'groupId', 'gameData', 'players', 'isSaving'],
+                fields: ['gameid', 'groupid', 'gameData', 'players', 'isSaving'],
                 actions: ['setSaving'],
             });
             this.holeRangeStoreBindings = createStoreBindings(this, {
@@ -162,7 +162,7 @@ Component({
                 const apiData = {
                     gameId: this.data.gameid,
                     hindex,
-                    groupId: this.data.groupId, // 添加分组ID
+                    groupid: this.data.groupid, // 添加分组ID
                     holeUniqueKey: holeUniqueKeyForAPI, // 使用 unique_key 作为洞的唯一标识
                     scores,
                 };

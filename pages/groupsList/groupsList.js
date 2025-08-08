@@ -76,13 +76,13 @@ Page({
 
     // 点击分组, 进入计分页面
     onGroupTap(e) {
-        const { groupId, groupName } = e.currentTarget.dataset;
+        const { groupid, groupName } = e.currentTarget.dataset;
         const { gameId } = this.data;
 
-        console.log('📝 选择分组:', { gameId, groupId, groupName });
+        console.log('📝 选择分组:', { gameId, groupid, groupName });
 
         wx.navigateTo({
-            url: `/pages/gameDetail/gameDetail?gameId=${gameId}&groupId=${groupId}`
+            url: `/pages/gameDetail/gameDetail?gameId=${gameId}&groupid=${groupid}`
         });
     },
 
