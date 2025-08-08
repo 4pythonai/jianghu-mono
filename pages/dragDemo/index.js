@@ -1,6 +1,6 @@
 const app = getApp()
 
-let listData = [
+const listData = [
 	{ hindex: 0, holename: "A1" },
 	{ hindex: 1, holename: "A2" },
 	{ hindex: 2, holename: "A3" },
@@ -24,7 +24,6 @@ let listData = [
 Page({
 	data: {
 		isIphoneX: app.globalData.isIphoneX,
-		size: 9,
 		listData: [],
 		extraNodes: [],
 		pageMetaScrollTop: 0,
@@ -43,7 +42,6 @@ Page({
 	itemClick(e) {
 		console.log(e);
 	},
-
 
 	scroll(e) {
 		this.setData({
