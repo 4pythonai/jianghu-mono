@@ -1,7 +1,5 @@
 @import "/styles/modal.wxss";
 
-
-
 @keyframes slideUp {
 	from {
 		transform: translateY(100%);
@@ -10,8 +8,6 @@
 		transform: translateY(0);
 	}
 }
-
- 
 
 .section {
 	margin-bottom: 32rpx;
@@ -47,6 +43,21 @@
 	box-sizing: border-box;
 	margin: 0;
 	overflow: hidden;
+	transition: all 0.2s ease;
+	cursor: pointer;
+}
+
+.hole-item.dragging {
+	opacity: 0.8;
+	transform: scale(1.1);
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+	z-index: 1000;
+}
+
+.hole-item.placeholder {
+	background: #e0e0e0;
+	border: 2rpx dashed #999;
+	opacity: 0.6;
 }
 
 .hole-item-text {
@@ -62,4 +73,85 @@
 	color: #fff; /* 白字 */
 	white-space: nowrap;
 	text-overflow: ellipsis;
+}
+
+.hole-item.placeholder .hole-item-text {
+	color: #999;
+}
+
+.picked-item {
+	position: fixed;
+	pointer-events: none;
+	opacity: 0.9;
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+	width: 60rpx; /* 固定宽度，与网格单元格大小匹配 */
+	height: 60rpx; /* 固定高度，保持圆形 */
+	border-radius: 50%;
+	background: #27ae60;
+	border: 2rpx solid #eee;
+	box-sizing: border-box;
+	overflow: hidden;
+	z-index: 1000;
+}
+
+.picked-item.dragging {
+	transform: scale(1.1);
+}
+
+.picked-item .hole-item-text {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24rpx; /* 适配60rpx的球 */
+	color: #fff;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.drag-hint {
+	text-align: center;
+	padding: 20rpx;
+	background: #f0f8ff;
+	border-radius: 8rpx;
+	margin-bottom: 20rpx;
+	border: 1rpx solid #d0e7ff;
+}
+
+.drag-hint text {
+	color: #0066cc;
+	font-size: 26rpx;
+}
+
+.modal-actions {
+	display: flex;
+	gap: 20rpx;
+	justify-content: center;
+}
+
+.modal-btn {
+	flex: 1;
+	padding: 20rpx 40rpx;
+	border-radius: 8rpx;
+	font-size: 28rpx;
+	border: none;
+}
+
+.modal-btn.reset {
+	background: #f0f0f0;
+	color: #666;
+}
+
+.modal-btn.cancel {
+	background: #e0e0e0;
+	color: #333;
+}
+
+.modal-btn.confirm {
+	background: #27ae60;
+	color: #fff;
 }

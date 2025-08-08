@@ -52,7 +52,7 @@ Page({
         if (this.data.gameCreated && newGameGroups && Array.isArray(newGameGroups)) {
             console.log('✅ 条件满足, 开始防抖调用');
             // 使用较短的防抖时间, 因为这是统一的变化监听
-            this.debounce('gameGroupsObserver', () => {
+            this.debounce('gameGroupsObserver', async () => {
                 console.log('🚀 防抖结束, 开始调用 updateGameGroupAndPlayers API');
                 const apiData = {
                     uuid: this.data.uuid,
@@ -62,7 +62,10 @@ Page({
                     }))
                 };
                 console.log('📤 API 调用数据:', apiData);
-                this.callUpdateAPI('updateGameGroupAndPlayers', apiData, `组数据同步-${description}`)
+
+                // 调用API并获取返回结果
+                const result = await this.callUpdateAPI('updateGameGroupAndPlayers', apiData, `组数据同步-${description}`);
+                console.log('📥 API 返回结果:', result);
             }, 300) // 较短的防抖时间
         } else {
             console.log('❌ 条件不满足, 跳过 API 调用');
@@ -81,6 +84,7 @@ Page({
     data: {
         uuid: '', // 游戏唯一标识符(调试用)
         gameid: null, // 服务端返回的游戏ID
+        groupid: null,
         gameCreated: false, // 标记游戏是否已创建
         selectedCourse: null, // 选中的球场信息
         selectedCourt: null,   // 选中的半场信息
@@ -164,7 +168,7 @@ Page({
 
     onScoringTypeChange(e) {
 
-        // updateGameScoringTypeMBC 뉴스 이덕영입니다. 
+
         this.setData({
             'formData.ScoringType': e.detail.value
         });

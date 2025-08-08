@@ -5,8 +5,10 @@
     <view class="hole-list">
       <block wx:for="{{holePlayList}}" wx:key="index">
         <view
-          class="hole-item {{index === 0 ? 'active' : ''}}"
-          bindtap="onSelectHole"
+          class="hole-item {{index === 0 ? 'active' : ''}} {{item.isPlaceholder ? 'placeholder' : ''}}"
+          bindtouchstart="onTouchStart"
+          bindtouchmove="onTouchMove"
+          bindtouchend="onTouchEnd"
           data-index="{{index}}"
           data-hindex="{{item.hindex}}"
         >
@@ -14,7 +16,23 @@
         </view>
       </block>
     </view>
+
+    <!-- 被拖拽的球 -->
+    <view
+      class="picked-item {{pickedItem.isDragging ? 'dragging' : ''}}"
+      wx:if="{{pickedItem}}"
+      style="transform: translate({{dragOffset.x}}px, {{dragOffset.y}}px); z-index: 1000;"
+    >
+      <text class="hole-item-text">{{pickedItem.holename}}</text>
+    </view>
+
+    <!-- 拖拽提示区域 -->
+    <view class="drag-hint" wx:if="{{isDragging}}">
+      <text>拖拽到目标位置释放</text>
+    </view>
+
     <view class="modal-actions">
+      <button class="modal-btn reset" bindtap="onReset">重置</button>
       <button class="modal-btn cancel" bindtap="close">取消</button>
       <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
     </view>
