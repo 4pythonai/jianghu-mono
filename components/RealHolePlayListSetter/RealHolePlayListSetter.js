@@ -35,6 +35,11 @@ Component({
         title: {
             type: String,
             value: '设置洞序'
+        },
+        // 使用场景
+        scene: {
+            type: String,
+            value: 'default'
         }
     },
 

@@ -4,6 +4,17 @@
   <view class="modal-mask" bindtap="onHideModal"></view>
   <view class="modal-content">
     <view class="modal-title">{{title}}</view>
+
+    <!-- 跳洞设置场景 -->
+    <view class="scene-indicator" wx:if="{{scene === 'starthole'}}">
+      <view class="scene-text">调整出发洞,点中的球洞将作为第一个洞</view>
+    </view>
+
+    <!-- 起止洞设置场景 -->
+    <view class="scene-indicator" wx:if="{{scene === 'startend'}}">
+      <!-- <text class="scene-text">起止洞设置</text> -->
+    </view>
+
     <view class="hole-list">
       <block wx:for="{{displayHoleList}}" wx:key="hindex">
         <view

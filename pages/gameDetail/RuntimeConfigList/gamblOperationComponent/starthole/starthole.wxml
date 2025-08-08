@@ -2,6 +2,7 @@
   wx:if="{{isStartholeVisible}}"
   holeList="{{holeList}}"
   title="调整出发洞"
+  scene="starthole"
   startHoleindex="1"
   roadLength="{{9}}"
   selectType="start"

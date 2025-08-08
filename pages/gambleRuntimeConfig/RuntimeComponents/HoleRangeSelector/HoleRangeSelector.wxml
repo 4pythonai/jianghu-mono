@@ -28,6 +28,7 @@
   wx:if="{{ifShowModal}}"
   holeList="{{holeList}}"
   title="调整洞序"
+  scene="startend"
   startHoleindex="{{startHoleindex}}"
   roadLength="{{roadLength}}"
   selectType="{{selectType}}"
