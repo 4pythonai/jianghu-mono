@@ -120,6 +120,8 @@ Component({
                         const x = 10 + col * (ballSize + spacingX); // 恢复之前的计算方式
                         const y = 10 + row * fixedRowHeight;
 
+
+
                         return {
                             ...hole,
                             x: Math.round(x),
@@ -172,10 +174,107 @@ Component({
 
         // ===== movable-view 事件处理 =====
 
+
+
         /**
-         * movable-view 位置变化事件
-         * @param {Object} e - 事件对象
+         * 重排剩余球，填补被拖拽球的空位
+         * @param {Number} dragIndex - 被拖拽的球索引
          */
+        rearrangeRemainingBalls(dragIndex) {
+            wx.createSelectorQuery().in(this)
+                .select('.move-area')
+                .boundingClientRect((rect) => {
+                    if (!rect) return;
+
+                    const { holePlayList } = this.data;
+
+                    // 获取剩余球（排除被拖拽的球）
+                    const remainingBalls = holePlayList.filter((_, index) => index !== dragIndex);
+
+                    console.log(`🔄 重排剩余${remainingBalls.length}个球，排除球${dragIndex}`);
+
+                    // 使用与初始化相同的布局参数
+                    const ballSize = 65;
+                    const ballsPerRow = 9;
+                    const fixedRowHeight = 70;
+                    const availableWidth = rect.width - 20;
+                    const spacingX = (availableWidth - ballSize * ballsPerRow) / (ballsPerRow - 1);
+
+                    // 为剩余球重新计算位置（保持原始顺序，跨行连续填充，y轴对齐）
+                    const updatedHoleList = [...holePlayList];
+                    let compactIndex = 0; // 紧凑排列的索引
+
+                    // 遍历所有球，跳过被拖拽的球，为其他球重新分配连续位置
+                    holePlayList.forEach((ball, originalIndex) => {
+                        if (originalIndex === dragIndex) {
+                            // 跳过被拖拽的球，稍后处理
+                            return;
+                        }
+
+                        // 为剩余球计算新的连续位置（跨行填充）
+                        const row = Math.floor(compactIndex / ballsPerRow);
+                        const col = compactIndex % ballsPerRow;
+                        const x = 10 + col * (ballSize + spacingX);
+                        const y = 10 + row * fixedRowHeight; // 确保y轴严格按行对齐
+
+
+
+                        // 更新位置
+                        updatedHoleList[originalIndex] = {
+                            ...updatedHoleList[originalIndex],
+                            x: Math.round(x),
+                            y: Math.round(y)
+                        };
+
+                        compactIndex++; // 下一个连续位置（跨行递增）
+                    });
+
+                    // 隐藏被拖拽的球（移到屏幕外）
+                    updatedHoleList[dragIndex] = {
+                        ...updatedHoleList[dragIndex],
+                        x: -100, // 移到屏幕外
+                        y: -100
+                    };
+
+                    this.setData({
+                        holePlayList: updatedHoleList
+                    });
+
+                    // 调试：显示重排后的实际y坐标
+                    console.log('✅ 重排完成，检查y轴对齐情况:');
+
+                    const firstRowBalls = [];
+                    const secondRowBalls = [];
+
+                    updatedHoleList.forEach((ball, index) => {
+                        if (index !== dragIndex && ball.y === 10) {
+                            firstRowBalls.push(`${ball.holename}(y:${ball.y})`);
+                        } else if (index !== dragIndex && ball.y === 80) {
+                            secondRowBalls.push(`${ball.holename}(y:${ball.y})`);
+                        } else if (index !== dragIndex) {
+                            console.log(`❌ 异常y值: ${ball.holename} y=${ball.y}`);
+                        }
+                    });
+
+                    console.log('🏠 第一行(y=10):', firstRowBalls.join(', '));
+                    console.log('🏠 第二行(y=80):', secondRowBalls.join(', '));
+
+                    // 验证是否所有球的y值都正确
+                    const wrongYBalls = updatedHoleList.filter((ball, index) =>
+                        index !== dragIndex && ball.y !== 10 && ball.y !== 80
+                    );
+                    if (wrongYBalls.length > 0) {
+                        console.log('❌ y轴异常的球:', wrongYBalls.map(b => `${b.holename}(y:${b.y})`));
+                    } else {
+                        console.log('✅ 所有球的y轴都正确对齐！');
+                    }
+                }).exec();
+        },
+
+        /**
+ * movable-view 位置变化事件
+ * @param {Object} e - 事件对象
+ */
         onMovableChange(e) {
             const { index } = e.currentTarget.dataset;
             const { x, y, source } = e.detail;
@@ -185,24 +284,28 @@ Component({
                 return;
             }
 
-            console.log(`🎯 用户拖拽球${index}, 位置(${x},${y}), 触发源:${source}`);
+            const dragIndex = Number.parseInt(index);
 
-            // 防止循环渲染：只在拖拽状态改变时更新
-            if (!this.data.isDragging || this.data.currentDragIndex !== Number.parseInt(index)) {
+            // 检测是否是新的拖拽开始
+
+            if (!this.data.isDragging || this.data.currentDragIndex !== dragIndex) {
+                console.log(`🎯 开始拖拽球${dragIndex} (${this.data.holePlayList[dragIndex].holename})`);
+
+                // 标记拖拽状态
                 this.setData({
-                    [`holePlayList[${index}].isDragging`]: true,
+                    [`holePlayList[${dragIndex}].isDragging`]: true,
                     isDragging: true,
-                    currentDragIndex: Number.parseInt(index)
+                    currentDragIndex: dragIndex
                 });
+
+                // 重排剩余球（隐藏被拖拽的球，其他球补位）
+                this.rearrangeRemainingBalls(dragIndex);
+                return; // 第一次拖拽不进行位置计算
             }
 
-            // 节流：减少位置计算频率
-            if (this._throttleTimer) {
-                clearTimeout(this._throttleTimer);
-            }
-            this._throttleTimer = setTimeout(() => {
-                this.calculateTargetPosition(x, y, Number.parseInt(index));
-            }, 200);
+            // 只有在重排完成后才进行位置计算（避免与重排逻辑冲突）
+            // 重排期间不计算目标位置，让重排完全生效
+            console.log('🎯 拖拽中，暂时跳过位置计算（等待重排稳定）');
         },
 
         /**
