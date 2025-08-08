@@ -16,8 +16,6 @@
     scroll-top="{{scrollTop}}"
     item-height="{{(750 - 8) / 9}}"
     top-size="110"
-    bottom-size="{{isIphoneX ? 380 : 300 }}"
+    bottom-size="{{400}}"
   ></drag>
 </view>
-
-<view class="empty-bottom {{isIphoneX ? 'isX' : ''}}"></view>
