@@ -31,7 +31,7 @@ Component({
             const processedList = holeList.map((item, index) => ({
                 ...item,
                 isDragging: false,
-                isPlaceholder: false,
+                isInsertPreview: false,
                 originalIndex: index
             }));
 
@@ -78,10 +78,10 @@ Component({
                 dragOffset: { x: offsetX, y: offsetY }
             });
 
-            // 节流更新占位符，避免过多调用
+            // 节流更新插入预览，避免过多调用
             const now = Date.now();
             if (now - this.data.lastUpdateTime > 100) { // 100ms节流
-                this.updatePlaceholder(touch.clientX, touch.clientY);
+                this.updateInsertPreview(touch.clientX, touch.clientY);
                 this.setData({ lastUpdateTime: now });
             }
         },
@@ -104,8 +104,8 @@ Component({
                     this.restoreOriginalOrder();
                 }
 
-                // 清除所有占位符
-                this.clearAllPlaceholders();
+                // 清除所有预览效果
+                this.clearAllPreviews();
 
                 // 重置拖拽状态
                 this.setData({
@@ -157,22 +157,32 @@ Component({
             });
         },
 
-        // 更新占位符
-        updatePlaceholder(clientX, clientY) {
+        // 更新插入位置预览
+        updateInsertPreview(clientX, clientY) {
             this.getTargetIndex(clientX, clientY).then(targetIndex => {
-                const holePlayList = this.data.holePlayList.map((item, index) => ({
-                    ...item,
-                    isPlaceholder: index === targetIndex
-                }));
-                this.setData({ holePlayList });
+                if (targetIndex !== -1) {
+                    // 创建插入预览效果：在目标位置显示一个透明的球
+                    const holePlayList = this.data.holePlayList.map((item, index) => ({
+                        ...item,
+                        isInsertPreview: index === targetIndex
+                    }));
+                    this.setData({ holePlayList });
+                } else {
+                    // 清除预览效果
+                    const holePlayList = this.data.holePlayList.map(item => ({
+                        ...item,
+                        isInsertPreview: false
+                    }));
+                    this.setData({ holePlayList });
+                }
             });
         },
 
-        // 清除所有占位符
-        clearAllPlaceholders() {
+        // 清除所有预览效果
+        clearAllPreviews() {
             const holePlayList = this.data.holePlayList.map(item => ({
                 ...item,
-                isPlaceholder: false
+                isInsertPreview: false
             }));
             this.setData({ holePlayList });
         },
@@ -195,7 +205,7 @@ Component({
                     const item = { ...holePlayList[i] };
                     item.isDragging = false;
                     item.isPicked = false;
-                    item.isPlaceholder = false;
+                    item.isInsertPreview = false;
                     rearrangedList.push(item);
                 }
             }
@@ -228,12 +238,12 @@ Component({
                 ...pickedItem,
                 isDragging: false,
                 isPicked: false,
-                isPlaceholder: false
+                isInsertPreview: false
             });
 
-            // 清除所有占位符
+            // 清除所有预览效果
             for (const item of currentList) {
-                item.isPlaceholder = false;
+                item.isInsertPreview = false;
             }
 
             // 更新所有球的索引
@@ -275,7 +285,7 @@ Component({
                 ...item,
                 isDragging: false,
                 isPicked: false,
-                isPlaceholder: false,
+                isInsertPreview: false,
                 originalIndex: index
             }));
 
@@ -290,7 +300,7 @@ Component({
             const resetList = this.data.originalHoleList.map((item, index) => ({
                 ...item,
                 isDragging: false,
-                isPlaceholder: false,
+                isInsertPreview: false,
                 originalIndex: index
             }));
 

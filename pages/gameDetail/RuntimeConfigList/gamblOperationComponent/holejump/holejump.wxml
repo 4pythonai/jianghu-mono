@@ -5,14 +5,14 @@
     <view class="hole-list">
       <block wx:for="{{holePlayList}}" wx:key="index">
         <view
-          class="hole-item {{index === 0 ? 'active' : ''}} {{item.isPlaceholder ? 'placeholder' : ''}}"
+          class="hole-item {{index === 0 ? 'active' : ''}} {{item.isInsertPreview ? 'insert-preview' : ''}}"
           bindtouchstart="onTouchStart"
           bindtouchmove="onTouchMove"
           bindtouchend="onTouchEnd"
           data-index="{{index}}"
           data-hindex="{{item.hindex}}"
         >
-          <text class="hole-item-text">{{item.holename}}</text>
+          <text class="hole-item-text" wx:if="{{!item.isInsertPreview}}">{{item.holename}}</text>
         </view>
       </block>
     </view>

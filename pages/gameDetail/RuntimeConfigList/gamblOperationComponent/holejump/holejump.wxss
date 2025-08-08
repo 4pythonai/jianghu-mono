@@ -54,10 +54,12 @@
 	z-index: 1000;
 }
 
-.hole-item.placeholder {
-	background: #e0e0e0;
-	border: 2rpx dashed #999;
+.hole-item.insert-preview {
+	background: rgba(39, 174, 96, 0.2); /* 更淡的绿色 */
+	border: 2rpx dashed rgba(39, 174, 96, 0.5); /* 虚线边框 */
 	opacity: 0.6;
+	transform: scale(0.95);
+	transition: all 0.2s ease;
 }
 
 .hole-item-text {
@@ -73,10 +75,6 @@
 	color: #fff; /* 白字 */
 	white-space: nowrap;
 	text-overflow: ellipsis;
-}
-
-.hole-item.placeholder .hole-item-text {
-	color: #999;
 }
 
 .picked-item {
