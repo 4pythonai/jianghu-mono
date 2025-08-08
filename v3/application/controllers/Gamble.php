@@ -118,11 +118,8 @@ class Gamble extends MY_Controller {
         $roadLength = intval($json_paras['roadLength']);
 
 
-        // $holePlayListString = implode(',', array_column($json_paras['holePlayList'], 'hindex'));
-        // $json_paras['holePlayList'] = $holePlayListString;
         $json_paras['bootstrap_order'] = $bootstrap_order;
 
-        // 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
 
         $json_paras['creator_id'] = $userid;
         unset($json_paras['rangeHolePlayList']);
@@ -138,7 +135,6 @@ class Gamble extends MY_Controller {
             'bootstrap_order' => $json_paras['bootstrap_order'],
             'ranking_tie_resolve_config' => $json_paras['ranking_tie_resolve_config'],
             'playerIndicatorConfig' => $json_paras['playerIndicatorConfig'],
-            // 'holePlayList' => $json_paras['holePlayList'],
             'startHoleindex' => $startHoleindex,
             'roadLength' => $roadLength,
             'creator_id' => $json_paras['creator_id']
@@ -535,6 +531,16 @@ class Gamble extends MY_Controller {
         $allRuntimeIDs = $json_paras['allRuntimeIDs'] ?? [];
         $bigWind = $json_paras['bigWind'];
         $this->db->where_in('id', $allRuntimeIDs)->update('t_gamble_x_runtime', ['bigWind' => $bigWind]);
+        echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+
+    public function changeStartHole() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        // debug($json_paras);
+        $gameid = $json_paras['gameid'];
+        $holeList = $json_paras['holeList'];
+        $this->db->where('id', $gameid)->update('t_game', ['holeList' => json_encode($holeList, JSON_UNESCAPED_UNICODE)]);
         echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
     }
 }

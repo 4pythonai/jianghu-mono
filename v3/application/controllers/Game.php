@@ -97,7 +97,7 @@ class Game extends MY_Controller {
 
         $holeList = $this->MDetailGame->getHoleListByGameId($gameid);
         $this->db->where('id', $gameid);
-        $this->db->update('t_game', ['holePlayList' => json_encode($holeList)]);
+        $this->db->update('t_game', ['holeList' => json_encode($holeList)]);
 
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
