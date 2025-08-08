@@ -21,7 +21,7 @@
     <view
       class="picked-item {{pickedItem.isDragging ? 'dragging' : ''}}"
       wx:if="{{pickedItem}}"
-      style="transform: translate({{dragOffset.x}}px, {{dragOffset.y}}px); z-index: 1000;"
+      style="left: {{pickedItemPosition.x + dragOffset.x}}px; top: {{pickedItemPosition.y + dragOffset.y}}px; z-index: 1000;"
     >
       <text class="hole-item-text">{{pickedItem.holename}}</text>
     </view>

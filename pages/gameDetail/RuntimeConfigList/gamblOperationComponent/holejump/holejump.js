@@ -13,7 +13,8 @@ Component({
         dragOffset: { x: 0, y: 0 },
         originalHoleList: [],
         lastUpdateTime: 0,
-        pickedItem: null
+        pickedItem: null,
+        pickedItemPosition: { x: 0, y: 0 }
     },
 
     lifetimes: {
@@ -57,7 +58,8 @@ Component({
                 isDragging: true,
                 dragStartIndex: index,
                 dragStartPosition: { x: touch.clientX, y: touch.clientY },
-                dragOffset: { x: 0, y: 0 }
+                dragOffset: { x: 0, y: 0 },
+                pickedItemPosition: { x: touch.clientX, y: touch.clientY } // 直接使用触摸位置
             });
 
             // 开始拖拽时，重新排列其他球，填补空缺
@@ -111,7 +113,8 @@ Component({
                     dragStartIndex: -1,
                     dragStartPosition: { x: 0, y: 0 },
                     dragOffset: { x: 0, y: 0 },
-                    pickedItem: null
+                    pickedItem: null,
+                    pickedItemPosition: { x: 0, y: 0 }
                 });
             });
         },
@@ -229,14 +232,14 @@ Component({
             });
 
             // 清除所有占位符
-            currentList.forEach(item => {
+            for (const item of currentList) {
                 item.isPlaceholder = false;
-            });
+            }
 
             // 更新所有球的索引
-            currentList.forEach((item, index) => {
-                item.originalIndex = index;
-            });
+            for (let i = 0; i < currentList.length; i++) {
+                currentList[i].originalIndex = i;
+            }
 
             console.log('Inserted item at index:', validIndex, 'Total items:', currentList.length);
 

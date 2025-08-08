@@ -92,6 +92,7 @@
 	box-sizing: border-box;
 	overflow: hidden;
 	z-index: 1000;
+	transform: translate(-50%, -50%); /* 让球以中心点定位 */
 }
 
 .picked-item.dragging {
