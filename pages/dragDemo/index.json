@@ -1,6 +1,6 @@
 {
 	"usingComponents": {
-		"drag": "../../components/dragComponent/index",
+		"DragComponent": "../../components/dragComponent/index",
 		"holeItem": "./holeItem/index"
 	}
 }

@@ -23,25 +23,19 @@ const listData = [
 
 Page({
 	data: {
-		isIphoneX: app.globalData.isIphoneX,
 		listData: [],
 		extraNodes: [],
 		pageMetaScrollTop: 0,
 		scrollTop: 0
 	},
+
 	sortEnd(e) {
 		console.log("sortEnd", e.detail.listData)
 		this.setData({
 			listData: e.detail.listData
 		});
 	},
-	change(e) {
-		console.log("change", e.detail.listData)
-	},
 
-	itemClick(e) {
-		console.log(e);
-	},
 
 	scroll(e) {
 		this.setData({
@@ -55,7 +49,7 @@ Page({
 		});
 	},
 	onLoad() {
-		this.drag = this.selectComponent('#drag');
+		this.drag = this.selectComponent('#holoJump');
 		// 模仿异步加载数据
 		setTimeout(() => {
 			this.setData({
