@@ -154,11 +154,15 @@ Component({
                     const realRects = [];
                     const currentList = this.data.holePlayList;
 
-                    for (let i = 0; i < rects.length; i++) {
-                        if (i < currentList.length && !currentList[i].isInsertPreview) {
+                    // 确保 rects 和 currentList 的索引对应
+                    for (let i = 0; i < rects.length && i < currentList.length; i++) {
+                        if (!currentList[i].isInsertPreview) {
                             realRects.push(rects[i]);
                         }
                     }
+
+                    console.log('Real rects count:', realRects.length, 'Current list count:', currentList.length);
+                    console.log('Current list items:', currentList.map(item => ({ holename: item.holename, isPreview: item.isInsertPreview })));
 
                     if (realRects.length === 0) {
                         resolve(-1);
@@ -171,14 +175,14 @@ Component({
                         let insertY;
 
                         if (i === 0) {
-                            // 第一个球之前
+                            // 第一个球之前 - 使用球的左边缘作为插入位置
                             const firstRect = realRects[0];
-                            insertX = firstRect.left - firstRect.width / 2;
+                            insertX = firstRect.left;
                             insertY = firstRect.top + firstRect.height / 2;
                         } else if (i === realRects.length) {
-                            // 最后一个球之后
+                            // 最后一个球之后 - 使用球的右边缘作为插入位置
                             const lastRect = realRects[realRects.length - 1];
-                            insertX = lastRect.right + lastRect.width / 2;
+                            insertX = lastRect.right;
                             insertY = lastRect.top + lastRect.height / 2;
                         } else {
                             // 两个球之间
@@ -192,8 +196,9 @@ Component({
                             (clientX - insertX) ** 2 + (clientY - insertY) ** 2
                         );
 
-                        if (distance < 50) { // 更小的检测范围
+                        if (distance < 80) { // 进一步增大检测范围，确保边界位置也能被检测到
                             console.log(`Insert position ${i} detected at (${insertX}, ${insertY}), distance: ${distance}`);
+                            console.log(`Touch position: (${clientX}, ${clientY})`);
                             resolve(i);
                             return;
                         }
@@ -222,8 +227,8 @@ Component({
 
                     cleanList.splice(targetIndex, 0, previewItem);
 
-                    // 更新后续球的索引
-                    for (let i = targetIndex + 1; i < cleanList.length; i++) {
+                    // 更新所有球的索引
+                    for (let i = 0; i < cleanList.length; i++) {
                         cleanList[i].originalIndex = i;
                     }
 
@@ -242,9 +247,9 @@ Component({
 
         // 限制拖拽范围在球区内
         limitDragRange(offsetX, offsetY) {
-            // 获取球区的边界
-            const maxOffsetX = 300; // 根据实际球区宽度调整
-            const maxOffsetY = 200; // 根据实际球区高度调整
+            // 获取球区的边界 - 增大范围以支持拖拽到边界位置
+            const maxOffsetX = 400; // 增大范围，支持拖拽到最左/最右
+            const maxOffsetY = 300; // 增大范围，支持拖拽到最上/最下
 
             return {
                 x: Math.max(-maxOffsetX, Math.min(maxOffsetX, offsetX)),
@@ -322,7 +327,11 @@ Component({
             const currentList = [...this.data.holePlayList];
             const pickedItem = this.data.pickedItem;
 
-            if (!pickedItem) return;
+            if (!pickedItem) {
+                console.warn('No picked item found, restoring original order');
+                this.restoreOriginalOrder();
+                return;
+            }
 
             console.log('InsertOnDrop - targetIndex:', targetIndex, 'currentList length:', currentList.length);
             console.log('Current list before cleanup:', currentList.map(item => item.holename || 'PREVIEW'));
@@ -331,6 +340,17 @@ Component({
             const cleanList = currentList.filter(item => !item.isInsertPreview);
 
             console.log('Clean list after filter:', cleanList.map(item => item.holename));
+
+            // 验证数据完整性
+            const originalCount = this.data.originalHoleList.length;
+            const expectedCount = originalCount; // 应该保持原始数量
+
+            if (cleanList.length !== expectedCount) {
+                console.warn(`Data integrity check failed: expected ${expectedCount}, got ${cleanList.length}`);
+                console.warn('Restoring original order to prevent data loss');
+                this.restoreOriginalOrder();
+                return;
+            }
 
             // 确保目标索引在有效范围内
             const validIndex = Math.max(0, Math.min(targetIndex, cleanList.length));
@@ -346,6 +366,13 @@ Component({
             // 更新所有球的索引
             for (let i = 0; i < cleanList.length; i++) {
                 cleanList[i].originalIndex = i;
+            }
+
+            // 最终验证
+            if (cleanList.length !== originalCount + 1) {
+                console.error(`Final count mismatch: expected ${originalCount + 1}, got ${cleanList.length}`);
+                this.restoreOriginalOrder();
+                return;
             }
 
             console.log('Final list after insert:', cleanList.map(item => item.holename));
@@ -395,7 +422,12 @@ Component({
 
         // 重置到原始顺序
         onReset() {
-            const resetList = this.data.originalHoleList.map((item, index) => ({
+            // 按照 hindex 排序
+            const sortedList = [...this.data.originalHoleList].sort((a, b) => {
+                return (a.hindex || 0) - (b.hindex || 0);
+            });
+
+            const resetList = sortedList.map((item, index) => ({
                 ...item,
                 isDragging: false,
                 isInsertPreview: false,
