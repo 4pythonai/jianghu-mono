@@ -1,6 +1,5 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../../../../stores/gameStore';
-// import { toJS } from 'mobx-miniprogram';
 
 const app = getApp();
 
@@ -10,46 +9,52 @@ Component({
     },
 
     data: {
-        isDragging: false,
-        dragStartIndex: -1,
-        dragStartPosition: { x: 0, y: 0 },
-        dragOffset: { x: 0, y: 0 },
-        originalHoleList: [],
-        lastUpdateTime: 0,
-        pickedItem: null,
-        pickedItemPosition: { x: 0, y: 0 },
-        dragStartTime: 0
+        // ===== 基础数据 =====
+        holePlayList: [], // 洞序列表，用于显示在网格中
+        originalHoleList: [], // 原始洞序列表，用于重置功能
+
+        // ===== 拖拽状态数据 =====
+        isDragging: false, // 是否正在拖拽
+        dragStartTime: 0, // 拖拽开始时间，用于判断是否为有效拖拽
+
+        // ===== 被拖拽的球数据 =====
+        pickedItem: null, // 当前被拖拽的球对象 {hindex, holename, originalIndex}
+        pickedItemPosition: { x: 0, y: 0 }, // 被拖拽球的初始位置
+        dragOffset: { x: 0, y: 0 }, // 拖拽过程中的偏移量
+
+        // ===== 拖拽目标位置数据 =====
+        targetIndex: -1, // 目标插入位置索引
+        leftItem: null, // 左边的球对象
+        rightItem: null, // 右边的球对象
+
+        // ===== 预览数据 =====
+        previewList: [], // 预览列表，用于显示拖拽后的效果
+        showPreview: false, // 是否显示预览效果
+
+        // ===== 网格布局数据 =====
+        gridConfig: {
+            columns: 9, // 网格列数
+            itemSize: 60, // 每个球的大小(rpx)
+            gap: 8, // 球之间的间距(rpx)
+            containerWidth: 0, // 容器宽度
+            containerHeight: 0 // 容器高度
+        },
+
+        // ===== 触摸事件数据 =====
+        touchData: {
+            startX: 0, // 触摸开始X坐标
+            startY: 0, // 触摸开始Y坐标
+            currentX: 0, // 当前触摸X坐标
+            currentY: 0, // 当前触摸Y坐标
+            startIndex: -1 // 开始触摸的球索引
+        }
     },
 
     lifetimes: {
         attached() {
-            // 绑定 mobx store
-            this.storeBindings = createStoreBindings(this, {
-                store: gameStore,
-                fields: ['gameData'],
-                actions: []
-            });
-
             // 初始化洞序列表
             const holeList = gameStore.gameData.holeList || [];
-            console.log('=== 原始洞序数据 ===');
-            console.log('gameStore.gameData.holeList:', holeList);
-            holeList.forEach((item, index) => {
-                console.log(`原始第${index + 1}洞:`, item);
-            });
-            console.log('==================');
-
-            const processedList = holeList.map((item, index) => ({
-                ...item,
-                isDragging: false,
-                isInsertPreview: false,
-                originalIndex: index
-            }));
-
-            this.setData({
-                holePlayList: processedList,
-                originalHoleList: JSON.parse(JSON.stringify(processedList))
-            });
+            this.initHoleList(holeList);
         },
 
         detached() {
@@ -58,415 +63,247 @@ Component({
     },
 
     methods: {
-        // 触摸开始
+        // ===== 初始化方法 =====
+
+        /**
+         * 初始化洞序列表
+         * @param {Array} holeList - 原始洞序列表
+         */
+        initHoleList(holeList) {
+            const holePlayList = holeList.map((hole, index) => ({
+                hindex: hole.hindex,
+                holename: hole.holename,
+                originalIndex: index, // 记录原始位置
+                isInsertPreview: false // 是否为插入预览
+            }));
+
+            this.setData({
+                holePlayList,
+                originalHoleList: [...holePlayList], // 深拷贝保存原始数据
+                previewList: [...holePlayList] // 初始化预览列表
+            });
+        },
+
+        // ===== 拖拽核心方法 =====
+
+        /**
+         * 触摸开始事件
+         * @param {Object} e - 触摸事件对象
+         */
         onTouchStart(e) {
-            // 如果已经在拖拽中，先重置状态
-            if (this.data.isDragging) {
-                this.resetDragState();
+            const { index } = e.currentTarget.dataset;
+            const touch = e.touches[0];
+
+            // 记录触摸开始数据
+            this.setData({
+                'touchData.startX': touch.clientX,
+                'touchData.startY': touch.clientY,
+                'touchData.currentX': touch.clientX,
+                'touchData.currentY': touch.clientY,
+                'touchData.startIndex': Number.parseInt(index),
+                dragStartTime: Date.now()
+            });
+        },
+
+        /**
+         * 触摸移动事件
+         * @param {Object} e - 触摸事件对象
+         */
+        onTouchMove(e) {
+            const touch = e.touches[0];
+            const { startX, startY, startIndex } = this.data.touchData;
+
+            // 计算移动距离
+            const deltaX = touch.clientX - startX;
+            const deltaY = touch.clientY - startY;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            // 如果移动距离小于阈值，不启动拖拽
+            if (distance < 10) return;
+
+            // 启动拖拽
+            if (!this.data.isDragging) {
+                this.startDrag(startIndex, touch);
             }
 
-            const touch = e.touches[0];
-            const index = e.currentTarget.dataset.index;
+            // 更新拖拽位置
+            this.updateDragPosition(touch);
 
-            console.log('Touch start - index:', index, 'position:', touch.clientX, touch.clientY);
+            // 更新触摸数据
+            this.setData({
+                'touchData.currentX': touch.clientX,
+                'touchData.currentY': touch.clientY
+            });
+        },
+
+        /**
+         * 触摸结束事件
+         * @param {Object} e - 触摸事件对象
+         */
+        onTouchEnd(e) {
+            if (this.data.isDragging) {
+                this.endDrag();
+            }
+
+            // 重置触摸数据
+            this.setData({
+                'touchData.startX': 0,
+                'touchData.startY': 0,
+                'touchData.currentX': 0,
+                'touchData.currentY': 0,
+                'touchData.startIndex': -1
+            });
+        },
+
+        // ===== 拖拽辅助方法 =====
+
+        /**
+         * 开始拖拽
+         * @param {Number} index - 被拖拽球的索引
+         * @param {Object} touch - 触摸对象
+         */
+        startDrag(index, touch) {
+            const item = this.data.holePlayList[index];
+            const position = this.getItemPosition(index);
 
             this.setData({
                 isDragging: true,
-                dragStartIndex: index,
-                dragStartPosition: { x: touch.clientX, y: touch.clientY },
+                pickedItem: { ...item },
+                pickedItemPosition: position,
                 dragOffset: { x: 0, y: 0 },
-                pickedItemPosition: { x: touch.clientX, y: touch.clientY }, // 直接使用触摸位置
-                dragStartTime: Date.now()
+                showPreview: false
             });
-
-            // 开始拖拽时，重新排列其他球，填补空缺
-            this.rearrangeOnPickup(index);
         },
 
-        // 触摸移动
-        onTouchMove(e) {
-            if (!this.data.isDragging) return;
-
-            const touch = e.touches[0];
-            const offsetX = touch.clientX - this.data.dragStartPosition.x;
-            const offsetY = touch.clientY - this.data.dragStartPosition.y;
-
-            // 限制拖拽范围在球区内
-            const limitedOffset = this.limitDragRange(offsetX, offsetY);
+        /**
+         * 更新拖拽位置
+         * @param {Object} touch - 触摸对象
+         */
+        updateDragPosition(touch) {
+            const { startX, startY } = this.data.touchData;
+            const offsetX = touch.clientX - startX;
+            const offsetY = touch.clientY - startY;
 
             this.setData({
-                dragOffset: limitedOffset
+                'dragOffset.x': offsetX,
+                'dragOffset.y': offsetY
             });
 
-            // 节流更新插入预览，避免过多调用
-            const now = Date.now();
-            if (now - this.data.lastUpdateTime > 100) { // 100ms节流
-                this.updateInsertPreview(touch.clientX, touch.clientY);
-                this.setData({ lastUpdateTime: now });
+            // 计算目标位置
+            this.calculateTargetPosition(touch);
+        },
+
+        /**
+         * 结束拖拽
+         */
+        endDrag() {
+            if (this.data.targetIndex !== -1) {
+                this.performMove();
             }
 
-            // 超时保护：如果拖拽时间过长，自动重置
-            const dragDuration = now - this.data.dragStartTime;
-            if (dragDuration > 10000) { // 10秒超时
-                console.warn('Drag timeout, resetting state');
-                this.resetDragState();
-            }
-        },
-
-        // 触摸结束
-        onTouchEnd(e) {
-            if (!this.data.isDragging) return;
-
-            const touch = e.changedTouches[0];
-            console.log('Touch end at:', touch.clientX, touch.clientY);
-
-            this.getTargetIndex(touch.clientX, touch.clientY).then(targetIndex => {
-                console.log('Target index:', targetIndex);
-
-                if (targetIndex !== -1) {
-                    console.log('Inserting picked item at index:', targetIndex);
-                    this.insertOnDrop(targetIndex);
-                } else {
-                    // 如果没有找到目标位置，恢复到原始状态
-                    this.restoreOriginalOrder();
-                }
-
-                // 重置拖拽状态
-                this.resetDragState();
-            }).catch(error => {
-                console.error('Error in touch end:', error);
-                // 发生错误时也要重置状态
-                this.resetDragState();
-            });
-        },
-
-        // 获取目标位置索引 - 检测插入位置
-        getTargetIndex(clientX, clientY) {
-            return new Promise((resolve) => {
-                const query = this.createSelectorQuery();
-                query.selectAll('.hole-item').boundingClientRect((rects) => {
-                    if (!rects || rects.length === 0) {
-                        resolve(-1);
-                        return;
-                    }
-
-                    // 过滤掉预览球，只保留真实的球
-                    const realRects = [];
-                    const currentList = this.data.holePlayList;
-
-                    // 确保 rects 和 currentList 的索引对应
-                    for (let i = 0; i < rects.length && i < currentList.length; i++) {
-                        if (!currentList[i].isInsertPreview) {
-                            realRects.push(rects[i]);
-                        }
-                    }
-
-                    console.log('Real rects count:', realRects.length, 'Current list count:', currentList.length);
-                    console.log('Current list items:', currentList.map(item => ({ holename: item.holename, isPreview: item.isInsertPreview })));
-
-                    if (realRects.length === 0) {
-                        resolve(-1);
-                        return;
-                    }
-
-                    // 检测插入位置：球之间的间隙
-                    for (let i = 0; i <= realRects.length; i++) {
-                        let insertX;
-                        let insertY;
-
-                        if (i === 0) {
-                            // 第一个球之前 - 使用球的左边缘作为插入位置
-                            const firstRect = realRects[0];
-                            insertX = firstRect.left;
-                            insertY = firstRect.top + firstRect.height / 2;
-                        } else if (i === realRects.length) {
-                            // 最后一个球之后 - 使用球的右边缘作为插入位置
-                            const lastRect = realRects[realRects.length - 1];
-                            insertX = lastRect.right;
-                            insertY = lastRect.top + lastRect.height / 2;
-                        } else {
-                            // 两个球之间
-                            const prevRect = realRects[i - 1];
-                            const nextRect = realRects[i];
-                            insertX = (prevRect.right + nextRect.left) / 2;
-                            insertY = (prevRect.top + nextRect.bottom) / 2;
-                        }
-
-                        const distance = Math.sqrt(
-                            (clientX - insertX) ** 2 + (clientY - insertY) ** 2
-                        );
-
-                        if (distance < 80) { // 进一步增大检测范围，确保边界位置也能被检测到
-                            console.log(`Insert position ${i} detected at (${insertX}, ${insertY}), distance: ${distance}`);
-                            console.log(`Touch position: (${clientX}, ${clientY})`);
-                            resolve(i);
-                            return;
-                        }
-                    }
-
-                    resolve(-1);
-                }).exec();
-            });
-        },
-
-        // 更新插入位置预览
-        updateInsertPreview(clientX, clientY) {
-            this.getTargetIndex(clientX, clientY).then(targetIndex => {
-                // 先清除所有预览球
-                const cleanList = this.data.holePlayList.filter(item => !item.isInsertPreview);
-
-                if (targetIndex !== -1) {
-                    // 在目标位置插入预览球
-                    const previewItem = {
-                        holename: '',
-                        isInsertPreview: true,
-                        isDragging: false,
-                        isPicked: false,
-                        originalIndex: targetIndex
-                    };
-
-                    cleanList.splice(targetIndex, 0, previewItem);
-
-                    // 更新所有球的索引
-                    for (let i = 0; i < cleanList.length; i++) {
-                        cleanList[i].originalIndex = i;
-                    }
-
-                    this.setData({ holePlayList: cleanList });
-
-                    console.log('Preview inserted at index:', targetIndex, 'Total items:', cleanList.length);
-                } else {
-                    // 没有目标位置，只清除预览
-                    for (let i = 0; i < cleanList.length; i++) {
-                        cleanList[i].originalIndex = i;
-                    }
-                    this.setData({ holePlayList: cleanList });
-                }
-            });
-        },
-
-        // 限制拖拽范围在球区内
-        limitDragRange(offsetX, offsetY) {
-            // 获取球区的边界 - 增大范围以支持拖拽到边界位置
-            const maxOffsetX = 400; // 增大范围，支持拖拽到最左/最右
-            const maxOffsetY = 300; // 增大范围，支持拖拽到最上/最下
-
-            return {
-                x: Math.max(-maxOffsetX, Math.min(maxOffsetX, offsetX)),
-                y: Math.max(-maxOffsetY, Math.min(maxOffsetY, offsetY))
-            };
-        },
-
-        // 重置拖拽状态
-        resetDragState() {
-            console.log('Resetting drag state');
-
-            // 清除所有预览效果
-            this.clearAllPreviews();
-
-            // 重置拖拽状态
             this.setData({
                 isDragging: false,
-                dragStartIndex: -1,
-                dragStartPosition: { x: 0, y: 0 },
-                dragOffset: { x: 0, y: 0 },
                 pickedItem: null,
-                pickedItemPosition: { x: 0, y: 0 }
+                pickedItemPosition: { x: 0, y: 0 },
+                dragOffset: { x: 0, y: 0 },
+                targetIndex: -1,
+                leftItem: null,
+                rightItem: null,
+                showPreview: false
             });
         },
 
-        // 清除所有预览效果
-        clearAllPreviews() {
-            const holePlayList = this.data.holePlayList.filter(item => !item.isInsertPreview);
-            for (let i = 0; i < holePlayList.length; i++) {
-                holePlayList[i].originalIndex = i;
-            }
-            this.setData({ holePlayList });
+        // ===== 位置计算方法 =====
+
+        /**
+         * 获取指定索引球的位置
+         * @param {Number} index - 球索引
+         * @returns {Object} 位置对象 {x, y}
+         */
+        getItemPosition(index) {
+            const { columns, itemSize, gap } = this.data.gridConfig;
+            const row = Math.floor(index / columns);
+            const col = index % columns;
+
+            const x = col * (itemSize + gap) + itemSize / 2;
+            const y = row * (itemSize + gap) + itemSize / 2;
+
+            return { x, y };
         },
 
-        // 拿起球时重新排列其他球
-        rearrangeOnPickup(pickupIndex) {
-            const holePlayList = [...this.data.holePlayList];
-            const pickedItem = holePlayList[pickupIndex];
-
-            console.log('Picking up item at index:', pickupIndex, 'Total items before:', holePlayList.length);
-            console.log('Original list:', holePlayList.map(item => item.holename));
-
-            // 标记被拖拽的球
-            pickedItem.isDragging = true;
-            pickedItem.isPicked = true;
-
-            // 重新排列其他球，填补空缺
-            const rearrangedList = [];
-            for (let i = 0; i < holePlayList.length; i++) {
-                if (i !== pickupIndex) {
-                    const item = { ...holePlayList[i] };
-                    item.isDragging = false;
-                    item.isPicked = false;
-                    item.isInsertPreview = false;
-                    rearrangedList.push(item);
-                }
-            }
-
-            // 更新索引
-            rearrangedList.forEach((item, index) => {
-                item.originalIndex = index;
-            });
-
-            console.log('Rearranged list length:', rearrangedList.length);
-            console.log('Rearranged list:', rearrangedList.map(item => item.holename));
-
-            this.setData({
-                holePlayList: rearrangedList,
-                pickedItem: pickedItem
-            });
+        /**
+         * 根据触摸位置计算目标插入位置
+         * @param {Object} touch - 触摸对象
+         */
+        calculateTargetPosition(touch) {
+            // 这里需要根据触摸位置计算目标索引
+            // 暂时留空，后续实现
         },
 
-        // 放下球时插入到目标位置
-        insertOnDrop(targetIndex) {
-            const currentList = [...this.data.holePlayList];
-            const pickedItem = this.data.pickedItem;
+        // ===== 移动操作方法 =====
 
-            if (!pickedItem) {
-                console.warn('No picked item found, restoring original order');
-                this.restoreOriginalOrder();
-                return;
-            }
+        /**
+         * 执行移动操作
+         */
+        performMove() {
+            const { pickedItem, targetIndex, holePlayList } = this.data;
+            const originalIndex = pickedItem.originalIndex;
 
-            console.log('InsertOnDrop - targetIndex:', targetIndex, 'currentList length:', currentList.length);
-            console.log('Current list before cleanup:', currentList.map(item => item.holename || 'PREVIEW'));
-
-            // 移除预览球
-            const cleanList = currentList.filter(item => !item.isInsertPreview);
-
-            console.log('Clean list after filter:', cleanList.map(item => item.holename));
-
-            // 验证数据完整性
-            const originalCount = this.data.originalHoleList.length;
-            const expectedCount = originalCount; // 应该保持原始数量
-
-            if (cleanList.length !== expectedCount) {
-                console.warn(`Data integrity check failed: expected ${expectedCount}, got ${cleanList.length}`);
-                console.warn('Restoring original order to prevent data loss');
-                this.restoreOriginalOrder();
-                return;
-            }
-
-            // 确保目标索引在有效范围内
-            const validIndex = Math.max(0, Math.min(targetIndex, cleanList.length));
-
-            // 在目标位置插入被拖拽的球
-            cleanList.splice(validIndex, 0, {
-                ...pickedItem,
-                isDragging: false,
-                isPicked: false,
-                isInsertPreview: false
-            });
-
-            // 更新所有球的索引
-            for (let i = 0; i < cleanList.length; i++) {
-                cleanList[i].originalIndex = i;
-            }
-
-            // 最终验证
-            if (cleanList.length !== originalCount + 1) {
-                console.error(`Final count mismatch: expected ${originalCount + 1}, got ${cleanList.length}`);
-                this.restoreOriginalOrder();
-                return;
-            }
-
-            console.log('Final list after insert:', cleanList.map(item => item.holename));
-            console.log('Inserted item at index:', validIndex, 'Total items:', cleanList.length);
-
-            this.setData({
-                holePlayList: cleanList,
-                pickedItem: null
-            });
-        },
-
-        // 移动洞的位置（保留原方法用于兼容）
-        moveHole(fromIndex, toIndex) {
-            const holePlayList = [...this.data.holePlayList];
-            const movedItem = holePlayList[fromIndex];
+            // 创建新的列表
+            const newList = [...holePlayList];
 
             // 移除原位置的球
-            holePlayList.splice(fromIndex, 1);
+            newList.splice(originalIndex, 1);
 
-            // 在目标位置插入球
-            holePlayList.splice(toIndex, 0, movedItem);
+            // 插入到目标位置
+            newList.splice(targetIndex, 0, pickedItem);
 
-            // 更新索引
-            holePlayList.forEach((item, index) => {
+            // 更新原始索引
+            newList.forEach((item, index) => {
                 item.originalIndex = index;
             });
 
-            this.setData({ holePlayList });
-        },
-
-        // 恢复原始顺序（当拖拽失败时）
-        restoreOriginalOrder() {
-            // 直接恢复到原始状态，不进行任何插入操作
-            const resetList = this.data.originalHoleList.map((item, index) => ({
-                ...item,
-                isDragging: false,
-                isPicked: false,
-                isInsertPreview: false,
-                originalIndex: index
-            }));
-
             this.setData({
-                holePlayList: resetList,
-                pickedItem: null
+                holePlayList: newList,
+                previewList: [...newList]
             });
         },
 
-        // 重置到原始顺序
+        // ===== 业务方法 =====
+
+        /**
+         * 重置到原始状态
+         */
         onReset() {
-            // 按照 hindex 排序
-            const sortedList = [...this.data.originalHoleList].sort((a, b) => {
-                return (a.hindex || 0) - (b.hindex || 0);
-            });
-
-            const resetList = sortedList.map((item, index) => ({
-                ...item,
-                isDragging: false,
-                isInsertPreview: false,
-                originalIndex: index
-            }));
-
             this.setData({
-                holePlayList: resetList,
-                pickedItem: null
+                holePlayList: [...this.data.originalHoleList],
+                previewList: [...this.data.originalHoleList]
             });
         },
 
-        // 确定按钮点击
-        async onJumpComplete() {
-
-
-            console.log("gameid", gameStore.gameid);
-            const res = await app.api.gamble.changeStartHole({
-                gameid: gameStore.gameid,
-                holeList: this.data.holePlayList
-            })
-
-            console.log("res", res);
-            if (res.code === 200) {
-                wx.showToast({
-                    title: '跳洞设置成功',
-                    icon: 'success'
-                })
-                await gameStore.fetchGameDetail(gameStore.gameid, gameStore.groupid);
-                this.triggerEvent('close');
-            }
+        /**
+         * 完成跳洞设置
+         */
+        onJumpComplete() {
+            // 这里可以触发事件，将结果传递给父组件
+            this.triggerEvent('complete', {
+                holePlayList: this.data.holePlayList
+            });
+            this.close();
         },
 
-        // 关闭弹窗
+        // ===== 工具方法 =====
+
+        /**
+         * 关闭弹窗
+         */
         close() {
             this.triggerEvent('close');
         },
 
-        // 空方法，阻止冒泡
+        /**
+         * 空方法，阻止冒泡
+         */
         noop() { }
     }
 });
