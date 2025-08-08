@@ -1,6 +1,6 @@
 import { gameStore } from '../../../../../stores/gameStore';
-
 const app = getApp();
+
 Component({
     properties: {
         // 传入的 runtimeConfigs 列表

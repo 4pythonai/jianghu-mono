@@ -1,6 +1,9 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '../../../../../stores/gameStore';
-import { toJS } from 'mobx-miniprogram';
+// import { toJS } from 'mobx-miniprogram';
+
+const app = getApp();
+
 Component({
     properties: {
         // 传入的 runtimeConfigs 列表
@@ -406,12 +409,24 @@ Component({
         },
 
         // 确定按钮点击
-        onJumpComplete() {
-            const selectedIdList = this.data.holePlayList.map(item => item.hindex);
+        async onJumpComplete() {
 
-            console.log(' 💜💜💜💜 selectedIdList 💜💜💜', this.data.holePlayList);
 
-            this.triggerEvent('onConfirmJump', { selectedIdList });
+            console.log("gameid", gameStore.gameid);
+            const res = await app.api.gamble.changeStartHole({
+                gameid: gameStore.gameid,
+                holeList: this.data.holePlayList
+            })
+
+            console.log("res", res);
+            if (res.code === 200) {
+                wx.showToast({
+                    title: '跳洞设置成功',
+                    icon: 'success'
+                })
+                await gameStore.fetchGameDetail(gameStore.gameid, gameStore.groupid);
+                this.triggerEvent('close');
+            }
         },
 
         // 关闭弹窗
