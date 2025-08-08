@@ -128,32 +128,3 @@
 	color: #0066cc;
 	font-size: 26rpx;
 }
-
-.modal-actions {
-	display: flex;
-	gap: 20rpx;
-	justify-content: center;
-}
-
-.modal-btn {
-	flex: 1;
-	padding: 20rpx 40rpx;
-	border-radius: 8rpx;
-	font-size: 28rpx;
-	border: none;
-}
-
-.modal-btn.reset {
-	background: #f0f0f0;
-	color: #666;
-}
-
-.modal-btn.cancel {
-	background: #e0e0e0;
-	color: #333;
-}
-
-.modal-btn.confirm {
-	background: #27ae60;
-	color: #fff;
-}

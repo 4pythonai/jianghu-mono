@@ -32,9 +32,9 @@
     </view>
 
     <view class="modal-actions">
-      <button class="modal-btn reset" bindtap="onReset">重置</button>
+      <button class="modal-btn cancel" bindtap="onReset">重置</button>
       <button class="modal-btn cancel" bindtap="close">取消</button>
-      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
+      <button class="modal-btn confirm" bindtap="onJumpComplete">确定</button>
     </view>
   </view>
 </view>

@@ -29,6 +29,13 @@ Component({
 
             // 初始化洞序列表
             const holeList = gameStore.gameData.holeList || [];
+            console.log('=== 原始洞序数据 ===');
+            console.log('gameStore.gameData.holeList:', holeList);
+            holeList.forEach((item, index) => {
+                console.log(`原始第${index + 1}洞:`, item);
+            });
+            console.log('==================');
+
             const processedList = holeList.map((item, index) => ({
                 ...item,
                 isDragging: false,
@@ -399,17 +406,10 @@ Component({
         },
 
         // 确定按钮点击
-        onConfirm() {
+        onJumpComplete() {
             const selectedIdList = this.data.holePlayList.map(item => item.hindex);
-            console.log('Confirming with', selectedIdList.length, 'items:', selectedIdList);
 
-            // 验证数据一致性
-            if (selectedIdList.length !== this.data.originalHoleList.length) {
-                console.error('Data inconsistency detected! Expected:', this.data.originalHoleList.length, 'Got:', selectedIdList.length);
-                // 如果数据不一致，恢复到原始状态
-                this.restoreOriginalOrder();
-                return;
-            }
+            console.log(' 💜💜💜💜 selectedIdList 💜💜💜', this.data.holePlayList);
 
             this.triggerEvent('onConfirmJump', { selectedIdList });
         },
