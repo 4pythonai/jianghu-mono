@@ -1,5 +1,11 @@
 @import "/styles/modal.wxss";
 
+/* 防止拖拽时弹窗跳动 */
+.modal-content {
+	overflow-y: auto !important; /* 强制纵向滚动而不是扩展高度 */
+	max-height: 80vh !important; /* 限制最大高度 */
+}
+
 @keyframes slideUp {
 	from {
 		transform: translateY(100%);
@@ -25,15 +31,22 @@
 	padding-left: 16rpx;
 }
 
-.move-area {
+/* 拖拽隔离容器 */
+.drag-container {
+	position: relative;
+	overflow: hidden; /* 隔离拖拽影响 */
+	height: 220rpx; /* 固定容器高度 */
 	margin-bottom: 32rpx;
+}
+
+.move-area {
 	width: 100%;
-	height: 180rpx; /* 固定高度：两行 × 70rpx + 球高65rpx + 边距 */
+	height: 180rpx; /* 固定高度 */
 	background: #f8f9fa;
 	border-radius: 12rpx;
 	padding: 0;
 	box-sizing: border-box;
-	overflow: hidden; /* 防止拖拽时高度变化 */
+	overflow: hidden; /* 严格隐藏超出内容 */
 	position: relative;
 }
 
