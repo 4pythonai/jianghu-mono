@@ -165,6 +165,7 @@
   <starthole
     wx:if="{{isStartholeVisible}}"
     runtimeConfigs="{{runtimeConfigs}}"
+    isStartholeVisible="{{isStartholeVisible}}"
     bind:close="onStartholeClose"
   />
   <juanguo

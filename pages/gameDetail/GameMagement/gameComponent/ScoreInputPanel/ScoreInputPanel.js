@@ -40,7 +40,7 @@ Component({
             this.scoreStoreBindings = createStoreBindings(this, {
                 store: scoreStore,
                 fields: ['scores'],
-                actions: ['updateCellScore', 'batchUpdateScoresForHole', 'updateScore'],
+                actions: ['batchUpdateScoresForHole', 'updateScore'],
             });
         },
         detached() {

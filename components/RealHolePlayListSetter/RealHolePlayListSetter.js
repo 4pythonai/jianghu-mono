@@ -30,6 +30,11 @@ Component({
         selectType: {
             type: String,
             value: null
+        },
+        // 弹窗标题
+        title: {
+            type: String,
+            value: '设置洞序'
         }
     },
 

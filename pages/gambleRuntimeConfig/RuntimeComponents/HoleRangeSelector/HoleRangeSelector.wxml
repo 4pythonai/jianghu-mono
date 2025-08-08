@@ -27,6 +27,7 @@
 <RealHolePlayListSetter
   wx:if="{{ifShowModal}}"
   holeList="{{holeList}}"
+  title="调整洞序"
   startHoleindex="{{startHoleindex}}"
   roadLength="{{roadLength}}"
   selectType="{{selectType}}"

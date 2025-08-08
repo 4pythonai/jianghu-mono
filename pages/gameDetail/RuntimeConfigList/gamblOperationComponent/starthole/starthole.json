@@ -1,6 +1,6 @@
 {
+    "component": true,
     "usingComponents": {
-        "AvatarGroup": "../../../../../components/AvatarGroup/AvatarGroup",
-        "RuntimeConfigSelector": "/components/RuntimeConfigSelector/RuntimeConfigSelector"
+        "RealHolePlayListSetter": "/components/RealHolePlayListSetter/RealHolePlayListSetter"
     }
 }

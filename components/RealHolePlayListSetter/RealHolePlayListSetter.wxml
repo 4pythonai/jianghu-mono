@@ -3,7 +3,7 @@
 <view>
   <view class="modal-mask" bindtap="onHideModal"></view>
   <view class="modal-content">
-    <view class="modal-title">设置洞序</view>
+    <view class="modal-title">{{title}}</view>
     <view class="hole-list">
       <block wx:for="{{displayHoleList}}" wx:key="hindex">
         <view

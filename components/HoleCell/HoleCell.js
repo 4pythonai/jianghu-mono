@@ -86,7 +86,7 @@ Component({
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
                 fields: ['gameData', 'players'],
-                actions: ['updateCellScore'],
+                actions: [],
             });
 
             if (typeof this.properties.unique_key !== 'string') {

@@ -1,17 +1,10 @@
-<view class="modal-mask" bindtap="close">
-  <view class="modal-content" catchtap="noTap">
-    <view class="modal-title">调整出发洞</view>
-    <view class="section">
-      <RuntimeConfigSelector
-        runtimeConfigs="{{runtimeConfigs}}"
-        selectedIdList="{{selectedIdList}}"
-        title="请选择调整出发洞的游戏"
-        bind:checkboxChange="onCheckboxChange"
-      />
-    </view>
-    <view class="modal-actions">
-      <button class="modal-btn cancel" bindtap="close">取消</button>
-      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
-    </view>
-  </view>
-</view>
+<RealHolePlayListSetter
+  wx:if="{{isStartholeVisible}}"
+  holeList="{{holeList}}"
+  title="调整出发洞"
+  startHoleindex="1"
+  roadLength="{{9}}"
+  selectType="start"
+  bind:cancel="onModalCancel"
+  bind:confirm="onModalConfirm"
+/>
