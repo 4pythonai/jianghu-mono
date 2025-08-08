@@ -102,7 +102,7 @@ Component({
                     const fixedRowHeight = 70;
 
                     // 使用之前能正常工作的计算方式
-                    const availableWidth = areaWidth - 20; // 留20rpx边距
+                    const availableWidth = areaWidth - 0; // 留20rpx边距
                     const spacingX = (availableWidth - ballSize * ballsPerRow) / (ballsPerRow - 1); // 球之间的间距
 
                     console.log('🎯 布局参数:', {
