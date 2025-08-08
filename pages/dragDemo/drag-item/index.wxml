@@ -1,5 +1,7 @@
 <view catchtap="itemClick">
-  <view class="hole-item">
-    <view class="hole-name">{{itemData.holename}}</view>
+  <view class="hole-container">
+    <view class="hole-circle">
+      <view class="hole-name">{{itemData.holename}}</view>
+    </view>
   </view>
 </view>
