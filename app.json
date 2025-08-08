@@ -1,5 +1,6 @@
 {
 	"pages": [
+		"pages/dragDemo/index",
 		"pages/live/live",
 		"pages/events/events",
 		"pages/community/community",
@@ -50,7 +51,7 @@
 				"selectedIconPath": "images/tabbar/live_selected.png"
 			},
 			{
-				"pagePath": "pages/events/events",
+				"pagePath": "pages/dragDemo/index",
 				"text": "赛事",
 				"iconPath": "images/tabbar/cup.png",
 				"selectedIconPath": "images/tabbar/cup_selected.png"

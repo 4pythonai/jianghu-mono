@@ -157,6 +157,8 @@
     bind:close="onKickoffClose"
     bind:confirm="onKickoffConfirm"
   />
+
+  <dragSort />
   <holejump
     wx:if="{{isHolejumpVisible}}"
     runtimeConfigs="{{runtimeConfigs}}"

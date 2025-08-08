@@ -3,6 +3,7 @@
 	"usingComponents": {
 		"kickoff": "./gamblOperationComponent/kickoff/kickoff",
 		"holejump": "./gamblOperationComponent/holejump/holejump",
+		"dragSort": "./gamblOperationComponent/dragSort/index",
 		"juanguo": "./gamblOperationComponent/juanguo/juanguo",
 		"starthole": "./gamblOperationComponent/starthole/starthole"
 	}

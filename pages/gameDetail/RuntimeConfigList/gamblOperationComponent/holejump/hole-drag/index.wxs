@@ -1,0 +1,177 @@
+var isOutRange = function (x1, y1, x2, y2, x3, y3) {
+    return x1 < 0 || x1 >= y1 || x2 < 0 || x2 >= y2 || x3 < 0 || x3 >= y3
+};
+
+var sortCore = function (sKey, eKey, st) {
+    var _ = st.baseData;
+
+    var excludeFix = function (cKey, type) {
+        if (st.list[cKey] && st.list[cKey].fixed) {
+            type ? --cKey : ++cKey;
+            return excludeFix(cKey, type);
+        }
+        return cKey;
+    }
+
+    // 先获取到 endKey 对应的 realKey, 防止下面排序过程中该 realKey 被修改
+    var endRealKey = -1;
+    st.list.forEach(function (item) {
+        if (item.sortKey === eKey) endRealKey = item.realKey;
+    });
+
+    return st.list.map(function (item) {
+        if (item.fixed) return item;
+        var cKey = item.sortKey;
+        var rKey = item.realKey;
+
+        if (sKey < eKey) {
+            // 正序拖动
+            if (cKey > sKey && cKey <= eKey) {
+                --rKey;
+                cKey = excludeFix(--cKey, true);
+            } else if (cKey === sKey) {
+                rKey = endRealKey;
+                cKey = eKey;
+            }
+        } else if (sKey > eKey) {
+            // 倒序拖动
+            if (cKey >= eKey && cKey < sKey) {
+                ++rKey
+                cKey = excludeFix(++cKey, false);
+            } else if (cKey === sKey) {
+                rKey = endRealKey;
+                cKey = eKey;
+            }
+        }
+
+        if (item.sortKey !== cKey) {
+            item.tranX = (cKey % _.columns) * (100 / _.columns) + "%";
+            item.tranY = Math.floor(cKey / _.columns) * 100 + "%";
+            item.sortKey = cKey;
+            item.realKey = rKey;
+        }
+
+        return item;
+    });
+}
+
+var longPress = function (event, ownerInstance) {
+    var index = event.currentTarget.dataset.index;
+    var st = ownerInstance.getState();
+
+    // 如果是固定项，不允许拖拽
+    if (st.list[index].fixed) return;
+
+    var mTouch = event.changedTouches[0];
+    if (!mTouch) return;
+
+    // 初始化拖拽状态
+    st.dragging = true;
+    st.cur = index;
+    st.sId = mTouch.identifier;
+
+    // 标记当前拖拽项
+    st.list[index].dragging = true;
+
+    // 触发震动反馈
+    ownerInstance.callMethod("vibrate");
+
+    // 通知组件拖拽开始
+    ownerInstance.callMethod("onDragStart", { index: index });
+
+    console.log('🎯 开始拖拽hole:', index, st.list[index].data.holename);
+};
+
+var touchMove = function (event, ownerInstance) {
+    var ins = event.instance;
+    var st = ownerInstance.getState();
+    var _ = st.baseData;
+
+    var mTouch = event.changedTouches[0];
+    if (!mTouch) return;
+
+    if (!st.dragging) return;
+
+    // 如果不是同一个触发点则返回
+    if (st.sId !== mTouch.identifier) return;
+
+    // 计算位移
+    var tranX = mTouch.pageX - (_.itemWidth / 2 + _.wrapLeft);
+    var tranY = mTouch.pageY - (_.itemHeight / 2 + _.wrapTop);
+
+    // 设置当前激活元素偏移量
+    ins.setStyle({
+        'transform': 'translate3d(' + tranX + 'px, ' + tranY + 'px, 0)'
+    })
+
+    var startKey = st.list[st.cur].sortKey;
+    var curX = Math.round(tranX / _.itemWidth);
+    var curY = Math.round(tranY / _.itemHeight);
+    var endKey = curX + _.columns * curY;
+
+    // 限制在有效范围内
+    if (endKey < 0) endKey = 0;
+    if (endKey >= st.list.length) endKey = st.list.length - 1;
+
+    // 目标项是固定项则返回
+    var item = st.list[endKey];
+    if (item && item.fixed) return;
+
+    // 超出范围检测
+    if (isOutRange(curX, _.columns, curY, _.rows, endKey, st.list.length)) return;
+
+    if (startKey === endKey) return;
+
+    // 执行排序
+    st.list = sortCore(startKey, endKey, st);
+
+    console.log('📍 拖拽预览: 从位置', startKey, '到位置', endKey);
+};
+
+var touchEnd = function (event, ownerInstance) {
+    var st = ownerInstance.getState();
+
+    if (!st.dragging) return;
+
+    var index = st.cur;
+
+    // 重置拖拽状态
+    st.dragging = false;
+    st.list[index].dragging = false;
+    st.cur = -1;
+    st.sId = "";
+
+    // 通知组件拖拽结束
+    ownerInstance.callMethod("onDragEnd", {
+        index: index,
+        newOrder: st.list
+    });
+
+    console.log('🏁 拖拽结束');
+};
+
+var listObserver = function (newList, oldList, ownerInstance) {
+    if (newList.length === 0) return;
+
+    var st = ownerInstance.getState();
+    if (!st) return;
+
+    st.list = newList;
+};
+
+var baseDataObserver = function (newData, oldData, ownerInstance) {
+    if (!newData) return;
+
+    var st = ownerInstance.getState();
+    if (!st) return;
+
+    st.baseData = newData;
+};
+
+module.exports = {
+    longPress: longPress,
+    touchMove: touchMove,
+    touchEnd: touchEnd,
+    listObserver: listObserver,
+    baseDataObserver: baseDataObserver
+};
