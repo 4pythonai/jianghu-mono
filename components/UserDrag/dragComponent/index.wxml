@@ -1,25 +1,23 @@
 <wxs module="handler" src="./index.wxs"></wxs>
 
-<view class="item-wrap item-wrap-class">
-  <!-- 调试信息 -->
-  <text
-    style="color: red; font-size: 12px;"
-  >Debug: list长度={{list.length}}, userList长度={{userList.length}}</text>
-
+<view
+  class="item-wrap item-wrap-class"
+  list="{{list}}"
+  style="{{wrapStyle}}"
+  baseData="{{baseData}}"
+  change:list="{{handler.listObserver}}"
+  change:baseData="{{handler.baseDataObserver}}"
+>
   <view
     class="item"
     wx:for="{{list}}"
     wx:key="id"
     data-index="{{index}}"
     style="width: {{100/columns}}%; transform: translate3d({{item.tranX}}, {{item.tranY}}, 0)"
-    bind:longpress="onLongPress"
-    catch:touchmove="onTouchMove"
-    catch:touchend="onTouchEnd"
+    bind:longpress="{{handler.longPress}}"
+    catch:touchmove="{{dragging ? handler.touchMove : ''}}"
+    catch:touchend="{{dragging ? handler.touchEnd : ''}}"
   >
-    <!-- 调试信息 -->
-    <text
-      style="color: blue; font-size: 10px;"
-    >Item {{index}}: {{item.data.nickname || item.data.wx_nickname}}</text>
-    <userItem index="{{index}}" item-data="{{item.data}}" bind:click="itemClick" />
+    <item index="{{index}}" item-data="{{item.data}}" bind:click="itemClick" />
   </view>
 </view>

@@ -14,25 +14,33 @@ Component({
 
     lifetimes: {
         attached() {
-            console.log('🔧 userItem attached');
-            console.log('  - index:', this.properties.index);
-            console.log('  - itemData:', this.properties.itemData);
+            // 组件初始化
         }
     },
 
     observers: {
-        'itemData': function (itemData) {
-            console.log('👤 userItem observers 触发');
-            console.log('  - itemData:', itemData);
+        'itemData': (itemData) => {
+            // 数据变化监听
         }
     },
     methods: {
         // 点击事件
         itemClick(e) {
             this.triggerEvent('click', {
-                itemData: this.data.itemData,
-                index: this.data.index
+                itemData: this.properties.itemData,
+                index: this.properties.index
             });
+        },
+
+        // 图片加载成功
+        onImageLoad(e) {
+            console.log('✅ 头像加载成功:', e.detail);
+        },
+
+        // 图片加载失败
+        onImageError(e) {
+            console.log('❌ 头像加载失败:', e.detail);
+            console.log('❌ 头像路径:', this.properties.itemData?.avatar);
         }
     }
 });

@@ -1,18 +1,19 @@
-<view catchtap="itemClick">
-  <view class="user-item-container">
-    <view class="user-info">
-      <view class="drag-handle">
-        <text class="drag-icon">⋮⋮</text>
-      </view>
-      <text class="group-dot">{{index < 2 ? '🔵' : '🔴'}}</text>
-      <text class="order-number">#{{index + 1}}</text>
-      <image
-        class="player-avatar"
-        src="{{itemData.avatar || '/images/default-avatar.png'}}"
-        lazy-load="true"
-        mode="aspectFill"
-      />
-      <text class="player-name">{{itemData.nickname || itemData.wx_nickname || '未知玩家'}}</text>
+<view catchtap="itemClick" class="user-item">
+  <view class="user-info">
+    <view class="drag-handle">
+      <text class="drag-icon">⋮⋮</text>
     </view>
+    <text class="group-dot">{{index < 2 ? '🔵' : '🔴'}}</text>
+    <text class="order-number">#{{index + 1}}</text>
+    <image
+      class="player-avatar"
+      src="{{itemData.avatar || '/images/default-avatar.png'}}"
+      lazy-load="true"
+      mode="aspectFill"
+      binderror="onImageError"
+      bindload="onImageLoad"
+    />
+
+    <text class="player-name">{{itemData.nickname || itemData.wx_nickname || '未知玩家'}}</text>
   </view>
 </view>

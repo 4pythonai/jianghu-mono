@@ -1,27 +1,18 @@
 <!--  UserDrag 组件 外层需要适当加一定距离的margin, 防止某些情况精度计算误差导致drag宽度大于屏幕宽度, 从而出现横向滚动条 -->
 <view style="margin: 4rpx;">
-  <!-- 直接显示用户列表，不使用复杂的拖拽组件 -->
-  <view class="user-list" wx:if="{{userList && userList.length > 0}}">
-    <view class="user-item" wx:for="{{userList}}" wx:key="userid" data-index="{{index}}">
-      <view class="user-info">
-        <view class="drag-handle">
-          <text class="drag-icon">⋮⋮</text>
-        </view>
-        <text class="group-dot">{{index < 2 ? '🔵' : '🔴'}}</text>
-        <text class="order-number">#{{index + 1}}</text>
-        <image
-          class="player-avatar"
-          src="{{item.avatar || '/images/default-avatar.png'}}"
-          lazy-load="true"
-          mode="aspectFill"
-        />
-        <text class="player-name">{{item.nickname || item.wx_nickname || '未知玩家'}}</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 如果没有用户数据，显示提示 -->
-  <view class="empty-tip" wx:else>
-    <text>暂无用户数据</text>
-  </view>
+  <DragComponent
+    id="userDrag"
+    generic:item="userItem"
+    bind:sortend="sortEnd"
+    bind:scroll="scroll"
+    item-wrap-class="userItem-wrap"
+    extra-nodes="{{extraNodes}}"
+    userList="{{currentUserList}}"
+    columns="1"
+    scroll-top="{{scrollTop}}"
+    item-height="84"
+    top-size="{{isModal ? 0 : 110}}"
+    bottom-size="{{isModal ? 0 : 400}}"
+    red-blue-config="{{redBlueConfig}}"
+  ></DragComponent>
 </view>
