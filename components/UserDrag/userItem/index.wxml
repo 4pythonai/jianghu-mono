@@ -1,0 +1,18 @@
+<view catchtap="itemClick">
+  <view class="user-item-container">
+    <view class="user-info">
+      <view class="drag-handle">
+        <text class="drag-icon">⋮⋮</text>
+      </view>
+      <text class="order-number">{{currentPosition + 1}}</text>
+      <text class="group-dot">{{currentPosition < 2 ? '🔵' : '🔴'}}</text>
+      <image
+        class="player-avatar"
+        src="{{itemData.avatar || '/images/default-avatar.png'}}"
+        lazy-load="true"
+        mode="aspectFill"
+      />
+      <text class="player-name">{{itemData.nickname || itemData.wx_nickname || '未知玩家'}}</text>
+    </view>
+  </view>
+</view>

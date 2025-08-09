@@ -1,0 +1,108 @@
+/* 用户项目样式 */
+.user-item-container {
+	width: 100%;
+	height: 85rpx;
+	position: relative;
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	padding: 10rpx 20rpx;
+	gap: 20rpx;
+	background-color: #fff;
+	height: 100%;
+	box-sizing: border-box;
+	border-bottom: 1rpx solid #f0f0f0;
+	transition: background-color 0.3s ease;
+}
+
+.user-info:hover {
+	background-color: #f8f9fa;
+}
+
+/* 拖拽手柄 */
+.drag-handle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40rpx;
+	height: 40rpx;
+	cursor: grab;
+	flex-shrink: 0;
+}
+
+.drag-icon {
+	font-size: 24rpx;
+	color: #999;
+	line-height: 1;
+	letter-spacing: -2rpx;
+	transform: rotate(90deg);
+}
+
+/* 分组标识 */
+.group-dot {
+	font-size: 20rpx;
+	flex-shrink: 0;
+}
+
+/* 序号 */
+.order-number {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #4caf50;
+	min-width: 60rpx;
+	flex-shrink: 0;
+}
+
+/* 头像 */
+.player-avatar {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	background-color: #f0f0f0;
+	border: 2rpx solid #e0e0e0;
+	flex-shrink: 0;
+}
+
+/* 用户名 */
+.player-name {
+	font-size: 30rpx;
+	color: #333;
+	font-weight: 500;
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* 响应式设计 */
+@media (max-width: 600rpx) {
+	.user-info {
+		padding: 8rpx 15rpx;
+		gap: 15rpx;
+	}
+
+	.order-number {
+		font-size: 28rpx;
+		min-width: 50rpx;
+	}
+
+	.player-avatar {
+		width: 50rpx;
+		height: 50rpx;
+	}
+
+	.player-name {
+		font-size: 26rpx;
+	}
+
+	.drag-handle {
+		width: 35rpx;
+		height: 35rpx;
+	}
+
+	.drag-icon {
+		font-size: 20rpx;
+	}
+}

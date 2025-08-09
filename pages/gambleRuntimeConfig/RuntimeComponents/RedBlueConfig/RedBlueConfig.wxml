@@ -3,20 +3,20 @@
     <view class="section-label">请选择分组方式</view>
     <radio-group class="my-radio-group" bindchange="onGroupingMethodChange">
       <label class="radio-item">
-        <radio class="my-radio" value="4_固拉" checked="{{red_blue_config === '4_固拉'}}"/>
+        <radio class="my-radio" value="4_固拉" checked="{{red_blue_config === '4_固拉'}}" />
         <text class="radio-label">固拉</text>
       </label>
       <label class="radio-item">
-        <radio class="my-radio" value="4_乱拉" checked="{{red_blue_config === '4_乱拉'}}"/>
+        <radio class="my-radio" value="4_乱拉" checked="{{red_blue_config === '4_乱拉'}}" />
         <text class="radio-label">乱拉</text>
       </label>
       <label class="radio-item">
-        <radio class="my-radio" value="4_高手不见面" checked="{{red_blue_config === '4_高手不见面'}}"/>
+        <radio class="my-radio" value="4_高手不见面" checked="{{red_blue_config === '4_高手不见面'}}" />
         <text class="radio-label">高手不见面</text>
       </label>
     </radio-group>
   </view>
-  
+
   <!-- 出发顺序 -->
   <view class="departure-order">
     <view class="section-label">出发顺序</view>
@@ -24,32 +24,14 @@
       <button class="order-btn" bindtap="randomOrder">抽签排序</button>
       <button class="order-btn" bindtap="handicapOrder">差点排序</button>
     </view>
-    
+
     <!-- 玩家列表 -->
     <view class="players-order-list">
-      <view 
-        class="player-order-item {{dragState.dragIndex === index ? 'dragging' : ''}}"
-        wx:for="{{bootstrap_order}}" 
-        wx:key="userid"
-        data-index="{{index}}"
-        bindtouchstart="onTouchStart"
-        bindtouchmove="onTouchMove"
-        bindtouchend="onTouchEnd"
-        style="{{dragState.dragIndex === index ? 'transform: translateY(' + dragState.offsetY + 'rpx); z-index: 999;' : (dragState.targetIndex === index ? 'transform: translateY(' + (dragState.direction > 0 ? '-100' : '100') + 'rpx);' : '')}}"
-      >
-        <view class="drag-handle">
-          <text class="drag-icon">⋮⋮</text>
-        </view>
-        <text class="group-dot">{{red_blue_config === '4_固拉' ? (index < 2 ? '🔵' : '🔴') : (index === 0 || index === 3 ? '🔵' : '🔴')}}</text>
-        <text class="order-number">#{{index + 1}}</text>
-        <image 
-          class="player-avatar" 
-          src="{{item.avatar || '/images/default-avatar.png'}}"
-          lazy-load="true"
-          mode="aspectFill"
-        />
-        <text class="player-name">{{item.nickname || item.wx_nickname || '未知玩家'}}</text>
-      </view>
+      <UserDrag
+        user-list="{{bootstrap_order}}"
+        red-blue-config="{{red_blue_config}}"
+        bind:sortend="onUserSortEnd"
+      />
     </view>
   </view>
-</view> 
+</view>

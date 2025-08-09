@@ -23,19 +23,7 @@ Component({
     data: {
         // 分组方式:固拉、4_乱拉、4_高手不见面
         red_blue_config: '4_固拉',
-
-
         bootstrap_order: [],
-
-        // 拖拽状态
-        dragState: {
-            dragIndex: -1,      // 当前拖拽的元素索引
-            targetIndex: -1,    // 目标位置索引
-            startY: 0,          // 开始触摸的Y坐标
-            offsetY: 0,         // Y轴偏移量
-            direction: 0        // 拖拽方向: 1向下, -1向上
-        },
-
         // 初始化标志位，避免重复触发事件
         hasInitialized: false
     },
@@ -189,90 +177,27 @@ Component({
             });
         },
 
-        // 拖拽开始
-        onTouchStart(e) {
-            const index = Number.parseInt(e.currentTarget.dataset.index);
-            const startY = e.touches[0].clientY;
+        // UserDrag 拖拽排序完成事件
+        onUserSortEnd(e) {
+            const newUserList = e.detail.listData;
 
             this.setData({
-                'dragState.dragIndex': index,
-                'dragState.startY': startY,
-                'dragState.offsetY': 0,
-                'dragState.targetIndex': -1
+                bootstrap_order: newUserList
             });
 
-        },
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', 'UserDrag拖拽完成, 新顺序', newUserList);
 
-        // 拖拽移动
-        onTouchMove(e) {
-            const { dragState } = this.data;
-            if (dragState.dragIndex === -1) return;
-
-            const currentY = e.touches[0].clientY;
-            const offsetY = (currentY - dragState.startY) * 2; // 放大移动距离的转换比例
-
-            // 计算目标索引
-            const itemHeight = 100; // 每个列表项的大概高度(rpx)
-            const moveDistance = Math.abs(offsetY);
-            const steps = Math.floor(moveDistance / itemHeight);
-            const direction = offsetY > 0 ? 1 : -1;
-
-            let targetIndex = -1;
-            if (steps > 0) {
-                targetIndex = dragState.dragIndex + (direction * steps);
-                targetIndex = Math.max(0, Math.min(this.data.bootstrap_order.length - 1, targetIndex));
-
-                // 如果目标索引和当前索引相同, 不显示目标位置
-                if (targetIndex === dragState.dragIndex) {
-                    targetIndex = -1;
-                }
-            }
-
-            this.setData({
-                'dragState.offsetY': offsetY,
-                'dragState.targetIndex': targetIndex,
-                'dragState.direction': direction
+            // 触发变更事件, 传递用户ID数组
+            this.triggerEvent('change', {
+                red_blue_config: this.data.red_blue_config,
+                bootstrap_order: this.convertToUserIds(newUserList)
             });
-        },
 
-        // 拖拽结束
-        onTouchEnd(e) {
-            const { dragState, bootstrap_order } = this.data;
-            if (dragState.dragIndex === -1) return;
-
-            const dragIndex = dragState.dragIndex;
-            const targetIndex = dragState.targetIndex;
-
-            // 如果有有效的目标位置, 执行位置交换
-            if (targetIndex !== -1 && targetIndex !== dragIndex) {
-                const newPlayersOrder = RuntimeComponentsUtils.array.moveElement(bootstrap_order, dragIndex, targetIndex);
-
-                this.setData({
-                    bootstrap_order: newPlayersOrder
-                });
-
-                RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '拖拽完成, 新顺序', newPlayersOrder);
-
-                // 触发变更事件, 传递用户ID数组
-                this.triggerEvent('change', {
-                    red_blue_config: this.data.red_blue_config,
-                    bootstrap_order: this.convertToUserIds(newPlayersOrder)
-                });
-
-                // 显示提示
-                wx.showToast({
-                    title: '顺序调整完成',
-                    icon: 'success',
-                    duration: 1000
-                });
-            }
-
-            // 重置拖拽状态
-            this.setData({
-                'dragState.dragIndex': -1,
-                'dragState.targetIndex': -1,
-                'dragState.offsetY': 0,
-                'dragState.direction': 0
+            // 显示提示
+            wx.showToast({
+                title: '顺序调整完成',
+                icon: 'success',
+                duration: 1000
             });
         },
 
