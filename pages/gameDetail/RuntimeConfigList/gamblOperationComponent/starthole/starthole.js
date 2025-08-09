@@ -57,10 +57,8 @@ Component({
             this.triggerEvent('close');
         },
 
-        // 空方法，阻止冒泡
         noTap() { },
 
-        // RealHolePlayListSetter 取消事件
         onModalCancel() {
             this.triggerEvent('close');
         },
@@ -80,14 +78,8 @@ Component({
                     icon: 'success'
                 })
                 await gameStore.fetchGameDetail(gameStore.gameid, gameStore.groupid);
-
-                // gameStore.gameData.holeList = e.detail.holePlayList;
-
                 this.triggerEvent('close');
             }
-            // 这里可以处理确认逻辑
-            // this.triggerEvent('close');
-
         }
     }
 });

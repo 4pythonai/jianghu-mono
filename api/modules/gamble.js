@@ -43,6 +43,8 @@ const gamble = {
 
     changeStartHole: (data, options) => request('/Gamble/changeStartHole', data, options),
 
+    // 跳洞设置
+    changeHoleOrder: (data, options) => request('/Gamble/changeHoleOrder', data, options),
 
 }
 

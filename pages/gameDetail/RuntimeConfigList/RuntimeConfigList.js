@@ -463,14 +463,14 @@ Page({
             return;
         }
 
-        // 这里可以处理新的洞序数据
-        // 例如：保存到服务器、更新本地状态等
+        // 处理跳洞设置数据
         console.log('处理跳洞设置数据，洞数量:', holePlayList.length);
 
-        wx.showToast({
-            title: '跳洞设置已保存',
-            icon: 'success'
-        });
+        // 延迟静默刷新数据，避免页面闪烁
+        console.log('[RuntimeConfigList] 跳洞设置保存成功，延迟静默刷新数据...');
+        setTimeout(() => {
+            this.silentRefreshRuntimeConfig();
+        }, 300); // 延迟300ms，等弹窗完全关闭后再静默刷新
 
         this.setData({ isHolejumpVisible: false });
     },

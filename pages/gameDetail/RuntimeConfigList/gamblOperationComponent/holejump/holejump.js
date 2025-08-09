@@ -35,16 +35,17 @@ Component({
             console.log('holejump: 从gameStore获取的洞数据:', holeList);
 
             if (holeList && holeList.length > 0) {
-                // 使用真实的洞数据
+
+                // 使用排序后的真实洞数据
                 this.setData({
                     initialHoleList: holeList,
                     holePlayList: holeList
                 });
 
-                console.log('holejump: 初始化洞序数据成功:', holeList);
+                console.log('holejump: 初始化洞序数据成功（已排序）:', holeList);
             } else {
                 console.warn('holejump: gameStore中没有洞数据，使用默认数据');
-                // 如果没有洞数据，生成默认的18洞数据
+                // 如果没有洞数据，生成默认的18洞数据（已按hindex排序）
                 const defaultHoleList = Array.from({ length: 18 }, (_, i) => ({
                     holeid: String(i + 1),
                     unique_key: String(i + 1),
@@ -58,7 +59,7 @@ Component({
                     holePlayList: defaultHoleList
                 });
 
-                console.log('holejump: 使用默认洞序数据:', defaultHoleList);
+                console.log('holejump: 使用默认洞序数据（已排序）:', defaultHoleList);
             }
         },
 
@@ -88,26 +89,67 @@ Component({
         // 重置按钮事件
         onReset() {
             console.log("重置拖拽排序");
-            // 重置到初始状态
-            this.setData({
-                holePlayList: this.data.initialHoleList
+
+            // 按照 hindex 大小重排洞序数据
+            const sortedHoleList = [...this.data.initialHoleList].sort((a, b) => {
+                return a.hindex - b.hindex;
             });
+
+            this.setData({
+                holePlayList: sortedHoleList
+            });
+
             // 通知HolesDrag组件重置数据
             const holesDrag = this.selectComponent('#holesDrag');
             if (holesDrag) {
-                holesDrag.updateHoleList(this.data.initialHoleList);
+                holesDrag.updateHoleList(sortedHoleList);
             }
             this.triggerEvent('reset');
         },
 
-        // 确定按钮事件
-        onJumpComplete() {
-            console.log("跳洞设置完成");
-            console.log("当前的洞序数据:", this.data.holePlayList);
-            // 传递当前的洞序数据给父组件
-            this.triggerEvent('complete', {
-                holePlayList: this.data.holePlayList
-            });
+        // 确定按钮事件 - 参考 starthole.js 的实现
+        async onJumpComplete() {
+
+            try {
+                // 调用API保存跳洞设置
+                console.log("gameid", gameStore.gameid);
+                const res = await app.api.gamble.changeStartHole({
+                    gameid: gameStore.gameid,
+                    holeList: this.data.holePlayList
+                });
+
+                console.log("跳洞设置API响应:", res);
+
+                if (res.code === 200) {
+                    wx.showToast({
+                        title: '跳洞设置成功',
+                        icon: 'success'
+                    });
+
+                    // 刷新游戏数据
+                    await gameStore.fetchGameDetail(gameStore.gameid, gameStore.groupid);
+
+                    // 传递当前的洞序数据给父组件
+                    this.triggerEvent('complete', {
+                        holePlayList: this.data.holePlayList
+                    });
+
+                    // 关闭弹窗
+                    this.triggerEvent('close');
+                } else {
+                    // API调用失败
+                    wx.showToast({
+                        title: res.msg || '跳洞设置失败',
+                        icon: 'none'
+                    });
+                }
+            } catch (error) {
+                console.error('跳洞设置失败:', error);
+                wx.showToast({
+                    title: '跳洞设置失败',
+                    icon: 'none'
+                });
+            }
         },
 
         // 测试拖拽功能
