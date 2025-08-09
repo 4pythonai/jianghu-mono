@@ -3,13 +3,12 @@
     <view class="drag-handle">
       <text class="drag-icon">⋮⋮</text>
     </view>
-    <view>{{index}}</view>
     <image
       class="player-avatar"
       src="{{itemData.avatar || '/images/default-avatar.png'}}"
       lazy-load="true"
       mode="aspectFill"
     />
-    <text class="player-name">{{index}}{{itemData.nickname || itemData.wx_nickname || '未知玩家'}}</text>
+    <text class="player-name">{{abcd}}{{itemData.nickname || itemData.wx_nickname || '未知玩家'}}</text>
   </view>
 </view>

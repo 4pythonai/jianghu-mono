@@ -45,13 +45,16 @@ Component({
         onSortEnd(e) {
             console.log("弹框收到排序结果:", e.detail.listData);
             // 保存排序结果到本地数据
+
             this.setData({
-                holePlayList: e.detail.listData
+                holePlayList: e.detail.listData,
             });
-            // 这里可以处理排序结果，比如保存到本地或传递给父组件
-            this.triggerEvent('holesortend', {
-                listData: e.detail.listData
-            });
+
+            // // 这里可以处理排序结果，比如保存到本地或传递给父组件
+            // this.triggerEvent('holesortend', {
+            //     listData: e.detail.listData
+            // });
+
         },
 
         // 滚动事件处理

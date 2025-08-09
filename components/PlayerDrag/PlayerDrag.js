@@ -29,10 +29,12 @@ Component({
             this.setData({
                 listData: e.detail.listData
             });
-            // 向父组件传递排序结果
-            this.triggerEvent('sortend', {
-                listData: e.detail.listData
-            });
+            // 向父组件传递排序结果，延迟30ms执行
+            setTimeout(() => {
+                this.triggerEvent('sortend', {
+                    listData: e.detail.listData
+                });
+            }, 30);
         },
 
         // 滚动事件

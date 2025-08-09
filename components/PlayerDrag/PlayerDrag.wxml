@@ -2,7 +2,7 @@
 <view style="margin: 4rpx;">
   <DragComponent
     id="PlayersDragDrop"
-    generic:item="PlayerItem"
+    generic:UPlayerItem="PlayerItem"
     bind:sortend="sortEnd"
     bind:scroll="scroll"
     item-wrap-class="holeItem-wrap"
