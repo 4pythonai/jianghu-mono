@@ -44,19 +44,11 @@ Component({
 
                 console.log('holejump: 初始化洞序数据成功（已排序）:', holeList);
             } else {
-                console.warn('holejump: gameStore中没有洞数据，使用默认数据');
-                // 如果没有洞数据，生成默认的18洞数据（已按hindex排序）
-                const defaultHoleList = Array.from({ length: 18 }, (_, i) => ({
-                    holeid: String(i + 1),
-                    unique_key: String(i + 1),
-                    par: 4,
-                    hindex: i + 1,
-                    holename: `${i + 1}号洞`
-                }));
+
 
                 this.setData({
-                    initialHoleList: defaultHoleList,
-                    holePlayList: defaultHoleList
+                    initialHoleList: holeList,
+                    holePlayList: holeList
                 });
 
                 console.log('holejump: 使用默认洞序数据（已排序）:', defaultHoleList);
