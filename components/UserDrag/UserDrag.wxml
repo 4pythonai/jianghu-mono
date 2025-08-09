@@ -1,18 +1,8 @@
 <!--  UserDrag 组件 外层需要适当加一定距离的margin, 防止某些情况精度计算误差导致drag宽度大于屏幕宽度, 从而出现横向滚动条 -->
 <view style="margin: 4rpx;">
   <!-- 直接显示用户列表，不使用复杂的拖拽组件 -->
-  <view class="user-list" wx:if="{{innerUserList && innerUserList.length > 0}}">
-    <view
-      class="user-item {{draggingIndex === index ? 'dragging' : ''}}"
-      wx:for="{{innerUserList}}"
-      wx:key="userid"
-      bindlongpress="onLongPress"
-      catchtouchmove="onTouchMove"
-      catchtouchend="onTouchEnd"
-      bindtap="onUserTap"
-      data-index="{{index}}"
-      style="{{draggingIndex === index ? 'z-index: 999; transform: translateY(' + dragOffsetY + 'px); opacity: 0.8;' : ''}}"
-    >
+  <view class="user-list" wx:if="{{userList && userList.length > 0}}">
+    <view class="user-item" wx:for="{{userList}}" wx:key="userid" data-index="{{index}}">
       <view class="user-info">
         <view class="drag-handle">
           <text class="drag-icon">⋮⋮</text>
