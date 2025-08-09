@@ -1,7 +1,7 @@
 <!-- UserDrag 组件 - 用户拖拽排序组件 -->
-<view class="user-drag-container">
+<view class="user-drag-container" style="--container-height: {{height}};">
   <view
-    class="user-item {{draggingIndex === index ? 'dragging' : ''}} {{dragging ? 'dragging-active' : ''}}"
+    class="drag-item {{draggingIndex === index ? 'dragging' : ''}} {{dragging && draggingIndex === index ? 'dragging-active' : ''}}"
     wx:for="{{currentUserList}}"
     wx:key="id"
     data-index="{{index}}"

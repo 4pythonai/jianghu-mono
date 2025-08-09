@@ -1,12 +1,22 @@
 .user-item {
 	background: white;
 	border-radius: 6rpx;
-	padding: 16rpx;
 	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 	transition: all 0.3s ease;
-	margin: 8rpx 0;
-	width: 100%;
+	height: 80rpx;
+	margin: 10rpx 0;
+	width: 90%;
 	box-sizing: border-box;
+	/* 添加硬件加速，减少闪烁 */
+	transform: translateZ(0);
+	will-change: transform;
+	backface-visibility: hidden;
+}
+
+/* 拖拽时禁用过渡动画，防止闪烁 */
+.user-item.dragging,
+.user-item.dragging-active {
+	transition: none !important;
 }
 
 .user-info {

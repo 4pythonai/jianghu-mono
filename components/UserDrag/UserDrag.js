@@ -9,6 +9,11 @@ Component({
         disabled: {
             type: Boolean,
             value: false
+        },
+        // 容器高度
+        height: {
+            type: String,
+            value: 'auto'
         }
     },
 
@@ -28,7 +33,12 @@ Component({
         // 宽度相关数据
         containerWidth: 0,
         itemWidth: 0,
-        itemHeight: 84
+        itemHeight: 84,
+        // 防抖相关
+        lastSwapTime: 0,
+        swapCooldown: 200, // 200ms防抖
+        // 拖拽稳定性相关
+        isDragging: false
     },
 
     observers: {
@@ -60,10 +70,14 @@ Component({
             query.select('.user-item').boundingClientRect();
             query.exec((res) => {
                 if (res[0] && res[1]) {
+                    // 确保高度计算准确，包含margin
+                    const itemHeight = res[1].height || 84;
+                    const computedHeight = itemHeight + 20; // 加上上下margin
+
                     this.setData({
                         containerWidth: res[0].width,
                         itemWidth: res[1].width,
-                        itemHeight: res[1].height || 84
+                        itemHeight: computedHeight
                     });
                 }
             });
@@ -125,17 +139,33 @@ Component({
         onTouchMove(e) {
             if (!this.data.dragging || this.data.draggingIndex === -1) return;
 
+            // 阻止默认滚动行为，防止屏幕跳动
+            e.preventDefault && e.preventDefault();
+
             const currentY = e.touches[0].clientY;
             const offsetY = currentY - this.data.startY;
             const itemHeight = this.data.itemHeight;
 
+            // 添加阈值，减少误触
+            const threshold = itemHeight * 0.3;
+
             // 计算目标位置
-            if (Math.abs(offsetY) > itemHeight * 0.3) {
+            if (Math.abs(offsetY) > threshold) {
                 const direction = offsetY > 0 ? 1 : -1;
                 const targetIndex = this.data.draggingIndex + direction;
 
                 if (targetIndex >= 0 && targetIndex < this.data.currentUserList.length) {
-                    this.swapItems(this.data.draggingIndex, targetIndex);
+                    // 添加防抖机制，减少频繁调用
+                    const now = Date.now();
+                    if (now - this.data.lastSwapTime > this.data.swapCooldown) {
+                        // 检查是否真的需要交换
+                        if (targetIndex !== this.data.draggingIndex) {
+                            this.swapItems(this.data.draggingIndex, targetIndex);
+                            this.setData({
+                                lastSwapTime: now
+                            });
+                        }
+                    }
                 }
             }
         },
@@ -169,10 +199,15 @@ Component({
          * 开始拖拽
          */
         startDrag(e, index) {
+            // 先设置拖拽状态，再添加样式类
             this.setData({
                 dragging: true,
                 draggingIndex: index,
-                longPressTimer: null
+                longPressTimer: null,
+                lastSwapTime: Date.now() // 重置防抖时间
+            }, () => {
+                // 确保状态更新完成后再进行下一步操作
+                console.log('🔄 开始拖拽:', index);
             });
 
             // 震动反馈
@@ -190,10 +225,18 @@ Component({
             list[fromIndex] = list[toIndex];
             list[toIndex] = temp;
 
+            // 计算新的起始位置，减少跳动
+            const heightDiff = (toIndex - fromIndex) * this.data.itemHeight;
+            const newStartY = this.data.startY + heightDiff;
+
+            // 批量更新，减少setData调用次数
             this.setData({
                 currentUserList: list,
                 draggingIndex: toIndex,
-                startY: this.data.startY + (toIndex - fromIndex) * this.data.itemHeight
+                startY: newStartY
+            }, () => {
+                // 确保状态更新完成后再进行下一步操作
+                console.log('🔄 交换完成:', fromIndex, '->', toIndex);
             });
         },
 

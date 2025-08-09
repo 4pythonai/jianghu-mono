@@ -1,6 +1,6 @@
 {
     "component": true,
     "usingComponents": {
-        "UserDrag": "/components/UserDrag/UserDrag"
+        "PlayerDrag": "/components/PlayerDrag/PlayerDrag"
     }
 }

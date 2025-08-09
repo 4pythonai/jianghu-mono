@@ -144,18 +144,7 @@ Component({
             }
         },
 
-        // 测试拖拽功能
-        testDrag() {
-            console.log("测试拖拽功能");
-            const holesDrag = this.selectComponent('#holesDrag');
-            if (holesDrag) {
-                console.log("HolesDrag component found:", holesDrag);
-                const listData = holesDrag.getListData();
-                console.log("Current list data:", listData);
-            } else {
-                console.error("HolesDrag component not found!");
-            }
-        },
+
 
         // 关闭弹框
         close() {
