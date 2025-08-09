@@ -102,7 +102,20 @@ Component({
 		listChange(e) {
 			console.log("🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️", e.list)
 			console.log("🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️🅰️", this.data.list)
-			this.data.listWxs = e.list;
+			// this.data.listWxs = e.list;
+
+			const updatedList = e.list.map((item, index) => {
+				if (!item.extraNode) {
+					// 对于非额外节点，重新计算 abcd 为 realKey
+					item.abcd = String(item.realKey);
+				}
+				return item;
+			});
+
+			this.setData({
+				list: e.list,        // 更新渲染用的 list
+				listWxs: e.list      // 更新 WXS 用的 listWxs
+			});
 		},
 
 		itemClick(e) {
@@ -208,7 +221,7 @@ Component({
 				item.realKey = item.extraNode ? -1 : i++; // 真实顺序
 
 				// item.abcd = "hello";
-				item.abcd = String(index)
+				item.abcd = String(item.realKey)
 				item.sortKey = index; // 整体顺序
 				item.tranX = `${(item.sortKey % columns) * 100}%`;
 				item.tranY = `${Math.floor(item.sortKey / columns) * 100}%`;

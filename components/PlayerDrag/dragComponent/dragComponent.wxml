@@ -19,17 +19,12 @@
     catch:touchend="{{dragging ? handler.touchEnd : ''}}"
     catch:touchcancel="{{dragging ? handler.touchEnd : ''}}"
   >
-    <block wx:if="{{item.extraNode}}">
-      <slot name="{{item.slot}}"></slot>
-    </block>
-    <block wx:else>
-      <UPlayerItem
-        data-index="{{index}}"
-        abcd="{{item.abcd}}"
-        columns="{{columns}}"
-        item-data="{{item.data}}"
-        bind:click="itemClick"
-      />
-    </block>
+    <UPlayerItem
+      data-index="{{index}}"
+      abcd="{{item.abcd}}"
+      columns="{{columns}}"
+      item-data="{{item.data}}"
+      bind:click="itemClick"
+    />
   </view>
 </view>
