@@ -64,11 +64,8 @@ Component({
             // 设置玩家顺序
             let bootstrap_order = [];
             if (initialBootstrapOrder && initialBootstrapOrder.length > 0) {
-                // 如果有初始顺序，将用户ID数组转换为玩家对象数组
                 bootstrap_order = initialBootstrapOrder.map(userId => {
-                    // 从players中找到对应的玩家对象
                     const player = players.find(p => {
-                        // 使用与 GameTypeManager 一致的字段名处理
                         const playerUserId = String(p.userid);
                         return playerUserId === String(userId);
                     });
@@ -113,7 +110,6 @@ Component({
             if (!Array.isArray(playersArray)) return [];
 
             return playersArray.map(player => {
-                // 使用与 GameTypeManager 一致的字段名处理
                 const userid = player.userid;
                 return Number.parseInt(userid) || 0;
             });

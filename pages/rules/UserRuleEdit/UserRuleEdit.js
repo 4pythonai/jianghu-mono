@@ -8,6 +8,7 @@ Page({
         ruleData: null, // 规则数据
         _gambleSysName: '',
         _gambleUserName: '',
+        _gambleHumanName: '',
         saving: false, // 保存状态
         configComponents: [] // 配置组件列表
     },
@@ -50,15 +51,11 @@ Page({
         // 确定游戏类型
         const _gambleSysName = ruleData.gambleSysName;
 
-        console.log('📋 [UserRuleEdit] 映射后的游戏类型:', _gambleSysName);
 
         // 获取游戏配置
-        const gameConfig = GameConfig.getGameType(_gambleSysName);
-        console.log('📋 [UserRuleEdit] 获取到的游戏配置:', gameConfig);
+        const _name = GameConfig.getGambleHumanName(_gambleSysName);
 
-        if (!gameConfig) {
-            console.error('📋 [UserRuleEdit] 无效的游戏类型:', _gambleSysName);
-            console.error('📋 [UserRuleEdit] 原始规则数据:', ruleData);
+        if (!_name) {
             wx.showToast({
                 title: `无效的游戏类型: ${_gambleSysName}`,
                 icon: 'none'
@@ -71,6 +68,7 @@ Page({
         this.setData({
             ruleData,
             _gambleSysName: _gambleSysName,
+            _gambleHumanName: _name,
             _gambleUserName: ruleData.gambleUserName
         });
 
@@ -98,10 +96,10 @@ Page({
             const _gambleSysName = ruleData.gambleSysName;
 
             // 获取游戏配置
-            const gameConfig = GameConfig.getGameType(_gambleSysName);
-            console.log('📋 [UserRuleEdit] API返回数据获取到的游戏配置:', gameConfig);
+            const _name = GameConfig.getGambleHumanName(_gambleSysName);
+            console.log('📋 [UserRuleEdit] API返回数据获取到的游戏配置:', _name);
 
-            if (!gameConfig) {
+            if (!_name) {
                 console.error('📋 [UserRuleEdit] API返回数据无效的游戏类型:', _gambleSysName);
                 console.error('📋 [UserRuleEdit] API返回的原始数据:', ruleData);
                 throw new Error(`无效的游戏类型: ${_gambleSysName}`);
@@ -113,7 +111,7 @@ Page({
             this.setData({
                 ruleData,
                 _gambleSysName: _gambleSysName,
-                gameName: gameConfig.name,
+                gameName: _name,
                 _gambleUserName: ruleData.gambleUserName
             });
 

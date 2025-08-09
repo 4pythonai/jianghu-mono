@@ -40,7 +40,7 @@ export const MEAT_VALUE_CONFIG_TYPES = {
 };
 
 // 游戏类型配置
-export const GAME_TYPES = {
+export const GAMBLE_TYPES = {
     // 2人游戏
     '2p-gross': { name: '2人比杆', hasPlayerConfig: false, hasGrouping: false, hasStroking: false },
     '2p-hole': { name: '2人比洞', hasPlayerConfig: false, hasGrouping: false, hasStroking: false },
@@ -63,61 +63,44 @@ export const GAME_TYPES = {
     'mp-dabudui': { name: '多人大部队', hasPlayerConfig: false, hasGrouping: true, hasStroking: false }
 };
 
-// 用户规则映射
-export const USER_RULES = {
-    twoPlayers: { '8421': '2p-8421', 'gross': '2p-gross', 'hole': '2p-hole' },
-    threePlayers: { '8421': '3p-8421', 'doudizhu': '3p-doudizhu', 'dizhupo': '3p-dizhupo' },
-    fourPlayers: { '8421': '4p-8421', 'lasi': '4p-lasi', 'dizhupo': '4p-dizhupo', '3da1': '4p-3da1', 'bestak': '4p-bestak' }
-};
+
 
 // 游戏配置管理器
 export const GameConfig = {
-    /**
-     * 获取游戏类型配置
-     */
-    getGameType(gameType) {
-        return GAME_TYPES[gameType];
-    },
+
 
     /**
      * 获取游戏名称
      */
-    getGameName(gameType) {
-        return GAME_TYPES[gameType]?.name;
+    getGambleHumanName(sysRuleName) {
+        return GAMBLE_TYPES[sysRuleName]?.name;
     },
 
     /**
      * 检查是否需要球员配置
      */
-    needsPlayerConfig(gameType) {
-        return GAME_TYPES[gameType]?.hasPlayerConfig;
+    needsPlayerConfig(sysRuleName) {
+        return GAMBLE_TYPES[sysRuleName]?.hasPlayerConfig;
     },
 
     /**
      * 检查是否需要分组
      */
-    needsGrouping(gameType) {
-        return GAME_TYPES[gameType]?.hasGrouping;
+    needsGrouping(sysRuleName) {
+        return GAMBLE_TYPES[sysRuleName]?.hasGrouping;
     },
 
     /**
      * 检查是否需要让杆
      */
-    needsStroking(gameType) {
-        return GAME_TYPES[gameType]?.hasStroking;
-    },
-
-    /**
-     * 获取用户规则映射
-     */
-    getUserRule(group, ruleType) {
-        return USER_RULES[group]?.[ruleType];
+    needsStroking(sysRuleName) {
+        return GAMBLE_TYPES[sysRuleName]?.hasStroking;
     },
 
     /**
      * 获取默认配置
      */
-    getDefaultConfig(gameType, players = []) {
+    getDefaultConfig(sysRuleName, players = []) {
         const config = {
             red_blue_config: '4_固拉',
             bootstrap_order: players.map(p => Number.parseInt(p.userid)),
@@ -126,7 +109,7 @@ export const GameConfig = {
         };
 
         // 8421游戏需要设置默认球员配置
-        if (this.needsPlayerConfig(gameType)) {
+        if (this.needsPlayerConfig(sysRuleName)) {
             const defaultPlayerConfig = {
                 "Birdie": 8,
                 "Par": 4,
@@ -142,43 +125,15 @@ export const GameConfig = {
         return config;
     },
 
-    /**
-     * 获取成绩类型标签
-     */
-    getScoreLabel(key) {
-        return GOLF_SCORE_TYPES.LABELS[key] || key;
-    },
 
-    /**
-     * 获取所有游戏类型
-     */
-    getAllGameTypes() {
-        return Object.keys(GAME_TYPES);
-    },
-
-    /**
-     * 验证游戏类型
-     */
-    isValidGameType(gameType) {
-        return !!GAME_TYPES[gameType];
-    },
 
 
 };
 
-// 导出兼容接口（如果其他地方还在使用旧的命名）
-export const GameTypeManager = GameConfig;
-export const GAME_TYPE_MAP = GAME_TYPES;
-export const GameConstantsUtils = GameConfig;
 
 // CommonJS 导出，包含所有需要的常量和对象
 module.exports = {
     GameConfig,
     GOLF_SCORE_TYPES,
     MEAT_VALUE_CONFIG_TYPES,
-    GAME_TYPES,
-    USER_RULES,
-    GameTypeManager: GameConfig,
-    GAME_TYPE_MAP: GAME_TYPES,
-    GameConstantsUtils: GameConfig
 };

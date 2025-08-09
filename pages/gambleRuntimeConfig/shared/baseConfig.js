@@ -197,7 +197,6 @@ const BaseConfig = {
             const players = pageContext.data.players || [];
 
             if (players.length > 0) {
-                // 使用 GameTypeManager 生成默认配置
                 const defaultConfig = GameConfig.getDefaultConfig(editConfig.gambleSysName, players);
                 val8421Config = defaultConfig.playerIndicatorConfig;
             }

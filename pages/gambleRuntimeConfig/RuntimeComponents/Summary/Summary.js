@@ -76,7 +76,7 @@ Component({
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用用户规则名称', displayName);
             } else if (this.data.gambleSysName) {
                 // 否则显示系统规则名称
-                displayName = GameConfig.getGameName(this.data.gambleSysName);
+                displayName = GameConfig.getGambleHumanName(this.data.gambleSysName);
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用系统规则名称', displayName);
             }
 

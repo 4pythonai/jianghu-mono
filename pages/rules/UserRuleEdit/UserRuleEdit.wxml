@@ -3,7 +3,7 @@
   <!-- 页面标题 -->
   <view class="page-header">
     <view class="header-title">编辑规则</view>
-    <view class="header-subtitle">{{_gambleUserName}}</view>
+    <view class="header-subtitle">{{_gambleHumanName}}/{{_gambleUserName}}</view>
   </view>
 
   <!-- 配置表单 -->

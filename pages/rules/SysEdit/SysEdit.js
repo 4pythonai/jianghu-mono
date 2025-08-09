@@ -23,9 +23,9 @@ Page({
             return;
         }
 
-        // 获取游戏配置
-        const gameConfig = GameConfig.getGameType(gameType);
-        if (!gameConfig) {
+        // 获取游戏配置 Human-readable
+        const _HumaName = GameConfig.getGambleHumanName(gameType);
+        if (!_HumaName) {
             wx.showToast({
                 title: '无效的游戏类型',
                 icon: 'none'
@@ -37,7 +37,8 @@ Page({
         // 设置页面数据
         this.setData({
             _gambleSysName: gameType,
-            _gambleUserName: `${gameConfig.name}规则`
+            _HumaName: _HumaName,
+            _gambleUserName: `${_HumaName}规则`
         });
 
         // 根据游戏类型加载对应的配置组件

@@ -2,7 +2,7 @@
 <view class="sys-edit-container">
   <!-- 页面标题 -->
   <view class="page-header">
-    <view class="header-title">{{_gambleSysName}}规则配置</view>
+    <view class="header-title">{{_HumaName}}规则配置</view>
     <view class="header-subtitle">配置新的系统规则</view>
   </view>
 
