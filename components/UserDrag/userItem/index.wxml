@@ -4,8 +4,8 @@
       <view class="drag-handle">
         <text class="drag-icon">⋮⋮</text>
       </view>
-      <text class="order-number">{{currentPosition + 1}}</text>
-      <text class="group-dot">{{currentPosition < 2 ? '🔵' : '🔴'}}</text>
+      <text class="order-number">{{index + 1}}</text>
+      <text class="group-dot">{{index < 2 ? '🔵' : '🔴'}}</text>
       <image
         class="player-avatar"
         src="{{itemData.avatar || '/images/default-avatar.png'}}"

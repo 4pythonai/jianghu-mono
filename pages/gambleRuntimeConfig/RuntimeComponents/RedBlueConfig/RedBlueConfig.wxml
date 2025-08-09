@@ -27,11 +27,7 @@
 
     <!-- 玩家列表 -->
     <view class="players-order-list">
-      <UserDrag
-        user-list="{{bootstrap_order}}"
-        red-blue-config="{{red_blue_config}}"
-        bind:sortend="onUserSortEnd"
-      />
+      <UserDrag user-list="{{bootstrap_order}}" bind:sortend="onUserSortEnd" />
     </view>
   </view>
 </view>

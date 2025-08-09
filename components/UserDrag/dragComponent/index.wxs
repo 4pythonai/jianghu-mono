@@ -72,7 +72,7 @@ var triggerCustomEvent = function (list, type, ins) {
 		}
 	});
 
-	ins.triggerEvent(type, { listData: listData });
+	ins.triggerEvent(type, { userList: listData });
 }
 
 var longPress = function (event, ownerInstance) {

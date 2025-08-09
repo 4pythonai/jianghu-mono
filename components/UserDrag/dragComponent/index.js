@@ -38,7 +38,7 @@ Component({
 			type: Array,
 			value: []
 		},
-		listData: {              // 数据源
+		userList: {              // 用户数据源
 			type: Array,
 			value: []
 		},
@@ -79,6 +79,17 @@ Component({
 		wrapStyle: '',                                          // item-wrap 样式
 		list: [],                                               // 渲染数据列
 		dragging: false,
+	},
+
+	observers: {
+		'userList': function (userList) {
+			console.log('🔗 DragComponent observers 触发，userList:', userList);
+			console.log('📏 userList 长度:', userList ? userList.length : 0);
+			if (userList && userList.length > 0) {
+				console.log('🚀 重新初始化 DragComponent');
+				this.init();
+			}
+		}
 	},
 	methods: {
 		vibrate() {
@@ -181,6 +192,10 @@ Component({
 		 *  {listData, topSize, bottomSize, itemHeight} 参数改变需要手动调用初始化方法
 		 */
 		init() {
+			console.log('🎬 DragComponent init() 开始');
+			console.log('  - this.data.userList:', this.data.userList);
+			console.log('  - this.data.extraNodes:', this.data.extraNodes);
+
 			// 初始必须为true以绑定wxs中的函数
 			this.setData({ dragging: true });
 
@@ -192,7 +207,8 @@ Component({
 				data: item
 			});
 
-			const { listData, extraNodes } = this.data;
+			const { userList, extraNodes } = this.data;
+			console.log('📦 处理数据源，userList长度:', userList ? userList.length : 0);
 			const _list = [];
 			const _before = [];
 			const _after = [];
@@ -212,11 +228,14 @@ Component({
 			});
 
 			// 遍历数据源增加扩展项, 以用作排序使用
-			listData.forEach((item, index) => {
+			userList.forEach((item, index) => {
+				console.log(`📝 处理用户 ${index}:`, item);
 				for (const i of destBefore) {
 					if (i.data.destKey === index) _list.push(i);
 				}
-				_list.push(delItem(item, false));
+				const processedItem = delItem(item, false);
+				console.log(`✨ delItem 处理后:`, processedItem);
+				_list.push(processedItem);
 				for (const i of destAfter) {
 					if (i.data.destKey === index) _list.push(i);
 				}
@@ -229,19 +248,30 @@ Component({
 				item.sortKey = index; // 整体顺序
 				item.tranX = `${(item.sortKey % columns) * 100}%`;
 				item.tranY = `${Math.floor(item.sortKey / columns) * 100}%`;
+				console.log(`🎯 Item ${index} 位置: tranX=${item.tranX}, tranY=${item.tranY}, realKey=${item.realKey}`);
 				return item;
 			});
 
 			this.data.rows = Math.ceil(list.length / columns);
+
+			console.log('✅ DragComponent 最终生成list，长度:', list.length);
+			console.log('🎯 设置list到data中');
 
 			this.setData({
 				list,
 				listWxs: list,
 				wrapStyle: `height: ${this.data.rows * this.data.itemHeight}rpx`
 			});
-			if (list.length === 0) return;
+
+			console.log('🔄 setData完成，当前list:', this.data.list.length);
+
+			if (list.length === 0) {
+				console.log('❌ list为空，不执行initDom');
+				return;
+			}
 
 			// 异步加载数据时候, 延迟执行 initDom 方法, 防止基础库 2.7.1 版本及以下无法正确获取 dom 信息
+			console.log('⏰ 延迟执行initDom');
 			setTimeout(() => this.initDom(), 0);
 		}
 	},

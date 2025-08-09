@@ -36,7 +36,10 @@ Component({
 
     observers: {
         'players, initialRedBlueConfig, initialBootstrapOrder': function (players, initialRedBlueConfig, initialBootstrapOrder) {
-            // 简化：只在数据变化时重新初始化
+            console.log('👀 observers 触发，参数变化:');
+            console.log('  - players:', players);
+            console.log('  - initialRedBlueConfig:', initialRedBlueConfig);
+            console.log('  - initialBootstrapOrder:', initialBootstrapOrder);
             this.initializeConfig();
         }
     },
@@ -44,53 +47,79 @@ Component({
     methods: {
         // 初始化配置
         initializeConfig() {
-            const { players, initialRedBlueConfig, initialBootstrapOrder, hasInitialized } = this.data;
+            // 优先用 properties 里的 players
+            const players = this.properties.players && this.properties.players.length > 0
+                ? this.properties.players
+                : (this.data.players || []);
+            const initialRedBlueConfig = this.properties.initialRedBlueConfig || this.data.initialRedBlueConfig || '4_固拉';
+            const initialBootstrapOrder = this.properties.initialBootstrapOrder || this.data.initialBootstrapOrder || [];
+            const hasInitialized = this.data.hasInitialized;
+
+            // ===== 调试打印 - 数据获取情况 =====
+            console.log('🔍 RedBlueConfig initializeConfig 开始');
+            console.log('📊 传入数据检查:');
+            console.log('  - this.properties.players:', this.properties.players);
+            console.log('  - this.data.players:', this.data.players);
+            console.log('  - 最终使用的 players:', players);
+            console.log('  - initialRedBlueConfig:', initialRedBlueConfig);
+            console.log('  - initialBootstrapOrder:', initialBootstrapOrder);
+            console.log('  - hasInitialized:', hasInitialized);
 
             // 设置分组配置
-            const red_blue_config = initialRedBlueConfig || '4_固拉';
+            const red_blue_config = initialRedBlueConfig;
 
             // 设置玩家顺序
             let bootstrap_order = [];
             if (initialBootstrapOrder && initialBootstrapOrder.length > 0) {
+                console.log('🎯 使用传入的 initialBootstrapOrder，开始映射玩家数据');
                 bootstrap_order = initialBootstrapOrder.map(userId => {
-                    const player = players.find(p => {
-                        const playerUserId = String(p.userid);
-                        return playerUserId === String(userId);
-                    });
-
-                    if (player) {
-                        return player;
-                    }
-                    // 如果找不到对应玩家，创建一个默认玩家对象
-                    return {
+                    const player = players.find(p => String(p.userid) === String(userId));
+                    console.log(`  - 查找用户ID ${userId}:`, player ? '找到' : '未找到', player);
+                    return player || {
                         userid: userId,
                         nickname: `玩家${userId}`,
                         avatar: '/images/default-avatar.png'
                     };
                 });
             } else {
-                // 否则使用玩家数组作为初始顺序
+                console.log('🎯 使用传入的 players 作为 bootstrap_order');
                 bootstrap_order = [...players];
             }
+
+            console.log('✅ 最终的 bootstrap_order:', bootstrap_order);
+            console.log('📏 bootstrap_order 长度:', bootstrap_order.length);
 
             this.setData({
                 red_blue_config,
                 bootstrap_order
             });
 
+            console.log('🔄 setData 完成，当前组件数据:');
+            console.log('  - red_blue_config:', this.data.red_blue_config);
+            console.log('  - bootstrap_order:', this.data.bootstrap_order);
+
             // 只在新增模式下触发初始事件
             if (bootstrap_order.length > 0 && !hasInitialized && (!initialBootstrapOrder || initialBootstrapOrder.length === 0)) {
+                console.log('🚀 触发初始化事件条件满足');
                 this.setData({
                     hasInitialized: true
                 });
 
                 wx.nextTick(() => {
-                    this.triggerEvent('change', {
+                    const eventData = {
                         red_blue_config,
                         bootstrap_order: this.convertToUserIds(bootstrap_order)
-                    });
+                    };
+                    console.log('📤 触发 change 事件，数据:', eventData);
+                    this.triggerEvent('change', eventData);
                 });
+            } else {
+                console.log('❌ 未触发初始化事件，条件检查:');
+                console.log('  - bootstrap_order.length > 0:', bootstrap_order.length > 0);
+                console.log('  - !hasInitialized:', !hasInitialized);
+                console.log('  - (!initialBootstrapOrder || initialBootstrapOrder.length === 0):', (!initialBootstrapOrder || initialBootstrapOrder.length === 0));
             }
+            console.log('🔚 RedBlueConfig initializeConfig 结束\n');
         },
 
         // 转换玩家对象数组为用户ID数组
@@ -181,17 +210,24 @@ Component({
         onUserSortEnd(e) {
             const newUserList = e.detail.listData;
 
+            console.log('🎯 UserDrag 拖拽排序完成');
+            console.log('  - 原 bootstrap_order:', this.data.bootstrap_order);
+            console.log('  - 新 newUserList:', newUserList);
+
             this.setData({
                 bootstrap_order: newUserList
             });
 
             RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', 'UserDrag拖拽完成, 新顺序', newUserList);
 
-            // 触发变更事件, 传递用户ID数组
-            this.triggerEvent('change', {
+            const eventData = {
                 red_blue_config: this.data.red_blue_config,
                 bootstrap_order: this.convertToUserIds(newUserList)
-            });
+            };
+            console.log('📤 拖拽完成，触发 change 事件，数据:', eventData);
+
+            // 触发变更事件, 传递用户ID数组
+            this.triggerEvent('change', eventData);
 
             // 显示提示
             wx.showToast({
