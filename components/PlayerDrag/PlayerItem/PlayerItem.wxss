@@ -1,0 +1,60 @@
+.hole-container {
+	width: 100rpx;
+	height: 100rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4rpx;
+	box-sizing: border-box;
+}
+
+.hole-circle {
+	width: 100%;
+	padding-top: 100%; /* 保证宽高比1:1 */
+	position: relative;
+	border-radius: 50%;
+	background: #27ae60; /* 绿色 */
+	border: 2rpx solid #eee;
+	box-sizing: border-box;
+	margin: 0;
+	overflow: hidden;
+}
+
+.hole-name {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24rpx;
+	color: #fff; /* 白字 */
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-weight: 600;
+}
+
+.hole-container:active {
+	transform: scale(0.95);
+	transition: transform 0.1s ease;
+}
+
+/* 拖拽时的样式 */
+.hole-container.dragging {
+	transform: scale(1.1);
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+	z-index: 1001 !important;
+}
+
+/* 确保拖拽时球洞可见 */
+.item.cur .hole-container {
+	z-index: 1001 !important;
+	position: relative;
+}
+
+/* 拖拽时的球洞样式 */
+.item.cur .hole-circle {
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+}

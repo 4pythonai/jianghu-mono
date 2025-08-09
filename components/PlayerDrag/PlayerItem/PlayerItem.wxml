@@ -1,0 +1,7 @@
+<view catchtap="itemClick">
+  <view class="hole-container">
+    <view class="hole-circle">
+      <view class="hole-name">{{itemData.userid}}</view>
+    </view>
+  </view>
+</view>

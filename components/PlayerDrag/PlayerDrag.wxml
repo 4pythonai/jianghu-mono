@@ -1,0 +1,17 @@
+<!--  drag 组件 外层需要适当加一定距离的margin, 防止某些情况精度计算误差导致drag宽度大于屏幕宽度, 从而出现横向滚动条 -->
+<view style="margin: 4rpx;">
+  <DragComponent
+    id="PlayersDragDrop"
+    generic:item="PlayerItem"
+    bind:sortend="sortEnd"
+    bind:scroll="scroll"
+    item-wrap-class="holeItem-wrap"
+    extra-nodes="{{extraNodes}}"
+    list-data="{{listData}}"
+    columns="1"
+    scroll-top="{{scrollTop}}"
+    item-height="{{(750 - 8) / 1}}"
+    top-size="{{isModal ? 0 : 110}}"
+    bottom-size="{{isModal ? 0 : 400}}"
+  ></DragComponent>
+</view>
