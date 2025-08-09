@@ -10,6 +10,7 @@ if (!defined('BASEPATH')) {
  */
 class GambleContext extends CI_Model {
     public $gambleSysName;
+    public $gambleUserName;
     public $gameid;
     public $gambleid;
     public $groupid;
@@ -57,6 +58,7 @@ class GambleContext extends CI_Model {
      */
     private static $propertyMapping = [
         'gambleSysName' => 'getGambleSysName',
+        'gambleUserName' => 'getGambleUserName',
         'gameid' => 'getGameid',
         'gambleid' => 'getGambleid',
         'groupid' => 'getGroupid',

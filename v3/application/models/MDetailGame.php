@@ -8,9 +8,9 @@ class MDetailGame  extends CI_Model {
     }
 
 
-    public function getGameDetail($game_id) {
+    public function getGameDetail($gameid) {
         // 获取游戏基本信息
-        $game_info = $this->getGameInfo($game_id);
+        $game_info = $this->getGameInfo($gameid);
         if (!$game_info) {
             return null;
         }
@@ -20,11 +20,11 @@ class MDetailGame  extends CI_Model {
         $course_info = $this->getCourseInfo($game_info['courseid']);
 
         // 获取游戏统计信息
-        $game_stats = $this->getGameStats($game_id);
+        $game_stats = $this->getGameStats($gameid);
 
 
         // 获取玩家信息
-        $players = $this->getPlayers($game_id);
+        $players = $this->getPlayers($gameid);
 
         // 获取球洞列表
         // $holeList = $this->getHoleListByGameId($game_id);
@@ -32,17 +32,17 @@ class MDetailGame  extends CI_Model {
 
 
         // 获取游戏分组信息
-        $groups = $this->getGroupsInfo($game_id);
+        $groups = $this->getGroupsInfo($gameid);
 
         // 成绩 
-        $scores = $this->getScoreInfo($game_id);
+        $scores = $this->getScoreInfo($gameid);
 
         // 创建者信息
         $creator = $this->MUser->getUserProfile($game_info['creatorid']);
 
         // 组装返回数据
         $result = [
-            'game_id' => (string)$game_info['game_id'],
+            'gameid' => (string)$game_info['gameid'],
             'uuid' => $game_info['uuid'],
             'private' => $game_info['private'],
             'scoring_type' => $game_info['scoring_type'],
@@ -101,7 +101,7 @@ class MDetailGame  extends CI_Model {
     public function getGameInfo($game_id) {
         $game_query = "
             SELECT 
-                id as game_id,
+                id as gameid,
                 uuid,
                 courseid,
                 status,

@@ -62,25 +62,26 @@ class Audit extends CI_Controller {
 
 
 
-        $groupid = $paras['groupId'];
+        $groupid = $paras['groupid'];
         $gambles = $this->db->get_where('t_gamble_x_runtime', ['groupid' => $groupid])->result_array();
 
-        $group_results = [];
+        $g_results = [];
         foreach ($gambles as $gamble) {
             $gambleid = $gamble['id'];
 
             $complex = $this->getGambleResult($gambleid, $debugMode);
+            debug($complex);
             $simple = [];
             $simple['useful_holes'] = $complex['useful_holes'];
             $simple['group_info'] = $complex['group_info'];
-            $group_results[] = $simple;
+            $g_results[] = $simple;
         }
 
 
         $ret = [];
         $ret['code'] = 200;
-        $ret['SummaryResult'] = $this->subTotal($group_results);
-        $ret['gambleResults'] = $group_results;
+        $ret['SummaryResult'] = $this->subTotal($g_results);
+        $ret['gambleResults'] = $g_results;
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
@@ -195,6 +196,7 @@ class Audit extends CI_Controller {
 
         $cfg = [
             'gambleSysName' => $row['gambleSysName'],
+            'gambleUserName' => $row['gambleUserName'],
             'userRuleId' => $row['userRuleId'],
             'gameid' => $row['gameid'],
             'gambleid' => $gambleid,

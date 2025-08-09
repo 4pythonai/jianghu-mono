@@ -73,8 +73,8 @@ class Game extends MY_Controller {
         $row['privacy_password'] = null;
         $row['status'] = 'init';
         $this->db->insert('t_game', $row);
-        $game_id = $this->db->insert_id();
-        echo json_encode(['code' => 200, 'uuid' => $uuid, 'game_id' => $game_id], JSON_UNESCAPED_UNICODE);
+        $gameid = $this->db->insert_id();
+        echo json_encode(['code' => 200, 'uuid' => $uuid, 'gameid' => $gameid], JSON_UNESCAPED_UNICODE);
     }
 
 
@@ -184,14 +184,19 @@ class Game extends MY_Controller {
         $gameid = $this->MGame->getGameidByUUID($uuid);
         $groups = $json_paras['groups'];
         $this->MGame->clearGameGroupAndPlayers($gameid);
-        $this->MGame->addGameGroupAndPlayers($gameid, $groups);
+        $groupid = $this->MGame->addGameGroupAndPlayers($gameid, $groups);
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '分组成功';
+        $ret['groupid'] = $groupid;
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
     public function gameDetail() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $game_id = $json_paras['gameId'];
-        $game_detail = $this->MDetailGame->getGameDetail($game_id);
-        $red_blue  = $this->getFirst4PlayersGambleRedBlug($game_id);
+        $gameid = $json_paras['gameid'];
+        $game_detail = $this->MDetailGame->getGameDetail($gameid);
+        $red_blue  = $this->getFirst4PlayersGambleRedBlug($gameid);
         echo json_encode(
             ['code' => 200, 'game_detail' => $game_detail, 'red_blue' => $red_blue],
             JSON_UNESCAPED_UNICODE
@@ -254,7 +259,7 @@ class Game extends MY_Controller {
 
     public function saveGameScore() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $game_id = $json_paras['gameId'];
+        $game_id = $json_paras['gameid'];
         $hindex = $json_paras['hindex'];
 
         $game_info = $this->MDetailGame->getGameInfo($game_id);
@@ -264,7 +269,7 @@ class Game extends MY_Controller {
         }
 
 
-        $group_id = $json_paras['groupId'];
+        $group_id = $json_paras['groupid'];
         $hole_unique_key = $json_paras['holeUniqueKey'];
         $scores = $json_paras['scores'];
         $this->MScore->saveScore($game_id, $group_id, $hole_unique_key, $hindex, $scores);

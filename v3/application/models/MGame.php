@@ -113,6 +113,7 @@ class MGame  extends CI_Model {
         ];
         $this->db->insert('t_game_group_user', $playerData);
       }
+      return $groupid;
     }
   }
 

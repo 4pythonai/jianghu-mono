@@ -15,6 +15,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     // private 参数
     private $gambleSysName;
+    private $gambleUserName;
     private $gameid;
     private $gambleid;
     private $groupid;
@@ -58,6 +59,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
 
         $this->gambleSysName = $config['gambleSysName'];
+        $this->gambleUserName = $config['gambleUserName'];
         $this->gameid = $config['gameid'];
         $this->gambleid = $config['gambleid'];
         $this->groupid = $config['groupid'];
@@ -177,6 +179,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'groupid' => $this->context->groupid,
             'userid' => $this->context->userid,
             'gambleSysName' => $this->context->gambleSysName,
+            'gambleUserName' => $this->context->gambleUserName,
             'redBlueConfig' => $this->context->redBlueConfig,
             'ranking4TieResolveConfig' => $this->context->ranking4TieResolveConfig,
             'drawConfig' => $this->context->drawConfig,
@@ -215,6 +218,10 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     // Getter 方法用于上下文对象
     public function getGambleSysName() {
         return $this->gambleSysName;
+    }
+
+    public function getGambleUserName() {
+        return $this->gambleUserName;
     }
 
     public function getGameid() {
