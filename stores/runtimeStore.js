@@ -13,13 +13,8 @@ export const runtimeStore = observable({
     loadingRuntimeConfig: false,  // 加载运行时配置状态
     runtimeConfigError: null,     // 运行时配置错误信息
 
-    /**
-     * 处理单个赌博配置
-     * @param {Object} config 原始配置数据
-     * @returns {Object} 处理后的配置数据
-     */
+
     processOneGamble: action((config) => {
-        console.log('🎮 [runtimeStore] 处理单个赌博配置:🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸', config);
         try {
             const processedConfig = { ...config };
 

@@ -510,7 +510,7 @@ Page({
     },
 
     onKickoffConfirm(e) {
-        const { configId, configName, hindex, multipliers, completeMultiplierConfig, holeMultiplierMap } = e.detail;
+        const { configId, configName, multipliers } = e.detail;
 
         app.api.gamble.updateKickOffMultiplier({
             configId,
@@ -559,7 +559,7 @@ Page({
     debugDataStatus() {
 
         if (this.data.runtimeConfigs && this.data.runtimeConfigs.length > 0) {
-            const firstConfig = this.data.runtimeConfigs[0];
+            // const firstConfig = this.data.runtimeConfigs[0];
         }
     }
 });

@@ -21,8 +21,11 @@
         wx:key="index"
         wx:for-item="gambleResult"
       >
-        <!-- 赌博结果标题 -->
-        <view class="gamble-result-title" wx:if="{{gambleResults.length > 1}}">赌博配置 {{index + 1}}</view>
+        <!-- 赌博结果标题  gambleSysName: "4p-lasi" gambleUserName: "4人拉丝规则" -->
+        <view
+          class="gamble-result-title"
+          wx:if="{{gambleResults.length > 1}}"
+        >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
 
         <!-- 赌博结果表格 -->
         <GambleResultTable
