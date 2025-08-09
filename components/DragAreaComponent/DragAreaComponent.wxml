@@ -1,4 +1,4 @@
-<wxs module="handler" src="./dragComponent.wxs"></wxs>
+<wxs module="handler" src="./DragAreaComponent.wxs"></wxs>
 
 <view
   class="item-wrap item-wrap-class"
@@ -19,7 +19,7 @@
     catch:touchend="{{dragging ? handler.touchEnd : ''}}"
     catch:touchcancel="{{dragging ? handler.touchEnd : ''}}"
   >
-    <UPlayerItem
+    <item
       data-index="{{index}}"
       abcd="{{item.abcd}}"
       columns="{{columns}}"
