@@ -52,6 +52,7 @@ Component({
     observers: {
         'players, initialRedBlueConfig, initialBootstrapOrder': function (players, initialRedBlueConfig, initialBootstrapOrder) {
 
+            console.log('[RedBlueConfig] 观察者触发，players:', players, 'initialRedBlueConfig:', initialRedBlueConfig, 'initialBootstrapOrder:', initialBootstrapOrder);
 
             this.initializeConfig();
         }
