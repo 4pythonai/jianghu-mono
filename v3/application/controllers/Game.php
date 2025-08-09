@@ -230,6 +230,7 @@ class Game extends MY_Controller {
             $row = $this->db->get_where('t_gamble_x_runtime', ['id' => $gambleid])->row_array();
             $cfg = [
                 'gambleSysName' => $row['gambleSysName'],
+                'gambleUserName' => $row['gambleUserName'],
                 'userRuleId' => $row['userRuleId'],
                 'gameid' => $row['gameid'],
                 'gambleid' => $gambleid,

@@ -68,10 +68,10 @@ class Audit extends CI_Controller {
         $g_results = [];
         foreach ($gambles as $gamble) {
             $gambleid = $gamble['id'];
-
             $complex = $this->getGambleResult($gambleid, $debugMode);
-            debug($complex);
             $simple = [];
+            $simple['gambleUserName'] = $complex['gambleUserName'];
+            $simple['gambleSysName'] = $complex['gambleSysName'];
             $simple['useful_holes'] = $complex['useful_holes'];
             $simple['group_info'] = $complex['group_info'];
             $g_results[] = $simple;
