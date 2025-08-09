@@ -449,11 +449,23 @@ Page({
     },
 
     onHolejumpComplete(e) {
-        const { holePlayList } = e.detail;
+        const { holePlayList } = e.detail || {};
         console.log('跳洞设置完成，新的洞序:', holePlayList);
+
+        // 检查数据有效性
+        if (!holePlayList || !Array.isArray(holePlayList)) {
+            console.warn('跳洞设置数据无效:', holePlayList);
+            wx.showToast({
+                title: '跳洞设置数据无效',
+                icon: 'none'
+            });
+            this.setData({ isHolejumpVisible: false });
+            return;
+        }
 
         // 这里可以处理新的洞序数据
         // 例如：保存到服务器、更新本地状态等
+        console.log('处理跳洞设置数据，洞数量:', holePlayList.length);
 
         wx.showToast({
             title: '跳洞设置已保存',

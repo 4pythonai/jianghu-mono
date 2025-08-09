@@ -7,9 +7,11 @@
       <view class="section-title">拖拽排序球洞</view>
       <view class="drag-container">
         <HolesDrag
+          id="holesDrag"
           scroll-top="{{scrollTop}}"
           bind:sortend="onSortEnd"
           bind:scroll="onScroll"
+          hole-list="{{holePlayList}}"
           is-modal="{{true}}"
         ></HolesDrag>
       </view>
