@@ -1,0 +1,5 @@
+{
+	"usingComponents": {
+		"HolesDrag": "../../components/HolesDrag/HolesDrag"
+	}
+}

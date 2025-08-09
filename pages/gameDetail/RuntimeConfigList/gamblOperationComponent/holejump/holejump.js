@@ -1,8 +1,4 @@
-// pages/gameDetail/RuntimeConfigList/gamblOperationComponent/holejump/holejump.js
-import { createStoreBindings } from 'mobx-miniprogram-bindings';
-import { gameStore } from '../../../../../stores/gameStore';
 
-const app = getApp();
 
 Component({
     properties: {
@@ -10,118 +6,67 @@ Component({
     },
 
     data: {
-
-        listData: [],
-
-        originalHoleList: [], // 原始洞序列表，用于重置功能
-        columnsPerRow: 9, // 每行的列数
-
-        // ===== 拖拽状态 =====
-        isDragging: false,
-
-        extraNodes: [],
-        pageMetaScrollTop: 0,
         scrollTop: 0
-
-
     },
 
     lifetimes: {
         attached() {
-
-            const listData = [
-                { hindex: 0, holename: "A1" },
-                { hindex: 1, holename: "A2" },
-                { hindex: 2, holename: "A3" },
-                { hindex: 3, holename: "A4" },
-                { hindex: 4, holename: "A5" },
-                { hindex: 5, holename: "A6" },
-                { hindex: 6, holename: "A7" },
-                { hindex: 7, holename: "A8" },
-                { hindex: 8, holename: "A9" },
-                { hindex: 9, holename: "B1" },
-                { hindex: 10, holename: "B2" },
-                { hindex: 11, holename: "B3" },
-                { hindex: 12, holename: "B4" },
-                { hindex: 13, holename: "B5" },
-                { hindex: 14, holename: "B6" },
-                { hindex: 15, holename: "B7" },
-                { hindex: 16, holename: "B8" },
-                { hindex: 17, holename: "B9" }
-            ];
-
-
-            this.drag = this.selectComponent('#holoJump');
-            // 模仿异步加载数据
-            setTimeout(() => {
-
-                this.setData({
-                    listData: listData
-                });
-
-                this.drag.init();
-            }, 100)
-
         },
 
         detached() {
-            this.storeBindings?.destroyStoreBindings();
         }
     },
 
     methods: {
+        // 空事件处理
+        noop() { },
 
-
-        sortEnd(e) {
-            console.log("sortEnd", e.detail.listData)
-            this.setData({
+        // 拖拽排序结束事件处理
+        onSortEnd(e) {
+            console.log("弹框收到排序结果:", e.detail.listData);
+            // 这里可以处理排序结果，比如保存到本地或传递给父组件
+            this.triggerEvent('holesortend', {
                 listData: e.detail.listData
             });
         },
 
-
-
-        scroll(e) {
+        // 滚动事件处理
+        onScroll(e) {
             this.setData({
-                pageMetaScrollTop: e.detail.scrollTop
-            })
-        },
-        // 页面滚动
-        onPageScroll(e) {
-            this.setData({
-                scrollTop: e.scrollTop
+                scrollTop: e.detail.scrollTop
             });
         },
 
+        // 重置按钮事件
+        onReset() {
+            console.log("重置拖拽排序");
+            // 这里可以重置排序到初始状态
+            this.triggerEvent('reset');
+        },
 
-
-
-
-        /**
-         * 完成跳洞设置
-         */
+        // 确定按钮事件
         onJumpComplete() {
-            console.log('📋 最终排序结果:', this.data.holePlayList.map(item => item.holename));
-
-            // 这里可以触发事件，将结果传递给父组件
-            this.triggerEvent('complete', {
-                holePlayList: this.data.holePlayList
-            });
-            this.close();
+            console.log("跳洞设置完成");
+            // 这里可以处理完成逻辑
+            this.triggerEvent('complete');
         },
 
-        // ===== 工具方法 =====
+        // 测试拖拽功能
+        testDrag() {
+            console.log("测试拖拽功能");
+            const holesDrag = this.selectComponent('HolesDrag');
+            if (holesDrag) {
+                console.log("HolesDrag component found:", holesDrag);
+                const listData = holesDrag.getListData();
+                console.log("Current list data:", listData);
+            } else {
+                console.error("HolesDrag component not found!");
+            }
+        },
 
-        /**
-         * 关闭弹窗
-         */
+        // 关闭弹框
         close() {
             this.triggerEvent('close');
-        },
-
-        /**
-         * 空方法，阻止冒泡
-         */
-        noop() { }
+        }
     }
 });

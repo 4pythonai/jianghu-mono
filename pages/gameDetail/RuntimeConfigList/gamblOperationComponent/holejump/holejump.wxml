@@ -2,21 +2,17 @@
   <view class="modal-content" catchtap="noop">
     <view class="modal-title">跳洞设置</view>
 
-    <view style="margin: 4rpx;">
-      <DragComponent
-        id="holoJump"
-        generic:item="holeItem"
-        bind:sortend="sortEnd"
-        bind:scroll="scroll"
-        item-wrap-class="holeItem-wrap"
-        extra-nodes="{{extraNodes}}"
-        list-data="{{listData}}"
-        columns="9"
-        scroll-top="{{scrollTop}}"
-        item-height="{{(750 - 8) / 9}}"
-        top-size="110"
-        bottom-size="{{400}}"
-      ></DragComponent>
+    <!-- 拖拽区域 -->
+    <view class="drag-section">
+      <view class="section-title">拖拽排序球洞</view>
+      <view class="drag-container">
+        <HolesDrag
+          scroll-top="{{scrollTop}}"
+          bind:sortend="onSortEnd"
+          bind:scroll="onScroll"
+          is-modal="{{true}}"
+        ></HolesDrag>
+      </view>
     </view>
 
     <view class="modal-actions">

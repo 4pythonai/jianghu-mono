@@ -1,0 +1,41 @@
+.holeItem-wrap {
+	background: #f7f7f7;
+}
+
+.empty-bottom {
+	padding-bottom: 300rpx;
+}
+
+.empty-bottom.isX {
+	padding-bottom: 380rpx;
+}
+
+/* 拖拽组件核心样式 */
+.item-wrap {
+	position: relative;
+	z-index: 1;
+}
+
+.item-wrap .item {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+}
+
+.item-wrap .item.tran {
+	transition: transform 0.3s !important;
+}
+
+.item-wrap .item.cur {
+	z-index: 1001 !important;
+}
+
+.item-wrap .item.fixed {
+	z-index: 0 !important;
+}
+
+/* 确保拖拽时的层级 */
+.item.cur {
+	z-index: 1001 !important;
+}
