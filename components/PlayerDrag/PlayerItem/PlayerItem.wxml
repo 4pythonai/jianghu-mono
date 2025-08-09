@@ -1,7 +1,14 @@
 <view catchtap="itemClick">
-  <view class="hole-container">
-    <view class="hole-circle">
-      <view class="hole-name">{{itemData.userid}}</view>
+  <view class="player-order-item">
+    <view class="drag-handle">
+      <text class="drag-icon">⋮⋮</text>
     </view>
+    <image
+      class="player-avatar"
+      src="{{itemData.avatar || '/images/default-avatar.png'}}"
+      lazy-load="true"
+      mode="aspectFill"
+    />
+    <text class="player-name">{{itemData.nickname || itemData.wx_nickname || '未知玩家'}}</text>
   </view>
 </view>

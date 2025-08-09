@@ -1,60 +1,159 @@
-.hole-container {
-	width: 100rpx;
-	height: 100rpx;
+/* RedBlueConfig组件样式 */
+.red-blue-config {
 	display: flex;
+	flex-direction: column;
+	gap: 25rpx;
+}
+
+/* 分组方式选择 */
+.grouping-method {
+	background-color: #f8f8f8;
+	border-radius: 15rpx;
+	padding: 20rpx;
+}
+
+.section-title {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #333;
+	margin-bottom: 15rpx;
+}
+
+.section-label {
+	margin-bottom: 10rpx;
+}
+
+.radio-item {
+	display: flex !important;
 	align-items: center;
 	justify-content: center;
-	padding: 4rpx;
+	padding: 12rpx 20rpx;
+	gap: 8rpx;
+	flex: 1;
+	background-color: #fff;
+	border-radius: 12rpx;
+	border: 2rpx solid #e0e0e0;
+	transition: all 0.3s;
+	min-height: 60rpx;
 	box-sizing: border-box;
 }
 
-.hole-circle {
-	width: 100%;
-	padding-top: 100%; /* 保证宽高比1:1 */
-	position: relative;
-	border-radius: 50%;
-	background: #27ae60; /* 绿色 */
-	border: 2rpx solid #eee;
-	box-sizing: border-box;
-	margin: 0;
+.radio-item:active {
+	transform: scale(0.98);
+}
+
+.radio-label {
+	font-size: 28rpx;
+	color: #333;
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.departure-order {
+	background-color: #f8f8f8;
+	border-radius: 15rpx;
+	padding: 20rpx;
+}
+
+.order-controls {
+	display: flex;
+	gap: 15rpx;
+	margin-bottom: 20rpx;
+}
+
+.order-btn {
+	flex: 1;
+	height: 70rpx;
+	background-color: #4caf50;
+	color: #fff;
+	border: none;
+	border-radius: 12rpx;
+	font-size: 28rpx;
+	font-weight: bold;
+}
+
+.order-btn::after {
+	border: none;
+}
+
+.order-btn:active {
+	transform: scale(0.98);
+}
+
+/* 玩家列表 */
+.players-order-list {
+	border: 2rpx solid #e0e0e0;
+	border-radius: 15rpx;
+	background-color: #fff;
 	overflow: hidden;
 }
 
-.hole-name {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
+.player-order-item {
+	display: flex;
+	align-items: center;
+	padding: 20rpx;
+	border-bottom: 1rpx solid #f0f0f0;
+	gap: 20rpx;
+	transition: transform 0.3s ease, background-color 0.3s ease;
+	position: relative;
+	background-color: #fff;
+}
+
+.player-order-item:last-child {
+	border-bottom: none;
+}
+
+/* 拖拽手柄 */
+.drag-handle {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	width: 40rpx;
+	height: 40rpx;
+	cursor: grab;
+	flex-shrink: 0;
+}
+
+.drag-icon {
 	font-size: 24rpx;
-	color: #fff; /* 白字 */
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	font-weight: 600;
+	color: #999;
+	line-height: 1;
+	letter-spacing: -2rpx;
+	transform: rotate(90deg);
 }
 
-.hole-container:active {
-	transform: scale(0.95);
-	transition: transform 0.1s ease;
+/* 拖拽状态样式 */
+.player-order-item.dragging {
+	background-color: #f0f8ff !important;
+	border: 2rpx solid #4caf50 !important;
+	border-radius: 12rpx !important;
+	box-shadow: 0 8rpx 25rpx rgba(0, 0, 0, 0.15) !important;
+	transition: none !important;
 }
 
-/* 拖拽时的样式 */
-.hole-container.dragging {
-	transform: scale(1.1);
-	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
-	z-index: 1001 !important;
+.player-order-item.dragging .drag-icon {
+	color: #4caf50;
 }
 
-/* 确保拖拽时球洞可见 */
-.item.cur .hole-container {
-	z-index: 1001 !important;
-	position: relative;
+.order-number {
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #4caf50;
+	min-width: 60rpx;
 }
 
-/* 拖拽时的球洞样式 */
-.item.cur .hole-circle {
-	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.3);
+.player-avatar {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	background-color: #f0f0f0;
+	border: 2rpx solid #e0e0e0;
+	flex-shrink: 0;
+}
+
+.player-name {
+	font-size: 30rpx;
+	color: #333;
+	font-weight: 500;
+	flex: 1;
 }

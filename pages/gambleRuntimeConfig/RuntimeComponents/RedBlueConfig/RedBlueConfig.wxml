@@ -32,7 +32,7 @@
         scroll-top="{{scrollTop}}"
         bind:sortend="onSortEnd"
         bind:scroll="onScroll"
-        USERS="{{USERS}}"
+        USERS="{{players}}"
         is-modal="{{true}}"
       ></PlayerDrag>
     </view>
