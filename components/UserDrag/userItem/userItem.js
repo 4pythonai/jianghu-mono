@@ -18,14 +18,7 @@ Component({
         }
     },
 
-    observers: {
-        'itemData': function (itemData) {
-            // 数据变化监听
-            if (itemData && !itemData.id) {
-                console.warn('⚠️ userItem: itemData缺少id字段', itemData);
-            }
-        }
-    },
+    observers: {},
 
     methods: {
         /**
@@ -50,15 +43,14 @@ Component({
          * 图片加载成功
          */
         onImageLoad(e) {
-            console.log('✅ 头像加载成功:', e.detail);
+            // 图片加载成功，静默处理
         },
 
         /**
          * 图片加载失败
          */
         onImageError(e) {
-            console.log('❌ 头像加载失败:', e.detail);
-            console.log('❌ 头像路径:', this.properties.itemData?.avatar);
+            // 图片加载失败，静默处理
         }
     }
 });

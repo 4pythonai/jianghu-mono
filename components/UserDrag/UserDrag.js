@@ -29,7 +29,6 @@ Component({
 
     observers: {
         'userList': function (newUserList) {
-            console.log('🔄 UserDrag userList 变化:', newUserList);
             this.setData({
                 currentUserList: newUserList || []
             });
@@ -107,8 +106,6 @@ Component({
 
             if (!this.data.dragging) return;
 
-            console.log('✋ 拖拽结束');
-
             this.setData({
                 dragging: false,
                 draggingIndex: -1,
@@ -126,8 +123,6 @@ Component({
          * 开始拖拽
          */
         startDrag(e, index) {
-            console.log('🔥 开始拖拽，索引:', index);
-
             this.setData({
                 dragging: true,
                 draggingIndex: index,
@@ -148,8 +143,6 @@ Component({
             const temp = list[fromIndex];
             list[fromIndex] = list[toIndex];
             list[toIndex] = temp;
-
-            console.log(`🔄 交换位置: ${fromIndex} ↔ ${toIndex}`);
 
             this.setData({
                 currentUserList: list,

@@ -153,6 +153,7 @@ Component({
             });
         },
 
+        // 抽签排序(随机打乱玩家顺序)
         randomOrder() {
             const { bootstrap_order } = this.data;
 
@@ -165,13 +166,8 @@ Component({
                 return;
             }
 
-            console.log('🎲 开始抽签排序');
-            console.log('  - 原顺序:', bootstrap_order.map(p => p.wx_nickname || p.nickname || `玩家${p.userid}`));
-
             // 随机打乱玩家顺序
             const shuffled = RuntimeComponentsUtils.array.shuffle(bootstrap_order);
-
-            console.log('  - 新顺序:', shuffled.map(p => p.wx_nickname || p.nickname || `玩家${p.userid}`));
 
             this.setData({
                 bootstrap_order: shuffled
@@ -209,17 +205,12 @@ Component({
                 return;
             }
 
-            console.log('🏌️ 开始差点排序');
-            console.log('  - 原顺序:', bootstrap_order.map(p => `${p.wx_nickname || p.nickname || `玩家${p.userid}`} (差点:${p.handicap || 0})`));
-
             // 按差点排序, 差点低的在前
             const sorted = [...bootstrap_order].sort((a, b) => {
                 const handicapA = Number(a.handicap) || 0;
                 const handicapB = Number(b.handicap) || 0;
                 return handicapA - handicapB;
             });
-
-            console.log('  - 新顺序:', sorted.map(p => `${p.wx_nickname || p.nickname || `玩家${p.userid}`} (差点:${p.handicap || 0})`));
 
             this.setData({
                 bootstrap_order: sorted
@@ -247,10 +238,6 @@ Component({
         onUserSortEnd(e) {
             const newUserList = e.detail.listData;
 
-            console.log('🎯 UserDrag 拖拽排序完成');
-            console.log('  - 原 bootstrap_order:', this.data.bootstrap_order);
-            console.log('  - 新 newUserList:', newUserList);
-
             this.setData({
                 bootstrap_order: newUserList
             });
@@ -261,7 +248,6 @@ Component({
                 red_blue_config: this.data.red_blue_config,
                 bootstrap_order: this.convertToUserIds(newUserList)
             };
-            console.log('📤 拖拽完成，触发 change 事件，数据:', eventData);
 
             // 触发变更事件, 传递用户ID数组
             this.triggerEvent('change', eventData);
