@@ -1,6 +1,0 @@
-<page-meta scroll-top="{{pageMetaScrollTop}}"></page-meta>
-
-<!-- 拖拽演示页面 -->
-<view class="drag-demo-page">
-  <HolesDrag scroll-top="{{scrollTop}}" bind:sortend="onSortEnd" bind:scroll="onScroll"></HolesDrag>
-</view>
