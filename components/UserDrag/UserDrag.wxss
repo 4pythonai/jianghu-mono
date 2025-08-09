@@ -6,11 +6,14 @@
 
 .user-item {
 	background: white;
-	border-radius: 8rpx;
-	margin-bottom: 20rpx;
-	padding: 20rpx;
+	border-radius: 6rpx;
+	margin-bottom: 12rpx;
+	padding: 12rpx 16rpx;
 	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 	transition: all 0.3s ease;
+	will-change: transform;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 
 .user-item.dragging {
@@ -26,35 +29,35 @@
 .user-info {
 	display: flex;
 	align-items: center;
-	gap: 20rpx;
+	gap: 12rpx;
 }
 
 .drag-handle {
 	color: #999;
-	font-size: 24rpx;
+	font-size: 20rpx;
 }
 
 .order-number {
 	color: #00aa00;
-	font-size: 32rpx;
+	font-size: 28rpx;
 	font-weight: bold;
-	min-width: 48rpx;
+	min-width: 40rpx;
 	text-align: center;
 }
 
 .group-dot {
-	font-size: 32rpx;
+	font-size: 28rpx;
 }
 
 .player-avatar {
-	width: 80rpx;
-	height: 80rpx;
+	width: 60rpx;
+	height: 60rpx;
 	border-radius: 50%;
 	border: 2rpx solid #ddd;
 }
 
 .player-name {
-	font-size: 28rpx;
+	font-size: 26rpx;
 	color: #333;
 	font-weight: 500;
 	flex: 1;
