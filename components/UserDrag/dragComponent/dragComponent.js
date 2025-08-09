@@ -81,6 +81,16 @@ Component({
 		dragging: false,
 	},
 
+	observers: {
+		'userList': function (newUserList) {
+			console.log('🔄 DragComponent userList 变化:', newUserList);
+			if (newUserList && newUserList.length > 0) {
+				// 直接调用init，使用properties中的数据
+				this.init();
+			}
+		}
+	},
+
 
 	methods: {
 		vibrate() {
@@ -109,16 +119,11 @@ Component({
 			// 排序完成后打印数组内容
 			if (e.list && e.list.length > 0) {
 				console.log('🔄 拖拽排序完成 - 当前数组顺序:');
-				console.log('📊 详细数据:', e.list.map(item => ({
-					id: item.id,
-					realKey: item.realKey,
-					sortKey: item.sortKey,
-					nickname: item.data?.nickname || item.data?.wx_nickname || '未知用户',
-					userid: item.data?.userid
-				})));
 				e.list.forEach((item, index) => {
-					const userData = item.data || {};
-					console.log(`位置${index + 1}: ${userData.nickname || userData.wx_nickname || '未知用户'} (userid: ${userData.userid}) [id:${item.id}, realKey:${item.realKey}]`);
+					if (!item.extraNode) {
+						const userData = item.data || {};
+						console.log(`位置${index + 1}: ${userData.nickname || userData.wx_nickname || '未知用户'} (userid: ${userData.userid}) [sortKey:${item.sortKey}]`);
+					}
 				});
 			}
 		},
@@ -194,7 +199,12 @@ Component({
 				data: item
 			});
 
-			const { userList, extraNodes } = this.data;
+			// 确保使用最新的userList数据
+			const userList = this.data.userList || this.properties.userList || [];
+			const extraNodes = this.data.extraNodes || this.properties.extraNodes || [];
+
+			console.log('🔄 DragComponent init 开始，userList:', userList);
+
 			const _list = [];
 			const _before = [];
 			const _after = [];
@@ -238,6 +248,8 @@ Component({
 			this.data.rows = Math.ceil(list.length / columns);
 
 			const wrapHeight = this.data.rows * this.data.itemHeight;
+
+			console.log('🔄 DragComponent init 完成，list:', list);
 
 			this.setData({
 				list,

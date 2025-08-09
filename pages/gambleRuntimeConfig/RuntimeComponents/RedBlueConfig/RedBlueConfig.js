@@ -156,8 +156,22 @@ Component({
         randomOrder() {
             const { bootstrap_order } = this.data;
 
+            // 检查是否有玩家数据
+            if (!bootstrap_order || bootstrap_order.length === 0) {
+                wx.showToast({
+                    title: '没有玩家数据',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            console.log('🎲 开始抽签排序');
+            console.log('  - 原顺序:', bootstrap_order.map(p => p.wx_nickname || p.nickname || `玩家${p.userid}`));
+
             // 随机打乱玩家顺序
             const shuffled = RuntimeComponentsUtils.array.shuffle(bootstrap_order);
+
+            console.log('  - 新顺序:', shuffled.map(p => p.wx_nickname || p.nickname || `玩家${p.userid}`));
 
             this.setData({
                 bootstrap_order: shuffled
@@ -174,11 +188,29 @@ Component({
                 title: '抽签排序完成',
                 icon: 'success'
             });
+
+            // 记录日志
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '抽签排序完成', {
+                originalOrder: bootstrap_order.map(p => p.userid),
+                newOrder: shuffled.map(p => p.userid)
+            });
         },
 
         // 差点排序(按差点从低到高排序)
         handicapOrder() {
             const { bootstrap_order } = this.data;
+
+            // 检查是否有玩家数据
+            if (!bootstrap_order || bootstrap_order.length === 0) {
+                wx.showToast({
+                    title: '没有玩家数据',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            console.log('🏌️ 开始差点排序');
+            console.log('  - 原顺序:', bootstrap_order.map(p => `${p.wx_nickname || p.nickname || `玩家${p.userid}`} (差点:${p.handicap || 0})`));
 
             // 按差点排序, 差点低的在前
             const sorted = [...bootstrap_order].sort((a, b) => {
@@ -187,11 +219,16 @@ Component({
                 return handicapA - handicapB;
             });
 
+            console.log('  - 新顺序:', sorted.map(p => `${p.wx_nickname || p.nickname || `玩家${p.userid}`} (差点:${p.handicap || 0})`));
+
             this.setData({
                 bootstrap_order: sorted
             });
 
-            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '差点排序', sorted);
+            RuntimeComponentsUtils.logger.log('RED_BLUE_CONFIG', '差点排序完成', {
+                originalOrder: bootstrap_order.map(p => ({ userid: p.userid, handicap: p.handicap || 0 })),
+                newOrder: sorted.map(p => ({ userid: p.userid, handicap: p.handicap || 0 }))
+            });
 
             // 触发变更事件, 传递用户ID数组
             this.triggerEvent('change', {

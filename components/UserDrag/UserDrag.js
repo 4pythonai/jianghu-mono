@@ -16,9 +16,18 @@ Component({
 
     observers: {
         'userList': function (newUserList) {
+            console.log('🔄 UserDrag userList 变化:', newUserList);
             this.setData({
                 currentUserList: newUserList || []
             });
+
+            // 通知DragComponent更新
+            setTimeout(() => {
+                const dragComponent = this.selectComponent('#userDrag');
+                if (dragComponent && dragComponent.init) {
+                    dragComponent.init();
+                }
+            }, 100);
         }
     },
 

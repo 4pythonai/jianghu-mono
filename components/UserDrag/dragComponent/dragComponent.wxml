@@ -1,4 +1,4 @@
-<wxs module="handler" src="./index.wxs"></wxs>
+<wxs module="handler" src="./dragComponent.wxs"></wxs>
 
 <view
   class="item-wrap item-wrap-class"

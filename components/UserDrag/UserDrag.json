@@ -1,7 +1,7 @@
 {
     "component": true,
     "usingComponents": {
-        "DragComponent": "./dragComponent/index",
-        "userItem": "./userItem/index"
+        "DragComponent": "./dragComponent/dragComponent",
+        "userItem": "./userItem/userItem"
     }
 }

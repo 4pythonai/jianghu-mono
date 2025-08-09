@@ -143,13 +143,23 @@ const RuntimeComponentsUtils = {
     // 数组工具
     array: {
         /**
-         * 安全的数组随机排序
+         * 安全的数组随机排序 (使用Fisher-Yates洗牌算法)
          * @param {Array} array - 原数组
          * @returns {Array} 打乱后的新数组
          */
         shuffle(array) {
             if (!Array.isArray(array)) return [];
-            return [...array].sort(() => Math.random() - 0.5);
+
+            const shuffled = [...array];
+            const length = shuffled.length;
+
+            // Fisher-Yates洗牌算法
+            for (let i = length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+
+            return shuffled;
         },
 
         /**
