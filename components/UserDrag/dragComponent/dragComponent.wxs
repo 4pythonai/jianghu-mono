@@ -89,9 +89,16 @@ var longPress = function (event, ownerInstance) {
 	var item = st.list[st.cur];
 	if (item && item.fixed) return;
 
-	// 如果已经在 drag 中则返回, 防止多指触发 drag 动作, touchstart 事件中有效果
-	if (st.dragging) return;
+	// 如果已经在 drag 中则返回, 防止多指触发 drag 动作
+	if (st.dragging && st.cur !== -1) return;
+
+	// 重置拖拽状态，确保干净的开始
+	st.preStartKey = -1;
 	st.dragging = true;
+	st.tranX = 0;
+	st.tranY = 0;
+	st.sId = null;
+
 	ownerInstance.callMethod("drag", { dragging: true });
 
 	// 计算X,Y轴初始位移, 使 item 中心移动到点击处, 单列时候X轴初始不做位移
@@ -184,6 +191,7 @@ var touchEnd = function (event, ownerInstance) {
 	if (!st.dragging) return;
 	triggerCustomEvent(st.list, "sortend", ownerInstance);
 
+	// 重置当前拖拽项的样式
 	ins.addClass("tran");
 	ins.setStyle({
 		'transform': 'translate3d(' + st.list[st.cur].tranX + ',' + st.list[st.cur].tranY + ', 0)'
@@ -195,12 +203,16 @@ var touchEnd = function (event, ownerInstance) {
 		itemIns.addClass("tran");
 	});
 
+	// 重置拖拽状态 - 确保所有状态都被重置
 	st.preStartKey = -1;
 	st.dragging = false;
-	ownerInstance.callMethod("drag", { dragging: false });
 	st.cur = -1;
 	st.tranX = 0;
 	st.tranY = 0;
+	st.sId = null;
+
+	// 通知JS组件拖拽结束
+	ownerInstance.callMethod("drag", { dragging: false });
 }
 
 var baseDataObserver = function (newVal, oldVal, ownerInstance, ins) {
@@ -217,12 +229,14 @@ var listObserver = function (newVal, oldVal, ownerInstance, ins) {
 	st.list.forEach(function (item, index) {
 		var itemIns = st.itemsInstance[index];
 		if (item && itemIns) {
-			// 重置所有样式类，确保干净的状态
-			itemIns.removeClass("cur").removeClass("tran");
-			itemIns.setStyle({
-				'transform': 'translate3d(' + item.tranX + ',' + item.tranY + ', 0)'
-			});
-			if (item.fixed) itemIns.addClass("fixed");
+			// 只有在非拖拽状态下才重置样式
+			if (!st.dragging || st.cur === -1) {
+				itemIns.removeClass("cur").removeClass("tran");
+				itemIns.setStyle({
+					'transform': 'translate3d(' + item.tranX + ',' + item.tranY + ', 0)'
+				});
+				if (item.fixed) itemIns.addClass("fixed");
+			}
 		}
 	})
 }

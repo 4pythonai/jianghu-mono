@@ -1,7 +1,6 @@
 {
     "component": true,
     "usingComponents": {
-        "DragComponent": "./dragComponent/dragComponent",
         "userItem": "./userItem/userItem"
     }
 }

@@ -1,17 +1,30 @@
 Component({
     properties: {
+        // 用户列表数据
         userList: {
             type: Array,
             value: []
+        },
+        // 是否禁用拖拽
+        disabled: {
+            type: Boolean,
+            value: false
         }
     },
 
     data: {
-        draggingIndex: -1,
-        startY: 0,
+        // 当前用户列表（用于拖拽排序）
         currentUserList: [],
-        extraNodes: [],
-        scrollTop: 0
+        // 拖拽状态
+        dragging: false,
+        // 拖拽的索引
+        draggingIndex: -1,
+        // 拖拽开始位置
+        startY: 0,
+        // 拖拽开始时间
+        startTime: 0,
+        // 长按定时器
+        longPressTimer: null
     },
 
     observers: {
@@ -20,14 +33,6 @@ Component({
             this.setData({
                 currentUserList: newUserList || []
             });
-
-            // 通知DragComponent更新
-            setTimeout(() => {
-                const dragComponent = this.selectComponent('#userDrag');
-                if (dragComponent && dragComponent.init) {
-                    dragComponent.init();
-                }
-            }, 100);
         }
     },
 
@@ -40,44 +45,47 @@ Component({
     },
 
     methods: {
-        // 拖拽排序结束事件 (来自DragComponent)
-        sortEnd(e) {
-            console.log('🎯 UserDrag sortEnd 事件触发');
-            console.log('  - e.detail.userList:', e.detail.userList);
+        /**
+         * 触摸开始
+         */
+        onTouchStart(e) {
+            if (this.properties.disabled) return;
 
-            this.setData({
-                currentUserList: e.detail.userList
-            });
-
-            // 向父组件传递排序结果
-            this.triggerEvent('sortend', {
-                listData: e.detail.userList
-            });
-        },
-
-        // 长按开始拖拽
-        onLongPress(e) {
             const index = e.currentTarget.dataset.index;
+            const item = this.data.currentUserList[index];
 
-            console.log('🔥 开始拖拽，索引:', index);
+            // 检查是否允许拖拽
+            if (item?.fixed) return;
+
+            // 清除之前的长按定时器
+            if (this.data.longPressTimer) {
+                clearTimeout(this.data.longPressTimer);
+            }
+
+            // 设置长按定时器
+            const timer = setTimeout(() => {
+                this.startDrag(e, index);
+            }, 500);
 
             this.setData({
-                draggingIndex: index,
-                startY: e.touches[0].clientY
+                longPressTimer: timer,
+                startY: e.touches[0].clientY,
+                startTime: Date.now()
             });
-
-            wx.vibrateShort();
         },
 
-        // 拖拽移动
+        /**
+         * 触摸移动
+         */
         onTouchMove(e) {
-            if (this.data.draggingIndex === -1) return;
+            if (!this.data.dragging || this.data.draggingIndex === -1) return;
 
-            const offsetY = e.touches[0].clientY - this.data.startY;
+            const currentY = e.touches[0].clientY;
+            const offsetY = currentY - this.data.startY;
             const itemHeight = 84; // 固定高度
 
-            // 简单的位置交换逻辑
-            if (Math.abs(offsetY) > itemHeight * 0.5) {
+            // 计算目标位置
+            if (Math.abs(offsetY) > itemHeight * 0.3) {
                 const direction = offsetY > 0 ? 1 : -1;
                 const targetIndex = this.data.draggingIndex + direction;
 
@@ -87,15 +95,25 @@ Component({
             }
         },
 
-        // 拖拽结束
+        /**
+         * 触摸结束
+         */
         onTouchEnd(e) {
-            if (this.data.draggingIndex === -1) return;
+            // 清除长按定时器
+            if (this.data.longPressTimer) {
+                clearTimeout(this.data.longPressTimer);
+                this.setData({ longPressTimer: null });
+            }
+
+            if (!this.data.dragging) return;
 
             console.log('✋ 拖拽结束');
 
             this.setData({
+                dragging: false,
                 draggingIndex: -1,
-                startY: 0
+                startY: 0,
+                startTime: 0
             });
 
             // 触发排序完成事件
@@ -104,8 +122,28 @@ Component({
             });
         },
 
-        // 交换两个项目
+        /**
+         * 开始拖拽
+         */
+        startDrag(e, index) {
+            console.log('🔥 开始拖拽，索引:', index);
+
+            this.setData({
+                dragging: true,
+                draggingIndex: index,
+                longPressTimer: null
+            });
+
+            // 震动反馈
+            wx.vibrateShort();
+        },
+
+        /**
+         * 交换两个项目
+         */
         swapItems(fromIndex, toIndex) {
+            if (fromIndex === toIndex) return;
+
             const list = [...this.data.currentUserList];
             const temp = list[fromIndex];
             list[fromIndex] = list[toIndex];
@@ -118,6 +156,27 @@ Component({
                 draggingIndex: toIndex,
                 startY: this.data.startY + (toIndex - fromIndex) * 84
             });
+        },
+
+        /**
+         * 用户项点击事件
+         */
+        onItemClick(e) {
+            // 如果正在拖拽，不触发点击事件
+            if (this.data.dragging) return;
+
+            const { itemData, index } = e.detail;
+            this.triggerEvent('itemclick', {
+                itemData,
+                index
+            });
+        },
+
+        /**
+         * 空事件处理方法（用于条件性禁用事件）
+         */
+        noTap() {
+            return;
         }
     }
 });

@@ -85,7 +85,7 @@ Component({
 		'userList': function (newUserList) {
 			console.log('🔄 DragComponent userList 变化:', newUserList);
 			if (newUserList && newUserList.length > 0) {
-				// 直接调用init，使用properties中的数据
+				// 直接调用init，让init方法自己处理状态
 				this.init();
 			}
 		}
@@ -169,7 +169,6 @@ Component({
 				baseData.wrapLeft = res[1].left;
 				baseData.wrapTop = res[1].top + this.data.scrollTop;
 				this.setData({
-					dragging: false,
 					baseData
 				});
 			});
