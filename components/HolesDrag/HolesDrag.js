@@ -1,24 +1,3 @@
-const listData = [
-    { hindex: 0, holename: "A1" },
-    { hindex: 1, holename: "A2" },
-    { hindex: 2, holename: "A3" },
-    { hindex: 3, holename: "A4" },
-    { hindex: 4, holename: "A5" },
-    { hindex: 5, holename: "A6" },
-    { hindex: 6, holename: "A7" },
-    { hindex: 7, holename: "A8" },
-    { hindex: 8, holename: "A9" },
-    { hindex: 9, holename: "B1" },
-    { hindex: 10, holename: "B2" },
-    { hindex: 11, holename: "B3" },
-    { hindex: 12, holename: "B4" },
-    { hindex: 13, holename: "B5" },
-    { hindex: 14, holename: "B6" },
-    { hindex: 15, holename: "B7" },
-    { hindex: 16, holename: "B8" },
-    { hindex: 17, holename: "B9" }
-];
-
 Component({
     properties: {
         // 外部传入的滚动位置
@@ -30,18 +9,23 @@ Component({
         isModal: {
             type: Boolean,
             value: false
+        },
+        // 外部传入的球洞列表数据
+        holeList: {
+            type: Array,
+            value: []
         }
     },
 
     data: {
         listData: [],
-        extraNodes: []
+        extraNodes: [],
+        isInitialized: false
     },
 
     methods: {
         // 拖拽排序结束事件
         sortEnd(e) {
-            console.log("HolesDrag sortEnd", e.detail.listData);
             this.setData({
                 listData: e.detail.listData
             });
@@ -62,22 +46,31 @@ Component({
         // 初始化组件
         init() {
             this.drag = this.selectComponent('#holoJump');
-            console.log("HolesDrag init, drag component:", this.drag);
+
+            // 检查是否有数据
+            if (!this.data.holeList || this.data.holeList.length === 0) {
+                console.warn('HolesDrag: 没有传入holeList数据');
+                return;
+            }
+
+            // 防止重复初始化
+            if (this.data.isInitialized) {
+                return;
+            }
+
             // 模仿异步加载数据
             setTimeout(() => {
                 this.setData({
-                    listData: listData
+                    listData: this.data.holeList,
+                    isInitialized: true
                 });
-                console.log("HolesDrag setData listData:", listData);
                 if (this.drag) {
                     this.drag.init();
-                    console.log("HolesDrag drag.init() called");
 
                     // 弹框内特殊处理：延迟重新初始化DOM信息
                     if (this.data.isModal) {
                         setTimeout(() => {
                             this.drag.initDom();
-                            console.log("HolesDrag modal initDom() called");
                         }, 200);
                     }
                 } else {
@@ -96,6 +89,19 @@ Component({
             this.setData({
                 listData: data
             });
+        },
+
+        // 更新球洞列表数据（手动更新方法）
+        updateHoleList(newHoleList) {
+            if (!newHoleList || newHoleList.length === 0) {
+                console.warn('HolesDrag: updateHoleList 传入的数据为空');
+                return;
+            }
+
+            // 直接设置数据，observers会自动处理后续逻辑
+            this.setData({
+                holeList: newHoleList
+            });
         }
     },
 
@@ -103,6 +109,35 @@ Component({
         attached() {
             // 组件加载完成后自动初始化
             this.init();
+        }
+    },
+
+    observers: {
+        // 监听holeList属性变化
+        'holeList': function (newHoleList, oldHoleList) {
+
+            // 避免重复设置相同数据
+            if (JSON.stringify(newHoleList) === JSON.stringify(oldHoleList)) {
+                return;
+            }
+
+            if (newHoleList && newHoleList.length > 0) {
+                // 直接更新listData，避免循环调用
+                this.setData({
+                    listData: newHoleList,
+                    isInitialized: false // 重置初始化标志
+                });
+
+                // 重新初始化拖拽组件
+                if (this.drag) {
+                    this.drag.init();
+                    if (this.data.isModal) {
+                        setTimeout(() => {
+                            this.drag.initDom();
+                        }, 200);
+                    }
+                }
+            }
         }
     }
 }); 
