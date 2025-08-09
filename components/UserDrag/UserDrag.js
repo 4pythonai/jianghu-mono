@@ -24,11 +24,16 @@ Component({
         // 拖拽开始时间
         startTime: 0,
         // 长按定时器
-        longPressTimer: null
+        longPressTimer: null,
+        // 宽度相关数据
+        containerWidth: 0,
+        itemWidth: 0,
+        itemHeight: 84
     },
 
     observers: {
         'userList': function (newUserList) {
+            console.log('🔄 UserDrag userList 变化:', newUserList);
             this.setData({
                 currentUserList: newUserList || []
             });
@@ -40,10 +45,51 @@ Component({
             this.setData({
                 currentUserList: this.properties.userList || []
             });
+            // 初始化时获取宽度信息
+            this.initWidth();
         }
     },
 
     methods: {
+        /**
+         * 初始化宽度信息
+         */
+        initWidth() {
+            const query = this.createSelectorQuery();
+            query.select('.user-drag-container').boundingClientRect();
+            query.select('.user-item').boundingClientRect();
+            query.exec((res) => {
+                if (res[0] && res[1]) {
+                    this.setData({
+                        containerWidth: res[0].width,
+                        itemWidth: res[1].width,
+                        itemHeight: res[1].height || 84
+                    });
+                }
+            });
+        },
+
+        /**
+         * 获取容器宽度
+         */
+        getContainerWidth() {
+            return this.data.containerWidth;
+        },
+
+        /**
+         * 获取项目宽度
+         */
+        getItemWidth() {
+            return this.data.itemWidth;
+        },
+
+        /**
+         * 获取项目高度
+         */
+        getItemHeight() {
+            return this.data.itemHeight;
+        },
+
         /**
          * 触摸开始
          */
@@ -81,7 +127,7 @@ Component({
 
             const currentY = e.touches[0].clientY;
             const offsetY = currentY - this.data.startY;
-            const itemHeight = 84; // 固定高度
+            const itemHeight = this.data.itemHeight;
 
             // 计算目标位置
             if (Math.abs(offsetY) > itemHeight * 0.3) {
@@ -147,7 +193,7 @@ Component({
             this.setData({
                 currentUserList: list,
                 draggingIndex: toIndex,
-                startY: this.data.startY + (toIndex - fromIndex) * 84
+                startY: this.data.startY + (toIndex - fromIndex) * this.data.itemHeight
             });
         },
 
