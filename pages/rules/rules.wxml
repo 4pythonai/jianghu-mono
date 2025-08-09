@@ -25,7 +25,6 @@
       id="myRulesComponent"
       show="{{ activeTab == 0 }}"
       bind:editRule="onEditRule"
-      bind:ruleDeleted="onRuleDeleted"
       bind:pullDownComplete="onPullDownComplete"
     ></MyRules>
 

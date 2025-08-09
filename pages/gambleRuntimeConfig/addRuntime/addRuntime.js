@@ -62,12 +62,8 @@ Page({
             const needsStroking = GameConfig.needsStroking(gambleSysName);
 
             // 获取 gameStore 中的 gameData
-            console.log("🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺", gameStore)
             const gameData = toJS(gameStore.gameData);
             const groupid = toJS(gameStore.gameData.groups[0].groupid); // 从 gameStore 获取 groupid
-            console.log("🔺🔺🔺🔺🔺🔺 groupid 🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺", groupid)
-            console.log('[AddRuntime] gameStore.gameData:', gameData);
-            console.log('[AddRuntime] gameStore.groupid:', groupid);
 
             // 计算调试信息
             const gameDataType = typeof gameData;
@@ -124,7 +120,6 @@ Page({
         if (holeRangeSelector) {
             const holeConfig = holeRangeSelector.getConfig();
             if (holeConfig) {
-                console.log('🕳️ [AddRuntime] 收集洞范围配置:', holeConfig);
                 this.setData({
                     'runtimeConfig.startHoleindex': holeConfig.startHoleindex,
                     'runtimeConfig.endHoleindex': holeConfig.endHoleindex,

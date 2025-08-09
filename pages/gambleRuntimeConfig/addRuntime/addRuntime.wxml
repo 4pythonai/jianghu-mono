@@ -1,18 +1,4 @@
 <view class="runtime-config-container">
-  <!-- 调试信息 -->
-  <view class="debug-info">
-    <text>调试信息:</text>
-    <text>gambleSysName: {{gambleSysName}}</text>
-    <text>gambleSysName长度: {{gambleSysName.length}}</text>
-    <text>needsPlayerConfig: {{needsPlayerConfig}}</text>
-    <text>players: {{players.length}}人</text>
-    <text>error: {{error}}</text>
-    <text>loading: {{loading}}</text>
-    <text>gameData存在: {{gameData ? '是' : '否'}}</text>
-    <text>gameDataString: {{gameDataString}}</text>
-  </view>
-
-  <!-- 错误状态 -->
   <view class="error-container" wx:if="{{error}}">
     <text class="error-text">{{error}}</text>
   </view>

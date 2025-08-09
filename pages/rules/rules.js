@@ -83,13 +83,7 @@ Page({
         });
     },
 
-    // 处理规则删除事件
-    onRuleDeleted(e) {
-        const { id } = e.detail;
-        console.log('📋 [Rules] 规则已删除:', id);
 
-        // 可以在这里添加额外的处理逻辑
-    },
 
     // 下拉刷新
     onPullDownRefresh() {
