@@ -1,93 +1,4 @@
-/* RedBlueConfig组件样式 */
-.red-blue-config {
-	display: flex;
-	flex-direction: column;
-	gap: 25rpx;
-}
-
-/* 分组方式选择 */
-.grouping-method {
-	background-color: #f8f8f8;
-	border-radius: 15rpx;
-	padding: 20rpx;
-}
-
-.section-title {
-	font-size: 32rpx;
-	font-weight: bold;
-	color: #333;
-	margin-bottom: 15rpx;
-}
-
-.section-label {
-	margin-bottom: 10rpx;
-}
-
-.radio-item {
-	display: flex !important;
-	align-items: center;
-	justify-content: center;
-	padding: 12rpx 20rpx;
-	gap: 8rpx;
-	flex: 1;
-	background-color: #fff;
-	border-radius: 12rpx;
-	border: 2rpx solid #e0e0e0;
-	transition: all 0.3s;
-	min-height: 60rpx;
-	box-sizing: border-box;
-}
-
-.radio-item:active {
-	transform: scale(0.98);
-}
-
-.radio-label {
-	font-size: 28rpx;
-	color: #333;
-	font-weight: 500;
-	white-space: nowrap;
-}
-
-.departure-order {
-	background-color: #f8f8f8;
-	border-radius: 15rpx;
-	padding: 20rpx;
-}
-
-.order-controls {
-	display: flex;
-	gap: 15rpx;
-	margin-bottom: 20rpx;
-}
-
-.order-btn {
-	flex: 1;
-	height: 70rpx;
-	background-color: #4caf50;
-	color: #fff;
-	border: none;
-	border-radius: 12rpx;
-	font-size: 28rpx;
-	font-weight: bold;
-}
-
-.order-btn::after {
-	border: none;
-}
-
-.order-btn:active {
-	transform: scale(0.98);
-}
-
-/* 玩家列表 */
-.players-order-list {
-	border: 2rpx solid #e0e0e0;
-	border-radius: 15rpx;
-	background-color: #fff;
-	overflow: hidden;
-}
-
+/* 玩家列表项样式 */
 .player-order-item {
 	display: flex;
 	align-items: center;
@@ -135,13 +46,6 @@
 	color: #4caf50;
 }
 
-.order-number {
-	font-size: 32rpx;
-	font-weight: bold;
-	color: #4caf50;
-	min-width: 60rpx;
-}
-
 .player-avatar {
 	width: 60rpx;
 	height: 60rpx;
@@ -153,7 +57,13 @@
 
 .player-name {
 	font-size: 30rpx;
-	color: #333;
+	color: hsl(0, 2%, 43%);
 	font-weight: 500;
 	flex: 1;
+}
+
+.player-serial {
+	margin-left: 20rpx;
+	margin-right: 20rpx;
+	color: green;
 }

@@ -107,7 +107,7 @@ Component({
 			const updatedList = e.list.map((item, index) => {
 				if (!item.extraNode) {
 					// 对于非额外节点，重新计算 abcd 为 realKey
-					item.abcd = String(item.realKey);
+					item.abcd = String(item.realKey + 1);
 				}
 				return item;
 			});
@@ -220,8 +220,7 @@ Component({
 
 				item.realKey = item.extraNode ? -1 : i++; // 真实顺序
 
-				// item.abcd = "hello";
-				item.abcd = String(item.realKey)
+				item.abcd = String(item.realKey + 1)
 				item.sortKey = index; // 整体顺序
 				item.tranX = `${(item.sortKey % columns) * 100}%`;
 				item.tranY = `${Math.floor(item.sortKey / columns) * 100}%`;
