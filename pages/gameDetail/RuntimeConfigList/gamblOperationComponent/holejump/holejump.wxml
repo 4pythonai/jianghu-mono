@@ -2,19 +2,21 @@
   <view class="modal-content" catchtap="noop">
     <view class="modal-title">跳洞设置</view>
 
-    <!-- 拖拽提示区域 -->
-    <view class="drag-hint">
-      <text>长按球开始拖拽，松开完成排序</text>
-    </view>
-
-    <!-- 拖拽容器 -->
-    <view class="drag-container">
-      <hole-drag
-        hole-list="{{holePlayList}}"
-        columns="{{columnsPerRow}}"
-        bind:dragstart="onDragStart"
-        bind:dragend="onDragEnd"
-      ></hole-drag>
+    <view style="margin: 4rpx;">
+      <DragComponent
+        id="holoJump"
+        generic:item="holeItem"
+        bind:sortend="sortEnd"
+        bind:scroll="scroll"
+        item-wrap-class="holeItem-wrap"
+        extra-nodes="{{extraNodes}}"
+        list-data="{{listData}}"
+        columns="9"
+        scroll-top="{{scrollTop}}"
+        item-height="{{(750 - 8) / 9}}"
+        top-size="110"
+        bottom-size="{{400}}"
+      ></DragComponent>
     </view>
 
     <view class="modal-actions">

@@ -1,0 +1,15 @@
+page {
+	padding-top: 110rpx;
+}
+
+.holeItem-wrap {
+	background: #f7f7f7;
+}
+
+.empty-bottom {
+	padding-bottom: 300rpx;
+
+	&.isX {
+		padding-bottom: 380rpx;
+	}
+}

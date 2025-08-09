@@ -48,3 +48,14 @@
 	color: #0066cc;
 	font-size: 26rpx;
 }
+
+.holeItem-wrap {
+	background: #f7f7f7;
+}
+
+.empty-bottom {
+	padding-bottom: 300rpx;
+}
+.empty-bottom.isX {
+	padding-bottom: 380rpx;
+}

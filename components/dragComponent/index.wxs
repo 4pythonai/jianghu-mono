@@ -1,6 +1,8 @@
+
 var isOutRange = function (x1, y1, x2, y2, x3, y3) {
 	return x1 < 0 || x1 >= y1 || x2 < 0 || x2 >= y2 || x3 < 0 || x3 >= y3
 };
+
 
 var sortCore = function (sKey, eKey, st) {
 	var _ = st.baseData;
@@ -16,7 +18,7 @@ var sortCore = function (sKey, eKey, st) {
 	// 先获取到 endKey 对应的 realKey, 防止下面排序过程中该 realKey 被修改
 	var endRealKey = -1;
 	st.list.forEach(function (item) {
-		if(item.sortKey === eKey) endRealKey = item.realKey;
+		if (item.sortKey === eKey) endRealKey = item.realKey;
 	});
 
 	return st.list.map(function (item) {
@@ -54,7 +56,7 @@ var sortCore = function (sKey, eKey, st) {
 	});
 }
 
-var triggerCustomEvent = function(list, type, ins) {
+var triggerCustomEvent = function (list, type, ins) {
 	var _list = [], listData = [];
 
 	list.forEach(function (item) {
@@ -67,7 +69,7 @@ var triggerCustomEvent = function(list, type, ins) {
 		}
 	});
 
-	ins.triggerEvent(type, {listData: listData});
+	ins.triggerEvent(type, { listData: listData });
 }
 
 var longPress = function (event, ownerInstance) {
@@ -87,7 +89,7 @@ var longPress = function (event, ownerInstance) {
 	// 如果已经在 drag 中则返回, 防止多指触发 drag 动作, touchstart 事件中有效果
 	if (st.dragging) return;
 	st.dragging = true;
-	ownerInstance.callMethod("drag", {dragging: true});
+	ownerInstance.callMethod("drag", { dragging: true });
 
 	// 计算X,Y轴初始位移, 使 item 中心移动到点击处, 单列时候X轴初始不做位移
 	st.tranX = _.columns === 1 ? 0 : sTouch.pageX - (_.itemWidth / 2 + _.wrapLeft);
@@ -168,7 +170,7 @@ var touchMove = function (event, ownerInstance) {
 	});
 
 	ownerInstance.callMethod("vibrate");
-	ownerInstance.callMethod("listChange", {list: list});
+	ownerInstance.callMethod("listChange", { list: list });
 	triggerCustomEvent(list, "change", ownerInstance);
 }
 
@@ -186,7 +188,7 @@ var touchEnd = function (event, ownerInstance) {
 
 	st.preStartKey = -1;
 	st.dragging = false;
-	ownerInstance.callMethod("drag", {dragging: false});
+	ownerInstance.callMethod("drag", { dragging: false });
 	st.cur = -1;
 	st.tranX = 0;
 	st.tranY = 0;

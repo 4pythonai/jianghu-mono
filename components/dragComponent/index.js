@@ -2,24 +2,25 @@
  * 版本号比较
  */
 const compareVersion = (v1, v2) => {
-	v1 = v1.split('.')
-	v2 = v2.split('.')
-	const len = Math.max(v1.length, v2.length)
+	const v1Parts = v1.split('.')
+	const v2Parts = v2.split('.')
+	const len = Math.max(v1Parts.length, v2Parts.length)
 
-	while (v1.length < len) {
-		v1.push('0')
+	while (v1Parts.length < len) {
+		v1Parts.push('0')
 	}
-	while (v2.length < len) {
-		v2.push('0')
+	while (v2Parts.length < len) {
+		v2Parts.push('0')
 	}
 
 	for (let i = 0; i < len; i++) {
-		const num1 = parseInt(v1[i])
-		const num2 = parseInt(v2[i])
+		const num1 = Number.parseInt(v1Parts[i])
+		const num2 = Number.parseInt(v2Parts[i])
 
 		if (num1 > num2) {
 			return 1
-		} else if (num1 < num2) {
+		}
+		if (num1 < num2) {
 			return -1
 		}
 	}
@@ -100,8 +101,8 @@ Component({
 			this.data.listWxs = e.list;
 		},
 		itemClick(e) {
-			let index = e.currentTarget.dataset.index;
-			let item = this.data.listWxs[index];
+			const index = e.currentTarget.dataset.index;
+			const item = this.data.listWxs[index];
 
 			this.triggerEvent('click', {
 				key: item.realKey,
@@ -113,13 +114,13 @@ Component({
 		 *  初始化获取 dom 信息
 		 */
 		initDom() {
-			let { windowWidth, windowHeight, platform, SDKVersion } = wx.getSystemInfoSync();
-			let remScale = (windowWidth || 375) / 375;
+			const { windowWidth, windowHeight, platform, SDKVersion } = wx.getSystemInfoSync();
+			const remScale = (windowWidth || 375) / 375;
 
 			this.data.pageMetaSupport = compareVersion(SDKVersion, '2.9.0') >= 0;
 			this.data.platform = platform;
 
-			let baseData = {};
+			const baseData = {};
 			baseData.windowHeight = windowHeight;
 			baseData.realTopSize = this.data.topSize * remScale / 2;
 			baseData.realBottomSize = this.data.bottomSize * remScale / 2;
@@ -157,7 +158,7 @@ Component({
 			// 初始必须为true以绑定wxs中的函数,
 			this.setData({ dragging: true });
 
-			let delItem = (item, extraNode) => ({
+			const delItem = (item, extraNode) => ({
 				id: item.hindex,
 				extraNode: extraNode,
 				fixed: item.fixed,
@@ -165,8 +166,12 @@ Component({
 				data: item
 			});
 
-			let { listData, extraNodes } = this.data;
-			let _list = [], _before = [], _after = [], destBefore = [], destAfter = [];
+			const { listData, extraNodes } = this.data;
+			const _list = [];
+			const _before = [];
+			const _after = [];
+			const destBefore = [];
+			const destAfter = [];
 
 			extraNodes.forEach((item, index) => {
 				if (item.type === "before") {
@@ -182,17 +187,18 @@ Component({
 
 			// 遍历数据源增加扩展项, 以用作排序使用
 			listData.forEach((item, index) => {
-				destBefore.forEach((i) => {
+				for (const i of destBefore) {
 					if (i.data.destKey === index) _list.push(i);
-				});
+				}
 				_list.push(delItem(item, false));
-				destAfter.forEach((i) => {
+				for (const i of destAfter) {
 					if (i.data.destKey === index) _list.push(i);
-				});
+				}
 			});
 
-			let i = 0, columns = this.data.columns;
-			let list = (_before.concat(_list, _after) || []).map((item, index) => {
+			let i = 0;
+			const columns = this.data.columns;
+			const list = (_before.concat(_list, _after) || []).map((item, index) => {
 				item.realKey = item.extraNode ? -1 : i++; // 真实顺序
 				item.sortKey = index; // 整体顺序
 				item.tranX = `${(item.sortKey % columns) * 100}%`;
