@@ -13,6 +13,7 @@ Page({
         // 传递的数据
         gambleSysName: '',
         gameid: null,
+        groupid: null,
         players: [],
         gameData: null,
         userRule: null,
@@ -61,8 +62,12 @@ Page({
             const needsStroking = GameConfig.needsStroking(gambleSysName);
 
             // 获取 gameStore 中的 gameData
+            console.log("🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺", gameStore)
             const gameData = toJS(gameStore.gameData);
+            const groupid = toJS(gameStore.gameData.groups[0].groupid); // 从 gameStore 获取 groupid
+            console.log("🔺🔺🔺🔺🔺🔺 groupid 🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺", groupid)
             console.log('[AddRuntime] gameStore.gameData:', gameData);
+            console.log('[AddRuntime] gameStore.groupid:', groupid);
 
             // 计算调试信息
             const gameDataType = typeof gameData;
@@ -71,12 +76,7 @@ Page({
             let gameDataString = '';
             let roadLength = 0;
             if (gameData?.holeList && Array.isArray(gameData.holeList)) {
-                const holeListInfo = gameData.holeList.map(hole => ({
-                    hindex: hole.hindex,
-                    holename: hole.holename,
-                    unique_key: hole.unique_key
-                }));
-                gameDataString = JSON.stringify(holeListInfo, null, 2);
+                gameDataString = JSON.stringify(gameData, null, 2);
                 roadLength = gameData.holeList.length;
             }
 
@@ -87,6 +87,8 @@ Page({
 
             this.setData({
                 config: config,
+                groupid: groupid,
+                'runtimeConfig.groupid': groupid, // 使用 gameStore.groupid 设置 runtimeConfig 中的 groupid
                 needsPlayerConfig: needsPlayerConfig,
                 needsGrouping: needsGrouping,
                 needsStroking: needsStroking,
@@ -101,7 +103,7 @@ Page({
 
     // 确认配置
     onConfirmConfig() {
-        const { runtimeConfig, gambleSysName, gameid, players } = this.data;
+        const { runtimeConfig, gambleSysName, players } = this.data;
 
         // 从各个组件收集最新配置
         this.collectAllConfigs();

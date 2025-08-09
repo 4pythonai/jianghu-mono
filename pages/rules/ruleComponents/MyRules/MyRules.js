@@ -210,10 +210,10 @@ Component({
             const { holeRangeStore } = require('../../../../stores/holeRangeStore');
 
             const gambleSysName = item.gambleSysName;
-            console.log(`📋 [MyRules] 查看规则 "${item.gambleUserName}", 类型: ${gambleSysName}`);
 
             // 从 holeRangeStore 获取洞数据
             const { holeList } = holeRangeStore.getState();
+            console.log('🅰️🅰️🅰️🅰️  group:', group);
 
             // 准备传递给运行时配置页面的数据
             const runtimeConfigData = {
