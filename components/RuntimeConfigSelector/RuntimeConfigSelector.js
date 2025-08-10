@@ -85,43 +85,30 @@ Component({
             }
         },
 
-        // 点击项目时触发
-        onItemTap(e) {
-            const itemId = String(e.currentTarget.dataset.id);
-            console.log('[RuntimeConfigSelector] 点击项目:', itemId);
+        // checkbox 变化时触发
+        onCheckboxChange(e) {
+            const selectedValues = e.detail.value;
+            console.log('[RuntimeConfigSelector] checkbox 变化:', selectedValues);
 
-            const currentSelectedIdList = this.data.selectedIdList || [];
-            console.log('[RuntimeConfigSelector] 当前选中列表:', currentSelectedIdList);
-
-            let newSelectedIdList;
-
-            if (currentSelectedIdList.includes(itemId)) {
-                // 如果已选中，则取消选中
-                newSelectedIdList = currentSelectedIdList.filter(id => id !== itemId);
-                console.log('[RuntimeConfigSelector] 取消选中:', itemId);
-            } else {
-                // 如果未选中，则选中
-                newSelectedIdList = [...currentSelectedIdList, itemId];
-                console.log('[RuntimeConfigSelector] 选中:', itemId);
-            }
-
-            console.log('[RuntimeConfigSelector] 新的选中列表:', newSelectedIdList);
+            // 确保所有值都是字符串类型
+            const stringIds = selectedValues.map(id => String(id));
+            console.log('[RuntimeConfigSelector] 转换后的字符串ID:', stringIds);
 
             // 计算新的选中状态对象
             const isSelected = {};
             for (const config of this.data.runtimeConfigs) {
-                isSelected[config.id] = newSelectedIdList.includes(String(config.id));
+                isSelected[config.id] = stringIds.includes(String(config.id));
             }
 
             this.setData({
-                selectedIdList: newSelectedIdList,
+                selectedIdList: stringIds,
                 isSelected: isSelected
             }, () => {
                 console.log('[RuntimeConfigSelector] setData 完成，当前状态:', this.data.selectedIdList);
             });
 
             // 触发父组件事件
-            this.triggerEvent('checkboxChange', { selectedIdList: newSelectedIdList });
+            this.triggerEvent('checkboxChange', { selectedIdList: stringIds });
         },
 
         // 调试方法：检查checkbox状态

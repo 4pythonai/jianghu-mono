@@ -16,10 +16,11 @@
 	align-items: center;
 	padding-left: 10rpx;
 	margin-bottom: 36rpx;
-	border: 1rpx solid #ede7e7;
 }
 
 .game-item-info {
+	padding-top: 4px;
+	padding-bottom: 4px;
 	margin-left: 16rpx;
 }
 .game-title {
@@ -29,31 +30,10 @@
 	display: block;
 }
 
-/* 自定义checkbox样式 */
-.custom-checkbox {
-	width: 40rpx;
-	height: 40rpx;
-	border: 2rpx solid #ddd;
-	border-radius: 6rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+/* 标准checkbox样式 */
+.standard-checkbox {
 	margin-right: 16rpx;
-	background-color: #fff;
-	transition: all 0.2s ease;
-	position: relative;
-}
-
-.custom-checkbox.checked {
-	background-color: #07c160 !important;
-	border-color: #07c160 !important;
-}
-
-.checkmark {
-	color: #fff !important;
-	font-size: 24rpx;
-	font-weight: bold;
-	line-height: 1;
+	transform: scale(0.9);
 }
 
 /* 点击效果 */
@@ -68,7 +48,7 @@
 
 /* 去掉点击高亮 */
 .game-item-row,
-.custom-checkbox,
+.standard-checkbox,
 .game-item-info,
 .game-title {
 	-webkit-tap-highlight-color: transparent;
