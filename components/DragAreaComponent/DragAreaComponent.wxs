@@ -88,6 +88,12 @@ var longPress = function (event, ownerInstance) {
 
 	// 如果已经在 drag 中则返回, 防止多指触发 drag 动作, touchstart 事件中有效果
 	if (st.dragging) return;
+
+	// 重置之前的状态
+	st.preStartKey = -1;
+	st.tranX = 0;
+	st.tranY = 0;
+
 	st.dragging = true;
 	ownerInstance.callMethod("drag", { dragging: true });
 
@@ -100,9 +106,14 @@ var longPress = function (event, ownerInstance) {
 		'transform': 'translate3d(' + st.tranX + 'px, ' + st.tranY + 'px, 0)'
 	});
 
+	// 确保所有item都重置为正常状态，然后设置当前item为拖拽状态
 	st.itemsInstance.forEach(function (item, index) {
 		item.removeClass("tran").removeClass("cur");
-		item.addClass(index === st.cur ? "cur" : "tran");
+		if (index === st.cur) {
+			item.addClass("cur");
+		} else {
+			item.addClass("tran");
+		}
 	})
 
 	ownerInstance.callMethod("vibrate");
@@ -192,11 +203,19 @@ var touchEnd = function (event, ownerInstance) {
 	if (!st.dragging) return;
 	triggerCustomEvent(st.list, "sortend", ownerInstance);
 
+	// 确保所有item都重置为正常状态
+	st.itemsInstance.forEach(function (itemIns, index) {
+		itemIns.removeClass("cur").removeClass("tran");
+		itemIns.addClass("tran");
+	});
+
+	// 设置当前拖拽item的最终位置
 	ins.addClass("tran");
 	ins.setStyle({
 		'transform': 'translate3d(' + st.list[st.cur].tranX + ',' + st.list[st.cur].tranY + ', 0)'
 	});
 
+	// 立即重置状态，不使用setTimeout
 	st.preStartKey = -1;
 	st.dragging = false;
 	ownerInstance.callMethod("drag", { dragging: false });

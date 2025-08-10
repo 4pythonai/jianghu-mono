@@ -97,6 +97,16 @@ Component({
 			this.setData({
 				dragging: e.dragging
 			})
+
+			// 如果拖拽结束，确保状态完全重置
+			if (!e.dragging) {
+				// 延迟重置，确保wxs中的状态也同步
+				setTimeout(() => {
+					this.setData({
+						dragging: false
+					});
+				}, 50);
+			}
 		},
 
 		listChange(e) {
@@ -176,13 +186,22 @@ Component({
 			// 初始必须为true以绑定wxs中的函数,
 			this.setData({ dragging: true });
 
-			const delItem = (item, extraNode) => ({
-				id: item.hindex,
-				extraNode: extraNode,
-				fixed: item.fixed,
-				slot: item.slot,
-				data: item
-			});
+			const delItem = (item, extraNode) => {
+				// 确保item存在且是对象
+				if (!item || typeof item !== 'object') {
+					console.warn('DragAreaComponent: 无效的item数据:', item);
+					return null;
+				}
+
+				return {
+					id: item.hindex || item.userid || item.id || `item_${Date.now()}_${Math.random()}`,
+					extraNode: extraNode,
+					fixed: item.fixed || false,
+					slot: item.slot || false,
+					data: item, // 保存完整的原始数据
+					originalIndex: item.originalIndex !== undefined ? item.originalIndex : item.index
+				};
+			};
 
 			const { listData, extraNodes } = this.data;
 			const _list = [];
@@ -205,27 +224,38 @@ Component({
 
 			// 遍历数据源增加扩展项, 以用作排序使用
 			listData.forEach((item, index) => {
+				// 为每个item添加原始索引信息
+				const itemWithIndex = { ...item, originalIndex: index };
+
 				for (const i of destBefore) {
-					if (i.data.destKey === index) _list.push(i);
+					if (i && i.data && i.data.destKey === index) _list.push(i);
 				}
-				_list.push(delItem(item, false));
+
+				const processedItem = delItem(itemWithIndex, false);
+				if (processedItem) {
+					_list.push(processedItem);
+				}
+
 				for (const i of destAfter) {
-					if (i.data.destKey === index) _list.push(i);
+					if (i && i.data && i.data.destKey === index) _list.push(i);
 				}
 			});
 
+			// 过滤掉无效的item
+			const validList = _list.filter(item => item !== null);
+
 			let i = 0;
 			const columns = this.data.columns;
-			const list = (_before.concat(_list, _after) || []).map((item, index) => {
+			const list = (_before.concat(validList, _after) || []).map((item, index) => {
+				if (!item) return null;
 
 				item.realKey = item.extraNode ? -1 : i++; // 真实顺序
-
 				item.abcd = String(item.realKey + 1)
 				item.sortKey = index; // 整体顺序
 				item.tranX = `${(item.sortKey % columns) * 100}%`;
 				item.tranY = `${Math.floor(item.sortKey / columns) * 100}%`;
 				return item;
-			});
+			}).filter(item => item !== null);
 
 			this.data.rows = Math.ceil(list.length / columns);
 
@@ -238,6 +268,28 @@ Component({
 
 			// 异步加载数据时候, 延迟执行 initDom 方法, 防止基础库 2.7.1 版本及以下无法正确获取 dom 信息
 			setTimeout(() => this.initDom(), 0);
+		},
+
+		// 强制重置拖拽状态
+		forceResetDragState() {
+			this.setData({
+				dragging: false
+			});
+
+			// 重新初始化
+			setTimeout(() => {
+				this.init();
+			}, 100);
+		},
+
+		// 拖拽结束后的状态同步
+		syncDragEndState() {
+			// 确保拖拽状态正确重置
+			setTimeout(() => {
+				this.setData({
+					dragging: false
+				});
+			}, 300);
 		}
 	},
 	ready() {

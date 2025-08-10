@@ -73,7 +73,6 @@
 .players-order-list {
 	border: 2rpx solid #e0e0e0;
 	border-radius: 15rpx;
-	background-color: #933030;
 	overflow: hidden;
 	height: 400rpx;
 }

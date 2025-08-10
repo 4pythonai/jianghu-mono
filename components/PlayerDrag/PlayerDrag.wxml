@@ -5,6 +5,7 @@
     generic:item="PlayerItem"
     bind:sortend="sortEnd"
     bind:scroll="scroll"
+    bind:drag="onDragChange"
     item-wrap-class="holeItem-wrap"
     extra-nodes="{{extraNodes}}"
     list-data="{{listData}}"

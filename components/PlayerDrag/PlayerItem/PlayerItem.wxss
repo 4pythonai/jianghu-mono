@@ -5,7 +5,8 @@
 	padding: 20rpx;
 	border-bottom: 1rpx solid #f0f0f0;
 	gap: 20rpx;
-	transition: transform 0.3s ease, background-color 0.3s ease;
+	transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s
+		ease, box-shadow 0.3s ease;
 	position: relative;
 	background-color: #fff;
 }
@@ -31,6 +32,7 @@
 	line-height: 1;
 	letter-spacing: -2rpx;
 	transform: rotate(90deg);
+	transition: color 0.3s ease;
 }
 
 /* 拖拽状态样式 */
@@ -44,6 +46,25 @@
 
 .player-order-item.dragging .drag-icon {
 	color: #4caf50;
+}
+
+/* 确保拖拽过程中的层级和样式 */
+.player-order-item.cur {
+	z-index: 1001 !important;
+	background-color: #f0f8ff !important;
+	border: 2rpx solid #4caf50 !important;
+	border-radius: 12rpx !important;
+	box-shadow: 0 8rpx 25rpx rgba(0, 0, 0, 0.15) !important;
+	transition: none !important;
+}
+
+.player-order-item.cur .drag-icon {
+	color: #4caf50;
+}
+
+/* 拖拽动画状态 */
+.player-order-item.tran {
+	transition: transform 0.3s ease !important;
 }
 
 .player-avatar {
