@@ -26,6 +26,8 @@ export function normalizeHole(hole, index = null) {
         unique_key: hole.unique_key != null ? String(hole.unique_key) : '',
         par: Number(hole.par),
         hindex: index || hole.hindex, // 添加hindex字段
+        // 确保 holename 字段存在，如果没有则使用默认值
+        holename: hole.holename || `洞${index || hole.hindex || '?'}`
     };
 }
 

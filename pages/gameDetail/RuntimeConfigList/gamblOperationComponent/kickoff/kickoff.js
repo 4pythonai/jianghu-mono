@@ -29,8 +29,11 @@ Component({
                 }
             });
 
-            this.updateKIcoHolesList();
-            this.loadExistingMultipliers();
+            // 只有在 runtimeConfigs 有值时才初始化数据
+            if (this.data.runtimeConfigs && this.data.runtimeConfigs.length > 0) {
+                this.updateKIcoHolesList();
+                this.loadExistingMultipliers();
+            }
         },
         detached() {
             this.storeBindings.destroyStoreBindings();
@@ -39,23 +42,43 @@ Component({
 
     observers: {
         'runtimeConfigs': function (runtimeConfigs) {
-            this.loadExistingMultipliers();
+            if (runtimeConfigs && runtimeConfigs.length > 0) {
+                this.updateKIcoHolesList();
+                this.loadExistingMultipliers();
+            }
         }
     },
 
     methods: {
         // 更新洞序列表
         updateKIcoHolesList() {
-            const config = this.data.runtimeConfigs?.[0];
-            const holeIndexes = config.holePlayListStr.split(',').map(index => Number.parseInt(index.trim()));
-            const allHoles = gameStore.gameData?.holeList || [];
-            const holePlayList = holeIndexes.map(hindex => {
-                const hole = allHoles.find(h => h.hindex === hindex);
-                return hole || { hindex, holename: `洞${hindex}` };
-            }).filter(hole => hole);
+            // 直接从 gameStore 获取真实的洞数据，参考 holejump.js 的实现
+            const holeList = gameStore.gameData?.holeList || [];
 
-            this.setData({ holePlayList });
+            console.log('[kickoff] 从gameStore获取的洞数据:', holeList);
 
+            if (holeList && holeList.length > 0) {
+                // 使用真实的洞数据，按照 hindex 排序，确保数据类型正确
+                const sortedHoleList = [...holeList]
+                    .map(hole => ({
+                        ...hole,
+                        hindex: Number(hole.hindex),
+                        holename: String(hole.holename || `洞${hole.hindex}`)
+                    }))
+                    .sort((a, b) => a.hindex - b.hindex);
+
+                this.setData({ holePlayList: sortedHoleList });
+                console.log('[kickoff] 初始化洞序数据成功（已排序）:', sortedHoleList);
+            } else {
+                // 如果没有洞数据，使用默认的洞序（1-18洞）
+                const defaultHoles = Array.from({ length: 18 }, (_, i) => ({
+                    hindex: i + 1,
+                    holename: `洞${i + 1}`
+                }));
+
+                this.setData({ holePlayList: defaultHoles });
+                console.log('[kickoff] 使用默认洞序数据:', defaultHoles);
+            }
         },
 
         // 加载现有的倍数配置
@@ -88,10 +111,22 @@ Component({
             const { index, hindex } = e.currentTarget.dataset;
             const hole = this.data.holePlayList[index];
 
-            this.setData({
-                selectedHole: hole,
-                showMultiplierSelector: true
-            });
+            if (hole) {
+                // 确保数据类型正确
+                const selectedHole = {
+                    hindex: Number(hole.hindex),
+                    holename: String(hole.holename || `洞${hole.hindex}`)
+                };
+
+                this.setData({
+                    selectedHole: selectedHole,
+                    showMultiplierSelector: true
+                });
+
+                console.log('[kickoff] 选择洞:', selectedHole);
+            } else {
+                console.error('[kickoff] 未找到洞数据，index:', index);
+            }
         },
 
         // 倍数选择确认 - 保留连锁逻辑
