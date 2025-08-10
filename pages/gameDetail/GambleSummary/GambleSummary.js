@@ -127,25 +127,54 @@ Component({
                 fail: (error) => {
                     console.error('[GambleSummary] 跳转失败:', error);
 
-                    // 如果是页面栈溢出，尝试使用 redirectTo
-                    if (error.errMsg && error.errMsg.includes('navigateTo:fail page stack limit exceeded')) {
-                        wx.showModal({
-                            title: '提示',
-                            content: '页面层级过深，将重新打开配置列表页面',
-                            showCancel: false,
-                            success: () => {
-                                wx.redirectTo({
-                                    url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`,
-                                    fail: (redirectError) => {
-                                        console.error('[GambleSummary] redirectTo 也失败了:', redirectError);
-                                        wx.showToast({
-                                            title: '跳转失败，请重试',
-                                            icon: 'none'
-                                        });
-                                    }
-                                });
-                            }
-                        });
+                    // 检查错误类型并智能处理
+                    if (error.errMsg) {
+                        if (error.errMsg.includes('webview count limit exceed')) {
+                            // webview数量超限，提示用户关闭其他页面
+                            wx.showModal({
+                                title: '提示',
+                                content: '检测到webview数量超限，建议关闭记分卡或结果页面后再试',
+                                showCancel: false,
+                                success: () => {
+                                    // 尝试使用redirectTo作为备选方案
+                                    wx.redirectTo({
+                                        url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`,
+                                        fail: (redirectError) => {
+                                            console.error('[GambleSummary] redirectTo 也失败了:', redirectError);
+                                            wx.showToast({
+                                                title: '跳转失败，请关闭其他页面后重试',
+                                                icon: 'none'
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        } else if (error.errMsg.includes('page stack limit exceeded')) {
+                            // 页面栈溢出，使用redirectTo
+                            wx.showModal({
+                                title: '提示',
+                                content: '页面层级过深，将重新打开配置列表页面',
+                                showCancel: false,
+                                success: () => {
+                                    wx.redirectTo({
+                                        url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`,
+                                        fail: (redirectError) => {
+                                            console.error('[GambleSummary] redirectTo 也失败了:', redirectError);
+                                            wx.showToast({
+                                                title: '跳转失败，请重试',
+                                                icon: 'none'
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        } else {
+                            // 其他错误
+                            wx.showToast({
+                                title: '跳转失败，请重试',
+                                icon: 'none'
+                            });
+                        }
                     } else {
                         wx.showToast({
                             title: '跳转失败，请重试',

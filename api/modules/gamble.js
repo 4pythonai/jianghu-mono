@@ -46,6 +46,8 @@ const gamble = {
     // 跳洞设置
     changeHoleOrder: (data, options) => request('/Gamble/changeHoleOrder', data, options),
 
+    getSingleGambleResult: (data, options) => request('/Audit/getSingleGambleResult', data, options),
+
 }
 
 export default gamble

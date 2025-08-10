@@ -31,6 +31,8 @@
         <GambleResultTable
           groupInfo="{{gambleResult.group_info  }}"
           usefulHoles="{{gambleResult.useful_holes  }}"
+          qrcode_url="{{gambleResult.qrcode_url}}"
+          showQr="{false}"
         ></GambleResultTable>
       </view>
 

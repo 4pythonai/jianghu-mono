@@ -1,3 +1,5 @@
 {
-    "navigationBarTitleText": "赌球结果"
+    "usingComponents": {
+        "GambleResultTable": "/components/GambleResultTable/GambleResultTable"
+    }
 }

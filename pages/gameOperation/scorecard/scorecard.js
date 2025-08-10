@@ -51,6 +51,14 @@ Page({
     onUnload() {
         // 页面卸载时取消监听
         wx.offDeviceMotionChange(this.onDeviceMotionChange);
+
+        // 主动销毁webview，释放资源
+        this.setData({
+            showWebView: false,
+            webviewUrl: ''
+        });
+
+        console.log('📊 [Scorecard] 页面卸载，webview已销毁');
     },
 
     // 设备方向变化监听
