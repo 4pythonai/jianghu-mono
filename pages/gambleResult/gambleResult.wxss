@@ -25,22 +25,6 @@
 	margin-bottom: 10rpx;
 }
 
-.subtitle-text {
-	display: block;
-	font-size: 28rpx;
-	color: #666;
-}
-
-.header-info {
-	display: flex;
-	gap: 30rpx;
-}
-
-.info-text {
-	font-size: 26rpx;
-	color: #888;
-}
-
 /* 加载状态 */
 .loading-container {
 	display: flex;

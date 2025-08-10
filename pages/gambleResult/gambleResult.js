@@ -47,7 +47,6 @@ Page({
             if (result.code === 200) {
                 console.log('🎯 [GambleResult] 获取结果成功:', result);
 
-
                 this.setData({
                     groupInfo: result.gambleResult.group_info,
                     usefulHoles: result.gambleResult.useful_holes,
@@ -70,9 +69,5 @@ Page({
     onBackToGame() {
         console.log('🎯 [GambleResult] 返回游戏详情');
         wx.navigateBack();
-    },
-
-    onUnload() {
-        console.log('🎯 [GambleResult] 页面卸载');
     }
 }); 
