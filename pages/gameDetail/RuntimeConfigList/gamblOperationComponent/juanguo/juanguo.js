@@ -170,30 +170,99 @@ Component({
         // 捐锅方式切换
         onDonationTypeChange(e) {
             const value = e.detail.value;
+            const oldValue = this.data.donationType;
+
             this.setData({
                 donationType: value,
                 // 切换到normal时自动填1分
                 donationPoints: value === 'normal' ? 1 : this.data.donationPoints
             });
+
             console.log('[juanguo] 捐锅方式变更为:', value);
+
+            // 切换捐锅方式后，验证相关输入值是否仍然有效
+            this.validateAfterTypeChange(value, oldValue);
+        },
+
+        /**
+         * 捐锅方式切换后的验证
+         * @param {string} newType 新的捐锅方式
+         * @param {string} oldType 旧的捐锅方式
+         */
+        validateAfterTypeChange(newType, oldType) {
+            // 如果从其他方式切换到normal，确保donationPoints有效
+            if (newType === 'normal' && oldType !== 'normal') {
+                if (!this.data.donationPoints || Number(this.data.donationPoints) <= 0) {
+                    this.setData({ donationPoints: 1 });
+                }
+            }
+
+            // 如果切换到需要maxDonationPoints的方式，确保值有效
+            if ((newType === 'normal' || newType === 'all') &&
+                (!this.data.maxDonationPoints || Number(this.data.maxDonationPoints) <= 0)) {
+                // 清空无效值，让用户重新输入
+                this.setData({ maxDonationPoints: '' });
+            }
+
+            // 如果切换到bigpot方式，确保totalFee有效
+            if (newType === 'bigpot' && (!this.data.totalFee || Number(this.data.totalFee) <= 0)) {
+                // 清空无效值，让用户重新输入
+                this.setData({ totalFee: '' });
+            }
         },
 
         // 捐锅分数输入
         onDonationPointsInput(e) {
             const donationPoints = e.detail.value;
             this.setData({ donationPoints });
+            // 实时验证输入值
+            this.validateSingleInput('donationPoints', donationPoints);
         },
 
         // 总费用输入（大锅饭模式）
         onTotalFeeInput(e) {
             const totalFee = e.detail.value;
             this.setData({ totalFee });
+            // 实时验证输入值
+            this.validateSingleInput('totalFee', totalFee);
         },
 
         // 最大捐锅点数输入
         onMaxDonationPointsInput(e) {
             const maxDonationPoints = e.detail.value;
             this.setData({ maxDonationPoints });
+            // 实时验证输入值
+            this.validateSingleInput('maxDonationPoints', maxDonationPoints);
+        },
+
+        /**
+         * 实时验证单个输入值
+         * @param {string} field 字段名
+         * @param {string} value 输入值
+         */
+        validateSingleInput(field, value) {
+            const numValue = Number(value);
+
+            // 检查是否为空或非数字
+            if (!value || isNaN(numValue)) {
+                return false;
+
+            }
+
+            // 检查是否小于等于0
+            if (numValue <= 0) {
+                return false;
+            }
+
+            // 特殊验证：每洞捐分不能超过最大捐锅点数
+            if (field === 'donationPoints' && this.data.donationType === 'normal') {
+                const maxPoints = Number(this.data.maxDonationPoints);
+                if (maxPoints && numValue > maxPoints) {
+                    return false;
+                }
+            }
+
+            return true;
         },
 
         // 确定按钮点击
@@ -203,6 +272,17 @@ Component({
 
             // 确保 selectedIds 去重
             const selectedIds = [...new Set(this.data.selectedIdList || [])];
+
+            // 根据捐锅方式验证输入值
+            const validationResult = this.validateInputs();
+            if (!validationResult.isValid) {
+                wx.showToast({
+                    title: validationResult.message,
+                    icon: 'none',
+                    duration: 2000
+                });
+                return;
+            }
 
             // 构建捐锅配置数据
             const donationConfig = {
@@ -218,6 +298,54 @@ Component({
             // 触发事件传递给父组件，让父组件决定是否关闭弹窗
             this.triggerEvent('confirmDonation', { donationConfig });
             // 注意：不再在这里自动关闭弹窗，由父组件控制
+        },
+
+        /**
+         * 验证输入值
+         * @returns {{isValid: boolean, message: string}} 验证结果
+         */
+        validateInputs() {
+            const { donationType, donationPoints, totalFee, maxDonationPoints } = this.data;
+
+            // 根据捐锅方式验证相应的输入值
+            switch (donationType) {
+                case 'normal':
+                    // 普通模式：验证每洞捐分和最大捐锅点数
+                    if (!donationPoints || Number(donationPoints) <= 0) {
+                        return { isValid: false, message: '每洞捐分必须大于0' };
+                    }
+                    if (!maxDonationPoints || Number(maxDonationPoints) <= 0) {
+                        return { isValid: false, message: '最大合计点数必须大于0' };
+                    }
+                    // 验证每洞捐分不能超过最大捐锅点数
+                    if (Number(donationPoints) > Number(maxDonationPoints)) {
+                        return { isValid: false, message: '每洞捐分不能超过最大合计点数' };
+                    }
+                    break;
+
+                case 'all':
+                    // 全捐模式：验证最大捐锅点数
+                    if (!maxDonationPoints || Number(maxDonationPoints) <= 0) {
+                        return { isValid: false, message: '最大合计点数必须大于0' };
+                    }
+                    break;
+
+                case 'bigpot':
+                    // 大锅饭模式：验证总费用
+                    if (!totalFee || Number(totalFee) <= 0) {
+                        return { isValid: false, message: '总费用必须大于0' };
+                    }
+                    break;
+
+                case 'none':
+                    // 不捐锅模式：不需要验证
+                    break;
+
+                default:
+                    return { isValid: false, message: '请选择有效的捐锅方式' };
+            }
+
+            return { isValid: true, message: '' };
         },
 
         // 关闭弹窗

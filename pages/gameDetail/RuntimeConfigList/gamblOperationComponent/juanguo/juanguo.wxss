@@ -69,3 +69,21 @@
 .input-inline-placeholder {
 	color: #bbb;
 }
+
+/* 必填输入框样式 */
+.required-input {
+	border-color: #4caf50;
+	box-shadow: 0 4rpx 8rpx rgba(76, 175, 80, 0.15);
+}
+
+.required-input:active,
+.required-input:focus {
+	border-color: #45a072;
+	background: #f0f8f0;
+}
+
+/* 必填输入框的placeholder样式 */
+.required-input::placeholder {
+	color: #4caf50;
+	font-weight: 500;
+}

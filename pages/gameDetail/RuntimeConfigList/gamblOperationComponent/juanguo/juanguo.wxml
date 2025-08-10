@@ -18,20 +18,21 @@
           <radio value="normal" checked="{{donationType === 'normal'}}" />
           <text class="radio-text">赢家每洞捐</text>
           <input
-            class="input-inline point-input"
+            class="input-inline point-input required-input"
             type="number"
             value="{{donationPoints}}"
             bindinput="onDonationPointsInput"
             wx:if="{{donationType === 'normal'}}"
+            placeholder="必填"
           />
           <text class="radio-text" wx:if="{{donationType === 'normal'}}">分,捐到</text>
           <input
-            class="input-inline input-inline-placeholder"
+            class="input-inline input-inline-placeholder required-input"
             type="number"
             value="{{maxDonationPoints}}"
             bindinput="onMaxDonationPointsInput"
             wx:if="{{donationType === 'normal'}}"
-            placeholder="最大合计点数"
+            placeholder="必填"
           />
           <text class="radio-text">为止</text>
         </label>
@@ -40,12 +41,12 @@
           <text class="radio-text">全捐，捐到</text>
           <!-- 最大捐锅点数输入框，仅在选择全捐模式时显示 -->
           <input
-            class="input-inline input-inline-placeholder"
+            class="input-inline input-inline-placeholder required-input"
             type="number"
             value="{{maxDonationPoints}}"
             bindinput="onMaxDonationPointsInput"
             wx:if="{{donationType === 'all'}}"
-            placeholder="最大合计点数"
+            placeholder="必填"
           />
           <text class="radio-text">为止</text>
         </label>
@@ -53,12 +54,12 @@
           <radio value="bigpot" checked="{{donationType === 'bigpot'}}" />
           <text class="radio-text">大锅版,共计</text>
           <input
-            class="input-inline input-inline-placeholder"
+            class="input-inline input-inline-placeholder required-input"
             type="number"
             value="{{totalFee}}"
             bindinput="onTotalFeeInput"
             wx:if="{{donationType === 'bigpot'}}"
-            placeholder="请输入总费用"
+            placeholder="必填"
           />
           <text class="radio-text">元</text>
         </label>
