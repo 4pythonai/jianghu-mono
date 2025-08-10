@@ -206,11 +206,14 @@ Page({
     // 保存配置
     async saveConfig() {
         const { runtimeConfig, gameid, groupid, configId } = this.data;
+
+        // 直接调用BaseConfig的保存方法，避免重复逻辑
         const result = await BaseConfig.saveConfig(runtimeConfig, gameid, groupid, configId, this, true);
-        if (result.success) {
+
+        if (result?.success) {
             console.log('[EditRuntime] 配置更新成功');
         } else {
-            console.error('[EditRuntime] 配置更新失败:', result.error);
+            console.error('[EditRuntime] 配置更新失败:', result?.error);
         }
     },
 

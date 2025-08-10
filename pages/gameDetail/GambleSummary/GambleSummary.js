@@ -105,11 +105,54 @@ Component({
         /**
          * 导航栏图标按钮点击事件
          */
-        onIconClick() {
+        gotoRuntimeConfigList() {
             const gameid = this.properties.gameid;
             const groupid = this.properties.groupid;
+
+            // 检查参数
+            if (!gameid || !groupid) {
+                wx.showToast({
+                    title: '缺少必要参数',
+                    icon: 'none'
+                });
+                return;
+            }
+
+            // 尝试跳转，添加错误处理
             wx.navigateTo({
                 url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`,
+                success: () => {
+                    console.log('[GambleSummary] 成功跳转到配置列表页面');
+                },
+                fail: (error) => {
+                    console.error('[GambleSummary] 跳转失败:', error);
+
+                    // 如果是页面栈溢出，尝试使用 redirectTo
+                    if (error.errMsg && error.errMsg.includes('navigateTo:fail page stack limit exceeded')) {
+                        wx.showModal({
+                            title: '提示',
+                            content: '页面层级过深，将重新打开配置列表页面',
+                            showCancel: false,
+                            success: () => {
+                                wx.redirectTo({
+                                    url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`,
+                                    fail: (redirectError) => {
+                                        console.error('[GambleSummary] redirectTo 也失败了:', redirectError);
+                                        wx.showToast({
+                                            title: '跳转失败，请重试',
+                                            icon: 'none'
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        wx.showToast({
+                            title: '跳转失败，请重试',
+                            icon: 'none'
+                        });
+                    }
+                }
             });
         },
 

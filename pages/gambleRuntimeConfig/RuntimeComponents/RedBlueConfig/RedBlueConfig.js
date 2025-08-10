@@ -48,8 +48,13 @@ Component({
             console.log("弹框收到排序结果:", _bootstrap_order);
 
             this.setData({
-                holePlayList: e.detail.listData,
                 bootstrap_order: _bootstrap_order
+            });
+
+            // 触发变更事件，通知父组件数据已更新
+            this.triggerEvent('change', {
+                red_blue_config: this.data.red_blue_config,
+                bootstrap_order: this.convertToUserIds(_bootstrap_order)
             });
         },
 
@@ -102,13 +107,6 @@ Component({
                 bootstrap_order = [...players];
             }
 
-            console.log('[RedBlueConfig] initializeConfig 结果:', {
-                players,
-                initialBootstrapOrder,
-                bootstrap_order,
-                red_blue_config,
-                bootstrapOrderTypes: bootstrap_order.map(item => typeof item)
-            });
 
             this.setData({
                 red_blue_config,
@@ -246,13 +244,6 @@ Component({
                 red_blue_config: this.data.red_blue_config,
                 bootstrap_order: this.convertToUserIds(this.data.bootstrap_order)
             };
-
-            console.log('[RedBlueConfig] getConfig 返回配置:', {
-                red_blue_config: config.red_blue_config,
-                bootstrap_order: config.bootstrap_order,
-                originalBootstrapOrder: this.data.bootstrap_order,
-                players: this.data.players
-            });
 
             return config;
         }

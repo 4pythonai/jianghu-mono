@@ -5,7 +5,7 @@
       <text class="nav-title">游戏详情</text>
     </view>
     <view class="nav-right">
-      <view class="icon-btn" bindtap="onIconClick">
+      <view class="icon-btn" bindtap="gotoRuntimeConfigList">
         <image class="nav-icon" src="/assets/icons/icons8-right-arrow-50-3.png" mode="aspectFit"></image>
       </view>
     </view>

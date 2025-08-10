@@ -241,15 +241,14 @@ const BaseConfig = {
      * @returns {Promise} 保存结果
      */
     async saveConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit = false) {
-        const saveData = configManager.prepareSaveData(runtimeConfig, isEdit, configId);
-
-        pageContext.setData({ loading: true });
-
         try {
+            const saveData = configManager.prepareSaveData(runtimeConfig, isEdit, configId);
+
+            pageContext.setData({ loading: true });
+
             const apiMethod = isEdit ? 'updateRuntimeConfig' : 'addRuntimeConfig';
-
-
             const res = await app.api.gamble[apiMethod](saveData);
+
             if (res.code === 200) {
                 wx.showToast({
                     title: isEdit ? '配置更新成功' : '配置保存成功',
@@ -257,27 +256,30 @@ const BaseConfig = {
                 });
 
                 setTimeout(() => {
-                    wx.navigateTo({
+                    wx.redirectTo({
                         url: `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`
                     });
-                }, 1500);
+                }, 300);
 
                 return { success: true };
             }
-            wx.showToast({
-                title: res.msg || (isEdit ? '更新失败' : '保存失败'),
-                icon: 'none'
-            });
-            return { success: false, error: res.msg };
 
-        } catch (err) {
-            console.error('[BaseConfig] 保存配置失败:', err);
             wx.showToast({
-                title: '网络错误, 请重试',
+                title: isEdit ? '配置更新失败' : '配置保存失败',
                 icon: 'none'
             });
-            return { success: false, error: err.message };
+
+            return { success: false, error: res.message || '保存失败' };
+        } catch (error) {
+            console.error('[BaseConfig] 保存配置失败:', error);
+            wx.showToast({
+                title: '保存失败，请重试',
+                icon: 'none'
+            });
+
+            return { success: false, error: error.message };
         } finally {
+            // 无论成功还是失败，都要重置loading状态
             pageContext.setData({ loading: false });
         }
     },
