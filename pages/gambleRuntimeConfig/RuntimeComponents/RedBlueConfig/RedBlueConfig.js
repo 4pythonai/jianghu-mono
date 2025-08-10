@@ -44,17 +44,13 @@ Component({
 
         onSortEnd(e) {
             console.log("弹框收到排序结果:", e.detail.listData);
-            // 保存排序结果到本地数据
+            const _bootstrap_order = e.detail.listData.map(item => item.userid);
+            console.log("弹框收到排序结果:", _bootstrap_order);
 
             this.setData({
                 holePlayList: e.detail.listData,
+                bootstrap_order: _bootstrap_order
             });
-
-            // // 这里可以处理排序结果，比如保存到本地或传递给父组件
-            // this.triggerEvent('holesortend', {
-            //     listData: e.detail.listData
-            // });
-
         },
 
         // 滚动事件处理
@@ -69,12 +65,22 @@ Component({
         initializeConfig() {
             const { players, initialRedBlueConfig, initialBootstrapOrder, hasInitialized } = this.data;
 
+            console.log('[RedBlueConfig] initializeConfig 输入参数:', {
+                players: players?.map(p => ({ userid: p.userid, type: typeof p.userid })),
+                initialRedBlueConfig,
+                initialBootstrapOrder,
+                initialBootstrapOrderType: typeof initialBootstrapOrder,
+                isArray: Array.isArray(initialBootstrapOrder),
+                hasInitialized
+            });
+
             // 设置分组配置
             const red_blue_config = initialRedBlueConfig || '4_固拉';
 
             // 设置玩家顺序
             let bootstrap_order = [];
             if (initialBootstrapOrder && initialBootstrapOrder.length > 0) {
+                // 如果有初始玩家顺序，转换为玩家对象数组
                 bootstrap_order = initialBootstrapOrder.map(userId => {
                     const player = players.find(p => {
                         const playerUserId = String(p.userid);
@@ -92,9 +98,17 @@ Component({
                     };
                 });
             } else {
-                // 否则使用玩家数组作为初始顺序
+                // 否则使用玩家数组作为初始顺序，但存储为玩家对象数组
                 bootstrap_order = [...players];
             }
+
+            console.log('[RedBlueConfig] initializeConfig 结果:', {
+                players,
+                initialBootstrapOrder,
+                bootstrap_order,
+                red_blue_config,
+                bootstrapOrderTypes: bootstrap_order.map(item => typeof item)
+            });
 
             this.setData({
                 red_blue_config,
@@ -120,10 +134,33 @@ Component({
         convertToUserIds(playersArray) {
             if (!Array.isArray(playersArray)) return [];
 
-            return playersArray.map(player => {
-                const userid = player.userid;
-                return Number.parseInt(userid) || 0;
+            const result = playersArray.map(player => {
+                let userid;
+
+                // 处理两种情况：
+                // 1. player 是玩家对象，有 userid 属性
+                // 2. player 是用户ID字符串或数字
+                if (typeof player === 'object' && player !== null && player.userid !== undefined) {
+                    userid = player.userid;
+                } else if (typeof player === 'string' || typeof player === 'number') {
+                    userid = player;
+                } else {
+                    console.warn('[RedBlueConfig] convertToUserIds 未知的player类型:', player);
+                    return 0;
+                }
+
+                const convertedId = Number.parseInt(userid) || 0;
+                console.log('[RedBlueConfig] convertToUserIds 转换:', {
+                    player,
+                    userid,
+                    convertedId,
+                    useridType: typeof userid
+                });
+                return convertedId;
             });
+
+            console.log('[RedBlueConfig] convertToUserIds 最终结果:', result);
+            return result;
         },
 
         // 分组方式选择变更
@@ -205,10 +242,19 @@ Component({
 
         // 获取当前配置（用于外部收集配置）
         getConfig() {
-            return {
+            const config = {
                 red_blue_config: this.data.red_blue_config,
                 bootstrap_order: this.convertToUserIds(this.data.bootstrap_order)
             };
+
+            console.log('[RedBlueConfig] getConfig 返回配置:', {
+                red_blue_config: config.red_blue_config,
+                bootstrap_order: config.bootstrap_order,
+                originalBootstrapOrder: this.data.bootstrap_order,
+                players: this.data.players
+            });
+
+            return config;
         }
     }
 }); 

@@ -64,6 +64,17 @@ const ConfigValidator = {
     validateGroupingConfig(runtimeConfig, players, gambleSysName) {
         const errors = [];
 
+        console.log('[ConfigValidator] 验证分组配置:', {
+            runtimeConfig,
+            players,
+            gambleSysName,
+            hasRedBlueConfig: !!runtimeConfig.red_blue_config,
+            hasBootstrapOrder: !!runtimeConfig.bootstrap_order,
+            bootstrapOrderType: typeof runtimeConfig.bootstrap_order,
+            bootstrapOrderLength: runtimeConfig.bootstrap_order?.length,
+            playersLength: players?.length
+        });
+
         // 检查是否需要分组
         const needsGrouping = GameConfig.needsGrouping(gambleSysName);
 
@@ -77,16 +88,36 @@ const ConfigValidator = {
             if (!runtimeConfig.bootstrap_order || !Array.isArray(runtimeConfig.bootstrap_order)) {
                 errors.push('玩家顺序配置有误');
             } else {
-                const playersOrderCount = runtimeConfig.bootstrap_order.length;
+                // 确保 bootstrap_order 是数字数组
+                let bootstrapOrder = runtimeConfig.bootstrap_order;
+                if (bootstrapOrder.length > 0 && typeof bootstrapOrder[0] !== 'number') {
+                    console.log('[ConfigValidator] 转换 bootstrap_order 为数字数组:', {
+                        original: bootstrapOrder,
+                        firstElementType: typeof bootstrapOrder[0]
+                    });
+                    bootstrapOrder = bootstrapOrder.map(id => Number.parseInt(id) || 0);
+                }
+
+                const playersOrderCount = bootstrapOrder.length;
 
                 if (playersOrderCount !== players.length) {
                     errors.push('玩家顺序数量与总人数不符');
                 } else {
                     // 验证所有玩家ID都存在
                     const playerIds = players.map(p => Number.parseInt(p.userid));
-                    const allPlayersIncluded = runtimeConfig.bootstrap_order.every(id =>
+                    const allPlayersIncluded = bootstrapOrder.every(id =>
                         playerIds.includes(Number.parseInt(id))
                     );
+
+                    console.log('[ConfigValidator] 玩家ID验证:', {
+                        playerIds,
+                        bootstrapOrder: runtimeConfig.bootstrap_order,
+                        convertedBootstrapOrder: bootstrapOrder,
+                        allPlayersIncluded,
+                        playerIdsDetails: playerIds.map(id => ({ id, type: typeof id })),
+                        bootstrapOrderDetails: bootstrapOrder.map(id => ({ id, type: typeof id })),
+                        players: players.map(p => ({ userid: p.userid, type: typeof p.userid }))
+                    });
 
                     if (!allPlayersIncluded) {
                         errors.push('玩家顺序配置有误');

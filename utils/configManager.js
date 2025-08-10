@@ -622,6 +622,8 @@ class ConfigManager {
     validateConfig(config, players) {
         const errors = [];
 
+        console.log('[ConfigManager] 验证配置数据:', config);
+
         // 验证分组配置
         if (config.bootstrap_order) {
             const playersOrderCount = config.bootstrap_order.length;

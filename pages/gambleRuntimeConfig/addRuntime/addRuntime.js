@@ -94,6 +94,17 @@ Page({
             });
 
         }, 100);
+
+        // 添加更多调试信息
+        setTimeout(() => {
+            console.log('[AddRuntime] 页面加载完成后的状态:', {
+                runtimeConfig: this.data.runtimeConfig,
+                bootstrapOrder: this.data.runtimeConfig.bootstrap_order,
+                bootstrapOrderType: typeof this.data.runtimeConfig.bootstrap_order,
+                isArray: Array.isArray(this.data.runtimeConfig.bootstrap_order),
+                players: this.data.players?.map(p => ({ userid: p.userid, type: typeof p.userid }))
+            });
+        }, 200);
     },
 
 
@@ -115,6 +126,8 @@ Page({
 
     // 收集所有组件的配置
     collectAllConfigs() {
+        console.log('[AddRuntime] 开始收集所有组件配置');
+
         // 从洞范围选择器获取配置
         const holeRangeSelector = this.selectComponent('#holeRangeSelector');
         if (holeRangeSelector) {
@@ -154,12 +167,24 @@ Page({
         const redBlueConfig = this.selectComponent('#redBlueConfig');
         if (redBlueConfig) {
             const groupConfig = redBlueConfig.getConfig();
+            console.log('[AddRuntime] RedBlueConfig 组件配置:', groupConfig);
             if (groupConfig) {
+                const oldBootstrapOrder = this.data.runtimeConfig.bootstrap_order;
                 this.setData({
                     'runtimeConfig.red_blue_config': groupConfig.red_blue_config,
                     'runtimeConfig.bootstrap_order': groupConfig.bootstrap_order
                 });
+                console.log('[AddRuntime] 设置分组配置后:', {
+                    red_blue_config: this.data.runtimeConfig.red_blue_config,
+                    bootstrap_order: this.data.runtimeConfig.bootstrap_order,
+                    oldBootstrapOrder,
+                    newBootstrapOrder: groupConfig.bootstrap_order,
+                    bootstrapOrderType: typeof groupConfig.bootstrap_order,
+                    isArray: Array.isArray(groupConfig.bootstrap_order)
+                });
             }
+        } else {
+            console.warn('[AddRuntime] 未找到 RedBlueConfig 组件');
         }
 
         // 从排名配置组件获取配置
@@ -172,6 +197,8 @@ Page({
                 });
             }
         }
+
+        console.log('[AddRuntime] 收集配置完成，最终 runtimeConfig:', this.data.runtimeConfig);
     },
 
     // 保存配置
