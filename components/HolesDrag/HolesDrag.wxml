@@ -8,9 +8,9 @@
     item-wrap-class="holeItem-wrap"
     extra-nodes="{{extraNodes}}"
     list-data="{{listData}}"
-    columns="9"
+    columns="6"
     scroll-top="{{scrollTop}}"
-    item-height="{{(750 - 8) / 9}}"
+    item-height="{{(750 - 8) / 6}}"
     top-size="{{isModal ? 0 : 110}}"
     bottom-size="{{isModal ? 0 : 400}}"
   ></DragComponent>
