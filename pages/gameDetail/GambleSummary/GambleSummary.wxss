@@ -128,22 +128,6 @@
 	font-size: 28rpx;
 }
 
-/* 响应式设计 */
-@media (max-width: 750rpx) {
-	.gamble-container {
-		padding: 16rpx;
-	}
-
-	.summary-title {
-		font-size: 28rpx;
-		margin-bottom: 16rpx;
-	}
-
-	.nav-title {
-		font-size: 32rpx;
-	}
-}
-
 /* 无游戏状态样式 - 居中布局 */
 .no-gamble-container {
 	display: flex;
