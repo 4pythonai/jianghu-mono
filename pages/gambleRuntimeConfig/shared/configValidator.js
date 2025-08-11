@@ -109,15 +109,6 @@ const ConfigValidator = {
                         playerIds.includes(Number.parseInt(id))
                     );
 
-                    console.log('[ConfigValidator] 玩家ID验证:', {
-                        playerIds,
-                        bootstrapOrder: runtimeConfig.bootstrap_order,
-                        convertedBootstrapOrder: bootstrapOrder,
-                        allPlayersIncluded,
-                        playerIdsDetails: playerIds.map(id => ({ id, type: typeof id })),
-                        bootstrapOrderDetails: bootstrapOrder.map(id => ({ id, type: typeof id })),
-                        players: players.map(p => ({ userid: p.userid, type: typeof p.userid }))
-                    });
 
                     if (!allPlayersIncluded) {
                         errors.push('玩家顺序配置有误');

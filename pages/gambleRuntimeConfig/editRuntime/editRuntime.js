@@ -102,12 +102,7 @@ Page({
             'runtimeConfig.playerIndicatorConfig': config.val8421_config_parsed || config.playerIndicatorConfig || {}
         });
 
-        // 添加调试信息，检查 setData 后的数据
-        console.log('[🔍🔍🔍🔍] setData 后的页面数据:', {
-            configStartHoleindex: this.data.config?.startHoleindex,
-            configRoadLength: this.data.config?.roadLength,
-            configExists: !!this.data.config
-        });
+
 
         // 设置 holeRangeStore 中的洞范围配置
         if (config.startHoleindex !== undefined) {

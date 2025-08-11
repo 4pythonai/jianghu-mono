@@ -69,7 +69,7 @@ const RuntimeComponentsUtils = {
          * 获取默认8421配置
          * @returns {Object} 默认配置对象
          */
-        getDefaultConfig() {
+        get8421DefaultConfig() {
             return { ...RuntimeComponentsUtils.CONSTANTS.DEFAULT_8421_CONFIG };
         },
 
@@ -99,7 +99,7 @@ const RuntimeComponentsUtils = {
          * @returns {Object} 配置对象
          */
         stringToConfig(str) {
-            if (!str || str.length < 4) return this.getDefaultConfig();
+            if (!str || str.length < 4) return this.get8421DefaultConfig();
 
             const digits = str.split('').map(d => Number.parseInt(d));
 
@@ -122,7 +122,7 @@ const RuntimeComponentsUtils = {
                 };
             }
 
-            return this.getDefaultConfig();
+            return this.get8421DefaultConfig();
         }
     },
 

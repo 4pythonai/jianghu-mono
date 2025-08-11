@@ -63,7 +63,7 @@ Component({
 
             const playersWithConfig = players.map(player => {
                 const userid = String(player.userid);
-                const config = val8421Config[userid] || RuntimeComponentsUtils.config8421.getDefaultConfig();
+                const config = val8421Config[userid] || RuntimeComponentsUtils.config8421.get8421DefaultConfig();
                 const configString = RuntimeComponentsUtils.config8421.configToString(config);
 
                 return {

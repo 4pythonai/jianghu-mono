@@ -75,7 +75,7 @@ const BaseConfig = {
         });
 
         // 获取默认配置
-        const defaultConfig = GameConfig.getDefaultConfig(
+        const defaultConfig = GameConfig.getDefaultGambleConfig(
             processedData.gambleSysName,
             processedData.players
         );
@@ -102,7 +102,7 @@ const BaseConfig = {
             if (!defaultConfig.playerIndicatorConfig || Object.keys(defaultConfig.playerIndicatorConfig).length === 0) {
 
                 // 重新获取默认配置
-                const retryConfig = GameConfig.getDefaultConfig(
+                const retryConfig = GameConfig.getDefaultGambleConfig(
                     processedData.gambleSysName,
                     processedData.players
                 );
@@ -197,7 +197,7 @@ const BaseConfig = {
             const players = pageContext.data.players || [];
 
             if (players.length > 0) {
-                const defaultConfig = GameConfig.getDefaultConfig(editConfig.gambleSysName, players);
+                const defaultConfig = GameConfig.getDefaultGambleConfig(editConfig.gambleSysName, players);
                 val8421Config = defaultConfig.playerIndicatorConfig;
             }
         }

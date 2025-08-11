@@ -18,7 +18,6 @@ export const runtimeStore = observable({
     reorderPlayersByBootStrapOrder: action((players, bootStrapOrder) => {
 
 
-        console.log("Step5  📴📳🈶🈚️🈸🈺🈷️✴️🈲 ", players, bootStrapOrder);
         if (!Array.isArray(players) || players.length === 0) return [];
 
         const orderIds = Array.isArray(bootStrapOrder) ? bootStrapOrder.map(id => `${id}`) : [];
@@ -51,7 +50,6 @@ export const runtimeStore = observable({
 
     processOneGamble: action(function (config) {
 
-        console.log("预处理 Step1 :🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️", config);
 
         try {
             const processedConfig = { ...config };
@@ -70,23 +68,18 @@ export const runtimeStore = observable({
                 }
             }
 
-            console.log("预处理 Step2 :🅾️🅾️🅾️  String", typeof config.bootstrap_order);
 
 
             // 解析 bootstrap_order JSON 字符串
             if (config.bootstrap_order && typeof config.bootstrap_order === 'string') {
-                console.log("预处理: Step3 🅾️🅾️🅾️  String", typeof config.bootstrap_order);
                 try {
                     processedConfig.bootstrap_order_parsed = JSON.parse(config.bootstrap_order);
                     processedConfig.players = this.reorderPlayersByBootStrapOrder(processedConfig.attenders, processedConfig.bootstrap_order_parsed);
 
                 } catch (e) {
-                    console.log("Step 77  📴📳🈶🈚️🈸🈺🈷️✴️🈲  ", e);
-
                     processedConfig.bootstrap_order_parsed = [];
                 }
             } else {
-                console.log("Step4  📴📳🈶🈚️🈸🈺🈷️✴️🈲  ", config.bootstrap_order);
 
             }
 
@@ -123,9 +116,6 @@ export const runtimeStore = observable({
                     processedConfigs.push(tmp);
                 }
 
-                console.log('🎮 [runtimeStore] 处理后的配置数据:', processedConfigs);
-                console.log('🎮 [runtimeStore] 第一个配置项的 bigWind:', processedConfigs[0]?.bigWind);
-                console.log('🎮 [runtimeStore] 第一个配置项的 ifShow:', processedConfigs[0]?.ifShow);
 
                 this.runtimeConfigs = processedConfigs;
                 console.log('🎮 [runtimeStore] 已更新 runtimeConfigs，长度:', this.runtimeConfigs.length);

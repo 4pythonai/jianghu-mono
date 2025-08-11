@@ -1,7 +1,6 @@
 const app = getApp()
 
 // 我的规则组件
-const { GameConfig } = require('../../../../utils/gameConfig.js');
 
 Component({
     properties: {

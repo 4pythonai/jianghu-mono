@@ -97,13 +97,26 @@ export const GameConfig = {
         return GAMBLE_TYPES[sysRuleName]?.hasStroking;
     },
 
+
+    convertToUserIds(playersArray) {
+        if (!Array.isArray(playersArray)) return [];
+        return playersArray.map(player => {
+            const rawId = player?.userid;
+            const id = Number.parseInt(`${rawId}`) || 0;
+            return id;
+        });
+    },
+
+
     /**
      * 获取默认配置
      */
-    getDefaultConfig(sysRuleName, players = []) {
+    getDefaultGambleConfig(sysRuleName, players = []) {
+        console.log(" getDefaultGambleConfig 🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹 players", players)
+
         const config = {
             red_blue_config: '4_固拉',
-            bootstrap_order: [...players], // 直接使用用户对象数组，而不是用户ID数组
+            bootstrap_order: this.convertToUserIds(players),
             ranking_tie_resolve_config: 'indicator.reverse',
             playerIndicatorConfig: {}
         };
@@ -122,6 +135,7 @@ export const GameConfig = {
             }
         }
 
+        console.log(" getDefaultGambleConfig 🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹 💹🈯️💹🈯️💹 config", config)
         return config;
     },
 
