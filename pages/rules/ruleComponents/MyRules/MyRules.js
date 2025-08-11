@@ -114,7 +114,7 @@ Component({
         },
 
         // 查看规则详情 - 跳转到运行时配置页面
-        onViewRule(e) {
+        onCreateGamble(e) {
             const { item } = e.detail || e.currentTarget.dataset;
             const { gameStore } = require('../../../../stores/gameStore');
             const { holeRangeStore } = require('../../../../stores/holeRangeStore');

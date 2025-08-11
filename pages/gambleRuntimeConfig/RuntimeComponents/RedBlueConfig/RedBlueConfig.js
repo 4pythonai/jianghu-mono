@@ -172,11 +172,28 @@ Component({
 
         // 获取当前配置（用于外部收集配置）
         getConfig() {
+            const { red_blue_config, bootstrap_order, players } = this.data;
+
+            let finalBootstrapOrder = bootstrap_order;
+            if (Array.isArray(bootstrap_order) && bootstrap_order.length === 0) {
+                finalBootstrapOrder = this.convertToUserIds(players || []);
+                console.warn(
+                    `RedBlueConfig.getConfig ⚠️⚠️⚠️ bootstrap_order 为空，已自动从 players 转换。playersCount=${players?.length ?? 0}，converted=`,
+                    finalBootstrapOrder
+                );
+            } else {
+                console.log(
+                    `RedBlueConfig.getConfig ✅ 使用已有 bootstrap_order：`,
+                    finalBootstrapOrder
+                );
+            }
+
             const config = {
-                red_blue_config: this.data.red_blue_config,
-                bootstrap_order: this.data.bootstrap_order
+                red_blue_config,
+                bootstrap_order: finalBootstrapOrder
             };
 
+            console.log(`RedBlueConfig.getConfig 📦 返回配置：`, config);
             return config;
         }
     }

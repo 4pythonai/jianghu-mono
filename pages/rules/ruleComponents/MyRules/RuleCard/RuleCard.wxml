@@ -1,7 +1,7 @@
 <!-- 统一规则卡片组件 -->
 <view
   class="rule-item1"
-  bindtap="onViewRule"
+  bindtap="onCreateGamble"
   bindlongpress="onLongPressRule"
   data-item="{{ item }}"
 >

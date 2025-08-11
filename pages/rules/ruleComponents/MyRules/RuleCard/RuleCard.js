@@ -107,10 +107,10 @@ Component({
         /**
          * 查看规则详情
          */
-        onViewRule(e) {
+        onCreateGamble(e) {
             const { item } = e.currentTarget.dataset;
             const group = this.getRuleGroup();
-            this.triggerEvent('viewRule', { item, group, id: item.userRuleId });
+            this.triggerEvent('createNewGamble', { item, group, id: item.userRuleId });
         },
 
         /**
