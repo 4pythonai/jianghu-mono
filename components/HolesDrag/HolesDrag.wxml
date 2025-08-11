@@ -7,11 +7,12 @@
     bind:scroll="scroll"
     item-wrap-class="holeItem-wrap"
     extra-nodes="{{extraNodes}}"
-    list-data="{{listData}}"
+    array-data="{{listData}}"
     columns="6"
     scroll-top="{{scrollTop}}"
     item-height="{{(750 - 8) / 6}}"
     top-size="{{isModal ? 0 : 110}}"
     bottom-size="{{isModal ? 0 : 400}}"
+    unique-key-name="hindex"
   ></DragComponent>
 </view>

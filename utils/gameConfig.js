@@ -103,7 +103,7 @@ export const GameConfig = {
     getDefaultConfig(sysRuleName, players = []) {
         const config = {
             red_blue_config: '4_固拉',
-            bootstrap_order: players.map(p => Number.parseInt(p.userid)),
+            bootstrap_order: [...players], // 直接使用用户对象数组，而不是用户ID数组
             ranking_tie_resolve_config: 'indicator.reverse',
             playerIndicatorConfig: {}
         };

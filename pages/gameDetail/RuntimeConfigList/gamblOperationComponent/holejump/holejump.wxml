@@ -11,7 +11,7 @@
           scroll-top="{{scrollTop}}"
           bind:sortend="onSortEnd"
           bind:scroll="onScroll"
-          hole-list="{{holePlayList}}"
+          holeList="{{holePlayList}}"
           is-modal="{{true}}"
         ></HolesDrag>
       </view>

@@ -96,7 +96,6 @@ Component({
             if (holesDrag) {
                 holesDrag.updateHoleList(sortedHoleList);
             }
-            this.triggerEvent('reset');
         },
 
         // 确定按钮事件 - 参考 starthole.js 的实现

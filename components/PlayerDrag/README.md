@@ -7,7 +7,7 @@ PlayerDrag是一个用于玩家列表拖拽排序的微信小程序组件，基�
 - 支持玩家列表的拖拽排序
 - 自动处理拖拽状态管理
 - 支持弹框模式下的特殊处理
-- 具备异常状态自动恢复功能
+- 简洁的代码结构，易于维护
 
 ## 使用方法
 
@@ -17,6 +17,7 @@ PlayerDrag是一个用于玩家列表拖拽排序的微信小程序组件，基�
   USERS="{{playerList}}" 
   bind:sortend="onSortEnd"
   bind:scroll="onScroll"
+  bind:drag="onDragChange"
 />
 ```
 
@@ -26,6 +27,7 @@ PlayerDrag是一个用于玩家列表拖拽排序的微信小程序组件，基�
   USERS="{{playerList}}" 
   isModal="{{true}}"
   bind:sortend="onSortEnd"
+  bind:drag="onDragChange"
 />
 ```
 
@@ -52,48 +54,93 @@ PlayerDrag是一个用于玩家列表拖拽排序的微信小程序组件，基�
 | getListData | 获取当前列表数据 | 无 |
 | setListData | 设置列表数据 | data: Array |
 | updateUserList | 更新玩家列表 | newUserList: Array |
-| resetDragState | 强制重置拖拽状态 | 无 |
-| handleDragError | 处理拖拽异常恢复 | 无 |
 
-## 最近修复的Bug
+## 数据格式要求
 
-### Bug描述
-第二次拖拽时，选中的item变白矩形，然后无法移动。
+### 输入数据格式
+```javascript
+const playerList = [
+  {
+    userid: "1",           // 唯一标识符（必需）
+    username: "玩家1",     // 显示名称
+    // ... 其他业务字段
+  }
+];
+```
 
-### 修复内容
-1. **拖拽状态管理优化**：修复了拖拽结束后状态未正确重置的问题
-2. **CSS类名管理**：确保拖拽过程中的CSS类名（cur、tran）正确应用和清理
-3. **transform样式处理**：修复了拖拽结束后transform样式残留的问题
-4. **异常状态恢复**：添加了拖拽状态异常时的自动恢复机制
-5. **生命周期管理**：优化了组件的初始化和销毁逻辑
-6. **setTimeout兼容性修复**：修复了wxs中setTimeout不可用导致的渲染错误
-7. **用户数据完整性修复**：修复了拖拽后用户信息丢失的问题
-8. **数据结构兼容性修复**：修复了hindex字段不存在导致的错误
+### 输出数据格式
+```javascript
+// sortend 事件返回的数据格式
+{
+  listData: [
+    {
+      userid: "1",
+      username: "玩家1",
+      // ... 排序后的数据
+    }
+  ]
+}
+```
 
-### 技术细节
-- 在wxs中添加了延迟状态重置，确保动画完成后再清理状态
-- 优化了拖拽开始和结束时的CSS类名管理
-- 添加了拖拽状态监听和异常检测
-- 实现了强制重置拖拽状态的方法
-- **重要修复**：移除了wxs中的setTimeout调用，改用JS中的setTimeout来管理状态
-- 优化了拖拽动画的过渡效果，确保状态切换更加平滑
-- **数据修复**：添加了用户数据预处理和验证机制
-- **字段兼容**：支持多种用户ID字段（userid、id、hindex）
+## 使用示例
 
-### 已知问题修复
-- **nv_setTimeout is not defined错误**：已修复，wxs文件中不再使用setTimeout
-- **拖拽状态残留**：通过JS中的延迟状态重置解决
-- **CSS动画冲突**：优化了transition属性，避免状态切换时的样式冲突
-- **用户信息丢失**：通过数据预处理和验证机制解决
-- **hindex字段错误**：支持多种用户ID字段格式，增强兼容性
+### 基础使用
+```javascript
+Page({
+  data: {
+    playerList: []
+  },
+  
+  onLoad() {
+    // 获取玩家数据
+    this.setData({
+      playerList: this.getPlayerList()
+    });
+  },
+  
+  onSortEnd(e) {
+    console.log("排序结果:", e.detail.listData);
+    // 更新本地数据
+    this.setData({
+      playerList: e.detail.listData
+    });
+  },
+  
+  onScroll(e) {
+    // 处理滚动事件
+    console.log("滚动位置:", e.detail.scrollTop);
+  },
+  
+  onDragChange(e) {
+    // 处理拖拽状态变化
+    console.log("拖拽状态:", e.detail.dragging);
+  }
+});
+```
+
+### 动态更新数据
+```javascript
+// 更新玩家列表
+updatePlayerList() {
+  const newPlayerList = this.getNewPlayerList();
+  this.setData({
+    playerList: newPlayerList
+  });
+}
+```
 
 ## 注意事项
-1. 确保传入的USERS数据格式正确
-2. 在弹框模式下使用isModal属性
-3. 如果遇到拖拽异常，可以调用resetDragState()方法强制恢复
-4. 组件会自动检测拖拽状态异常并尝试恢复
 
-## 更新日志
-- 2024-12-19: 修复第二次拖拽时item变白矩形无法移动的bug
-- 优化拖拽状态管理，提升用户体验
-- 添加异常状态自动恢复功能
+1. **数据必需**: 必须传入 `USERS` 数据，组件无内置默认数据
+2. **数据格式**: 确保传入的数据格式正确，包含所有必需字段
+3. **弹框使用**: 在弹框中使用时，必须设置 `is-modal="{{true}}"`
+4. **事件处理**: 记得处理 `sortend`、`scroll` 和 `drag` 事件
+5. **数据更新**: 使用 `observers` 或 `updateUserList` 方法更新数据
+
+## 组件特点
+
+1. **简洁设计**: 代码结构清晰，易于理解和维护
+2. **完全数据驱动**: 完全依赖外部传入的数据
+3. **自动初始化**: 组件加载完成后自动初始化
+4. **弹框兼容**: 支持弹框模式下的特殊处理
+5. **事件通信**: 通过事件向父组件传递数据

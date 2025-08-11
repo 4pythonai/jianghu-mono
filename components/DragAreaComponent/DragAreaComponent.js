@@ -38,7 +38,7 @@ Component({
 			type: Array,
 			value: []
 		},
-		listData: {              // 数据源
+		arrayData: {              // 数据源
 			type: Array,
 			value: []
 		},
@@ -61,6 +61,10 @@ Component({
 		scrollTop: {             // 页面滚动高度
 			type: Number,
 			value: 0
+		},
+		uniqueKeyName: {         // 数组中唯一性键的名称
+			type: String,
+			value: 'id'
 		},
 	},
 	data: {
@@ -180,7 +184,7 @@ Component({
 		},
 		/**
 		 *  初始化函数
-		 *  {listData, topSize, bottomSize, itemHeight} 参数改变需要手动调用初始化方法
+		 *  {arrayData, topSize, bottomSize, itemHeight} 参数改变需要手动调用初始化方法
 		 */
 		init() {
 			// 初始必须为true以绑定wxs中的函数,
@@ -194,7 +198,7 @@ Component({
 				}
 
 				return {
-					id: item.hindex || item.userid || item.id || `item_${Date.now()}_${Math.random()}`,
+					id: item[this.data.uniqueKeyName] || `item_${Date.now()}_${Math.random()}`,
 					extraNode: extraNode,
 					fixed: item.fixed || false,
 					slot: item.slot || false,
@@ -203,7 +207,7 @@ Component({
 				};
 			};
 
-			const { listData, extraNodes } = this.data;
+			const { arrayData, extraNodes } = this.data;
 			const _list = [];
 			const _before = [];
 			const _after = [];
@@ -223,12 +227,12 @@ Component({
 			});
 
 			// 遍历数据源增加扩展项, 以用作排序使用
-			listData.forEach((item, index) => {
+			arrayData.forEach((item, index) => {
 				// 为每个item添加原始索引信息
 				const itemWithIndex = { ...item, originalIndex: index };
 
 				for (const i of destBefore) {
-					if (i && i.data && i.data.destKey === index) _list.push(i);
+					if (i?.data?.destKey === index) _list.push(i);
 				}
 
 				const processedItem = delItem(itemWithIndex, false);
@@ -237,7 +241,7 @@ Component({
 				}
 
 				for (const i of destAfter) {
-					if (i && i.data && i.data.destKey === index) _list.push(i);
+					if (i?.data?.destKey === index) _list.push(i);
 				}
 			});
 
