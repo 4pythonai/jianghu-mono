@@ -6,7 +6,7 @@
     bind:sortend="sortEnd"
     bind:scroll="scroll"
     bind:drag="onDragChange"
-    item-wrap-class="holeItem-wrap"
+    item-wrap-class="playerItem-wrap"
     extra-nodes="{{extraNodes}}"
     array-data="{{listData}}"
     columns="1"
