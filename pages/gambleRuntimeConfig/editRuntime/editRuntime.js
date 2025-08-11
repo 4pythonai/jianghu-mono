@@ -61,7 +61,6 @@ Page({
 
 
         // 从 gameStore 获取玩家数据
-        const players = gameStore.players || [];
 
         // 获取 gameStore 中的 gameData
         const gameData = toJS(gameStore.gameData);
@@ -88,7 +87,7 @@ Page({
             gambleSysName: config.gambleSysName,
             gameid: config.gameid,
             groupid: config.groupid, // 添加 groupid 到页面数据
-            players: players,
+            players: config.players,
             gameData: gameData, // 添加 gameData
             gameDataType: gameDataType,
             gameDataString: gameDataString,

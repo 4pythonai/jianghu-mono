@@ -34,15 +34,6 @@ Component({
         }
     },
 
-    // 移除observers，避免循环监听
-    // observers: {
-    //     'players, initialRedBlueConfig, initialBootstrapOrder': function (players, initialRedBlueConfig, initialBootstrapOrder) {
-    //         // 只在组件首次加载或数据真正变化时初始化
-    //         if (!this.data.hasInitialized || this.shouldReinitialize(players, initialBootstrapOrder)) {
-    //             this.initializeConfig();
-    //         }
-    //     }
-    // },
 
     methods: {
         onSortEnd(e) {
@@ -77,53 +68,60 @@ Component({
 
         // 初始化配置
         initializeConfig() {
-            const { players: inputPlayers, initialRedBlueConfig, initialBootstrapOrder } = this.data;
+            const { players, initialRedBlueConfig, initialBootstrapOrder } = this.data;
 
-            console.log('[RedBlueConfig] initializeConfig 输入参数:', {
-                players: inputPlayers?.map(p => ({ userid: p.userid, type: typeof p.userid })),
-                initialRedBlueConfig,
-                initialBootstrapOrder,
-                initialBootstrapOrderType: typeof initialBootstrapOrder,
-                isArray: Array.isArray(initialBootstrapOrder)
-            });
-
-            // 设置分组配置
+            // 分组配置
             const red_blue_config = initialRedBlueConfig || '4_固拉';
 
-            // 设置玩家显示数组（用于 PlayerDrag 组件）
-            let players = [...inputPlayers];
+            // 规范化初始顺序为字符串ID数组，支持传对象或ID
+            const normalizedOrderIds = Array.isArray(initialBootstrapOrder)
+                ? initialBootstrapOrder.map(item => {
+                    const id = (typeof item === 'object' && item !== null && item.userid !== undefined)
+                        ? item.userid
+                        : item;
+                    return `${id}`;
+                })
+                : [];
 
-            // 设置配置保存数组（用户ID数组）
-            let bootstrap_order = [];
-            if (initialBootstrapOrder && initialBootstrapOrder.length > 0) {
-                // 如果 initialBootstrapOrder 是用户ID数组，直接使用
-                if (typeof initialBootstrapOrder[0] === 'string' || typeof initialBootstrapOrder[0] === 'number') {
-                    bootstrap_order = [...initialBootstrapOrder];
-                } else {
-                    // 如果 initialBootstrapOrder 是用户对象数组，提取用户ID
-                    bootstrap_order = initialBootstrapOrder.map(player => player.userid);
+            // 基于初始顺序重排 players：顺序内的在前，剩余的按原顺序在后
+            let reorderedPlayers = Array.isArray(players) ? [...players] : [];
+            if (normalizedOrderIds.length > 0 && reorderedPlayers.length > 0) {
+                const usedIndexSet = new Set();
+                const idToIndex = new Map(reorderedPlayers.map((p, i) => [`${p?.userid}`, i]));
+                const ordered = [];
+
+                for (const idStr of normalizedOrderIds) {
+                    const matchedIndex = idToIndex.get(idStr);
+                    if (matchedIndex !== undefined) {
+                        ordered.push(reorderedPlayers[matchedIndex]);
+                        usedIndexSet.add(matchedIndex);
+                    }
                 }
-            } else if (inputPlayers && inputPlayers.length > 0) {
-                // 如果没有初始顺序，使用输入玩家的顺序
-                bootstrap_order = inputPlayers.map(player => player.userid);
+
+                for (const [index, player] of reorderedPlayers.entries()) {
+                    if (!usedIndexSet.has(index)) {
+                        ordered.push(player);
+                    }
+                }
+
+                reorderedPlayers = ordered;
             }
+
+            const bootstrap_order = reorderedPlayers.map(p => p?.userid);
 
             this.setData({
                 red_blue_config,
-                bootstrap_order,
-                players
+                players: reorderedPlayers,
+                bootstrap_order
             });
 
             // 只在新增模式下触发初始事件
             if (bootstrap_order.length > 0 && !this.data.hasInitialized) {
-                this.setData({
-                    hasInitialized: true
-                });
-
+                this.setData({ hasInitialized: true });
                 wx.nextTick(() => {
                     this.triggerEvent('change', {
                         red_blue_config,
-                        bootstrap_order: this.convertToUserIds(players)
+                        bootstrap_order: this.convertToUserIds(reorderedPlayers)
                     });
                 });
             }

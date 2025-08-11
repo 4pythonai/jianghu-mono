@@ -46,8 +46,8 @@
         <text class="config-value">{{ item.player8421Count }}人</text>
       </view>
       <view class="config-row" wx:if="{{ item.endHoleindex }}">
-        <text class="config-label">起/终:</text>
-        <text class="config-value">{{ item.startHoleindex }}/{{ item.endHoleindex }}</text>
+        <text class="config-label">出发顺序/bootstrap_order_parsed:</text>
+        <text class="config-value">{{ item.bootstrap_order_parsed }}</text>
       </view>
       <view class="config-row" wx:if="{{ item.endHoleindex }}">
         <text class="config-label">长度(roadLength):</text>
@@ -127,9 +127,11 @@
       </view>
     </view>
     <view class="config-list">
+      <!-- 每一个赌博游戏 -->
       <view wx:for="{{ runtimeConfigs }}" wx:key="unique">
         <template is="configItem" data="{{ item, index }}" />
       </view>
+      <!-- 每一个赌博游戏 -->
     </view>
     <!-- 添加更多游戏按钮 -->
     <view class="add-more-container">

@@ -14,7 +14,45 @@ export const runtimeStore = observable({
     runtimeConfigError: null,     // 运行时配置错误信息
 
 
-    processOneGamble: action((config) => {
+
+    reorderPlayersByBootStrapOrder: action((players, bootStrapOrder) => {
+
+
+        console.log("Step5  📴📳🈶🈚️🈸🈺🈷️✴️🈲 ", players, bootStrapOrder);
+        if (!Array.isArray(players) || players.length === 0) return [];
+
+        const orderIds = Array.isArray(bootStrapOrder) ? bootStrapOrder.map(id => `${id}`) : [];
+        if (orderIds.length === 0) return [...players];
+
+        const idToFirstIndex = new Map();
+        for (let i = 0; i < players.length; i++) {
+            const idStr = `${players[i]?.userid}`;
+            if (!idToFirstIndex.has(idStr)) idToFirstIndex.set(idStr, i);
+        }
+
+        const usedIndices = new Set();
+        const ordered = [];
+
+        for (const idStr of orderIds) {
+            const matchedIndex = idToFirstIndex.get(idStr);
+            if (matchedIndex !== undefined) {
+                ordered.push(players[matchedIndex]);
+                usedIndices.add(matchedIndex);
+            }
+        }
+
+        for (let i = 0; i < players.length; i++) {
+            if (!usedIndices.has(i)) ordered.push(players[i]);
+        }
+
+        return ordered;
+    }),
+
+
+    processOneGamble: action(function (config) {
+
+        console.log("预处理 Step1 :🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️🅾️", config);
+
         try {
             const processedConfig = { ...config };
 
@@ -32,19 +70,31 @@ export const runtimeStore = observable({
                 }
             }
 
+            console.log("预处理 Step2 :🅾️🅾️🅾️  String", typeof config.bootstrap_order);
+
+
             // 解析 bootstrap_order JSON 字符串
             if (config.bootstrap_order && typeof config.bootstrap_order === 'string') {
+                console.log("预处理: Step3 🅾️🅾️🅾️  String", typeof config.bootstrap_order);
                 try {
                     processedConfig.bootstrap_order_parsed = JSON.parse(config.bootstrap_order);
+                    processedConfig.players = this.reorderPlayersByBootStrapOrder(processedConfig.attenders, processedConfig.bootstrap_order_parsed);
+
                 } catch (e) {
+                    console.log("Step 77  📴📳🈶🈚️🈸🈺🈷️✴️🈲  ", e);
+
                     processedConfig.bootstrap_order_parsed = [];
                 }
+            } else {
+                console.log("Step4  📴📳🈶🈚️🈸🈺🈷️✴️🈲  ", config.bootstrap_order);
+
             }
 
 
 
             return processedConfig;
         } catch (e) {
+            console.log("Step6  📴📳🈶🈚️🈸🈺🈷️✴️🈲  ", e);
             return config;
         }
     }),

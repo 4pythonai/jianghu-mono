@@ -308,13 +308,8 @@ Page({
 
     // 处理运行时配置项点击事件 - 跳转到配置页面
     onRuntimeItemClick(e) {
-        const { config, index } = e.currentTarget.dataset;
-
-        console.log(' 🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓 ')
+        const { config } = e.currentTarget.dataset;
         console.log(config);
-        console.log(' 🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓🌓 ')
-
-        // 简化：只传递配置ID
         wx.navigateTo({ url: `/pages/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}` });
     },
 
