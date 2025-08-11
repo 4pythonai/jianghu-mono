@@ -1,13 +1,4 @@
 <view class="runtime-config-container">
-  <view class="section">
-    <RedBlueConfig
-      id="redBlueConfig"
-      players="{{players}}"
-      initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
-      initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
-    />
-  </view>
-
   <RuleCard item="{{config.spec}}" showEdit="{{false}}" />
 
   <!-- 错误状态 -->
@@ -61,6 +52,15 @@
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
       />
     </view>
+  </view>
+
+  <view class="section">
+    <RedBlueConfig
+      id="redBlueConfig"
+      players="{{players}}"
+      initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+      initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+    />
   </view>
 
   <!-- 底部按钮 -->

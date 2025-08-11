@@ -225,5 +225,16 @@ Page({
     // 取消配置
     onCancelConfig() {
         BaseConfig.onCancelConfig(this);
+    },
+
+    // 页面滚动时打印并透传 scrollTop 给 RedBlueConfig -> PlayerDrag
+    onPageScroll(e) {
+        const currentScrollTop = e?.scrollTop || 0;
+        console.log('[EditRuntime] onPageScroll scrollTop =', currentScrollTop);
+
+        const redBlueConfig = this.selectComponent('#redBlueConfig');
+        if (redBlueConfig) {
+            redBlueConfig.setData({ scrollTop: currentScrollTop });
+        }
     }
 }); 
