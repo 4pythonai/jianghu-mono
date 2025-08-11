@@ -58,7 +58,7 @@
     <RedBlueConfig
       id="redBlueConfig"
       players="{{players}}"
-      initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+      red_blue_config="{{runtimeConfig.red_blue_config}}"
       initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
     />
   </view>

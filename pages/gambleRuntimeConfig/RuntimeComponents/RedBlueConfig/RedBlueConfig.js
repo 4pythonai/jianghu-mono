@@ -9,9 +9,9 @@ Component({
             value: []
         },
         // 初始分组配置
-        initialRedBlueConfig: {
+        red_blue_config: {
             type: String,
-            value: '4_固拉'
+            value: null
         },
         // 初始玩家顺序
         initialBootstrapOrder: {
@@ -21,7 +21,6 @@ Component({
     },
 
     data: {
-        red_blue_config: '4_固拉',
         bootstrap_order: [], // 用于保存配置的用户ID数组
         players: [], // 完整的用户对象数组，用于 PlayerDrag 组件
         scrollTop: 0,
