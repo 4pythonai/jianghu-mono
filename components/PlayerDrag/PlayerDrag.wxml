@@ -12,8 +12,8 @@
     columns="1"
     scroll-top="{{scrollTop}}"
     item-height="{{(750 - 8) / 1}}"
-    top-size="{{isModal ? 0 : 110}}"
+    top-size="{{110}}"
     unique-key-name="userid"
-    bottom-size="{{isModal ? 0 : 400}}"
+    bottom-size="{{300}}"
   ></DragComponent>
 </view>

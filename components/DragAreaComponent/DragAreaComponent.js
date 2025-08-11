@@ -1,5 +1,8 @@
 /**
- * 版本号比较
+ * 
+ * https://github.com/wxp-ui/wxp-ui
+ * 
+ * 
  */
 const compareVersion = (v1, v2) => {
 	const v1Parts = v1.split('.')

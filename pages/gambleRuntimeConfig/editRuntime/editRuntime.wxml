@@ -1,16 +1,11 @@
 <view class="runtime-config-container">
-  <!-- 调试信息 -->
-  <view class="debug-info">
-    <text>调试信息:</text>
-    <text>gambleSysName: {{gambleSysName}}</text>
-    <text>gameid: {{gameid}}</text>
-    <text>configId: {{configId}}</text>
-    <text>players: {{players.length}}人</text>
-    <text>gameData存在: {{gameData ? '是' : '否'}}</text>
-    <text>gameData类型: {{gameDataType}}</text>
-    <text>holeList信息: {{gameDataString}}</text>
-    <text>error: {{error}}</text>
-    <text>loading: {{loading}}</text>
+  <view class="section">
+    <RedBlueConfig
+      id="redBlueConfig"
+      players="{{players}}"
+      initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
+      initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+    />
   </view>
 
   <RuleCard item="{{config.spec}}" showEdit="{{false}}" />
@@ -58,17 +53,6 @@
       />
     </view>
 
-    <!-- 分组配置 -->
-
-    <view class="section">
-      <RedBlueConfig
-        id="redBlueConfig"
-        players="{{players}}"
-        initialRedBlueConfig="{{runtimeConfig.red_blue_config}}"
-        initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
-      />
-    </view>
-
     <!-- 排名配置 -->
     <view class="section">
       <view class="section-label">排名规则</view>
@@ -87,5 +71,18 @@
       bindtap="onConfirmConfig"
       loading="{{loading}}"
     >{{loading ? '更新中...' : '更新配置'}}</button>
+  </view>
+
+  <view class="debug-info">
+    <text>调试信息:</text>
+    <text>gambleSysName: {{gambleSysName}}</text>
+    <text>gameid: {{gameid}}</text>
+    <text>configId: {{configId}}</text>
+    <text>players: {{players.length}}人</text>
+    <text>gameData存在: {{gameData ? '是' : '否'}}</text>
+    <text>gameData类型: {{gameDataType}}</text>
+    <text>holeList信息: {{gameDataString}}</text>
+    <text>error: {{error}}</text>
+    <text>loading: {{loading}}</text>
   </view>
 </view>
