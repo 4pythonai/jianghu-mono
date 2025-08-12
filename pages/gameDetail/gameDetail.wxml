@@ -14,4 +14,20 @@
 <!-- 赌博相关 -->
 <view class="tab-content" hidden="{{currentTab !== 2}}" style="width: 100%; padding: 0;">
   <GambleSummary gameid="{{gameid}}" groupid="{{groupid}}" id="GambleSummary" />
+
+  <!-- 窄菜单条 - 只在游戏tab时显示 -->
+  <view class="floating-menu" wx:if="{{currentTab === 2}}">
+    <view class="menu-header">
+      <text class="menu-title">快捷操作</text>
+    </view>
+    <view class="menu-item" bindtap="onMenuAction" data-action="action1">
+      <text class="menu-text">添加配置</text>
+    </view>
+    <view class="menu-item" bindtap="onMenuAction" data-action="action2">
+      <text class="menu-text">编辑规则</text>
+    </view>
+    <view class="menu-item" bindtap="onMenuAction" data-action="action3">
+      <text class="menu-text">查看统计</text>
+    </view>
+  </view>
 </view>
