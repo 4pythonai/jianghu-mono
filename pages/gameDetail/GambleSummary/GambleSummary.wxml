@@ -12,62 +12,65 @@
   </view>
 
   <view class="gamble-container">
-    <!-- 赌博汇总表格 -->
-    <view class="gamble-total-table">
-      <view class="gamble-result-title" wx:if="{{gambleResults.length > 1}}">游戏汇总</view>
-      <GambleTotalTable
-        groupInfo="{{SummaryResult.group_info}}"
-        usefulHoles="{{SummaryResult.useful_holes}}"
-        qrcode_url="{{''}}"
-        showQr="{{false}}"
-      ></GambleTotalTable>
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text>加载中...</text>
     </view>
 
-    <!-- 赌博结果列表 -->
-    <view class="gamble-results">
-      <view
-        class="gamble-result-item"
-        wx:for="{{gambleResults}}"
-        wx:key="index"
-        wx:for-item="gambleResult"
-      >
-        <!-- 赌博结果标题 -->
-        <view
-          class="gamble-result-title"
-          wx:if="{{gambleResults.length > 1}}"
-        >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
-
-        <!-- 赌博结果表格 -->
-        <GambleResultTable
-          groupInfo="{{gambleResult.group_info}}"
-          usefulHoles="{{gambleResult.useful_holes}}"
-          qrcode_url="{{gambleResult.qrcode_url}}"
+    <!-- 有赌博数据时的内容 -->
+    <block wx:elif="{{gambleResults && gambleResults.length > 0}}">
+      <!-- 赌博汇总表格 -->
+      <view class="gamble-total-table">
+        <view class="gamble-result-title" wx:if="{{gambleResults.length > 1}}">游戏汇总</view>
+        <GambleTotalTable
+          groupInfo="{{SummaryResult.group_info}}"
+          usefulHoles="{{SummaryResult.useful_holes}}"
+          qrcode_url="{{''}}"
           showQr="{{false}}"
-        ></GambleResultTable>
+        ></GambleTotalTable>
       </view>
 
-      <!-- 空状态 -->
-      <view
-        class="empty-state"
-        wx:if="{{(!gambleResults || gambleResults.length === 0) && !loading}}"
-      >
-        <view class="no-gamble-container">
-          <view class="summary-title">汇总待开发[gameID:{{gameid}}][groupID:{{groupid}}]</view>
-          <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
-          <text class="empty-hint">暂无游戏配置</text>
-          <!-- 按钮区域 -->
-          <view class="bottom-button-area">
-            <button class="add-game-button" bindtap="handleAddGame">
-              <text class="button-emoji">🎮</text>
-              <text class="button-text">添加游戏</text>
-            </button>
-          </view>
+      <!-- 赌博结果列表 -->
+      <view class="gamble-results">
+        <view
+          class="gamble-result-item"
+          wx:for="{{gambleResults}}"
+          wx:key="index"
+          wx:for-item="gambleResult"
+        >
+          <!-- 赌博结果标题 -->
+          <view
+            class="gamble-result-title"
+            wx:if="{{gambleResults.length > 1}}"
+          >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
+
+          <!-- 赌博结果表格 -->
+          <GambleResultTable
+            groupInfo="{{gambleResult.group_info}}"
+            usefulHoles="{{gambleResult.useful_holes}}"
+            qrcode_url="{{gambleResult.qrcode_url}}"
+            showQr="{{false}}"
+          ></GambleResultTable>
         </view>
       </view>
+    </block>
 
-      <!-- 加载状态 -->
-      <view class="loading-state" wx:if="{{loading}}">
-        <text>加载中...</text>
+    <!-- 暂无赌博数据状态 -->
+    <view
+      class="empty-state"
+      wx:elif="{{!loading && (!gambleResults || gambleResults.length === 0)}}"
+    >
+      <view class="no-gamble-container">
+        <view class="summary-title">汇总待开发[gameID:{{gameid}}][groupID:{{groupid}}]</view>
+        <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
+        <text class="empty-hint">暂无</text>
+        <!-- 按钮区域 -->
+        <view class="bottom-button-area">
+          <button class="add-game-button" bindtap="handleAddGame">
+            <text class="button-emoji">🎮</text>
+            <text class="button-text">添加游戏</text>
+          </button>
+        </view>
       </view>
     </view>
   </view>

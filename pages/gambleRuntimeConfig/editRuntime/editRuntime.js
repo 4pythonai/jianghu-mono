@@ -2,7 +2,6 @@
  * 编辑运行时配置页面
  * 专门处理编辑配置的逻辑
  */
-const BaseConfig = require('../shared/baseConfig');
 const ConfigValidator = require('../shared/configValidator');
 const { runtimeStore } = require('../../../stores/runtimeStore');
 const { gameStore } = require('../../../stores/gameStore');
@@ -62,17 +61,6 @@ Page({
 
         const gameData = toJS(gameStore.gameData);
         const gameDataType = typeof gameData;
-
-        // 只提取 holeList 中的 hindex, holename, unique_key
-        if (gameData?.holeList && Array.isArray(gameData.holeList)) {
-            const holeListInfo = gameData.holeList.map(hole => ({
-                hindex: hole.hindex,
-                holename: hole.holename,
-                unique_key: hole.unique_key
-            }));
-        }
-
-
         // 直接设置配置数据
         this.setData({
             config: config,
@@ -157,12 +145,21 @@ Page({
 
     // 重新选择规则
     onReSelectRule() {
-        BaseConfig.onReSelectRule(this);
+        wx.showModal({
+            title: '重新选择规则',
+            content: '确定要重新选择赌博规则吗？当前配置将丢失。',
+            success: (res) => {
+                if (res.confirm) {
+                    wx.navigateBack();
+                }
+            }
+        });
     },
 
     // 取消配置
     onCancelConfig() {
-        BaseConfig.onCancelConfig(this);
+        console.log('[EditRuntime] 取消配置');
+        wx.navigateBack();
     },
 
     // 页面滚动时打印并透传 scrollTop 给 RedBlueConfig -> PlayerDrag

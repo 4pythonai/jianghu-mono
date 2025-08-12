@@ -95,33 +95,7 @@ const GambleMetaConfig = {
         return GAMBLE_TYPES[sysRuleName]?.hasStroking;
     },
 
-    /**
-     * 获取默认配置
-     */
-    getDefaultGambleConfig(sysRuleName, players = []) {
-        const config = {
-            red_blue_config: '4_固拉',
-            bootstrap_order: convertToUserIds(players),
-            ranking_tie_resolve_config: 'indicator.reverse',
-            playerIndicatorConfig: {}
-        };
 
-        // 8421游戏需要设置默认球员配置
-        if (this.needsPlayerConfig(sysRuleName)) {
-            const defaultPlayerConfig = {
-                "Birdie": 8,
-                "Par": 4,
-                "Par+1": 2,
-                "Par+2": 1
-            };
-
-            for (const player of players) {
-                config.playerIndicatorConfig[String(player.userid)] = { ...defaultPlayerConfig };
-            }
-        }
-
-        return config;
-    },
 };
 
 // CommonJS 导出，包含所有需要的常量和对象

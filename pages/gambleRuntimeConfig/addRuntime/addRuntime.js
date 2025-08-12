@@ -2,12 +2,13 @@
  * 新增运行时配置页面
  * 专门处理新增配置的逻辑
  */
-const BaseConfig = require('../shared/baseConfig');
 const ConfigValidator = require('../shared/configValidator');
 const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig');
 const { gameStore } = require('../../../stores/gameStore');
 const { toJS } = require('mobx-miniprogram');
-const configManager = require('../../../utils/configManager'); // Added import for configManager
+const configManager = require('../../../utils/configManager');
+const { holeRangeStore } = require('../../../stores/holeRangeStore');
+const GambleRelatedInitor = require('../../../utils/GambleRelatedInitor');
 
 Page({
     data: {
@@ -46,64 +47,128 @@ Page({
     onLoad(options) {
         console.log('🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸 AddRuntime');
 
-        // 使用基础配置逻辑初始化页面
-        const result = BaseConfig.initializePageData(options, this);
-
-        if (!result.success) {
-            console.error('[AddRuntime] 初始化失败:', result.error);
-            return;
-        }
+        // 初始化页面数据
+        this.initializePageData(options);
 
         // 添加调试日志
         setTimeout(() => {
-            const { gambleSysName } = this.data;
-            const needsPlayerConfig = GambleMetaConfig.needsPlayerConfig(gambleSysName);
-            const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
-            const needsStroking = GambleMetaConfig.needsStroking(gambleSysName);
-
-            // 获取 gameStore 中的 gameData
-            const gameData = toJS(gameStore.gameData);
-            const groupid = toJS(gameStore.gameData.groups[0].groupid); // 从 gameStore 获取 groupid
-
-            // 计算调试信息
-            const gameDataType = typeof gameData;
-
-            // 只提取 holeList 中的 hindex, holename, unique_key
-            let roadLength = 0;
-            if (gameData?.holeList && Array.isArray(gameData.holeList)) {
-                roadLength = gameData.holeList.length;
-            }
-
-            const config = {
-                startHoleindex: 1,
-                roadLength: roadLength,
-            }
-
-            this.setData({
-                config: config,
-                groupid: groupid,
-                'runtimeConfig.groupid': groupid, // 使用 gameStore.groupid 设置 runtimeConfig 中的 groupid
-                needsPlayerConfig: needsPlayerConfig,
-                needsGrouping: needsGrouping,
-                needsStroking: needsStroking,
-                gameData: gameData,
-                gameDataType: gameDataType,
-            });
-
+            this.setupDebugInfo();
         }, 100);
-
-        // 添加更多调试信息
-        setTimeout(() => {
-            console.log('[AddRuntime] 页面加载完成后的状态:', {
-                runtimeConfig: this.data.runtimeConfig,
-                bootstrapOrder: this.data.runtimeConfig.bootstrap_order,
-                bootstrapOrderType: typeof this.data.runtimeConfig.bootstrap_order,
-                isArray: Array.isArray(this.data.runtimeConfig.bootstrap_order),
-                players: this.data.players?.map(p => ({ userid: p.userid, type: typeof p.userid }))
-            });
-        }, 200);
     },
 
+    /**
+     * 初始化页面数据
+     * @param {Object} options 页面参数
+     */
+    initializePageData(options) {
+        // 处理传入的数据
+        const processedData = configManager.processIncomingData(options);
+
+        // 设置页面数据
+        const setDataObj = {
+            gambleSysName: processedData.gambleSysName,
+            gameid: processedData.gameid,
+            groupid: processedData.groupid,
+            configId: processedData.configId || '',
+            players: processedData.players,
+            gameData: processedData.gameData,
+            userRule: processedData.userRule,
+            'runtimeConfig.gameid': processedData.gameid,
+            'runtimeConfig.groupid': processedData.groupid,
+            'runtimeConfig.userRuleId': processedData.userRuleId,
+            'runtimeConfig.gambleSysName': processedData.gambleSysName,
+            'runtimeConfig.gambleUserName': processedData.gambleUserName
+        };
+
+        this.setData(setDataObj);
+        this.createGambleRelatedConfig(processedData.editConfig);
+    },
+
+    /**
+     * 设置调试信息
+     */
+    setupDebugInfo() {
+        const { gambleSysName } = this.data;
+        const needsPlayerConfig = GambleMetaConfig.needsPlayerConfig(gambleSysName);
+        const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
+        const needsStroking = GambleMetaConfig.needsStroking(gambleSysName);
+
+        // 获取 gameStore 中的 gameData
+        const gameData = toJS(gameStore.gameData);
+        const groupid = toJS(gameStore.gameData.groups[0].groupid);
+
+        // 计算调试信息
+        const gameDataType = typeof gameData;
+
+        // 只提取 holeList 中的 hindex, holename, unique_key
+        let roadLength = 0;
+        if (gameData?.holeList && Array.isArray(gameData.holeList)) {
+            roadLength = gameData.holeList.length;
+        }
+
+        const config = {
+            startHoleindex: 1,
+            roadLength: roadLength,
+        }
+
+        this.setData({
+            config: config,
+            groupid: groupid,
+            'runtimeConfig.groupid': groupid,
+            needsPlayerConfig: needsPlayerConfig,
+            needsGrouping: needsGrouping,
+            needsStroking: needsStroking,
+            gameData: gameData,
+            gameDataType: gameDataType,
+        });
+    },
+
+    /**
+     * 创建游戏相关配置
+     * 处理特定游戏类型的配置需求，如8421游戏的球员指标配置
+     * @param {Object} editConfig 编辑配置
+     */
+    createGambleRelatedConfig(editConfig) {
+        console.log('[AddRuntime] 🟥🟧🟨🟥🟧🟨🟥🟧🟨🟥🟧🟨 editConfig== ', editConfig);
+
+        // 加载玩家顺序配置
+        if (editConfig?.bootstrap_order) {
+            let bootstrapOrder = editConfig.bootstrap_order;
+            if (typeof bootstrapOrder === 'string') {
+                try {
+                    bootstrapOrder = JSON.parse(bootstrapOrder);
+                } catch (error) {
+                    bootstrapOrder = [];
+                }
+            }
+            if (Array.isArray(bootstrapOrder) && bootstrapOrder.length > 0) {
+                this.setData({
+                    'runtimeConfig.bootstrap_order': bootstrapOrder
+                });
+                console.log('[AddRuntime] 玩家顺序配置加载:', bootstrapOrder);
+            }
+        }
+
+        // 加载排名配置
+        if (editConfig?.ranking_tie_resolve_config) {
+            this.setData({
+                'runtimeConfig.ranking_tie_resolve_config': editConfig.ranking_tie_resolve_config
+            });
+            console.log('[AddRuntime] 排名配置加载:', editConfig.ranking_tie_resolve_config);
+        }
+
+        // 8421初始化配置
+        if (editConfig.gambleSysName.includes('8421')) {
+            const val8421Config = GambleRelatedInitor.getInit8421Values(this.data.players);
+            this.setData({
+                'runtimeConfig.playerIndicatorConfig': val8421Config
+            });
+        }
+
+
+
+        console.log('[AddRuntime] 游戏相关配置创建完成');
+    },
 
     // 确认配置
     onConfirmConfig() {
@@ -144,7 +209,6 @@ Page({
     async saveConfig() {
         const { runtimeConfig, gameid, groupid } = this.data;
 
-
         // 调用 configManager 的保存方法
         const result = await configManager.saveConfig(runtimeConfig, gameid, groupid, '', this, false);
         if (result.success) {
@@ -156,11 +220,20 @@ Page({
 
     // 重新选择规则
     onReSelectRule() {
-        BaseConfig.onReSelectRule(this);
+        wx.showModal({
+            title: '重新选择规则',
+            content: '确定要重新选择赌博规则吗？当前配置将丢失。',
+            success: (res) => {
+                if (res.confirm) {
+                    wx.navigateBack();
+                }
+            }
+        });
     },
 
     // 取消配置
     onCancelConfig() {
-        BaseConfig.onCancelConfig(this);
+        console.log('[AddRuntime] 取消配置');
+        wx.navigateBack();
     }
 }); 
