@@ -110,9 +110,9 @@
 	flex: 1;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-end;
 	width: 50%;
-	text-align: center;
+	text-align: right;
 }
 
 /* 平局指示器容器 */
@@ -120,9 +120,9 @@
 	flex: 1;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	width: 50%;
-	text-align: center;
+	text-align: left;
 }
 
 /* 总计行样式 */

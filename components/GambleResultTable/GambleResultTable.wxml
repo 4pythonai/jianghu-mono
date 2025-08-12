@@ -32,8 +32,8 @@
             <view class="hole-name-container">
               <text>{{item.holename || item.id}}</text>
             </view>
-            <view class="draw-indicator-container" wx:if="{{item.draw === 'y'}}">
-              <text title="平局">❓</text>
+            <view class="draw-indicator-container">
+              <text wx:if="{{item.draw === 'y'}}" title="平局">❓</text>
             </view>
           </view>
         </view>
