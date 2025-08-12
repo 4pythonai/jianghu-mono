@@ -21,9 +21,18 @@
   <view class="departure-order">
     <view class="section-label">出发顺序</view>
     <view class="order-controls">
-      <button class="order-btn" bindtap="randomOrder">抽签排序</button>
+      <button
+        class="order-btn {{isAutoRandoming ? 'auto-active' : ''}}"
+        bindtap="toggleAutoRandom"
+      >{{isAutoRandoming ? '停止抽签' : '开始抽签'}}</button>
+      <!-- <button class="order-btn" bindtap="randomOrder">抽签排序</button> -->
       <button class="order-btn" bindtap="handicapOrder">差点排序</button>
     </view>
+
+    <!-- 自动抽签状态提示 -->
+    <!-- <view wx:if="{{isAutoRandoming}}" class="auto-status">
+      <text class="auto-status-text">🔄 自动抽签运行中 ({{autoRandomInterval/1000}}秒间隔)</text>
+    </view>-->
 
     <!-- 玩家列表 -->
     <view class="players-order-list">
