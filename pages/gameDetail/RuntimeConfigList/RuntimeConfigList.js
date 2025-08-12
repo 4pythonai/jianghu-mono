@@ -114,8 +114,39 @@ Page({
     // 删除配置项
     onDeleteConfig(e) {
         const id = e.currentTarget.dataset.id;
-        app.api.gamble.deleteRuntimeConfig({ id: id }).then(res => {
-            this.refreshRuntimeConfig();
+
+        // 显示确认对话框
+        wx.showModal({
+            title: '确认删除',
+            content: '是否要删除此游戏配置？',
+            confirmText: '删除',
+            cancelText: '取消',
+            confirmColor: '#dc3545',
+            success: (res) => {
+                if (res.confirm) {
+                    // 用户确认删除
+                    wx.showLoading({
+                        title: '删除中...',
+                        mask: true
+                    });
+
+                    app.api.gamble.deleteRuntimeConfig({ id: id }).then(res => {
+                        wx.hideLoading();
+                        wx.showToast({
+                            title: '删除成功',
+                            icon: 'success'
+                        });
+                        this.refreshRuntimeConfig();
+                    }).catch(err => {
+                        wx.hideLoading();
+                        wx.showToast({
+                            title: '删除失败',
+                            icon: 'error'
+                        });
+                        console.error('删除配置失败:', err);
+                    });
+                }
+            }
         });
     },
 

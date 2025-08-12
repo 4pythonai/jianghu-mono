@@ -7,14 +7,16 @@
     data-config="{{ item }}"
     data-index="{{ index }}"
   >
-    <image
-      class="delete-btn"
-      src="/assets/icons/icons8-delete-48.png"
-      data-id="{{ item.id }}"
-      catchtap="onDeleteConfig"
-    />
+    <!-- 删除 -->
+
     <view class="config-header">
       <text class="config-title">游戏配置#{{ index + 1 }}/{{item.abstract}}</text>
+      <image
+        class="delete-btn"
+        src="/assets/icons/icons8-delete-48.png"
+        data-id="{{ item.id }}"
+        catchtap="onDeleteConfig"
+      />
     </view>
     <view class="config-details">
       <view class="config-row">
