@@ -81,7 +81,6 @@
     <text>players: {{players.length}}人</text>
     <text>gameData存在: {{gameData ? '是' : '否'}}</text>
     <text>gameData类型: {{gameDataType}}</text>
-    <text>holeList信息: {{gameDataString}}</text>
     <text>error: {{error}}</text>
     <text>loading: {{loading}}</text>
   </view>

@@ -41,7 +41,6 @@ Page({
 
         // 调试信息字段
         gameDataType: '',
-        gameDataString: ''
     },
 
     onLoad(options) {
@@ -70,10 +69,8 @@ Page({
             const gameDataType = typeof gameData;
 
             // 只提取 holeList 中的 hindex, holename, unique_key
-            let gameDataString = '';
             let roadLength = 0;
             if (gameData?.holeList && Array.isArray(gameData.holeList)) {
-                gameDataString = JSON.stringify(gameData, null, 2);
                 roadLength = gameData.holeList.length;
             }
 
@@ -91,7 +88,6 @@ Page({
                 needsStroking: needsStroking,
                 gameData: gameData,
                 gameDataType: gameDataType,
-                gameDataString: gameDataString
             });
 
         }, 100);
@@ -146,19 +142,11 @@ Page({
 
     // 保存配置
     async saveConfig() {
-        const { runtimeConfig, gambleSysName, players, gameid, groupid } = this.data;
+        const { runtimeConfig, gameid, groupid } = this.data;
 
-        console.log('[AddRuntime] 保存配置，参数检查:', {
-            runtimeConfig,
-            gambleSysName,
-            players: players?.length,
-            gameid,
-            groupid
-        });
 
         // 调用 configManager 的保存方法
         const result = await configManager.saveConfig(runtimeConfig, gameid, groupid, '', this, false);
-
         if (result.success) {
             console.log('[AddRuntime] 配置保存成功');
         } else {
@@ -175,5 +163,4 @@ Page({
     onCancelConfig() {
         BaseConfig.onCancelConfig(this);
     }
-
 }); 

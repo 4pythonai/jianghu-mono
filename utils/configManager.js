@@ -672,7 +672,8 @@ class ConfigManager {
             roadLength,
         };
 
-        // 如果是编辑模式，添加配置ID
+
+
         if (isEdit) {
             saveData.id = configId;
         }
@@ -681,7 +682,6 @@ class ConfigManager {
         return saveData;
     }
 
-    // ==================== 合并方法 ====================
 
     /**
      * 将多个组件状态合并为完整的配置数据

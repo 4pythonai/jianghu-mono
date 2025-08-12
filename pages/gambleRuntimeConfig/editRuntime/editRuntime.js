@@ -36,7 +36,6 @@ Page({
 
         // 调试信息字段
         gameDataType: '',
-        gameDataString: ''
     },
 
     onLoad(options) {
@@ -61,23 +60,16 @@ Page({
         }
 
 
-        // 从 gameStore 获取玩家数据
-
-        // 获取 gameStore 中的 gameData
         const gameData = toJS(gameStore.gameData);
-
-        // 计算调试信息
         const gameDataType = typeof gameData;
 
         // 只提取 holeList 中的 hindex, holename, unique_key
-        let gameDataString = '';
         if (gameData?.holeList && Array.isArray(gameData.holeList)) {
             const holeListInfo = gameData.holeList.map(hole => ({
                 hindex: hole.hindex,
                 holename: hole.holename,
                 unique_key: hole.unique_key
             }));
-            gameDataString = JSON.stringify(holeListInfo, null, 2);
         }
 
 
@@ -91,7 +83,6 @@ Page({
             players: config.players,
             gameData: gameData, // 添加 gameData
             gameDataType: gameDataType,
-            gameDataString: gameDataString,
             'runtimeConfig.gameid': config.gameid,
             'runtimeConfig.groupid': config.groupid,
             'runtimeConfig.userRuleId': config.userRuleId,
@@ -122,7 +113,7 @@ Page({
 
     // 确认配置
     onConfirmConfig() {
-        const { runtimeConfig, gambleSysName, gameid, configId, players } = this.data;
+        const { runtimeConfig, gambleSysName, players } = this.data;
 
         // 从各个组件收集最新配置
         this.collectAllConfigs();
@@ -153,20 +144,10 @@ Page({
 
     // 保存配置
     async saveConfig() {
-        const { runtimeConfig, gambleSysName, players, gameid, groupid, configId } = this.data;
-
-        console.log('[EditRuntime] 保存配置，参数检查:', {
-            runtimeConfig,
-            gambleSysName,
-            players: players?.length,
-            gameid,
-            groupid,
-            configId
-        });
+        const { runtimeConfig, gameid, groupid, configId } = this.data;
 
         // 调用 configManager 的保存方法
         const result = await configManager.saveConfig(runtimeConfig, gameid, groupid, configId, this, true);
-
         if (result.success) {
             console.log('[EditRuntime] 配置更新成功');
         } else {
