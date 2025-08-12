@@ -16,7 +16,7 @@
     </view>
   </view>
 
-  <view class="gamble-container">
+  <view class="gamble-container" style="display: flex; flex-direction: column; min-height: 100vh;">
     <!-- 加载状态 -->
     <view class="loading-state" wx:if="{{loading}}">
       <text>加载中...</text>
@@ -47,7 +47,7 @@
       <!-- 多个游戏时，显示汇总和菜单 -->
       <block wx:else>
         <!-- 赌博汇总表格 -->
-        <view class="gamble-total-table" wx:if="{{currentDisplayType === 'summary'}}">
+        <view class="gamble-total-table" wx:if="{{currentDisplayType === 'summary'}}" style="flex: 1;">
           <view class="gamble-result-title">游戏汇总/出右边横菜单</view>
           <GambleTotalTable
             groupInfo="{{SummaryResult.group_info}}"

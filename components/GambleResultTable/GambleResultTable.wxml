@@ -1,5 +1,5 @@
-<view class="gamble-result-table">
-  <view class="table-wrapper">
+<view class="gamble-result-table" style="display: flex; flex-direction: column; min-height: 100vh;">
+  <view class="table-wrapper" style="flex: 1;">
     <!-- 表头 -->
     <view class="table-header">
       <view class="header-cell hole-header">
@@ -57,7 +57,7 @@
 
   <!-- 固定在屏幕底部的统计行 -->
   <view class="fixed-summary">
-    <view class="table-wrapper">
+    <view class="table-wrapper" style="flex: 1;">
       <!-- 总计行 -->
       <view class="table-row total-row">
         <view class="cell hole-header">
