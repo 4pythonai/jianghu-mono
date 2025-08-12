@@ -235,3 +235,22 @@
 .button-text {
 	font-size: 32rpx;
 }
+
+/* 提示信息样式 */
+.gamble-hint {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 40rpx;
+	background: #fff;
+	border-radius: 16rpx;
+	margin: 20rpx 0;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.hint-text {
+	font-size: 28rpx;
+	color: #666;
+	text-align: center;
+	line-height: 1.5;
+}

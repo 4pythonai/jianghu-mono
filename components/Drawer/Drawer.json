@@ -1,4 +1,7 @@
 {
     "component": true,
-    "usingComponents": {}
+    "usingComponents": {
+        "GambleTotalTable": "/components/GambleTotalTable/GambleTotalTable",
+        "GambleResultTable": "/components/GambleResultTable/GambleResultTable"
+    }
 }

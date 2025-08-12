@@ -19,12 +19,25 @@ Component({
         gameStatus: {
             type: String,
             value: '进行中'
+        },
+        // 新增：赌博汇总数据
+        summaryResult: {
+            type: Object,
+            value: {}
+        },
+        // 新增：赌博结果列表
+        gambleResults: {
+            type: Array,
+            value: []
         }
     },
 
     data: {
         model: false,
-        animationData: {}
+        animationData: {},
+        // 新增：显示控制状态
+        currentDisplayType: 'summary', // 'summary' 或 'detail'
+        currentDetailIndex: -1 // 当前显示的明细索引，-1表示显示汇总
     },
 
     methods: {
@@ -83,6 +96,17 @@ Component({
         // 对外暴露的隐藏方法
         hide: function () {
             this.initModel("close")
+        },
+
+        // 新增：切换显示汇总或明细
+        switchDisplay: function (e) {
+            const { type, index } = e.currentTarget.dataset;
+            console.log('[Drawer] 切换显示:', { type, index });
+
+            this.setData({
+                currentDisplayType: type,
+                currentDetailIndex: index
+            });
         }
     }
 })

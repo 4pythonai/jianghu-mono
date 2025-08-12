@@ -18,7 +18,10 @@ Component({
         loading: false,
         lastFetchParams: null,  // 记录上次请求的参数，避免重复请求
         createTime: '',  // 创建时间，传递给 Drawer 组件
-        gameStatus: '进行中'  // 游戏状态，传递给 Drawer 组件
+        gameStatus: '进行中',  // 游戏状态，传递给 Drawer 组件
+        // 新增：显示控制状态
+        currentDisplayType: 'summary', // 'summary' 或 'detail'
+        currentDetailIndex: -1 // 当前显示的明细索引，-1表示显示汇总
     },
 
     lifetimes: {
@@ -207,6 +210,19 @@ Component({
                     icon: 'none'
                 });
             }
+        },
+
+        /**
+         * 切换显示汇总或明细
+         */
+        switchDisplay(e) {
+            const { type, index } = e.detail;
+            console.log('[GambleSummary] 切换显示:', { type, index });
+
+            this.setData({
+                currentDisplayType: type,
+                currentDetailIndex: index
+            });
         }
     }
 });
