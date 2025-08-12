@@ -20,8 +20,8 @@
     <!-- 有赌博数据时的内容 -->
     <block wx:elif="{{gambleResults && gambleResults.length > 0}}">
       <!-- 赌博汇总表格 -->
-      <view class="gamble-total-table">
-        <view class="gamble-result-title" wx:if="{{gambleResults.length > 1}}">游戏汇总</view>
+      <view class="gamble-total-table" wx:if="{{gambleResults.length > 1}}">
+        <view class="gamble-result-title">游戏汇总</view>
         <GambleTotalTable
           groupInfo="{{SummaryResult.group_info}}"
           usefulHoles="{{SummaryResult.useful_holes}}"
@@ -38,7 +38,7 @@
           wx:key="index"
           wx:for-item="gambleResult"
         >
-          <!-- 赌博结果标题 -->
+          <!-- 赌博结果标题 - 只有当有多个赌博配置时才显示 -->
           <view
             class="gamble-result-title"
             wx:if="{{gambleResults.length > 1}}"

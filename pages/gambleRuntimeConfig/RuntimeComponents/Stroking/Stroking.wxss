@@ -223,6 +223,7 @@
 .stroking-selection radio-group {
 	display: flex;
 	gap: 40rpx;
+	margin-left: 40rpx;
 	align-items: center;
 }
 
@@ -369,23 +370,4 @@
 	font-size: 26rpx;
 	color: #999;
 	line-height: 1.5;
-}
-
-/* 响应式设计 */
-@media (max-width: 600rpx) {
-	.stroking-container {
-		padding: 20rpx;
-	}
-
-	.users-grid {
-		grid-template-columns: 1fr;
-	}
-
-	.par-inputs {
-		flex-direction: column;
-	}
-
-	.par-input-group {
-		min-width: auto;
-	}
 }

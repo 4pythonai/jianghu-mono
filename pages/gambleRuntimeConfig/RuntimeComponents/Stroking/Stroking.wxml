@@ -2,7 +2,6 @@
 <view class="stroking-container">
   <!-- 让杆选择 -->
   <view class="stroking-selection">
-    <view class="section-title">让杆设置</view>
     <radio-group bindchange="onStrokingChange">
       <label class="radio-option">
         <radio value="disable" checked="{{!enableStroking}}" />
