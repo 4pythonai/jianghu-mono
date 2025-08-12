@@ -1,4 +1,5 @@
 import { parseGambleRule } from '../../../../../utils/gambleRuleParser.js';
+import { GambleMetaConfig } from '../../../../../utils/GambleMetaConfig.js';
 
 Component({
     /**
@@ -55,31 +56,18 @@ Component({
 
             // 解析规则配置
             const details = parseGambleRule(item, item.gambleSysName);
+            console.log('[RuleCard] 🟥🟧🟨🟥🟧🟨<insert>🟥🟧🟨🟥🟧🟨 details ', details);
 
             // 根据规则类型设置玩家数量和标签
-            const { playerCount, ruleTypeLabel } = this.getRuleTypeInfo(item.gambleSysName);
+            const gameType = GambleMetaConfig.getGambleType(item.gambleSysName);
+            const playerCount = gameType?.playerCount || 0;
+            const ruleTypeLabel = gameType?.ruleTypeLabel || '未知';
 
             this.setData({
                 configDetails: details,
                 playerCount,
                 ruleTypeLabel
             });
-        },
-
-        /**
-         * 根据规则类型获取玩家数量和标签
-         */
-        getRuleTypeInfo(gambleSysName) {
-            const ruleTypeMap = {
-                '4p-8421': { playerCount: 4, ruleTypeLabel: '4人' },
-                '4p-lasi': { playerCount: 4, ruleTypeLabel: '4人' },
-                '3p-8421': { playerCount: 3, ruleTypeLabel: '3人' },
-                '3p-lasi': { playerCount: 3, ruleTypeLabel: '3人' },
-                '2p-8421': { playerCount: 2, ruleTypeLabel: '2人' },
-                '2p-lasi': { playerCount: 2, ruleTypeLabel: '2人' }
-            };
-
-            return ruleTypeMap[gambleSysName] || { playerCount: 0, ruleTypeLabel: '未知' };
         },
 
         /**

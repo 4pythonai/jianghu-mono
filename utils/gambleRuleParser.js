@@ -13,11 +13,6 @@ import { parse4PLasiConfig } from './ruleParser/Parser4p-lasi.js';
  */
 function parseGambleRule(item, tag) {
 
-    console.log(tag)
-
-    if (!item || !tag) {
-        return {};
-    }
 
     switch (tag) {
         case '4p-8421':

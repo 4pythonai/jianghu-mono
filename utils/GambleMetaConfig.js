@@ -42,31 +42,41 @@ const MEAT_VALUE_CONFIG_TYPES = {
 };
 
 // 游戏类型配置
+
+
+
 const GAMBLE_TYPES = {
     // 2人游戏
-    '2p-gross': { name: '2人比杆', hasPlayerConfig: false, hasGrouping: false, hasStroking: false },
-    '2p-hole': { name: '2人比洞', hasPlayerConfig: false, hasGrouping: false, hasStroking: false },
-    '2p-8421': { name: '2人8421', hasPlayerConfig: true, hasGrouping: false, hasStroking: false },
+    '2p-gross': { name: '2人比杆', playerCount: 2, ruleTypeLabel: '2人', hasPlayerConfig: false, hasGrouping: false, hasStroking: false },
+    '2p-hole': { name: '2人比洞', playerCount: 2, ruleTypeLabel: '2人', hasPlayerConfig: false, hasGrouping: false, hasStroking: false },
+    '2p-8421': { name: '2人8421', playerCount: 2, ruleTypeLabel: '2人', hasPlayerConfig: true, hasGrouping: false, hasStroking: false },
 
     // 3人游戏  
-    '3p-doudizhu': { name: '3人斗地主', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
-    '3p-dizhupo': { name: '3人地主婆', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
-    '3p-8421': { name: '3人8421', hasPlayerConfig: true, hasGrouping: true, hasStroking: false },
+    '3p-doudizhu': { name: '3人斗地主', playerCount: 3, ruleTypeLabel: '3人', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
+    '3p-dizhupo': { name: '3人地主婆', playerCount: 3, ruleTypeLabel: '3人', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
+    '3p-8421': { name: '3人8421', playerCount: 3, ruleTypeLabel: '3人', hasPlayerConfig: true, hasGrouping: true, hasStroking: false },
 
     // 4人游戏
-    '4p-lasi': { name: '4人拉丝', hasPlayerConfig: false, hasGrouping: true, hasStroking: true },
-    '4p-8421': { name: '4人8421', hasPlayerConfig: true, hasGrouping: true, hasStroking: false },
-    '4p-dizhupo': { name: '4人地主婆', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
-    '4p-3da1': { name: '4人3打1', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
-    '4p-bestak': { name: '4人Bestak', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
+    '4p-lasi': { name: '4人拉丝', playerCount: 4, ruleTypeLabel: '4人', hasPlayerConfig: false, hasGrouping: true, hasStroking: true },
+    '4p-8421': { name: '4人8421', playerCount: 4, ruleTypeLabel: '4人', hasPlayerConfig: true, hasGrouping: true, hasStroking: false },
+    '4p-dizhupo': { name: '4人地主婆', playerCount: 4, ruleTypeLabel: '4人', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
+    '4p-3da1': { name: '4人3打1', playerCount: 4, ruleTypeLabel: '4人', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
+    '4p-bestak': { name: '4人Bestak', playerCount: 4, ruleTypeLabel: '4人', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
 
     // 多人游戏
-    'mp-labahua': { name: '多人喇叭花', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
-    'mp-dabudui': { name: '多人大部队', hasPlayerConfig: false, hasGrouping: true, hasStroking: false }
+    'mp-labahua': { name: '多人喇叭花', playerCount: 0, ruleTypeLabel: '多人', hasPlayerConfig: false, hasGrouping: true, hasStroking: false },
+    'mp-dabudui': { name: '多人大部队', playerCount: 0, ruleTypeLabel: '多人', hasPlayerConfig: false, hasGrouping: true, hasStroking: false }
 };
 
 // 游戏配置管理器
 const GambleMetaConfig = {
+    /**
+     * 获取游戏类型配置
+     */
+    getGambleType(sysRuleName) {
+        return GAMBLE_TYPES[sysRuleName] || null;
+    },
+
     /**
      * 获取游戏名称
      */
@@ -95,7 +105,33 @@ const GambleMetaConfig = {
         return GAMBLE_TYPES[sysRuleName]?.hasStroking;
     },
 
+    /**
+     * 获取默认配置
+     */
+    getDefaultGambleConfig(sysRuleName, players = []) {
+        const config = {
+            red_blue_config: '4_固拉',
+            bootstrap_order: convertToUserIds(players),
+            ranking_tie_resolve_config: 'indicator.reverse',
+            playerIndicatorConfig: {}
+        };
 
+        // 8421游戏需要设置默认球员配置
+        if (this.needsPlayerConfig(sysRuleName)) {
+            const defaultPlayerConfig = {
+                "Birdie": 8,
+                "Par": 4,
+                "Par+1": 2,
+                "Par+2": 1
+            };
+
+            for (const player of players) {
+                config.playerIndicatorConfig[String(player.userid)] = { ...defaultPlayerConfig };
+            }
+        }
+
+        return config;
+    },
 };
 
 // CommonJS 导出，包含所有需要的常量和对象
