@@ -24,9 +24,9 @@ Page({
             userRuleId: null,       // 用户规则ID(仅用户规则时有值)
             gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
             gambleUserName: null,   // 用户规则名称(如:规则_4721)
-            red_blue_config: '4_固拉',
+            red_blue_config: null,
             bootstrap_order: [],
-            ranking_tie_resolve_config: 'indicator.reverse',
+            ranking_tie_resolve_config: null,
             playerIndicatorConfig: {}      // 球员8421指标配置
         },
 
@@ -126,14 +126,6 @@ Page({
 
         // 从各个组件收集最新配置
         this.collectAllConfigs();
-
-        console.log('[EditRuntime] 确认配置:', {
-            runtimeConfig,
-            gambleSysName,
-            gameid,
-            configId,
-            playerCount: players.length
-        });
 
         // 验证配置
         if (!ConfigValidator.validateAndShow(runtimeConfig, players, gambleSysName)) {
