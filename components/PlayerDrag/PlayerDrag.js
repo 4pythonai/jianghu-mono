@@ -14,6 +14,11 @@ Component({
         USERS: {
             type: Array,
             value: []
+        },
+        // 红蓝配置参数
+        redBlueConfig: {
+            type: String,
+            value: ''
         }
     },
 

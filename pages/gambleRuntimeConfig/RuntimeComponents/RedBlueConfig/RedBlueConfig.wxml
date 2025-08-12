@@ -34,6 +34,7 @@
         bind:scroll="onScroll"
         USERS="{{players}}"
         is-modal="{{false}}"
+        red-blue-config="{{red_blue_config}}"
       ></PlayerDrag>
     </view>
   </view>

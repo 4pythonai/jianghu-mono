@@ -69,6 +69,10 @@ Component({
 			type: String,
 			value: 'id'
 		},
+		redBlueConfig: {         // 红蓝配置参数
+			type: String,
+			value: ''
+		},
 	},
 	data: {
 		/* 未渲染数据 */

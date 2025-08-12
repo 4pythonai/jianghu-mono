@@ -24,6 +24,7 @@
       abcd="{{item.abcd}}"
       columns="{{columns}}"
       item-data="{{item.data}}"
+      red-blue-config="{{redBlueConfig}}"
       bind:click="itemClick"
     />
   </view>

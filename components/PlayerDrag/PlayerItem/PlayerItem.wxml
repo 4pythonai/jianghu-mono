@@ -4,7 +4,9 @@
       <text class="drag-icon">⋮⋮</text>
     </view>
     <view>
-      <text class="player-dot">{{(abcd === '1' || abcd === '2') ? '🔵' : '🔴'}}</text>
+      <text
+        class="player-dot"
+      >{{(redBlueConfig === '4_固拉' && (abcd === '1' || abcd === '2')) || (redBlueConfig !== '4_固拉' && (abcd === '1' || abcd === '4')) ? '🔵' : '🔴'}}</text>
       <text class="player-serial">#{{abcd}}</text>
     </view>
     <image

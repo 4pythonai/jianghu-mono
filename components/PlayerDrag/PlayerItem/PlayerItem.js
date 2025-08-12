@@ -7,6 +7,10 @@ Component({
         itemData: {
             type: Object,
             value: {}
+        },
+        redBlueConfig: {
+            type: String,
+            value: ''
         }
     },
 }) 

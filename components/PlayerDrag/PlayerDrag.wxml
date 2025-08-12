@@ -15,5 +15,6 @@
     top-size="{{110}}"
     unique-key-name="userid"
     bottom-size="{{300}}"
+    red-blue-config="{{redBlueConfig}}"
   ></DragComponent>
 </view>
