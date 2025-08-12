@@ -237,15 +237,13 @@
 	filter: brightness(0) invert(1); /* 将图标变为白色 */
 }
 
-/* 踢一脚按钮样式 - 稍微暗一点 */
+/* 踢一脚按钮样式 - 与配置游戏按钮保持一致 */
 .kick-btn {
-	background: linear-gradient(135deg, #3d8b40, #388e3c) !important;
-	opacity: 0.9;
+	background: linear-gradient(135deg, #4caf50, #45a049) !important;
 }
 
 .kick-btn:active {
-	background: linear-gradient(135deg, #2e7d32, #2e7d32) !important;
-	opacity: 1;
+	background: linear-gradient(135deg, #3d8b40, #388e3c) !important;
 }
 
 /* 游戏额外选项列表样式 */
