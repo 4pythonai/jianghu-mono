@@ -8,7 +8,8 @@ Page({
         _gambleUserName: '', // 规则名称  gambleUserName
         saving: false, // 保存状态
         configComponents: [], // 配置组件列表
-        hasLasiKpi: false // 是否包含LasiKPI组件
+        hasLasiKpi: false, // 是否包含LasiKPI组件
+        isManualEdit: false // 是否手动编辑过规则名称
     },
 
     onLoad(options) {
@@ -52,7 +53,8 @@ Page({
                 const lasiKpiComponent = this.selectComponent('#LasiKPI');
                 if (lasiKpiComponent && lasiKpiComponent.data.generatedRuleName) {
                     this.setData({
-                        _gambleUserName: lasiKpiComponent.data.generatedRuleName
+                        _gambleUserName: lasiKpiComponent.data.generatedRuleName,
+                        isManualEdit: false // 初始时不是手动编辑
                     });
                     console.log('📋 [SysEdit] 初始化规则名称为:', lasiKpiComponent.data.generatedRuleName);
                 }
@@ -102,8 +104,11 @@ Page({
     // 规则名称输入事件
     onRuleNameInput(e) {
         const value = e.detail.value;
-        this.setData({ _gambleUserName: value });
-        console.log('📋 [SysEdit] 规则名称已更新:', value);
+        this.setData({
+            _gambleUserName: value,
+            isManualEdit: true // 标记为手动编辑
+        });
+        console.log('📋 [SysEdit] 规则名称已手动更新:', value);
     },
 
     // LasiKPI配置变化事件处理
@@ -112,12 +117,14 @@ Page({
 
         // 从事件中获取生成的规则名称
         const { generatedRuleName } = e.detail;
-        if (generatedRuleName) {
-            // 更新规则名称
+        if (generatedRuleName && !this.data.isManualEdit) {
+            // 只有在用户没有手动编辑时才自动更新规则名称
             this.setData({
                 _gambleUserName: generatedRuleName
             });
             console.log('📋 [SysEdit] 规则名称已自动更新为:', generatedRuleName);
+        } else if (generatedRuleName && this.data.isManualEdit) {
+            console.log('📋 [SysEdit] 用户已手动编辑规则名称，跳过自动更新');
         }
     },
 

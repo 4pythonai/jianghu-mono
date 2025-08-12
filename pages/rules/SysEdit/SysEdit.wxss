@@ -61,18 +61,6 @@
 	background: white;
 }
 
-.form-input.readonly {
-	background: #f0f0f0;
-	color: #666;
-	border-color: #ddd;
-	cursor: not-allowed;
-}
-
-.form-input.readonly:focus {
-	border-color: #ddd;
-	background: #f0f0f0;
-}
-
 .form-hint {
 	margin-top: 12rpx;
 }

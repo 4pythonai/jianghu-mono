@@ -12,15 +12,14 @@
     <view class="form-section">
       <view class="form-label">规则名称</view>
       <input
-        class="form-input {{hasLasiKpi ? 'readonly' : ''}}"
+        class="form-input"
         value="{{_gambleUserName}}"
         bindinput="onRuleNameInput"
-        placeholder="{{hasLasiKpi ? '规则名称由KPI配置自动生成' : '请输入规则名称'}}"
+        placeholder="请输入规则名称"
         maxlength="50"
-        disabled="{{hasLasiKpi}}"
       />
       <view wx:if="{{hasLasiKpi}}" class="form-hint">
-        <text class="hint-text">规则名称由KPI配置自动生成</text>
+        <text class="hint-text">规则名称会根据KPI配置自动生成，您也可以手动修改</text>
       </view>
     </view>
 
