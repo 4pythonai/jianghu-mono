@@ -38,10 +38,15 @@
       <text class="config-text">{{ configDetails.reward }}</text>
     </view>
 
+    <view wx:if="{{ configDetails.kpis }}" class="config-detail-item">
+      <text class="config-label">[拉丝]：</text>
+      <text class="config-text">{{ configDetails.kpis }}</text>
+    </view>
+
     <!-- 其他配置项 -->
     <view wx:for="{{ configDetails }}" wx:key="key" wx:for-item="value" wx:for-index="key">
       <view
-        wx:if="{{ key !== 'koufen' && key !== 'eatmeat' && key !== 'draw' && key !== 'reward' && value }}"
+        wx:if="{{ key !== 'koufen' && key !== 'eatmeat' && key !== 'kpis' && key !== 'draw' && key !== 'reward' && value }}"
         class="config-detail-item"
       >
         <text class="config-label">[{{ key }}]：</text>
