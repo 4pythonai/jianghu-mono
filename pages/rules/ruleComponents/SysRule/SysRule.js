@@ -1,5 +1,5 @@
 // 添加规则组件
-const { ROUTES, GameConfig } = require('../../../../utils/gambleConfig.js');
+const { ROUTES, GambleItemConfig } = require('../../../../utils/gambleConfig.js');
 const app = getApp()
 
 Component({

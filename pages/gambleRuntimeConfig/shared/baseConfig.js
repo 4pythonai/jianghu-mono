@@ -3,7 +3,7 @@
  * 包含新增和编辑模式的公共方法
  */
 const { holeRangeStore } = require('../../../stores/holeRangeStore');
-const { GameConfig } = require('../../../utils/gambleConfig');
+const { GambleItemConfig } = require('../../../utils/gambleConfig');
 const configManager = require('../../../utils/configManager');
 
 const app = getApp();
@@ -75,7 +75,7 @@ const BaseConfig = {
         });
 
         // 获取默认配置
-        const defaultConfig = GameConfig.getDefaultGambleConfig(
+        const defaultConfig = GambleItemConfig.getDefaultGambleConfig(
             processedData.gambleSysName,
             processedData.players
         );
@@ -94,7 +94,7 @@ const BaseConfig = {
         // 强制检查8421配置是否为空，如果为空则重新初始化
         const is8421Game = processedData.gambleSysName && (
             processedData.gambleSysName.includes('8421') ||
-            GameConfig.needsPlayerConfig(processedData.gambleSysName)
+            GambleItemConfig.needsPlayerConfig(processedData.gambleSysName)
         );
 
         if (is8421Game) {
@@ -102,7 +102,7 @@ const BaseConfig = {
             if (!defaultConfig.playerIndicatorConfig || Object.keys(defaultConfig.playerIndicatorConfig).length === 0) {
 
                 // 重新获取默认配置
-                const retryConfig = GameConfig.getDefaultGambleConfig(
+                const retryConfig = GambleItemConfig.getDefaultGambleConfig(
                     processedData.gambleSysName,
                     processedData.players
                 );
@@ -184,7 +184,7 @@ const BaseConfig = {
         // 如果8421配置为空且是8421游戏，则初始化默认配置
         const is8421Game = editConfig.gambleSysName && (
             editConfig.gambleSysName.includes('8421') ||
-            GameConfig.needsPlayerConfig(editConfig.gambleSysName)
+            GambleItemConfig.needsPlayerConfig(editConfig.gambleSysName)
         );
 
         if (Object.keys(val8421Config).length === 0 && is8421Game) {
@@ -194,7 +194,7 @@ const BaseConfig = {
             const players = pageContext.data.players || [];
 
             if (players.length > 0) {
-                const defaultConfig = GameConfig.getDefaultGambleConfig(editConfig.gambleSysName, players);
+                const defaultConfig = GambleItemConfig.getDefaultGambleConfig(editConfig.gambleSysName, players);
                 val8421Config = defaultConfig.playerIndicatorConfig;
             }
         }

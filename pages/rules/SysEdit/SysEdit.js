@@ -1,5 +1,5 @@
 // 系统规则配置页面
-const { GameConfig } = require('../../../utils/gambleConfig.js');
+const { GambleItemConfig } = require('../../../utils/gambleConfig.js');
 const app = getApp()
 
 Page({
@@ -24,7 +24,7 @@ Page({
         }
 
         // 获取游戏配置 Human-readable
-        const _HumaName = GameConfig.getGambleHumanName(gameType);
+        const _HumaName = GambleItemConfig.getGambleHumanName(gameType);
         if (!_HumaName) {
             wx.showToast({
                 title: '无效的游戏类型',

@@ -1,6 +1,6 @@
 // 用户规则编辑页面
 const app = getApp()
-const { GameConfig } = require('../../../utils/gambleConfig.js');
+const { GambleItemConfig } = require('../../../utils/gambleConfig.js');
 
 Page({
     data: {
@@ -53,7 +53,7 @@ Page({
 
 
         // 获取游戏配置
-        const _name = GameConfig.getGambleHumanName(_gambleSysName);
+        const _name = GambleItemConfig.getGambleHumanName(_gambleSysName);
 
         if (!_name) {
             wx.showToast({
@@ -96,7 +96,7 @@ Page({
             const _gambleSysName = ruleData.gambleSysName;
 
             // 获取游戏配置
-            const _name = GameConfig.getGambleHumanName(_gambleSysName);
+            const _name = GambleItemConfig.getGambleHumanName(_gambleSysName);
             console.log('📋 [UserRuleEdit] API返回数据获取到的游戏配置:', _name);
 
             if (!_name) {

@@ -4,7 +4,7 @@
  */
 const BaseConfig = require('../shared/baseConfig');
 const ConfigValidator = require('../shared/configValidator');
-const { GameConfig } = require('../../../utils/gambleConfig');
+const { GambleItemConfig } = require('../../../utils/gambleConfig');
 const { gameStore } = require('../../../stores/gameStore');
 const { toJS } = require('mobx-miniprogram');
 
@@ -57,9 +57,9 @@ Page({
         // 添加调试日志
         setTimeout(() => {
             const { gambleSysName } = this.data;
-            const needsPlayerConfig = GameConfig.needsPlayerConfig(gambleSysName);
-            const needsGrouping = GameConfig.needsGrouping(gambleSysName);
-            const needsStroking = GameConfig.needsStroking(gambleSysName);
+            const needsPlayerConfig = GambleItemConfig.needsPlayerConfig(gambleSysName);
+            const needsGrouping = GambleItemConfig.needsGrouping(gambleSysName);
+            const needsStroking = GambleItemConfig.needsStroking(gambleSysName);
 
             // 获取 gameStore 中的 gameData
             const gameData = toJS(gameStore.gameData);

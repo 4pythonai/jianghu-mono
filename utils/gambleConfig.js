@@ -68,7 +68,7 @@ export const GAMBLE_TYPES = {
 
 
 // 游戏配置管理器
-export const GameConfig = {
+export const GambleItemConfig = {
 
 
     /**
@@ -134,7 +134,7 @@ export const GameConfig = {
 
 // CommonJS 导出，包含所有需要的常量和对象
 module.exports = {
-    GameConfig,
+    GambleItemConfig,
     GOLF_SCORE_TYPES,
     MEAT_VALUE_CONFIG_TYPES,
 };
