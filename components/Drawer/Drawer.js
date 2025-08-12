@@ -34,7 +34,6 @@ Component({
 
     data: {
         model: false,
-        animationData: {},
         // 新增：显示控制状态
         currentDisplayType: 'summary', // 'summary' 或 'detail'
         currentDetailIndex: -1 // 当前显示的明细索引，-1表示显示汇总
@@ -57,58 +56,20 @@ Component({
 
         initModel: function (status) {
             if (status === "open") {
-                // 打开动画：先设置显示，然后从右侧滑入
+                // 打开Drawer
                 this.setData({
                     model: true
                 })
-
-                // 延迟一点时间让DOM渲染完成
-                setTimeout(() => {
-                    const animation = wx.createAnimation({
-                        duration: 400,
-                        timingFunction: "ease-out",
-                        delay: 0
-                    })
-
-                    // 先设置到右侧外
-                    animation.translateX(100).step()
-                    this.setData({
-                        animationData: animation.export()
-                    })
-
-                    // 然后滑入到正确位置
-                    setTimeout(() => {
-                        animation.translateX(0).step()
-                        this.setData({
-                            animationData: animation.export()
-                        })
-                        // 触发打开事件
-                        this.triggerEvent('open')
-                    }, 50)
-                }, 50)
+                // 触发打开事件
+                this.triggerEvent('open')
 
             } else if (status === "close") {
-                // 关闭动画：先滑出，然后隐藏
-                const animation = wx.createAnimation({
-                    duration: 400,
-                    timingFunction: "ease-out",
-                    delay: 0
-                })
-
-                // 滑出到右侧
-                animation.translateX(100).step()
+                // 关闭Drawer
                 this.setData({
-                    animationData: animation.export()
+                    model: false
                 })
-
-                // 等待动画完成后隐藏
-                setTimeout(() => {
-                    this.setData({
-                        model: false
-                    })
-                    // 触发关闭事件
-                    this.triggerEvent('close')
-                }, 400)
+                // 触发关闭事件
+                this.triggerEvent('close')
             }
         },
 
