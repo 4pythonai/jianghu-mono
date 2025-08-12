@@ -139,48 +139,101 @@ Component({
 
         // 生成规则名称
         generateRuleName() {
-            console.log("❌⭕️❌⭕️❌⭕️❌⭕️❌⭕️")
-            const { selectedIndicators, totalCalculationType } = this.data;
+            const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
+
+            console.log('🎯 [LasiKPI] 生成规则名称 - 输入参数:', {
+                selectedIndicators,
+                kpiValues,
+                totalCalculationType
+            });
 
             if (selectedIndicators.length === 0) {
                 this.setData({ generatedRuleName: '四人拉丝' });
+                console.log('🎯 [LasiKPI] 规则名称: 四人拉丝 (无选中指标)');
+                return;
+            }
+
+            // 获取选中指标的分值
+            const selectedValues = selectedIndicators.map(indicator => kpiValues[indicator]);
+
+            // 检查所有分值是否一致
+            const allValuesEqual = selectedValues.every(value => value === selectedValues[0]);
+
+            console.log('🎯 [LasiKPI] 选中分值:', selectedValues, '是否一致:', allValuesEqual);
+
+            if (selectedIndicators.length === 3) {
+                if (allValuesEqual) {
+                    // 三个指标且分值一致，默认名称为"拉丝三点"
+                    this.setData({ generatedRuleName: '拉丝三点' });
+                    console.log('🎯 [LasiKPI] 规则名称: 拉丝三点 (三个指标分值一致)');
+                } else {
+                    // 三个指标但分值不一致，按"头尾总"顺序展示分值
+                    const name = `${kpiValues.best}${kpiValues.worst}${kpiValues.total}`;
+                    this.setData({ generatedRuleName: name });
+                    console.log('🎯 [LasiKPI] 规则名称:', name, '(三个指标分值不一致)');
+                }
+                return;
+            }
+
+            if (selectedIndicators.length === 2) {
+                // 按"头尾总"顺序重新排列选中的指标
+                const sortedIndicators = [];
+                const sortedValues = [];
+
+                // 先添加头（best）
+                if (selectedIndicators.includes('best')) {
+                    sortedIndicators.push('best');
+                    sortedValues.push(kpiValues.best);
+                }
+                // 再添加尾（worst）
+                if (selectedIndicators.includes('worst')) {
+                    sortedIndicators.push('worst');
+                    sortedValues.push(kpiValues.worst);
+                }
+                // 最后添加总（total）
+                if (selectedIndicators.includes('total')) {
+                    sortedIndicators.push('total');
+                    sortedValues.push(kpiValues.total);
+                }
+
+                if (allValuesEqual) {
+                    // 两个指标且分值一致，根据勾选指标命名
+                    const indicatorNames = sortedIndicators.map(indicator => {
+                        if (indicator === 'best') return '头';
+                        if (indicator === 'worst') return '尾';
+                        if (indicator === 'total') return '总';
+                        return '';
+                    });
+                    const ruleName = `${indicatorNames[0]}${indicatorNames[1]}两点`;
+                    this.setData({ generatedRuleName: ruleName });
+                    console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(两个指标分值一致)');
+                } else {
+                    // 两个指标但分值不一致，根据勾选指标和分值命名
+                    const indicatorNames = sortedIndicators.map(indicator => {
+                        if (indicator === 'best') return '头';
+                        if (indicator === 'worst') return '尾';
+                        if (indicator === 'total') return '总';
+                        return '';
+                    });
+                    const ruleName = `${indicatorNames[0]}${sortedValues[0]}${indicatorNames[1]}${sortedValues[1]}`;
+                    this.setData({ generatedRuleName: ruleName });
+                    console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(两个指标分值不一致)');
+                }
                 return;
             }
 
             if (selectedIndicators.length === 1) {
                 const indicator = selectedIndicators[0];
-                const indicatorMap = {
-                    'best': '较好',
-                    'worst': '较差',
-                    'total': totalCalculationType === 'add_total' ? '加法总杆' : '乘法总杆'
-                };
-                this.setData({ generatedRuleName: `拉丝${indicatorMap[indicator]}` });
-                return;
-            }
-
-            if (selectedIndicators.length === 2) {
-                const [first, second] = selectedIndicators;
-                const indicatorMap = {
-                    'best': '头',
-                    'worst': '尾',
-                    'total': totalCalculationType === 'add_total' ? '加' : '乘'
-                };
-                this.setData({ generatedRuleName: `${indicatorMap[first]}${indicatorMap[second]}` });
-                return;
-            }
-
-            if (selectedIndicators.length === 3) {
-                const indicatorMap = {
-                    'best': '2',
-                    'worst': '1',
-                    'total': '1'
-                };
-                const name = selectedIndicators.map(indicator => indicatorMap[indicator]).join('');
-                this.setData({ generatedRuleName: name });
+                const indicatorName = indicator === 'best' ? '最好成绩' :
+                    indicator === 'worst' ? '最差成绩' : '总成绩';
+                const ruleName = `拉丝一点${indicatorName}`;
+                this.setData({ generatedRuleName: ruleName });
+                console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(单个指标)');
                 return;
             }
 
             this.setData({ generatedRuleName: '四人拉丝' });
+            console.log('🎯 [LasiKPI] 规则名称: 四人拉丝 (默认)');
         },
 
         // 更新Store
@@ -327,6 +380,149 @@ Component({
             this.printCurrentKpiConfig();
 
             console.log('🎯 [LasiKPI] 配置数据初始化完成');
+        },
+
+        // 测试命名规则 - 开发调试用
+        testNamingRules() {
+            console.log('🎯 [LasiKPI] ===== 测试拉丝规则命名 =====');
+
+            const testCases = [
+                // 测试用例1: 三个指标，分值一致
+                {
+                    selectedIndicators: ['best', 'worst', 'total'],
+                    kpiValues: { best: 1, worst: 1, total: 1 },
+                    expected: '拉丝三点'
+                },
+                // 测试用例2: 三个指标，分值不一致 - 按头尾总顺序
+                {
+                    selectedIndicators: ['best', 'worst', 'total'],
+                    kpiValues: { best: 4, worst: 2, total: 1 },
+                    expected: '421'
+                },
+                // 测试用例3: 三个指标，分值不一致 - 不同选中顺序
+                {
+                    selectedIndicators: ['total', 'best', 'worst'],
+                    kpiValues: { best: 3, worst: 1, total: 5 },
+                    expected: '315'
+                },
+                // 测试用例4: 两个指标，分值一致 - 头尾
+                {
+                    selectedIndicators: ['best', 'worst'],
+                    kpiValues: { best: 2, worst: 2, total: 1 },
+                    expected: '头尾两点'
+                },
+                // 测试用例5: 两个指标，分值一致 - 头总（按顺序排列）
+                {
+                    selectedIndicators: ['best', 'total'],
+                    kpiValues: { best: 3, worst: 1, total: 3 },
+                    expected: '头总两点'
+                },
+                // 测试用例6: 两个指标，分值一致 - 头总（反序排列）
+                {
+                    selectedIndicators: ['total', 'best'],
+                    kpiValues: { best: 3, worst: 1, total: 3 },
+                    expected: '头总两点'
+                },
+                // 测试用例7: 两个指标，分值一致 - 头尾（按顺序排列）
+                {
+                    selectedIndicators: ['best', 'worst'],
+                    kpiValues: { best: 2, worst: 2, total: 1 },
+                    expected: '头尾两点'
+                },
+                // 测试用例8: 两个指标，分值一致 - 头尾（反序排列）
+                {
+                    selectedIndicators: ['worst', 'best'],
+                    kpiValues: { best: 2, worst: 2, total: 1 },
+                    expected: '头尾两点'
+                },
+                // 测试用例9: 两个指标，分值一致 - 尾总（按顺序排列）
+                {
+                    selectedIndicators: ['worst', 'total'],
+                    kpiValues: { best: 1, worst: 4, total: 4 },
+                    expected: '尾总两点'
+                },
+                // 测试用例10: 两个指标，分值一致 - 尾总（反序排列）
+                {
+                    selectedIndicators: ['total', 'worst'],
+                    kpiValues: { best: 1, worst: 4, total: 4 },
+                    expected: '尾总两点'
+                },
+                // 测试用例11: 两个指标，分值不一致 - 头N尾M（按顺序排列）
+                {
+                    selectedIndicators: ['best', 'worst'],
+                    kpiValues: { best: 4, worst: 2, total: 1 },
+                    expected: '头4尾2'
+                },
+                // 测试用例12: 两个指标，分值不一致 - 头N尾M（反序排列）
+                {
+                    selectedIndicators: ['worst', 'best'],
+                    kpiValues: { best: 4, worst: 2, total: 1 },
+                    expected: '头4尾2'
+                },
+                // 测试用例13: 两个指标，分值不一致 - 头N总M（按顺序排列）
+                {
+                    selectedIndicators: ['best', 'total'],
+                    kpiValues: { best: 3, worst: 1, total: 5 },
+                    expected: '头3总5'
+                },
+                // 测试用例14: 两个指标，分值不一致 - 头N总M（反序排列）
+                {
+                    selectedIndicators: ['total', 'best'],
+                    kpiValues: { best: 3, worst: 1, total: 5 },
+                    expected: '头3总5'
+                },
+                // 测试用例15: 两个指标，分值不一致 - 尾N总M（按顺序排列）
+                {
+                    selectedIndicators: ['worst', 'total'],
+                    kpiValues: { best: 1, worst: 2, total: 4 },
+                    expected: '尾2总4'
+                },
+                // 测试用例16: 两个指标，分值不一致 - 尾N总M（反序排列）
+                {
+                    selectedIndicators: ['total', 'worst'],
+                    kpiValues: { best: 1, worst: 2, total: 4 },
+                    expected: '尾2总4'
+                },
+                // 测试用例17: 单个指标 - 最好成绩
+                {
+                    selectedIndicators: ['best'],
+                    kpiValues: { best: 4, worst: 1, total: 1 },
+                    expected: '拉丝一点最好成绩'
+                },
+                // 测试用例18: 单个指标 - 最差成绩
+                {
+                    selectedIndicators: ['worst'],
+                    kpiValues: { best: 1, worst: 3, total: 1 },
+                    expected: '拉丝一点最差成绩'
+                },
+                // 测试用例19: 单个指标 - 总成绩
+                {
+                    selectedIndicators: ['total'],
+                    kpiValues: { best: 1, worst: 1, total: 5 },
+                    expected: '拉丝一点总成绩'
+                }
+            ];
+
+            testCases.forEach((testCase, index) => {
+                console.log(`🎯 [LasiKPI] 测试用例 ${index + 1}:`, testCase);
+
+                // 临时设置数据
+                this.setData({
+                    selectedIndicators: testCase.selectedIndicators,
+                    kpiValues: testCase.kpiValues
+                });
+
+                // 生成规则名称
+                this.generateRuleName();
+
+                // 检查结果
+                const actual = this.data.generatedRuleName;
+                const passed = actual === testCase.expected;
+
+                console.log(`🎯 [LasiKPI] 期望: "${testCase.expected}", 实际: "${actual}", 通过: ${passed ? '✅' : '❌'}`);
+            });
+
+            console.log('🎯 [LasiKPI] ===== 测试完成 =====');
         }
     }
 });
