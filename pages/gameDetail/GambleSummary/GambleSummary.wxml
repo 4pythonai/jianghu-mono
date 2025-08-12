@@ -24,46 +24,69 @@
 
     <!-- 有赌博数据时的内容 -->
     <block wx:elif="{{gambleResults && gambleResults.length > 0}}">
-      <!-- 赌博汇总表格 -->
-      <view class="gamble-total-table" wx:if="{{currentDisplayType === 'summary'}}">
-        <view class="gamble-result-title">游戏汇总/出右边横菜单</view>
-        <GambleTotalTable
-          groupInfo="{{SummaryResult.group_info}}"
-          usefulHoles="{{SummaryResult.useful_holes}}"
-          qrcode_url="{{''}}"
-          showQr="{{false}}"
-        ></GambleTotalTable>
-      </view>
-
-      <!-- 赌博结果列表 -->
-      <view class="gamble-results">
-        <view
-          class="gamble-result-item"
-          wx:for="{{gambleResults}}"
-          wx:key="index"
-          wx:for-item="gambleResult"
-          wx:if="{{currentDisplayType === 'detail' && currentDetailIndex === index}}"
-        >
-          <!-- 赌博结果标题 - 只有当有多个赌博配置时才显示 -->
+      <!-- 只有一个游戏时，直接显示明细，不显示汇总 -->
+      <block wx:if="{{gambleResults.length === 1}}">
+        <view class="gamble-results">
           <view
-            class="gamble-result-title"
-            wx:if="{{gambleResults.length > 1}}"
-          >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
-
-          <!-- 赌博结果表格 -->
-          <GambleResultTable
-            groupInfo="{{gambleResult.group_info}}"
-            usefulHoles="{{gambleResult.useful_holes}}"
-            qrcode_url="{{gambleResult.qrcode_url}}"
-            showQr="{{false}}"
-          ></GambleResultTable>
+            class="gamble-result-item"
+            wx:for="{{gambleResults}}"
+            wx:key="index"
+            wx:for-item="gambleResult"
+          >
+            <!-- 赌博结果表格 -->
+            <GambleResultTable
+              groupInfo="{{gambleResult.group_info}}"
+              usefulHoles="{{gambleResult.useful_holes}}"
+              qrcode_url="{{gambleResult.qrcode_url}}"
+              showQr="{{false}}"
+            ></GambleResultTable>
+          </view>
         </view>
-      </view>
+      </block>
 
-      <!-- 默认显示提示信息 -->
-      <view class="gamble-hint" wx:if="{{!currentDisplayType}}">
-        <text class="hint-text">点击右上角设置按钮查看详细数据</text>
-      </view>
+      <!-- 多个游戏时，显示汇总和菜单 -->
+      <block wx:else>
+        <!-- 赌博汇总表格 -->
+        <view class="gamble-total-table" wx:if="{{currentDisplayType === 'summary'}}">
+          <view class="gamble-result-title">游戏汇总/出右边横菜单</view>
+          <GambleTotalTable
+            groupInfo="{{SummaryResult.group_info}}"
+            usefulHoles="{{SummaryResult.useful_holes}}"
+            qrcode_url="{{''}}"
+            showQr="{{false}}"
+          ></GambleTotalTable>
+        </view>
+
+        <!-- 赌博结果列表 -->
+        <view class="gamble-results">
+          <view
+            class="gamble-result-item"
+            wx:for="{{gambleResults}}"
+            wx:key="index"
+            wx:for-item="gambleResult"
+            wx:if="{{currentDisplayType === 'detail' && currentDetailIndex === index}}"
+          >
+            <!-- 赌博结果标题 - 只有当有多个赌博配置时才显示 -->
+            <view
+              class="gamble-result-title"
+              wx:if="{{gambleResults.length > 1}}"
+            >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
+
+            <!-- 赌博结果表格 -->
+            <GambleResultTable
+              groupInfo="{{gambleResult.group_info}}"
+              usefulHoles="{{gambleResult.useful_holes}}"
+              qrcode_url="{{gambleResult.qrcode_url}}"
+              showQr="{{false}}"
+            ></GambleResultTable>
+          </view>
+        </view>
+
+        <!-- 默认显示提示信息 -->
+        <view class="gamble-hint" wx:if="{{!currentDisplayType}}">
+          <text class="hint-text">点击右上角设置按钮查看详细数据</text>
+        </view>
+      </block>
     </block>
 
     <!-- 暂无赌博数据状态 -->
@@ -86,8 +109,8 @@
     </view>
   </view>
 
-  <!-- 窄菜单条 -->
-  <view class="floating-menu">
+  <!-- 窄菜单条 - 只有多个游戏时才显示 -->
+  <view class="floating-menu" wx:if="{{gambleResults && gambleResults.length > 1}}">
     <view class="menu-item" bindtap="onMenuAction" data-action="viewDetail">
       <text class="menu-text">明细</text>
     </view>
