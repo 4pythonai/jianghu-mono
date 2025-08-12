@@ -105,6 +105,26 @@
 	text-align: center;
 }
 
+/* 洞名容器 */
+.hole-name-container {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 50%;
+	text-align: center;
+}
+
+/* 平局指示器容器 */
+.draw-indicator-container {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 50%;
+	text-align: center;
+}
+
 /* 总计行样式 */
 .total-row {
 	background-color: #f8f9fa;
