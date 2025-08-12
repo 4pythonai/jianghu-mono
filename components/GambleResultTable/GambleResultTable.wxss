@@ -135,15 +135,13 @@
 	color: #6c757d;
 }
 
-/* 红蓝分组样式 */
+/* 红蓝分组样式 - 已移除背景色 */
 .cell.team-red {
-	background-color: rgba(220, 53, 69, 0.1);
-	border-left: 1px solid #dc3545;
+	/* 移除红队背景色 */
 }
 
 .cell.team-blue {
-	background-color: rgba(0, 123, 255, 0.1);
-	border-left: 1px solid #007bff;
+	/* 移除蓝队背景色 */
 }
 
 /* 响应式设计 */
