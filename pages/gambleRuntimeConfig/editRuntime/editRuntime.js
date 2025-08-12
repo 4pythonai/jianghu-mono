@@ -138,52 +138,16 @@ Page({
 
     // 收集所有组件的配置
     collectAllConfigs() {
-        // 从洞范围选择器获取配置
-        const holeRangeSelector = this.selectComponent('#holeRangeSelector');
-        if (holeRangeSelector) {
-            const holeConfig = holeRangeSelector.getConfig();
-            if (holeConfig) {
-                console.log('🕳️ [EditRuntime] 收集洞范围配置:', holeConfig);
-                this.setData({
-                    'runtimeConfig.startHoleindex': holeConfig.startHoleindex,
-                    'runtimeConfig.endHoleindex': holeConfig.endHoleindex,
-                    'runtimeConfig.roadLength': holeConfig.roadLength,
-                });
-            }
-        }
+        // 调用 configManager 的统一收集方法
+        const collectedConfig = configManager.collectAllConfigs(this, false);
 
-        // 从8421球员配置组件获取配置
-        const playerIndicator = this.selectComponent('#playerIndicator');
-        if (playerIndicator) {
-            const playerConfig = playerIndicator.getConfig();
-            if (playerConfig) {
-                this.setData({
-                    'runtimeConfig.playerIndicatorConfig': playerConfig
-                });
+        // 将收集到的配置设置到页面数据中
+        if (Object.keys(collectedConfig).length > 0) {
+            const setDataObj = {};
+            for (const key of Object.keys(collectedConfig)) {
+                setDataObj[`runtimeConfig.${key}`] = collectedConfig[key];
             }
-        }
-
-        // 从分组配置组件获取配置
-        const redBlueConfig = this.selectComponent('#redBlueConfig');
-        if (redBlueConfig) {
-            const groupConfig = redBlueConfig.getConfig();
-            if (groupConfig) {
-                this.setData({
-                    'runtimeConfig.red_blue_config': groupConfig.red_blue_config,
-                    'runtimeConfig.bootstrap_order': groupConfig.bootstrap_order
-                });
-            }
-        }
-
-        // 从排名配置组件获取配置
-        const rankConfig = this.selectComponent('#rankConfig');
-        if (rankConfig) {
-            const rankingConfig = rankConfig.getConfig();
-            if (rankingConfig) {
-                this.setData({
-                    'runtimeConfig.ranking_tie_resolve_config': rankingConfig
-                });
-            }
+            this.setData(setDataObj);
         }
     },
 

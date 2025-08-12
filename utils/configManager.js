@@ -911,6 +911,85 @@ class ConfigManager {
     // ==================== 配置保存方法 ====================
 
     /**
+     * 收集所有组件的配置
+     * @param {Object} pageContext 页面上下文
+     * @param {boolean} needsStroking 是否需要让杆配置
+     * @returns {Object} 收集到的配置对象
+     */
+    collectAllConfigs(pageContext, needsStroking = false) {
+        console.log('[ConfigManager] 开始收集所有组件配置');
+
+        const collectedConfig = {};
+
+        // 从洞范围选择器获取配置
+        const holeRangeSelector = pageContext.selectComponent('#holeRangeSelector');
+        if (holeRangeSelector) {
+            const holeConfig = holeRangeSelector.getConfig();
+            if (holeConfig) {
+                console.log('🕳️ [ConfigManager] 收集洞范围配置:', holeConfig);
+                Object.assign(collectedConfig, {
+                    startHoleindex: holeConfig.startHoleindex,
+                    endHoleindex: holeConfig.endHoleindex,
+                    roadLength: holeConfig.roadLength,
+                });
+            }
+        }
+
+        // 从让杆配置组件获取配置（仅在需要时）
+        if (needsStroking) {
+            const stroking = pageContext.selectComponent('#stroking');
+            if (stroking) {
+                const strokingConfig = stroking.getConfig();
+                if (strokingConfig) {
+                    Object.assign(collectedConfig, {
+                        stroking_config: strokingConfig
+                    });
+                }
+            }
+        }
+
+        // 从8421球员配置组件获取配置
+        const playerIndicator = pageContext.selectComponent('#playerIndicator');
+        if (playerIndicator) {
+            const playerConfig = playerIndicator.getConfig();
+            if (playerConfig) {
+                Object.assign(collectedConfig, {
+                    playerIndicatorConfig: playerConfig
+                });
+            }
+        }
+
+        // 从分组配置组件获取配置
+        const redBlueConfig = pageContext.selectComponent('#redBlueConfig');
+        if (redBlueConfig) {
+            const groupConfig = redBlueConfig.getConfig();
+            console.log('[ConfigManager] RedBlueConfig 组件配置:', groupConfig);
+            if (groupConfig) {
+                Object.assign(collectedConfig, {
+                    red_blue_config: groupConfig.red_blue_config,
+                    bootstrap_order: groupConfig.bootstrap_order
+                });
+            }
+        } else {
+            console.warn('[ConfigManager] 未找到 RedBlueConfig 组件');
+        }
+
+        // 从排名配置组件获取配置
+        const rankConfig = pageContext.selectComponent('#rankConfig');
+        if (rankConfig) {
+            const rankingConfig = rankConfig.getConfig();
+            if (rankingConfig) {
+                Object.assign(collectedConfig, {
+                    ranking_tie_resolve_config: rankingConfig
+                });
+            }
+        }
+
+        console.log('[ConfigManager] 收集配置完成，收集到的配置:', collectedConfig);
+        return collectedConfig;
+    }
+
+    /**
      * 保存配置
      * @param {Object} runtimeConfig 运行时配置
      * @param {string} gameid 游戏ID
