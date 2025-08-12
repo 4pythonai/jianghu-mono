@@ -1,5 +1,10 @@
 <view data-status="open" bindtap="handleShowTecModelClick"></view>
-<view class="mask" data-status="close" wx:if="{{model}}" bindtap="handleCancelTecClick"></view>
+<view
+  class="mask {{model ? 'show' : ''}}"
+  data-status="close"
+  wx:if="{{model}}"
+  bindtap="handleCancelTecClick"
+></view>
 <view animation="{{animationData}}" class="drawer-box" wx:if="{{model}}">
   <view class="drawer-content">
     <!-- 标题栏 -->

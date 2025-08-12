@@ -56,35 +56,59 @@ Component({
         },
 
         initModel: function (status) {
-            const animation = wx.createAnimation({
-                duration: 300,
-                timingFunction: "ease",
-                delay: 0
-            })
-            this.animation = animation;
-            animation.translateX(100).step();
-            this.setData({
-                animationData: animation.export()
-            })
-            setTimeout(function () {
-                animation.translateX(0).step()
+            if (status === "open") {
+                // 打开动画：先设置显示，然后从右侧滑入
+                this.setData({
+                    model: true
+                })
+
+                // 延迟一点时间让DOM渲染完成
+                setTimeout(() => {
+                    const animation = wx.createAnimation({
+                        duration: 400,
+                        timingFunction: "ease-out",
+                        delay: 0
+                    })
+
+                    // 先设置到右侧外
+                    animation.translateX(100).step()
+                    this.setData({
+                        animationData: animation.export()
+                    })
+
+                    // 然后滑入到正确位置
+                    setTimeout(() => {
+                        animation.translateX(0).step()
+                        this.setData({
+                            animationData: animation.export()
+                        })
+                        // 触发打开事件
+                        this.triggerEvent('open')
+                    }, 50)
+                }, 50)
+
+            } else if (status === "close") {
+                // 关闭动画：先滑出，然后隐藏
+                const animation = wx.createAnimation({
+                    duration: 400,
+                    timingFunction: "ease-out",
+                    delay: 0
+                })
+
+                // 滑出到右侧
+                animation.translateX(100).step()
                 this.setData({
                     animationData: animation.export()
                 })
-                if (status === "close") {
+
+                // 等待动画完成后隐藏
+                setTimeout(() => {
                     this.setData({
                         model: false
                     })
                     // 触发关闭事件
                     this.triggerEvent('close')
-                }
-            }.bind(this), 300)
-            if (status === "open") {
-                this.setData({
-                    model: true
-                })
-                // 触发打开事件
-                this.triggerEvent('open')
+                }, 400)
             }
         },
 
@@ -110,6 +134,11 @@ Component({
 
             // 通知父组件切换显示
             this.triggerEvent('switchDisplay', { type, index });
+
+            // 切换完成后自动关闭Drawer
+            setTimeout(() => {
+                this.initModel("close");
+            }, 200);
         }
     }
 })
