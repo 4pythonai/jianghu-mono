@@ -8,7 +8,16 @@ Page({
     // 页面加载
     onLoad(options) {
         console.log('📋 [Rules] 页面加载');
-        console.log('📋 [Rules] 初始activeTab:', this.data.activeTab);
+        console.log('📋 [Rules] 页面参数:', options);
+
+        // 如果传入了activeTab参数，则设置对应的tab
+        if (options.activeTab !== undefined) {
+            const activeTab = Number.parseInt(options.activeTab);
+            console.log('📋 [Rules] 设置activeTab:', activeTab);
+            this.setData({ activeTab });
+        }
+
+        console.log('📋 [Rules] 最终activeTab:', this.data.activeTab);
     },
 
     // 页面显示

@@ -129,17 +129,6 @@ Page({
             ...configData
         };
 
-        console.log('📋 [SysEdit] 保存规则数据（扁平化结构）:', JSON.stringify(ruleData, null, 2));
-        console.log('📋 [SysEdit] 数据字段对应表结构:');
-        console.log('📋 [SysEdit] - gambleUserName:', ruleData.gambleUserName);
-        console.log('📋 [SysEdit] - gambleSysName:', ruleData.gambleSysName);
-        console.log('📋 [SysEdit] - badScoreBaseLine:', ruleData.badScoreBaseLine);
-        console.log('📋 [SysEdit] - badScoreMaxLost:', ruleData.badScoreMaxLost);
-        console.log('📋 [SysEdit] - dutyConfig:', ruleData.dutyConfig);
-        console.log('📋 [SysEdit] - drawConfig:', ruleData.drawConfig);
-        console.log('📋 [SysEdit] - eatingRange:', ruleData.eatingRange);
-        console.log('📋 [SysEdit] - meatValueConfig:', ruleData.meatValueConfig);
-        console.log('📋 [SysEdit] - meatMaxValue:', ruleData.meatMaxValue);
 
         // 调用API保存规则
         app.api.gamble.addGambleRule(ruleData)
@@ -150,9 +139,21 @@ Page({
                     icon: 'success'
                 });
 
-                // 返回"我的规则"
-
-
+                // 保存成功后跳转到"我的规则"页面
+                setTimeout(() => {
+                    // 跳转到规则页面，并设置activeTab为0（我的规则）
+                    wx.redirectTo({
+                        url: '/pages/rules/rules?activeTab=0',
+                        success: () => {
+                            console.log('📋 [SysEdit] 成功跳转到我的规则页面');
+                        },
+                        fail: (err) => {
+                            console.error('📋 [SysEdit] 跳转失败:', err);
+                            // 如果跳转失败，使用navigateBack
+                            wx.navigateBack();
+                        }
+                    });
+                }, 100); // 延迟1.5秒，让用户看到成功提示
             })
             .catch(err => {
                 console.error('📋 [SysEdit] 保存失败:', err);
