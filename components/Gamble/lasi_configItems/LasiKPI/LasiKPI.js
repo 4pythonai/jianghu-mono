@@ -139,6 +139,7 @@ Component({
 
         // 生成规则名称
         generateRuleName() {
+            console.log("❌⭕️❌⭕️❌⭕️❌⭕️❌⭕️")
             const { selectedIndicators, totalCalculationType } = this.data;
 
             if (selectedIndicators.length === 0) {
