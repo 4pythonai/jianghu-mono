@@ -96,7 +96,7 @@ Component({
             // 通知父组件切换显示
             this.triggerEvent('switchDisplay', { type, index });
 
-            // 切换完成后自动关闭Drawer
+            // 切换显示后保持Drawer打开
             setTimeout(() => {
                 this.initModel("close");
             }, 200);

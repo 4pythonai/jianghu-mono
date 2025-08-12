@@ -96,13 +96,47 @@
 .hole-header-inner {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	width: 100%;
 	height: 100%;
 	font-weight: bold;
 	color: #495057;
 	padding: 0 8rpx;
 	text-align: center;
+	flex-direction: row;
+	gap: 4rpx;
+}
+
+/* 洞名固定宽度容器 */
+.hole-name-fixed {
+	width: 60rpx;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+/* 平局标志固定宽度容器 */
+.draw-indicator-fixed {
+	width: 30rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 洞名文字 */
+.hole-name {
+	font-weight: bold;
+	color: #495057;
+	line-height: 1;
+	font-size: 24rpx;
+}
+
+/* 平局指示器 */
+.draw-indicator {
+	font-size: 20rpx;
+	color: #ff6b35;
+	line-height: 1;
+	font-weight: bold;
 }
 
 /* 总计行样式 */
