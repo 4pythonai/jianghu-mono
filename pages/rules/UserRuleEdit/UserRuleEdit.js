@@ -193,6 +193,17 @@ Page({
         console.log('📋 [UserRuleEdit] 规则名称已更新:', value);
     },
 
+    // 处理拉丝KPI配置变化
+    onLasiKpiConfigChange(e) {
+        const { generatedRuleName } = e.detail;
+        console.log('📋 [UserRuleEdit] 收到LasiKPI配置变化:', e.detail);
+
+        if (generatedRuleName) {
+            this.setData({ _gambleUserName: generatedRuleName });
+            console.log('📋 [UserRuleEdit] 规则名称已自动更新为:', generatedRuleName);
+        }
+    },
+
     // 验证表单
     validateForm() {
         const { _gambleUserName } = this.data;
