@@ -4,7 +4,6 @@
 		"RuntimeConfigList": "./RuntimeConfigList/RuntimeConfigList",
 		"BBS": "./BBS/BBS",
 		"GameMagement": "./GameMagement/GameMagement",
-		"Drawer": "../../components/Drawer/Drawer",
 		"GambleSummary": "./GambleSummary/GambleSummary"
 	},
 	"componentPlaceholder": {

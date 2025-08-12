@@ -16,7 +16,9 @@ Component({
         SummaryResult: {},
         gambleResults: [],
         loading: false,
-        lastFetchParams: null  // 记录上次请求的参数，避免重复请求
+        lastFetchParams: null,  // 记录上次请求的参数，避免重复请求
+        createTime: '',  // 创建时间，传递给 Drawer 组件
+        gameStatus: '进行中'  // 游戏状态，传递给 Drawer 组件
     },
 
     lifetimes: {
@@ -135,6 +137,76 @@ Component({
          */
         refresh() {
             this.fetchGambleSummary();
+        },
+
+        /**
+         * 显示抽屉
+         */
+        showDrawer() {
+            // 通过选择器获取 Drawer 组件实例并调用其 show 方法
+            const drawer = this.selectComponent('#drawer');
+            if (drawer) {
+                drawer.show();
+            }
+        },
+
+        /**
+         * 抽屉打开事件处理
+         */
+        onDrawerOpen() {
+            console.log('[GambleSummary] 抽屉已打开');
+        },
+
+        /**
+         * 抽屉关闭事件处理
+         */
+        onDrawerClose() {
+            console.log('[GambleSummary] 抽屉已关闭');
+        },
+
+        /**
+         * 抽屉确认事件处理
+         */
+        onDrawerConfirm() {
+            console.log('[GambleSummary] 抽屉确认操作');
+            // 可以在这里添加确认后的逻辑
+            wx.showToast({
+                title: '操作成功',
+                icon: 'success'
+            });
+        },
+
+        /**
+         * 菜单项点击事件处理
+         */
+        onMenuAction(e) {
+            const action = e.currentTarget.dataset.action;
+            console.log('[GambleSummary] 菜单项点击:', action);
+
+            switch (action) {
+                case 'viewDetail':
+                    this.handleViewDetail();
+                    break;
+                default:
+                    console.warn('[GambleSummary] 未知的菜单操作:', action);
+            }
+        },
+
+        /**
+         * 查看明细处理方法
+         */
+        handleViewDetail() {
+            console.log('[GambleSummary] 显示明细抽屉');
+            const drawer = this.selectComponent('#drawer');
+            if (drawer && drawer.show) {
+                drawer.show();
+            } else {
+                console.warn('[GambleSummary] Drawer组件未找到或没有show方法');
+                wx.showToast({
+                    title: '组件加载失败',
+                    icon: 'none'
+                });
+            }
         }
     }
 });

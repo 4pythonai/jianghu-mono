@@ -14,23 +14,4 @@
 <!-- 赌博相关 -->
 <view class="tab-content" hidden="{{currentTab !== 2}}" style="width: 100%; padding: 0;">
   <GambleSummary gameid="{{gameid}}" groupid="{{groupid}}" id="GambleSummary" />
-
-  <!-- 窄菜单条 - 只在游戏tab时显示 -->
-  <view class="floating-menu" wx:if="{{currentTab === 2}}">
-    <view class="menu-item" bindtap="onMenuAction" data-action="viewDetail">
-      <text class="menu-text">明细</text>
-    </view>
-  </view>
 </view>
-
-<!-- Drawer组件 -->
-<Drawer
-  id="detailDrawer"
-  gameid="{{gameid}}"
-  groupid="{{groupid}}"
-  createTime="{{gameData.createTime || ''}}"
-  gameStatus="{{gameData.status || '进行中'}}"
-  bind:confirm="onDrawerConfirm"
-  bind:close="onDrawerClose"
-  bind:open="onDrawerOpen"
-/>

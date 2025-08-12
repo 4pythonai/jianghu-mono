@@ -5,8 +5,13 @@
       <text class="nav-title">游戏详情</text>
     </view>
     <view class="nav-right">
-      <view class="icon-btn" bindtap="gotoRuntimeConfigList">
-        <image class="nav-icon" src="/assets/icons/icons8-right-arrow-50-3.png" mode="aspectFit"></image>
+      <view class="nav-buttons">
+        <view class="icon-btn" bindtap="showDrawer">
+          <image class="nav-icon" src="/assets/icons/icons8-settings-50.png" mode="aspectFit"></image>
+        </view>
+        <view class="icon-btn" bindtap="gotoRuntimeConfigList">
+          <image class="nav-icon" src="/assets/icons/icons8-right-arrow-50-3.png" mode="aspectFit"></image>
+        </view>
       </view>
     </view>
   </view>
@@ -74,4 +79,23 @@
       </view>
     </view>
   </view>
+
+  <!-- 窄菜单条 -->
+  <view class="floating-menu">
+    <view class="menu-item" bindtap="onMenuAction" data-action="viewDetail">
+      <text class="menu-text">明细</text>
+    </view>
+  </view>
+
+  <!-- Drawer 组件 -->
+  <Drawer
+    id="drawer"
+    gameid="{{gameid}}"
+    groupid="{{groupid}}"
+    createTime="{{createTime}}"
+    gameStatus="{{gameStatus}}"
+    bind:open="onDrawerOpen"
+    bind:close="onDrawerClose"
+    bind:confirm="onDrawerConfirm"
+  ></Drawer>
 </view>

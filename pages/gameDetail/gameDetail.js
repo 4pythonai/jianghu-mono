@@ -88,53 +88,5 @@ Page({
                 console.warn('[gameDetail] 游戏组件未找到或没有refresh方法');
             }
         }
-    },
-
-    // 菜单项点击事件处理
-    onMenuAction(e) {
-        const action = e.currentTarget.dataset.action;
-        console.log('[gameDetail] 菜单项点击:', action);
-
-        switch (action) {
-            case 'viewDetail':
-                this.handleViewDetail();
-                break;
-            default:
-                console.warn('[gameDetail] 未知的菜单操作:', action);
-        }
-    },
-
-    // 查看明细处理方法
-    handleViewDetail() {
-        console.log('[gameDetail] 显示明细抽屉');
-        const drawer = this.selectComponent('#detailDrawer');
-        if (drawer && drawer.show) {
-            drawer.show();
-        } else {
-            console.warn('[gameDetail] Drawer组件未找到或没有show方法');
-            wx.showToast({
-                title: '组件加载失败',
-                icon: 'none'
-            });
-        }
-    },
-
-    // Drawer确认事件
-    onDrawerConfirm() {
-        console.log('[gameDetail] Drawer确认');
-        wx.showToast({
-            title: '操作成功',
-            icon: 'success'
-        });
-    },
-
-    // Drawer关闭事件
-    onDrawerClose() {
-        console.log('[gameDetail] Drawer关闭');
-    },
-
-    // Drawer打开事件
-    onDrawerOpen() {
-        console.log('[gameDetail] Drawer打开');
     }
 });
