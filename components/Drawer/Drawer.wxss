@@ -52,20 +52,40 @@
 	color: #333 !important;
 }
 
+/* 关闭按钮容器 - 底部居中 */
+.close-btn-container {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	padding: 20rpx 30rpx 40rpx !important;
+	border-top: 1rpx solid #f0f0f0 !important;
+	background: #f8f9fa !important;
+	margin-top: auto !important;
+}
+
 .close-btn {
-	width: 60rpx !important;
-	height: 60rpx !important;
+	width: 80rpx !important;
+	height: 80rpx !important;
 	display: flex !important;
 	align-items: center !important;
 	justify-content: center !important;
 	border-radius: 50% !important;
-	background: #f0f0f0 !important;
+	background: #fff !important;
+	border: 2rpx solid #e0e0e0 !important;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1) !important;
+	transition: all 0.3s ease !important;
+}
+
+.close-btn:active {
+	background: #f5f5f5 !important;
+	transform: scale(0.95) !important;
 }
 
 .close-icon {
-	font-size: 40rpx !important;
+	font-size: 48rpx !important;
 	color: #666 !important;
 	line-height: 1 !important;
+	font-weight: bold !important;
 }
 
 /* 标题列表 */
@@ -110,9 +130,22 @@
 .content-area {
 	flex: 1 !important;
 	overflow-y: auto !important;
-	padding: 20rpx !important;
+	padding: 40rpx 30rpx !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
 }
 
-.table-container {
-	width: 100% !important;
+.hint-container {
+	text-align: center !important;
+	padding: 40rpx !important;
+	background: #f8f9fa !important;
+	border-radius: 16rpx !important;
+	border: 2rpx dashed #dee2e6 !important;
+}
+
+.hint-text {
+	font-size: 28rpx !important;
+	color: #666 !important;
+	line-height: 1.5 !important;
 }

@@ -4,10 +4,7 @@
   <view class="drawer-content">
     <!-- 标题栏 -->
     <view class="drawer-header">
-      <text class="drawer-title">游戏数据</text>
-      <view class="close-btn" bindtap="handleCancelTecClick">
-        <text class="close-icon">×</text>
-      </view>
+      <text class="drawer-title">选择查看内容</text>
     </view>
 
     <!-- 标题列表 -->
@@ -35,29 +32,10 @@
       </view>
     </view>
 
-    <!-- 内容区域 -->
-    <view class="content-area">
-      <!-- 汇总表格 -->
-      <view class="table-container" wx:if="{{currentDisplayType === 'summary'}}">
-        <GambleTotalTable
-          groupInfo="{{summaryResult.group_info}}"
-          usefulHoles="{{summaryResult.useful_holes}}"
-          qrcode_url="{{''}}"
-          showQr="{{false}}"
-        ></GambleTotalTable>
-      </view>
-
-      <!-- 明细表格 -->
-      <view
-        class="table-container"
-        wx:if="{{currentDisplayType === 'detail' && currentDetailIndex >= 0}}"
-      >
-        <GambleResultTable
-          groupInfo="{{gambleResults[currentDetailIndex].group_info}}"
-          usefulHoles="{{gambleResults[currentDetailIndex].useful_holes}}"
-          qrcode_url="{{gambleResults[currentDetailIndex].qrcode_url}}"
-          showQr="{{false}}"
-        ></GambleResultTable>
+    <!-- 关闭按钮 - 移到底部居中 -->
+    <view class="close-btn-container">
+      <view class="close-btn" data-status="close" bindtap="handleCancelTecClick">
+        <text class="close-icon">×</text>
       </view>
     </view>
   </view>

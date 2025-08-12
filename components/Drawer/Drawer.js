@@ -107,6 +107,9 @@ Component({
                 currentDisplayType: type,
                 currentDetailIndex: index
             });
+
+            // 通知父组件切换显示
+            this.triggerEvent('switchDisplay', { type, index });
         }
     }
 })

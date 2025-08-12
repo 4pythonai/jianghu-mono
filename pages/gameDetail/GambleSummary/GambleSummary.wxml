@@ -24,8 +24,8 @@
 
     <!-- 有赌博数据时的内容 -->
     <block wx:elif="{{gambleResults && gambleResults.length > 0}}">
-      <!-- 赌博汇总表格 - 隐藏 -->
-      <!-- <view class="gamble-total-table" wx:if="{{gambleResults.length > 1}}">
+      <!-- 赌博汇总表格 -->
+      <view class="gamble-total-table" wx:if="{{currentDisplayType === 'summary'}}">
         <view class="gamble-result-title">游戏汇总/出右边横菜单</view>
         <GambleTotalTable
           groupInfo="{{SummaryResult.group_info}}"
@@ -33,21 +33,24 @@
           qrcode_url="{{''}}"
           showQr="{{false}}"
         ></GambleTotalTable>
-      </view>-->
+      </view>
 
-      <!-- 赌博结果列表 - 隐藏 -->
-      <!-- <view class="gamble-results">
+      <!-- 赌博结果列表 -->
+      <view class="gamble-results">
         <view
           class="gamble-result-item"
           wx:for="{{gambleResults}}"
           wx:key="index"
           wx:for-item="gambleResult"
+          wx:if="{{currentDisplayType === 'detail' && currentDetailIndex === index}}"
         >
+          <!-- 赌博结果标题 - 只有当有多个赌博配置时才显示 -->
           <view
             class="gamble-result-title"
             wx:if="{{gambleResults.length > 1}}"
           >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
 
+          <!-- 赌博结果表格 -->
           <GambleResultTable
             groupInfo="{{gambleResult.group_info}}"
             usefulHoles="{{gambleResult.useful_holes}}"
@@ -55,10 +58,10 @@
             showQr="{{false}}"
           ></GambleResultTable>
         </view>
-      </view>-->
+      </view>
 
-      <!-- 显示提示信息 -->
-      <view class="gamble-hint">
+      <!-- 默认显示提示信息 -->
+      <view class="gamble-hint" wx:if="{{!currentDisplayType}}">
         <text class="hint-text">点击右上角设置按钮查看详细数据</text>
       </view>
     </block>
@@ -102,5 +105,6 @@
     bind:open="onDrawerOpen"
     bind:close="onDrawerClose"
     bind:confirm="onDrawerConfirm"
+    bind:switchDisplay="switchDisplay"
   ></Drawer>
 </view>
