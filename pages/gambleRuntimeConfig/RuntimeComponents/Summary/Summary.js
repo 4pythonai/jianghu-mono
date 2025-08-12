@@ -1,6 +1,6 @@
 // Summary组件 - 显示游戏规则摘要和参与人员
 const RuntimeComponentsUtils = require('../common-utils.js');
-const { GambleItemConfig } = require('../../../../utils/gambleConfig.js');
+const { GambleMetaConfig } = require('../../../../utils/gambleConfig.js');
 
 Component({
     properties: {
@@ -76,7 +76,7 @@ Component({
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用用户规则名称', displayName);
             } else if (this.data.gambleSysName) {
                 // 否则显示系统规则名称
-                displayName = GambleItemConfig.getGambleHumanName(this.data.gambleSysName);
+                displayName = GambleMetaConfig.getGambleHumanName(this.data.gambleSysName);
                 RuntimeComponentsUtils.logger.log('SUMMARY', '使用系统规则名称', displayName);
             }
 

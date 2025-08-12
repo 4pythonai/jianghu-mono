@@ -2,7 +2,7 @@
  * 配置验证器
  * 专门处理配置验证逻辑
  */
-const { GambleItemConfig } = require('../../../utils/gambleConfig');
+const { GambleMetaConfig } = require('../../../utils/gambleConfig');
 
 const ConfigValidator = {
 
@@ -76,7 +76,7 @@ const ConfigValidator = {
         });
 
         // 检查是否需要分组
-        const needsGrouping = GambleItemConfig.needsGrouping(gambleSysName);
+        const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
 
         if (needsGrouping) {
             // 验证分组方式
@@ -131,7 +131,7 @@ const ConfigValidator = {
         const errors = [];
 
         // 检查是否需要球员配置
-        const needsPlayerConfig = GambleItemConfig.needsPlayerConfig(gambleSysName);
+        const needsPlayerConfig = GambleMetaConfig.needsPlayerConfig(gambleSysName);
 
         if (needsPlayerConfig) {
             const val8421Config = runtimeConfig.playerIndicatorConfig;

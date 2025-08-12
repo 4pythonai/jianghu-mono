@@ -5,7 +5,7 @@
  * @param {any} player
  * @returns {object}
  */
-export function normalizePlayer(player) {
+function normalizePlayer(player) {
     return {
         ...player,
         userid: String(player.userid),
@@ -19,7 +19,7 @@ export function normalizePlayer(player) {
  * @param {number} index 洞在列表中的索引位置（从1开始）
  * @returns {object}
  */
-export function normalizeHole(hole, index = null) {
+function normalizeHole(hole, index = null) {
     return {
         ...hole,
         holeid: hole.holeid != null ? String(hole.holeid) : '',
@@ -36,7 +36,7 @@ export function normalizeHole(hole, index = null) {
  * @param {any} score
  * @returns {object}
  */
-export function normalizeScore(score) {
+function normalizeScore(score) {
     return {
         score: Number(score.score) || 0,
         putts: Number(score.putts) || 0,
@@ -45,13 +45,11 @@ export function normalizeScore(score) {
     };
 }
 
-
-
 /**
  * 标准化score_cards中的洞数据
  * @param {any[]} scoreCards
  */
-export function normalizeScoreCards(scoreCards) {
+function normalizeScoreCards(scoreCards) {
     for (const card of scoreCards) {
         if (card.scores && Array.isArray(card.scores)) {
             for (const hole of card.scores) {
@@ -69,7 +67,7 @@ export function normalizeScoreCards(scoreCards) {
  * @param {number} [par]
  * @returns {string}
  */
-export function formatScore(score, par) {
+function formatScore(score, par) {
     if (!score || score === 0) return '0';
     return score.toString();
 }
@@ -79,7 +77,7 @@ export function formatScore(score, par) {
  * @param {number} putts
  * @returns {string}
  */
-export function formatPutts(putts) {
+function formatPutts(putts) {
     if (!putts || putts === 0) return '0';
     return putts.toString();
 }
@@ -90,7 +88,7 @@ export function formatPutts(putts) {
  * @param {number} par
  * @returns {string}
  */
-export function formatDiff(score, par) {
+function formatDiff(score, par) {
     if (!score || !par) return '0';
     const diff = score - par;
     if (diff === 0) return '0';
@@ -102,7 +100,7 @@ export function formatDiff(score, par) {
  * @param {number} diff
  * @returns {string}
  */
-export function getScoreClass(diff) {
+function getScoreClass(diff) {
     if (diff <= -2) return 'score-eagle';
     if (diff === -1) return 'score-birdie';
     if (diff === 0) return 'score-par';
@@ -117,7 +115,7 @@ export function getScoreClass(diff) {
  * @param {Array} playersArray 玩家对象数组
  * @returns {Array} 用户ID数组
  */
-export function convertToUserIds(playersArray) {
+function convertToUserIds(playersArray) {
     if (!Array.isArray(playersArray)) return [];
     return playersArray.map(player => {
         const rawId = player?.userid;
@@ -125,3 +123,15 @@ export function convertToUserIds(playersArray) {
         return id;
     });
 }
+
+module.exports = {
+    normalizePlayer,
+    normalizeHole,
+    normalizeScore,
+    normalizeScoreCards,
+    formatScore,
+    formatPutts,
+    formatDiff,
+    getScoreClass,
+    convertToUserIds
+};

@@ -2,10 +2,10 @@
  * 游戏配置管理 - 统一管理所有游戏相关配置
  */
 
-import { convertToUserIds } from './gameUtils.js';
+const { convertToUserIds } = require('./gameUtils.js');
 
 // 高尔夫球成绩类型
-export const GOLF_SCORE_TYPES = {
+const GOLF_SCORE_TYPES = {
     BETTER_THAN_BIRDIE: 'BetterThanBirdie',
     BIRDIE: 'Birdie',
     PAR: 'Par',
@@ -22,7 +22,7 @@ export const GOLF_SCORE_TYPES = {
 };
 
 // 肉分值配置类型
-export const MEAT_VALUE_CONFIG_TYPES = {
+const MEAT_VALUE_CONFIG_TYPES = {
     DOUBLE_WITH_REWARD: 'DOUBLE_WITH_REWARD',
     DOUBLE_WITHOUT_REWARD: 'DOUBLE_WITHOUT_REWARD',
     SINGLE_DOUBLE: 'SINGLE_DOUBLE',
@@ -42,7 +42,7 @@ export const MEAT_VALUE_CONFIG_TYPES = {
 };
 
 // 游戏类型配置
-export const GAMBLE_TYPES = {
+const GAMBLE_TYPES = {
     // 2人游戏
     '2p-gross': { name: '2人比杆', hasPlayerConfig: false, hasGrouping: false, hasStroking: false },
     '2p-hole': { name: '2人比洞', hasPlayerConfig: false, hasGrouping: false, hasStroking: false },
@@ -65,12 +65,8 @@ export const GAMBLE_TYPES = {
     'mp-dabudui': { name: '多人大部队', hasPlayerConfig: false, hasGrouping: true, hasStroking: false }
 };
 
-
-
 // 游戏配置管理器
-export const GambleItemConfig = {
-
-
+const GambleMetaConfig = {
     /**
      * 获取游戏名称
      */
@@ -99,12 +95,10 @@ export const GambleItemConfig = {
         return GAMBLE_TYPES[sysRuleName]?.hasStroking;
     },
 
-
     /**
      * 获取默认配置
      */
     getDefaultGambleConfig(sysRuleName, players = []) {
-
         const config = {
             red_blue_config: '4_固拉',
             bootstrap_order: convertToUserIds(players),
@@ -131,10 +125,9 @@ export const GambleItemConfig = {
     },
 };
 
-
 // CommonJS 导出，包含所有需要的常量和对象
 module.exports = {
-    GambleItemConfig,
+    GambleMetaConfig,
     GOLF_SCORE_TYPES,
     MEAT_VALUE_CONFIG_TYPES,
 };
