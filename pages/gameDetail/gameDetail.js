@@ -96,59 +96,27 @@ Page({
         console.log('[gameDetail] 菜单项点击:', action);
 
         switch (action) {
-            case 'action1':
-                this.handleAction1();
-                break;
-            case 'action2':
-                this.handleAction2();
-                break;
-            case 'action3':
-                this.handleAction3();
+            case 'viewDetail':
+                this.handleViewDetail();
                 break;
             default:
                 console.warn('[gameDetail] 未知的菜单操作:', action);
         }
     },
 
-    // 具体操作处理方法
-    handleAction1() {
-        // 添加配置
+    // 查看明细处理方法
+    handleViewDetail() {
         wx.showModal({
-            title: '添加配置',
-            content: '是否要添加新的游戏配置？',
+            title: '查看明细',
+            content: '是否要查看游戏详细配置？',
             success: (res) => {
                 if (res.confirm) {
-                    // 跳转到添加配置页面
+                    // 跳转到游戏明细页面
                     wx.navigateTo({
-                        url: `/pages/gambleRuntimeConfig/addRuntime/addRuntime?gameid=${this.data.gameid}&groupid=${this.data.groupid}`
+                        url: `/pages/gameDetail/gameDetail?gameid=${this.data.gameid}&groupid=${this.data.groupid}&tab=2`
                     });
                 }
             }
         });
-    },
-
-    handleAction2() {
-        // 编辑规则
-        wx.showModal({
-            title: '编辑规则',
-            content: '是否要编辑当前游戏规则？',
-            success: (res) => {
-                if (res.confirm) {
-                    // 跳转到规则编辑页面
-                    wx.navigateTo({
-                        url: `/pages/rules/UserRuleEdit/UserRuleEdit?ruleId=${this.data.gameData?.userRuleId || ''}`
-                    });
-                }
-            }
-        });
-    },
-
-    handleAction3() {
-        // 查看统计
-        wx.showToast({
-            title: '查看统计功能开发中',
-            icon: 'none'
-        });
-        // 在这里添加查看统计的具体逻辑
     }
 });
