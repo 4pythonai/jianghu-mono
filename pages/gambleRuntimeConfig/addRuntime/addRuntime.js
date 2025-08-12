@@ -7,6 +7,7 @@ const ConfigValidator = require('../shared/configValidator');
 const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig');
 const { gameStore } = require('../../../stores/gameStore');
 const { toJS } = require('mobx-miniprogram');
+const configManager = require('../../../utils/configManager'); // Added import for configManager
 
 Page({
     data: {
@@ -44,7 +45,7 @@ Page({
     },
 
     onLoad(options) {
-        console.log('[AddRuntime] 页面加载, 参数:', options);
+        console.log('🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸 AddRuntime');
 
         // 使用基础配置逻辑初始化页面
         const result = BaseConfig.initializePageData(options, this);
@@ -203,16 +204,18 @@ Page({
 
     // 保存配置
     async saveConfig() {
-        const { runtimeConfig, gameid, groupid } = this.data;
+        const { runtimeConfig, gambleSysName, players, gameid, groupid } = this.data;
 
         console.log('[AddRuntime] 保存配置，参数检查:', {
+            runtimeConfig,
+            gambleSysName,
+            players: players?.length,
             gameid,
-            groupid,
-            groupIdType: typeof groupid,
-            hasGroupId: !!groupid
+            groupid
         });
 
-        const result = await BaseConfig.saveConfig(runtimeConfig, gameid, groupid, '', this, false);
+        // 调用 configManager 的保存方法
+        const result = await configManager.saveConfig(runtimeConfig, gameid, groupid, '', this, false);
 
         if (result.success) {
             console.log('[AddRuntime] 配置保存成功');

@@ -8,6 +8,7 @@ const { runtimeStore } = require('../../../stores/runtimeStore');
 const { gameStore } = require('../../../stores/gameStore');
 const { holeRangeStore } = require('../../../stores/holeRangeStore');
 const { toJS } = require('mobx-miniprogram');
+const configManager = require('../../../utils/configManager'); // Added import for configManager
 
 Page({
     data: {
@@ -196,15 +197,24 @@ Page({
 
     // 保存配置
     async saveConfig() {
-        const { runtimeConfig, gameid, groupid, configId } = this.data;
+        const { runtimeConfig, gambleSysName, players, gameid, groupid, configId } = this.data;
 
-        // 直接调用BaseConfig的保存方法，避免重复逻辑
-        const result = await BaseConfig.saveConfig(runtimeConfig, gameid, groupid, configId, this, true);
+        console.log('[EditRuntime] 保存配置，参数检查:', {
+            runtimeConfig,
+            gambleSysName,
+            players: players?.length,
+            gameid,
+            groupid,
+            configId
+        });
 
-        if (result?.success) {
+        // 调用 configManager 的保存方法
+        const result = await configManager.saveConfig(runtimeConfig, gameid, groupid, configId, this, true);
+
+        if (result.success) {
             console.log('[EditRuntime] 配置更新成功');
         } else {
-            console.error('[EditRuntime] 配置更新失败:', result?.error);
+            console.error('[EditRuntime] 配置更新失败:', result.error);
         }
     },
 

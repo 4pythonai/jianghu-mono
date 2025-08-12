@@ -228,51 +228,6 @@ Component({
 
 
 
-        // 卡片点击跳转运行时配置页
-        onRunTimeConfig(e) {
-            const { title } = e.currentTarget.dataset;
-
-            // 导入store来获取游戏数据
-            const { gameStore } = require('../../../../stores/gameStore');
-            const { holeRangeStore } = require('../../../../stores/holeRangeStore');
-            console.log('[AddRule] 游戏数据:', gameStore);
-
-            // 从 holeRangeStore 获取洞数据
-            const { holeList } = holeRangeStore.getState();
-
-            // 准备传递给运行时配置页面的数据(简化版)
-            const runtimeConfigData = {
-                gambleSysName: title,
-                gameid: gameStore.gameid || null,
-                playerCount: gameStore.players?.length || 0,
-                holeCount: holeList?.length || 18,
-                fromUserRule: false, // 标识这是从系统规则进入的,
-                holeList: holeList || []
-            };
-
-            // 将完整数据暂存到全局(为了保持一致性)
-            const app = getApp();
-            app.globalData = app.globalData || {};
-
-            // 编码传递的数据
-            const encodedData = encodeURIComponent(JSON.stringify(runtimeConfigData));
-
-            // 跳转到运行时配置页面
-            wx.navigateTo({
-                url: `/pages/gambleRuntimeConfig/addRuntime/addRuntime?data=${encodedData}`,
-                success: () => {
-                    console.log('🎮 成功跳转到运行时配置页面, 规则类型:', title);
-                },
-                fail: (err) => {
-                    console.error('🎮 跳转失败:', err);
-                    wx.showToast({
-                        title: '页面跳转失败',
-                        icon: 'none'
-                    });
-                }
-            });
-        },
-
         // 卡片点击跳转规则配置页
         onConfigRule(e) {
             const { title } = e.currentTarget.dataset;

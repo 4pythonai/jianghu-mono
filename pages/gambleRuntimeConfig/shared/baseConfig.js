@@ -16,106 +16,36 @@ const BaseConfig = {
      * @returns {Object} 初始化结果
      */
     initializePageData(options, pageContext) {
-        try {
-            // 处理传入的数据
-            const processedData = configManager.processIncomingData(options);
 
-            // 设置页面数据
-            const setDataObj = {
-                gambleSysName: processedData.gambleSysName,
-                gameid: processedData.gameid,
-                groupid: processedData.groupid, // 添加 groupid 到页面数据
-                configId: processedData.configId || '',
-                players: processedData.players,
-                gameData: processedData.gameData,
-                userRule: processedData.userRule,
-                'runtimeConfig.gameid': processedData.gameid,
-                'runtimeConfig.groupid': processedData.groupid,
-                'runtimeConfig.userRuleId': processedData.userRuleId,
-                'runtimeConfig.gambleSysName': processedData.gambleSysName,
-                'runtimeConfig.gambleUserName': processedData.gambleUserName
-            };
+        // 处理传入的数据
+        const processedData = configManager.processIncomingData(options);
 
-            pageContext.setData(setDataObj);
-
-            // 根据是否有编辑配置来决定初始化方式
-            if (processedData.editConfig) {
-                BaseConfig.loadEditConfig(processedData.editConfig, pageContext);
-            } else {
-                BaseConfig.initializeNewConfig(processedData, pageContext);
-            }
-
-            return {
-                success: true,
-                data: processedData
-            };
-
-        } catch (error) {
-            console.error('[BaseConfig] 初始化失败:', error);
-            pageContext.setData({
-                error: `初始化失败: ${error.message}`
-            });
-
-            return {
-                success: false,
-                error: error.message
-            };
-        }
-    },
-
-    /**
-     * 初始化新配置
-     * @param {Object} processedData 处理后的数据
-     * @param {Object} pageContext 页面上下文
-     */
-    initializeNewConfig(processedData, pageContext) {
-        console.log('[BaseConfig] 初始化新配置:', {
+        // 设置页面数据
+        const setDataObj = {
             gambleSysName: processedData.gambleSysName,
-            playerCount: processedData.players?.length
-        });
+            gameid: processedData.gameid,
+            groupid: processedData.groupid, // 添加 groupid 到页面数据
+            configId: processedData.configId || '',
+            players: processedData.players,
+            gameData: processedData.gameData,
+            userRule: processedData.userRule,
+            'runtimeConfig.gameid': processedData.gameid,
+            'runtimeConfig.groupid': processedData.groupid,
+            'runtimeConfig.userRuleId': processedData.userRuleId,
+            'runtimeConfig.gambleSysName': processedData.gambleSysName,
+            'runtimeConfig.gambleUserName': processedData.gambleUserName
+        };
 
-        // 获取默认配置
-        const defaultConfig = GambleMetaConfig.getDefaultGambleConfig(
-            processedData.gambleSysName,
-            processedData.players
-        );
+        pageContext.setData(setDataObj);
+        BaseConfig.loadEditConfig(processedData.editConfig, pageContext);
 
-        console.log('[BaseConfig] 获取到的默认配置:', defaultConfig);
-
-        // 设置默认配置
-        pageContext.setData({
-            'runtimeConfig.red_blue_config': defaultConfig.red_blue_config,
-            'runtimeConfig.bootstrap_order': defaultConfig.bootstrap_order,
-            'runtimeConfig.ranking_tie_resolve_config': defaultConfig.ranking_tie_resolve_config,
-            'runtimeConfig.playerIndicatorConfig': defaultConfig.playerIndicatorConfig
-        });
-
-
-        // 强制检查8421配置是否为空，如果为空则重新初始化
-        const is8421Game = processedData.gambleSysName && (
-            processedData.gambleSysName.includes('8421') ||
-            GambleMetaConfig.needsPlayerConfig(processedData.gambleSysName)
-        );
-
-        if (is8421Game) {
-            // 直接检查生成的默认配置，而不是从页面数据中获取
-            if (!defaultConfig.playerIndicatorConfig || Object.keys(defaultConfig.playerIndicatorConfig).length === 0) {
-
-                // 重新获取默认配置
-                const retryConfig = GambleMetaConfig.getDefaultGambleConfig(
-                    processedData.gambleSysName,
-                    processedData.players
-                );
-
-                pageContext.setData({
-                    'runtimeConfig.playerIndicatorConfig': retryConfig.playerIndicatorConfig
-                });
-
-            } else {
-                console.log('[BaseConfig] 8421配置已正确生成:', defaultConfig.playerIndicatorConfig);
-            }
-        }
+        return {
+            success: true,
+            data: processedData
+        };
     },
+
+
 
     /**
      * 加载编辑配置
@@ -216,60 +146,6 @@ const BaseConfig = {
 
 
 
-
-    /**
-     * 保存配置
-     * @param {Object} runtimeConfig 运行时配置
-     * @param {string} gameid 游戏ID
-     * @param {string} groupid 分组ID
-     * @param {string} configId 配置ID
-     * @param {Object} pageContext 页面上下文
-     * @param {boolean} isEdit 是否为编辑模式
-     * @returns {Promise} 保存结果
-     */
-    async saveConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit = false) {
-        try {
-            const saveData = configManager.prepareSaveData(runtimeConfig, isEdit, configId);
-
-            pageContext.setData({ loading: true });
-
-            const apiMethod = isEdit ? 'updateRuntimeConfig' : 'addRuntimeConfig';
-            const res = await app.api.gamble[apiMethod](saveData);
-
-            if (res.code === 200) {
-                wx.showToast({
-                    title: isEdit ? '配置更新成功' : '配置保存成功',
-                    icon: 'success'
-                });
-
-                setTimeout(() => {
-                    wx.redirectTo({
-                        url: `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`
-                    });
-                }, 300);
-
-                return { success: true };
-            }
-
-            wx.showToast({
-                title: isEdit ? '配置更新失败' : '配置保存失败',
-                icon: 'none'
-            });
-
-            return { success: false, error: res.message || '保存失败' };
-        } catch (error) {
-            console.error('[BaseConfig] 保存配置失败:', error);
-            wx.showToast({
-                title: '保存失败，请重试',
-                icon: 'none'
-            });
-
-            return { success: false, error: error.message };
-        } finally {
-            // 无论成功还是失败，都要重置loading状态
-            pageContext.setData({ loading: false });
-        }
-    },
 
     /**
      * 重新选择规则

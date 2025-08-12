@@ -120,7 +120,6 @@ const GambleMetaConfig = {
             }
         }
 
-        console.log(" getDefaultGambleConfig 🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹 💹🈯️💹🈯️💹 config", config)
         return config;
     },
 };

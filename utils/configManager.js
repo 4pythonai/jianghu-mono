@@ -512,7 +512,7 @@ class ConfigManager {
      * @returns {Object} 处理后的数据
      */
     processIncomingData(options) {
-        console.log('[ConfigManager] 处理传入数据:', options);
+        console.log('[ConfigManager] 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢 处理传入数据:', options);
 
         try {
             if (!options.data) {
@@ -906,6 +906,63 @@ class ConfigManager {
         }
 
         return state;
+    }
+
+    // ==================== 配置保存方法 ====================
+
+    /**
+     * 保存配置
+     * @param {Object} runtimeConfig 运行时配置
+     * @param {string} gameid 游戏ID
+     * @param {string} groupid 分组ID
+     * @param {string} configId 配置ID
+     * @param {Object} pageContext 页面上下文
+     * @param {boolean} isEdit 是否为编辑模式
+     * @returns {Promise} 保存结果
+     */
+    async saveConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit = false) {
+        try {
+            const saveData = this.prepareSaveData(runtimeConfig, isEdit, configId);
+
+            pageContext.setData({ loading: true });
+
+            const app = getApp();
+            const apiMethod = isEdit ? 'updateRuntimeConfig' : 'addRuntimeConfig';
+            const res = await app.api.gamble[apiMethod](saveData);
+
+            if (res.code === 200) {
+                wx.showToast({
+                    title: isEdit ? '配置更新成功' : '配置保存成功',
+                    icon: 'success'
+                });
+
+                setTimeout(() => {
+                    wx.redirectTo({
+                        url: `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`
+                    });
+                }, 300);
+
+                return { success: true };
+            }
+
+            wx.showToast({
+                title: isEdit ? '配置更新失败' : '配置保存失败',
+                icon: 'none'
+            });
+
+            return { success: false, error: res.message || '保存失败' };
+        } catch (error) {
+            console.error('[ConfigManager] 保存配置失败:', error);
+            wx.showToast({
+                title: '保存失败，请重试',
+                icon: 'none'
+            });
+
+            return { success: false, error: error.message };
+        } finally {
+            // 无论成功还是失败，都要重置loading状态
+            pageContext.setData({ loading: false });
+        }
     }
 }
 

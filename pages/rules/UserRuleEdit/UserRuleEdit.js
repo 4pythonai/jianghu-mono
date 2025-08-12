@@ -15,7 +15,6 @@ Page({
 
     onLoad(options) {
         console.log('📋 [UserRuleEdit] 页面加载，参数:', options);
-
         const { ruleId, ruleData } = options;
         console.log('📋 [UserRuleEdit] 接收到的ruleId:', ruleId);
         console.log('📋 [UserRuleEdit] 接收到的ruleData:', ruleData);
