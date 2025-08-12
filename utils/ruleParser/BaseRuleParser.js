@@ -2,7 +2,7 @@
  * 基础规则解析器
  * 提供通用的规则解析方法，供具体规则解析器继承使用
  */
-const { GOLF_SCORE_TYPES, MEAT_VALUE_CONFIG_TYPES } = require('../gambleConfig.js');
+const { GOLF_SCORE_TYPES, MEAT_VALUE_CONFIG_TYPES } = require('../GambleMetaConfig');
 
 class BaseRuleParser {
     /**

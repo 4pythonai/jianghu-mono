@@ -3,7 +3,7 @@
  * 包含新增和编辑模式的公共方法
  */
 const { holeRangeStore } = require('../../../stores/holeRangeStore');
-const { GambleMetaConfig } = require('../../../utils/gambleConfig');
+const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig');
 const configManager = require('../../../utils/configManager');
 
 const app = getApp();

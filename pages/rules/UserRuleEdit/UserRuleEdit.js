@@ -1,6 +1,6 @@
 // 用户规则编辑页面
 const app = getApp()
-const { GambleMetaConfig } = require('../../../utils/gambleConfig.js');
+const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig.js');
 
 Page({
     data: {

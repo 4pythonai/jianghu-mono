@@ -2,7 +2,7 @@
  * 配置验证器
  * 专门处理配置验证逻辑
  */
-const { GambleMetaConfig } = require('../../../utils/gambleConfig');
+const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig');
 
 const ConfigValidator = {
 

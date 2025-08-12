@@ -1,5 +1,5 @@
 // 系统规则配置页面
-const { GambleMetaConfig } = require('../../../utils/gambleConfig.js');
+const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig.js');
 const app = getApp()
 
 Page({
