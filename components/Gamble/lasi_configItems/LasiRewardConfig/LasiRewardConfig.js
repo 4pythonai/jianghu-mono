@@ -45,11 +45,16 @@ Component({
                 const rewardTypeText = config.rewardType === 'add' ? '加法奖励' : '乘法奖励';
                 const rewardPair = config.rewardPair || [];
 
-                // 计算有效的奖励项目数量
+                // 计算所有奖励项目数量（包括值为0的项目）
+                const totalRewards = rewardPair.length;
                 const validRewards = rewardPair.filter(item => item.rewardValue > 0);
 
-                if (validRewards.length > 0) {
-                    displayValue = `${rewardTypeText} (${validRewards.length}项)`;
+                if (totalRewards > 0) {
+                    if (validRewards.length > 0) {
+                        displayValue = `${rewardTypeText} (${totalRewards}项)`;
+                    } else {
+                        displayValue = `${rewardTypeText} (${totalRewards}项，未设置)`;
+                    }
                 } else {
                     displayValue = `${rewardTypeText} (未设置)`;
                 }

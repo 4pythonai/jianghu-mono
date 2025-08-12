@@ -150,15 +150,9 @@ Page({
                     icon: 'success'
                 });
 
-                // 返回上一页并刷新
-                setTimeout(() => {
-                    const pages = getCurrentPages();
-                    const prevPage = pages[pages.length - 2];
-                    if (prevPage?.onShow) {
-                        prevPage.onShow();
-                    }
-                    wx.navigateBack();
-                }, 1500);
+                // 返回"我的规则"
+
+
             })
             .catch(err => {
                 console.error('📋 [SysEdit] 保存失败:', err);

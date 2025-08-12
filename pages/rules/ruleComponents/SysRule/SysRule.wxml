@@ -69,12 +69,6 @@
         <view class="plus-btn">+</view>
       </view>
     </view>
-    <view class="card-row">
-      <view class="rule-card" bindtap="onConfigRule" data-title="4p-bestak">
-        <text>比A比K</text>
-        <view class="plus-btn">+</view>
-      </view>
-    </view>
   </view>
 
   <!-- 4人以上游戏 -->

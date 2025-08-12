@@ -54,35 +54,6 @@ Page({
         });
     },
 
-    // 处理规则保存事件
-    onRuleSaved(e) {
-        const { rule, isEdit } = e.detail;
-        console.log('📋 [Rules] 规则已保存:', rule, '编辑模式:', isEdit);
-
-        // 清除编辑状态并切换到我的规则tab
-        this.setData({
-            activeTab: 0,
-            editRule: null
-        });
-
-        // 通知MyRules组件刷新列表
-        const myRulesComponent = this.selectComponent('#myRulesComponent');
-        if (myRulesComponent) {
-            myRulesComponent.refreshRules();
-        }
-    },
-
-    // 处理取消编辑事件
-    onCancelEdit() {
-        console.log('📋 [Rules] 取消编辑');
-
-        // 清除编辑状态并切换到我的规则tab
-        this.setData({
-            activeTab: 0,
-            editRule: null
-        });
-    },
-
 
 
     // 下拉刷新
@@ -101,14 +72,5 @@ Page({
     // 处理组件的下拉刷新完成事件
     onPullDownComplete() {
         wx.stopPullDownRefresh();
-    },
-
-    // Debug方法:手动切换tab
-    debugToggleTab() {
-        const newTab = this.data.activeTab === 0 ? 1 : 0;
-        console.log('📋 [Rules] Debug切换tab:', this.data.activeTab, '->', newTab);
-        this.setData({
-            activeTab: newTab
-        });
     }
 }); 

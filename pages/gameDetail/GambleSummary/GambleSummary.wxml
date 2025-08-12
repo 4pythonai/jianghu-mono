@@ -21,7 +21,7 @@
     <block wx:elif="{{gambleResults && gambleResults.length > 0}}">
       <!-- 赌博汇总表格 -->
       <view class="gamble-total-table" wx:if="{{gambleResults.length > 1}}">
-        <view class="gamble-result-title">游戏汇总</view>
+        <view class="gamble-result-title">游戏汇总/出右边横菜单</view>
         <GambleTotalTable
           groupInfo="{{SummaryResult.group_info}}"
           usefulHoles="{{SummaryResult.useful_holes}}"
