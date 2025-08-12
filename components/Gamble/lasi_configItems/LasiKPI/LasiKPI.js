@@ -86,8 +86,8 @@ Component({
             });
 
             this.calculateTotalScore();
-            this.updateStore();
             this.generateRuleName();
+            this.updateStore();
             this.printCurrentKpiConfig();
         },
 
@@ -98,8 +98,8 @@ Component({
                 totalCalculationType: newType
             });
 
-            this.updateStore();
             this.generateRuleName();
+            this.updateStore();
 
             // 打印当前KPI配置
             this.printCurrentKpiConfig();
@@ -118,8 +118,8 @@ Component({
             });
 
             this.calculateTotalScore();
-            this.updateStore();
             this.generateRuleName();
+            this.updateStore();
             this.printCurrentKpiConfig();
         },
 
@@ -147,93 +147,90 @@ Component({
                 totalCalculationType
             });
 
+            let ruleName = '四人拉丝'; // 默认规则名称
+
             if (selectedIndicators.length === 0) {
-                this.setData({ generatedRuleName: '四人拉丝' });
+                ruleName = '四人拉丝';
                 console.log('🎯 [LasiKPI] 规则名称: 四人拉丝 (无选中指标)');
-                return;
+            } else {
+                // 获取选中指标的分值
+                const selectedValues = selectedIndicators.map(indicator => kpiValues[indicator]);
+
+                // 检查所有分值是否一致
+                const allValuesEqual = selectedValues.every(value => value === selectedValues[0]);
+
+                console.log('🎯 [LasiKPI] 选中分值:', selectedValues, '是否一致:', allValuesEqual);
+
+                if (selectedIndicators.length === 3) {
+                    if (allValuesEqual) {
+                        // 三个指标且分值一致，默认名称为"拉丝三点"
+                        ruleName = '拉丝三点';
+                        console.log('🎯 [LasiKPI] 规则名称: 拉丝三点 (三个指标分值一致)');
+                    } else {
+                        // 三个指标但分值不一致，按"头尾总"顺序展示分值
+                        ruleName = `${kpiValues.best}${kpiValues.worst}${kpiValues.total}`;
+                        console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(三个指标分值不一致)');
+                    }
+                } else if (selectedIndicators.length === 2) {
+                    // 按"头尾总"顺序重新排列选中的指标
+                    const sortedIndicators = [];
+                    const sortedValues = [];
+
+                    // 先添加头（best）
+                    if (selectedIndicators.includes('best')) {
+                        sortedIndicators.push('best');
+                        sortedValues.push(kpiValues.best);
+                    }
+                    // 再添加尾（worst）
+                    if (selectedIndicators.includes('worst')) {
+                        sortedIndicators.push('worst');
+                        sortedValues.push(kpiValues.worst);
+                    }
+                    // 最后添加总（total）
+                    if (selectedIndicators.includes('total')) {
+                        sortedIndicators.push('total');
+                        sortedValues.push(kpiValues.total);
+                    }
+
+                    if (allValuesEqual) {
+                        // 两个指标且分值一致，根据勾选指标命名
+                        const indicatorNames = sortedIndicators.map(indicator => {
+                            if (indicator === 'best') return '头';
+                            if (indicator === 'worst') return '尾';
+                            if (indicator === 'total') return '总';
+                            return '';
+                        });
+                        ruleName = `${indicatorNames[0]}${indicatorNames[1]}两点`;
+                        console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(两个指标分值一致)');
+                    } else {
+                        // 两个指标但分值不一致，根据勾选指标和分值命名
+                        const indicatorNames = sortedIndicators.map(indicator => {
+                            if (indicator === 'best') return '头';
+                            if (indicator === 'worst') return '尾';
+                            if (indicator === 'total') return '总';
+                            return '';
+                        });
+                        ruleName = `${indicatorNames[0]}${sortedValues[0]}${indicatorNames[1]}${sortedValues[1]}`;
+                        console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(两个指标分值不一致)');
+                    }
+                } else if (selectedIndicators.length === 1) {
+                    const indicator = selectedIndicators[0];
+                    const indicatorName = indicator === 'best' ? '最好成绩' :
+                        indicator === 'worst' ? '最差成绩' : '总成绩';
+                    ruleName = `拉丝一点${indicatorName}`;
+                    console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(单个指标)');
+                }
             }
 
-            // 获取选中指标的分值
-            const selectedValues = selectedIndicators.map(indicator => kpiValues[indicator]);
+            // 更新数据并立即触发事件
+            this.setData({ generatedRuleName: ruleName });
 
-            // 检查所有分值是否一致
-            const allValuesEqual = selectedValues.every(value => value === selectedValues[0]);
-
-            console.log('🎯 [LasiKPI] 选中分值:', selectedValues, '是否一致:', allValuesEqual);
-
-            if (selectedIndicators.length === 3) {
-                if (allValuesEqual) {
-                    // 三个指标且分值一致，默认名称为"拉丝三点"
-                    this.setData({ generatedRuleName: '拉丝三点' });
-                    console.log('🎯 [LasiKPI] 规则名称: 拉丝三点 (三个指标分值一致)');
-                } else {
-                    // 三个指标但分值不一致，按"头尾总"顺序展示分值
-                    const name = `${kpiValues.best}${kpiValues.worst}${kpiValues.total}`;
-                    this.setData({ generatedRuleName: name });
-                    console.log('🎯 [LasiKPI] 规则名称:', name, '(三个指标分值不一致)');
-                }
-                return;
-            }
-
-            if (selectedIndicators.length === 2) {
-                // 按"头尾总"顺序重新排列选中的指标
-                const sortedIndicators = [];
-                const sortedValues = [];
-
-                // 先添加头（best）
-                if (selectedIndicators.includes('best')) {
-                    sortedIndicators.push('best');
-                    sortedValues.push(kpiValues.best);
-                }
-                // 再添加尾（worst）
-                if (selectedIndicators.includes('worst')) {
-                    sortedIndicators.push('worst');
-                    sortedValues.push(kpiValues.worst);
-                }
-                // 最后添加总（total）
-                if (selectedIndicators.includes('total')) {
-                    sortedIndicators.push('total');
-                    sortedValues.push(kpiValues.total);
-                }
-
-                if (allValuesEqual) {
-                    // 两个指标且分值一致，根据勾选指标命名
-                    const indicatorNames = sortedIndicators.map(indicator => {
-                        if (indicator === 'best') return '头';
-                        if (indicator === 'worst') return '尾';
-                        if (indicator === 'total') return '总';
-                        return '';
-                    });
-                    const ruleName = `${indicatorNames[0]}${indicatorNames[1]}两点`;
-                    this.setData({ generatedRuleName: ruleName });
-                    console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(两个指标分值一致)');
-                } else {
-                    // 两个指标但分值不一致，根据勾选指标和分值命名
-                    const indicatorNames = sortedIndicators.map(indicator => {
-                        if (indicator === 'best') return '头';
-                        if (indicator === 'worst') return '尾';
-                        if (indicator === 'total') return '总';
-                        return '';
-                    });
-                    const ruleName = `${indicatorNames[0]}${sortedValues[0]}${indicatorNames[1]}${sortedValues[1]}`;
-                    this.setData({ generatedRuleName: ruleName });
-                    console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(两个指标分值不一致)');
-                }
-                return;
-            }
-
-            if (selectedIndicators.length === 1) {
-                const indicator = selectedIndicators[0];
-                const indicatorName = indicator === 'best' ? '最好成绩' :
-                    indicator === 'worst' ? '最差成绩' : '总成绩';
-                const ruleName = `拉丝一点${indicatorName}`;
-                this.setData({ generatedRuleName: ruleName });
-                console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(单个指标)');
-                return;
-            }
-
-            this.setData({ generatedRuleName: '四人拉丝' });
-            console.log('🎯 [LasiKPI] 规则名称: 四人拉丝 (默认)');
+            // 立即触发事件，传递最新的规则名称
+            this.triggerEvent('kpiConfigChange', {
+                selectedIndicators: this.data.selectedIndicators,
+                hasTotalType: this.data.selectedIndicators.includes('total'),
+                generatedRuleName: ruleName
+            });
         },
 
         // 更新Store
@@ -245,9 +242,6 @@ Component({
             };
 
             G4PLasiStore.updateLasiConfig(config);
-
-            // 通知奖励配置组件更新
-            this.notifyRewardConfigUpdate();
         },
 
         // 通知奖励配置组件更新
@@ -255,7 +249,8 @@ Component({
             // 触发自定义事件，通知父组件KPI配置已更新
             this.triggerEvent('kpiConfigChange', {
                 selectedIndicators: this.data.selectedIndicators,
-                hasTotalType: this.data.selectedIndicators.includes('total')
+                hasTotalType: this.data.selectedIndicators.includes('total'),
+                generatedRuleName: this.data.generatedRuleName
             });
         },
 

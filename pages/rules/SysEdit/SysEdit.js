@@ -7,7 +7,8 @@ Page({
         _gambleSysName: '', // 游戏类型，如 '4p-8421'
         _gambleUserName: '', // 规则名称  gambleUserName
         saving: false, // 保存状态
-        configComponents: [] // 配置组件列表
+        configComponents: [], // 配置组件列表
+        hasLasiKpi: false // 是否包含LasiKPI组件
     },
 
     onLoad(options) {
@@ -43,6 +44,20 @@ Page({
 
         // 根据游戏类型加载对应的配置组件
         this.loadConfigComponents(gameType);
+
+        // 如果是4p-lasi游戏类型，等待LasiKPI组件初始化后再设置规则名称
+        if (gameType === '4p-lasi') {
+            // 延迟设置，等待组件加载完成
+            setTimeout(() => {
+                const lasiKpiComponent = this.selectComponent('#LasiKPI');
+                if (lasiKpiComponent && lasiKpiComponent.data.generatedRuleName) {
+                    this.setData({
+                        _gambleUserName: lasiKpiComponent.data.generatedRuleName
+                    });
+                    console.log('📋 [SysEdit] 初始化规则名称为:', lasiKpiComponent.data.generatedRuleName);
+                }
+            }, 500);
+        }
     },
 
     // 根据游戏类型加载配置组件
@@ -74,8 +89,14 @@ Page({
                 ];
         }
 
-        this.setData({ configComponents: components });
-        console.log('📋 [SysEdit] 加载配置组件:', components);
+        // 检查是否包含LasiKPI组件
+        const hasLasiKpi = components.some(comp => comp.name === 'LasiKPI');
+
+        this.setData({
+            configComponents: components,
+            hasLasiKpi: hasLasiKpi
+        });
+        console.log('📋 [SysEdit] 加载配置组件:', components, '包含LasiKPI:', hasLasiKpi);
     },
 
     // 规则名称输入事件
@@ -83,6 +104,21 @@ Page({
         const value = e.detail.value;
         this.setData({ _gambleUserName: value });
         console.log('📋 [SysEdit] 规则名称已更新:', value);
+    },
+
+    // LasiKPI配置变化事件处理
+    onLasiKpiConfigChange(e) {
+        console.log('📋 [SysEdit] LasiKPI配置变化:', e.detail);
+
+        // 从事件中获取生成的规则名称
+        const { generatedRuleName } = e.detail;
+        if (generatedRuleName) {
+            // 更新规则名称
+            this.setData({
+                _gambleUserName: generatedRuleName
+            });
+            console.log('📋 [SysEdit] 规则名称已自动更新为:', generatedRuleName);
+        }
     },
 
     // 验证表单
