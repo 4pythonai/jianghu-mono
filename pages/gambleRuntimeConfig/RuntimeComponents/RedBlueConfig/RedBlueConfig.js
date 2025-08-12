@@ -1,5 +1,6 @@
 // RedBlueConfig组件 - 分组配置
 const RuntimeComponentsUtils = require('../common-utils.js');
+const { convertToUserIds } = require('../../../../utils/gameUtils.js');
 
 Component({
     properties: {
@@ -48,7 +49,7 @@ Component({
             const newPlayers = e.detail.listData;
 
             // 更新配置保存顺序（用户ID数组）
-            const newBootstrapOrder = this.convertToUserIds(newPlayers);
+            const newBootstrapOrder = convertToUserIds(newPlayers);
 
             console.log("弹框收到排序结果:", newBootstrapOrder);
 
@@ -72,16 +73,6 @@ Component({
         },
 
 
-
-        // 转换玩家对象数组为用户ID数组（简化版：playersArray 一定是对象数组，仅提取 userid）
-        convertToUserIds(playersArray) {
-            if (!Array.isArray(playersArray)) return [];
-            return playersArray.map(player => {
-                const rawId = player?.userid;
-                const id = Number.parseInt(`${rawId}`) || 0;
-                return id;
-            });
-        },
 
         // 分组方式选择变更
         onGroupingMethodChange(e) {
@@ -121,7 +112,7 @@ Component({
             // 触发变更事件, 传递用户ID数组
             this.triggerEvent('change', {
                 red_blue_config: this.data.red_blue_config,
-                bootstrap_order: this.convertToUserIds(shuffled)
+                bootstrap_order: convertToUserIds(shuffled)
             });
 
             // 显示提示
@@ -159,7 +150,7 @@ Component({
             // 触发变更事件, 传递用户ID数组
             this.triggerEvent('change', {
                 red_blue_config: this.data.red_blue_config,
-                bootstrap_order: this.convertToUserIds(sorted)
+                bootstrap_order: convertToUserIds(sorted)
             });
 
             // 显示提示
@@ -175,7 +166,7 @@ Component({
 
             let finalBootstrapOrder = bootstrap_order;
             if (Array.isArray(bootstrap_order) && bootstrap_order.length === 0) {
-                finalBootstrapOrder = this.convertToUserIds(players || []);
+                finalBootstrapOrder = convertToUserIds(players || []);
                 console.warn(
                     `RedBlueConfig.getConfig ⚠️⚠️⚠️ bootstrap_order 为空，已自动从 players 转换。playersCount=${players?.length ?? 0}，converted=`,
                     finalBootstrapOrder

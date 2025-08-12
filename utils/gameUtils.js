@@ -111,3 +111,17 @@ export function getScoreClass(diff) {
     if (diff >= 3) return 'score-triple-bogey';
     return 'score-par';
 }
+
+/**
+ * 转换玩家对象数组为用户ID数组
+ * @param {Array} playersArray 玩家对象数组
+ * @returns {Array} 用户ID数组
+ */
+export function convertToUserIds(playersArray) {
+    if (!Array.isArray(playersArray)) return [];
+    return playersArray.map(player => {
+        const rawId = player?.userid;
+        const id = Number.parseInt(`${rawId}`) || 0;
+        return id;
+    });
+}

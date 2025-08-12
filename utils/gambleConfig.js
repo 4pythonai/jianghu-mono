@@ -2,6 +2,8 @@
  * 游戏配置管理 - 统一管理所有游戏相关配置
  */
 
+import { convertToUserIds } from './gameUtils.js';
+
 // 高尔夫球成绩类型
 export const GOLF_SCORE_TYPES = {
     BETTER_THAN_BIRDIE: 'BetterThanBirdie',
@@ -98,25 +100,14 @@ export const GameConfig = {
     },
 
 
-    convertToUserIds(playersArray) {
-        if (!Array.isArray(playersArray)) return [];
-        return playersArray.map(player => {
-            const rawId = player?.userid;
-            const id = Number.parseInt(`${rawId}`) || 0;
-            return id;
-        });
-    },
-
-
     /**
      * 获取默认配置
      */
     getDefaultGambleConfig(sysRuleName, players = []) {
-        console.log(" getDefaultGambleConfig 🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹🈯️💹 players", players)
 
         const config = {
             red_blue_config: '4_固拉',
-            bootstrap_order: this.convertToUserIds(players),
+            bootstrap_order: convertToUserIds(players),
             ranking_tie_resolve_config: 'indicator.reverse',
             playerIndicatorConfig: {}
         };
