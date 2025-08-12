@@ -205,6 +205,24 @@ button[disabled] {
 	transform: scale(0.97);
 }
 
+/* 禁用状态 */
+.rule-card.disabled {
+	background: #cccccc;
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+.rule-card.disabled text {
+	color: #666666;
+	text-shadow: none;
+}
+
+.rule-card.disabled .plus-btn {
+	background: #e0e0e0;
+	color: #999999;
+	border-color: #cccccc;
+}
+
 .rule-card text {
 	color: #fff;
 	font-size: 32rpx;
