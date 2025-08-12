@@ -54,9 +54,7 @@
 3. 调用`getConfigResult()`方法获取配置结果
 4. 调用`getConfigData()`方法获取配置数据
 
-## 测试
 
-组件内置了测试方法`testNamingRules()`，可以在开发时调用验证命名规则的正确性。
 
 ## 注意事项
 
