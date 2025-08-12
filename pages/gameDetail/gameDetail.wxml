@@ -22,3 +22,15 @@
     </view>
   </view>
 </view>
+
+<!-- Drawer组件 -->
+<Drawer
+  id="detailDrawer"
+  gameid="{{gameid}}"
+  groupid="{{groupid}}"
+  createTime="{{gameData.createTime || ''}}"
+  gameStatus="{{gameData.status || '进行中'}}"
+  bind:confirm="onDrawerConfirm"
+  bind:close="onDrawerClose"
+  bind:open="onDrawerOpen"
+/>
