@@ -155,17 +155,6 @@
 	color: #6c757d;
 }
 
-/* 红蓝分组样式 */
-.cell.team-red {
-	background-color: rgba(220, 53, 69, 0.1);
-	border-left: 1px solid #dc3545;
-}
-
-.cell.team-blue {
-	background-color: rgba(0, 123, 255, 0.1);
-	border-left: 1px solid #007bff;
-}
-
 /* 响应式设计 */
 @media (max-width: 750rpx) {
 	.hole-header {

@@ -101,43 +101,18 @@ Component({
                         }
                     }
 
-                    // 确保红蓝分组数据的类型一致性
-                    const redTeam = (hole.red || []).map(id => String(id));
-                    const blueTeam = (hole.blue || []).map(id => String(id));
-
-
-                    // 为每个球员计算class
-                    const playerClasses = {};
-                    for (const player of players) {
-                        const userid = String(player.userid);
-                        const classes = ['cell'];
-
-                        if (redTeam.includes(userid)) {
-                            classes.push('team-red');
-                        }
-                        if (blueTeam.includes(userid)) {
-                            classes.push('team-blue');
-                        }
-
-                        playerClasses[userid] = classes.join(' ');
-                    }
-
                     processedHoles.push({
                         ...hole,
-                        holeMoney,
-                        red: redTeam,
-                        blue: blueTeam,
-                        playerClasses
+                        holeMoney
                     });
                 }
             }
 
 
             console.log('🟢🟢🟢🟢🟢 GambleResultTable :', {
-                players: players.map(p => ({ userid: p.userid, nickname: p.nickname, teamClass: p.teamClass })),
+                players: players.map(p => ({ userid: p.userid, nickname: p.nickname })),
                 processedHoles: processedHoles.map(h => ({
-                    id: h.id,
-                    playerClasses: h.playerClasses
+                    id: h.id
                 }))
             });
 

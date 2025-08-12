@@ -38,7 +38,7 @@
           </view>
         </view>
         <view
-          class="{{item.playerClasses[player.userid] || 'cell'}}"
+          class="cell"
           wx:for="{{players}}"
           wx:key="userid"
           wx:for-item="player"
