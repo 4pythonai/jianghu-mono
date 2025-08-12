@@ -29,12 +29,8 @@
       <view class="table-row" wx:for="{{processedHoles}}" wx:key="index">
         <view class="cell hole-header">
           <view class="hole-header-inner">
-            <view class="hole-name-fixed">
-              <text class="hole-name">{{item.holename}}</text>
-            </view>
-            <view class="draw-indicator-fixed">
-              <text wx:if="{{item.draw === 'y'}}" class="draw-indicator" title="平局">?</text>
-            </view>
+            <text wx:if="{{item.draw === 'y'}}" title="平局">{{item.holename || item.id}}❓</text>
+            <text wx:else>{{item.holename || item.id}}</text>
           </view>
         </view>
         <view

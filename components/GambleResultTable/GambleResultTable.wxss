@@ -96,47 +96,13 @@
 .hole-header-inner {
 	display: flex;
 	align-items: center;
-	justify-content: flex-start;
+	justify-content: center;
 	width: 100%;
 	height: 100%;
 	font-weight: bold;
 	color: #495057;
 	padding: 0 8rpx;
 	text-align: center;
-	flex-direction: row;
-	gap: 4rpx;
-}
-
-/* 洞名固定宽度容器 */
-.hole-name-fixed {
-	width: 60rpx;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-}
-
-/* 平局标志固定宽度容器 */
-.draw-indicator-fixed {
-	width: 30rpx;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-/* 洞名文字 */
-.hole-name {
-	font-weight: bold;
-	color: #495057;
-	line-height: 1;
-	font-size: 24rpx;
-}
-
-/* 平局指示器 */
-.draw-indicator {
-	font-size: 20rpx;
-	color: #ff6b35;
-	line-height: 1;
-	font-weight: bold;
 }
 
 /* 总计行样式 */
@@ -169,13 +135,15 @@
 	color: #6c757d;
 }
 
-/* 红蓝分组样式 - 已移除背景色 */
+/* 红蓝分组样式 */
 .cell.team-red {
-	/* 移除红队背景色 */
+	background-color: rgba(220, 53, 69, 0.1);
+	border-left: 1px solid #dc3545;
 }
 
 .cell.team-blue {
-	/* 移除蓝队背景色 */
+	background-color: rgba(0, 123, 255, 0.1);
+	border-left: 1px solid #007bff;
 }
 
 /* 响应式设计 */
