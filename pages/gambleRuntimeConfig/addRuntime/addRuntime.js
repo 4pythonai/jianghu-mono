@@ -4,7 +4,7 @@
  */
 const BaseConfig = require('../shared/baseConfig');
 const ConfigValidator = require('../shared/configValidator');
-const { GameConfig } = require('../../../utils/gameConfig');
+const { GameConfig } = require('../../../utils/gambleConfig');
 const { gameStore } = require('../../../stores/gameStore');
 const { toJS } = require('mobx-miniprogram');
 

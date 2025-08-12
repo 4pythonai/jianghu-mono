@@ -3,7 +3,7 @@
  * 包含新增和编辑模式的公共方法
  */
 const { holeRangeStore } = require('../../../stores/holeRangeStore');
-const { GameConfig } = require('../../../utils/gameConfig');
+const { GameConfig } = require('../../../utils/gambleConfig');
 const configManager = require('../../../utils/configManager');
 
 const app = getApp();
@@ -115,9 +115,6 @@ const BaseConfig = {
                 console.log('[BaseConfig] 8421配置已正确生成:', defaultConfig.playerIndicatorConfig);
             }
         }
-
-        // 初始化洞范围配置
-        BaseConfig.initializeHoleRangeConfig(pageContext);
     },
 
     /**
@@ -217,16 +214,6 @@ const BaseConfig = {
         console.log('[BaseConfig] 编辑配置加载完成');
     },
 
-    /**
-     * 初始化洞范围配置
-     * @param {Object} pageContext 页面上下文
-     */
-    initializeHoleRangeConfig(pageContext) {
-        // 使用 holeRangeStore 重置洞范围到默认状态
-        // holeRangeStore.resetHoleRange();
-
-        console.log('[BaseConfig] 洞范围配置初始化完成');
-    },
 
 
 

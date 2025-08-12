@@ -22,19 +22,10 @@
 	z-index: 100;
 }
 
-.nav-left {
-	flex: 1;
-}
-
 .nav-title {
 	font-size: 36rpx;
 	font-weight: 600;
 	color: #333;
-}
-
-.nav-right {
-	display: flex;
-	align-items: center;
 }
 
 .icon-btn {
@@ -66,24 +57,14 @@
 	box-sizing: border-box;
 }
 
-/* 标题样式 */
-.summary-title {
-	font-size: 32rpx;
-	font-weight: 600;
-	color: #333;
-	margin-bottom: 24rpx;
-	padding: 16rpx 24rpx;
-	background: #fff;
-	border-radius: 12rpx;
-	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+/* 赌博汇总表格 */
+.gamble-total-table {
+	margin-bottom: 40rpx;
 }
 
 /* 赌博结果容器 */
 .gamble-results {
 	width: 100%;
-	border-radius: 12rpx;
-	overflow: hidden;
-	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
 }
 
 /* 赌博结果项样式 */
@@ -113,7 +94,6 @@
 	align-items: center;
 	justify-content: center;
 	min-height: 80vh;
-	font-size: 28rpx;
 	padding: 40rpx 0;
 	background: #fefefe;
 }
@@ -128,7 +108,7 @@
 	font-size: 28rpx;
 }
 
-/* 无游戏状态样式 - 居中布局 */
+/* 无游戏状态样式 */
 .no-gamble-container {
 	display: flex;
 	flex-direction: column;
@@ -137,6 +117,17 @@
 	min-height: 70vh;
 	text-align: center;
 	background: #f9fbfa;
+}
+
+.summary-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333;
+	margin-bottom: 24rpx;
+	padding: 16rpx 24rpx;
+	background: #fff;
+	border-radius: 12rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
 .ps-image {
@@ -153,11 +144,10 @@
 	margin-bottom: 60rpx;
 }
 
-/* 底部按钮区域 - 居中布局 */
+/* 底部按钮区域 */
 .bottom-button-area {
 	display: flex;
 	justify-content: center;
-	padding: 0;
 	width: 100%;
 	box-sizing: border-box;
 	margin-top: 20rpx;

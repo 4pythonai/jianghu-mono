@@ -1,6 +1,6 @@
 // 用户规则编辑页面
 const app = getApp()
-const { GameConfig } = require('../../../utils/gameConfig.js');
+const { GameConfig } = require('../../../utils/gambleConfig.js');
 
 Page({
     data: {

@@ -21,7 +21,6 @@ Component({
 
     observers: {
         'groupInfo, usefulHoles': function (groupInfo, usefulHoles) {
-
             this.processData();
         }
     },
@@ -31,6 +30,13 @@ Component({
         processData() {
             const { groupInfo, usefulHoles } = this.properties;
 
+            // 添加调试日志
+            console.log('🔍 [GambleTotalTable] 接收到的属性:', {
+                groupInfo,
+                usefulHoles,
+                groupInfoLength: groupInfo?.length,
+                usefulHolesLength: usefulHoles?.length
+            });
 
             // 处理球员信息 - 保持为数组格式
             const players = [];
@@ -42,7 +48,6 @@ Component({
                     playersMap[player.userid] = player;
                 }
             }
-
 
             // 使用 useful_holes 来获取实际的赌球结果
             const holesDataToUse = usefulHoles || [];
@@ -60,7 +65,6 @@ Component({
             const processedHoles = [];
             if (holesDataToUse && Array.isArray(holesDataToUse)) {
                 for (const hole of holesDataToUse) {
-
                     const holeMoney = {};
 
                     // 初始化所有球员的金额为0
@@ -69,12 +73,12 @@ Component({
                         holeMoney[userid] = 0;
                     }
 
-                    // 处理获胜者详情
-                    if (hole.winner_detail && Array.isArray(hole.winner_detail)) {
-                        for (const winner of hole.winner_detail) {
-                            const userid = winner.userid;
-                            const money = winner.final_points || 0;
-                            const donated = winner.pointsDonated || 0;
+                    // 处理 players_detail - 所有用户的输赢情况
+                    if (hole.players_detail && Array.isArray(hole.players_detail)) {
+                        for (const detail of hole.players_detail) {
+                            const userid = detail.userid;
+                            const money = detail.final_points || 0;
+                            const donated = detail.pointsDonated || 0;
 
                             // 确保该用户存在于我们的球员列表中
                             if (playersMap[userid]) {
@@ -83,66 +87,25 @@ Component({
                                 totalDonated[userid] += donated;
                             }
                         }
-                    }
-
-                    // 处理失败者详情
-                    if (hole.failer_detail && Array.isArray(hole.failer_detail)) {
-                        for (const failer of hole.failer_detail) {
-                            const userid = failer.userid;
-                            const money = failer.final_points || 0;
-                            const donated = failer.pointsDonated || 0;
-
-                            // 确保该用户存在于我们的球员列表中
-                            if (playersMap[userid]) {
-                                holeMoney[userid] = money;
-                                totalMoney[userid] += money;
-                                totalDonated[userid] += donated;
-                            }
-                        }
-                    }
-
-                    // 确保红蓝分组数据的类型一致性
-                    const redTeam = (hole.red || []).map(id => String(id));
-                    const blueTeam = (hole.blue || []).map(id => String(id));
-
-
-                    // 为每个球员计算class
-                    const playerClasses = {};
-                    for (const player of players) {
-                        const userid = String(player.userid);
-                        const classes = ['cell'];
-
-                        if (redTeam.includes(userid)) {
-                            classes.push('team-red');
-                        }
-                        if (blueTeam.includes(userid)) {
-                            classes.push('team-blue');
-                        }
-
-                        playerClasses[userid] = classes.join(' ');
                     }
 
                     processedHoles.push({
                         ...hole,
-                        holeMoney,
-                        red: redTeam,
-                        blue: blueTeam,
-                        playerClasses
+                        holeMoney
                     });
                 }
             }
 
-
-            console.log('🟢🟢🟢🟢🟢 GambleResultTable :', {
-                players: players.map(p => ({ userid: p.userid, nickname: p.nickname, teamClass: p.teamClass })),
+            console.log('⭕️⭕️⭕️⭕️⭕️⭕️⭕️⭕️ TotalTable]  :', {
+                players: players.map(p => ({ userid: p.userid, nickname: p.nickname })),
                 processedHoles: processedHoles.map(h => ({
-                    id: h.id,
-                    playerClasses: h.playerClasses
+                    holename: h.holename,
+                    holeMoney: h.holeMoney
                 }))
             });
 
             this.setData({
-                players,
+                players, // 现在是数组格式
                 totalMoney,
                 totalDonated,
                 processedHoles

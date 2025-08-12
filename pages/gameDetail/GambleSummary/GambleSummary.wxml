@@ -12,16 +12,26 @@
   </view>
 
   <view class="gamble-container">
-    <!-- 使用GambleResultTable组件 -->
+    <!-- 赌博汇总表格 -->
+    <view class="gamble-total-table">
+      <view class="gamble-result-title" wx:if="{{gambleResults.length > 1}}">游戏汇总</view>
+      <GambleTotalTable
+        groupInfo="{{SummaryResult.group_info}}"
+        usefulHoles="{{SummaryResult.useful_holes}}"
+        qrcode_url="{{''}}"
+        showQr="{{false}}"
+      ></GambleTotalTable>
+    </view>
+
+    <!-- 赌博结果列表 -->
     <view class="gamble-results">
-      <!-- 循环渲染每个赌博结果 -->
       <view
         class="gamble-result-item"
         wx:for="{{gambleResults}}"
         wx:key="index"
         wx:for-item="gambleResult"
       >
-        <!-- 赌博结果标题  gambleSysName: "4p-lasi" gambleUserName: "4人拉丝规则" -->
+        <!-- 赌博结果标题 -->
         <view
           class="gamble-result-title"
           wx:if="{{gambleResults.length > 1}}"
@@ -29,13 +39,14 @@
 
         <!-- 赌博结果表格 -->
         <GambleResultTable
-          groupInfo="{{gambleResult.group_info  }}"
-          usefulHoles="{{gambleResult.useful_holes  }}"
+          groupInfo="{{gambleResult.group_info}}"
+          usefulHoles="{{gambleResult.useful_holes}}"
           qrcode_url="{{gambleResult.qrcode_url}}"
-          showQr="{false}"
+          showQr="{{false}}"
         ></GambleResultTable>
       </view>
 
+      <!-- 空状态 -->
       <view
         class="empty-state"
         wx:if="{{(!gambleResults || gambleResults.length === 0) && !loading}}"

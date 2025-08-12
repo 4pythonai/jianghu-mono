@@ -2,7 +2,7 @@
  * 统一规则格式化器
  * 合并 displayFormatter.js 的功能，提供统一的格式化接口
  */
-const { GOLF_SCORE_TYPES } = require('../gameConfig.js');
+const { GOLF_SCORE_TYPES } = require('../gambleConfig.js');
 
 class RuleFormatter {
     /**
