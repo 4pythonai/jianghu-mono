@@ -14,66 +14,15 @@ class MIndicatorLasi extends CI_Model {
      * @param array $hole 洞数据（引用传递）
      * @param array $configs 8421配置
      */
-    public function calculate8421Indicators(&$hole, $context) {
-        $playerIndicatorConfig = $context->playerIndicatorConfig;
-        $sub8421ConfigString =  $context->badScoreBaseLine;
-        $max8421SubValue = $context->badScoreMaxLost;
+    public function calculateLasiIndicators(&$hole, $context) {
 
+        $fixedKpis = $this->fixKpis($context->kpis, $context->kpis['totalCalculationType']);
         $indicatorBlue = 0;
         $indicatorRed = 0;
+        debug($hole);
+        die;
 
 
-        // 处理红队
-        foreach ($hole['red'] as $userid) {
-            $userAddConfigPair = $playerIndicatorConfig[$userid];
-            $_8421_add_sub_max_config = [
-                'add' => $userAddConfigPair,
-                'sub' => $sub8421ConfigString,
-                'max' => $max8421SubValue,
-            ];
-
-            $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$userid], $_8421_add_sub_max_config);
-
-            $logMsg = sprintf(
-                "第 %s 洞,红队,队员:%4d,%s, PAR:%d,分值:%2d,指标:%2d",
-                $hole['hindex'],
-                $userid,
-                $this->MUser->getNicknameById($userid),
-                $hole['par'],
-                $hole['computedScores'][$userid],
-                $indicator
-            );
-
-            $hole['indicators'][$userid] = $indicator;
-            $hole['debug'][] = $logMsg; // 直接添加调试信息
-            $indicatorRed += $indicator;
-        }
-
-        // 处理蓝队
-        foreach ($hole['blue'] as $userid) {
-            $userAddConfigPair = $playerIndicatorConfig[$userid];
-            $_8421_add_sub_max_config = [
-                'add' => $userAddConfigPair,
-                'sub' => $sub8421ConfigString,
-                'max' => $max8421SubValue,
-            ];
-
-            $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$userid], $_8421_add_sub_max_config);
-
-            $logMsg = sprintf(
-                "第 %s 洞,蓝队,队员:%4d,%s,PAR:%d,分值:%2d,指标:%2d",
-                $hole['hindex'],
-                $userid,
-                $this->MUser->getNicknameById($userid),
-                $hole['par'],
-                $hole['computedScores'][$userid],
-                $indicator
-            );
-
-            $hole['indicators'][$userid] = $indicator;
-            $hole['debug'][] = $logMsg; // 直接添加调试信息
-            $indicatorBlue += $indicator;
-        }
 
         $hole['indicatorBlue'] = $indicatorBlue;
         $hole['indicatorRed'] = $indicatorRed;

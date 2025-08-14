@@ -16,6 +16,9 @@ class MIndicator8421 extends CI_Model {
         $indicatorBlue = 0;
         $indicatorRed = 0;
 
+        debug($hole);
+        die;
+
 
         // 处理红队
         foreach ($hole['red'] as $userid) {
