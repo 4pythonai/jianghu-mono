@@ -185,6 +185,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $tmp = [
             'gameid' => $this->context->gameid,
             'gambleid' => $this->context->gambleid,
+            'kpis' => $this->context->kpis,
+            'RewardConfig' => $this->context->RewardConfig,
             'badScoreBaseLine' => $this->context->badScoreBaseLine,
             'groupid' => $this->context->groupid,
             'userid' => $this->context->userid,
@@ -212,9 +214,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'roadLength' => $this->context->roadLength,
         ];
 
-        // debug("+++++++++++++++++++++");
-        // debug($tmp);
-        // debug("+++++++++++++++++++++");
 
         return $tmp;
     }

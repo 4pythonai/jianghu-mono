@@ -244,4 +244,53 @@ class MIndicator8421 extends CI_Model {
         // 默认返回标准杆
         return  0;
     }
+
+
+    public function set8421WinFailPoints(&$hole, $context) {
+        // debug("设置输赢:setWinFailPoints" . $context->gambleSysName);
+
+        $indicatorBlue = $hole['indicatorBlue'];
+        $indicatorRed = $hole['indicatorRed'];
+
+        // 获取顶洞配置
+        $drawConfig = $context->drawConfig;
+
+        // 判断是否为顶洞
+        $isDraw = $this->MIndicator->checkDraw($indicatorBlue, $indicatorRed, $drawConfig);
+
+        if ($isDraw) {
+            $hole['draw'] = 'y';
+        } else {
+            $hole['draw'] = 'n';
+        }
+
+        $points = abs($indicatorBlue - $indicatorRed);
+
+        if ($indicatorBlue > $indicatorRed) {
+            $hole['winner'] = 'blue';
+            $hole['failer'] = 'red';
+            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:蓝队获胜";
+        }
+
+        if ($indicatorBlue < $indicatorRed) {
+            $hole['winner'] = 'red';
+            $hole['failer'] = 'blue';
+            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:红队获胜";
+        }
+
+        if ($indicatorBlue == $indicatorRed) {
+            $hole['winner'] = null;
+            $hole['failer'] = null;
+            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:指标一样,无输赢";
+        }
+
+
+
+        $hole['points_before_kick'] = $points;
+        $currentHoleMultiplier = $this->MIndicator->getCurrentHoleMultiplier($hole, $context->kickConfig);
+
+        $hole['points'] =  $points * $currentHoleMultiplier;
+        // debug($hole);
+        // die;
+    }
 }
