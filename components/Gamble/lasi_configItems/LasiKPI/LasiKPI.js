@@ -10,7 +10,6 @@ Component({
             worst: true,
             total: true
         },
-        // 总杆计算方式: 'add_total' 或 'plus_total'
         totalCalculationType: 'add_total',
         // 各KPI的分值配置
         kpiValues: {
@@ -91,9 +90,9 @@ Component({
             this.printCurrentKpiConfig();
         },
 
-        // 切换总杆计算方式 plus_total
+        // 切换总杆计算方式  
         onToggleTotalType() {
-            const newType = this.data.totalCalculationType === 'add_total' ? 'plus_total' : 'add_total';
+            const newType = this.data.totalCalculationType === 'add_total' ? 'multiply_total' : 'add_total';
             this.setData({
                 totalCalculationType: newType
             });

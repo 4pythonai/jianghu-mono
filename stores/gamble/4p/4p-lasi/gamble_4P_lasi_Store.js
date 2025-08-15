@@ -28,7 +28,6 @@ export const G4PLasiStore = observable({
     lasi_config: {
         // 拉丝指标配置
         indicators: [], // 选择的指标列表
-        // 总杆计算方式: 'add_total' | 'plus_total'
         totalCalculationType: 'add_total',
         // KPI分值配置
         kpiValues: {

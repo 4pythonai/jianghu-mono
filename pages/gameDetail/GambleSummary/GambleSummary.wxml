@@ -34,6 +34,9 @@
             wx:for-item="gambleResult"
           >
             <!-- 赌博结果表格 -->
+            <view
+              class="gamble-result-title"
+            >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
             <GambleResultTable
               groupInfo="{{gambleResult.group_info}}"
               usefulHoles="{{gambleResult.useful_holes}}"
@@ -47,7 +50,11 @@
       <!-- 多个游戏时，显示汇总和菜单 -->
       <block wx:else>
         <!-- 赌博汇总表格 -->
-        <view class="gamble-total-table" wx:if="{{currentDisplayType === 'summary'}}" style="flex: 1;">
+        <view
+          class="gamble-total-table"
+          wx:if="{{currentDisplayType === 'summary'}}"
+          style="flex: 1;"
+        >
           <view class="gamble-result-title">游戏汇总/出右边横菜单</view>
           <GambleTotalTable
             groupInfo="{{SummaryResult.group_info}}"
