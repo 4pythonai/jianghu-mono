@@ -74,6 +74,8 @@ class Audit extends CI_Controller {
             $simple['gambleSysName'] = $complex['gambleSysName'];
             $simple['useful_holes'] = $complex['useful_holes'];
             $simple['group_info'] = $complex['group_info'];
+            $simple['qrcode_url'] = $complex['qrcode_url'];
+            $simple['detail_url'] = $complex['detail_url'];
             $g_results[] = $simple;
         }
 
