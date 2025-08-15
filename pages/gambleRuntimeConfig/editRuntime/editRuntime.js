@@ -26,7 +26,8 @@ Page({
             red_blue_config: null,
             bootstrap_order: [],
             ranking_tie_resolve_config: null,
-            playerIndicatorConfig: {}      // 球员8421指标配置
+            playerIndicatorConfig: {},      // 球员8421指标配置
+            stroking_config: []             // 让杆配置
         },
 
         // 页面状态
@@ -35,6 +36,10 @@ Page({
 
         // 调试信息字段
         gameDataType: '',
+
+        // 计算属性
+        is8421Game: false, // 是否为8421游戏
+        needsStroking: false, // 是否需要让杆功能
     },
 
     onLoad(options) {
@@ -61,6 +66,12 @@ Page({
 
         const gameData = toJS(gameStore.gameData);
         const gameDataType = typeof gameData;
+        // 判断是否为8421游戏
+        const is8421Game = ['4p-8421', '3p-8421', '2p-8421'].includes(config.gambleSysName);
+
+        // 判断是否需要让杆功能（只有lasi游戏需要）
+        const needsStroking = config.gambleSysName === '4p-lasi';
+
         // 直接设置配置数据
         this.setData({
             config: config,
@@ -71,6 +82,8 @@ Page({
             players: config.players,
             gameData: gameData, // 添加 gameData
             gameDataType: gameDataType,
+            is8421Game: is8421Game, // 设置8421游戏标识
+            needsStroking: needsStroking, // 设置让杆功能标识
             'runtimeConfig.gameid': config.gameid,
             'runtimeConfig.groupid': config.groupid,
             'runtimeConfig.userRuleId': config.userRuleId,
@@ -79,7 +92,8 @@ Page({
             'runtimeConfig.red_blue_config': config.red_blue_config || '4_固拉',
             'runtimeConfig.bootstrap_order': config.bootstrap_order_parsed || config.bootstrap_order || [],
             'runtimeConfig.ranking_tie_resolve_config': config.ranking_tie_resolve_config || 'score.reverse',
-            'runtimeConfig.playerIndicatorConfig': config.val8421_config_parsed || config.playerIndicatorConfig || {}
+            'runtimeConfig.playerIndicatorConfig': config.val8421_config_parsed || config.playerIndicatorConfig || {},
+            'runtimeConfig.stroking_config': config.stroking_config || []
         });
 
 
@@ -117,8 +131,8 @@ Page({
 
     // 收集所有组件的配置
     collectAllConfigs() {
-        // 调用 configManager 的统一收集方法
-        const collectedConfig = configManager.collectAllConfigs(this, false);
+        // 调用 configManager 的统一收集方法，传递needsStroking参数
+        const collectedConfig = configManager.collectAllConfigs(this, this.data.needsStroking);
 
         // 将收集到的配置设置到页面数据中
         if (Object.keys(collectedConfig).length > 0) {

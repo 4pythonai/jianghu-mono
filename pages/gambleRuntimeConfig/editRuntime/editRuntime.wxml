@@ -23,10 +23,6 @@
     <view class="section">
       <view class="section-label">选择洞范围</view>
       <!-- 调试信息 -->
-      <view class="debug-info">
-        <text>config.roadLength: {{config.roadLength}}</text>
-        <text>config.startHoleindex: {{config.startHoleindex}}</text>
-      </view>
       <HoleRangeSelector
         id="holeRangeSelector"
         roadLength="{{config.roadLength}}"
@@ -34,13 +30,28 @@
       />
     </view>
 
+    <!-- 让杆方式选择 -->
+    <view class="section" wx:if="{{needsStroking}}">
+      <view class="section-label">让杆方式</view>
+      <Stroking id="strokingSelector" strokingConfig="{{runtimeConfig.stroking_config}}" />
+    </view>
+
     <!-- 8421球员配置 -->
-    <view class="section" wx:if="{{gambleSysName.indexOf('8421') !== -1}}">
-      <view class="section-label">球员指标配置</view>
+    <view class="section" wx:if="{{is8421Game}}">
+      <view class="section-label">球员指标配置 ({{gambleSysName}})</view>
       <PlayerIndicator
         id="playerIndicator"
         players="{{players}}"
         val8421Config="{{runtimeConfig.playerIndicatorConfig}}"
+      />
+    </view>
+
+    <view class="section">
+      <RedBlueConfig
+        id="redBlueConfig"
+        players="{{players}}"
+        red_blue_config="{{runtimeConfig.red_blue_config}}"
+        initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
       />
     </view>
 
@@ -54,15 +65,6 @@
     </view>
   </view>
 
-  <view class="section">
-    <RedBlueConfig
-      id="redBlueConfig"
-      players="{{players}}"
-      red_blue_config="{{runtimeConfig.red_blue_config}}"
-      initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
-    />
-  </view>
-
   <!-- 底部按钮 -->
   <view class="bottom-buttons">
     <button class="cancel-btn" bindtap="onCancelConfig">取消</button>
@@ -71,17 +73,5 @@
       bindtap="onConfirmConfig"
       loading="{{loading}}"
     >{{loading ? '更新中...' : '更新配置'}}</button>
-  </view>
-
-  <view class="debug-info">
-    <text>调试信息:</text>
-    <text>gambleSysName: {{gambleSysName}}</text>
-    <text>gameid: {{gameid}}</text>
-    <text>configId: {{configId}}</text>
-    <text>players: {{players.length}}人</text>
-    <text>gameData存在: {{gameData ? '是' : '否'}}</text>
-    <text>gameData类型: {{gameDataType}}</text>
-    <text>error: {{error}}</text>
-    <text>loading: {{loading}}</text>
   </view>
 </view>

@@ -6,6 +6,7 @@
         "RedBlueConfig": "../RuntimeComponents/RedBlueConfig/RedBlueConfig",
         "RankConflictResolver": "../RuntimeComponents/RankConflictResolver/RankConflictResolver",
         "PlayerIndicator": "../RuntimeComponents/PlayerIndicator/PlayerIndicator",
+        "Stroking": "../RuntimeComponents/Stroking/Stroking",
         "RuleCard": "../../../pages/rules/ruleComponents/MyRules/RuleCard/RuleCard"
     }
 }
