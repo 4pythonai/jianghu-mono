@@ -45,7 +45,6 @@ Page({
     },
 
     onLoad(options) {
-        console.log('🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸🌸 AddRuntime');
 
         // 初始化页面数据
         this.initializePageData(options);
@@ -129,7 +128,6 @@ Page({
      * @param {Object} editConfig 编辑配置
      */
     createGambleRelatedConfig(editConfig) {
-        console.log('[AddRuntime] 🟥🟧🟨🟥🟧🟨🟥🟧🟨🟥🟧🟨 editConfig== ', editConfig);
 
         // 加载玩家顺序配置
         if (editConfig?.bootstrap_order) {
@@ -145,7 +143,6 @@ Page({
                 this.setData({
                     'runtimeConfig.bootstrap_order': bootstrapOrder
                 });
-                console.log('[AddRuntime] 玩家顺序配置加载:', bootstrapOrder);
             }
         }
 
@@ -154,7 +151,6 @@ Page({
             this.setData({
                 'runtimeConfig.ranking_tie_resolve_config': editConfig.ranking_tie_resolve_config
             });
-            console.log('[AddRuntime] 排名配置加载:', editConfig.ranking_tie_resolve_config);
         }
 
         // 8421初始化配置
@@ -164,10 +160,6 @@ Page({
                 'runtimeConfig.playerIndicatorConfig': val8421Config
             });
         }
-
-
-
-        console.log('[AddRuntime] 游戏相关配置创建完成');
     },
 
     // 确认配置

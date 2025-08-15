@@ -86,7 +86,6 @@ Component({
         // 新增：切换显示汇总或明细
         switchDisplay: function (e) {
             const { type, index } = e.currentTarget.dataset;
-            console.log('[Drawer] 切换显示:', { type, index });
 
             this.setData({
                 currentDisplayType: type,

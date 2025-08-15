@@ -56,7 +56,6 @@ Component({
 
             // 解析规则配置
             const details = parseGambleRule(item, item.gambleSysName);
-            console.log('[RuleCard] 🟥🟧🟨🟥🟧🟨<insert>🟥🟧🟨🟥🟧🟨 details ', details);
 
             // 根据规则类型设置玩家数量和标签
             const gameType = GambleMetaConfig.getGambleType(item.gambleSysName);

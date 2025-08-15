@@ -45,12 +45,10 @@ Component({
   // 组件生命周期
   lifetimes: {
     attached() {
-      console.log('🎯 [E8421Koufen] 组件加载，模式:', this.properties.mode);
 
       // 根据模式初始化组件
       if (this.properties.mode === 'UserEdit') {
         // UserEdit模式：等待外部数据初始化，不自动从Store加载
-        console.log('🎯 [E8421Koufen] UserEdit模式，等待外部数据初始化');
         // 设置默认值，避免显示"请配置扣分规则"
         this.setData({
           selectedStart: 0,
@@ -62,7 +60,6 @@ Component({
         });
       } else if (this.properties.mode === 'SysConfig') {
         // SysConfig模式：使用独立的配置数据，不依赖Store
-        console.log('🎯 [E8421Koufen] SysConfig模式，使用独立配置');
         // 使用默认配置初始化，但保持用户之前的选择
         this.setData({
           selectedStart: this.data.selectedStart || 0,
@@ -194,20 +191,16 @@ Component({
     // 事件处理方法
     onSelectStart(e) {
       const index = e.currentTarget.dataset.index;
-      console.log('🎯 [E8421Koufen] onSelectStart 被调用，index:', index, '当前状态:', this.data.selectedStart);
       this.setData({ selectedStart: index });
-      console.log('🎯 [E8421Koufen] selectedStart 已更新为:', index);
       this.updateDisplayValue();
     },
 
     onSelectMax(e) {
       // 如果选择了"不扣分"，则禁用封顶和同伴惩罚选项
       if (Number(this.data.selectedStart) === 2) {
-        console.log('🎯 [E8421Koufen] onSelectMax 被调用，但当前状态为不扣分，忽略操作');
         return;
       }
       const index = e.currentTarget.dataset.index;
-      console.log('🎯 [E8421Koufen] onSelectMax 被调用，index:', index);
       this.setData({ selectedMax: index });
       this.updateDisplayValue();
     },
@@ -215,11 +208,9 @@ Component({
     onSelectDuty(e) {
       // 如果选择了"不扣分"，则禁用封顶和同伴惩罚选项
       if (Number(this.data.selectedStart) === 2) {
-        console.log('🎯 [E8421Koufen] onSelectDuty 被调用，但当前状态为不扣分，忽略操作');
         return;
       }
       const index = e.currentTarget.dataset.index;
-      console.log('🎯 [E8421Koufen] onSelectDuty 被调用，index:', index);
       this.setData({ selectedDuty: index });
       this.updateDisplayValue();
     },

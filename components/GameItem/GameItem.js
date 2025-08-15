@@ -34,7 +34,6 @@ Component({
 
     methods: {
         _groupPlayersByGroupId(players, gameData) {
-            console.log('🔄 开始分组玩家数据:', { players, gameData });
 
             if (!players || !Array.isArray(players)) {
                 console.warn('⚠️ 玩家数据为空或不是数组');

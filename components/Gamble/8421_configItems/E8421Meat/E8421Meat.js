@@ -48,7 +48,6 @@ Component({
 
       if (this.properties.mode === 'SysConfig') {
         // SysConfig模式：使用独立的配置数据，不依赖Store
-        console.log('🎯 [E8421Meat] SysConfig模式，使用独立配置');
         // 使用默认配置初始化，但保持用户之前的选择
         this.setData({
           eatingRange: this.data.eatingRange || {
@@ -64,7 +63,6 @@ Component({
         });
       } else if (this.properties.mode === 'UserEdit') {
         // UserEdit模式：等待外部数据初始化，不自动从Store加载
-        console.log('🎯 [E8421Meat] UserEdit模式，等待外部数据初始化');
         // 设置默认值，避免显示"请配置吃肉规则"
         this.setData({
           eatingRange: {

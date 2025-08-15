@@ -25,7 +25,6 @@ Component({
 
     lifetimes: {
         attached() {
-            console.log('🎯 [LasiKPI] 拉丝KPI配置组件加载');
             // 初始化时从Store获取当前配置
             let selectedIndicators = G4PLasiStore.lasi_config?.indicators || [];
             const kpiValues = G4PLasiStore.lasi_config?.kpiValues || this.data.kpiValues;
@@ -140,17 +139,11 @@ Component({
         generateRuleName() {
             const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
 
-            console.log('🎯 [LasiKPI] 生成规则名称 - 输入参数:', {
-                selectedIndicators,
-                kpiValues,
-                totalCalculationType
-            });
 
             let ruleName = '四人拉丝'; // 默认规则名称
 
             if (selectedIndicators.length === 0) {
                 ruleName = '四人拉丝';
-                console.log('🎯 [LasiKPI] 规则名称: 四人拉丝 (无选中指标)');
             } else {
                 // 获取选中指标的分值
                 const selectedValues = selectedIndicators.map(indicator => kpiValues[indicator]);
@@ -158,17 +151,14 @@ Component({
                 // 检查所有分值是否一致
                 const allValuesEqual = selectedValues.every(value => value === selectedValues[0]);
 
-                console.log('🎯 [LasiKPI] 选中分值:', selectedValues, '是否一致:', allValuesEqual);
 
                 if (selectedIndicators.length === 3) {
                     if (allValuesEqual) {
                         // 三个指标且分值一致，默认名称为"拉丝三点"
                         ruleName = '拉丝三点';
-                        console.log('🎯 [LasiKPI] 规则名称: 拉丝三点 (三个指标分值一致)');
                     } else {
                         // 三个指标但分值不一致，按"头尾总"顺序展示分值
                         ruleName = `${kpiValues.best}${kpiValues.worst}${kpiValues.total}`;
-                        console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(三个指标分值不一致)');
                     }
                 } else if (selectedIndicators.length === 2) {
                     // 按"头尾总"顺序重新排列选中的指标
@@ -200,7 +190,6 @@ Component({
                             return '';
                         });
                         ruleName = `${indicatorNames[0]}${indicatorNames[1]}两点`;
-                        console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(两个指标分值一致)');
                     } else {
                         // 两个指标但分值不一致，根据勾选指标和分值命名
                         const indicatorNames = sortedIndicators.map(indicator => {
@@ -210,14 +199,12 @@ Component({
                             return '';
                         });
                         ruleName = `${indicatorNames[0]}${sortedValues[0]}${indicatorNames[1]}${sortedValues[1]}`;
-                        console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(两个指标分值不一致)');
                     }
                 } else if (selectedIndicators.length === 1) {
                     const indicator = selectedIndicators[0];
                     const indicatorName = indicator === 'best' ? '最好成绩' :
                         indicator === 'worst' ? '最差成绩' : '总成绩';
                     ruleName = `拉丝一点${indicatorName}`;
-                    console.log('🎯 [LasiKPI] 规则名称:', ruleName, '(单个指标)');
                 }
             }
 
@@ -296,24 +283,14 @@ Component({
         printCurrentKpiConfig() {
             const { selectedIndicators, kpiValues, totalCalculationType, totalScore } = this.data;
 
-            console.log('🎯 [LasiKPI] ===== 当前KPI配置 =====');
-            console.log('🎯 [LasiKPI] 配置对象:', {
-                selectedIndicators,
-                kpiValues,
-                totalCalculationType,
-                totalScore
-            });
-
             // 打印配置结果数组
             const configResult = this.getConfigResult();
         },
 
         // 初始化配置数据 - 供UserRuleEdit页面调用
         initConfigData(configData) {
-            console.log('🎯 [LasiKPI] 初始化配置数据:', configData);
 
             if (!configData) {
-                console.warn('🎯 [LasiKPI] 配置数据为空，使用默认值');
                 return;
             }
 
@@ -329,15 +306,12 @@ Component({
                 } else if (typeof configData.kpis === 'string') {
                     try {
                         kpiConfig = JSON.parse(configData.kpis);
-                        console.log('🎯 [LasiKPI] 成功解析kpis字符串:', kpiConfig);
                     } catch (error) {
-                        console.error('🎯 [LasiKPI] 解析kpis字符串失败:', error);
                         kpiConfig = configData;
                     }
                 }
             }
 
-            console.log('🎯 [LasiKPI] 提取的KPI配置:', kpiConfig);
 
             // 支持两种字段名：selectedIndicators 和 indicators
             const selectedIndicators = kpiConfig.selectedIndicators || kpiConfig.indicators || ['best', 'worst', 'total'];
@@ -348,11 +322,7 @@ Component({
             };
             const totalCalculationType = kpiConfig.totalCalculationType || 'add_total';
 
-            console.log('🎯 [LasiKPI] 解析后的配置:', {
-                selectedIndicators,
-                kpiValues,
-                totalCalculationType
-            });
+
 
             // 构建选中状态映射
             const isSelected = {
@@ -373,7 +343,6 @@ Component({
             this.updateStore();
             this.printCurrentKpiConfig();
 
-            console.log('🎯 [LasiKPI] 配置数据初始化完成');
         },
 
 

@@ -71,7 +71,6 @@ Component({
     checkDisabledState() {
       const isDisabled = G4PLasiStore.drawConfig === 'NoDraw';
       this.setData({ isDisabled });
-      console.log('吃肉组件禁用状态:', isDisabled);
     },
 
     // 计算显示值
@@ -121,7 +120,6 @@ Component({
         displayValue: displayValue
       });
 
-      console.log('吃肉规则显示值已更新:', displayValue);
     },
 
     // 从store初始化配置
@@ -156,14 +154,12 @@ Component({
 
         // 保存默认配置到store
         G4PLasiStore.updateEatmeatRule(defaultEatingRange, 'MEAT_AS_1', 10000000);
-        console.log('使用默认吃肉配置:', defaultEatingRange);
       }
     },
 
     // 解析存储的配置
     parseStoredConfig(config) {
       const { eatingRange, meatValue, meatMaxValue } = config;
-      console.log('从store加载吃肉配置:', config);
 
       // 使用统一的解析工具类解析吃肉数量配置
       const parsedEatingRange = configManager.parseEatingRange(eatingRange);
@@ -211,12 +207,10 @@ Component({
       const newEatingRange = { ...this.data.eatingRange };
       newEatingRange[key] = value;
       this.setData({ eatingRange: newEatingRange });
-      console.log('更新吃肉配置:', key, value);
     },
 
     // 肉分值计算方式改变事件
     onMeatValueChange(e) {
-      console.log('onMeatValueChange 💞💞💞💞💞💞💞💞💞💞💞💞💞', e);
       const index = Number.parseInt(e.currentTarget.dataset.index);
       this.setData({ meatValueOption: index });
     },
@@ -225,18 +219,12 @@ Component({
     onMeatScoreChange(e) {
       const value = this.data.meatScoreRange[e.detail.value];
       this.setData({ meatScoreValue: value });
-      console.log('更新肉分值:', value);
     },
 
     // 封顶选择事件
     onTopSelect(e) {
-      console.log('🎯 onTopSelect 被调用了！', e);
-      console.log('当前meatValueOption:', this.data.meatValueOption);
-      console.log('点击的index:', e.currentTarget.dataset.index);
-
       // 如果肉分值选项不是"分值翻倍"，则不处理点击事件
       if (this.data.meatValueOption !== 1) {
-        console.log('肉分值选项不是"分值翻倍"，忽略点击事件');
         wx.showToast({
           title: '请先选择"分值翻倍"',
           icon: 'none',
@@ -244,7 +232,6 @@ Component({
         });
         return;
       }
-      console.log('设置topSelected为:', e.currentTarget.dataset.index);
       this.setData({ topSelected: e.currentTarget.dataset.index });
     },
 
@@ -343,21 +330,12 @@ Component({
     // 打印当前配置
     printCurrentConfig() {
       const config = this.getConfigData();
-      console.log('🎯 [LasiEatmeat] ===== 当前吃肉配置 =====');
-      console.log('🎯 [LasiEatmeat] 配置对象:', config);
-      console.log('🎯 [LasiEatmeat] 吃肉得分配对:', config.eatingRange);
-      console.log('🎯 [LasiEatmeat] 肉分值配置:', config.meatValueConfig);
-      console.log('🎯 [LasiEatmeat] 吃肉封顶:', config.meatMaxValue === 10000000 ? '不封顶' : config.meatMaxValue);
-      console.log('🎯 [LasiEatmeat] 是否启用:', config.eatingRange && config.eatingRange.length > 0);
-      console.log('🎯 [LasiEatmeat] ========================');
     },
 
     // 初始化配置数据 - 供UserRuleEdit页面调用
     initConfigData(configData) {
-      console.log('🎯 [LasiEatmeat] 初始化配置数据:', configData);
 
       if (!configData) {
-        console.warn('🎯 [LasiEatmeat] 配置数据为空，使用默认值');
         return;
       }
 
@@ -421,7 +399,6 @@ Component({
       this.updateDisplayValue();
       this.printCurrentConfig();
 
-      console.log('🎯 [LasiEatmeat] 配置数据初始化完成');
     }
   }
 });

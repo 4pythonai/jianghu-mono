@@ -63,16 +63,13 @@ Component({
                 displayValue: displayValue
             });
 
-            console.log('顶洞规则显示值已更新:', displayValue);
         },
 
         syncSelectedFromStore() {
             const currentValue = G4PLasiStore.lasi_dingdong_config;
-            console.log('syncSelectedFromStore被调用，store值:', currentValue);
             if (currentValue) {
                 if (currentValue === 'DrawEqual') {
                     this.setData({ selected: 0 });
-                    console.log('设置selected为0');
                 } else if (currentValue.startsWith('Diff_')) {
                     // 解析分数值
                     const score = Number.parseInt(currentValue.replace('Diff_', ''));
@@ -80,19 +77,15 @@ Component({
                         selected: 1,
                         selectedDiffScore: score || 1
                     });
-                    console.log('设置selected为1，分数:', score || 1);
                 } else if (currentValue === 'NoDraw') {
                     this.setData({ selected: 2 });
-                    console.log('设置selected为2');
                 }
             }
         },
 
         onSelect(e) {
             const index = Number.parseInt(e.currentTarget.dataset.index);
-            console.log('选择选项:', index, '当前selected:', this.data.selected);
             this.setData({ selected: index });
-            console.log('设置后selected:', index);
         },
 
         // 分数选择器相关方法
@@ -100,7 +93,6 @@ Component({
             const selectedIndex = e.detail.value;
             const selectedScore = this.data.diffScores[selectedIndex];
             this.setData({ selectedDiffScore: selectedScore });
-            console.log('选择分数:', selectedScore);
         },
 
         onShowConfig() {
@@ -162,7 +154,6 @@ Component({
         // 打印当前配置
         printCurrentConfig() {
             const config = this.getConfigData();
-            console.log('🎯 [LasiDingDong] 配置对象:', config);
         },
 
         // 初始化配置数据 - 供UserRuleEdit页面调用
@@ -197,7 +188,6 @@ Component({
             this.updateDisplayValue();
             this.printCurrentConfig();
 
-            console.log('🎯 [LasiDingDong] 配置数据初始化完成');
         }
     }
 });

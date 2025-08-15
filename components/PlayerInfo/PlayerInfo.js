@@ -29,8 +29,6 @@ Component({
                     displayText: isValid ? 'T' : 'X'
                 });
 
-                console.log('Tee value:', newVal); // 用于调试
-                console.log('Is valid:', isValid); // 额外的调试信息
             }
         }
     },

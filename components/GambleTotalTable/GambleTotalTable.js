@@ -30,14 +30,6 @@ Component({
         processData() {
             const { groupInfo, usefulHoles } = this.properties;
 
-            // 添加调试日志
-            console.log('🔍 [GambleTotalTable] 接收到的属性:', {
-                groupInfo,
-                usefulHoles,
-                groupInfoLength: groupInfo?.length,
-                usefulHolesLength: usefulHoles?.length
-            });
-
             // 处理球员信息 - 保持为数组格式
             const players = [];
             const playersMap = {}; // 用于快速查找的对象映射
@@ -96,13 +88,7 @@ Component({
                 }
             }
 
-            console.log('⭕️⭕️⭕️⭕️⭕️⭕️⭕️⭕️ TotalTable]  :', {
-                players: players.map(p => ({ userid: p.userid, nickname: p.nickname })),
-                processedHoles: processedHoles.map(h => ({
-                    holename: h.holename,
-                    holeMoney: h.holeMoney
-                }))
-            });
+
 
             this.setData({
                 players, // 现在是数组格式

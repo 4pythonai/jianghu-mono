@@ -22,11 +22,9 @@ Component({
     selectedDiffScore: 1
   },
   attached() {
-    console.log('🎯 [Draw8421] 组件加载，模式:', this.properties.mode);
 
     if (this.properties.mode === 'SysConfig') {
       // SysConfig模式：使用独立的配置数据，不依赖Store
-      console.log('🎯 [Draw8421] SysConfig模式，使用独立配置');
       // 使用默认配置初始化，但保持用户之前的选择
       this.setData({
         selected: this.data.selected || 0,
@@ -34,7 +32,6 @@ Component({
       });
     } else if (this.properties.mode === 'UserEdit') {
       // UserEdit模式：等待外部数据初始化，不自动从Store加载
-      console.log('🎯 [Draw8421] UserEdit模式，等待外部数据初始化');
       // 设置默认值，避免显示"请配置顶洞规则"
       this.setData({
         selected: 0,
@@ -54,7 +51,6 @@ Component({
       if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
         // 使用工具类格式化显示值
         const { selected, selectedDiffScore } = this.data;
-        console.log('🎯 [Draw8421] updateDisplayValue - 当前状态:', { selected, selectedDiffScore });
 
         // 构建配置数据用于格式化
         let drawConfig = '';
@@ -66,7 +62,6 @@ Component({
           drawConfig = 'NoDraw';
         }
 
-        console.log('🎯 [Draw8421] updateDisplayValue - 构建的drawConfig:', drawConfig);
 
         // 使用工具类格式化
         const displayValue = ruleFormatter.formatDrawRule(drawConfig);
@@ -95,16 +90,13 @@ Component({
     // 事件处理方法
     onSelect(e) {
       const index = Number.parseInt(e.currentTarget.dataset.index);
-      console.log('🎯 [Draw8421] 选择选项:', index, '当前selected:', this.data.selected);
       this.setData({ selected: index });
-      console.log('🎯 [Draw8421] 设置后selected:', index);
     },
 
     onDiffScoreChange(e) {
       const selectedIndex = e.detail.value;
       const selectedScore = this.data.diffScores[selectedIndex];
       this.setData({ selectedDiffScore: selectedScore });
-      console.log('🎯 [Draw8421] 选择分数:', selectedScore);
     },
 
     // UI控制方法

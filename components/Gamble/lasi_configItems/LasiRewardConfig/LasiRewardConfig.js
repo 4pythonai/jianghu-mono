@@ -241,7 +241,6 @@ Component({
 
         // 初始化配置数据 - 供UserRuleEdit页面调用
         initConfigData(configData) {
-            console.log('🎯 [LasiRewardConfig] 初始化配置数据:', configData);
 
             if (!configData) {
                 console.warn('🎯 [LasiRewardConfig] 配置数据为空，使用默认值');
@@ -257,14 +256,11 @@ Component({
                 if (typeof configData.RewardConfig === 'string') {
                     try {
                         rewardConfig = JSON.parse(configData.RewardConfig);
-                        console.log('🎯 [LasiRewardConfig] 成功解析RewardConfig字符串:', rewardConfig);
                     } catch (error) {
-                        console.error('🎯 [LasiRewardConfig] 解析RewardConfig字符串失败:', error);
                         rewardConfig = configData;
                     }
                 } else if (typeof configData.RewardConfig === 'object') {
                     rewardConfig = configData.RewardConfig;
-                    console.log('🎯 [LasiRewardConfig] 使用RewardConfig对象:', rewardConfig);
                 }
             }
 
@@ -272,11 +268,7 @@ Component({
             const rewardPreCondition = rewardConfig.rewardPreCondition || 'NONE';
             const rewardPair = rewardConfig.rewardPair || [];
 
-            console.log('🎯 [LasiRewardConfig] 解析后的配置:', {
-                rewardType,
-                rewardPreCondition,
-                rewardPair
-            });
+
 
             // 根据奖励类型设置对应的奖励项目
             if (rewardType === 'add') {
@@ -302,12 +294,6 @@ Component({
         // 打印当前配置
         printCurrentConfig() {
             const config = this.getCurrentConfig();
-            console.log('🎯 [LasiRewardConfig] ===== 当前奖励配置 =====');
-            console.log('🎯 [LasiRewardConfig] 配置对象:', config);
-            console.log('🎯 [LasiRewardConfig] 奖励类型:', config.rewardType);
-            console.log('🎯 [LasiRewardConfig] 前置条件:', config.rewardPreCondition);
-            console.log('🎯 [LasiRewardConfig] 奖励项目:', config.rewardPair);
-            console.log('🎯 [LasiRewardConfig] ========================');
         }
     }
 });

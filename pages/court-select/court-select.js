@@ -178,13 +178,6 @@ Page({
         const pages = getCurrentPages()
         const commonCreatePage = pages[pages.length - 3] // 获取commonCreate页面(跳过course-select页面)
 
-        // console.log('=== 页面栈调试信息 ===')
-        // console.log('当前页面栈:', pages.map(p => p.route))
-        // console.log('当前页面(最后一个):', pages[pages.length - 1]?.route)
-        // console.log('course-select页面(倒数第二个):', pages[pages.length - 2]?.route)
-        // console.log('commonCreate页面(倒数第三个):', commonCreatePage?.route)
-        // console.log('commonCreate页面是否存在:', !!commonCreatePage)
-        // console.log('commonCreate页面是否有setCourtSelection方法:', typeof commonCreatePage?.setCourtSelection)
 
         // 打印更多页面信息
         pages.forEach((page, index) => {

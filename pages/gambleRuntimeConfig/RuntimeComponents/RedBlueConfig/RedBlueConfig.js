@@ -64,7 +64,6 @@ Component({
     methods: {
         // 初始化配置
         initializeConfig() {
-            console.log("initializeConfig ❤️🧡💛💚💙 初始化配置", this.data);
 
             // 如果启用自动抽签，启动定时器
             if (this.data.autoRandomOrder) {
@@ -75,11 +74,9 @@ Component({
         // 启动自动抽签
         startAutoRandomOrder() {
             if (this.data.isAutoRandoming) {
-                console.log("自动抽签已在运行中");
                 return;
             }
 
-            console.log("🚀 启动自动抽签定时器，间隔:", this.data.autoRandomInterval, "ms");
 
             this.setData({
                 isAutoRandoming: true
@@ -100,7 +97,6 @@ Component({
 
         // 停止自动抽签
         stopAutoRandomOrder() {
-            console.log("🛑 停止自动抽签定时器");
 
             this.clearAutoRandomTimer();
             this.setData({
@@ -127,7 +123,6 @@ Component({
                 return;
             }
 
-            console.log("🎲 自动抽签执行中...");
 
             // 随机打乱玩家顺序
             const shuffled = RuntimeComponentsUtils.array.shuffle([...players]);
@@ -151,7 +146,6 @@ Component({
         },
 
         onSortEnd(e) {
-            console.log("弹框收到排序结果:", e.detail.listData);
 
             // 更新显示顺序（用户对象数组）
             const newPlayers = e.detail.listData;
@@ -159,7 +153,6 @@ Component({
             // 更新配置保存顺序（用户ID数组）
             const newBootstrapOrder = convertToUserIds(newPlayers);
 
-            console.log("弹框收到排序结果:", newBootstrapOrder);
 
             this.setData({
                 players: newPlayers,
@@ -271,15 +264,6 @@ Component({
             let finalBootstrapOrder = bootstrap_order;
             if (Array.isArray(bootstrap_order) && bootstrap_order.length === 0) {
                 finalBootstrapOrder = convertToUserIds(players || []);
-                console.warn(
-                    `RedBlueConfig.getConfig ⚠️⚠️⚠️ bootstrap_order 为空，已自动从 players 转换。playersCount=${players?.length ?? 0}，converted=`,
-                    finalBootstrapOrder
-                );
-            } else {
-                console.log(
-                    `RedBlueConfig.getConfig ✅ 使用已有 bootstrap_order：`,
-                    finalBootstrapOrder
-                );
             }
 
             const config = {
@@ -287,7 +271,6 @@ Component({
                 bootstrap_order: finalBootstrapOrder
             };
 
-            console.log(`RedBlueConfig.getConfig 📦 返回配置：`, config);
             return config;
         },
 

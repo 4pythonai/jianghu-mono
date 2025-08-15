@@ -12,7 +12,6 @@ Component({
             type: null, // 允许任何类型
             value: 0,
             observer: function (newVal, oldVal) {
-                console.log('🕳️ [HoleRangeSelector] roadLength 属性变化:', { newVal, oldVal, type: typeof newVal });
                 // 直接更新组件数据
                 if (newVal !== oldVal) {
                     const numVal = newVal ? Number(newVal) : 0;
@@ -43,7 +42,6 @@ Component({
 
             // 直接从 gameStore 获取洞数据
             const holeList = gameStore.gameData?.holeList || [];
-            console.log("🕳️ [HoleRangeSelector] 从 gameStore 获取的 holeList:", toJS(holeList));
 
             // 直接从 properties 获取参数，并确保类型转换
             const startHoleindex = this.properties.startHoleindex ? Number(this.properties.startHoleindex) : null;
@@ -161,7 +159,6 @@ Component({
          * @param {Object} e 事件对象
          */
         onHoleOrderConfirm(e) {
-            console.log(' ❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌ [HoleRangeSelector] 收到洞顺序确认:', e.detail);
             const result = e.detail;
 
 

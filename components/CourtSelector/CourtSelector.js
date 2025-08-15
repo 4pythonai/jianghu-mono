@@ -65,12 +65,10 @@ Component({
  */
     lifetimes: {
         attached: function () {
-            console.log('CourtSelector  ❤️❤️❤️ 组件已挂载')
             this.initComponent()
         },
 
         detached: function () {
-            console.log('CourtSelector组件已卸载')
         }
     },
 
@@ -79,15 +77,12 @@ Component({
      */
     observers: {
         'courseid': function (courseid) {
-            console.log('courseid 变化 ❤️❤️❤️:', courseid)
             if (courseid) {
                 this.loadCourseDetail(courseid)
             }
         },
         'courseInfo': function (courseInfo) {
-            console.log('courseInfo 变化 ❤️❤️❤️:', courseInfo)
             if (courseInfo?.courseid && !this.properties.courseid) {
-                console.log('通过 courseInfo 获取到 courseid ❤️❤️❤️:', courseInfo.courseid)
                 this.loadCourseDetail(courseInfo.courseid)
             }
         },
@@ -111,21 +106,12 @@ Component({
          * 初始化组件
          */
         initComponent() {
-            console.log('initComponent ❤️❤️❤️❤️', this.properties)
             const { courseid, courseInfo } = this.properties
 
             if (courseid) {
-                console.log('使用 courseid 参数 ❤️❤️❤️:', courseid)
                 this.loadCourseDetail(courseid)
             } else if (courseInfo?.courseid) {
-                console.log('使用 courseInfo.courseid ❤️❤️❤️:', courseInfo.courseid)
                 this.loadCourseDetail(courseInfo.courseid)
-            } else {
-                console.log('CourtSelector: 等待数据传入 ❤️❤️❤️', {
-                    courseid,
-                    courseInfo
-                })
-                // 不报错, 等待 observers 监听到数据变化
             }
         },
 

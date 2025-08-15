@@ -11,7 +11,6 @@ class Parser4pLasi extends BaseRuleParser {
      * @returns {Object} 解析结果
      */
     parse4PLasiConfig(item) {
-        console.log('[Parser4pLasi] 🟥🟧🟨🟥🟧🟨+++🟥🟧🟨🟥🟧🟨 parse4PLasiConfig ', item);
         const details = {
             koufen: '无',
             eatmeat: '无',
@@ -40,13 +39,8 @@ class Parser4pLasi extends BaseRuleParser {
         }
 
         if (item.kpis) {
-            console.log('[Parser4pLasi] +🟥🟧🟨🟥🟧🟨>+++++++++++ kpisDetail ');
             const kpisDetail = this.parseKpisConfig(item);
-            console.log('[Parser4pLasi] +🟥🟧🟨🟥🟧🟨>+++++++++++ kpisDetail ', kpisDetail);
             if (kpisDetail) details.kpis = kpisDetail;
-        } else {
-            console.log('[Parser4pLasi] +🟥🟧🟨🟥🟧🟨>>>>>>>>>>>>>>>>>>>>>>> kpisDetail 无');
-            // details.kpis = '无';
         }
 
         return details;
@@ -58,7 +52,6 @@ class Parser4pLasi extends BaseRuleParser {
      * @returns {string|null} 解析结果
      */
     parseKpisConfig(item) {
-        console.log('[Parser4pLasi] 🟨🟨🟨🟨🟨 解析KPI配置:', item.kpis);
 
         try {
             // 解析kpis配置，支持字符串和对象格式

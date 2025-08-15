@@ -55,7 +55,6 @@ Component({
             // 直接从 gameStore 获取真实的洞数据，参考 holejump.js 的实现
             const holeList = gameStore.gameData?.holeList || [];
 
-            console.log('[kickoff] 从gameStore获取的洞数据:', holeList);
 
             if (holeList && holeList.length > 0) {
                 // 使用真实的洞数据，按照 hindex 排序，确保数据类型正确
@@ -68,7 +67,6 @@ Component({
                     .sort((a, b) => a.hindex - b.hindex);
 
                 this.setData({ holePlayList: sortedHoleList });
-                console.log('[kickoff] 初始化洞序数据成功（已排序）:', sortedHoleList);
             } else {
                 // 如果没有洞数据，使用默认的洞序（1-18洞）
                 const defaultHoles = Array.from({ length: 18 }, (_, i) => ({
@@ -77,7 +75,6 @@ Component({
                 }));
 
                 this.setData({ holePlayList: defaultHoles });
-                console.log('[kickoff] 使用默认洞序数据:', defaultHoles);
             }
         },
 
@@ -179,7 +176,6 @@ Component({
             }));
 
 
-            console.log('🌸🌸🌸🌸 当前 multiplierArray:', multiplierArray);
 
             // 更新 store
             this.updateRuntimeMultipliers(config.id, multiplierArray);
@@ -190,7 +186,6 @@ Component({
             }
 
             // 触发确认事件
-            console.log('🌸🌸🌸🌸 当前 triggerData:', triggerData);
             this.triggerEvent('confirm', triggerData);
         },
 

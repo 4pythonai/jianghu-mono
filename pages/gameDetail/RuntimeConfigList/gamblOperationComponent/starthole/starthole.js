@@ -65,13 +65,10 @@ Component({
 
         // RealHolePlayListSetter 确认事件
         async onHoleOrderConfirm(e) {
-            console.log('[starthole] 确认选择:', e.detail);
-            console.log("gameid", gameStore.gameid);
             const res = await app.api.gamble.changeStartHole({
                 gameid: gameStore.gameid,
                 holeList: e.detail.holePlayList
             })
-            console.log("res", res);
             if (res.code === 200) {
                 wx.showToast({
                     title: '出发洞设置成功',

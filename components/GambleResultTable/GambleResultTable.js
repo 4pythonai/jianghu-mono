@@ -109,13 +109,6 @@ Component({
             }
 
 
-            console.log('🟢🟢🟢🟢🟢 GambleResultTable :', {
-                players: players.map(p => ({ userid: p.userid, nickname: p.nickname })),
-                processedHoles: processedHoles.map(h => ({
-                    id: h.id
-                }))
-            });
-
             this.setData({
                 players,
                 totalMoney,

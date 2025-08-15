@@ -157,10 +157,8 @@ Component({
         // 处理 RuntimeConfigSelector 组件的 checkbox 变化
         onCheckboxChange(e) {
             const selectedIdList = e.detail.selectedIdList || [];
-            console.log('[juanguo] 选中ID变化:', selectedIdList);
             // 去重处理
             const uniqueSelectedIds = [...new Set(selectedIdList)];
-            console.log('[juanguo] 去重后的选中ID:', uniqueSelectedIds);
             this.setData({
                 selectedIdList: uniqueSelectedIds,
                 forceRefresh: this.data.forceRefresh + 1
@@ -178,7 +176,6 @@ Component({
                 donationPoints: value === 'normal' ? 1 : this.data.donationPoints
             });
 
-            console.log('[juanguo] 捐锅方式变更为:', value);
 
             // 切换捐锅方式后，验证相关输入值是否仍然有效
             this.validateAfterTypeChange(value, oldValue);
