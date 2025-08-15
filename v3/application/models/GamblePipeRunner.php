@@ -44,6 +44,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $kickConfig; // 踢球配置
     private $donationCfg; // 捐赠配置
     private $bigWind; // 大风配置
+    private $kpis; // KPI配置
+    private $RewardConfig; // 奖励配置
 
 
 
@@ -96,6 +98,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->kickConfig = $_config_row['kickConfig'];
         $this->donationCfg = $_config_row['donationCfg'];
         $this->bigWind = $_config_row['bigWind'];
+        $this->kpis = json_decode($_config_row['kpis'], true);
+        $this->RewardConfig = json_decode($_config_row['RewardConfig'], true);
 
 
 
@@ -149,7 +153,13 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $this->MMeat->addMeatIfDraw($hole, $context);
 
             // 设置双方点数（这会设置 winner_detail）
-            $this->MMoney->setHolePointsDetail($hole, $context->dutyConfig);
+            $this->MMoney->setHolePointsDetail($hole, $context);
+
+
+            // 设置 duty
+            $this->MMoney->dutyHandler($hole, $context);
+
+
 
             // 处理吃肉逻辑（在 winner_detail 设置之后）
             $this->MMeat->processEating($hole, $context);
@@ -329,5 +339,13 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getRoadLength() {
         return $this->roadLength;
+    }
+
+    public function getKpis() {
+        return $this->kpis;
+    }
+
+    public function getRewardConfig() {
+        return $this->RewardConfig;
     }
 }

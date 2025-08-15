@@ -23,6 +23,8 @@ class MRuntimeConfig extends CI_Model {
         $RunTimeConfigRow['meatValueConfig'] = $GambleConfigRow['meatValueConfig'];
         $RunTimeConfigRow['meatMaxValue'] = $GambleConfigRow['meatMaxValue'];
         $RunTimeConfigRow['dutyConfig'] = $GambleConfigRow['dutyConfig'];
+        $RunTimeConfigRow['kpis'] = $GambleConfigRow['kpis'];
+        $RunTimeConfigRow['RewardConfig'] = $GambleConfigRow['RewardConfig'];
 
         // 防御性处理 kickConfig ,  donationCfg
         $kickConfig = $RunTimeConfigRow['kickConfig'];

@@ -6,23 +6,29 @@ if (!defined('BASEPATH')) {
 
 class MIndicatorLasi extends CI_Model {
 
-
-
     /**
-     * 计算8421指标
-     * @param int $index 洞索引
+     * 计算拉丝指标
      * @param array $hole 洞数据（引用传递）
-     * @param array $configs 8421配置
+     * @param object $context 上下文配置
      */
     public function calculateLasiIndicators(&$hole, $context) {
-
-        $fixedKpis = $this->fixKpis($context->kpis, $context->kpis['totalCalculationType']);
+        $fixedKpis = $this->fixKpis($context->kpis['kpiValues'], $context->kpis['totalCalculationType']);
         $indicatorBlue = 0;
         $indicatorRed = 0;
-        debug($hole);
-        die;
+
+        foreach ($fixedKpis as $kpi => $value) {
+            $_tmp_indicators = $this->compareIndicator($hole, $kpi, $value);
+            $hole['tmp_indicators'][$kpi] = $_tmp_indicators;
+        }
+
+        $_sumed = $this->sumkPIs($hole['tmp_indicators']);
+
+        // debug($hole['tmp_indicators']);
+        // debug($_sumed);
 
 
+        $hole['indicators'] = $_sumed;
+        unset($hole['tmp_indicators']);
 
         $hole['indicatorBlue'] = $indicatorBlue;
         $hole['indicatorRed'] = $indicatorRed;
@@ -30,50 +36,13 @@ class MIndicatorLasi extends CI_Model {
 
 
 
-
-
-
-    /**
-     * 计算拉丝KPI配对结果
-     * 根据拉丝算法计算两组在不同指标上的比较结果
-     * 
-     * @param array $hole 洞数据
-     * @param array $kpis KPI配置
-     * @param array $rewardConfig 奖励配置（暂时不使用）
-     * @return array 拉丝结果
-     */
-    public function getLasiKPIPais($hole, $kpis, $rewardConfig) {
-
-        $kpis = $this->fixKpis($kpis['kpiValues'], $kpis['totalCalculationType']);
-
-        $redScore = 0;
-        $blueScore = 0;
-
-        // 循环计算每个指标是哪组赢了
-        foreach ($kpis as $indicatorType => $points) {
-            $comparisonResult = $this->compareIndicator($hole, $indicatorType);
-
-            if ($comparisonResult['winner'] === 'red') {
-                $redScore += $points;
-            } elseif ($comparisonResult['winner'] === 'blue') {
-                $blueScore += $points;
-            }
-            // 如果平局，双方都不加分
-        }
-
-        return [
-            'red' => $redScore,
-            'blue' => $blueScore
-        ];
-    }
-
     /**
      * 比较指定指标的双方成绩
      * @param array $hole 洞数据
-     * @param string $indicatorType 指标类型 (best, worst, plus_total, multiply_total等)
+     * @param string $indicatorType 指标类型 (best, worst, add_total, multiply_total等)
      * @return array 比较结果 ['winner' => 'red'|'blue'|'draw', 'redValue' => int, 'blueValue' => int]
      */
-    private function compareIndicator($hole, $indicatorType) {
+    private function compareIndicator($hole, $indicatorType, $value) {
         $redScores = [];
         $blueScores = [];
 
@@ -103,9 +72,11 @@ class MIndicatorLasi extends CI_Model {
         }
 
         return [
-            'winner' => $winner,
+            'kpi' => $indicatorType,
             'redValue' => $redValue,
-            'blueValue' => $blueValue
+            'blueValue' => $blueValue,
+            'winner' => $winner,
+            'subPoints' => $winner === 'draw' ? 0 : $value
         ];
     }
 
@@ -125,27 +96,23 @@ class MIndicatorLasi extends CI_Model {
                 // 最差成绩（杆数最多）
                 return max($scores);
 
-            case 'plus_total':
+            case 'add_total':
                 // 杆数相加
                 return array_sum($scores);
 
             case 'multiply_total':
                 // 杆数相乘
                 return array_product($scores);
-
-            case 'average':
-                // 平均杆数
-                return round(array_sum($scores) / count($scores), 2);
-
-            default:
-                // 默认返回最好成绩
-                return min($scores);
         }
     }
 
-
+    /**
+     * 修复KPI配置，将'total'替换为具体的计算类型
+     * @param array $kpiValues KPI值配置
+     * @param string $totalCalculationType 总计算类型
+     * @return array 修复后的KPI配置
+     */
     private function fixKpis($kpiValues, $totalCalculationType) {
-
         $fixedKpis = [];
 
         foreach ($kpiValues as $key => $value) {
@@ -159,5 +126,63 @@ class MIndicatorLasi extends CI_Model {
         }
 
         return $fixedKpis;
+    }
+
+
+    /**
+     * 汇总所有KPI指标，计算最终得分和输赢
+     * @param array $tmp_indicators 临时指标数组
+     * @return array 汇总结果 ['winner' => 'blue'|'red'|'draw', 'bluePoints' => int, 'redPoints' => int]
+     */
+    private function sumkPIs($tmp_indicators) {
+        $bluePoints = 0;
+        $redPoints = 0;
+
+        foreach ($tmp_indicators as $indicator) {
+            $winner = $indicator['winner'];
+            $subPoints = $indicator['subPoints'];
+
+            // 每个指标：赢方得X分，输方得0分
+            switch ($winner) {
+                case 'blue':
+                    $bluePoints += $subPoints;  // 蓝队赢，得X分
+                    $redPoints += 0;            // 红队输，得0分
+                    break;
+                case 'red':
+                    $redPoints += $subPoints;   // 红队赢，得X分
+                    $bluePoints += 0;           // 蓝队输，得0分
+                    break;
+                case 'draw':
+                    // 平局双方都不得分
+                    $bluePoints += 0;
+                    $redPoints += 0;
+                    break;
+            }
+        }
+
+        // 判断最终输赢：得分高者获胜
+        if ($bluePoints > $redPoints) {
+            $winner = 'blue';
+            $blueFinalPoints = $bluePoints;
+            $redFinalPoints = $redPoints;
+            $difference = $bluePoints - $redPoints;
+        } elseif ($redPoints > $bluePoints) {
+            $winner = 'red';
+            $blueFinalPoints = $bluePoints;
+            $redFinalPoints = $redPoints;
+            $difference = $redPoints - $bluePoints;
+        } else {
+            $winner = 'draw';
+            $blueFinalPoints = $bluePoints;
+            $redFinalPoints = $redPoints;
+            $difference = 0;
+        }
+
+        return [
+            'winner' => $winner,
+            'bluePoints' => $blueFinalPoints,
+            'redPoints' => $redFinalPoints,
+            'difference' => $difference
+        ];
     }
 }

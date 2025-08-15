@@ -38,6 +38,8 @@ class GambleContext extends CI_Model {
     public $donationCfg;
     public $bigWind;
     public $roadLength;
+    public $kpis;
+    public $RewardConfig;
 
 
     public $meat_pool = []; // 肉池管理
@@ -86,6 +88,8 @@ class GambleContext extends CI_Model {
         'donationCfg' => 'getDonationCfg',
         'bigWind' => 'getBigWind',
         'roadLength' => 'getRoadLength',
+        'kpis' => 'getKpis',
+        'RewardConfig' => 'getRewardConfig',
     ];
 
     /**

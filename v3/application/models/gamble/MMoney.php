@@ -16,7 +16,7 @@ class MMoney extends CI_Model {
      * 
      */
 
-    public function setHolePointsDetail(&$hole, $dutyConfig) {
+    public function setHolePointsDetail(&$hole, $context) {
 
         $attendersNum = count($hole['red']) + count($hole['blue']);
         if ($attendersNum == 2) {
@@ -26,14 +26,22 @@ class MMoney extends CI_Model {
             $this->set3PlayerHolePointsDetail($hole);
         }
         if ($attendersNum == 4) {
-            $this->set4PlayerHolePointsDetail($hole, $dutyConfig);
+            if ($context->gambleSysName == '4p-8421') {
+                $this->set4Player8421HolePointsDetail($hole);
+            }
+
+            if ($context->gambleSysName == '4p-lasi') {
+                $this->set4PlayerLasiHolePointsDetail($hole);
+            }
         }
     }
 
 
-    // 4人比赛输赢金额分配
-    public function set4PlayerHolePointsDetail(&$hole, $dutyConfig) {
+    // 8421 4人比赛输赢金额分配
+    public function set4Player8421HolePointsDetail(&$hole) {
         // 2:2 
+        // debug($hole);
+        // die;
         if (count($hole['red']) == 2 && count($hole['blue']) == 2) {
             if ($hole['winner'] == 'blue') {
                 $hole['winner_detail'] = [
@@ -56,15 +64,47 @@ class MMoney extends CI_Model {
                     ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]], 'indicator' => $hole['indicators'][$hole['blue'][1]], 'scorePoints' => -$hole['points']],
                 ];
             }
+        }
+    }
 
+    public function set4PlayerLasiHolePointsDetail(&$hole) {
+        // debug($hole);
+        // die;
+        if ($hole['winner'] == 'blue') {
+            $hole['winner_detail'] = [
+                ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]],  'scorePoints' => $hole['points']],
+                ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]],  'scorePoints' => $hole['points']],
+            ];
+            $hole['failer_detail'] = [
+                ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]],   'scorePoints' => -$hole['points']],
+                ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]],   'scorePoints' => -$hole['points']],
+            ];
+        }
 
-            if (array_key_exists('failer_detail', $hole)) {
-                // 输家里面只要出现一个负分,就靠考虑下"包负分"的情况
-                if ($hole['failer_detail'][0]['indicator'] < 0 || $hole['failer_detail'][1]['indicator'] < 0) {
-                    $duty = $this->checkIfDuty($dutyConfig, $hole['winner_detail'], $hole['failer_detail']);
-                    if ($duty) {
-                        debug("需要包负分,处理负分情况");
-                        $this->processDuty($hole);
+        if ($hole['winner'] == 'red') {
+            $hole['winner_detail'] = [
+                ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]],   'scorePoints' => $hole['points']],
+                ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]],   'scorePoints' => $hole['points']],
+            ];
+            $hole['failer_detail'] = [
+                ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]],  'scorePoints' => -$hole['points']],
+                ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]],  'scorePoints' => -$hole['points']],
+            ];
+        }
+    }
+
+    public function dutyHandler(&$hole, $context) {
+        if ($context->gambleSysName == '4p-8421') {
+            if (count($hole['red']) == 2 && count($hole['blue']) == 2) {
+                if (array_key_exists('failer_detail', $hole)) {
+                    // 输家里面只要出现一个负分,就靠考虑下"包负分"的情况
+                    if ($hole['failer_detail'][0]['indicator'] < 0 || $hole['failer_detail'][1]['indicator'] < 0) {
+                        $dutyConfig = $context->dutyConfig;
+                        $duty = $this->checkIfDuty($dutyConfig, $hole['winner_detail'], $hole['failer_detail']);
+                        if ($duty) {
+                            debug("需要包负分,处理负分情况");
+                            $this->processDuty($hole);
+                        }
                     }
                 }
             }

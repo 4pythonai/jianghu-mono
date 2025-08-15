@@ -30,10 +30,19 @@ class MIndicator extends CI_Model {
     }
 
 
-
     public function setWinFailPoints(&$hole, $context) {
+        if ($context->gambleSysName == '4p-8421') {
+            $this->set8421WinFailPoints($hole, $context);
+        }
+        if ($context->gambleSysName == '4p-lasi') {
+            $this->setLasiWinFailPoints($hole, $context);
+        }
+    }
 
-        // debug($hole);
+
+
+    public function set8421WinFailPoints(&$hole, $context) {
+        // debug("设置输赢:setWinFailPoints" . $context->gambleSysName);
 
         $indicatorBlue = $hole['indicatorBlue'];
         $indicatorRed = $hole['indicatorRed'];
@@ -76,6 +85,132 @@ class MIndicator extends CI_Model {
         $currentHoleMultiplier = $this->getCurrentHoleMultiplier($hole, $context->kickConfig);
 
         $hole['points'] =  $points * $currentHoleMultiplier;
+        // debug($hole);
+        // die;
+    }
+
+    public function setLasiWinFailPoints(&$hole, $context) {
+        // debug("设置输赢:setWinFailPoints" . $context->gambleSysName);
+
+
+        if ($hole['indicators']['winner'] == 'draw') {
+            $hole['draw'] = 'y';
+        } else {
+            $hole['draw'] = 'n';
+        }
+
+        $points = abs($hole['indicators']['difference']);
+
+        if ($hole['indicators']['winner'] == 'blue') {
+            $hole['winner'] = 'blue';
+            $hole['failer'] = 'red';
+        }
+
+        if ($hole['indicators']['winner'] == 'red') {
+            $hole['winner'] = 'red';
+            $hole['failer'] = 'blue';
+        }
+
+
+        $hole['points_before_kick'] = $points;
+        $currentHoleMultiplier = $this->getCurrentHoleMultiplier($hole, $context->kickConfig);
+        $rewardFactor = $this->getLassiRewardFactor($hole, $context);
+
+        $hole['points'] =  $points * $currentHoleMultiplier;
+    }
+
+    public function getLassiRewardFactor($hole, $context) {
+        debug("+++++++++++++++++++++++++++++++++++");
+        if ($hole['draw'] == 'y') {
+            return 1;
+        }
+
+        $winner_side_scores = [];
+
+        //赢家的两个杆数
+        if ($hole['winner'] == 'blue') {
+            $winner_side_scores[] = $hole['computedScores'][$hole['blue'][0]];
+            $winner_side_scores[] = $hole['computedScores'][$hole['blue'][1]];
+        }
+
+        if ($hole['winner'] == 'red') {
+            $winner_side_scores[] = $hole['computedScores'][$hole['red'][0]];
+            $winner_side_scores[] = $hole['computedScores'][$hole['red'][1]];
+        }
+
+        debug($winner_side_scores);
+
+        debug($context->RewardConfig);
+        die;
+
+
+
+
+        debug($hole);
+        $rewardFactor = 1;
+        debug($context);
+        $rewardFactorConfig = $context->RewardConfig;
+        debug($rewardFactorConfig);
+
+        return $rewardFactor;
+    }
+
+
+    private function tmp001($par, $bestScores, $rewardPair) {
+
+        // $par=4;
+        //         $bestScores=      Array
+        // (
+        //     [0] => 1
+        //     [1] => 4
+        // )
+
+        //     $rewardPair => Array
+        //         (
+        //             [0] => Array
+        //                 (
+        //                     [scoreName] => Par
+        //                     [rewardValue] => 1
+        //                 )
+
+        //             [1] => Array
+        //                 (
+        //                     [scoreName] => Birdie
+        //                     [rewardValue] => 2
+        //                 )
+
+        //             [2] => Array
+        //                 (
+        //                     [scoreName] => Eagle
+        //                     [rewardValue] => 4
+        //                 )
+
+        //             [3] => Array
+        //                 (
+        //                     [scoreName] => Albatross/HIO
+        //                     [rewardValue] => 10
+        //                 )
+
+        //             [4] => Array
+        //                 (
+        //                     [scoreName] => Birdie+Birdie
+        //                     [rewardValue] => 4
+        //                 )
+
+        //             [5] => Array
+        //                 (
+        //                     [scoreName] => Birdie+Eagle
+        //                     [rewardValue] => 8
+        //                 )
+
+        //             [6] => Array
+        //                 (
+        //                     [scoreName] => Eagle+Eagle
+        //                     [rewardValue] => 16
+        //                 )
+
+        //         )
+
     }
 
 
