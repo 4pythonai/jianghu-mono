@@ -114,15 +114,29 @@ class MIndicator extends CI_Model {
 
         $hole['points_before_kick'] = $points;
         $currentHoleMultiplier = $this->getCurrentHoleMultiplier($hole, $context->kickConfig);
-        $rewardFactor = $this->getLassiRewardFactor($hole, $context);
+        $rewardFactor = $this->getLassiRewardFactor($hole, $context->RewardConfig);
 
-        $hole['points'] =  $points * $currentHoleMultiplier;
+        if ($context->RewardConfig['rewardType'] == 'multiply') {
+            $hole['points'] =  $points * $currentHoleMultiplier * $rewardFactor;
+        }
+
+        if ($context->RewardConfig['rewardType'] == 'add') {
+            $hole['points'] =  $points * $currentHoleMultiplier + $rewardFactor;
+        }
     }
 
-    public function getLassiRewardFactor($hole, $context) {
-        debug("+++++++++++++++++++++++++++++++++++");
+    public function getLassiRewardFactor(&$hole, $RewardConfig) {
+
+
+        return 1;
+
         if ($hole['draw'] == 'y') {
-            return 1;
+            if ($RewardConfig['rewardType'] == 'multiply') {
+                return 1;
+            }
+            if ($RewardConfig['rewardType'] == 'add') {
+                return 0;
+            }
         }
 
         $winner_side_scores = [];
@@ -138,79 +152,77 @@ class MIndicator extends CI_Model {
             $winner_side_scores[] = $hole['computedScores'][$hole['red'][1]];
         }
 
-        debug($winner_side_scores);
 
-        debug($context->RewardConfig);
-        die;
+        $tmp = $this->findRewardValue($hole['par'], $winner_side_scores, $RewardConfig['rewardPair']);
+        $hole['debug'][] = "奖励倍数: $tmp";
 
-
-
-
-        debug($hole);
-        $rewardFactor = 1;
-        debug($context);
-        $rewardFactorConfig = $context->RewardConfig;
-        debug($rewardFactorConfig);
-
-        return $rewardFactor;
+        return $tmp;
     }
 
 
-    private function tmp001($par, $bestScores, $rewardPair) {
 
-        // $par=4;
-        //         $bestScores=      Array
-        // (
-        //     [0] => 1
-        //     [1] => 4
-        // )
 
-        //     $rewardPair => Array
-        //         (
-        //             [0] => Array
-        //                 (
-        //                     [scoreName] => Par
-        //                     [rewardValue] => 1
-        //                 )
+    private function getScoreName($par, $score) {
+        // HIO (一杆进洞) 是最特殊的情况，优先判断
+        if ($score === 1) {
+            return 'Albatross/HIO';
+        }
 
-        //             [1] => Array
-        //                 (
-        //                     [scoreName] => Birdie
-        //                     [rewardValue] => 2
-        //                 )
+        $diff = $score - $par;
 
-        //             [2] => Array
-        //                 (
-        //                     [scoreName] => Eagle
-        //                     [rewardValue] => 4
-        //                 )
+        switch ($diff) {
+            case -3:
+                return 'Albatross/HIO'; // 例如 Par 5 打 2 杆
+            case -2:
+                return 'Eagle';
+            case -1:
+                return 'Birdie';
+            case 0:
+                return 'Par';
+            default:
+                return null; // 对于 Bogey 或更高杆数，没有特殊奖励名称
+        }
+    }
 
-        //             [3] => Array
-        //                 (
-        //                     [scoreName] => Albatross/HIO
-        //                     [rewardValue] => 10
-        //                 )
+    private function findRewardValue($par, $bestScores, $rewardPair) {
+        // 1. 为了方便快速查找，将奖励配置转换为一个以 scoreName 为键的映射数组
+        $rewardMap = [];
+        foreach ($rewardPair as $reward) {
+            $rewardMap[$reward['scoreName']] = $reward['rewardValue'];
+        }
 
-        //             [4] => Array
-        //                 (
-        //                     [scoreName] => Birdie+Birdie
-        //                     [rewardValue] => 4
-        //                 )
+        // 2. 算法第一步：根据最好成绩（最小杆数）来寻找 rewardValue
+        if (!empty($bestScores)) {
+            $minScore = min($bestScores);
+            $bestScoreName = $this->getScoreName($par, $minScore);
 
-        //             [5] => Array
-        //                 (
-        //                     [scoreName] => Birdie+Eagle
-        //                     [rewardValue] => 8
-        //                 )
+            // 如果找到了对应的得分名称，并且该名称存在于奖励配置中
+            if ($bestScoreName !== null && isset($rewardMap[$bestScoreName])) {
+                return $rewardMap[$bestScoreName]; // 找到，立即返回
+            }
+        }
 
-        //             [6] => Array
-        //                 (
-        //                     [scoreName] => Eagle+Eagle
-        //                     [rewardValue] => 16
-        //                 )
+        // 3. 算法第二步：如果最好成绩没找到，则在组合配置里面寻找
+        //    (假设组合总是由两个分数构成)
+        if (count($bestScores) >= 2) {
+            $scoreName1 = $this->getScoreName($par, $bestScores[0]);
+            $scoreName2 = $this->getScoreName($par, $bestScores[1]);
 
-        //         )
+            // 确保两个分数都能转换为有效的得分名称
+            if ($scoreName1 && $scoreName2) {
+                // 将名称排序以确保组合键的一致性 (例如 "Birdie+Eagle" 和 "Eagle+Birdie" 是同一种)
+                $comboNames = [$scoreName1, $scoreName2];
+                sort($comboNames);
+                $comboKey = implode('+', $comboNames);
 
+                if (isset($rewardMap[$comboKey])) {
+                    return $rewardMap[$comboKey]; // 找到组合奖励，返回
+                }
+            }
+        }
+
+        // 4. 如果以上都没有找到，返回默认值 1
+        return 1;
     }
 
 

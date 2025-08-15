@@ -23,6 +23,7 @@ class MIndicatorLasi extends CI_Model {
 
         $_sumed = $this->sumkPIs($hole['tmp_indicators']);
 
+        // debug("各个指标");
         // debug($hole['tmp_indicators']);
         // debug($_sumed);
 

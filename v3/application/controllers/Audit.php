@@ -209,13 +209,27 @@ class Audit extends CI_Controller {
 
         // 生成二维码图片
         $qrcode_url = generate_qrcode($detail_url, "gamble_result_{$gambleid}.png");
-
         $final_result = $this->GamblePipe->GetGambleResult($cfg);
         if ($debugMode) {
             debug($final_result);
         }
 
         $final_result['qrcode_url'] = $qrcode_url;
+        $final_result['detail_url'] = $detail_url;
         return $final_result;
+    }
+
+
+    public function getSingleGambleResult() {
+
+        $debugMode = false; // 小程序
+        $paras = json_decode(file_get_contents('php://input'), true);
+        $gambleid = $paras['gambleid'];
+        $result = $this->getGambleResult($gambleid, $debugMode);
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['gambleResult'] = $result;
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 }
