@@ -124,10 +124,12 @@ Page({
             const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
             const needsStroking = GambleMetaConfig.needsStroking(gambleSysName);
 
+            // 确保包含完整的 runtimeConfig 对象，避免 Object.keys() 报错
             setRuntimeConfigData(this, {
                 is8421Game,
                 needsGrouping,
-                needsStroking
+                needsStroking,
+                runtimeConfig: this.data.runtimeConfig || {} // 保留现有的 runtimeConfig
             });
         }
     },
@@ -150,30 +152,27 @@ Page({
                 }
             }
             if (Array.isArray(bootstrapOrder) && bootstrapOrder.length > 0) {
-                setRuntimeConfigData(this, {
-                    runtimeConfig: {
-                        bootstrap_order: bootstrapOrder
-                    }
+                // 只更新特定的 runtimeConfig 字段，不覆盖其他数据
+                this.setData({
+                    'runtimeConfig.bootstrap_order': bootstrapOrder
                 });
             }
         }
 
         // 加载排名配置
         if (editConfig?.ranking_tie_resolve_config) {
-            setRuntimeConfigData(this, {
-                runtimeConfig: {
-                    ranking_tie_resolve_config: editConfig.ranking_tie_resolve_config
-                }
+            // 只更新特定的 runtimeConfig 字段，不覆盖其他数据
+            this.setData({
+                'runtimeConfig.ranking_tie_resolve_config': editConfig.ranking_tie_resolve_config
             });
         }
 
         // 8421初始化配置
-        if (editConfig.gambleSysName.includes('8421')) {
+        if (editConfig?.gambleSysName && editConfig.gambleSysName.includes('8421')) {
             const val8421Config = GambleRelatedInitor.getInit8421Values(this.data.players);
-            setRuntimeConfigData(this, {
-                runtimeConfig: {
-                    playerIndicatorConfig: val8421Config
-                }
+            // 只更新特定的 runtimeConfig 字段，不覆盖其他数据
+            this.setData({
+                'runtimeConfig.playerIndicatorConfig': val8421Config
             });
         }
     },

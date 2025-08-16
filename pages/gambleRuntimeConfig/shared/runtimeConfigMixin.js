@@ -76,12 +76,16 @@ function setRuntimeConfigData(pageContext, configData, options = {}, callback) {
     });
 
     // runtimeConfig 字段设置
-    Object.keys(configData.runtimeConfig).forEach(key => {
-        setDataObj[`runtimeConfig.${key}`] = configData.runtimeConfig[key];
-    });
+    if (configData.runtimeConfig) {
+        Object.keys(configData.runtimeConfig).forEach(key => {
+            setDataObj[`runtimeConfig.${key}`] = configData.runtimeConfig[key];
+        });
+    }
 
     // 特殊字段设置（如 config 对象）
-    setDataObj.config = configData.config;
+    if (configData.config) {
+        setDataObj.config = configData.config;
+    }
 
     // 一次性设置所有数据
     console.log('[RuntimeConfigMixin] 设置配置数据:', setDataObj);
