@@ -1,0 +1,11 @@
+
+function indexOf(array, value) {
+    return array.indexOf(value)
+}
+
+function includes(arr, value) {
+    return arr.indexOf(value) >= 0;
+}
+
+
+module.exports = { includes: includes, indexOf: indexOf, includes: includes };

@@ -63,6 +63,14 @@
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
       />
     </view>
+
+    <view class="section">
+      <view class="section-label">排名规则</view>
+      <RankLasiConflictResolver
+        id="rankConfig"
+        selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+      />
+    </view>
   </view>
 
   <!-- 底部按钮 -->
