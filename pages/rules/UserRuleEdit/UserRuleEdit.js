@@ -30,17 +30,25 @@ Page({
 
         this.setData({ ruleId });
 
-        // 如果有传递的规则数据，直接使用；否则通过API获取
+        // 解析并初始化规则数据
         if (ruleData) {
             try {
                 const parsedRuleData = JSON.parse(decodeURIComponent(ruleData));
                 this.initializeWithRuleData(parsedRuleData);
             } catch (error) {
                 console.error('📋 [UserRuleEdit] 解析规则数据失败:', error);
-                this.loadRuleData(ruleId);
+                wx.showToast({
+                    title: '数据解析失败',
+                    icon: 'none'
+                });
+                setTimeout(() => wx.navigateBack(), 1500);
             }
         } else {
-            this.loadRuleData(ruleId);
+            wx.showToast({
+                title: '缺少规则数据',
+                icon: 'none'
+            });
+            setTimeout(() => wx.navigateBack(), 1500);
         }
     },
 
@@ -75,60 +83,7 @@ Page({
         this.loadConfigComponents(_gambleSysName);
     },
 
-    // 加载规则数据
-    async loadRuleData(ruleId) {
-        try {
-            wx.showLoading({ title: '加载中...' });
 
-            console.log('📋 [UserRuleEdit] 开始加载规则数据, ruleId:', ruleId);
-
-            // 调用API获取规则数据
-            const apiResponse = await app.api.gamble.getUserGambleRule({ ruleId });
-
-            if (!apiResponse || apiResponse.code !== 200 || !apiResponse.data) {
-                throw new Error('规则不存在或获取失败');
-            }
-
-            const ruleData = apiResponse.data;
-
-            // 确定游戏类型
-            const _gambleSysName = ruleData.gambleSysName;
-
-            // 获取游戏配置
-            const _name = GambleMetaConfig.getGambleHumanName(_gambleSysName);
-            console.log('📋 [UserRuleEdit] API返回数据获取到的游戏配置:', _name);
-
-            if (!_name) {
-                console.error('📋 [UserRuleEdit] API返回数据无效的游戏类型:', _gambleSysName);
-                console.error('📋 [UserRuleEdit] API返回的原始数据:', ruleData);
-                throw new Error(`无效的游戏类型: ${_gambleSysName}`);
-            }
-
-            // 检查config字段
-
-            // 设置页面数据
-            this.setData({
-                ruleData,
-                _gambleSysName: _gambleSysName,
-                gameName: _name,
-                _gambleUserName: ruleData.gambleUserName
-            });
-
-
-            // 根据游戏类型加载对应的配置组件
-            this.loadConfigComponents(_gambleSysName);
-
-        } catch (error) {
-            console.error('📋 [UserRuleEdit] 加载规则数据失败:', error);
-            wx.showToast({
-                title: '加载规则失败',
-                icon: 'none'
-            });
-            setTimeout(() => wx.navigateBack(), 1500);
-        } finally {
-            wx.hideLoading();
-        }
-    },
 
     // 根据游戏类型加载配置组件
     loadConfigComponents(_gambleSysName) {
