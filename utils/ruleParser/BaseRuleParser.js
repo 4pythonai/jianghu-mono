@@ -168,7 +168,7 @@ class BaseRuleParser {
             detail += rewardTypeText;
 
             // 解析前置条件
-            if (rewardPreCondition) {
+            if (rewardPreCondition && rewardType === 'add') {
                 let preConditionText = '';
                 switch (rewardPreCondition) {
                     case 'total_win':
@@ -194,7 +194,9 @@ class BaseRuleParser {
                 if (validRewards.length > 0) {
                     const rewardDetails = validRewards.map(item => {
                         const { scoreName, rewardValue } = item;
-                        return `${scoreName}+${rewardValue}`;
+                        // 根据奖励类型选择符号：加法奖励用+，乘法奖励用x
+                        const symbol = rewardType === 'add' ? '+' : 'X';
+                        return `${scoreName}${symbol}${rewardValue}`;
                     }).join('、');
 
                     detail += `，${rewardDetails}`;

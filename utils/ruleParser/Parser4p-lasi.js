@@ -19,8 +19,8 @@ class Parser4pLasi extends BaseRuleParser {
         };
 
         if (item.badScoreBaseLine) {
-            const koufenDetail = this.parseKoufenConfig(item);
-            if (koufenDetail) details.koufen = koufenDetail;
+            // 拉丝没有扣分配置
+            details.koufen = null
         }
 
         if (item.meatValueConfig) {
@@ -42,6 +42,9 @@ class Parser4pLasi extends BaseRuleParser {
             const kpisDetail = this.parseKpisConfig(item);
             if (kpisDetail) details.kpis = kpisDetail;
         }
+
+        console.log(' 🟢🟡🟠🟣🟤🟧🟨🟦🟪🟫parse4PLasiConfig 解析完成:', details);
+
 
         return details;
     }

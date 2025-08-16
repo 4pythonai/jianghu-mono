@@ -46,16 +46,13 @@
 	margin: 8rpx 0;
 	width: 100%;
 	box-sizing: border-box;
+	overflow: visible;
 }
 
 .rule-description text {
 	color: rgba(255, 255, 255, 0.9);
 	font-size: 28rpx;
 	line-height: 1.4;
-	display: -webkit-box;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
 }
 
 /* 配置详情样式 */
@@ -63,6 +60,8 @@
 	margin-bottom: 6rpx;
 	display: flex;
 	align-items: flex-start;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .config-detail-item:last-child {
@@ -82,6 +81,10 @@
 	font-size: 26rpx;
 	line-height: 1.4;
 	flex: 1;
+	word-wrap: break-word;
+	word-break: break-all;
+	white-space: normal;
+	overflow: visible;
 }
 
 .rule-footer {
