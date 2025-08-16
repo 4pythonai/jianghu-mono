@@ -61,7 +61,7 @@
     <!-- 排名配置 -->
     <view class="section">
       <view class="section-label">排名规则</view>
-      <RankConflictResolver
+      <Rank8421ConflictResolver
         id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
       />

@@ -4,7 +4,7 @@
         "Summary": "../RuntimeComponents/Summary/Summary",
         "HoleRangeSelector": "../RuntimeComponents/HoleRangeSelector/HoleRangeSelector",
         "RedBlueConfig": "../RuntimeComponents/RedBlueConfig/RedBlueConfig",
-        "RankConflictResolver": "../RuntimeComponents/RankConflictResolver/RankConflictResolver",
+        "Rank8421ConflictResolver": "../RuntimeComponents/Rank8421ConflictResolver/Rank8421ConflictResolver",
         "PlayerIndicator": "../RuntimeComponents/PlayerIndicator/PlayerIndicator",
         "Stroking": "../RuntimeComponents/Stroking/Stroking",
         "RuleCard": "../../../pages/rules/ruleComponents/MyRules/RuleCard/RuleCard"
