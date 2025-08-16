@@ -27,10 +27,10 @@ Page({
         // 初始化页面数据
         this.initializePageData(options);
 
-        // 设置游戏配置和状态
+        // 设置游戏配置和状态 - 增加延迟确保数据初始化完成
         setTimeout(() => {
             this.setupGameConfig();
-        }, 100);
+        }, 200);
     },
 
     /**
@@ -41,34 +41,8 @@ Page({
         // 处理传入的数据
         const processedData = configManager.processIncomingData(options);
 
-        // 使用统一的配置设置方法
-        const configData = {
-            gambleSysName: processedData.gambleSysName,
-            gameid: processedData.gameid,
-            groupid: processedData.groupid,
-            configId: processedData.configId || '',
-            players: processedData.players,
-            gameData: processedData.gameData,
-            userRule: processedData.userRule,
-            runtimeConfig: {
-                gameid: processedData.gameid,
-                groupid: processedData.groupid,
-                userRuleId: processedData.userRuleId,
-                gambleSysName: processedData.gambleSysName,
-                gambleUserName: processedData.gambleUserName
-            }
-        };
-
-        setRuntimeConfigData(this, configData);
-        this.createGambleRelatedConfig(processedData.editConfig);
-    },
-
-    /**
-     * 设置游戏配置和状态
-     * 包括游戏功能标识、洞范围配置、默认游戏配置等
-     */
-    setupGameConfig() {
-        const { gambleSysName } = this.data;
+        // 计算游戏配置和状态
+        const gambleSysName = processedData.gambleSysName;
         const is8421Game = ['4p-8421', '3p-8421', '2p-8421'].includes(gambleSysName);
         const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
         const needsStroking = GambleMetaConfig.needsStroking(gambleSysName);
@@ -92,27 +66,70 @@ Page({
         }
 
         // 设置默认的游戏配置
-        const defaultConfig = GambleMetaConfig.getDefaultGambleConfig(gambleSysName, this.data.players);
+        const defaultConfig = GambleMetaConfig.getDefaultGambleConfig(gambleSysName, processedData.players);
 
-        // 使用统一的配置设置方法
+        // 使用统一的配置设置方法，一次性设置所有数据
         const configData = {
-            config: config,
+            gambleSysName: gambleSysName,
+            gameid: processedData.gameid,
             groupid: groupid,
+            configId: processedData.configId || '',
+            players: processedData.players,
+            gameData: gameData,
+            userRule: processedData.userRule,
+            is8421Game: is8421Game,
+            needsGrouping: needsGrouping,
+            needsStroking: needsStroking,
+            gameDataType: gameDataType,
+            config: config,
             runtimeConfig: {
+                gameid: processedData.gameid,
                 groupid: groupid,
+                userRuleId: processedData.userRuleId,
+                gambleSysName: gambleSysName,
+                gambleUserName: processedData.gambleUserName,
                 red_blue_config: defaultConfig.red_blue_config,
                 bootstrap_order: defaultConfig.bootstrap_order,
                 ranking_tie_resolve_config: defaultConfig.ranking_tie_resolve_config,
                 playerIndicatorConfig: defaultConfig.playerIndicatorConfig
-            },
-            is8421Game: is8421Game,
-            needsGrouping: needsGrouping,
-            needsStroking: needsStroking,
-            gameData: gameData,
-            gameDataType: gameDataType
+            }
         };
 
-        setRuntimeConfigData(this, configData);
+        // 使用回调确保数据设置完成后再执行后续逻辑
+        setRuntimeConfigData(this, configData, {}, () => {
+            console.log('[AddRuntime] initializePageData 数据设置完成，开始执行后续逻辑');
+            this.createGambleRelatedConfig(processedData.editConfig);
+        });
+    },
+
+    /**
+     * 设置游戏配置和状态
+     * 包括游戏功能标识、洞范围配置、默认游戏配置等
+     */
+    setupGameConfig() {
+        // 这个方法现在只需要处理一些额外的配置，主要数据已经在 initializePageData 中设置
+        console.log('[AddRuntime] setupGameConfig 开始，当前页面数据:', {
+            is8421Game: this.data.is8421Game,
+            needsGrouping: this.data.needsGrouping,
+            needsStroking: this.data.needsStroking,
+            gambleSysName: this.data.gambleSysName
+        });
+
+        // 检查数据是否已正确设置
+        if (this.data.is8421Game === undefined || this.data.needsGrouping === undefined || this.data.needsStroking === undefined) {
+            console.warn('[AddRuntime] 关键数据未设置，重新设置');
+            // 如果数据未设置，重新设置一次
+            const gambleSysName = this.data.gambleSysName;
+            const is8421Game = ['4p-8421', '3p-8421', '2p-8421'].includes(gambleSysName);
+            const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
+            const needsStroking = GambleMetaConfig.needsStroking(gambleSysName);
+
+            setRuntimeConfigData(this, {
+                is8421Game,
+                needsGrouping,
+                needsStroking
+            });
+        }
     },
 
     /**

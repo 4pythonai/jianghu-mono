@@ -3,6 +3,10 @@
  * 提供两个页面共同的业务方法实现
  */
 
+// 统一导入所有依赖模块
+const configManager = require('../../../utils/configManager');
+const ConfigValidator = require('./configValidator');
+
 /**
  * 收集所有组件的配置
  * 统一的配置收集逻辑
@@ -13,7 +17,6 @@ function collectAllConfigs(pageContext, needsStroking) {
     console.log('[RuntimeConfigMixin] 开始收集所有组件配置');
 
     // 调用 configManager 的统一收集方法，传入 needsStroking 参数
-    const configManager = require('../../../utils/configManager');
     const collectedConfig = configManager.collectAllConfigs(pageContext, needsStroking);
 
     // 将收集到的配置设置到页面数据中
@@ -57,8 +60,9 @@ function onCancelConfig() {
  * @param {Object} pageContext 页面上下文
  * @param {Object} configData 要设置的配置数据
  * @param {Object} options 选项配置
+ * @param {Function} callback 设置完成后的回调函数
  */
-function setRuntimeConfigData(pageContext, configData, options = {}) {
+function setRuntimeConfigData(pageContext, configData, options = {}, callback) {
     const setDataObj = {};
 
     // 基础字段设置
@@ -72,22 +76,41 @@ function setRuntimeConfigData(pageContext, configData, options = {}) {
     });
 
     // runtimeConfig 字段设置
-    if (configData.runtimeConfig) {
-        Object.keys(configData.runtimeConfig).forEach(key => {
-            setDataObj[`runtimeConfig.${key}`] = configData.runtimeConfig[key];
-        });
-    }
+    Object.keys(configData.runtimeConfig).forEach(key => {
+        setDataObj[`runtimeConfig.${key}`] = configData.runtimeConfig[key];
+    });
 
     // 特殊字段设置（如 config 对象）
-    if (configData.config) {
-        setDataObj.config = configData.config;
-    }
+    setDataObj.config = configData.config;
 
     // 一次性设置所有数据
-    if (Object.keys(setDataObj).length > 0) {
-        console.log('[RuntimeConfigMixin] 设置配置数据:', setDataObj);
-        pageContext.setData(setDataObj);
-    }
+    console.log('[RuntimeConfigMixin] 设置配置数据:', setDataObj);
+    pageContext.setData(setDataObj, () => {
+        // 数据设置完成后的回调
+        console.log('[RuntimeConfigMixin] setData 回调执行，数据设置完成');
+
+        // 使用 nextTick 确保数据完全同步
+        wx.nextTick(() => {
+            console.log('[RuntimeConfigMixin] nextTick 执行，数据完全同步:', {
+                is8421Game: pageContext.data.is8421Game,
+                needsGrouping: pageContext.data.needsGrouping,
+                needsStroking: pageContext.data.needsStroking,
+                gambleSysName: pageContext.data.gambleSysName
+            });
+
+            callback?.();
+        });
+    });
+
+    // 验证数据是否设置成功
+    setTimeout(() => {
+        console.log('[RuntimeConfigMixin] 设置后的页面数据:', {
+            is8421Game: pageContext.data.is8421Game,
+            needsGrouping: pageContext.data.needsGrouping,
+            needsStroking: pageContext.data.needsStroking,
+            gambleSysName: pageContext.data.gambleSysName
+        });
+    }, 10);
 }
 
 /**
@@ -103,7 +126,6 @@ function onConfirmConfigCommon(pageContext, isEdit = false) {
     collectAllConfigs(pageContext, pageContext.data.needsStroking);
 
     // 验证配置
-    const ConfigValidator = require('./configValidator');
     if (!ConfigValidator.validateAndShow(runtimeConfig, players, gambleSysName)) {
         return;
     }
@@ -111,7 +133,6 @@ function onConfirmConfigCommon(pageContext, isEdit = false) {
     // 保存配置
     const { gameid, groupid, configId } = pageContext.data;
     console.log('[RuntimeConfigMixin] 保存配置参数:', { gameid, groupid, configId, isEdit });
-    const configManager = require('../../../utils/configManager');
     configManager.saveGambleConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit);
 }
 

@@ -73,9 +73,13 @@ Page({
             }
         };
 
-        setRuntimeConfigData(this, configData);
-
-
+        setRuntimeConfigData(this, configData, {}, () => {
+            console.log('[EditRuntime] 数据设置完成，当前页面数据:', {
+                is8421Game: this.data.is8421Game,
+                needsStroking: this.data.needsStroking,
+                gambleSysName: this.data.gambleSysName
+            });
+        });
 
         // 设置 holeRangeStore 中的洞范围配置
         if (config.startHoleindex !== undefined) {

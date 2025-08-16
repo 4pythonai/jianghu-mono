@@ -49,6 +49,18 @@
       />
     </view>
 
+    <!-- 调试信息 -->
+    <view class="section" style="background: #f0f0f0; padding: 10rpx; margin: 10rpx;">
+      <view class="section-label">调试信息</view>
+      <text>gambleSysName: {{gambleSysName}}</text>
+      <br />
+      <text>is8421Game: {{is8421Game}}</text>
+      <br />
+      <text>needsGrouping: {{needsGrouping}}</text>
+      <br />
+      <text>needsStroking: {{needsStroking}}</text>
+    </view>
+
     <!-- 分组配置 -->
     <view class="section" wx:if="{{needsGrouping}}">
       <view class="section-label">分组配置</view>

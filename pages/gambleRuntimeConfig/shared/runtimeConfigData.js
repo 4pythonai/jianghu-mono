@@ -10,7 +10,7 @@
 function getDefaultRuntimeConfigData() {
     return {
         // 传递的数据
-        gambleSysName: '',
+        gambleSysName: null,
         gameid: null,
         groupid: null,
         players: [],
@@ -24,8 +24,8 @@ function getDefaultRuntimeConfigData() {
             gameid: null,           // 游戏ID
             groupid: null,          // 分组ID
             userRuleId: null,       // 用户规则ID(仅用户规则时有值)
-            gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
-            gambleUserName: null,   // 用户规则名称(如:规则_4721)
+            gambleSysName: null,
+            gambleUserName: null,
             red_blue_config: '4_固拉',
             stroking_config: [],    // 让杆配置，初始为空数组
             bootstrap_order: [],
