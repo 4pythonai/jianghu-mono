@@ -82,9 +82,13 @@ function setRuntimeConfigData(pageContext, configData, options = {}, callback) {
         });
     }
 
-    // 特殊字段设置（如 config 对象）
-    if (configData.config) {
-        setDataObj.config = configData.config;
+    if (configData.holeRangeConfig) {
+        setDataObj.holeRangeConfig = configData.holeRangeConfig;
+    }
+
+    // 处理现有运行时配置字段
+    if (configData.existingRuntimeConfig) {
+        setDataObj.existingRuntimeConfig = configData.existingRuntimeConfig;
     }
 
     // 一次性设置所有数据

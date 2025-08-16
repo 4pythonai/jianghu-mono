@@ -24,8 +24,8 @@
 
       <HoleRangeSelector
         id="holeRangeSelector"
-        roadLength="{{config.roadLength}}"
-        startHoleindex="{{config.startHoleindex}}"
+        roadLength="{{holeRangeConfig.roadLength}}"
+        startHoleindex="{{holeRangeConfig.startHoleindex}}"
       />
     </view>
 

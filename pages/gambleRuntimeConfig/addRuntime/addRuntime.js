@@ -23,14 +23,8 @@ Page({
     data: getDefaultRuntimeConfigData(),
 
     onLoad(options) {
-
         // 初始化页面数据
         this.initializePageData(options);
-
-        // 设置游戏配置和状态 - 增加延迟确保数据初始化完成
-        setTimeout(() => {
-            this.setupGameConfig();
-        }, 200);
     },
 
     /**
@@ -51,10 +45,9 @@ Page({
 
         // 计算洞范围配置
         const roadLength = gameData?.holeList?.length || 0;
-        const config = { startHoleindex: 1, roadLength };
+        const holeRangeConfig = { startHoleindex: 1, roadLength };
 
-        // 使用 mixin 设置数据，只传递需要覆盖的字段
-        setRuntimeConfigData(this, {
+        const configData = {
             gambleSysName,
             gameid: processedData.gameid,
             groupid,
@@ -66,7 +59,8 @@ Page({
             needsGrouping: GambleMetaConfig.needsGrouping(gambleSysName),
             needsStroking: GambleMetaConfig.needsStroking(gambleSysName),
             gameDataType: typeof gameData,
-            config,
+            // 洞范围配置：起始洞索引和道路长度
+            holeRangeConfig,
             runtimeConfig: {
                 gameid: processedData.gameid,
                 groupid,
@@ -78,23 +72,12 @@ Page({
                 ranking_tie_resolve_config: defaultConfig.ranking_tie_resolve_config,
                 playerIndicatorConfig: defaultConfig.playerIndicatorConfig
             }
-        }, {}, () => {
+        }
+
+        // 使用 mixin 设置数据，只传递需要覆盖的字段
+        setRuntimeConfigData(this, configData, {}, () => {
             console.log('[AddRuntime] initializePageData 数据设置完成，开始执行后续逻辑');
             this.createGambleRelatedConfig(processedData.editConfig);
-        });
-    },
-
-    /**
-     * 设置游戏配置和状态
-     * 包括游戏功能标识、洞范围配置、默认游戏配置等
-     */
-    setupGameConfig() {
-        // 主要数据已经在 initializePageData 中设置完成，这里只需要日志确认
-        console.log('[AddRuntime] setupGameConfig 完成，当前页面数据:', {
-            is8421Game: this.data.is8421Game,
-            needsGrouping: this.data.needsGrouping,
-            needsStroking: this.data.needsStroking,
-            gambleSysName: this.data.gambleSysName
         });
     },
 

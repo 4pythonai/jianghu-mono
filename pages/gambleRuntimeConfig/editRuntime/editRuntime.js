@@ -31,9 +31,9 @@ Page({
         }
 
         // 从 runtimeStore 中查找对应的配置
-        const config = runtimeStore.runtimeConfigs.find(c => c.id === configId);
+        const existingRuntimeConfig = runtimeStore.runtimeConfigs.find(c => c.id === configId);
 
-        if (!config) {
+        if (!existingRuntimeConfig) {
             setRuntimeConfigData(this, { error: '未找到配置数据' });
             return;
         }
@@ -42,34 +42,35 @@ Page({
         const gameData = toJS(gameStore.gameData);
         const gameDataType = typeof gameData;
         // 判断是否为8421游戏
-        const is8421Game = ['4p-8421', '3p-8421', '2p-8421'].includes(config.gambleSysName);
+        const is8421Game = ['4p-8421', '3p-8421', '2p-8421'].includes(existingRuntimeConfig.gambleSysName);
 
         // 判断是否需要让杆功能（只有lasi游戏需要）
-        const needsStroking = config.gambleSysName === '4p-lasi';
+        const needsStroking = existingRuntimeConfig.gambleSysName === '4p-lasi';
 
         // 使用统一的配置设置方法
         const configData = {
-            config: config,
+            // 现有运行时配置：从store中获取的完整配置数据
+            existingRuntimeConfig,
             configId: configId,
-            gambleSysName: config.gambleSysName,
-            gameid: config.gameid,
-            groupid: config.groupid,
-            players: config.players,
+            gambleSysName: existingRuntimeConfig.gambleSysName,
+            gameid: existingRuntimeConfig.gameid,
+            groupid: existingRuntimeConfig.groupid,
+            players: existingRuntimeConfig.players,
             gameData: gameData,
             gameDataType: gameDataType,
             is8421Game: is8421Game,
             needsStroking: needsStroking,
             runtimeConfig: {
-                gameid: config.gameid,
-                groupid: config.groupid,
-                userRuleId: config.userRuleId,
-                gambleSysName: config.gambleSysName,
-                gambleUserName: config.gambleUserName,
-                red_blue_config: config.red_blue_config || '4_固拉',
-                bootstrap_order: config.bootstrap_order_parsed || config.bootstrap_order || [],
-                ranking_tie_resolve_config: config.ranking_tie_resolve_config || 'score.reverse',
-                playerIndicatorConfig: config.val8421_config_parsed || config.playerIndicatorConfig || {},
-                stroking_config: config.stroking_config || []
+                gameid: existingRuntimeConfig.gameid,
+                groupid: existingRuntimeConfig.groupid,
+                userRuleId: existingRuntimeConfig.userRuleId,
+                gambleSysName: existingRuntimeConfig.gambleSysName,
+                gambleUserName: existingRuntimeConfig.gambleUserName,
+                red_blue_config: existingRuntimeConfig.red_blue_config || '4_固拉',
+                bootstrap_order: existingRuntimeConfig.bootstrap_order_parsed || existingRuntimeConfig.bootstrap_order || [],
+                ranking_tie_resolve_config: existingRuntimeConfig.ranking_tie_resolve_config || 'score.reverse',
+                playerIndicatorConfig: existingRuntimeConfig.val8421_config_parsed || existingRuntimeConfig.playerIndicatorConfig || {},
+                stroking_config: existingRuntimeConfig.stroking_config || []
             }
         };
 
@@ -77,18 +78,19 @@ Page({
             console.log('[EditRuntime] 数据设置完成，当前页面数据:', {
                 is8421Game: this.data.is8421Game,
                 needsStroking: this.data.needsStroking,
-                gambleSysName: this.data.gambleSysName
+                gambleSysName: this.data.gambleSysName,
+                existingRuntimeConfig: this.data.existingRuntimeConfig  // 添加现有配置的调试信息
             });
         });
 
         // 设置 holeRangeStore 中的洞范围配置
-        if (config.startHoleindex !== undefined) {
-            holeRangeStore.setStartIndex(Number.parseInt(config.startHoleindex));
+        if (existingRuntimeConfig.startHoleindex !== undefined) {
+            holeRangeStore.setStartIndex(Number.parseInt(existingRuntimeConfig.startHoleindex));
         }
 
         // 设置 holeRangeStore 中的道路长度配置
-        if (config.roadLength !== undefined) {
-            holeRangeStore.setRoadLength(Number.parseInt(config.roadLength));
+        if (existingRuntimeConfig.roadLength !== undefined) {
+            holeRangeStore.setRoadLength(Number.parseInt(existingRuntimeConfig.roadLength));
         }
     },
 
@@ -116,14 +118,5 @@ Page({
     // 取消配置 - 使用共享方法
     onCancelConfig() {
         sharedOnCancelConfig();
-    },
-
-    // 页面滚动时打印并透传 scrollTop 给 RedBlueConfig -> PlayerDrag
-    onPageScroll(e) {
-        const currentScrollTop = e?.scrollTop || 0;
-        const redBlueConfig = this.selectComponent('#redBlueConfig');
-        if (redBlueConfig) {
-            redBlueConfig.setData({ scrollTop: currentScrollTop });
-        }
     }
 }); 
