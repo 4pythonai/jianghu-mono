@@ -126,7 +126,7 @@ Page({
         }
 
         // 保存配置
-        this.saveConfig();
+        this.saveGambleConfig();
     },
 
     // 收集所有组件的配置
@@ -145,11 +145,11 @@ Page({
     },
 
     // 保存配置
-    async saveConfig() {
+    async saveGambleConfig() {
         const { runtimeConfig, gameid, groupid, configId } = this.data;
 
         // 调用 configManager 的保存方法
-        const result = await configManager.saveConfig(runtimeConfig, gameid, groupid, configId, this, true);
+        const result = await configManager.saveGambleConfig(runtimeConfig, gameid, groupid, configId, this, true);
         if (result.success) {
             console.log('[EditRuntime] 配置更新成功');
         } else {

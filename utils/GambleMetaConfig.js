@@ -109,10 +109,24 @@ const GambleMetaConfig = {
      * 获取默认配置
      */
     getDefaultGambleConfig(sysRuleName, players = []) {
+        // 根据游戏类型设置不同的默认排名规则
+        let defaultRankingConfig = 'indicator.reverse'; // 默认值
+
+        if (sysRuleName && sysRuleName.includes('lasi')) {
+            // 拉丝游戏默认使用第一个选项：得分相同按出身得分排序
+            defaultRankingConfig = 'score.win_loss.reverse_score';
+        } else if (sysRuleName && sysRuleName.includes('8421')) {
+            // 8421游戏保持原有默认值
+            defaultRankingConfig = 'indicator.reverse';
+        } else {
+            // 其他游戏类型
+            defaultRankingConfig = 'score.reverse';
+        }
+
         const config = {
             red_blue_config: '4_固拉',
             bootstrap_order: convertToUserIds(players),
-            ranking_tie_resolve_config: 'indicator.reverse',
+            ranking_tie_resolve_config: defaultRankingConfig,
             playerIndicatorConfig: {}
         };
 

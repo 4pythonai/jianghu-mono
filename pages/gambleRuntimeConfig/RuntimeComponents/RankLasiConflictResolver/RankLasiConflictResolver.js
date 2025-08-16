@@ -6,7 +6,7 @@ Component({
         // 当前选中的配置
         selectedConfig: {
             type: String,
-            value: 'indicator.win_loss.reverse_indicator'
+            value: ''  // 移除硬编码的默认值，让父组件决定
         }
     },
 
@@ -43,7 +43,7 @@ Component({
         ],
 
         // 当前选中的索引
-        selectedIndex: 2
+        selectedIndex: 0  // 改为 0，作为默认值
     },
 
     lifetimes: {
@@ -62,6 +62,16 @@ Component({
         // 更新选中的索引
         updateSelectedIndex() {
             const { selectedConfig, rankingOptions } = this.data;
+
+            // 如果 selectedConfig 为空，使用默认值
+            if (!selectedConfig) {
+                // 对于拉丝游戏，默认选择第一个选项
+                this.setData({
+                    selectedIndex: 0
+                });
+                return;
+            }
+
             const selectedIndex = rankingOptions.findIndex(option => option.value === selectedConfig);
 
             this.setData({

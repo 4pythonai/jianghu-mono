@@ -7,7 +7,6 @@ const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig');
 const { gameStore } = require('../../../stores/gameStore');
 const { toJS } = require('mobx-miniprogram');
 const configManager = require('../../../utils/configManager');
-const { holeRangeStore } = require('../../../stores/holeRangeStore');
 const GambleRelatedInitor = require('../../../utils/GambleRelatedInitor');
 
 Page({
@@ -32,7 +31,7 @@ Page({
             red_blue_config: '4_固拉',
             stroking_config: [],    // 让杆配置，初始为空数组
             bootstrap_order: [],
-            ranking_tie_resolve_config: 'indicator.reverse',
+            ranking_tie_resolve_config: '',  // 移除硬编码，稍后从 GambleMetaConfig 获取
             playerIndicatorConfig: {}      // 球员8421指标配置
         },
 
@@ -49,9 +48,9 @@ Page({
         // 初始化页面数据
         this.initializePageData(options);
 
-        // 添加调试日志
+        // 设置游戏配置和状态
         setTimeout(() => {
-            this.setupDebugInfo();
+            this.setupGameConfig();
         }, 100);
     },
 
@@ -84,9 +83,10 @@ Page({
     },
 
     /**
-     * 设置调试信息
+     * 设置游戏配置和状态
+     * 包括游戏功能标识、洞范围配置、默认游戏配置等
      */
-    setupDebugInfo() {
+    setupGameConfig() {
         const { gambleSysName } = this.data;
         const needsPlayerConfig = GambleMetaConfig.needsPlayerConfig(gambleSysName);
         const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
@@ -110,10 +110,17 @@ Page({
             roadLength: roadLength,
         }
 
+        // 设置默认的游戏配置
+        const defaultConfig = GambleMetaConfig.getDefaultGambleConfig(gambleSysName, this.data.players);
+
         this.setData({
             config: config,
             groupid: groupid,
             'runtimeConfig.groupid': groupid,
+            'runtimeConfig.red_blue_config': defaultConfig.red_blue_config,
+            'runtimeConfig.bootstrap_order': defaultConfig.bootstrap_order,
+            'runtimeConfig.ranking_tie_resolve_config': defaultConfig.ranking_tie_resolve_config,
+            'runtimeConfig.playerIndicatorConfig': defaultConfig.playerIndicatorConfig,
             needsPlayerConfig: needsPlayerConfig,
             needsGrouping: needsGrouping,
             needsStroking: needsStroking,
@@ -163,7 +170,7 @@ Page({
     },
 
     // 确认配置
-    onConfirmConfig() {
+    async onConfirmConfig() {
         const { runtimeConfig, gambleSysName, players } = this.data;
 
         // 从各个组件收集最新配置
@@ -175,7 +182,9 @@ Page({
         }
 
         // 保存配置
-        this.saveConfig();
+        const { gameid, groupid } = this.data;
+        configManager.saveGambleConfig(runtimeConfig, gameid, groupid, '', this, false);
+
     },
 
     // 收集所有组件的配置
@@ -198,16 +207,9 @@ Page({
     },
 
     // 保存配置
-    async saveConfig() {
+    async saveGambleConfig() {
         const { runtimeConfig, gameid, groupid } = this.data;
-
-        // 调用 configManager 的保存方法
-        const result = await configManager.saveConfig(runtimeConfig, gameid, groupid, '', this, false);
-        if (result.success) {
-            console.log('[AddRuntime] 配置保存成功');
-        } else {
-            console.error('[AddRuntime] 配置保存失败:', result.error);
-        }
+        await configManager.saveGambleConfig(runtimeConfig, gameid, groupid, '', this, false);
     },
 
     // 重新选择规则

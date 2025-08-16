@@ -999,7 +999,7 @@ class ConfigManager {
      * @param {boolean} isEdit 是否为编辑模式
      * @returns {Promise} 保存结果
      */
-    async saveConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit = false) {
+    async saveGambleConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit = false) {
         try {
             const saveData = this.prepareSaveData(runtimeConfig, isEdit, configId);
 

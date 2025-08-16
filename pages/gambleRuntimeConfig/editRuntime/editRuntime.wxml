@@ -1,3 +1,4 @@
+<wxs src="/utils/es.wxs" module="util" />
 <view class="runtime-config-container">
   <RuleCard item="{{config.spec}}" showEdit="{{false}}" />
 
@@ -56,16 +57,17 @@
     </view>
 
     <!-- 排名配置 -->
-    <view class="section">
-      <view class="section-label">排名规则</view>
+
+    <view class="section" wx:if="{{gambleSysName && util.includes(gambleSysName, '8421')}}">
+      <view class="section-label">8421排名规则</view>
       <Rank8421ConflictResolver
         id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
       />
     </view>
 
-    <view class="section">
-      <view class="section-label">排名规则</view>
+    <view class="section" wx:if="{{gambleSysName && util.includes(gambleSysName, 'lasi')}}">
+      <view class="section-label">拉丝排名规则</view>
       <RankLasiConflictResolver
         id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
