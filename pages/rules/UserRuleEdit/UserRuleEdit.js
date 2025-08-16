@@ -154,7 +154,7 @@ Page({
         console.log('📋 [UserRuleEdit] 收到LasiKPI配置变化:', e.detail);
 
         if (generatedRuleName) {
-            this.setData({ _gambleUserName: generatedRuleName });
+            // this.setData({ _gambleUserName: generatedRuleName });
             console.log('📋 [UserRuleEdit] 规则名称已自动更新为:', generatedRuleName);
         }
     },
