@@ -1,6 +1,6 @@
 <wxs src="/utils/es.wxs" module="util" />
 <view class="runtime-config-container">
-  <RuleCard item="{{config.spec}}" showEdit="{{false}}" />
+  <RuleCard item="{{existingRuntimeConfig.spec}}" showEdit="{{false}}" />
 
   <!-- 错误状态 -->
   <view class="error-container" wx:if="{{error}}">
