@@ -20,11 +20,11 @@ Component({
             },
             {
                 value: 'indicator.win_loss.reverse_indicator',
-                label: '2得分相同按输赢排序，输赢相同按出身输赢排序',
+                label: '2得分相同按输赢排序，输赢相同按前洞输赢排序',
             },
             {
                 value: 'indicator.win_loss.reverse_win',
-                label: '3得分相同按输赢排序，输赢相同按出身得分排序',
+                label: '3得分相同按输赢排序，输赢相同按前洞得分排序',
             },
             {
                 value: 'score.reverse',
@@ -32,11 +32,11 @@ Component({
             },
             {
                 value: 'score.win_loss.reverse_score',
-                label: '5成绩相同按输赢排序，输赢相同按出身输赢排序',
+                label: '5成绩相同按输赢排序，输赢相同按前洞输赢排序',
             },
             {
                 value: 'score.win_loss.reverse_win',
-                label: '6成绩相同按输赢排序，输赢相同按出身成绩排序',
+                label: '6成绩相同按输赢排序，输赢相同按前洞成绩排序',
             },
 
 

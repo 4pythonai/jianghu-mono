@@ -18,7 +18,7 @@ Page({
         players: [],
         gameData: null,
         userRule: null,
-        needsPlayerConfig: false,
+        is8421Game: false,
         needsGrouping: false,
         needsStroking: false,
 
@@ -88,7 +88,7 @@ Page({
      */
     setupGameConfig() {
         const { gambleSysName } = this.data;
-        const needsPlayerConfig = GambleMetaConfig.needsPlayerConfig(gambleSysName);
+        const is8421Game = ['4p-8421', '3p-8421', '2p-8421'].includes(gambleSysName);
         const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
         const needsStroking = GambleMetaConfig.needsStroking(gambleSysName);
 
@@ -121,7 +121,7 @@ Page({
             'runtimeConfig.bootstrap_order': defaultConfig.bootstrap_order,
             'runtimeConfig.ranking_tie_resolve_config': defaultConfig.ranking_tie_resolve_config,
             'runtimeConfig.playerIndicatorConfig': defaultConfig.playerIndicatorConfig,
-            needsPlayerConfig: needsPlayerConfig,
+            is8421Game: is8421Game,
             needsGrouping: needsGrouping,
             needsStroking: needsStroking,
             gameData: gameData,

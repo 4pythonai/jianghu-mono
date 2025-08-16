@@ -40,7 +40,7 @@
     </view>
 
     <!-- 8421球员配置 -->
-    <view class="section" wx:if="{{needsPlayerConfig}}">
+    <view class="section" wx:if="{{is8421Game}}">
       <view class="section-label">球员指标配置</view>
       <PlayerIndicator
         id="playerIndicator"
@@ -61,15 +61,14 @@
     </view>
 
     <!-- 排名配置 -->
-    <view class="section" wx:if="{{gambleSysName && util.includes(gambleSysName, '8421')}}">
+    <view class="section" wx:if="{{is8421Game}}">
       <view class="section-label">8421排名规则</view>
       <Rank8421ConflictResolver
         id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
       />
     </view>
-
-    <view class="section" wx:if="{{gambleSysName && util.indexOf(gambleSysName, 'lasi')}}">
+    <view class="section" wx:if="{{gambleSysName && util.includes(gambleSysName, 'lasi')}}">
       <view class="section-label">拉丝排名规则</view>
       <RankLasiConflictResolver
         id="rankConfig"

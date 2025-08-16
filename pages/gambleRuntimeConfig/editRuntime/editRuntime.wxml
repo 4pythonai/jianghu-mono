@@ -58,7 +58,8 @@
 
     <!-- 排名配置 -->
 
-    <view class="section" wx:if="{{gambleSysName && util.includes(gambleSysName, '8421')}}">
+    <!-- 排名配置 -->
+    <view class="section" wx:if="{{is8421Game}}">
       <view class="section-label">8421排名规则</view>
       <Rank8421ConflictResolver
         id="rankConfig"
