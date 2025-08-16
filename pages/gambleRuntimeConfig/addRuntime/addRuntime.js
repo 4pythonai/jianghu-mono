@@ -2,46 +2,25 @@
  * 新增运行时配置页面
  * 专门处理新增配置的逻辑
  */
-const ConfigValidator = require('../shared/configValidator');
-const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig');
-const { gameStore } = require('../../../stores/gameStore');
-const { toJS } = require('mobx-miniprogram');
-const configManager = require('../../../utils/configManager');
-const GambleRelatedInitor = require('../../../utils/GambleRelatedInitor');
+// 使用共享的导入和数据结构
+const { getBaseImportsWithMixin } = require('../shared/runtimeConfigImports');
+const { getDefaultRuntimeConfigData } = require('../shared/runtimeConfigData');
+
+const {
+    GambleMetaConfig,
+    gameStore,
+    toJS,
+    configManager,
+    GambleRelatedInitor,
+    setRuntimeConfigData,
+    collectAllConfigs: sharedCollectAllConfigs,
+    onReSelectRule: sharedOnReSelectRule,
+    onCancelConfig: sharedOnCancelConfig,
+    onConfirmConfigCommon
+} = getBaseImportsWithMixin();
 
 Page({
-    data: {
-        // 传递的数据
-        gambleSysName: '',
-        gameid: null,
-        groupid: null,
-        players: [],
-        gameData: null,
-        userRule: null,
-        is8421Game: false,
-        needsGrouping: false,
-        needsStroking: false,
-
-        runtimeConfig: {
-            gameid: null,           // 游戏ID
-            groupid: null,          // 分组ID
-            userRuleId: null,       // 用户规则ID(仅用户规则时有值)
-            gambleSysName: null,    // 游戏系统名称(如:8421、gross、hole等)
-            gambleUserName: null,   // 用户规则名称(如:规则_4721)
-            red_blue_config: '4_固拉',
-            stroking_config: [],    // 让杆配置，初始为空数组
-            bootstrap_order: [],
-            ranking_tie_resolve_config: '',  // 移除硬编码，稍后从 GambleMetaConfig 获取
-            playerIndicatorConfig: {}      // 球员8421指标配置
-        },
-
-        // 页面状态
-        loading: false,
-        error: null,
-
-        // 调试信息字段
-        gameDataType: '',
-    },
+    data: getDefaultRuntimeConfigData(),
 
     onLoad(options) {
 
@@ -62,8 +41,8 @@ Page({
         // 处理传入的数据
         const processedData = configManager.processIncomingData(options);
 
-        // 设置页面数据
-        const setDataObj = {
+        // 使用统一的配置设置方法
+        const configData = {
             gambleSysName: processedData.gambleSysName,
             gameid: processedData.gameid,
             groupid: processedData.groupid,
@@ -71,14 +50,16 @@ Page({
             players: processedData.players,
             gameData: processedData.gameData,
             userRule: processedData.userRule,
-            'runtimeConfig.gameid': processedData.gameid,
-            'runtimeConfig.groupid': processedData.groupid,
-            'runtimeConfig.userRuleId': processedData.userRuleId,
-            'runtimeConfig.gambleSysName': processedData.gambleSysName,
-            'runtimeConfig.gambleUserName': processedData.gambleUserName
+            runtimeConfig: {
+                gameid: processedData.gameid,
+                groupid: processedData.groupid,
+                userRuleId: processedData.userRuleId,
+                gambleSysName: processedData.gambleSysName,
+                gambleUserName: processedData.gambleUserName
+            }
         };
 
-        this.setData(setDataObj);
+        setRuntimeConfigData(this, configData);
         this.createGambleRelatedConfig(processedData.editConfig);
     },
 
@@ -113,20 +94,25 @@ Page({
         // 设置默认的游戏配置
         const defaultConfig = GambleMetaConfig.getDefaultGambleConfig(gambleSysName, this.data.players);
 
-        this.setData({
+        // 使用统一的配置设置方法
+        const configData = {
             config: config,
             groupid: groupid,
-            'runtimeConfig.groupid': groupid,
-            'runtimeConfig.red_blue_config': defaultConfig.red_blue_config,
-            'runtimeConfig.bootstrap_order': defaultConfig.bootstrap_order,
-            'runtimeConfig.ranking_tie_resolve_config': defaultConfig.ranking_tie_resolve_config,
-            'runtimeConfig.playerIndicatorConfig': defaultConfig.playerIndicatorConfig,
+            runtimeConfig: {
+                groupid: groupid,
+                red_blue_config: defaultConfig.red_blue_config,
+                bootstrap_order: defaultConfig.bootstrap_order,
+                ranking_tie_resolve_config: defaultConfig.ranking_tie_resolve_config,
+                playerIndicatorConfig: defaultConfig.playerIndicatorConfig
+            },
             is8421Game: is8421Game,
             needsGrouping: needsGrouping,
             needsStroking: needsStroking,
             gameData: gameData,
-            gameDataType: gameDataType,
-        });
+            gameDataType: gameDataType
+        };
+
+        setRuntimeConfigData(this, configData);
     },
 
     /**
@@ -147,87 +133,53 @@ Page({
                 }
             }
             if (Array.isArray(bootstrapOrder) && bootstrapOrder.length > 0) {
-                this.setData({
-                    'runtimeConfig.bootstrap_order': bootstrapOrder
+                setRuntimeConfigData(this, {
+                    runtimeConfig: {
+                        bootstrap_order: bootstrapOrder
+                    }
                 });
             }
         }
 
         // 加载排名配置
         if (editConfig?.ranking_tie_resolve_config) {
-            this.setData({
-                'runtimeConfig.ranking_tie_resolve_config': editConfig.ranking_tie_resolve_config
+            setRuntimeConfigData(this, {
+                runtimeConfig: {
+                    ranking_tie_resolve_config: editConfig.ranking_tie_resolve_config
+                }
             });
         }
 
         // 8421初始化配置
         if (editConfig.gambleSysName.includes('8421')) {
             const val8421Config = GambleRelatedInitor.getInit8421Values(this.data.players);
-            this.setData({
-                'runtimeConfig.playerIndicatorConfig': val8421Config
+            setRuntimeConfigData(this, {
+                runtimeConfig: {
+                    playerIndicatorConfig: val8421Config
+                }
             });
         }
     },
 
-    // 确认配置
+    // 确认配置 - 使用共享方法
     async onConfirmConfig() {
-        const { runtimeConfig, gambleSysName, players } = this.data;
-
-        // 从各个组件收集最新配置
-        this.collectAllConfigs();
-
-        // 验证配置
-        if (!ConfigValidator.validateAndShow(runtimeConfig, players, gambleSysName)) {
-            return;
-        }
-
-        // 保存配置
-        const { gameid, groupid } = this.data;
-        configManager.saveGambleConfig(runtimeConfig, gameid, groupid, '', this, false);
-
+        onConfirmConfigCommon(this, false); // false 表示新增模式
     },
 
-    // 收集所有组件的配置
+    // 收集所有组件的配置 - 使用共享方法
     collectAllConfigs() {
-        console.log('[AddRuntime] 开始收集所有组件配置');
-
-        // 调用 configManager 的统一收集方法，传入 needsStroking 参数
-        const collectedConfig = configManager.collectAllConfigs(this, this.data.needsStroking);
-
-        // 将收集到的配置设置到页面数据中
-        if (Object.keys(collectedConfig).length > 0) {
-            const setDataObj = {};
-            for (const key of Object.keys(collectedConfig)) {
-                setDataObj[`runtimeConfig.${key}`] = collectedConfig[key];
-            }
-            this.setData(setDataObj);
-        }
-
-        console.log('[AddRuntime] 收集配置完成，最终 runtimeConfig:', this.data.runtimeConfig);
+        sharedCollectAllConfigs(this, this.data.needsStroking);
     },
 
-    // 保存配置
-    async saveGambleConfig() {
-        const { runtimeConfig, gameid, groupid } = this.data;
-        await configManager.saveGambleConfig(runtimeConfig, gameid, groupid, '', this, false);
-    },
 
-    // 重新选择规则
+
+    // 重新选择规则 - 使用共享方法
     onReSelectRule() {
-        wx.showModal({
-            title: '重新选择规则',
-            content: '确定要重新选择赌博规则吗？当前配置将丢失。',
-            success: (res) => {
-                if (res.confirm) {
-                    wx.navigateBack();
-                }
-            }
-        });
+        sharedOnReSelectRule();
     },
 
-    // 取消配置
+    // 取消配置 - 使用共享方法
     onCancelConfig() {
-        console.log('[AddRuntime] 取消配置');
-        wx.navigateBack();
+        sharedOnCancelConfig();
     }
 }); 
