@@ -140,11 +140,15 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 红蓝分组 - 直接传递 useful_holes 的引用以确保实时数据
             $this->MRedBlue->setRedBlueWithContext($index, $hole, $context);
 
+
             // 计算指标
             $this->MIndicator->computeIndicators($index, $hole, $context);
 
+
             // 判断输赢
             $this->MIndicator->setWinFailPoints($hole, $context);
+
+
 
             // 进行排名计算( 排名必须在输赢判定后,因为排名可能用到输赢)
             $this->MRanking->rankAttendersWithContext($index, $hole, $context);
@@ -152,7 +156,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 检查是否产生肉（顶洞）
             $this->MMeat->addMeatIfDraw($hole, $context);
 
-            // 设置双方点数（这会设置 winner_detail）
             $this->MMoney->setHolePointsDetail($hole, $context);
 
 

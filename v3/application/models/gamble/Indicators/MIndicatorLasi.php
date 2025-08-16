@@ -190,7 +190,6 @@ class MIndicatorLasi extends CI_Model {
 
     public function setLasiWinFailPoints(&$hole, $context) {
 
-
         if ($hole['indicators']['winner'] == 'draw') {
             $hole['draw'] = 'y';
         } else {
@@ -204,22 +203,31 @@ class MIndicatorLasi extends CI_Model {
             $hole['failer'] = 'red';
         }
 
+
         if ($hole['indicators']['winner'] == 'red') {
             $hole['winner'] = 'red';
             $hole['failer'] = 'blue';
         }
+
+        if ($hole['draw'] == 'y') {
+            $hole['winner'] = null;
+            $hole['failer'] = null;
+            $hole['points'] = 0;
+        }
+
+
 
 
         $hole['points_before_kick'] = $points;
         $currentHoleMultiplier = $this->MIndicator->getCurrentHoleMultiplier($hole, $context->kickConfig);
         $rewardFactor = $this->getLassiRewardFactor($hole, $context->RewardConfig);
 
-        if ($context->RewardConfig['rewardType'] == 'multiply') {
+        if ($context->RewardConfig['rewardType'] == 'multiply'  && $hole['draw'] == 'n') {
             $hole['points'] =  $points * $currentHoleMultiplier * $rewardFactor;
         }
 
-        if ($context->RewardConfig['rewardType'] == 'add') {
-            debug("加法建议");
+        if ($context->RewardConfig['rewardType'] == 'add' && $hole['draw'] == 'n') {
+            // debug("加法类型");
             $this->addDebug($hole, "加法奖励: 奖励点数: $rewardFactor");
             $hole['points'] =  $points * $currentHoleMultiplier + $rewardFactor;
         }
@@ -240,7 +248,6 @@ class MIndicatorLasi extends CI_Model {
             if ($RewardConfig['rewardType'] == 'add') {
                 // $hole['debug'][] = "平局/加法奖励: 奖励点数: 0";
                 $this->addDebug($hole, "打平:加法奖励: 奖励点数: 0");
-
                 return 0;
             }
         }
@@ -259,14 +266,14 @@ class MIndicatorLasi extends CI_Model {
         }
 
 
-        $tmp = $this->findRewardValue($hole['par'], $winner_side_scores, $RewardConfig['rewardPair']);
-        $this->addDebug($hole, "奖励倍数(点数): $tmp");
-
+        $tmp = $this->findRewardValue($hole, $winner_side_scores, $RewardConfig['rewardPair']);
+        $this->addDebug($hole, "奖励(倍数/点数): $tmp");
         return $tmp;
     }
 
 
-    private function findRewardValue($par, $bestScores, $rewardPair) {
+    private function findRewardValue(&$hole, $bestScores, $rewardPair) {
+        $par = $hole['par'];
         // 1. 为了方便快速查找，将奖励配置转换为一个以 scoreName 为键的映射数组
         $rewardMap = [];
         foreach ($rewardPair as $reward) {
@@ -280,6 +287,7 @@ class MIndicatorLasi extends CI_Model {
 
             // 如果找到了对应的得分名称，并且该名称存在于奖励配置中
             if ($bestScoreName !== null && isset($rewardMap[$bestScoreName])) {
+                $this->addDebug($hole, "找到单奖: $bestScoreName");
                 return $rewardMap[$bestScoreName]; // 找到，立即返回
             }
         }
@@ -298,6 +306,7 @@ class MIndicatorLasi extends CI_Model {
                 $comboKey = implode('+', $comboNames);
 
                 if (isset($rewardMap[$comboKey])) {
+                    $this->addDebug($hole, "找到组合奖励: $comboKey");
                     return $rewardMap[$comboKey]; // 找到组合奖励，返回
                 }
             }

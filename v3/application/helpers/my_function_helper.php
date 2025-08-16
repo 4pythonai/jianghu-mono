@@ -326,8 +326,104 @@ function postJson($url, $data) {
 
 
 function response500($msg) {
-  $ret = ['code' => 500,  'message' => $msg];
-  echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+  // 如果是数组或对象，格式化错误信息
+  if (is_array($msg) || is_object($msg)) {
+    $formattedMsg = [];
+
+    if (isset($msg['code'])) {
+      $formattedMsg['error_code'] = $msg['code'];
+    }
+
+    if (isset($msg['message'])) {
+      $formattedMsg['error_message'] = $msg['message'];
+    }
+
+    if (isset($msg['trace'])) {
+      $formattedMsg['error_location'] = [];
+      $callChain = [];
+
+      // 跳过前几个系统调用，从实际业务代码开始
+      $startIndex = 0;
+      foreach ($msg['trace'] as $index => $trace) {
+        // 跳过系统函数和错误处理函数
+        if (
+          isset($trace['function']) &&
+          (strpos($trace['function'], 'my_errorHandler') !== false ||
+            strpos($trace['function'], 'response500') !== false ||
+            strpos($trace['function'], 'debug_backtrace') !== false)
+        ) {
+          $startIndex = $index + 1;
+          continue;
+        }
+
+        if ($index >= $startIndex && count($callChain) < 5) { // 显示最多5层调用栈
+          $callInfo = '';
+
+          if (isset($trace['class'])) {
+            $callInfo .= $trace['class'];
+          }
+
+          if (isset($trace['function'])) {
+            $callInfo .= '->' . $trace['function'] . '()';
+          }
+
+          if (isset($trace['line'])) {
+            $callInfo .= ':' . $trace['line'];
+          }
+
+          if (isset($trace['file'])) {
+            $callInfo .= ' [' . basename($trace['file']) . ']';
+          }
+
+          $callChain[] = $callInfo;
+        }
+      }
+
+      // 构建链式调用字符串，需要反转顺序以显示正确的调用链
+      $formattedMsg['error_location'] = implode(' ---> ', array_reverse($callChain));
+    }
+
+    $ret = [
+      'code' => 500,
+      'message' => '服务器内部错误',
+      'details' => $formattedMsg
+    ];
+  } else {
+    // 如果是字符串，直接使用
+    $ret = [
+      'code' => 500,
+      'message' => $msg
+    ];
+  }
+
+  // 在浏览器中一行一行打印，方便调试
+  if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'Mozilla') !== false) {
+    // 浏览器环境，使用HTML格式
+    echo '<pre style="background:#f5f5f5; padding:10px; border:1px solid #ccc; font-family:monospace; white-space:pre-wrap;">';
+    echo '<strong>错误信息：</strong><br>';
+    echo '<strong>错误代码：</strong>' . $ret['code'] . '<br>';
+    echo '<strong>错误消息：</strong>' . $ret['message'] . '<br>';
+
+    if (isset($ret['details'])) {
+      echo '<strong>详细信息：</strong><br>';
+      echo '<strong>错误代码：</strong>' . $ret['details']['error_code'] . '<br>';
+      echo '<strong>错误消息：</strong>' . $ret['details']['error_message'] . '<br>';
+      echo '<strong>调用位置：</strong><br>';
+      $locations = explode(' ---> ', $ret['details']['error_location']);
+      foreach ($locations as $index => $location) {
+        echo ($index + 1) . '. ' . $location . '<br>';
+      }
+      // 添加第6行：错误发生的具体位置
+      echo '6. 错误发生在: ' . $ret['details']['error_message'] . '<br>';
+    }
+
+    echo '<br><strong>完整JSON：</strong><br>';
+    echo htmlspecialchars(json_encode($ret, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+    echo '</pre>';
+  } else {
+    // 非浏览器环境，使用JSON格式
+    echo json_encode($ret, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+  }
   die;
 }
 

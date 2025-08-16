@@ -15,7 +15,7 @@ set_exception_handler('my_exceptionHandler');
 
 function my_errorHandler($errno, $errstr, $errfile, $errline) {
   if (strlen($errstr) > 0) {
-    $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+    $trace = debug_backtrace();
     response500([
       "code" => $errno,
       "message" => "ErrorCode:" . $errno . ",Errmessage:" . $errfile . ' ' . $errline . ' ' . $errstr,
@@ -29,14 +29,13 @@ function  my_exceptionHandler(Throwable $exception) {
 
   // debug($exception->getMessage());
   print_r($exception->getTraceAsString());
-
   my_errorHandler('Exception', $exception->getMessage(),  $exception->getFile(), $exception->getLine());
 };
 
 
 function  my_shutdownHandler() {
   $last_error = error_get_last();
-  debug($last_error);
+  // debug($last_error);
   my_errorHandler($last_error['type'], $last_error['message'], $last_error['file'], $last_error['line']);
 };
 

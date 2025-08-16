@@ -68,8 +68,6 @@ class MMoney extends CI_Model {
     }
 
     public function set4PlayerLasiHolePointsDetail(&$hole) {
-        // debug($hole);
-        // die;
         if ($hole['winner'] == 'blue') {
             $hole['winner_detail'] = [
                 ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]],  'scorePoints' => $hole['points']],
