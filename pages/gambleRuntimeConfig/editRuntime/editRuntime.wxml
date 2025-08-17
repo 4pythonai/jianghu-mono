@@ -47,7 +47,7 @@
       />
     </view>
 
-    <view class="section">
+    <view class="section" wx:if="{{needsGrouping}}">
       <RedBlueConfig
         id="redBlueConfig"
         players="{{players}}"

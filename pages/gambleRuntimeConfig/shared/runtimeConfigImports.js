@@ -67,6 +67,7 @@ function getEditImports() {
     return {
         ConfigValidator,
         configManager,
+        GambleMetaConfig,
         runtimeStore,
         gameStore,
         holeRangeStore,

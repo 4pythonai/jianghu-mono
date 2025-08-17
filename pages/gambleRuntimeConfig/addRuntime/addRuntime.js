@@ -23,8 +23,14 @@ Page({
     data: getDefaultRuntimeConfigData(),
 
     onLoad(options) {
+
         // 初始化页面数据
         this.initializePageData(options);
+
+        // 设置游戏配置和状态 - 增加延迟确保数据初始化完成
+        setTimeout(() => {
+            this.createGambleRelatedConfig(options.editConfig);
+        }, 200);
     },
 
     /**

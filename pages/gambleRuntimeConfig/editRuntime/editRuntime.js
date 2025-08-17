@@ -7,6 +7,7 @@ const { getEditImportsWithMixin } = require('../shared/runtimeConfigImports');
 const { getDefaultEditRuntimeConfigData } = require('../shared/runtimeConfigData');
 
 const {
+    GambleMetaConfig,
     runtimeStore,
     gameStore,
     holeRangeStore,
@@ -17,6 +18,10 @@ const {
     onCancelConfig: sharedOnCancelConfig,
     onConfirmConfigCommon
 } = getEditImportsWithMixin();
+
+
+
+
 
 Page({
     data: getDefaultEditRuntimeConfigData(),
@@ -59,6 +64,7 @@ Page({
             gameData: gameData,
             gameDataType: gameDataType,
             is8421Game: is8421Game,
+            needsGrouping: GambleMetaConfig.needsGrouping(existingRuntimeConfig.gambleSysName),
             needsStroking: needsStroking,
             runtimeConfig: {
                 gameid: existingRuntimeConfig.gameid,
