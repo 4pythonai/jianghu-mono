@@ -10,7 +10,8 @@ Page({
         _gambleUserName: '',
         _gambleHumanName: '',
         saving: false, // 保存状态
-        configComponents: [] // 配置组件列表
+        configComponents: [], // 配置组件列表
+        isInitialized: false // 是否已完成初始化
     },
 
     onLoad(options) {
@@ -119,6 +120,11 @@ Page({
 
         // 初始化配置组件数据
         this.initConfigComponents();
+
+        // 标记初始化完成
+        setTimeout(() => {
+            this.setData({ isInitialized: true });
+        }, 200);
     },
 
     // 初始化配置组件数据 - 支持扁平化数据结构
@@ -153,9 +159,24 @@ Page({
         const { generatedRuleName } = e.detail;
         console.log('📋 [UserRuleEdit] 收到LasiKPI配置变化:', e.detail);
 
+        // 只有在初始化完成后，才处理KPI配置变化
+        if (!this.data.isInitialized) {
+            console.log('📋 [UserRuleEdit] 初始化阶段，忽略KPI配置变化');
+            return;
+        }
+
         if (generatedRuleName) {
-            // this.setData({ _gambleUserName: generatedRuleName });
-            console.log('📋 [UserRuleEdit] 规则名称已自动更新为:', generatedRuleName);
+            // 只有在编辑模式下，且用户没有手动输入过规则名称时，才自动更新
+            const { _gambleUserName, ruleData } = this.data;
+            const originalName = ruleData?.gambleUserName || '';
+
+            // 如果当前名称与原始名称相同，说明用户没有手动修改过，可以自动更新
+            if (_gambleUserName === originalName) {
+                this.setData({ _gambleUserName: generatedRuleName });
+                console.log('📋 [UserRuleEdit] 规则名称已自动更新为:', generatedRuleName);
+            } else {
+                console.log('📋 [UserRuleEdit] 用户已手动修改规则名称，保持用户输入:', _gambleUserName);
+            }
         }
     },
 
