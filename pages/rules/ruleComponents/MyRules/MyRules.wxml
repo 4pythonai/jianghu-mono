@@ -1,5 +1,5 @@
 <!-- 我的规则组件 -->
-<view wx:if="{{ show }}" class="myrules-container">
+<view wx:if="{{ show }}" class="myrules-container" id="myRulesComponent">
   <!-- 加载状态 -->
   <view wx:if="{{ loading }}" class="loading-container">
     <text class="loading-text">加载中...</text>

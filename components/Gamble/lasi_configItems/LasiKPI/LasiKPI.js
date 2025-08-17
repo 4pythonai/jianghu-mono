@@ -1,4 +1,5 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
+import { generateLasiRuleName } from '../../../../utils/ruleNameGenerator.js'
 
 Component({
     data: {
@@ -139,74 +140,8 @@ Component({
         generateRuleName() {
             const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
 
-
-            let ruleName = '四人拉丝'; // 默认规则名称
-
-            if (selectedIndicators.length === 0) {
-                ruleName = '四人拉丝';
-            } else {
-                // 获取选中指标的分值
-                const selectedValues = selectedIndicators.map(indicator => kpiValues[indicator]);
-
-                // 检查所有分值是否一致
-                const allValuesEqual = selectedValues.every(value => value === selectedValues[0]);
-
-
-                if (selectedIndicators.length === 3) {
-                    if (allValuesEqual) {
-                        // 三个指标且分值一致，默认名称为"拉丝三点"
-                        ruleName = '拉丝三点';
-                    } else {
-                        // 三个指标但分值不一致，按"头尾总"顺序展示分值
-                        ruleName = `${kpiValues.best}${kpiValues.worst}${kpiValues.total}`;
-                    }
-                } else if (selectedIndicators.length === 2) {
-                    // 按"头尾总"顺序重新排列选中的指标
-                    const sortedIndicators = [];
-                    const sortedValues = [];
-
-                    // 先添加头（best）
-                    if (selectedIndicators.includes('best')) {
-                        sortedIndicators.push('best');
-                        sortedValues.push(kpiValues.best);
-                    }
-                    // 再添加尾（worst）
-                    if (selectedIndicators.includes('worst')) {
-                        sortedIndicators.push('worst');
-                        sortedValues.push(kpiValues.worst);
-                    }
-                    // 最后添加总（total）
-                    if (selectedIndicators.includes('total')) {
-                        sortedIndicators.push('total');
-                        sortedValues.push(kpiValues.total);
-                    }
-
-                    if (allValuesEqual) {
-                        // 两个指标且分值一致，根据勾选指标命名
-                        const indicatorNames = sortedIndicators.map(indicator => {
-                            if (indicator === 'best') return '头';
-                            if (indicator === 'worst') return '尾';
-                            if (indicator === 'total') return '总';
-                            return '';
-                        });
-                        ruleName = `${indicatorNames[0]}${indicatorNames[1]}两点`;
-                    } else {
-                        // 两个指标但分值不一致，根据勾选指标和分值命名
-                        const indicatorNames = sortedIndicators.map(indicator => {
-                            if (indicator === 'best') return '头';
-                            if (indicator === 'worst') return '尾';
-                            if (indicator === 'total') return '总';
-                            return '';
-                        });
-                        ruleName = `${indicatorNames[0]}${sortedValues[0]}${indicatorNames[1]}${sortedValues[1]}`;
-                    }
-                } else if (selectedIndicators.length === 1) {
-                    const indicator = selectedIndicators[0];
-                    const indicatorName = indicator === 'best' ? '最好成绩' :
-                        indicator === 'worst' ? '最差成绩' : '总成绩';
-                    ruleName = `拉丝一点${indicatorName}`;
-                }
-            }
+            // 使用统一的规则名称生成器
+            const ruleName = generateLasiRuleName(selectedIndicators, kpiValues, totalCalculationType);
 
             // 更新数据并立即触发事件
             this.setData({ generatedRuleName: ruleName });

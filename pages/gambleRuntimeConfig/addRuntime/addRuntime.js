@@ -125,7 +125,26 @@ Page({
 
     // 确认配置 - 使用共享方法
     async onConfirmConfig() {
-        onConfirmConfigCommon(this, false); // false 表示新增模式
+        // 新增模式下，保存成功后跳转到规则页面
+        const result = await onConfirmConfigCommon(this, false); // false 表示新增模式
+
+        // 如果保存成功，手动调用跳转（因为onConfirmConfigCommon内部会调用saveGambleConfig）
+        if (result?.success) {
+            // 延迟跳转，确保数据保存完成
+            setTimeout(() => {
+                wx.redirectTo({
+                    url: '/pages/rules/rules?activeTab=0',
+                    success: () => {
+                        console.log('[AddRuntime] 成功跳转到规则页面');
+                    },
+                    fail: (err) => {
+                        console.error('[AddRuntime] 跳转失败:', err);
+                        // 如果跳转失败，使用navigateBack
+                        wx.navigateBack();
+                    }
+                });
+            }, 500);
+        }
     },
 
     // 收集所有组件的配置 - 使用共享方法

@@ -3,6 +3,7 @@
  * 继承基础解析器，提供拉丝特定的解析逻辑
  */
 const BaseRuleParser = require('./BaseRuleParser.js');
+const { generateLasiRuleName } = require('../ruleNameGenerator.js');
 
 class Parser4pLasi extends BaseRuleParser {
     /**
@@ -90,7 +91,7 @@ class Parser4pLasi extends BaseRuleParser {
             }
 
             // 生成规则名称
-            const ruleName = this.generateKpiRuleName(indicators, totalCalculationType);
+            const ruleName = generateLasiRuleName(indicators, kpiValues, totalCalculationType);
 
             // 计算总分
             let totalScore = 0;
@@ -106,49 +107,7 @@ class Parser4pLasi extends BaseRuleParser {
         }
     }
 
-    /**
-     * 生成KPI规则名称
-     * @param {Array} indicators - 选中的指标
-     * @param {string} totalCalculationType - 总杆计算方式
-     * @returns {string} 规则名称
-     */
-    generateKpiRuleName(indicators, totalCalculationType) {
-        if (indicators.length === 0) {
-            return '四人拉丝';
-        }
 
-        if (indicators.length === 1) {
-            const indicator = indicators[0];
-            const indicatorMap = {
-                'best': '拉丝较好',
-                'worst': '拉丝较差',
-                'total': totalCalculationType === 'add_total' ? '拉丝加法总杆' : '拉丝乘法总杆'
-            };
-            return indicatorMap[indicator] || '四人拉丝';
-        }
-
-        if (indicators.length === 2) {
-            const [first, second] = indicators;
-            const indicatorMap = {
-                'best': '头',
-                'worst': '尾',
-                'total': totalCalculationType === 'add_total' ? '加' : '乘'
-            };
-            return `${indicatorMap[first]}${indicatorMap[second]}`;
-        }
-
-        if (indicators.length === 3) {
-            const indicatorMap = {
-                'best': '2',
-                'worst': '1',
-                'total': '1'
-            };
-            const name = indicators.map(indicator => indicatorMap[indicator]).join('');
-            return name;
-        }
-
-        return '四人拉丝';
-    }
 }
 
 // 创建实例并导出函数，保持向后兼容

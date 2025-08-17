@@ -301,9 +301,10 @@ class ConfigManager {
      * @param {string} configId 配置ID
      * @param {Object} pageContext 页面上下文
      * @param {boolean} isEdit 是否为编辑模式
+     * @param {string} redirectTo 跳转目标页面，可选值：'gameDetail' | 'rules' | 'auto'(自动判断)
      * @returns {Promise} 保存结果
      */
-    async saveGambleConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit = false) {
+    async saveGambleConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit = false, redirectTo = 'auto') {
         try {
             const saveData = this.prepareSaveData(runtimeConfig, isEdit, configId);
 
@@ -320,8 +321,32 @@ class ConfigManager {
                 });
 
                 setTimeout(() => {
+                    let targetUrl;
+                    if (redirectTo === 'rules') {
+                        // 明确指定跳转到规则页面
+                        targetUrl = `/pages/rules/rules?activeTab=0`;
+                    } else if (redirectTo === 'gameDetail') {
+                        // 明确指定跳转到游戏详情页面
+                        targetUrl = `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`;
+                    } else {
+                        // 自动判断：新增模式下跳转到规则页面，编辑模式下跳转到游戏详情页面
+                        if (isEdit) {
+                            targetUrl = `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`;
+                        } else {
+                            targetUrl = `/pages/rules/rules?activeTab=0`;
+                        }
+                    }
+
                     wx.redirectTo({
-                        url: `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`
+                        url: targetUrl,
+                        success: () => {
+                            console.log(`[ConfigManager] 成功跳转到: ${targetUrl}`);
+                        },
+                        fail: (err) => {
+                            console.error(`[ConfigManager] 跳转失败:`, err);
+                            // 如果跳转失败，使用navigateBack
+                            wx.navigateBack();
+                        }
                     });
                 }, 300);
 

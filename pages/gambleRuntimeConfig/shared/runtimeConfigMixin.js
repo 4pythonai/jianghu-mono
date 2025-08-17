@@ -126,8 +126,9 @@ function setRuntimeConfigData(pageContext, configData, options = {}, callback) {
  * 处理配置验证和保存的通用流程
  * @param {Object} pageContext 页面上下文
  * @param {boolean} isEdit 是否为编辑模式
+ * @returns {Promise} 保存结果
  */
-function onConfirmConfigCommon(pageContext, isEdit = false) {
+async function onConfirmConfigCommon(pageContext, isEdit = false) {
     const { runtimeConfig, gambleSysName, players } = pageContext.data;
 
     // 从各个组件收集最新配置
@@ -135,13 +136,20 @@ function onConfirmConfigCommon(pageContext, isEdit = false) {
 
     // 验证配置
     if (!ConfigValidator.validateAndShow(runtimeConfig, players, gambleSysName)) {
-        return;
+        return { success: false, error: '配置验证失败' };
     }
 
     // 保存配置
     const { gameid, groupid, configId } = pageContext.data;
     console.log('[RuntimeConfigMixin] 保存配置参数:', { gameid, groupid, configId, isEdit });
-    configManager.saveGambleConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit);
+
+    try {
+        const result = await configManager.saveGambleConfig(runtimeConfig, gameid, groupid, configId, pageContext, isEdit);
+        return result;
+    } catch (error) {
+        console.error('[RuntimeConfigMixin] 保存配置失败:', error);
+        return { success: false, error: error.message };
+    }
 }
 
 module.exports = {
