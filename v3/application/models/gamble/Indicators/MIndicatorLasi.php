@@ -226,8 +226,27 @@ class MIndicatorLasi extends CI_Model {
         // die;
 
         // 乘法奖励,只考虑赢方的倍数
+
+        $rewardFactor = 1;
+
         if ($context->RewardConfig['rewardType'] == 'multiply'  && $hole['draw'] == 'n') {
             $rewardFactor = $this->getLassiRewardFactor($hole, $context->RewardConfig);
+
+            if ($hole['winner'] == 'blue') {
+                $score1 = $hole['computedScores'][$hole['blue'][0]];
+                $score2 = $hole['computedScores'][$hole['blue'][1]];
+            }
+            if ($hole['winner'] == 'red') {
+                $score1 = $hole['computedScores'][$hole['red'][0]];
+                $score2 = $hole['computedScores'][$hole['red'][1]];
+            }
+            $this->load->model('gamble/MReward');
+            $rewardFactor = $this->MReward->getRewardFactor($hole['par'], $score1, $score2, $context->RewardConfig['rewardPair'], $context->RewardConfig['rewardType']);
+            debug($rewardFactor);
+            die;
+
+
+
             $hole['points'] =  $points * $currentHoleMultiplier * $rewardFactor;
             $hole['bonus_points'] =  $points * $currentHoleMultiplier * ($rewardFactor - 1);
         }
