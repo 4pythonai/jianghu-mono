@@ -68,7 +68,7 @@ function setRuntimeConfigData(pageContext, configData, options = {}, callback) {
     // 基础字段设置
     const baseFields = [
         'gambleSysName', 'gameid', 'groupid', 'players', 'gameData', 'userRule',
-        'is8421Game', 'needsGrouping', 'needsStroking', 'gameDataType', 'configId'
+        'is8421Game', 'needRedBlueDiv', 'needsStroking', 'gameDataType', 'configId'
     ];
 
     baseFields.forEach(field => {
@@ -101,7 +101,7 @@ function setRuntimeConfigData(pageContext, configData, options = {}, callback) {
         wx.nextTick(() => {
             console.log('[RuntimeConfigMixin] nextTick 执行，数据完全同步:', {
                 is8421Game: pageContext.data.is8421Game,
-                needsGrouping: pageContext.data.needsGrouping,
+                needRedBlueDiv: pageContext.data.needRedBlueDiv,
                 needsStroking: pageContext.data.needsStroking,
                 gambleSysName: pageContext.data.gambleSysName
             });
@@ -114,7 +114,7 @@ function setRuntimeConfigData(pageContext, configData, options = {}, callback) {
     setTimeout(() => {
         console.log('[RuntimeConfigMixin] 设置后的页面数据:', {
             is8421Game: pageContext.data.is8421Game,
-            needsGrouping: pageContext.data.needsGrouping,
+            needRedBlueDiv: pageContext.data.needRedBlueDiv,
             needsStroking: pageContext.data.needsStroking,
             gambleSysName: pageContext.data.gambleSysName
         });

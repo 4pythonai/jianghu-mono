@@ -55,17 +55,17 @@ Page({
         // 使用统一的配置设置方法
         const configData = {
             // 现有运行时配置：从store中获取的完整配置数据
-            existingRuntimeConfig,
             configId: configId,
+            existingRuntimeConfig,
             gambleSysName: existingRuntimeConfig.gambleSysName,
-            gameid: existingRuntimeConfig.gameid,
-            groupid: existingRuntimeConfig.groupid,
-            players: existingRuntimeConfig.players,
             gameData: gameData,
             gameDataType: gameDataType,
+            gameid: existingRuntimeConfig.gameid,
+            groupid: existingRuntimeConfig.groupid,
             is8421Game: is8421Game,
-            needsGrouping: GambleMetaConfig.needsGrouping(existingRuntimeConfig.gambleSysName),
+            needRedBlueDiv: GambleMetaConfig.needRedBlueDiv(existingRuntimeConfig.gambleSysName),
             needsStroking: needsStroking,
+            players: existingRuntimeConfig.players,
             runtimeConfig: {
                 gameid: existingRuntimeConfig.gameid,
                 groupid: existingRuntimeConfig.groupid,

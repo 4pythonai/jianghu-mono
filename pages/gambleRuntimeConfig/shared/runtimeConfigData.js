@@ -17,7 +17,7 @@ function getDefaultRuntimeConfigData() {
         gameData: null,
         userRule: null,
         is8421Game: false,
-        needsGrouping: false,
+        needRedBlueDiv: false,
         needsStroking: false,
 
         runtimeConfig: {

@@ -39,7 +39,7 @@ Page({
      */
     initializePageData(options) {
         // 处理传入的数据
-        const processedData = configManager.processIncomingData(options);
+        const processedData = configManager.processIncomingGambleCardData(options);
 
         // 获取基础数据
         const gambleSysName = processedData.gambleSysName;
@@ -53,18 +53,19 @@ Page({
         const roadLength = gameData?.holeList?.length || 0;
         const holeRangeConfig = { startHoleindex: 1, roadLength };
 
+        console.log("🉐💮🆚🉐💮🆚🉐💮🆚🉐💮🆚🉐💮🆚🉐💮🆚🉐💮🆚 processedData", processedData)
+
         const configData = {
             gambleSysName,
+            gameData,
+            gameDataType: typeof gameData,
             gameid: processedData.gameid,
             groupid,
-            configId: processedData.configId || '',
-            players: processedData.players,
-            gameData,
-            userRule: processedData.userRule,
             is8421Game: ['4p-8421', '3p-8421', '2p-8421'].includes(gambleSysName),
-            needsGrouping: GambleMetaConfig.needsGrouping(gambleSysName),
+            needRedBlueDiv: GambleMetaConfig.needRedBlueDiv(gambleSysName),
             needsStroking: GambleMetaConfig.needsStroking(gambleSysName),
-            gameDataType: typeof gameData,
+            players: processedData.players,
+            userRule: processedData.userRule,
             // 洞范围配置：起始洞索引和道路长度
             holeRangeConfig,
             runtimeConfig: {

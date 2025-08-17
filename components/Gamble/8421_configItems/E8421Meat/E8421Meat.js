@@ -76,10 +76,8 @@ Component({
           topSelected: 0,
           topScoreLimit: 3
         });
-      } else {
-        // 默认模式：从store获取当前配置并初始化组件状态
-        this.initializeFromStore();
       }
+
       // 计算显示值
       this.updateDisplayValue();
       // 检查禁用状态
@@ -144,35 +142,42 @@ Component({
       }
     },
 
-    // 从Store初始化 - 使用工具类简化
-    initializeFromStore() {
-      const store = G4P8421Store;
-      this.parseStoredConfig(store);
-      this.updateDisplayValue();
-    },
-
-    // 解析存储的配置 - 使用工具类简化
-    parseStoredConfig(config) {
-      // 使用工具类解析eatingRange
-      const eatingRange = configManager.parseEatingRange(config.eatingRange);
-      if (eatingRange) {
-        this.setData({ eatingRange });
+    /**
+    * 解析 meatValueConfig 配置
+    * @param {string} value - 配置值，如 "SINGLE_DOUBLE"
+    * @returns {Object} 解析结果，如 { type: 'SINGLE_DOUBLE', index: 1 }
+    */
+    parseMeatValueConfig(value) {
+      if (!value || typeof value !== 'string') {
+        return {
+          type: 'MEAT_AS_1',
+          index: 0,
+          score: 1
+        };
       }
 
-      // 使用工具类解析meatValueConfig
-      const meatResult = configManager.parseMeatValueConfig(config.meatValueConfig);
-      this.setData({
-        meatValueOption: meatResult.index,
-        meatScoreValue: meatResult.score
-      });
+      if (value === 'SINGLE_DOUBLE') {
+        return { type: value, index: 1 };
+      }
+      if (value === 'CONTINUE_DOUBLE') {
+        return { type: value, index: 2 };
+      }
+      if (value.startsWith('MEAT_AS_')) {
+        const meatResult = this.parseMeatAs(value);
+        return {
+          type: 'MEAT_AS',
+          index: 0,
+          score: meatResult ? meatResult.score : 1
+        };
+      }
 
-      // 使用工具类解析meatMaxValue
-      const maxResult = configManager.parseMaxValue(config.meatMaxValue);
-      this.setData({
-        topSelected: maxResult.isUnlimited ? 0 : 1,
-        topScoreLimit: maxResult.isUnlimited ? 3 : maxResult.value
-      });
+      return {
+        type: 'MEAT_AS_1',
+        index: 0,
+        score: 1
+      };
     },
+
 
     // 事件处理方法
     onEatValueChange(e) {
@@ -241,6 +246,40 @@ Component({
       });
     },
 
+
+    /**
+ * 将E8421Meat组件状态转换为配置数据
+ * @param {Object} componentState - 组件状态
+ * @returns {Object} 配置数据
+ */
+    convertE8421MeatToConfig(componentState) {
+      const { eatingRange, meatValueOption, meatScoreValue, topSelected, topScoreLimit } = componentState;
+
+      // 构建肉分值配置
+      let meatValueConfig = null;
+      switch (meatValueOption) {
+        case 0:
+          meatValueConfig = `MEAT_AS_${meatScoreValue}`;
+          break;
+        case 1:
+          meatValueConfig = 'SINGLE_DOUBLE';
+          break;
+        case 2:
+          meatValueConfig = 'CONTINUE_DOUBLE';
+          break;
+      }
+
+      // 构建封顶配置
+      const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
+
+      return {
+        eatingRange,
+        meatValueConfig,
+        meatMaxValue
+      };
+    },
+
+
     // 获取配置数据 - 使用工具类简化
     getConfigData() {
       const componentState = {
@@ -252,16 +291,70 @@ Component({
       };
 
       // 使用工具类转换组件状态为配置数据
-      const configData = configManager.convertE8421MeatToConfig(componentState);
+      const configData = this.convertE8421MeatToConfig(componentState);
 
       return configData;
+    },
+
+
+    /**
+     * 将配置数据转换为E8421Meat组件状态
+     * @param {Object} configData - 配置数据
+     * @returns {Object} 组件状态
+     */
+    convertConfigToE8421Meat(configData) {
+      const { eatingRange, meatValueConfig, meatMaxValue } = configData;
+      const state = {};
+
+      // 解析eatingRange
+      if (eatingRange) {
+        if (typeof eatingRange === 'string') {
+          try {
+            state.eatingRange = JSON.parse(eatingRange);
+          } catch (error) {
+            state.eatingRange = {
+              "BetterThanBirdie": 1,
+              "Birdie": 1,
+              "Par": 1,
+              "WorseThanPar": 1
+            };
+          }
+        } else {
+          state.eatingRange = eatingRange;
+        }
+      }
+
+      // 解析meatValueConfig
+      if (meatValueConfig?.startsWith('MEAT_AS_')) {
+        state.meatValueOption = 0;
+        const score = Number.parseInt(meatValueConfig.replace('MEAT_AS_', ''));
+        state.meatScoreValue = Number.isNaN(score) ? 1 : score;
+      } else if (meatValueConfig === 'SINGLE_DOUBLE') {
+        state.meatValueOption = 1;
+      } else if (meatValueConfig === 'CONTINUE_DOUBLE') {
+        state.meatValueOption = 2;
+      } else {
+        state.meatValueOption = 0;
+        state.meatScoreValue = 1;
+      }
+
+      // 解析meatMaxValue
+      const maxValue = Number(meatMaxValue);
+      if (maxValue === 10000000) {
+        state.topSelected = 0;
+      } else {
+        state.topSelected = 1;
+        state.topScoreLimit = maxValue > 0 ? maxValue : 3;
+      }
+
+      return state;
     },
 
     // 初始化配置数据 - 使用工具类简化
     initConfigData(configData) {
 
       // 使用工具类转换配置数据为组件状态
-      const componentState = configManager.convertConfigToE8421Meat(configData);
+      const componentState = this.convertConfigToE8421Meat(configData);
 
       this.setData(componentState);
       this.updateDisplayValue();

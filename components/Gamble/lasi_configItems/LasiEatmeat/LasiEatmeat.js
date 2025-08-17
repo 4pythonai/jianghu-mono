@@ -162,10 +162,7 @@ Component({
       const { eatingRange, meatValue, meatMaxValue } = config;
 
       // 使用统一的解析工具类解析吃肉数量配置
-      const parsedEatingRange = configManager.parseEatingRange(eatingRange);
-      if (parsedEatingRange) {
-        this.setData({ eatingRange: parsedEatingRange });
-      }
+      this.setData({ eatingRange: eatingRange });
 
       // 解析肉分值计算方式
       if (meatValue) {
@@ -324,7 +321,48 @@ Component({
         topScoreLimit: this.data.topScoreLimit
       };
 
-      return configManager.convertLasiEatmeatToConfig(componentState);
+      return this.convertLasiEatmeatToConfig(componentState);
+    },
+
+
+
+
+    /**
+     * 将LasiEatmeat组件状态转换为配置数据
+     * @param {Object} componentState - 组件状态
+     * @returns {Object} 配置数据
+     */
+    convertLasiEatmeatToConfig(componentState) {
+      const { eatingRange, meatValueOption, meatScoreValue, topSelected, topScoreLimit } = componentState;
+
+      // 构建肉分值配置
+      let meatValue = null;
+      switch (meatValueOption) {
+        case 0:
+          meatValue = `MEAT_AS_${meatScoreValue}`;
+          break;
+        case 1:
+          meatValue = 'SINGLE_DOUBLE';
+          break;
+        case 2:
+          meatValue = 'CONTINUE_DOUBLE';
+          break;
+        case 3:
+          meatValue = 'DOUBLE_WITH_REWARD';
+          break;
+        case 4:
+          meatValue = 'DOUBLE_WITHOUT_REWARD';
+          break;
+      }
+
+      // 构建封顶配置
+      const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
+
+      return {
+        eatingRange,
+        meatValueConfig: meatValue, // 修正字段名
+        meatMaxValue
+      };
     },
 
     // 打印当前配置

@@ -94,7 +94,7 @@ const GambleMetaConfig = {
     /**
      * 检查是否需要分组
      */
-    needsGrouping(sysRuleName) {
+    needRedBlueDiv(sysRuleName) {
         return GAMBLE_TYPES[sysRuleName]?.hasGrouping;
     },
 

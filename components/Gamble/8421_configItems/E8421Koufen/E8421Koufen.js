@@ -69,9 +69,6 @@ Component({
           doubleParScore: this.data.doubleParScore || 0,
           maxSubScore: this.data.maxSubScore || 2
         });
-      } else {
-        // 默认模式：从store获取当前配置并初始化组件状态
-        this.initializeFromStore();
       }
       // 计算显示值
       this.updateDisplayValue();
@@ -143,50 +140,35 @@ Component({
       }
     },
 
-    // 从Store初始化 - 保持原有逻辑
-    initializeFromStore() {
-      const store = G4P8421Store;
-      this.parseStoredConfig(store);
-      this.updateDisplayValue();
-    },
 
-    // 解析存储的配置 - 使用工具类简化
-    parseStoredConfig(config) {
-      // 使用工具类解析扣分基线
-      let selectedStart = 0;
-      let paScore = 4;
-      let doubleParScore = 0;
 
-      if (config.badScoreBaseLine === 'NoSub') {
-        selectedStart = 2;
-      } else if (config.badScoreBaseLine?.startsWith('Par+')) {
-        selectedStart = 0;
-        const result = configManager.parseParPlus(config.badScoreBaseLine);
-        paScore = result ? result.score : 4;
-      } else if (config.badScoreBaseLine?.startsWith('DoublePar+')) {
-        selectedStart = 1;
-        const result = configManager.parseDoubleParPlus(config.badScoreBaseLine);
-        doubleParScore = result ? result.score : 0;
+
+    /**
+     * 解析 dutyConfig 配置
+     * @param {string} value - 配置值，如 "DUTY_DINGTOU"
+     * @returns {Object} 解析结果，如 { type: 'DUTY_DINGTOU', index: 1 }
+     */
+    parseDutyConfig(value) {
+      if (!value || typeof value !== 'string') {
+        return {
+          type: 'NODUTY',
+          index: 0
+        };
       }
 
-      // 使用工具类解析封顶配置
-      const maxResult = configManager.parseMaxValue(config.badScoreMaxLost);
-      const selectedMax = maxResult.isUnlimited ? 0 : 1;
-      const maxSubScore = maxResult.isUnlimited ? 2 : maxResult.value;
+      const dutyMap = {
+        'NODUTY': 0,
+        'DUTY_DINGTOU': 1,
+        'DUTY_NEGATIVE': 2
+      };
 
-      // 使用工具类解析同伴惩罚配置
-      const dutyResult = configManager.parseDutyConfig(config.dutyConfig);
-      const selectedDuty = dutyResult.index;
-
-      this.setData({
-        selectedStart,
-        selectedMax,
-        selectedDuty,
-        paScore,
-        doubleParScore,
-        maxSubScore
-      });
+      return {
+        type: value,
+        index: dutyMap[value] !== undefined ? dutyMap[value] : 0
+      };
     },
+
+
 
     // 事件处理方法
     onSelectStart(e) {
@@ -244,11 +226,64 @@ Component({
       this.updateDisplayValue();
     },
 
+    /**
+ * 将配置数据转换为E8421Koufen组件状态
+ * @param {Object} configData - 配置数据
+ * @returns {Object} 组件状态
+ */
+    convertConfigToE8421Koufen(configData) {
+      const { badScoreBaseLine, badScoreMaxLost, dutyConfig } = configData;
+      const state = {};
+
+      // 解析扣分基线
+      if (badScoreBaseLine === 'NoSub') {
+        state.selectedStart = 2;
+      } else if (badScoreBaseLine?.startsWith('Par+')) {
+        state.selectedStart = 0;
+        const score = Number.parseInt(badScoreBaseLine.replace('Par+', ''));
+        state.paScore = Number.isNaN(score) ? 4 : score;
+      } else if (badScoreBaseLine?.startsWith('DoublePar+')) {
+        state.selectedStart = 1;
+        const score = Number.parseInt(badScoreBaseLine.replace('DoublePar+', ''));
+        state.doubleParScore = Number.isNaN(score) ? 0 : score;
+      } else {
+        state.selectedStart = 0;
+        state.paScore = 4;
+      }
+
+      // 解析封顶配置
+      const maxLostValue = Number(badScoreMaxLost);
+      if (maxLostValue === 10000000) {
+        state.selectedMax = 0;
+      } else {
+        state.selectedMax = 1;
+        state.maxSubScore = maxLostValue > 0 ? maxLostValue : 2;
+      }
+
+      // 解析同伴惩罚配置
+      switch (dutyConfig) {
+        case 'NODUTY':
+          state.selectedDuty = 0;
+          break;
+        case 'DUTY_DINGTOU':
+          state.selectedDuty = 1;
+          break;
+        case 'DUTY_NEGATIVE':
+          state.selectedDuty = 2;
+          break;
+        default:
+          state.selectedDuty = 0;
+      }
+
+      return state;
+    },
+
+
     // 从配置数据初始化 - 使用工具类简化
     initializeFromConfigData(configData) {
 
       // 使用工具类转换配置数据为组件状态
-      const componentState = configManager.convertConfigToE8421Koufen(configData);
+      const componentState = this.convertConfigToE8421Koufen(configData);
 
       this.setData(componentState);
     },

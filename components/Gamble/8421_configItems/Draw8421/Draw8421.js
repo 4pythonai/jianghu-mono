@@ -21,6 +21,8 @@ Component({
     diffScores: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     selectedDiffScore: 1
   },
+
+
   attached() {
 
     if (this.properties.mode === 'SysConfig') {
@@ -37,9 +39,6 @@ Component({
         selected: 0,
         selectedDiffScore: 1
       });
-    } else {
-      // 默认模式：从store获取当前配置并初始化组件状态
-      this.syncSelectedFromStore();
     }
     // 计算显示值
     this.updateDisplayValue();
@@ -76,16 +75,6 @@ Component({
       }
     },
 
-    // 从Store同步选择状态 - 使用工具类简化
-    syncSelectedFromStore() {
-      const store = G4P8421Store;
-      const drawResult = configManager.parseDrawConfig(store.drawConfig);
-
-      this.setData({
-        selected: drawResult.index,
-        selectedDiffScore: drawResult.score || 1
-      });
-    },
 
     // 事件处理方法
     onSelect(e) {
@@ -134,28 +123,68 @@ Component({
       });
     },
 
+
+    /**
+     * 将Draw8421组件状态转换为配置数据
+     * @param {Object} componentState - 组件状态
+     * @returns {Object} 配置数据
+     */
+    convertDraw8421ToConfig(componentState) {
+      const { selected, selectedDiffScore } = componentState;
+
+      // 根据选择的选项生成配置值
+      let drawConfig = '';
+      if (selected === 0) {
+        drawConfig = 'DrawEqual';
+      } else if (selected === 1) {
+        drawConfig = `Diff_${selectedDiffScore}`;
+      } else if (selected === 2) {
+        drawConfig = 'NoDraw';
+      }
+
+      return { drawConfig };
+    },
+
     // 获取配置数据 - 使用工具类简化
     getConfigData() {
       const componentState = {
         selected: this.data.selected,
         selectedDiffScore: this.data.selectedDiffScore
       };
-
-      // 使用工具类转换组件状态为配置数据
-      const configData = configManager.convertDraw8421ToConfig(componentState);
-
+      const configData = this.convertDraw8421ToConfig(componentState);
       return configData;
+    },
+
+    /**
+     * 将配置数据转换为Draw8421组件状态
+     * @param {Object} configData - 配置数据
+     * @returns {Object} 组件状态
+     */
+    convertConfigToDraw8421(configData) {
+      const { drawConfig } = configData;
+      const state = {};
+
+      if (drawConfig === 'DrawEqual') {
+        state.selected = 0;
+      } else if (drawConfig === 'NoDraw') {
+        state.selected = 2;
+      } else if (drawConfig?.startsWith('Diff_')) {
+        state.selected = 1;
+        const score = Number.parseInt(drawConfig.replace('Diff_', ''));
+        state.selectedDiffScore = Number.isNaN(score) ? 1 : score;
+      } else {
+        state.selected = 0;
+        state.selectedDiffScore = 1;
+      }
+
+      return state;
     },
 
     // 初始化配置数据 - 使用工具类简化
     initConfigData(configData) {
-
-      // 使用工具类转换配置数据为组件状态
-      const componentState = configManager.convertConfigToDraw8421(configData);
-
+      const componentState = this.convertConfigToDraw8421(configData);
       this.setData(componentState);
       this.updateDisplayValue();
-
     }
   }
 });

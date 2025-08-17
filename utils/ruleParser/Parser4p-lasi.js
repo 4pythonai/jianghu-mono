@@ -43,8 +43,6 @@ class Parser4pLasi extends BaseRuleParser {
             if (kpisDetail) details.kpis = kpisDetail;
         }
 
-        console.log(' 🟢🟡🟠🟣🟤🟧🟨🟦🟪🟫parse4PLasiConfig 解析完成:', details);
-
 
         return details;
     }

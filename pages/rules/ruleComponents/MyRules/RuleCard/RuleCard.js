@@ -55,7 +55,6 @@ Component({
             if (!item?.gambleSysName) return;
 
             // 解析规则配置
-            console.log(' 解析规则配置 item', item);
             const details = parseGambleRule(item, item.gambleSysName);
 
             // 根据规则类型设置玩家数量和标签

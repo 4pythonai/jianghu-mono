@@ -76,9 +76,9 @@ const ConfigValidator = {
         });
 
         // 检查是否需要分组
-        const needsGrouping = GambleMetaConfig.needsGrouping(gambleSysName);
+        const needRedBlueDiv = GambleMetaConfig.needRedBlueDiv(gambleSysName);
 
-        if (needsGrouping) {
+        if (needRedBlueDiv) {
             // 验证分组方式
             if (!runtimeConfig.red_blue_config) {
                 errors.push('请选择分组方式');

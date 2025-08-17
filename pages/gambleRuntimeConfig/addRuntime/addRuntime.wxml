@@ -56,13 +56,13 @@
       <br />
       <text>is8421Game: {{is8421Game}}</text>
       <br />
-      <text>needsGrouping: {{needsGrouping}}</text>
+      <text>needRedBlueDiv: {{needRedBlueDiv}}</text>
       <br />
       <text>needsStroking: {{needsStroking}}</text>
     </view>
 
     <!-- 分组配置 -->
-    <view class="section" wx:if="{{needsGrouping}}">
+    <view class="section" wx:if="{{needRedBlueDiv}}">
       <view class="section-label">分组配置</view>
       <RedBlueConfig
         id="redBlueConfig"

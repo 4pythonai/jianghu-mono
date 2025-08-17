@@ -219,8 +219,62 @@ Component({
         strokeDiffValue: this.data.strokeDiffValue
       };
 
-      return configManager.convertLasiKoufenToConfig(componentState);
+      return this.convertLasiKoufenToConfig(componentState);
     },
+
+    // ==================== 拉丝相关方法 ====================
+
+    /**
+     * 将LasiKoufen组件状态转换为配置数据
+     * @param {Object} componentState - 组件状态
+     * @returns {Object} 配置数据
+     */
+    convertLasiKoufenToConfig(componentState) {
+      const { dutyConfig, PartnerDutyCondition, doubleParPlusValue, parPlusValue, strokeDiffValue } = componentState;
+
+      // 构建扣分基线
+      let badScoreBaseLine = null;
+      switch (dutyConfig) {
+        case 'NODUTY':
+          badScoreBaseLine = 'NoSub';
+          break;
+        case 'Par+':
+          badScoreBaseLine = `Par+${parPlusValue}`;
+          break;
+        case 'DoublePar+':
+          badScoreBaseLine = `DoublePar+${doubleParPlusValue}`;
+          break;
+      }
+
+      // 构建同伴惩罚配置
+      let dutyConfigValue = null;
+      switch (PartnerDutyCondition) {
+        case 'DUTY_DINGTOU':
+          dutyConfigValue = 'DUTY_DINGTOU';
+          break;
+        case 'DUTY_PAR':
+          dutyConfigValue = `Par+${parPlusValue}`;
+          break;
+        case 'DUTY_DOUBLE_PAR':
+          dutyConfigValue = `DoublePar+${doubleParPlusValue}`;
+          break;
+        default:
+          dutyConfigValue = 'NODUTY';
+      }
+
+      return {
+        badScoreBaseLine,
+        badScoreMaxLost: 10000000, // 添加默认的封顶配置
+        dutyConfig: dutyConfigValue,
+        PartnerDutyCondition: PartnerDutyCondition,
+        customValues: {
+          doubleParPlusValue,
+          parPlusValue,
+          strokeDiffValue
+        }
+      };
+    },
+
 
     // 打印当前配置
     printCurrentConfig() {
