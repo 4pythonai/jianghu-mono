@@ -4,6 +4,10 @@ const configManager = require('../../../../utils/configManager.js');
 
 Component({
   properties: {
+    mode: {
+      type: String,
+      value: 'UserConfig' // 默认模式
+    }
   },
 
   data: {
@@ -27,7 +31,7 @@ Component({
     },
     eatRangeKeys: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
 
-    meatValueOption: 0,
+    meatValueOption: 4,
     topOptions: ["不封顶", "X分封顶"],
     topSelected: 0,
 
@@ -43,8 +47,15 @@ Component({
   // 组件生命周期
   lifetimes: {
     attached() {
-      // 从store获取当前配置并初始化组件状态
-      this.initializeFromStore();
+      // 根据模式决定初始化方式
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：使用默认配置，不依赖store
+        this.initializeSysConfig();
+      } else {
+        // UserConfig模式：从store获取当前配置并初始化组件状态
+        this.initializeFromStore();
+      }
+
       // 计算显示值
       this.updateDisplayValue();
       // 检查禁用状态
@@ -67,6 +78,26 @@ Component({
     }
   },
   methods: {
+    // 初始化SysConfig模式的默认配置
+    initializeSysConfig() {
+      // 使用组件data中定义的默认值
+      const defaultEatingRange = {
+        "BetterThanBirdie": 4,
+        "Birdie": 2,
+        "Par": 1,
+        "WorseThanPar": 0
+      };
+
+      // 确保使用data中设置的默认值
+      this.setData({
+        eatingRange: defaultEatingRange,
+        meatValueOption: this.data.meatValueOption, // 保持为4（分值翻倍不含奖励）
+        meatScoreValue: this.data.meatScoreValue,   // 保持为1
+        topSelected: this.data.topSelected,         // 保持为0（不封顶）
+        topScoreLimit: this.data.topScoreLimit      // 保持为3
+      });
+    },
+
     // 检查禁用状态
     checkDisabledState() {
       const isDisabled = G4PLasiStore.drawConfig === 'NoDraw';
@@ -75,6 +106,70 @@ Component({
 
     // 计算显示值
     updateDisplayValue() {
+      let displayValue = '';
+
+      // 根据模式决定数据来源
+      if (this.properties.mode === 'SysConfig') {
+        // SysConfig模式：从组件data中读取数据
+        displayValue = this.getDisplayValueFromComponentData();
+      } else {
+        // UserConfig模式：从store中读取数据
+        displayValue = this.getDisplayValueFromStore();
+      }
+
+      this.setData({
+        displayValue: displayValue
+      });
+    },
+
+    // 从组件data中获取显示值（SysConfig模式）
+    getDisplayValueFromComponentData() {
+      const { meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
+
+      // 格式化吃肉规则显示
+      let meatValueText = '';
+      switch (meatValueOption) {
+        case 0:
+          meatValueText = `肉算${meatScoreValue}分`;
+          break;
+        case 1:
+          meatValueText = '分值翻倍';
+          break;
+        case 2:
+          meatValueText = '分值连续翻倍';
+          break;
+        case 3:
+          meatValueText = '分值翻倍(含奖励)';
+          break;
+        case 4:
+          meatValueText = '分值翻倍(不含奖励)';
+          break;
+        default:
+          meatValueText = '请配置吃肉规则';
+      }
+
+      // 格式化封顶值
+      let meatMaxText = '';
+      if (topSelected === 0) {
+        meatMaxText = '不封顶';
+      } else {
+        meatMaxText = `${topScoreLimit}分封顶`;
+      }
+
+      // 组合显示文本
+      if (meatValueText && meatMaxText) {
+        return `${meatValueText}/${meatMaxText}`;
+      } else if (meatValueText) {
+        return meatValueText;
+      } else if (meatMaxText) {
+        return meatMaxText;
+      } else {
+        return '请配置吃肉规则';
+      }
+    },
+
+    // 从store中获取显示值（UserConfig模式）
+    getDisplayValueFromStore() {
       const store = G4PLasiStore;
       let displayValue = '';
 
@@ -111,15 +206,12 @@ Component({
       } else if (meatValueText) {
         displayValue = meatValueText;
       } else if (meatMaxText) {
-        displayValue = meatMaxText;
+        displayValue = meatValueText;
       } else {
         displayValue = '请配置吃肉规则';
       }
 
-      this.setData({
-        displayValue: displayValue
-      });
-
+      return displayValue;
     },
 
     // 从store初始化配置
