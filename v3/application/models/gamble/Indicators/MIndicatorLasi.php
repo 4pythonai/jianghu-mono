@@ -220,16 +220,23 @@ class MIndicatorLasi extends CI_Model {
 
         $hole['points_before_kick'] = $points;
         $currentHoleMultiplier = $this->MIndicator->getCurrentHoleMultiplier($hole, $context->kickConfig);
-        $rewardFactor = $this->getLassiRewardFactor($hole, $context->RewardConfig);
 
+        // debug("奖励属性");
+        // debug($context->RewardConfig);
+        // die;
+
+        // 乘法奖励,只考虑赢方的倍数
         if ($context->RewardConfig['rewardType'] == 'multiply'  && $hole['draw'] == 'n') {
+            $rewardFactor = $this->getLassiRewardFactor($hole, $context->RewardConfig);
             $hole['points'] =  $points * $currentHoleMultiplier * $rewardFactor;
+            $hole['bonus_points'] =  $points * $currentHoleMultiplier * ($rewardFactor - 1);
         }
 
         if ($context->RewardConfig['rewardType'] == 'add' && $hole['draw'] == 'n') {
             // debug("加法类型");
             $this->addDebug($hole, "加法奖励: 奖励点数: $rewardFactor");
             $hole['points'] =  $points * $currentHoleMultiplier + $rewardFactor;
+            $hole['bonus_points'] =  $rewardFactor;
         }
     }
 

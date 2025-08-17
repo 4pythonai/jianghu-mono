@@ -25,13 +25,55 @@ class Test extends CI_Controller {
 
     public function index() {
 
-        $game_id = 1338112;
+        $this->load->model('gamble/MReward');
+        $rewardPair = [
+            [
+                'scoreName' => 'Par',
+                'rewardValue' => 1
+            ],
+            [
+                'scoreName' => 'Birdie',
+                'rewardValue' => 2
+            ],
+            [
+                'scoreName' => 'Eagle',
+                'rewardValue' => 4
+            ],
+            [
+                'scoreName' => 'Albatross/HIO',
+                'rewardValue' => 10
+            ],
+            [
+                'scoreName' => 'Birdie+Birdie',
+                'rewardValue' => 4
+            ],
+            [
+                'scoreName' => 'Birdie+Eagle',
+                'rewardValue' => 8
+            ],
+            [
+                'scoreName' => 'Eagle+Birdie',
+                'rewardValue' => 8
+            ],
+            [
+                'scoreName' => 'Eagle+Eagle',
+                'rewardValue' => 16
+            ]
+        ];
+        $par = 5;
+        $score1 = 3;
+        $score2 = 1;
+        $rewardType = 'multiply';
+        $reward = $this->MReward->getRewardFactor($par, $score1, $score2, $rewardPair, $rewardType);
+        debug([
+            'PAR' => $par,
+            "成绩1" => $score1,
+            "成绩2" => $score2,
+            "奖励类型" => $rewardType,
 
-        $holes = $this->MDetailGame->getGameHoles($game_id);
-        debug($holes);
-
-        $holes = $this->MDetailGame->getHoleListByGameId($game_id);
-        debug($holes);
+        ]);
+        debug($rewardPair);
+        debug($reward);
     }
 
 

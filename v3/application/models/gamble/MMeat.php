@@ -258,6 +258,10 @@ class MMeat extends CI_Model {
      * @return int 能吃几块肉
      */
     private function determineEatingCount($winner_performance, $context, $available_meat_count, &$hole) {
+
+        // debug($context);
+        // die;
+
         $meat_value_config = $context->meatValueConfig;
 
         if ($meat_value_config === 'CONTINUE_DOUBLE') {
@@ -269,14 +273,30 @@ class MMeat extends CI_Model {
         if ($meat_value_config === 'SINGLE_DOUBLE') {
             // SINGLE_DOUBLE模式：根据表现决定能吃几块肉
             $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eatingRange);
-            $this->addDebug($hole, "吃肉分析: SINGLE_DOUBLE模式，根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉");
+            $this->addDebug($hole, "吃肉分析: SINGLE_DOUBLE模式，根据表现 {$winner_performance} 最多可以吃 {$eating_count} 块肉");
         }
 
         if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
             // MEAT_AS_X模式：根据表现决定能吃几块肉
             $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eatingRange);
-            $this->addDebug($hole, "吃肉分析: MEAT_AS_X模式，根据表现 {$winner_performance} 可以吃 {$eating_count} 块肉");
+            $this->addDebug($hole, "吃肉分析: MEAT_AS_X模式，根据表现 {$winner_performance} 最多可以吃 {$eating_count} 块肉");
         }
+
+        if ($meat_value_config === 'DOUBLE_WITHOUT_REWARD') {
+            // SINGLE_DOUBLE模式：根据表现决定能吃几块肉
+            $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eatingRange);
+            $this->addDebug($hole, "拉丝吃肉分析: DOUBLE_WITHOUT_REWARD 模式，根据表现 {$winner_performance} 最多可以吃 {$eating_count} 块肉");
+        }
+
+
+        if ($meat_value_config === 'DOUBLE_WITH_REWARD') {
+            // SINGLE_DOUBLE模式：根据表现决定能吃几块肉
+            $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eatingRange);
+            $this->addDebug($hole, "拉丝吃肉分析: DOUBLE_WITH_REWARD 模式，根据表现 {$winner_performance} 最多可以吃 {$eating_count} 块肉");
+        }
+
+
+        // DOUBLE_WITHOUT_REWARD
 
         return $eating_count;
     }
