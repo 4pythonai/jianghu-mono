@@ -1,6 +1,5 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
 import { reaction } from 'mobx-miniprogram'
-import configManager from '../../../../utils/configManager.js'
 import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
 
 Component({
@@ -142,41 +141,8 @@ Component({
       }
     },
 
-    /**
-    * 解析 meatValueConfig 配置
-    * @param {string} value - 配置值，如 "SINGLE_DOUBLE"
-    * @returns {Object} 解析结果，如 { type: 'SINGLE_DOUBLE', index: 1 }
-    */
-    parseMeatValueConfig(value) {
-      if (!value || typeof value !== 'string') {
-        return {
-          type: 'MEAT_AS_1',
-          index: 0,
-          score: 1
-        };
-      }
 
-      if (value === 'SINGLE_DOUBLE') {
-        return { type: value, index: 1 };
-      }
-      if (value === 'CONTINUE_DOUBLE') {
-        return { type: value, index: 2 };
-      }
-      if (value.startsWith('MEAT_AS_')) {
-        const meatResult = this.parseMeatAs(value);
-        return {
-          type: 'MEAT_AS',
-          index: 0,
-          score: meatResult ? meatResult.score : 1
-        };
-      }
 
-      return {
-        type: 'MEAT_AS_1',
-        index: 0,
-        score: 1
-      };
-    },
 
 
     // 事件处理方法
@@ -292,7 +258,6 @@ Component({
 
       // 使用工具类转换组件状态为配置数据
       const configData = this.convertE8421MeatToConfig(componentState);
-
       return configData;
     },
 

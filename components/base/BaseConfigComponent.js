@@ -88,17 +88,7 @@ export class BaseConfigComponent {
         // 子类可以重写这个方法来自定义错误处理
     }
 
-    /**
-     * 验证配置数据
-     * @param {Object} configData - 配置数据
-     * @returns {boolean} 是否有效
-     */
-    validateConfigData(configData) {
-        if (!configData || typeof configData !== 'object') {
-            return false;
-        }
-        return true;
-    }
+
 
     /**
      * 重置组件状态

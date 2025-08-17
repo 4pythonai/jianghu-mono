@@ -1,5 +1,4 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import configManager from '../../../../utils/configManager.js'
 import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
 
 Component({

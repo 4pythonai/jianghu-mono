@@ -1,5 +1,4 @@
 import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import configManager from '../../../../utils/configManager.js'
 import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
 
 Component({
@@ -288,6 +287,53 @@ Component({
       this.setData(componentState);
     },
 
+
+    /**
+     * 将E8421Koufen组件状态转换为配置数据
+     * @param {Object} componentState - 组件状态
+     * @returns {Object} 配置数据
+     */
+    convertE8421KoufenToConfig(componentState) {
+      const { selectedStart, selectedMax, selectedDuty, paScore, doubleParScore, maxSubScore } = componentState;
+
+      // 构建扣分基线
+      let badScoreBaseLine = null;
+      switch (selectedStart) {
+        case 0:
+          badScoreBaseLine = `Par+${paScore}`;
+          break;
+        case 1:
+          badScoreBaseLine = `DoublePar+${doubleParScore}`;
+          break;
+        case 2:
+          badScoreBaseLine = 'NoSub';
+          break;
+      }
+
+      // 构建封顶配置
+      const badScoreMaxLost = selectedMax === 0 ? 10000000 : maxSubScore;
+
+      // 构建同伴惩罚配置
+      let dutyConfig = null;
+      switch (selectedDuty) {
+        case 0:
+          dutyConfig = 'NODUTY';
+          break;
+        case 1:
+          dutyConfig = 'DUTY_DINGTOU';
+          break;
+        case 2:
+          dutyConfig = 'DUTY_NEGATIVE';
+          break;
+      }
+
+      return {
+        badScoreBaseLine,
+        badScoreMaxLost,
+        dutyConfig
+      };
+    },
+
     // 获取配置数据 - 使用工具类简化
     getConfigData() {
       const componentState = {
@@ -300,7 +346,7 @@ Component({
       };
 
       // 使用工具类转换组件状态为配置数据
-      const configData = configManager.convertE8421KoufenToConfig(componentState);
+      const configData = this.convertE8421KoufenToConfig(componentState);
 
       return configData;
     },

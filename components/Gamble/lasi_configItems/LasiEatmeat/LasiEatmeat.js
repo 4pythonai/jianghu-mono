@@ -157,6 +157,33 @@ Component({
       }
     },
 
+
+    /**
+     * 解析 MEAT_AS_X 格式的配置
+     * @param {string} value - 配置值，如 "MEAT_AS_2"
+     * @returns {Object|null} 解析结果，如 { type: 'MeatAs', score: 2 }
+     */
+    parseMeatAs(value) {
+      if (!value || typeof value !== 'string') {
+        return null;
+      }
+
+      if (value.startsWith('MEAT_AS_')) {
+        const scoreStr = value.replace('MEAT_AS_', '');
+        const score = Number.parseInt(scoreStr);
+
+        if (!Number.isNaN(score)) {
+          return {
+            type: 'MeatAs',
+            score: score,
+            original: value
+          };
+        }
+      }
+
+      return null;
+    },
+
     // 解析存储的配置
     parseStoredConfig(config) {
       const { eatingRange, meatValue, meatMaxValue } = config;
@@ -170,7 +197,7 @@ Component({
         if (meatValue?.startsWith('MEAT_AS_')) {
           meatValueOption = 0;
           // 使用统一的解析工具
-          const meatResult = configManager.parseMeatAs(meatValue);
+          const meatResult = this.parseMeatAs(meatValue);
           this.setData({ meatScoreValue: meatResult ? meatResult.score : 1 });
         } else if (meatValue === 'SINGLE_DOUBLE') {
           meatValueOption = 1;

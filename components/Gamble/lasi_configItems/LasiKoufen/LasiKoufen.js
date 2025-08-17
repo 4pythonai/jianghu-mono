@@ -1,5 +1,4 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
-const configManager = require('../../../../utils/configManager.js');
 
 Component({
   properties: {
@@ -222,7 +221,6 @@ Component({
       return this.convertLasiKoufenToConfig(componentState);
     },
 
-    // ==================== 拉丝相关方法 ====================
 
     /**
      * 将LasiKoufen组件状态转换为配置数据
@@ -332,6 +330,64 @@ Component({
       return this.getCurrentConfig();
     },
 
+
+
+    // ==================== 配置解析方法 ====================
+
+    /**
+     * 解析 Par+X 格式的配置
+     * @param {string} value - 配置值，如 "Par+4"
+     * @returns {Object|null} 解析结果，如 { type: 'Par', score: 4 }
+     */
+    parseParPlus(value) {
+      if (!value || typeof value !== 'string') {
+        return null;
+      }
+
+      if (value.startsWith('Par+')) {
+        const scoreStr = value.replace('Par+', '');
+        const score = Number.parseInt(scoreStr);
+
+        if (!Number.isNaN(score)) {
+          return {
+            type: 'Par',
+            score: score,
+            original: value
+          };
+        }
+      }
+
+      return null;
+    },
+
+
+
+    /**
+     * 解析 DoublePar+X 格式的配置
+     * @param {string} value - 配置值，如 "DoublePar+7"
+     * @returns {Object|null} 解析结果，如 { type: 'DoublePar', score: 7 }
+     */
+    parseDoubleParPlus(value) {
+      if (!value || typeof value !== 'string') {
+        return null;
+      }
+
+      if (value.startsWith('DoublePar+')) {
+        const scoreStr = value.replace('DoublePar+', '');
+        const score = Number.parseInt(scoreStr);
+
+        if (!Number.isNaN(score)) {
+          return {
+            type: 'DoublePar',
+            score: score,
+            original: value
+          };
+        }
+      }
+
+      return null;
+    },
+
     // 初始化配置数据 - 供UserRuleEdit页面调用
     initConfigData(configData) {
       console.log('🎯 [LasiKoufen] 初始化配置数据:', configData);
@@ -360,8 +416,8 @@ Component({
           dutyConfig = 'NODUTY';
         } else {
           // 使用统一的解析工具
-          const parResult = configManager.parseParPlus(configData.badScoreBaseLine);
-          const doubleParResult = configManager.parseDoubleParPlus(configData.badScoreBaseLine);
+          const parResult = this.parseParPlus(configData.badScoreBaseLine);
+          const doubleParResult = this.parseDoubleParPlus(configData.badScoreBaseLine);
 
           if (parResult) {
             dutyConfig = 'Par+';
@@ -375,8 +431,8 @@ Component({
         // 解析dutyConfig
         let PartnerDutyCondition = 'DUTY_DINGTOU';
         if (configData.dutyConfig) {
-          const parResult = configManager.parseParPlus(configData.dutyConfig);
-          const doubleParResult = configManager.parseDoubleParPlus(configData.dutyConfig);
+          const parResult = this.parseParPlus(configData.dutyConfig);
+          const doubleParResult = this.parseDoubleParPlus(configData.dutyConfig);
 
           if (parResult) {
             PartnerDutyCondition = 'DUTY_PAR';
