@@ -230,7 +230,6 @@ class MIndicatorLasi extends CI_Model {
         $rewardFactor = 1;
 
         if ($context->RewardConfig['rewardType'] == 'multiply'  && $hole['draw'] == 'n') {
-            $rewardFactor = $this->getLassiRewardFactor($hole, $context->RewardConfig);
 
             if ($hole['winner'] == 'blue') {
                 $score1 = $hole['computedScores'][$hole['blue'][0]];
@@ -260,109 +259,6 @@ class MIndicatorLasi extends CI_Model {
     }
 
 
-    public function getLassiRewardFactor(&$hole, $RewardConfig) {
-
-
-
-        if ($hole['draw'] == 'y') {
-            if ($RewardConfig['rewardType'] == 'multiply') {
-                // $hole['debug'][] = "平局/乘法奖励: 奖励倍数: 1";
-                $this->addDebug($hole, "打平:乘法奖励: 奖励倍数: 1");
-
-                return 1;
-            }
-            if ($RewardConfig['rewardType'] == 'add') {
-                // $hole['debug'][] = "平局/加法奖励: 奖励点数: 0";
-                $this->addDebug($hole, "打平:加法奖励: 奖励点数: 0");
-                return 0;
-            }
-        }
-
-        $winner_side_scores = [];
-
-        //赢家的两个杆数
-        if ($hole['winner'] == 'blue') {
-            $winner_side_scores[] = $hole['computedScores'][$hole['blue'][0]];
-            $winner_side_scores[] = $hole['computedScores'][$hole['blue'][1]];
-        }
-
-        if ($hole['winner'] == 'red') {
-            $winner_side_scores[] = $hole['computedScores'][$hole['red'][0]];
-            $winner_side_scores[] = $hole['computedScores'][$hole['red'][1]];
-        }
-
-
-        $tmp = $this->findRewardValue($hole, $winner_side_scores, $RewardConfig['rewardPair']);
-        $this->addDebug($hole, "奖励(倍数/点数): $tmp");
-        return $tmp;
-    }
-
-
-    private function findRewardValue(&$hole, $bestScores, $rewardPair) {
-        $par = $hole['par'];
-        // 1. 为了方便快速查找，将奖励配置转换为一个以 scoreName 为键的映射数组
-        $rewardMap = [];
-        foreach ($rewardPair as $reward) {
-            $rewardMap[$reward['scoreName']] = $reward['rewardValue'];
-        }
-
-        // 2. 算法第一步：根据最好成绩（最小杆数）来寻找 rewardValue
-        if (!empty($bestScores)) {
-            $minScore = min($bestScores);
-            $bestScoreName = $this->getScoreName($par, $minScore);
-
-            // 如果找到了对应的得分名称，并且该名称存在于奖励配置中
-            if ($bestScoreName !== null && isset($rewardMap[$bestScoreName])) {
-                $this->addDebug($hole, "找到单奖: $bestScoreName");
-                return $rewardMap[$bestScoreName]; // 找到，立即返回
-            }
-        }
-
-        // 3. 算法第二步：如果最好成绩没找到，则在组合配置里面寻找
-        //    (假设组合总是由两个分数构成)
-        if (count($bestScores) >= 2) {
-            $scoreName1 = $this->getScoreName($par, $bestScores[0]);
-            $scoreName2 = $this->getScoreName($par, $bestScores[1]);
-
-            // 确保两个分数都能转换为有效的得分名称
-            if ($scoreName1 && $scoreName2) {
-                // 将名称排序以确保组合键的一致性 (例如 "Birdie+Eagle" 和 "Eagle+Birdie" 是同一种)
-                $comboNames = [$scoreName1, $scoreName2];
-                sort($comboNames);
-                $comboKey = implode('+', $comboNames);
-
-                if (isset($rewardMap[$comboKey])) {
-                    $this->addDebug($hole, "找到组合奖励: $comboKey");
-                    return $rewardMap[$comboKey]; // 找到组合奖励，返回
-                }
-            }
-        }
-
-        // 4. 如果以上都没有找到，返回默认值 1
-        return 1;
-    }
-
-    private function getScoreName($par, $score) {
-        // HIO (一杆进洞) 是最特殊的情况，优先判断
-        if ($score === 1) {
-            return 'Albatross/HIO';
-        }
-
-        $diff = $score - $par;
-
-        switch ($diff) {
-            case -3:
-                return 'Albatross/HIO'; // 例如 Par 5 打 2 杆
-            case -2:
-                return 'Eagle';
-            case -1:
-                return 'Birdie';
-            case 0:
-                return 'Par';
-            default:
-                return null; // 对于 Bogey 或更高杆数，没有特殊奖励名称
-        }
-    }
 
 
     /**
