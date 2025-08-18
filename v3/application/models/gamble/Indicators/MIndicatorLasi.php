@@ -6,13 +6,21 @@ if (!defined('BASEPATH')) {
 
 class MIndicatorLasi extends CI_Model {
 
+
+
+
+
+
+
+
+
     /**
      * 计算拉丝指标
      * @param array $hole 洞数据（引用传递）
      * @param object $context 上下文配置
      */
     public function calculateLasiIndicators(&$hole, $context) {
-        $fixedKpis = $this->fixKpis($context->kpis['kpiValues'], $context->kpis['totalCalculationType']);
+        $fixedKpis = $this->fixKpis($context->kpis['kpiValues'], $context->kpis['indicators'],  $context->kpis['totalCalculationType']);
         $indicatorBlue = 0;
         $indicatorRed = 0;
 
@@ -23,8 +31,9 @@ class MIndicatorLasi extends CI_Model {
 
         $_sumed = $this->sumkPIs($hole['tmp_indicators']);
 
-        // debug("各个指标");
-        // debug($hole['tmp_indicators']);
+        debug("各个指标");
+        debug($hole['tmp_indicators']);
+        // die;
         // debug($_sumed);
 
 
@@ -43,7 +52,7 @@ class MIndicatorLasi extends CI_Model {
      * @param string $indicatorType 指标类型 (best, worst, add_total, multiply_total等)
      * @return array 比较结果 ['winner' => 'red'|'blue'|'draw', 'redValue' => int, 'blueValue' => int]
      */
-    private function compareIndicator($hole, $indicatorType, $value) {
+    private function compareIndicator($hole, $kpiName, $value) {
         $redScores = [];
         $blueScores = [];
 
@@ -58,10 +67,10 @@ class MIndicatorLasi extends CI_Model {
         }
 
         // 计算红队指标值
-        $redValue = $this->calculateTeamIndicator($redScores, $indicatorType);
+        $redValue = $this->calculateTeamIndicator($redScores, $kpiName);
 
         // 计算蓝队指标值
-        $blueValue = $this->calculateTeamIndicator($blueScores, $indicatorType);
+        $blueValue = $this->calculateTeamIndicator($blueScores, $kpiName);
 
         // 比较结果（高尔夫中杆数越少越好）
         if ($redValue < $blueValue) {
@@ -73,7 +82,7 @@ class MIndicatorLasi extends CI_Model {
         }
 
         return [
-            'kpi' => $indicatorType,
+            'kpi' => $kpiName,
             'redValue' => $redValue,
             'blueValue' => $blueValue,
             'winner' => $winner,
@@ -113,20 +122,24 @@ class MIndicatorLasi extends CI_Model {
      * @param string $totalCalculationType 总计算类型
      * @return array 修复后的KPI配置
      */
-    private function fixKpis($kpiValues, $totalCalculationType) {
-        $fixedKpis = [];
+    private function fixKpis($kpiValues, $indicators, $totalCalculationType) {
 
-        foreach ($kpiValues as $key => $value) {
-            if ($key === 'total') {
-                // 将 'total' 替换为 totalCalculationType 的值
-                $fixedKpis[$totalCalculationType] = $value;
-            } else {
-                // 其他键保持不变
-                $fixedKpis[$key] = $value;
+        $tmp = [];
+
+        foreach ($kpiValues as $kpiName => $kpiValue) {
+            if (in_array($kpiName, $indicators)) {
+                $tmp[$kpiName] = $kpiValue;
             }
         }
 
-        return $fixedKpis;
+
+        foreach ($tmp as $key => $value) {
+            if ($key === 'total') {
+                $tmp[$totalCalculationType] = $value;
+            }
+        }
+
+        return $tmp;
     }
 
 
@@ -136,6 +149,8 @@ class MIndicatorLasi extends CI_Model {
      * @return array 汇总结果 ['winner' => 'blue'|'red'|'draw', 'bluePoints' => int, 'redPoints' => int]
      */
     private function sumkPIs($tmp_indicators) {
+
+
         $bluePoints = 0;
         $redPoints = 0;
 
@@ -241,20 +256,20 @@ class MIndicatorLasi extends CI_Model {
             }
             $this->load->model('gamble/MReward');
             $rewardFactor = $this->MReward->getRewardFactor($hole['par'], $score1, $score2, $context->RewardConfig['rewardPair'], $context->RewardConfig['rewardType']);
-            debug($rewardFactor);
-            die;
 
-
-
-            $hole['points'] =  $points * $currentHoleMultiplier * $rewardFactor;
-            $hole['bonus_points'] =  $points * $currentHoleMultiplier * ($rewardFactor - 1);
+            // debug($rewardFactor);
+            // 最后得分
+            $hole['points'] =  $points * $currentHoleMultiplier * $rewardFactor['finalRewardValue'];
+            // 因为乘法奖励得到的点数
+            $hole['bonus_points'] =  $points * $currentHoleMultiplier * ($rewardFactor['finalRewardValue'] - 1);
         }
 
         if ($context->RewardConfig['rewardType'] == 'add' && $hole['draw'] == 'n') {
             // debug("加法类型");
             $this->addDebug($hole, "加法奖励: 奖励点数: $rewardFactor");
-            $hole['points'] =  $points * $currentHoleMultiplier + $rewardFactor;
-            $hole['bonus_points'] =  $rewardFactor;
+            $hole['points'] =  $points * $currentHoleMultiplier;
+            // $hole['points'] =  $points * $currentHoleMultiplier + $rewardFactor;
+            $hole['bonus_points'] =  0;
         }
     }
 

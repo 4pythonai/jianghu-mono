@@ -39,29 +39,28 @@ class MMoney extends CI_Model {
 
     // 8421 4人比赛输赢金额分配
     public function set4Player8421HolePointsDetail(&$hole) {
-        // 2:2 
-        // debug($hole);
-        // die;
         if (count($hole['red']) == 2 && count($hole['blue']) == 2) {
+
+
             if ($hole['winner'] == 'blue') {
                 $hole['winner_detail'] = [
-                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]], 'indicator' => $hole['indicators'][$hole['blue'][0]], 'scorePoints' => $hole['points']],
-                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]], 'indicator' => $hole['indicators'][$hole['blue'][1]], 'scorePoints' => $hole['points']],
+                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]],  'scorePoints' => $hole['points']],
+                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]],  'scorePoints' => $hole['points']],
                 ];
                 $hole['failer_detail'] = [
-                    ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]], 'indicator' => $hole['indicators'][$hole['red'][0]], 'scorePoints' => -$hole['points']],
-                    ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]], 'indicator' => $hole['indicators'][$hole['red'][1]], 'scorePoints' => -$hole['points']],
+                    ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]],   'scorePoints' => -$hole['points']],
+                    ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]],   'scorePoints' => -$hole['points']],
                 ];
             }
 
             if ($hole['winner'] == 'red') {
                 $hole['winner_detail'] = [
-                    ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]], 'indicator' => $hole['indicators'][$hole['red'][0]], 'scorePoints' => $hole['points']],
-                    ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]], 'indicator' => $hole['indicators'][$hole['red'][1]], 'scorePoints' => $hole['points']],
+                    ['userid' => $hole['red'][0], 'computedScore' => $hole['computedScores'][$hole['red'][0]],  'scorePoints' => $hole['points']],
+                    ['userid' => $hole['red'][1], 'computedScore' => $hole['computedScores'][$hole['red'][1]],  'scorePoints' => $hole['points']],
                 ];
                 $hole['failer_detail'] = [
-                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]], 'indicator' => $hole['indicators'][$hole['blue'][0]], 'scorePoints' => -$hole['points']],
-                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]], 'indicator' => $hole['indicators'][$hole['blue'][1]], 'scorePoints' => -$hole['points']],
+                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['computedScores'][$hole['blue'][0]],   'scorePoints' => -$hole['points']],
+                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['computedScores'][$hole['blue'][1]],   'scorePoints' => -$hole['points']],
                 ];
             }
         }
@@ -95,8 +94,24 @@ class MMoney extends CI_Model {
         if ($context->gambleSysName == '4p-8421') {
             if (count($hole['red']) == 2 && count($hole['blue']) == 2) {
                 if (array_key_exists('failer_detail', $hole)) {
+
+                    // debug("888888888888888888");
+                    // debug($hole['failer_detail']);
+                    // die;
+
                     // 输家里面只要出现一个负分,就靠考虑下"包负分"的情况
-                    if ($hole['failer_detail'][0]['indicator'] < 0 || $hole['failer_detail'][1]['indicator'] < 0) {
+
+
+                    $failer1 = $hole['failer_detail'][0]['userid'];
+                    $_8421_add_sub_max_config = $this->MIndicator8421->get8421AddSubMaxConfig($context, $failer1);
+                    $f1_indicator = $this->MIndicator8421->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$failer1], $_8421_add_sub_max_config);
+
+                    $failer2 = $hole['failer_detail'][1]['userid'];
+                    $_8421_add_sub_max_config = $this->MIndicator8421->get8421AddSubMaxConfig($context, $failer2);
+                    $f2_indicator = $this->MIndicator8421->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$failer2], $_8421_add_sub_max_config);
+
+
+                    if ($f1_indicator < 0 || $f2_indicator < 0) {
                         $dutyConfig = $context->dutyConfig;
                         $duty = $this->checkIfDuty($dutyConfig, $hole['winner_detail'], $hole['failer_detail']);
                         if ($duty) {

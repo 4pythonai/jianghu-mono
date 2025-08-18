@@ -40,6 +40,7 @@ class GambleContext extends CI_Model {
     public $roadLength;
     public $kpis;
     public $RewardConfig;
+    public $kpiBranches; // 添加 kpiBranches 属性
 
 
     public $meat_pool = []; // 肉池管理

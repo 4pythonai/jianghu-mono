@@ -6,75 +6,57 @@ if (!defined('BASEPATH')) {
 class MIndicator8421 extends CI_Model {
 
 
+    public function get8421AddSubMaxConfig($context, $playerId) {
+        $sub8421ConfigString =  $context->badScoreBaseLine;
+        $max8421SubValue = $context->badScoreMaxLost;
+        $userAddConfigPair = $context->playerIndicatorConfig[$playerId];
+        $_8421_add_sub_max_config = [
+            'add' => $userAddConfigPair,
+            'sub' => $sub8421ConfigString,
+            'max' => $max8421SubValue,
+        ];
+
+        return $_8421_add_sub_max_config;
+    }
 
 
     public function calculate8421Indicators(&$hole, $context) {
-        $playerIndicatorConfig = $context->playerIndicatorConfig;
-        $sub8421ConfigString =  $context->badScoreBaseLine;
-        $max8421SubValue = $context->badScoreMaxLost;
 
-        $indicatorBlue = 0;
-        $indicatorRed = 0;
+        $kpiBranches = $context->kpiBranches;
+        $attenders = $context->attenders;
 
-        // debug($hole);
-        // die;
+        $hole['KPI_INDICATORS'] = [];
+
+        foreach ($kpiBranches as $kpiname) {
 
 
-        // 处理红队
-        foreach ($hole['red'] as $userid) {
-            $userAddConfigPair = $playerIndicatorConfig[$userid];
-            $_8421_add_sub_max_config = [
-                'add' => $userAddConfigPair,
-                'sub' => $sub8421ConfigString,
-                'max' => $max8421SubValue,
-            ];
 
-            $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$userid], $_8421_add_sub_max_config);
+            $ind_blue = 0;
+            $ind_red = 0;
 
-            $logMsg = sprintf(
-                "第 %s 洞,红队,队员:%4d,%s, PAR:%d,分值:%2d,指标:%2d",
-                $hole['hindex'],
-                $userid,
-                $this->MUser->getNicknameById($userid),
-                $hole['par'],
-                $hole['computedScores'][$userid],
-                $indicator
-            );
+            foreach ($attenders as $attender) {
 
-            $hole['indicators'][$userid] = $indicator;
-            $hole['debug'][] = $logMsg; // 直接添加调试信息
-            $indicatorRed += $indicator;
+                $_8421_add_sub_max_config = $this->get8421AddSubMaxConfig($context, $attender);
+                $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$attender], $_8421_add_sub_max_config);
+
+
+
+                if (in_array($attender, $hole['blue'])) {
+                    $ind_blue += $indicator;
+                }
+
+                if (in_array($attender, $hole['red'])) {
+                    $ind_red += $indicator;
+                }
+
+
+
+                $hole['KPI_INDICATORS'][$kpiname]['red'] = $ind_red;
+                $hole['KPI_INDICATORS'][$kpiname]['blue'] = $ind_blue;
+            }
         }
-
-        // 处理蓝队
-        foreach ($hole['blue'] as $userid) {
-            $userAddConfigPair = $playerIndicatorConfig[$userid];
-            $_8421_add_sub_max_config = [
-                'add' => $userAddConfigPair,
-                'sub' => $sub8421ConfigString,
-                'max' => $max8421SubValue,
-            ];
-
-            $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$userid], $_8421_add_sub_max_config);
-
-            $logMsg = sprintf(
-                "第 %s 洞,蓝队,队员:%4d,%s,PAR:%d,分值:%2d,指标:%2d",
-                $hole['hindex'],
-                $userid,
-                $this->MUser->getNicknameById($userid),
-                $hole['par'],
-                $hole['computedScores'][$userid],
-                $indicator
-            );
-
-            $hole['indicators'][$userid] = $indicator;
-            $hole['debug'][] = $logMsg; // 直接添加调试信息
-            $indicatorBlue += $indicator;
-        }
-
-        $hole['indicatorBlue'] = $indicatorBlue;
-        $hole['indicatorRed'] = $indicatorRed;
     }
+
 
 
 
@@ -123,8 +105,6 @@ class MIndicator8421 extends CI_Model {
      */
     public function get8421AddValue($par, $score, $userConfig) {
 
-        // debug("用户分值配置", $userConfig);
-
         // 计算相对于Par的差值 (负数表示低于标准杆，正数表示高于标准杆)
         $diffFromPar = $score - $par;
 
@@ -141,7 +121,6 @@ class MIndicator8421 extends CI_Model {
             $betterThanBirdie = abs($diffFromPar + 1); // 比Birdie好多少杆
             $birdieScore = $userConfig['Birdie'] ?? 8; // 获取Birdie的配置分值，默认8
             $result = $birdieScore * pow(2, $betterThanBirdie);
-            // debug("比Birdie好{$betterThanBirdie}杆，基于Birdie分值{$birdieScore}，计算结果：{$result}");
             return $result;
         }
 
@@ -247,16 +226,16 @@ class MIndicator8421 extends CI_Model {
 
 
     public function set8421WinFailPoints(&$hole, $context) {
-        // debug("设置输赢:setWinFailPoints" . $context->gambleSysName);
 
-        $indicatorBlue = $hole['indicatorBlue'];
-        $indicatorRed = $hole['indicatorRed'];
+        $kpiIndicatorRedBlue = $this->summarizeKpiIndicatorsConcise($hole['KPI_INDICATORS']);
+        $indicatorBlue = $kpiIndicatorRedBlue['indicatorBlue'];
+        $indicatorRed = $kpiIndicatorRedBlue['indicatorRed'];
 
         // 获取顶洞配置
         $drawConfig = $context->drawConfig;
 
         // 判断是否为顶洞
-        $isDraw = $this->MIndicator->checkDraw($indicatorBlue, $indicatorRed, $drawConfig);
+        $isDraw = $this->MIndicator->check8421Draw($indicatorBlue, $indicatorRed, $drawConfig);
 
         if ($isDraw) {
             $hole['draw'] = 'y';
@@ -290,7 +269,15 @@ class MIndicator8421 extends CI_Model {
         $currentHoleMultiplier = $this->MIndicator->getCurrentHoleMultiplier($hole, $context->kickConfig);
 
         $hole['points'] =  $points * $currentHoleMultiplier;
-        // debug($hole);
-        // die;
+    }
+
+    public function summarizeKpiIndicatorsConcise(array $indicators): array {
+        $totalRed = array_sum(array_column($indicators, 'red'));
+        $totalBlue = array_sum(array_column($indicators, 'blue'));
+
+        return [
+            'indicatorBlue' => $totalBlue,
+            'indicatorRed' => $totalRed,
+        ];
     }
 }

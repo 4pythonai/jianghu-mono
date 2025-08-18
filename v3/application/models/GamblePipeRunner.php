@@ -140,14 +140,19 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 红蓝分组 - 直接传递 useful_holes 的引用以确保实时数据
             $this->MRedBlue->setRedBlueWithContext($index, $hole, $context);
 
+            // 设置要比较的 kpi分支
+            $this->MIndicator->setKpiBranches($index, $hole, $context);
+
 
             // 计算指标
             $this->MIndicator->computeIndicators($index, $hole, $context);
 
-
             // 判断输赢
-            $this->MIndicator->setWinFailPoints($hole, $context);
+            $this->MPoints->setWinFailPoints($hole, $context);
 
+
+            // 设置 拉丝的乘法 奖励
+            $this->MPoints->setLasiMultiplyReward($hole, $context);
 
 
             // 进行排名计算( 排名必须在输赢判定后,因为排名可能用到输赢)
@@ -215,6 +220,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'group_info' => $this->context->group_info,
             'useful_holes' => $this->context->usefulHoles, // 实际的计算结果,
             'roadLength' => $this->context->roadLength,
+            'kpiBranches' => $this->context->kpiBranches,
         ];
 
 

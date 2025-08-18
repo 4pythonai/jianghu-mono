@@ -12,6 +12,24 @@ class MIndicator extends CI_Model {
         $this->load->model('gamble/Indicators/MIndicatorLasi');
     }
 
+
+
+
+
+
+    public function setKpiBranches($index, &$hole,  &$context) {
+        if ($context->gambleSysName == '4p-8421') {
+            $branches = ['k8421'];
+            $context->kpiBranches = $branches;
+        }
+    }
+
+
+
+
+
+
+
     /**
      * 计算洞的指标 (使用上下文对象)
      * @param int $index 洞索引
@@ -30,14 +48,7 @@ class MIndicator extends CI_Model {
     }
 
 
-    public function setWinFailPoints(&$hole, $context) {
-        if ($context->gambleSysName == '4p-8421') {
-            $this->MIndicator8421->set8421WinFailPoints($hole, $context);
-        }
-        if ($context->gambleSysName == '4p-lasi') {
-            $this->MIndicatorLasi->setLasiWinFailPoints($hole, $context);
-        }
-    }
+
 
 
 
@@ -70,7 +81,7 @@ class MIndicator extends CI_Model {
      * @param string $drawConfig 顶洞配置
      * @return bool 是否为顶洞
      */
-    public function checkDraw($indicatorBlue, $indicatorRed, $drawConfig) {
+    public function check8421Draw($indicatorBlue, $indicatorRed, $drawConfig) {
         if ($drawConfig == "NoDraw") {
             // 不考虑顶洞，只有完全相等才算顶洞
             return false;

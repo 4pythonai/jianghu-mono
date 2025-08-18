@@ -10,6 +10,13 @@ if (!defined('BASEPATH')) {
 
 class MReward extends CI_Model {
 
+
+    public function setLasisetLasiMultiplyRewardReward(&$hole, $context) {
+        // $this->setLasiWinFailPoints($hole, $context);
+        debug(" 拉丝 乘法奖励");
+    }
+
+
     public function getRewardFactor($par, $score1, $score2, $RewardPair, $rewardType) {
         // 获取两个杆数对应的得分名称
         $scoreName1 = $this->getScoreName($par, $score1);

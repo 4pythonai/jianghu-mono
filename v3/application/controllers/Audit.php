@@ -25,6 +25,9 @@ class Audit extends CI_Controller {
         $this->load->model('gamble/MRuntimeConfig');
         $this->load->model('gamble/MStroking');
         $this->load->model('gamble/MIndicator');
+        $this->load->model('gamble/MPoints');
+        $this->load->model('gamble/MReward');
+
         $this->load->model('gamble/MRedBlue');
         $this->load->model('gamble/MMoney');
         $this->load->model('gamble/MRanking');
