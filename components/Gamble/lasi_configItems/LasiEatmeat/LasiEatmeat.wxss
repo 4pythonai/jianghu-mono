@@ -1,8 +1,6 @@
 @import "/styles/modal.wxss";
 
-
 .modal-list {
-
 	width: 100%;
 	border-radius: 24rpx;
 	padding: 32rpx 24rpx;
@@ -14,6 +12,7 @@
 	justify-content: space-between;
 	margin-bottom: 18rpx;
 }
+
 .eat-label {
 	font-size: 28rpx;
 	color: #222;
@@ -31,6 +30,7 @@
 	color: #222;
 	margin-bottom: 18rpx;
 }
+
 .radio-outer {
 	width: 32rpx;
 	height: 32rpx;
@@ -42,16 +42,17 @@
 	align-items: center;
 	justify-content: center;
 }
+
 .radio-outer.checked {
 	border-color: #4caf7a;
 }
+
 .radio-inner {
 	width: 18rpx;
 	height: 18rpx;
 	border-radius: 50%;
 	background: #4caf7a;
 }
-
 
 /* 新增样式 */
 .eat-picker {
@@ -79,8 +80,6 @@
 	background: #45a072;
 	transform: scale(0.95);
 }
-
-
 
 .option-content {
 	display: flex;
@@ -134,20 +133,34 @@
 	margin-bottom: 8rpx;
 }
 
-.form-input {
+/* 模拟input的样式，避免真机上的光标问题 */
+.form-input-simulator {
 	width: 100%;
 	height: 64rpx;
 	background: #f8f8f8;
 	border: 2rpx solid #4caf7a;
 	border-radius: 16rpx;
 	font-size: 28rpx;
-	color: #888;
+	color: #222;
 	padding: 0 24rpx;
 	margin-bottom: 0;
 	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	line-height: 64rpx;
+	/* 确保不会有任何光标或焦点效果 */
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+	pointer-events: none;
 }
 
-
+.form-input-simulator.conditionally-disabled {
+	color: #bbb;
+	background: #f0f0f0;
+	border-color: #e0e0e0;
+}
 
 .form-select {
 	position: relative;

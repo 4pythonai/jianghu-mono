@@ -3,6 +3,13 @@ import { reaction } from 'mobx-miniprogram'
 const configManager = require('../../../../utils/configManager.js');
 
 Component({
+  properties: {
+    // 可选：显式定义mode属性
+    mode: {
+      type: String,
+      value: 'UserConfig' // 默认模式
+    }
+  },
 
   data: {
     // 组件内部状态
@@ -10,7 +17,7 @@ Component({
     displayValue: '请配置吃肉规则',
     isDisabled: false,
 
-    // 直接使用固定的默认配置
+    // 配置相关数据
     eatingRange: {
       "BetterThanBirdie": 4,
       "Birdie": 2,
@@ -38,12 +45,18 @@ Component({
     topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1),  // 1-20, 封顶分数范围
     meatScoreRange: [1, 2, 3, 4, 5], // 肉分值范围 1-5
   },
+
   // 组件生命周期
   lifetimes: {
     attached() {
-      // 根据模式决定初始化方式
+      console.log('🎯 [LasiEatmeat] 组件加载，模式:', this.properties.mode);
+
       if (this.properties.mode === 'SysConfig') {
-        this.initializeSysConfig();
+        // SysConfig模式：使用独立的配置数据，不依赖Store
+        this.initializeWithDefaults();
+      } else if (this.properties.mode === 'UserEdit') {
+        // UserEdit模式：等待外部数据初始化，不自动从Store加载
+        this.initializeWithDefaults();
       } else {
         // UserConfig模式：从store获取当前配置并初始化组件状态
         this.initializeFromStore();
@@ -70,10 +83,10 @@ Component({
       }
     }
   },
+
   methods: {
-    // 初始化SysConfig模式的默认配置
-    initializeSysConfig() {
-      // 使用组件data中定义的默认值
+    // 使用默认值初始化
+    initializeWithDefaults() {
       const defaultEatingRange = {
         "BetterThanBirdie": 4,
         "Birdie": 2,
@@ -81,13 +94,12 @@ Component({
         "WorseThanPar": 0
       };
 
-      // 确保使用data中设置的默认值
       this.setData({
         eatingRange: defaultEatingRange,
-        meatValueOption: this.data.meatValueOption, // 保持为4（分值翻倍不含奖励）
-        meatScoreValue: this.data.meatScoreValue,   // 保持为1
-        topSelected: this.data.topSelected,         // 保持为0（不封顶）
-        topScoreLimit: this.data.topScoreLimit      // 保持为3
+        meatValueOption: this.data.meatValueOption || 4, // 保持为4（分值翻倍不含奖励）
+        meatScoreValue: this.data.meatScoreValue || 1,   // 保持为1
+        topSelected: this.data.topSelected || 0,         // 保持为0（不封顶）
+        topScoreLimit: this.data.topScoreLimit || 3      // 保持为3
       });
     },
 
@@ -99,23 +111,14 @@ Component({
 
     // 计算显示值
     updateDisplayValue() {
-      let displayValue = '';
-
-      // 根据模式决定数据来源
-      if (this.properties.mode === 'SysConfig') {
-        // SysConfig模式：从组件data中读取数据
-        displayValue = this.getDisplayValueFromComponentData();
-      } else {
-        // UserConfig模式：从store中读取数据
-        displayValue = this.getDisplayValueFromStore();
+      if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
+        // 使用组件内部状态
+        const displayValue = this.getDisplayValueFromComponentData();
+        this.setData({ displayValue });
       }
-
-      this.setData({
-        displayValue: displayValue
-      });
     },
 
-    // 从组件data中获取显示值（SysConfig模式）
+    // 从组件data获取显示值
     getDisplayValueFromComponentData() {
       const { meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
 
@@ -146,7 +149,10 @@ Component({
       if (topSelected === 0) {
         meatMaxText = '不封顶';
       } else {
-        meatMaxText = `${topScoreLimit}分封顶`;
+        meatMaxText = `${topScoreLimit || 3}分封顶`;
+      }
+      if (topScoreLimit == "10000000") {
+        meatMaxText = '不封顶';
       }
 
       // 组合显示文本
@@ -161,53 +167,14 @@ Component({
       }
     },
 
-    // 从store中获取显示值（UserConfig模式）
-    getDisplayValueFromStore() {
-      const store = G4PLasiStore;
-      let displayValue = '';
+    // // 从store获取显示值
+    // getDisplayValueFromStore() {
+    //   const store = G4PLasiStore;
+    //   // 使用工具类格式化显示值
+    //   return ruleFormatter.formatMeatRule(store.meatValueConfig, store.meatMaxValue);
+    // },
 
-      // 格式化吃肉规则显示
-      let meatValueText = '';
-      if (store.meatValueConfig) {
-        if (store.meatValueConfig?.startsWith('MEAT_AS_')) {
-          const score = store.meatValueConfig.replace('MEAT_AS_', '');
-          meatValueText = `肉算${score}分`;
-        } else if (store.meatValueConfig === 'DOUBLE_WITH_REWARD') {
-          meatValueText = '分值翻倍(含奖励)';
-        } else if (store.meatValueConfig === 'DOUBLE_WITHOUT_REWARD') {
-          meatValueText = '分值翻倍(不含奖励)';
-        } else if (store.meatValueConfig === 'SINGLE_DOUBLE') {
-          meatValueText = '分值翻倍';
-        } else if (store.meatValueConfig === 'CONTINUE_DOUBLE') {
-          meatValueText = '分值连续翻倍';
-        } else {
-          meatValueText = store.meatValueConfig;
-        }
-      }
-
-      // 格式化封顶值 - 10000000表示不封顶
-      let meatMaxText = '';
-      if (store.meatMaxValue === 10000000) {
-        meatMaxText = '不封顶';
-      } else if (typeof store.meatMaxValue === 'number' && store.meatMaxValue < 10000000) {
-        meatMaxText = `${store.meatMaxValue}分封顶`;
-      }
-
-      // 简化显示, 只显示主要的肉分值计算方式
-      if (meatValueText && meatMaxText) {
-        displayValue = `${meatValueText}/${meatMaxText}`;
-      } else if (meatValueText) {
-        displayValue = meatValueText;
-      } else if (meatMaxText) {
-        displayValue = meatValueText;
-      } else {
-        displayValue = '请配置吃肉规则';
-      }
-
-      return displayValue;
-    },
-
-    // 从store初始化配置
+    // 从Store初始化配置
     initializeFromStore() {
       // 直接访问store的属性
       const eatingRange = G4PLasiStore.eatingRange;
@@ -241,7 +208,6 @@ Component({
         G4PLasiStore.updateEatmeatRule(defaultEatingRange, 'MEAT_AS_1', 10000000);
       }
     },
-
 
     /**
      * 解析 MEAT_AS_X 格式的配置
@@ -299,7 +265,10 @@ Component({
       // 使用统一的解析工具类解析封顶配置
       const maxResult = configManager.parseMaxValue(meatMaxValue);
       if (maxResult.isUnlimited) {
-        this.setData({ topSelected: 0 });
+        this.setData({
+          topSelected: 0,
+          topScoreLimit: 3 // 设置默认值，避免显示问题
+        });
       } else {
         this.setData({
           topSelected: 1,
@@ -436,9 +405,6 @@ Component({
       return this.convertLasiEatmeatToConfig(componentState);
     },
 
-
-
-
     /**
      * 将LasiEatmeat组件状态转换为配置数据
      * @param {Object} componentState - 组件状态
@@ -477,74 +443,90 @@ Component({
       };
     },
 
+    /**
+     * 将配置数据转换为LasiEatmeat组件状态
+     * @param {Object} configData - 配置数据
+     * @returns {Object} 组件状态
+     */
+    convertConfigToLasiEatmeat(configData) {
+      const { eatingRange, meatValueConfig, meatMaxValue } = configData;
+      const state = {};
 
-
-    // 初始化配置数据 - 供UserRuleEdit页面调用
-    initConfigData(configData) {
-
-      if (!configData) {
-        return;
-      }
-
-      // 从配置数据中提取吃肉相关配置
-      let eatingRange = configData.eatingRange || {};
-      const meatValueConfig = configData.meatValueConfig || 'MEAT_AS_1';
-      const meatMaxValue = configData.meatMaxValue || 10000000;
-
-      // 处理eatingRange，确保它是正确的对象格式
-      if (typeof eatingRange === 'string') {
-        try {
-          eatingRange = JSON.parse(eatingRange);
-        } catch (error) {
-          console.error('解析eatingRange JSON字符串失败:', error);
-          eatingRange = {};
+      // 处理eatingRange
+      if (eatingRange) {
+        if (typeof eatingRange === 'string') {
+          try {
+            state.eatingRange = JSON.parse(eatingRange);
+          } catch (error) {
+            console.error('解析eatingRange JSON字符串失败:', error);
+            state.eatingRange = {
+              "BetterThanBirdie": 4,
+              "Birdie": 2,
+              "Par": 1,
+              "WorseThanPar": 0
+            };
+          }
+        } else if (Array.isArray(eatingRange)) {
+          console.warn('eatingRange是数组格式，转换为对象:', eatingRange);
+          state.eatingRange = {
+            "BetterThanBirdie": 4,
+            "Birdie": 2,
+            "Par": 1,
+            "WorseThanPar": 0
+          };
+        } else {
+          state.eatingRange = eatingRange;
         }
-      } else if (Array.isArray(eatingRange)) {
-        console.warn('eatingRange是数组格式，转换为对象:', eatingRange);
-        eatingRange = {};
       }
 
       // 解析肉分值配置
-      let meatValueOption = 0;
-      let meatScoreValue = 1;
-
-      if (meatValueConfig.startsWith('MEAT_AS_')) {
-        meatValueOption = 0;
-        meatScoreValue = Number.parseInt(meatValueConfig.replace('MEAT_AS_', '')) || 1;
+      if (meatValueConfig?.startsWith('MEAT_AS_')) {
+        state.meatValueOption = 0;
+        const score = Number.parseInt(meatValueConfig.replace('MEAT_AS_', ''));
+        state.meatScoreValue = Number.isNaN(score) ? 1 : score;
       } else {
         switch (meatValueConfig) {
           case 'SINGLE_DOUBLE':
-            meatValueOption = 1;
+            state.meatValueOption = 1;
             break;
           case 'CONTINUE_DOUBLE':
-            meatValueOption = 2;
+            state.meatValueOption = 2;
             break;
           case 'DOUBLE_WITH_REWARD':
-            meatValueOption = 3;
+            state.meatValueOption = 3;
             break;
           case 'DOUBLE_WITHOUT_REWARD':
-            meatValueOption = 4;
+            state.meatValueOption = 4;
             break;
           default:
-            meatValueOption = 0;
-            meatScoreValue = 1;
+            state.meatValueOption = 0;
+            state.meatScoreValue = 1;
         }
       }
 
       // 解析封顶配置
-      const topSelected = meatMaxValue === 10000000 ? 0 : 1;
-      const topScoreLimit = meatMaxValue === 10000000 ? 100 : meatMaxValue;
+      if (meatMaxValue === 10000000) {
+        state.topSelected = 0;
+        state.topScoreLimit = 3; // 设置默认值，避免显示问题
+      } else {
+        state.topSelected = 1;
+        state.topScoreLimit = meatMaxValue;
+      }
 
-      this.setData({
-        eatingRange,
-        meatValueOption,
-        meatScoreValue,
-        topSelected,
-        topScoreLimit
-      });
+      return state;
+    },
 
+    // 初始化配置数据 - 供UserRuleEdit页面调用
+    initConfigData(configData) {
+      if (!configData) {
+        return;
+      }
+
+      console.log('🎯 [LasiEatmeat] 配置数据已更新:', configData);
+
+      const componentState = this.convertConfigToLasiEatmeat(configData);
+      this.setData(componentState);
       this.updateDisplayValue();
-
     }
   }
 });
