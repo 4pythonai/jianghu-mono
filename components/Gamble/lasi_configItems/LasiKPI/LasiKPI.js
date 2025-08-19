@@ -56,15 +56,12 @@ Component({
                 this.updateStore();
             }
 
-            // 打印初始KPI配置
-            this.printCurrentKpiConfig();
         }
     },
 
     methods: {
         // 监听KPI配置变化（供外部调用）
         onKpiConfigChange() {
-            this.printCurrentKpiConfig();
         },
 
         // 选择拉丝指标
@@ -87,7 +84,6 @@ Component({
             this.calculateTotalScore();
             this.generateRuleName();
             this.updateStore();
-            this.printCurrentKpiConfig();
         },
 
         // 切换总杆计算方式  
@@ -100,8 +96,6 @@ Component({
             this.generateRuleName();
             this.updateStore();
 
-            // 打印当前KPI配置
-            this.printCurrentKpiConfig();
         },
 
         // KPI分值变化处理
@@ -119,7 +113,6 @@ Component({
             this.calculateTotalScore();
             this.generateRuleName();
             this.updateStore();
-            this.printCurrentKpiConfig();
         },
 
         // 计算总分
@@ -214,13 +207,7 @@ Component({
             };
         },
 
-        // 打印当前KPI配置
-        printCurrentKpiConfig() {
-            const { selectedIndicators, kpiValues, totalCalculationType, totalScore } = this.data;
 
-            // 打印配置结果数组
-            const configResult = this.getConfigResult();
-        },
 
         // 初始化配置数据 - 供UserRuleEdit页面调用
         initConfigData(configData) {
@@ -276,7 +263,6 @@ Component({
             this.calculateTotalScore();
             this.generateRuleName();
             this.updateStore();
-            this.printCurrentKpiConfig();
 
         },
 

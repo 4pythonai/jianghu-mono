@@ -126,7 +126,6 @@ Component({
         strokeDiffValue: strokeDiffValue
       });
 
-      this.printCurrentConfig();
     },
 
     // 显示配置弹窗
@@ -144,7 +143,6 @@ Component({
         dutyConfig: type
       });
 
-      this.printCurrentConfig();
     },
 
     // 包洞条件变化
@@ -154,7 +152,6 @@ Component({
         PartnerDutyCondition: condition
       });
 
-      this.printCurrentConfig();
     },
 
     // 双帕+X值改变 - 参考E8421Koufen.js的实现
@@ -203,8 +200,6 @@ Component({
 
       // 关闭弹窗
       this.setData({ visible: false });
-
-      this.printCurrentConfig();
       this.triggerEvent('confirm', config);
     },
 
@@ -274,17 +269,6 @@ Component({
     },
 
 
-    // 打印当前配置
-    printCurrentConfig() {
-      const config = this.getCurrentConfig();
-      console.log('🎯 [LasiBaodong] ===== 当前包洞配置 =====');
-      console.log('🎯 [LasiBaodong] 配置对象:', config);
-      console.log('🎯 [LasiBaodong] 包洞规则类型:', config.dutyConfig);
-      console.log('🎯 [LasiBaodong] 包洞条件:', config.PartnerDutyCondition);
-      console.log('🎯 [LasiBaodong] 是否启用:', config.dutyConfig !== 'NODUTY');
-      console.log('🎯 [LasiBaodong] 自定义数值:', config.customValues);
-      console.log('🎯 [LasiBaodong] ========================');
-    },
 
     // 设置配置
     setConfig(config) {
@@ -308,7 +292,6 @@ Component({
       }
 
       this.updateDisplayValue();
-      this.printCurrentConfig();
     },
 
     // 重置配置
@@ -322,7 +305,6 @@ Component({
       });
 
       this.updateDisplayValue();
-      this.printCurrentConfig();
     },
 
     // 获取配置数据（供SysEdit页面调用）
@@ -473,9 +455,6 @@ Component({
       });
 
       this.updateDisplayValue();
-      this.printCurrentConfig();
-
-      console.log('🎯 [LasiKoufen] 配置数据初始化完成');
     }
   }
 });

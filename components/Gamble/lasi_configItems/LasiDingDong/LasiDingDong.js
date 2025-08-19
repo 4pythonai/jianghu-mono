@@ -151,10 +151,6 @@ Component({
             };
         },
 
-        // 打印当前配置
-        printCurrentConfig() {
-            const config = this.getConfigData();
-        },
 
         // 初始化配置数据 - 供UserRuleEdit页面调用
         initConfigData(configData) {
@@ -186,8 +182,6 @@ Component({
             });
 
             this.updateDisplayValue();
-            this.printCurrentConfig();
-
         }
     }
 });

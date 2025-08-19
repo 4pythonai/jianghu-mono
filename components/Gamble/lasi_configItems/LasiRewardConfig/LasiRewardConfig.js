@@ -112,7 +112,6 @@ Component({
                 });
             }
 
-            this.printCurrentConfig();
         },
 
         // 检查KPI中是否有total类型
@@ -139,7 +138,6 @@ Component({
 
             // 实时更新Store
             this.updateStore();
-            this.printCurrentConfig();
         },
 
         // 输入框点击处理
@@ -175,7 +173,6 @@ Component({
 
             // 实时更新Store
             this.updateStore();
-            this.printCurrentConfig();
         },
 
         // 前置条件变化
@@ -187,7 +184,6 @@ Component({
 
             // 实时更新Store
             this.updateStore();
-            this.printCurrentConfig();
         },
 
         // 取消
@@ -210,7 +206,6 @@ Component({
             // 关闭弹窗
             this.setData({ visible: false });
 
-            this.printCurrentConfig();
             this.triggerEvent('confirm', config);
         },
 
@@ -286,14 +281,7 @@ Component({
             }
 
             this.updateDisplayValue();
-            this.printCurrentConfig();
-
-            console.log('🎯 [LasiRewardConfig] 配置数据初始化完成');
         },
 
-        // 打印当前配置
-        printCurrentConfig() {
-            const config = this.getCurrentConfig();
-        }
     }
 });

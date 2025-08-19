@@ -3,12 +3,6 @@ import { reaction } from 'mobx-miniprogram'
 const configManager = require('../../../../utils/configManager.js');
 
 Component({
-  properties: {
-    mode: {
-      type: String,
-      value: 'UserConfig' // 默认模式
-    }
-  },
 
   data: {
     // 组件内部状态
@@ -49,7 +43,6 @@ Component({
     attached() {
       // 根据模式决定初始化方式
       if (this.properties.mode === 'SysConfig') {
-        // SysConfig模式：使用默认配置，不依赖store
         this.initializeSysConfig();
       } else {
         // UserConfig模式：从store获取当前配置并初始化组件状态
@@ -484,10 +477,7 @@ Component({
       };
     },
 
-    // 打印当前配置
-    printCurrentConfig() {
-      const config = this.getConfigData();
-    },
+
 
     // 初始化配置数据 - 供UserRuleEdit页面调用
     initConfigData(configData) {
@@ -554,7 +544,6 @@ Component({
       });
 
       this.updateDisplayValue();
-      this.printCurrentConfig();
 
     }
   }
