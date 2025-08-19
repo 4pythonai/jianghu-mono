@@ -20,41 +20,35 @@ class MIndicator8421 extends CI_Model {
     }
 
 
-    public function calculate8421Indicators(&$hole, $context) {
-
-        $kpiBranches = $context->kpiBranches;
-        $attenders = $context->attenders;
-
-        $hole['KPI_INDICATORS'] = [];
-
-        foreach ($kpiBranches as $kpiname) {
 
 
+    /**
+     * 计算红蓝队的8421指标
+     * 
+     * @param array &$hole 球洞数据
+     * @param object $context 上下文对象
+     * @param array $attenders 参与者列表
+     * @param string $kpiname KPI名称
+     */
+    public function calculateTeam8421Indicators(&$hole, $context, $attenders, $kpiname) {
+        $ind_blue = 0;
+        $ind_red = 0;
 
-            $ind_blue = 0;
-            $ind_red = 0;
+        foreach ($attenders as $attender) {
+            $_8421_add_sub_max_config = $this->get8421AddSubMaxConfig($context, $attender);
+            $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$attender], $_8421_add_sub_max_config);
 
-            foreach ($attenders as $attender) {
+            if (in_array($attender, $hole['blue'])) {
+                $ind_blue += $indicator;
+            }
 
-                $_8421_add_sub_max_config = $this->get8421AddSubMaxConfig($context, $attender);
-                $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$attender], $_8421_add_sub_max_config);
-
-
-
-                if (in_array($attender, $hole['blue'])) {
-                    $ind_blue += $indicator;
-                }
-
-                if (in_array($attender, $hole['red'])) {
-                    $ind_red += $indicator;
-                }
-
-
-
-                $hole['KPI_INDICATORS'][$kpiname]['red'] = $ind_red;
-                $hole['KPI_INDICATORS'][$kpiname]['blue'] = $ind_blue;
+            if (in_array($attender, $hole['red'])) {
+                $ind_red += $indicator;
             }
         }
+
+        $hole['KPI_INDICATORS'][$kpiname]['red'] = $ind_red;
+        $hole['KPI_INDICATORS'][$kpiname]['blue'] = $ind_blue;
     }
 
 
@@ -135,24 +129,6 @@ class MIndicator8421 extends CI_Model {
         return 0;
     }
 
-    /**
-     * 将杆数差值转换为配置键名
-     * @param int $diffFromPar 相对于Par的差值
-     * @return string 配置键名
-     */
-    private function diffToConfigKey($diffFromPar) {
-        if ($diffFromPar == 0) {
-            return 'Par';
-        } elseif ($diffFromPar == -1) {
-            return 'Birdie';
-        } elseif ($diffFromPar > 0) {
-            return 'Par+' . $diffFromPar;
-        } else {
-            // 对于Eagle等情况，虽然不会直接使用，但提供一个标准格式
-            return 'Par' . $diffFromPar; // 如 "Par-2" 代表Eagle
-        }
-    }
-
 
     // 8421 减分配置,公共的,不特定针对某个用户,
     // 从XXX开始扣分意思是扣1分,成绩再差点,扣2分,再差,扣3分 
@@ -191,6 +167,27 @@ class MIndicator8421 extends CI_Model {
     }
 
     /**
+     * 将杆数差值转换为配置键名
+     * @param int $diffFromPar 相对于Par的差值
+     * @return string 配置键名
+     */
+    private function diffToConfigKey($diffFromPar) {
+        if ($diffFromPar == 0) {
+            return 'Par';
+        } elseif ($diffFromPar == -1) {
+            return 'Birdie';
+        } elseif ($diffFromPar > 0) {
+            return 'Par+' . $diffFromPar;
+        } else {
+            // 对于Eagle等情况，虽然不会直接使用，但提供一个标准格式
+            return 'Par' . $diffFromPar; // 如 "Par-2" 代表Eagle
+        }
+    }
+
+
+
+
+    /**
      * 解析配置字符串，计算实际阈值
      * 
      * @param int $par 标准杆数
@@ -222,62 +219,5 @@ class MIndicator8421 extends CI_Model {
 
         // 默认返回标准杆
         return  0;
-    }
-
-
-    public function set8421WinFailPoints(&$hole, $context) {
-
-        $kpiIndicatorRedBlue = $this->summarizeKpiIndicatorsConcise($hole['KPI_INDICATORS']);
-        $indicatorBlue = $kpiIndicatorRedBlue['indicatorBlue'];
-        $indicatorRed = $kpiIndicatorRedBlue['indicatorRed'];
-
-        // 获取顶洞配置
-        $drawConfig = $context->drawConfig;
-
-        // 判断是否为顶洞
-        $isDraw = $this->MIndicator->check8421Draw($indicatorBlue, $indicatorRed, $drawConfig);
-
-        if ($isDraw) {
-            $hole['draw'] = 'y';
-        } else {
-            $hole['draw'] = 'n';
-        }
-
-        $points = abs($indicatorBlue - $indicatorRed);
-
-        if ($indicatorBlue > $indicatorRed) {
-            $hole['winner'] = 'blue';
-            $hole['failer'] = 'red';
-            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:蓝队获胜";
-        }
-
-        if ($indicatorBlue < $indicatorRed) {
-            $hole['winner'] = 'red';
-            $hole['failer'] = 'blue';
-            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:红队获胜";
-        }
-
-        if ($indicatorBlue == $indicatorRed) {
-            $hole['winner'] = null;
-            $hole['failer'] = null;
-            $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队指标: {$indicatorBlue}, 红队指标: {$indicatorRed}, 结果:指标一样,无输赢";
-        }
-
-
-
-        $hole['points_before_kick'] = $points;
-        $currentHoleMultiplier = $this->MIndicator->getCurrentHoleMultiplier($hole, $context->kickConfig);
-
-        $hole['points'] =  $points * $currentHoleMultiplier;
-    }
-
-    public function summarizeKpiIndicatorsConcise(array $indicators): array {
-        $totalRed = array_sum(array_column($indicators, 'red'));
-        $totalBlue = array_sum(array_column($indicators, 'blue'));
-
-        return [
-            'indicatorBlue' => $totalBlue,
-            'indicatorRed' => $totalRed,
-        ];
     }
 }

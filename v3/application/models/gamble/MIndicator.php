@@ -13,21 +13,20 @@ class MIndicator extends CI_Model {
     }
 
 
+    public function setKpiBranches(&$context) {
 
 
 
-
-    public function setKpiBranches($index, &$hole,  &$context) {
         if ($context->gambleSysName == '4p-8421') {
             $branches = ['k8421'];
             $context->kpiBranches = $branches;
         }
+
+        if ($context->gambleSysName == '4p-lasi') {
+            $fixedKpis = $this->MIndicatorLasi->fixKpis($context);
+            $context->kpiBranches = array_keys($fixedKpis);
+        }
     }
-
-
-
-
-
 
 
     /**
@@ -37,68 +36,49 @@ class MIndicator extends CI_Model {
      * @param array $configs 8421配置（可选，用于避免重复获取）
      * @param GambleContext $context 赌球上下文对象
      */
-    public function computeIndicators($index, &$hole,  $context) {
-        if ($context->gambleSysName == '4p-8421') {
-            $this->MIndicator8421->calculate8421Indicators($hole, $context);
-        }
-
-        if ($context->gambleSysName == '4p-lasi') {
-            $this->MIndicatorLasi->calculateLasiIndicators($hole, $context);
-        }
+    public function computeIndicators(&$hole,  $context) {
+        $this->calculateKPIs($hole, $context);
     }
 
 
+    public function calculateKPIs(&$hole, $context) {
 
+        $kpiBranches = $context->kpiBranches;
+        $attenders = $context->attenders;
+        $hole['KPI_INDICATORS'] = [];
 
+        // [gambleSysName] => 4p-8421
 
+        foreach ($kpiBranches as $kpiname) {
 
+            // debug("AAAAAAAAA" . $kpiname);
 
-    // 得到当前洞的倍数
-    public  function getCurrentHoleMultiplier($hole, $kickConfig) {
-        // return 3;
-
-        // 如果 kickConfig 为 null，直接返回1
-        if ($kickConfig === null) {
-            return 1;
-        }
-
-        $currentHoleMultiplier = 1; // 默认值为1
-        foreach ($kickConfig as $kickConfig) {
-            if ($kickConfig['hindex'] == $hole['hindex']) {
-                $currentHoleMultiplier = $kickConfig['multiplier'];
-                break;
+            if ($context->gambleSysName == '4p-8421' && $kpiname == 'k8421') {
+                $this->MIndicator8421->calculateTeam8421Indicators($hole, $context, $attenders, $kpiname);
             }
-        }
-        return $currentHoleMultiplier;
-    }
 
+            if ($context->gambleSysName == '4p-lasi' && $kpiname == 'best') {
+                $this->MIndicatorLasi->calculateBestIndicators($hole, $context, $attenders, $kpiname);
+            }
 
+            if ($context->gambleSysName == '4p-lasi' && $kpiname == 'worst') {
+                $this->MIndicatorLasi->calculateWorstIndicators($hole, $context, $attenders, $kpiname);
+            }
 
-    /**
-     * 根据顶洞配置判断是否为顶洞
-     * @param int $indicatorBlue 蓝队指标
-     * @param int $indicatorRed 红队指标  
-     * @param string $drawConfig 顶洞配置
-     * @return bool 是否为顶洞
-     */
-    public function check8421Draw($indicatorBlue, $indicatorRed, $drawConfig) {
-        if ($drawConfig == "NoDraw") {
-            // 不考虑顶洞，只有完全相等才算顶洞
-            return false;
-        }
+            // multiply_total
+            if ($context->gambleSysName == '4p-lasi' && $kpiname == 'multiply_total') {
+                $this->MIndicatorLasi->calculateMultiplyTotalIndicators($hole, $context, $attenders, $kpiname);
+            }
 
-        // 默认情况：完全相等才算顶洞
-        if ($drawConfig == "DrawEqual") {
-            return $indicatorBlue == $indicatorRed;
-        }
+            // add_total
+            if ($context->gambleSysName == '4p-lasi' && $kpiname == 'add_total') {
+                $this->MIndicatorLasi->calculateAddTotalIndicators($hole, $context, $attenders, $kpiname);
+            }
 
-        // 检查是否为 "Diff_x" 格式
-        if (preg_match('/^Diff_(\d+)$/', $drawConfig, $matches)) {
-            $allowedDiff = (int)$matches[1];
-            $actualDiff = abs($indicatorBlue - $indicatorRed);
-
-            // 差值在允许范围内算顶洞
-            return $actualDiff <= $allowedDiff;
+            // add_reward,加法奖励,这是额外添加的kpi
+            if ($context->gambleSysName == '4p-lasi' && $kpiname == 'add_reward') {
+                $this->MIndicatorLasi->calculateAddRewardIndicators($hole, $context, $attenders, $kpiname);
+            }
         }
     }
 }

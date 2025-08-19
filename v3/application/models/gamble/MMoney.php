@@ -95,13 +95,6 @@ class MMoney extends CI_Model {
             if (count($hole['red']) == 2 && count($hole['blue']) == 2) {
                 if (array_key_exists('failer_detail', $hole)) {
 
-                    // debug("888888888888888888");
-                    // debug($hole['failer_detail']);
-                    // die;
-
-                    // 输家里面只要出现一个负分,就靠考虑下"包负分"的情况
-
-
                     $failer1 = $hole['failer_detail'][0]['userid'];
                     $_8421_add_sub_max_config = $this->MIndicator8421->get8421AddSubMaxConfig($context, $failer1);
                     $f1_indicator = $this->MIndicator8421->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$failer1], $_8421_add_sub_max_config);
