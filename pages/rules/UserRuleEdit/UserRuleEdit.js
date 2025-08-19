@@ -11,7 +11,8 @@ Page({
         _gambleHumanName: '',
         saving: false, // 保存状态
         configComponents: [], // 配置组件列表
-        isInitialized: false // 是否已完成初始化
+        isInitialized: false, // 是否已完成初始化
+        isManualEdit: false // 是否手动编辑过规则名称
     },
 
     onLoad(options) {
@@ -150,8 +151,11 @@ Page({
     // 规则名称输入事件
     onRuleNameInput(e) {
         const value = e.detail.value;
-        this.setData({ _gambleUserName: value });
-        console.log('📋 [UserRuleEdit] 规则名称已更新:', value);
+        this.setData({
+            _gambleUserName: value,
+            isManualEdit: true // 标记为手动编辑
+        });
+        console.log('📋 [UserRuleEdit] 规则名称已手动更新:', value);
     },
 
     // 处理拉丝KPI配置变化
@@ -165,18 +169,14 @@ Page({
             return;
         }
 
-        if (generatedRuleName) {
-            // 只有在编辑模式下，且用户没有手动输入过规则名称时，才自动更新
-            const { _gambleUserName, ruleData } = this.data;
-            const originalName = ruleData?.gambleUserName || '';
-
-            // 如果当前名称与原始名称相同，说明用户没有手动修改过，可以自动更新
-            if (_gambleUserName === originalName) {
-                this.setData({ _gambleUserName: generatedRuleName });
-                console.log('📋 [UserRuleEdit] 规则名称已自动更新为:', generatedRuleName);
-            } else {
-                console.log('📋 [UserRuleEdit] 用户已手动修改规则名称，保持用户输入:', _gambleUserName);
-            }
+        if (generatedRuleName && !this.data.isManualEdit) {
+            // 只有在用户没有手动编辑时才自动更新规则名称
+            this.setData({
+                _gambleUserName: generatedRuleName
+            });
+            console.log('📋 [UserRuleEdit] 规则名称已自动更新为:', generatedRuleName);
+        } else if (generatedRuleName && this.data.isManualEdit) {
+            console.log('📋 [UserRuleEdit] 用户已手动编辑规则名称，跳过自动更新');
         }
     },
 
