@@ -47,8 +47,18 @@ class MIndicator8421 extends CI_Model {
             }
         }
 
-        $hole['KPI_INDICATORS'][$kpiname]['red'] = $ind_red;
-        $hole['KPI_INDICATORS'][$kpiname]['blue'] = $ind_blue;
+        $diff = abs($ind_blue - $ind_red);
+        if ($ind_blue > $ind_red) {
+            $hole['KPI_INDICATORS'][$kpiname] = ['red' => $diff, 'blue' =>  -1 * $diff];
+        }
+
+        if ($ind_blue < $ind_red) {
+            $hole['KPI_INDICATORS'][$kpiname] = ['red' => -1 * $diff, 'blue' => $diff];
+        }
+
+        if ($ind_blue == $ind_red) {
+            $hole['KPI_INDICATORS'][$kpiname] = ['red' => 0, 'blue' => 0];
+        }
     }
 
 

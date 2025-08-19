@@ -13,9 +13,8 @@ class MIndicator extends CI_Model {
     }
 
 
+    // 归一化到kpi名称数组
     public function setKpiBranches(&$context) {
-
-
 
         if ($context->gambleSysName == '4p-8421') {
             $branches = ['k8421'];
@@ -33,25 +32,17 @@ class MIndicator extends CI_Model {
      * 计算洞的指标 (使用上下文对象)
      * @param int $index 洞索引
      * @param array $hole 洞数据（引用传递）
-     * @param array $configs 8421配置（可选，用于避免重复获取）
      * @param GambleContext $context 赌球上下文对象
      */
-    public function computeIndicators(&$hole,  $context) {
-        $this->calculateKPIs($hole, $context);
-    }
-
 
     public function calculateKPIs(&$hole, $context) {
 
-        $kpiBranches = $context->kpiBranches;
         $attenders = $context->attenders;
         $hole['KPI_INDICATORS'] = [];
 
-        // [gambleSysName] => 4p-8421
 
-        foreach ($kpiBranches as $kpiname) {
+        foreach ($context->kpiBranches as $kpiname) {
 
-            // debug("AAAAAAAAA" . $kpiname);
 
             if ($context->gambleSysName == '4p-8421' && $kpiname == 'k8421') {
                 $this->MIndicator8421->calculateTeam8421Indicators($hole, $context, $attenders, $kpiname);

@@ -144,15 +144,14 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             $this->MIndicator->setKpiBranches($context);
 
 
-            // 计算指标
-            $this->MIndicator->computeIndicators($hole, $context);
+            // 计算所有分项指标
+            $this->MIndicator->calculateKPIs($hole, $context);
 
             // 判断输赢
-            $this->MPoints->setWinFailPoints($hole, $context);
+            $this->MPoints->setWinnerFailerAndPoints($hole, $context);
 
 
-            // 设置 拉丝的乘法 奖励
-            $this->MPoints->setLasiMultiplyReward($hole, $context);
+
 
 
             // 进行排名计算( 排名必须在输赢判定后,因为排名可能用到输赢)
