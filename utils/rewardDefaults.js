@@ -20,7 +20,7 @@ export const REWARD_DEFAULTS = {
     ],
 
     // 默认奖励配置（用于store初始化）
-    DEFAULT_REWARD_CONFIG: {
+    DEFAULT_REWARD_JSON: {
         rewardType: 'add',
         rewardPreCondition: 'total_win',
         rewardPair: [

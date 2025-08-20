@@ -1,5 +1,6 @@
 import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
 import { reaction } from 'mobx-miniprogram'
+import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
 const configManager = require('../../../../utils/configManager.js');
 
 Component({
@@ -55,10 +56,7 @@ Component({
         // SysConfig模式：使用独立的配置数据，不依赖Store
         this.initializeWithDefaults();
       } else if (this.properties.mode === 'UserEdit') {
-        // UserEdit模式：等待外部数据初始化，不自动从Store加载
-        this.initializeWithDefaults();
-      } else {
-        // UserConfig模式：从store获取当前配置并初始化组件状态
+        // UserEdit模式：从Store初始化配置
         this.initializeFromStore();
       }
 
@@ -69,7 +67,7 @@ Component({
 
       // 监听顶洞规则变化
       this._storeReaction = reaction(
-        () => G4PLasiStore.drawConfig,
+        () => G4PLasiStore.lasi_dingdong_config,
         () => {
           this.checkDisabledState();
         }
@@ -103,9 +101,26 @@ Component({
       });
     },
 
+    // 从Store初始化配置
+    initializeFromStore() {
+      console.log('🎯 [LasiEatmeat] 从Store初始化配置');
+
+      // 从Store获取配置数据
+      const storeConfig = {
+        eatingRange: G4PLasiStore.eatingRange,
+        meatValueConfig: G4PLasiStore.meatValueConfig,
+        meatMaxValue: G4PLasiStore.meatMaxValue
+      };
+
+      console.log('🎯 [LasiEatmeat] Store配置数据:', storeConfig);
+
+      // 解析Store中的配置数据
+      this.parseStoredConfig(storeConfig);
+    },
+
     // 检查禁用状态
     checkDisabledState() {
-      const isDisabled = G4PLasiStore.drawConfig === 'NoDraw';
+      const isDisabled = G4PLasiStore.lasi_dingdong_config === 'NoDraw';
       this.setData({ isDisabled });
     },
 
@@ -115,6 +130,13 @@ Component({
         // 使用组件内部状态
         const displayValue = this.getDisplayValueFromComponentData();
         this.setData({ displayValue });
+        console.log('🎯 [LasiEatmeat] 吃肉规则显示值已更新:', displayValue);
+      } else {
+        // 使用Store数据
+        const store = G4PLasiStore;
+        const displayValue = ruleFormatter.formatMeatRule(store.meatValueConfig, store.meatMaxValue);
+        this.setData({ displayValue });
+        console.log('🎯 [LasiEatmeat] 从Store更新显示值:', displayValue);
       }
     },
 
@@ -144,15 +166,17 @@ Component({
           meatValueText = '请配置吃肉规则';
       }
 
-      // 格式化封顶值
+      // 格式化封顶值 - 只有在选择"分值翻倍"时才显示封顶信息
       let meatMaxText = '';
-      if (topSelected === 0) {
-        meatMaxText = '不封顶';
-      } else {
-        meatMaxText = `${topScoreLimit || 3}分封顶`;
-      }
-      if (topScoreLimit == "10000000") {
-        meatMaxText = '不封顶';
+      if (meatValueOption === 1) {
+        if (topSelected === 0) {
+          meatMaxText = '不封顶';
+        } else {
+          meatMaxText = `${topScoreLimit || 3}分封顶`;
+        }
+        if (topScoreLimit == "10000000") {
+          meatMaxText = '不封顶';
+        }
       }
 
       // 组合显示文本
@@ -167,47 +191,8 @@ Component({
       }
     },
 
-    // // 从store获取显示值
-    // getDisplayValueFromStore() {
-    //   const store = G4PLasiStore;
-    //   // 使用工具类格式化显示值
-    //   return ruleFormatter.formatMeatRule(store.meatValueConfig, store.meatMaxValue);
-    // },
 
-    // 从Store初始化配置
-    initializeFromStore() {
-      // 直接访问store的属性
-      const eatingRange = G4PLasiStore.eatingRange;
-      const meatValue = G4PLasiStore.meatValueConfig;
-      const meatMaxValue = G4PLasiStore.meatMaxValue;
 
-      // 检查store中是否有有效的配置
-      const hasValidConfig = eatingRange &&
-        typeof eatingRange === 'object' &&
-        !Array.isArray(eatingRange) &&
-        Object.keys(eatingRange).length > 0;
-
-      if (hasValidConfig && meatValue) {
-        // 解析已保存的配置
-        this.parseStoredConfig({
-          eatingRange,
-          meatValue,
-          meatMaxValue
-        });
-      } else {
-        // 如果没有有效配置，使用默认值并保存到store
-        const defaultEatingRange = {
-          "BetterThanBirdie": 4,
-          "Birdie": 2,
-          "Par": 1,
-          "WorseThanPar": 0
-        };
-        this.setData({ eatingRange: defaultEatingRange });
-
-        // 保存默认配置到store
-        G4PLasiStore.updateEatmeatRule(defaultEatingRange, 'MEAT_AS_1', 10000000);
-      }
-    },
 
     /**
      * 解析 MEAT_AS_X 格式的配置
@@ -237,26 +222,27 @@ Component({
 
     // 解析存储的配置
     parseStoredConfig(config) {
-      const { eatingRange, meatValue, meatMaxValue } = config;
+      const { eatingRange, meatValue, meatValueConfig, meatMaxValue } = config;
 
       // 使用统一的解析工具类解析吃肉数量配置
       this.setData({ eatingRange: eatingRange });
 
-      // 解析肉分值计算方式
-      if (meatValue) {
+      // 解析肉分值计算方式 - 支持 meatValue 和 meatValueConfig 两种字段名
+      const meatValueToParse = meatValueConfig || meatValue;
+      if (meatValueToParse) {
         let meatValueOption = 0;
-        if (meatValue?.startsWith('MEAT_AS_')) {
+        if (meatValueToParse?.startsWith('MEAT_AS_')) {
           meatValueOption = 0;
           // 使用统一的解析工具
-          const meatResult = this.parseMeatAs(meatValue);
+          const meatResult = this.parseMeatAs(meatValueToParse);
           this.setData({ meatScoreValue: meatResult ? meatResult.score : 1 });
-        } else if (meatValue === 'SINGLE_DOUBLE') {
+        } else if (meatValueToParse === 'SINGLE_DOUBLE') {
           meatValueOption = 1;
-        } else if (meatValue === 'CONTINUE_DOUBLE') {
+        } else if (meatValueToParse === 'CONTINUE_DOUBLE') {
           meatValueOption = 2;
-        } else if (meatValue === 'DOUBLE_WITH_REWARD') {
+        } else if (meatValueToParse === 'DOUBLE_WITH_REWARD') {
           meatValueOption = 3;
-        } else if (meatValue === 'DOUBLE_WITHOUT_REWARD') {
+        } else if (meatValueToParse === 'DOUBLE_WITHOUT_REWARD') {
           meatValueOption = 4;
         }
         this.setData({ meatValueOption });
