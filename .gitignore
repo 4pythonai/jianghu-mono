@@ -1,6 +1,7 @@
 node_modules/
 /miniprogram_npm/
 
+set_claude.sh
 # Logs
 logs
 *.log

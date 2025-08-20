@@ -140,7 +140,13 @@ Component({
             this.setData({ generatedRuleName: ruleName });
 
             // 立即触发事件，传递最新的规则名称
+            const config = {
+                indicators: this.data.selectedIndicators,
+                totalCalculationType: this.data.totalCalculationType,
+                kpiValues: this.data.kpiValues
+            };
             this.triggerEvent('kpiConfigChange', {
+                config,
                 selectedIndicators: this.data.selectedIndicators,
                 hasTotalType: this.data.selectedIndicators.includes('total'),
                 generatedRuleName: ruleName
@@ -161,7 +167,13 @@ Component({
         // 通知奖励配置组件更新
         notifyRewardConfigUpdate() {
             // 触发自定义事件，通知父组件KPI配置已更新
+            const config = {
+                indicators: this.data.selectedIndicators,
+                totalCalculationType: this.data.totalCalculationType,
+                kpiValues: this.data.kpiValues
+            };
             this.triggerEvent('kpiConfigChange', {
+                config,
                 selectedIndicators: this.data.selectedIndicators,
                 hasTotalType: this.data.selectedIndicators.includes('total'),
                 generatedRuleName: this.data.generatedRuleName

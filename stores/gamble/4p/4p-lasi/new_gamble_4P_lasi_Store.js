@@ -35,12 +35,6 @@ export const NewG4PLasiStore = observable({
       },
 
       // 吃肉相关（统一格式）
-
-      // DOUBLE_WITH_REWARD
-      // DOUBLE_WITHOUT_REWARD
-      // MEAT_AS_1
-
-
       meatRules: {
         eatingRange: {
           "BetterThanBirdie": 4,
@@ -70,6 +64,47 @@ export const NewG4PLasiStore = observable({
       ruleName: '',
       createTime: null,
       updateTime: null
+    }
+  },
+
+  // === LasiEatmeat 组件缺省值配置 ===
+  eatmeatDefaults: {
+    // 吃肉范围标签
+    eatRangeLabels: {
+      'BetterThanBirdie': '比鸟更好',
+      'Birdie': '鸟',
+      'Par': '帕',
+      'WorseThanPar': '比帕更差'
+    },
+
+    // 吃肉范围键值
+    eatRangeKeys: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
+
+    // 默认选择值
+    meatValueOption: 4, // 默认值：分值翻倍(不含奖励)
+    topOptions: ["不封顶", "X分封顶"],
+    topSelected: 0,
+    meatScoreValue: 1, // 肉算x分中的x值
+
+    // 数字选择器范围
+    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20
+    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20
+    meatScoreRange: [1, 2, 3, 4, 5], // 肉分值范围 1-5
+
+    // 系统默认配置
+    systemDefaults: {
+      eatingRange: {
+        "BetterThanBirdie": 4,
+        "Birdie": 2,
+        "Par": 1,
+        "WorseThanPar": 0
+      },
+      meatValueConfig: 'DOUBLE_WITHOUT_REWARD',
+      meatMaxValue: 10000000,
+      meatValueOption: 4,
+      meatScoreValue: 1,
+      topSelected: 0,
+      topScoreLimit: 3
     }
   },
 

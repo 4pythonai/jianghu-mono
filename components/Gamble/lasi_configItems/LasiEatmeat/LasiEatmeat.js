@@ -15,37 +15,26 @@ Component({
     displayValue: '请配置吃肉规则',
     isDisabled: false,
 
-    // 配置相关数据
-    eatingRange: {
-      "BetterThanBirdie": 4,
-      "Birdie": 2,
-      "Par": 1,
-      "WorseThanPar": 0
-    },
-
-    eatRangeLabels: {
-      'BetterThanBirdie': '比鸟更好',
-      'Birdie': '鸟',
-      'Par': '帕',
-      'WorseThanPar': '比帕更差'
-    },
-
-    eatRangeKeys: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
-    meatValueOption: 4, // 默认值：分值翻倍(不含奖励)
-    topOptions: ["不封顶", "X分封顶"],
+    // 配置相关数据 - 将从store中获取
+    eatingRange: {},
+    eatRangeLabels: {},
+    eatRangeKeys: [],
+    meatValueOption: 4,
+    topOptions: [],
     topSelected: 0,
-    meatScoreValue: 1, // 肉算x分中的x值
-
-    // 数字选择器范围
-    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20
-    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20
-    meatScoreRange: [1, 2, 3, 4, 5], // 肉分值范围 1-5
+    meatScoreValue: 1,
+    eatValueRange: [],
+    topScoreRange: [],
+    meatScoreRange: [],
   },
 
   // 组件生命周期
   lifetimes: {
     attached() {
       console.log('🎯 [LasiEatmeat] 组件加载，模式:', this.properties.mode);
+
+      // 从store获取缺省值
+      this.initializeFromStore();
 
       if (this.properties.mode === 'SysConfig') {
         // SysConfig模式：使用独立的配置数据
@@ -72,6 +61,79 @@ Component({
   },
 
   methods: {
+    // 从store初始化缺省值
+    initializeFromStore() {
+      try {
+        // 尝试从全局获取store
+        const store = getApp().globalData?.g4pLasiStore;
+        if (store && store.eatmeatDefaults) {
+          const defaults = store.eatmeatDefaults;
+          this.setData({
+            eatRangeLabels: defaults.eatRangeLabels,
+            eatRangeKeys: defaults.eatRangeKeys,
+            meatValueOption: defaults.meatValueOption,
+            topOptions: defaults.topOptions,
+            topSelected: defaults.topSelected,
+            meatScoreValue: defaults.meatScoreValue,
+            eatValueRange: defaults.eatValueRange,
+            topScoreRange: defaults.topScoreRange,
+            meatScoreRange: defaults.meatScoreRange,
+            // 初始化eatingRange
+            eatingRange: { ...defaults.systemDefaults.eatingRange }
+          });
+        } else {
+          // 如果store不可用，使用硬编码的默认值作为后备
+          this.setData({
+            eatRangeLabels: {
+              'BetterThanBirdie': '比鸟更好',
+              'Birdie': '鸟',
+              'Par': '帕',
+              'WorseThanPar': '比帕更差'
+            },
+            eatRangeKeys: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
+            meatValueOption: 4,
+            topOptions: ["不封顶", "X分封顶"],
+            topSelected: 0,
+            meatScoreValue: 1,
+            eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1),
+            topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1),
+            meatScoreRange: [1, 2, 3, 4, 5],
+            eatingRange: {
+              "BetterThanBirdie": 4,
+              "Birdie": 2,
+              "Par": 1,
+              "WorseThanPar": 0
+            }
+          });
+        }
+      } catch (error) {
+        console.error('🎯 [LasiEatmeat] 从store初始化失败:', error);
+        // 使用硬编码默认值
+        this.setData({
+          eatRangeLabels: {
+            'BetterThanBirdie': '比鸟更好',
+            'Birdie': '鸟',
+            'Par': '帕',
+            'WorseThanPar': '比帕更差'
+          },
+          eatRangeKeys: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
+          meatValueOption: 4,
+          topOptions: ["不封顶", "X分封顶"],
+          topSelected: 0,
+          meatScoreValue: 1,
+          eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1),
+          topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1),
+          meatScoreRange: [1, 2, 3, 4, 5],
+          eatingRange: {
+            "BetterThanBirdie": 4,
+            "Birdie": 2,
+            "Par": 1,
+            "WorseThanPar": 0
+          }
+        });
+      }
+    },
+
     // 获取当前赌博配置
     getCurrentGambleConfigs() {
       if (!this.pageContext) {
@@ -89,8 +151,18 @@ Component({
       return page.data?.gameData?.gambleCardData || page.data?.gambleCardData || {};
     },
 
-    // 获取系统默认值
+    // 获取系统默认值 - 现在从store获取
     getSystemDefaultConfig() {
+      try {
+        const store = getApp().globalData?.g4pLasiStore;
+        if (store && store.eatmeatDefaults?.systemDefaults) {
+          return store.eatmeatDefaults.systemDefaults;
+        }
+      } catch (error) {
+        console.error('🎯 [LasiEatmeat] 从store获取系统默认值失败:', error);
+      }
+
+      // 后备默认值
       return {
         eatingRange: {
           "BetterThanBirdie": 4,
@@ -171,7 +243,7 @@ Component({
       }
 
       // 解析封顶配置
-      const maxResult = meatMaxValue !== undefined 
+      const maxResult = meatMaxValue !== undefined
         ? (meatMaxValue === 10000000 ? { isUnlimited: true } : { isUnlimited: false, value: meatMaxValue })
         : { isUnlimited: true, value: 10000000 };
 
@@ -342,7 +414,7 @@ Component({
       }
 
       // 构建封顶配置
-      const meatMaxValue = data.meatValueOption === 1 
+      const meatMaxValue = data.meatValueOption === 1
         ? (data.topSelected === 0 ? 10000000 : data.topScoreLimit)
         : 10000000;
 
@@ -385,7 +457,7 @@ Component({
       return {
         eatingRange: data.eatingRange,
         meatValueConfig,
-        meatMaxValue: data.meatValueOption === 1 
+        meatMaxValue: data.meatValueOption === 1
           ? (data.topSelected === 0 ? 10000000 : data.topScoreLimit)
           : 10000000
       };

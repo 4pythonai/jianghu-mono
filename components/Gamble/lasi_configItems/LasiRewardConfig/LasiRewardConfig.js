@@ -11,7 +11,7 @@ Component({
         // 当前奖励类型：'add' | 'multiply'
         rewardType: 'add',
         // 奖励前置条件：'total_win' | 'total_not_fail' | 'total_ignore'
-        rewardPreCondition: 'total_win',
+        rewardPreCondition: 'total_ignore', // 修正：与实际数据保持一致
         // 是否显示前置条件（根据KPI中是否有total类型）
         showPreCondition: false,
 
@@ -81,7 +81,7 @@ Component({
             // 先设置基本数据
             this.setData({
                 rewardType: config.rewardType || 'add',
-                rewardPreCondition: config.rewardPreCondition || 'total_win',
+                rewardPreCondition: config.rewardPreCondition || 'total_ignore',
                 addRewardItems: config.addRewardItems || this.data.addRewardItems,
                 multiplyRewardItems: config.multiplyRewardItems || this.data.multiplyRewardItems
             });

@@ -1,93 +1,104 @@
-<!-- 用户规则编辑页面 -->
+<!-- 用户规则编辑/新建页面 - 重构版 -->
 <view class="user-rule-edit-container">
-  <!-- 页面标题 -->
-  <view class="page-header">
-    <view class="header-title">编辑规则</view>
-    <view class="header-subtitle">{{_gambleHumanName}}/{{_gambleUserName}}</view>
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-text">初始化中...</view>
   </view>
 
-  <!-- 配置表单 -->
-  <view class="config-form">
-    <!-- 规则名称 -->
-    <view class="form-section">
-      <view class="form-label">规则名称</view>
-      <input
-        class="form-input"
-        value="{{_gambleUserName}}"
-        bindinput="onRuleNameInput"
-        placeholder="请输入规则名称"
-        maxlength="50"
-      />
+  <!-- 主要内容 -->
+  <view wx:else class="main-content">
+    <!-- 页面标题 -->
+    <view class="page-header">
+      <view
+        class="header-title"
+      >{{pageMode === 'create' ? '新建规则' : pageMode === 'view' ? '查看规则' : '编辑规则'}}</view>
+      <view
+        class="header-subtitle"
+      >{{gambleHumanName}} / {{storeMetadata.gambleUserName || '未命名规则'}}</view>
     </view>
 
-    <!-- 配置组件区域 -->
-    <view class="config-components">
-      <block wx:for="{{configComponents}}" wx:key="name">
-        <view class="component-wrapper">
-          <!-- 动态加载配置组件 -->
-          <view class="component-content">
-            <!-- 4p-8421 配置组件 -->
-            <block wx:if="{{_gambleSysName === '4p-8421'}}">
-              <E8421Koufen
-                wx:if="{{item.name === 'E8421Koufen'}}"
-                id="{{item.name}}"
-                mode="UserEdit"
-              />
-              <Draw8421 wx:if="{{item.name === 'Draw8421'}}" id="{{item.name}}" mode="UserEdit" />
-              <E8421Meat wx:if="{{item.name === 'E8421Meat'}}" id="{{item.name}}" mode="UserEdit" />
-            </block>
+    <!-- 配置表单 -->
+    <view class="config-form">
+      <!-- 规则名称 -->
+      <view class="form-section">
+        <view class="form-label">规则名称</view>
+        <input
+          class="form-input"
+          value="{{storeMetadata.gambleUserName}}"
+          bindinput="onRuleNameInput"
+          placeholder="请输入规则名称"
+          maxlength="50"
+          disabled="{{pageMode === 'view'}}"
+        />
+      </view>
 
-            <!-- 4p-lasi 配置组件 -->
-            <block wx:elif="{{_gambleSysName === '4p-lasi'}}">
-              <LasiKoufen
-                wx:if="{{item.name === 'LasiKoufen'}}"
-                id="{{item.name}}"
-                mode="UserEdit"
-              />
+      <!-- 配置组件区域 - 固定为4人拉丝 -->
+      <view class="config-components">
+        <block wx:for="{{configComponents}}" wx:key="name">
+          <view class="component-wrapper">
+            <!-- 4人拉丝配置组件 -->
+            <view class="component-content">
+              <!-- KPI配置 -->
               <LasiKPI
                 wx:if="{{item.name === 'LasiKPI'}}"
                 id="{{item.name}}"
-                mode="UserEdit"
+                mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 bind:kpiConfigChange="onLasiKpiConfigChange"
               />
-              <LasiRewardConfig
-                wx:if="{{item.name === 'LasiRewardConfig'}}"
-                id="{{item.name}}"
-                mode="UserEdit"
-              />
+
+              <!-- 吃肉规则配置 -->
               <LasiEatmeat
                 wx:if="{{item.name === 'LasiEatmeat'}}"
                 id="{{item.name}}"
-                mode="UserEdit"
+                mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                bind:eatmeatConfigChange="onLasiEatmeatConfigChange"
               />
+
+              <!-- 奖励规则配置 -->
+              <LasiRewardConfig
+                wx:if="{{item.name === 'LasiRewardConfig'}}"
+                id="{{item.name}}"
+                mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                bind:rewardConfigChange="onLasiRewardConfigChange"
+              />
+
+              <!-- 顶洞规则配置 -->
               <LasiDingDong
                 wx:if="{{item.name === 'LasiDingDong'}}"
                 id="{{item.name}}"
-                mode="UserEdit"
+                mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                bind:dingdongConfigChange="onLasiDingdongConfigChange"
               />
-            </block>
-
-            <!-- 默认配置组件 -->
-            <block wx:else>
-              <view class="default-config" wx:if="{{item.name === 'DefaultConfig'}}">
-                <text>默认配置组件</text>
-              </view>
-            </block>
+            </view>
           </view>
-        </view>
-      </block>
-    </view>
-  </view>
+        </block>
+      </view>
+      <!-- 底部操作按钮 -->
+      <view class="bottom-actions">
+        <!-- 删除按钮 - 仅编辑模式显示 -->
+        <button
+          wx:if="{{pageMode === 'edit'}}"
+          class="delete-btn"
+          bindtap="onDeleteRule"
+          disabled="{{saving}}"
+        >删除</button>
 
-  <!-- 底部操作按钮 -->
-  <view class="bottom-actions">
-    <button class="delete-btn" bindtap="onDeleteRule" disabled="{{saving}}">删除</button>
-    <button class="cancel-btn" bindtap="onCancel" disabled="{{saving}}">取消</button>
-    <button
-      class="save-btn"
-      bindtap="onSaveRule"
-      loading="{{saving}}"
-      disabled="{{saving}}"
-    >{{saving ? '保存中...' : '保存'}}</button>
+        <!-- 取消按钮 -->
+        <button
+          class="cancel-btn"
+          bindtap="onCancel"
+          disabled="{{saving}}"
+        >{{pageMode === 'view' ? '返回' : '取消'}}</button>
+
+        <!-- 保存按钮 - 查看模式不显示 -->
+        <button
+          wx:if="{{pageMode !== 'view'}}"
+          class="save-btn"
+          bindtap="onSaveRule"
+          loading="{{saving}}"
+          disabled="{{saving}}"
+        >{{saving ? '保存中...' : pageMode === 'create' ? '创建规则' : '保存修改'}}</button>
+      </view>
+    </view>
   </view>
 </view>

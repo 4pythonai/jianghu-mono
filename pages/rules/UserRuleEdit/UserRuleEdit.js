@@ -1,369 +1,420 @@
-// 用户规则编辑页面
+/**
+ * 用户规则编辑/新建页面 - 重构版
+ * 使用统一的Gamble4PLasiStore管理状态
+ * 支持mode驱动的新建/编辑/查看行为
+ */
+
 const app = getApp()
-const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig.js');
+import { storeBindingsBehavior } from 'mobx-miniprogram-bindings'
+import { Gamble4PLasiStore } from '../../../stores/gamble/4p/4p-lasi/Gamble4PLasiStore.js'
+// const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig.js') // 暂时移除，重构后不再需要
 
 Page({
-    data: {
-        ruleId: '', // 规则ID
-        ruleData: null, // 规则数据
-        _gambleSysName: '',
-        _gambleUserName: '',
-        _gambleHumanName: '',
-        saving: false, // 保存状态
-        configComponents: [], // 配置组件列表
-        isInitialized: false, // 是否已完成初始化
-        isManualEdit: false // 是否手动编辑过规则名称
+  behaviors: [storeBindingsBehavior],
+
+  storeBindings: {
+    store: Gamble4PLasiStore,
+    fields: {
+      // 从Store获取状态
+      storeMode: 'mode',
+      storeMetadata: 'metadata', 
+      storeConfig: 'config',
+      isStoreInitialized: 'isInitialized',
+      isDirty: 'isDirty'
     },
-
-    onLoad(options) {
-        console.log('🅾️🅾️ [UserRuleEdit] 页面加载，参数:', options);
-        const { ruleId, ruleData } = options;
-
-        if (!ruleId) {
-            wx.showToast({
-                title: '缺少规则ID参数',
-                icon: 'none'
-            });
-            setTimeout(() => wx.navigateBack(), 1500);
-            return;
-        }
-
-        this.setData({ ruleId });
-
-        // 解析并初始化规则数据
-        if (ruleData) {
-            try {
-                const parsedRuleData = JSON.parse(decodeURIComponent(ruleData));
-                this.initializeWithRuleData(parsedRuleData);
-            } catch (error) {
-                console.error('📋 [UserRuleEdit] 解析规则数据失败:', error);
-                wx.showToast({
-                    title: '数据解析失败',
-                    icon: 'none'
-                });
-                setTimeout(() => wx.navigateBack(), 1500);
-            }
-        } else {
-            wx.showToast({
-                title: '缺少规则数据',
-                icon: 'none'
-            });
-            setTimeout(() => wx.navigateBack(), 1500);
-        }
-    },
-
-    // 使用传递的规则数据初始化页面
-    initializeWithRuleData(ruleData) {
-
-        // 确定游戏类型
-        const _gambleSysName = ruleData.gambleSysName;
-
-
-        // 获取游戏配置
-        const _name = GambleMetaConfig.getGambleHumanName(_gambleSysName);
-
-        if (!_name) {
-            wx.showToast({
-                title: `无效的游戏类型: ${_gambleSysName}`,
-                icon: 'none'
-            });
-            setTimeout(() => wx.navigateBack(), 1500);
-            return;
-        }
-
-        // 设置页面数据 gambleUserName
-        this.setData({
-            ruleData,
-            _gambleSysName: _gambleSysName,
-            _gambleHumanName: _name,
-            _gambleUserName: ruleData.gambleUserName
-        });
-
-        // 根据游戏类型加载对应的配置组件
-        this.loadConfigComponents(_gambleSysName);
-    },
-
-
-
-    // 根据游戏类型加载配置组件
-    loadConfigComponents(_gambleSysName) {
-        let components = [];
-
-        // 根据游戏类型确定需要的配置组件
-        switch (_gambleSysName) {
-            case '4p-8421':
-                components = [
-                    { name: 'E8421Koufen', title: '扣分规则' },
-                    { name: 'Draw8421', title: '顶洞规则' },
-                    { name: 'E8421Meat', title: '吃肉规则' }
-                ];
-                break;
-            case '4p-lasi':
-                components = [
-                    { name: 'LasiKoufen', title: '扣分规则' },
-                    { name: 'LasiKPI', title: 'KPI规则' },
-                    { name: 'LasiRewardConfig', title: '奖励配置' },
-                    { name: 'LasiEatmeat', title: '吃肉规则' },
-                    { name: 'LasiDingDong', title: '顶洞规则' }
-                ];
-                break;
-            // 可以继续添加其他游戏类型的配置组件
-            default:
-                components = [
-                    { name: 'DefaultConfig', title: '默认配置' }
-                ];
-        }
-
-        this.setData({ configComponents: components });
-        console.log('📋 [UserRuleEdit] 加载配置组件:', components);
-
-        // 初始化配置组件数据
-        this.initConfigComponents();
-
-        // 标记初始化完成
-        setTimeout(() => {
-            this.setData({ isInitialized: true });
-        }, 200);
-    },
-
-    // 初始化配置组件数据 - 支持扁平化数据结构
-    initConfigComponents() {
-        const { ruleData, configComponents } = this.data;
-
-        if (!ruleData) {
-            return;
-        }
-
-        // 延迟执行，确保组件已渲染
-        setTimeout(() => {
-            for (const component of configComponents) {
-                const componentInstance = this.selectComponent(`#${component.name}`);
-
-                if (componentInstance?.initConfigData) {
-                    componentInstance.initConfigData(ruleData);
-                }
-            }
-        }, 100);
-    },
-
-    // 规则名称输入事件
-    onRuleNameInput(e) {
-        const value = e.detail.value;
-        this.setData({
-            _gambleUserName: value,
-            isManualEdit: true // 标记为手动编辑
-        });
-        console.log('📋 [UserRuleEdit] 规则名称已手动更新:', value);
-    },
-
-    // 处理拉丝KPI配置变化
-    onLasiKpiConfigChange(e) {
-        const { generatedRuleName } = e.detail;
-        console.log('📋 [UserRuleEdit] 收到LasiKPI配置变化:', e.detail);
-
-        // 只有在初始化完成后，才处理KPI配置变化
-        if (!this.data.isInitialized) {
-            console.log('📋 [UserRuleEdit] 初始化阶段，忽略KPI配置变化');
-            return;
-        }
-
-        if (generatedRuleName && !this.data.isManualEdit) {
-            // 只有在用户没有手动编辑时才自动更新规则名称
-            this.setData({
-                _gambleUserName: generatedRuleName
-            });
-            console.log('📋 [UserRuleEdit] 规则名称已自动更新为:', generatedRuleName);
-        } else if (generatedRuleName && this.data.isManualEdit) {
-            console.log('📋 [UserRuleEdit] 用户已手动编辑规则名称，跳过自动更新');
-        }
-    },
-
-    // 验证表单
-    validateForm() {
-        const { _gambleUserName } = this.data;
-
-        if (!_gambleUserName || _gambleUserName.trim() === '') {
-            wx.showToast({
-                title: '请输入规则名称',
-                icon: 'none'
-            });
-            return false;
-        }
-
-        if (_gambleUserName.trim().length < 2) {
-            wx.showToast({
-                title: '规则名称至少2个字符',
-                icon: 'none'
-            });
-            return false;
-        }
-
-        return true;
-    },
-
-    // 保存规则
-    onSaveRule() {
-        if (!this.validateForm()) {
-            return;
-        }
-
-        this.setData({ saving: true });
-
-        // 收集所有配置组件的数据
-        const configData = this.collectConfigData();
-
-        // 构建更新数据 - 使用扁平化结构
-        const updateData = {
-            id: this.data.ruleId,
-            gambleUserName: this.data._gambleUserName,
-            gambleSysName: this.data._gambleSysName,
-            playersNumber: this.data.ruleData?.playersNumber, // 直接使用后台字段
-            updateTime: new Date().toISOString(),
-            ...configData
-        };
-
-        console.log('📋 [UserRuleEdit] 更新规则数据:', updateData);
-
-        // 调用API更新规则
-        app.api.gamble.updateGambleRule(updateData)
-            .then(res => {
-                console.log('📋 [UserRuleEdit] 更新成功:', res);
-                wx.showToast({
-                    title: '规则更新成功',
-                    icon: 'success'
-                });
-
-                // 返回上一页并刷新
-                setTimeout(() => {
-                    const pages = getCurrentPages();
-                    const prevPage = pages[pages.length - 2];
-                    prevPage?.onShow?.();
-                    wx.navigateBack();
-                }, 1500);
-            })
-            .catch(err => {
-                console.error('📋 [UserRuleEdit] 更新失败:', err);
-                wx.showToast({
-                    title: '更新失败，请重试',
-                    icon: 'none'
-                });
-            })
-            .finally(() => {
-                this.setData({ saving: false });
-            });
-    },
-
-    // 收集配置组件数据 - 改为扁平化结构
-    collectConfigData() {
-        const flatData = {};
-
-        console.log('📋 [UserRuleEdit] 开始收集配置数据（扁平化），组件列表:', this.data.configComponents);
-
-        // 遍历所有配置组件，收集数据并合并到扁平结构中
-        for (const component of this.data.configComponents) {
-            console.log('📋 [UserRuleEdit] 正在收集组件', component.name, '的数据');
-            const componentInstance = this.selectComponent(`#${component.name}`);
-
-            if (componentInstance?.getConfigData) {
-                const data = componentInstance.getConfigData();
-                console.log('📋 [UserRuleEdit] 组件', component.name, '返回数据:', data);
-
-                // 检查eatingRange字段的特殊处理
-                if (data.eatingRange) {
-                    console.log('📋 [UserRuleEdit] 检测到eatingRange字段:', {
-                        type: typeof data.eatingRange,
-                        isArray: Array.isArray(data.eatingRange),
-                        value: data.eatingRange,
-                        keys: Object.keys(data.eatingRange)
-                    });
-                }
-
-                // 将组件数据合并到扁平结构中
-                Object.assign(flatData, data);
-            } else {
-                console.warn('📋 [UserRuleEdit] 组件', component.name, '没有 getConfigData 方法');
-            }
-        }
-
-        console.log('📋 [UserRuleEdit] 收集到的扁平化配置数据:', flatData);
-
-        // 最终检查eatingRange字段
-        if (flatData.eatingRange) {
-            console.log('📋 [UserRuleEdit] 最终eatingRange字段检查:', {
-                type: typeof flatData.eatingRange,
-                isArray: Array.isArray(flatData.eatingRange),
-                value: flatData.eatingRange,
-                keys: Object.keys(flatData.eatingRange)
-            });
-        }
-
-        return flatData;
-    },
-
-    // 删除规则
-    onDeleteRule() {
-        wx.showModal({
-            title: '确认删除',
-            content: '确定要删除这个规则吗？删除后无法恢复。',
-            confirmText: '删除',
-            confirmColor: '#ff4757',
-            success: (res) => {
-                if (res.confirm) {
-                    this.deleteRule();
-                }
-            }
-        });
-    },
-
-    // 执行删除
-    deleteRule() {
-        this.setData({ saving: true });
-
-        app.api.gamble.deleteGambleRule(this.data.ruleId)
-            .then(res => {
-                console.log('📋 [UserRuleEdit] 删除成功:', res);
-                wx.showToast({
-                    title: '规则已删除',
-                    icon: 'success'
-                });
-
-                // 返回上一页并刷新
-                setTimeout(() => {
-                    const pages = getCurrentPages();
-                    const prevPage = pages[pages.length - 2];
-                    prevPage?.onShow?.();
-                    wx.navigateBack();
-                }, 1500);
-            })
-            .catch(err => {
-                console.error('📋 [UserRuleEdit] 删除失败:', err);
-                wx.showToast({
-                    title: '删除失败，请重试',
-                    icon: 'none'
-                });
-            })
-            .finally(() => {
-                this.setData({ saving: false });
-            });
-    },
-
-    // 取消编辑
-    onCancel() {
-        wx.showModal({
-            title: '确认取消',
-            content: '确定要取消编辑吗？未保存的内容将丢失。',
-            success: (res) => {
-                if (res.confirm) {
-                    wx.navigateBack();
-                }
-            }
-        });
-    },
-
-
-
-    // 页面卸载
-    onUnload() {
-        console.log('📋 [UserRuleEdit] 页面卸载');
+    actions: {
+      // 从Store获取方法
+      initializeStore: 'initialize',
+      updateKpiConfig: 'updateKpiConfig',
+      updateEatmeatConfig: 'updateEatmeatConfig', 
+      updateRewardConfig: 'updateRewardConfig',
+      updateDingdongConfig: 'updateDingdongConfig',
+      updateBaodongConfig: 'updateBaodongConfig',
+      updateRuleName: 'updateRuleName',
+      getSaveData: 'getSaveData',
+      getComponentData: 'getComponentData',
+      resetStore: 'reset'
     }
-}); 
+  },
+
+  data: {
+    // === 页面状态 ===
+    pageMode: 'edit',           // 'create' | 'edit' | 'view' (页面模式)
+    saving: false,              // 保存状态
+    loading: false,             // 加载状态
+    
+    // === 页面数据 ===
+    ruleId: null,               // 编辑模式下的规则ID
+    gambleHumanName: '',        // 游戏类型显示名
+    
+    // === 组件配置 ===
+    configComponents: [         // 4人拉丝固定的组件列表
+      { name: 'LasiKPI', title: 'KPI规则' },
+      { name: 'LasiEatmeat', title: '吃肉规则' },
+      { name: 'LasiRewardConfig', title: '奖励配置' },
+      { name: 'LasiDingDong', title: '顶洞规则' },
+      // { name: 'LasiBaodong', title: '包洞规则' } // 如果需要的话
+    ],
+    
+    // === UI状态 ===
+    isManualRuleName: false     // 是否手动编辑过规则名
+  },
+
+  onLoad(options) {
+    console.log('🔄 [UserRuleEdit] 页面加载，参数:', options)
+    
+    // 解析参数确定页面模式
+    this.parseOptions(options)
+  },
+
+  // === 初始化方法 ===
+  
+  // 解析URL参数，确定页面模式
+  parseOptions(options) {
+    const { mode, ruleId, ruleData } = options
+
+    // 确定页面模式
+    let pageMode = 'edit' // 默认编辑模式
+    if (mode === 'create') {
+      pageMode = 'create'
+    } else if (mode === 'view') {
+      pageMode = 'view' 
+    }
+
+    this.setData({ 
+      pageMode,
+      ruleId: ruleId || null,
+      gambleHumanName: '四人拉丝' // 固定为4人拉丝
+    })
+
+    // 根据模式初始化Store
+    if (pageMode === 'create') {
+      this.initializeForCreate()
+    } else if ((pageMode === 'edit' || pageMode === 'view') && ruleData) {
+      this.initializeForEdit(ruleData)
+    } else {
+      this.showErrorAndReturn('参数错误：缺少必要参数')
+    }
+  },
+
+  // 新建模式初始化
+  initializeForCreate() {
+    console.log('🆕 [UserRuleEdit] 初始化新建模式')
+    
+    this.setData({ loading: true })
+    
+    try {
+      // 使用Store的create模式初始化
+      this.initializeStore('create')
+      
+      // 设置页面标题
+      wx.setNavigationBarTitle({
+        title: '新建拉丝规则'
+      })
+      
+      this.setData({ loading: false })
+      
+    } catch (error) {
+      console.error('❌ [UserRuleEdit] 新建模式初始化失败:', error)
+      this.showErrorAndReturn('初始化失败')
+    }
+  },
+
+  // 编辑模式初始化
+  initializeForEdit(encodedRuleData) {
+    console.log('✏️ [UserRuleEdit] 初始化编辑模式')
+    
+    this.setData({ loading: true })
+    
+    try {
+      // 解析规则数据
+      const ruleData = JSON.parse(decodeURIComponent(encodedRuleData))
+      console.log('📊 [UserRuleEdit] 解析的规则数据:', ruleData)
+      
+      // 验证数据
+      if (!ruleData.gambleSysName || ruleData.gambleSysName !== '4p-lasi') {
+        throw new Error('不支持的游戏类型')
+      }
+      
+      // 使用Store的edit模式初始化
+      this.initializeStore(this.data.pageMode, ruleData)
+      
+      // 设置页面标题
+      const title = this.data.pageMode === 'view' ? '查看拉丝规则' : '编辑拉丝规则'
+      wx.setNavigationBarTitle({ title })
+      
+      this.setData({ loading: false })
+      
+    } catch (error) {
+      console.error('❌ [UserRuleEdit] 编辑模式初始化失败:', error)
+      this.showErrorAndReturn('数据解析失败')
+    }
+  },
+
+  // === Store数据变化监听 ===
+  
+  // 监听Store初始化完成
+  _storeInitializedHandler() {
+    if (this.data.isStoreInitialized) {
+      console.log('✅ [UserRuleEdit] Store初始化完成，同步组件数据')
+      this.syncComponentsWithStore()
+    }
+  },
+
+  // 同步组件数据
+  syncComponentsWithStore() {
+    const componentData = this.getComponentData()
+    console.log('🔄 [UserRuleEdit] 向子组件同步数据:', componentData)
+
+    // 延迟执行确保组件已渲染
+    setTimeout(() => {
+      this.data.configComponents.forEach(component => {
+        const componentInstance = this.selectComponent(`#${component.name}`)
+        if (componentInstance && componentInstance.syncWithStore) {
+          componentInstance.syncWithStore(componentData)
+        }
+      })
+    }, 100)
+  },
+
+  // === 事件处理 ===
+
+  // 规则名称手动输入
+  onRuleNameInput(e) {
+    const value = e.detail.value.trim()
+    console.log('✏️ [UserRuleEdit] 手动更新规则名:', value)
+    
+    this.setData({ isManualRuleName: true })
+    this.updateRuleName(value)
+  },
+
+  // LasiKPI配置变化 - 可能触发规则名自动更新
+  onLasiKpiConfigChange(e) {
+    const { config, generatedRuleName } = e.detail
+    console.log('📊 [UserRuleEdit] KPI配置变化:', { config, generatedRuleName })
+
+    // 更新Store中的KPI配置
+    this.updateKpiConfig(config)
+
+    // 如果有生成的规则名且用户未手动编辑，则自动更新
+    if (generatedRuleName && !this.data.isManualRuleName && this.data.pageMode === 'create') {
+      this.updateRuleName(generatedRuleName)
+    }
+  },
+
+  // 吃肉配置变化
+  onLasiEatmeatConfigChange(e) {
+    const { config } = e.detail
+    console.log('🥩 [UserRuleEdit] 吃肉配置变化:', config)
+    this.updateEatmeatConfig(config)
+  },
+
+  // 奖励配置变化
+  onLasiRewardConfigChange(e) {
+    const { config } = e.detail
+    console.log('🏆 [UserRuleEdit] 奖励配置变化:', config)
+    this.updateRewardConfig(config)
+  },
+
+  // 顶洞配置变化
+  onLasiDingdongConfigChange(e) {
+    const { config } = e.detail
+    console.log('🕳️ [UserRuleEdit] 顶洞配置变化:', config)
+    this.updateDingdongConfig(config)
+  },
+
+  // === 保存和验证 ===
+
+  // 表单验证
+  validateForm() {
+    if (!this.data.storeMetadata?.gambleUserName?.trim()) {
+      wx.showToast({
+        title: '请输入规则名称',
+        icon: 'none'
+      })
+      return false
+    }
+
+    if (this.data.storeMetadata.gambleUserName.trim().length < 2) {
+      wx.showToast({
+        title: '规则名称至少2个字符',
+        icon: 'none'
+      })
+      return false
+    }
+
+    return true
+  },
+
+  // 保存规则
+  onSaveRule() {
+    if (!this.validateForm()) {
+      return
+    }
+
+    // 查看模式不允许保存
+    if (this.data.pageMode === 'view') {
+      wx.showToast({
+        title: '查看模式不能保存',
+        icon: 'none'
+      })
+      return
+    }
+
+    this.setData({ saving: true })
+
+    try {
+      // 从Store获取保存数据
+      const saveData = this.getSaveData()
+      console.log('💾 [UserRuleEdit] 准备保存数据:', saveData)
+
+      // 根据模式调用不同的API
+      const apiPromise = this.data.pageMode === 'create' 
+        ? app.api.gamble.createGambleRule(saveData)
+        : app.api.gamble.updateGambleRule({
+            id: this.data.ruleId,
+            ...saveData
+          })
+
+      apiPromise
+        .then(res => {
+          console.log('✅ [UserRuleEdit] 保存成功:', res)
+          
+          const message = this.data.pageMode === 'create' ? '规则创建成功' : '规则更新成功'
+          wx.showToast({
+            title: message,
+            icon: 'success'
+          })
+
+          // 延迟返回上一页并刷新
+          setTimeout(() => {
+            this.navigateBackWithRefresh()
+          }, 1500)
+        })
+        .catch(err => {
+          console.error('❌ [UserRuleEdit] 保存失败:', err)
+          wx.showToast({
+            title: '保存失败，请重试',
+            icon: 'none'
+          })
+        })
+        .finally(() => {
+          this.setData({ saving: false })
+        })
+
+    } catch (error) {
+      console.error('❌ [UserRuleEdit] 保存数据准备失败:', error)
+      wx.showToast({
+        title: '数据准备失败',
+        icon: 'none'
+      })
+      this.setData({ saving: false })
+    }
+  },
+
+  // 删除规则 - 仅编辑模式可用
+  onDeleteRule() {
+    if (this.data.pageMode !== 'edit') {
+      return
+    }
+
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这个规则吗？删除后无法恢复。',
+      confirmText: '删除',
+      confirmColor: '#ff4757',
+      success: (res) => {
+        if (res.confirm) {
+          this.executeDelete()
+        }
+      }
+    })
+  },
+
+  // 执行删除
+  executeDelete() {
+    this.setData({ saving: true })
+
+    app.api.gamble.deleteGambleRule(this.data.ruleId)
+      .then(res => {
+        console.log('🗑️ [UserRuleEdit] 删除成功:', res)
+        wx.showToast({
+          title: '规则已删除',
+          icon: 'success'
+        })
+        setTimeout(() => {
+          this.navigateBackWithRefresh()
+        }, 1500)
+      })
+      .catch(err => {
+        console.error('❌ [UserRuleEdit] 删除失败:', err)
+        wx.showToast({
+          title: '删除失败，请重试',
+          icon: 'none'
+        })
+      })
+      .finally(() => {
+        this.setData({ saving: false })
+      })
+  },
+
+  // 取消编辑
+  onCancel() {
+    // 查看模式直接返回
+    if (this.data.pageMode === 'view') {
+      wx.navigateBack()
+      return
+    }
+
+    // 有未保存的修改时提示确认
+    if (this.data.isDirty) {
+      wx.showModal({
+        title: '确认取消',
+        content: '确定要取消吗？未保存的内容将丢失。',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateBack()
+          }
+        }
+      })
+    } else {
+      wx.navigateBack()
+    }
+  },
+
+  // === 辅助方法 ===
+
+  // 显示错误并返回
+  showErrorAndReturn(message) {
+    wx.showToast({
+      title: message,
+      icon: 'none'
+    })
+    setTimeout(() => wx.navigateBack(), 1500)
+  },
+
+  // 返回上一页并刷新
+  navigateBackWithRefresh() {
+    const pages = getCurrentPages()
+    const prevPage = pages[pages.length - 2]
+    if (prevPage && prevPage.onShow) {
+      prevPage.onShow()
+    }
+    wx.navigateBack()
+  },
+
+  // === 生命周期 ===
+
+  onShow() {
+    // 监听Store初始化状态
+    if (this.data.isStoreInitialized) {
+      this._storeInitializedHandler()
+    }
+  },
+
+  onUnload() {
+    console.log('🚪 [UserRuleEdit] 页面卸载，重置Store')
+    // 页面卸载时重置Store
+    this.resetStore()
+  }
+})
