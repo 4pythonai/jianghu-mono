@@ -3,7 +3,7 @@
  * 支持新建/编辑模式，统一数据结构，标准化接口
  */
 
-import { observable, action } from 'mobx-miniprogram'
+import { observable, action, computed } from 'mobx-miniprogram'
 import { gameStore } from '../../../gameStore'
 import { REWARD_DEFAULTS } from '../../../../utils/rewardDefaults.js'
 
@@ -313,6 +313,97 @@ export const Gamble4PLasiStore = observable({
       minute: '2-digit'
     });
     return `拉丝规则_${timestamp}`;
+  },
+
+  // === 计算属性（用于组件显示） ===
+  
+  // 获取吃肉配置的显示值
+  get eatmeatDisplayValue() {
+    const { eatingRange, meatValueConfig, meatMaxValue } = this.config.eatmeatConfig;
+    
+    // 格式化肉分值计算方式
+    let meatValueText = '';
+    if (meatValueConfig?.startsWith('MEAT_AS_')) {
+      const score = meatValueConfig.replace('MEAT_AS_', '');
+      meatValueText = `肉算${score}分`;
+    } else {
+      switch (meatValueConfig) {
+        case 'SINGLE_DOUBLE':
+          meatValueText = '分值翻倍';
+          break;
+        case 'CONTINUE_DOUBLE':
+          meatValueText = '分值连续翻倍';
+          break;
+        case 'DOUBLE_WITH_REWARD':
+          meatValueText = '分值翻倍(含奖励)';
+          break;
+        case 'DOUBLE_WITHOUT_REWARD':
+          meatValueText = '分值翻倍(不含奖励)';
+          break;
+        default:
+          meatValueText = '请配置吃肉规则';
+      }
+    }
+
+    // 格式化吃肉范围展示
+    let eatingRangeText = '';
+    if (eatingRange && typeof eatingRange === 'object') {
+      const parts = [];
+      if (eatingRange.BetterThanBirdie > 0) parts.push(`更好+${eatingRange.BetterThanBirdie}`);
+      if (eatingRange.Birdie > 0) parts.push(`鸟+${eatingRange.Birdie}`);
+      if (eatingRange.Par > 0) parts.push(`帕+${eatingRange.Par}`);
+      if (eatingRange.WorseThanPar > 0) parts.push(`更差+${eatingRange.WorseThanPar}`);
+
+      if (parts.length > 0) {
+        eatingRangeText = `给${parts.join(', ')}`;
+      }
+    }
+
+    // 格式化封顶值 - 只有在选择"分值翻倍"时才显示封顶信息
+    let meatMaxText = '';
+    if (meatValueConfig === 'SINGLE_DOUBLE') {
+      if (meatMaxValue === 10000000) {
+        meatMaxText = '不封顶';
+      } else {
+        meatMaxText = `${meatMaxValue}分封顶`;
+      }
+    }
+
+    // 组合显示文本
+    let result = meatValueText;
+    if (meatMaxText) {
+      result += `/${meatMaxText}`;
+    }
+
+    if (eatingRangeText) {
+      result = `${result} (${eatingRangeText})`;
+    }
+
+    return result || '请配置吃肉规则';
+  },
+
+  // 获取顶洞配置的显示值
+  get dingdongDisplayValue() {
+    const { mode } = this.config.dingdongConfig;
+    
+    switch (mode) {
+      case 'DrawEqual':
+        return '得分打平';
+      case 'NoDraw':
+        return '无顶洞';
+      default:
+        // 处理 Diff_X 格式
+        if (mode?.startsWith('Diff_')) {
+          const score = mode.replace('Diff_', '');
+          return `得分${score}分以内`;
+        }
+        return '请配置顶洞规则';
+    }
+  },
+
+  // 检查吃肉功能是否被禁用（根据顶洞配置）
+  get isEatmeatDisabled() {
+    return this.config.dingdongConfig?.mode === 'NoDraw';
   },
 
   // === 数据导出方法 ===

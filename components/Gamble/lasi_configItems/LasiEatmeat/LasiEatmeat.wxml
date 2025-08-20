@@ -1,10 +1,10 @@
 <!-- 吃肉规则配置组件 -->
 <!-- 显示部分 -->
-<view class="rule-section {{isDisabled ? 'disabled' : ''}}" wx:if="{{!visible}}">
+<view class="rule-section {{disabled ? 'disabled' : ''}}" wx:if="{{!visible}}">
   <view class="form-label">吃肉规则</view>
   <view class="form-select" bindtap="onShowConfig">
     <view
-      class="form-input-simulator {{isDisabled ? 'conditionally-disabled' : ''}}"
+      class="form-input-simulator {{disabled ? 'conditionally-disabled' : ''}}"
     >{{displayValue}}</view>
     <view class="select-arrow">
       <text class="arrow-circle">▼</text>
@@ -27,11 +27,11 @@
           <picker
             class="eat-picker"
             range="{{eatValueRange}}"
-            value="{{eatingRange[item] - 1}}"
+            value="{{editingConfig.eatingRange[item] - 1}}"
             data-index="{{index}}"
             bindchange="onEatValueChange"
           >
-            <view class="picker-value">{{eatingRange[item]}}</view>
+            <view class="picker-value">{{editingConfig.eatingRange[item]}}</view>
           </picker>
         </view>
       </block>

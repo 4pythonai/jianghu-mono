@@ -59,7 +59,9 @@
                 wx:if="{{item.name === 'LasiDingDong'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                bind:dingdongConfigChange="onLasiDingdongConfigChange"
+                config="{{storeConfig.dingdongConfig}}"
+                displayValue="{{dingdongDisplayValue}}"
+                bind:configChange="onLasiDingdongConfigChange"
               />
 
               <!-- 吃肉规则配置 -->
@@ -67,7 +69,10 @@
                 wx:if="{{item.name === 'LasiEatmeat'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                bind:eatmeatConfigChange="onLasiEatmeatConfigChange"
+                config="{{storeConfig.eatmeatConfig}}"
+                displayValue="{{eatmeatDisplayValue}}"
+                disabled="{{isEatmeatDisabled}}"
+                bind:configChange="onLasiEatmeatConfigChange"
               />
 
               <!-- 包洞规则配置 -->

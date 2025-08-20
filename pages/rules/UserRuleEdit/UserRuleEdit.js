@@ -20,7 +20,11 @@ Page({
             storeMetadata: 'metadata',
             storeConfig: 'config',
             isStoreInitialized: 'isInitialized',
-            isDirty: 'isDirty'
+            isDirty: 'isDirty',
+            // 计算属性
+            eatmeatDisplayValue: 'eatmeatDisplayValue',
+            isEatmeatDisabled: 'isEatmeatDisabled',
+            dingdongDisplayValue: 'dingdongDisplayValue'
         },
         actions: {
             // 从Store获取方法
@@ -50,9 +54,9 @@ Page({
         // === 组件配置 ===
         configComponents: [         // 4人拉丝固定的组件列表
             { name: 'LasiKPI', title: 'KPI规则' },
-            { name: 'LasiEatmeat', title: '吃肉规则' },
             { name: 'LasiRewardConfig', title: '奖励配置' },
             { name: 'LasiDingDong', title: '顶洞规则' },
+            { name: 'LasiEatmeat', title: '吃肉规则' },
             { name: 'LasiKoufen', title: '包洞规则' }
         ],
 
