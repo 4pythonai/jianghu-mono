@@ -1,283 +1,296 @@
-import { G4PLasiStore } from '../../../../stores/gamble/4p/4p-lasi/gamble_4P_lasi_Store.js'
+/**
+ * 拉丝KPI配置组件 - 重构版
+ * 纯展示组件，所有数据由父组件通过props传入
+ */
+
 import { generateLasiRuleName } from '../../../../utils/ruleNameGenerator.js'
 
 Component({
-    data: {
-        // 当前选中的指标
-        selectedIndicators: [],
-        // 选中状态的映射对象
-        isSelected: {
-            best: true,
-            worst: true,
-            total: true
-        },
-        totalCalculationType: 'add_total',
-        // 各KPI的分值配置
-        kpiValues: {
-            best: 1,    // 较好成绩PK分值
-            worst: 1,   // 较差成绩PK分值
-            total: 1    // 双方总杆PK分值
-        },
-        // 生成的规则名称
-        generatedRuleName: '',
-        // 总分
-        totalScore: 0
+  properties: {
+    // KPI配置数据
+    config: {
+      type: Object,
+      value: null
     },
-
-    lifetimes: {
-        attached() {
-            // 初始化时从Store获取当前配置
-            let selectedIndicators = G4PLasiStore.lasi_config?.indicators || [];
-            const kpiValues = G4PLasiStore.lasi_config?.kpiValues || this.data.kpiValues;
-
-            // 如果没有配置或配置为空，则默认选中3个指标
-            if (!selectedIndicators || selectedIndicators.length === 0) {
-                selectedIndicators = ['best', 'worst', 'total'];
-            }
-
-            // 构建选中状态映射
-            const isSelected = {
-                best: selectedIndicators.includes('best'),
-                worst: selectedIndicators.includes('worst'),
-                total: selectedIndicators.includes('total')
-            };
-
-            this.setData({
-                selectedIndicators,
-                isSelected,
-                totalCalculationType: G4PLasiStore.lasi_config?.totalCalculationType || 'add_total',
-                kpiValues
-            });
-            this.calculateTotalScore();
-            this.generateRuleName();
-
-            // 如果设置了默认指标，需要同步到Store中
-            if (selectedIndicators.length > 0) {
-                this.updateStore();
-            }
-
-        }
+    // 显示值（由Store计算）
+    displayValue: {
+      type: String,
+      value: '请配置KPI规则'
     },
-
-    methods: {
-        // 监听KPI配置变化（供外部调用）
-        onKpiConfigChange() {
-        },
-
-        // 选择拉丝指标
-        onSelectIndicator(e) {
-            const { value } = e.currentTarget.dataset;
-            const { selectedIndicators, isSelected } = this.data;
-
-            const newSelectedIndicators = selectedIndicators.includes(value)
-                ? selectedIndicators.filter(item => item !== value)
-                : [...selectedIndicators, value];
-
-            const newIsSelected = { ...isSelected };
-            newIsSelected[value] = !selectedIndicators.includes(value);
-
-            this.setData({
-                selectedIndicators: newSelectedIndicators,
-                isSelected: newIsSelected
-            });
-
-            this.calculateTotalScore();
-            this.generateRuleName();
-            this.updateStore();
-        },
-
-        // 切换总杆计算方式  
-        onToggleTotalType() {
-            const newType = this.data.totalCalculationType === 'add_total' ? 'multiply_total' : 'add_total';
-            this.setData({
-                totalCalculationType: newType
-            });
-
-            this.generateRuleName();
-            this.updateStore();
-
-        },
-
-        // KPI分值变化处理
-        onKpiValueChange(e) {
-            const { kpi } = e.currentTarget.dataset;
-            const value = Number.parseInt(e.detail.value) + 1; // picker的value从0开始，所以+1
-
-            const { kpiValues } = this.data;
-            kpiValues[kpi] = value;
-
-            this.setData({
-                kpiValues
-            });
-
-            this.calculateTotalScore();
-            this.generateRuleName();
-            this.updateStore();
-        },
-
-        // 计算总分
-        calculateTotalScore() {
-            const { selectedIndicators, kpiValues } = this.data;
-            let total = 0;
-
-            for (const indicator of selectedIndicators) {
-                total += kpiValues[indicator] || 0;
-            }
-
-            this.setData({
-                totalScore: total
-            });
-        },
-
-        // 生成规则名称
-        generateRuleName() {
-            const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
-
-            // 使用统一的规则名称生成器
-            const ruleName = generateLasiRuleName(selectedIndicators, kpiValues, totalCalculationType);
-
-            // 更新数据并立即触发事件
-            this.setData({ generatedRuleName: ruleName });
-
-            // 立即触发事件，传递最新的规则名称
-            const config = {
-                indicators: this.data.selectedIndicators,
-                totalCalculationType: this.data.totalCalculationType,
-                kpiValues: this.data.kpiValues
-            };
-            this.triggerEvent('kpiConfigChange', {
-                config,
-                selectedIndicators: this.data.selectedIndicators,
-                hasTotalType: this.data.selectedIndicators.includes('total'),
-                generatedRuleName: ruleName
-            });
-        },
-
-        // 更新Store
-        updateStore() {
-            const config = {
-                indicators: this.data.selectedIndicators,
-                totalCalculationType: this.data.totalCalculationType,
-                kpiValues: this.data.kpiValues
-            };
-
-            G4PLasiStore.updateLasiConfig(config);
-        },
-
-        // 通知奖励配置组件更新
-        notifyRewardConfigUpdate() {
-            // 触发自定义事件，通知父组件KPI配置已更新
-            const config = {
-                indicators: this.data.selectedIndicators,
-                totalCalculationType: this.data.totalCalculationType,
-                kpiValues: this.data.kpiValues
-            };
-            this.triggerEvent('kpiConfigChange', {
-                config,
-                selectedIndicators: this.data.selectedIndicators,
-                hasTotalType: this.data.selectedIndicators.includes('total'),
-                generatedRuleName: this.data.generatedRuleName
-            });
-        },
-
-        // 获取配置结果 - 返回指定格式的数组
-        getConfigResult() {
-            const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
-
-            const result = [];
-
-            // 添加选中的KPI配置
-            for (const indicator of selectedIndicators) {
-                if (indicator === 'total') {
-                    // 总杆类型需要特殊处理
-                    result.push({
-                        kpi: totalCalculationType,
-                        value: kpiValues.total
-                    });
-                } else {
-                    result.push({
-                        kpi: indicator,
-                        value: kpiValues[indicator]
-                    });
-                }
-            }
-
-            return result;
-        },
-
-        // 获取配置数据（供SysEdit页面调用）
-        getConfigData() {
-            const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
-
-            // 返回扁平化的数据结构，与UserRuleEdit的collectConfigData方法兼容
-            return {
-                kpis: JSON.stringify({
-                    indicators: selectedIndicators,
-                    kpiValues,
-                    totalCalculationType
-                })
-            };
-        },
-
-
-
-        // 初始化配置数据 - 供UserRuleEdit页面调用
-        initConfigData(configData) {
-
-            if (!configData) {
-                return;
-            }
-
-            // 从配置数据中提取KPI相关配置
-            // 支持三种数据结构：
-            // 1. 直接包含kpi相关字段
-            // 2. 嵌套在kpis字段中的对象
-            // 3. 嵌套在kpis字段中的JSON字符串
-            let kpiConfig = configData;
-            if (configData.kpis) {
-                if (typeof configData.kpis === 'object') {
-                    kpiConfig = configData.kpis;
-                } else if (typeof configData.kpis === 'string') {
-                    try {
-                        kpiConfig = JSON.parse(configData.kpis);
-                    } catch (error) {
-                        kpiConfig = configData;
-                    }
-                }
-            }
-
-
-            // 支持两种字段名：selectedIndicators 和 indicators
-            const selectedIndicators = kpiConfig.selectedIndicators || kpiConfig.indicators || ['best', 'worst', 'total'];
-            const kpiValues = kpiConfig.kpiValues || {
-                best: 1,
-                worst: 1,
-                total: 1
-            };
-            const totalCalculationType = kpiConfig.totalCalculationType || 'add_total';
-
-
-
-            // 构建选中状态映射
-            const isSelected = {
-                best: selectedIndicators.includes('best'),
-                worst: selectedIndicators.includes('worst'),
-                total: selectedIndicators.includes('total')
-            };
-
-            this.setData({
-                selectedIndicators,
-                isSelected,
-                kpiValues,
-                totalCalculationType
-            });
-
-            this.calculateTotalScore();
-            this.generateRuleName();
-            this.updateStore();
-
-        },
-
-
+    // 组件模式
+    mode: {
+      type: String,
+      value: 'UserEdit' // 'UserEdit' | 'SysConfig' | 'view'
     }
+  },
+
+  data: {
+    // KPI指标选项
+    indicatorOptions: [
+      { key: 'best', label: '较好成绩PK', value: 1 },
+      { key: 'worst', label: '较差成绩PK', value: 1 },
+      { key: 'total', label: '双方总杆PK', value: 1 }
+    ],
+    
+    // 总杆计算方式选项
+    totalCalculationOptions: [
+      { key: 'add_total', label: '杆数相加' },
+      { key: 'multiply_total', label: '杆数相乘' }
+    ],
+    
+    // 分值范围（1-10分）
+    valueRange: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    
+    // 当前编辑中的配置
+    editingConfig: {
+      indicators: ['best', 'worst', 'total'],
+      totalCalculationType: 'add_total',
+      kpiValues: {
+        best: 1,
+        worst: 1,
+        total: 1
+      }
+    },
+    
+    // UI选择状态
+    selectedIndicators: ['best', 'worst', 'total'],
+    isSelected: {
+      best: true,
+      worst: true,
+      total: true
+    },
+    totalCalculationType: 'add_total',
+    kpiValues: {
+      best: 1,
+      worst: 1,
+      total: 1
+    },
+    
+    // 计算属性
+    totalScore: 3,
+    generatedRuleName: ''
+  },
+
+  lifetimes: {
+    attached() {
+      console.log('🎯 [LasiKPI] 组件加载，props:', {
+        config: this.properties.config,
+        displayValue: this.properties.displayValue,
+        mode: this.properties.mode
+      });
+      
+      // 初始化默认配置
+      this.initializeWithDefaults();
+    }
+  },
+
+  observers: {
+    'config': function(newConfig) {
+      console.log('🎯 [LasiKPI] observer触发, newConfig:', newConfig);
+      if (newConfig) {
+        console.log('🎯 [LasiKPI] 配置更新:', newConfig);
+        this.updateEditingConfig(newConfig);
+      } else {
+        console.log('🎯 [LasiKPI] 配置为空，使用默认值');
+        this.initializeWithDefaults();
+      }
+    }
+  },
+
+  methods: {
+    // 初始化默认配置
+    initializeWithDefaults() {
+      const defaultConfig = {
+        indicators: ['best', 'worst', 'total'],
+        totalCalculationType: 'add_total',
+        kpiValues: {
+          best: 1,
+          worst: 1,
+          total: 1
+        }
+      };
+      
+      this.updateEditingConfig(defaultConfig);
+      
+      // 新建模式下，初始化后立即通知父组件默认配置
+      if (this.properties.mode === 'UserEdit') {
+        this.notifyConfigChange();
+      }
+    },
+
+    // 根据传入的config更新编辑状态
+    updateEditingConfig(config) {
+      const { indicators, totalCalculationType, kpiValues } = config;
+      
+      // 构建选中状态映射
+      const isSelected = {
+        best: indicators.includes('best'),
+        worst: indicators.includes('worst'),
+        total: indicators.includes('total')
+      };
+      
+      this.setData({
+        editingConfig: config,
+        selectedIndicators: indicators || ['best', 'worst', 'total'],
+        isSelected,
+        totalCalculationType: totalCalculationType || 'add_total',
+        kpiValues: kpiValues || { best: 1, worst: 1, total: 1 }
+      });
+      
+      this.calculateTotalScore();
+      this.generateRuleName();
+    },
+
+    // === UI事件处理 ===
+    
+    // 选择KPI指标
+    onSelectIndicator(e) {
+      const { value } = e.currentTarget.dataset;
+      const { selectedIndicators, isSelected } = this.data;
+      
+      const newSelectedIndicators = selectedIndicators.includes(value)
+        ? selectedIndicators.filter(item => item !== value)
+        : [...selectedIndicators, value];
+      
+      const newIsSelected = { ...isSelected };
+      newIsSelected[value] = !selectedIndicators.includes(value);
+      
+      this.setData({
+        selectedIndicators: newSelectedIndicators,
+        isSelected: newIsSelected
+      });
+      
+      this.calculateTotalScore();
+      this.generateRuleName();
+      this.notifyConfigChange();
+    },
+
+    // 切换总杆计算方式
+    onToggleTotalType() {
+      const newType = this.data.totalCalculationType === 'add_total' ? 'multiply_total' : 'add_total';
+      this.setData({
+        totalCalculationType: newType
+      });
+      
+      this.generateRuleName();
+      this.notifyConfigChange();
+    },
+
+    // KPI分值变化处理
+    onKpiValueChange(e) {
+      const { kpi } = e.currentTarget.dataset;
+      const value = this.data.valueRange[e.detail.value]; // 直接使用valueRange中的值
+      
+      const { kpiValues } = this.data;
+      const newKpiValues = { ...kpiValues };
+      newKpiValues[kpi] = value;
+      
+      this.setData({
+        kpiValues: newKpiValues
+      });
+      
+      this.calculateTotalScore();
+      this.generateRuleName();
+      this.notifyConfigChange();
+    },
+
+    // === 辅助方法 ===
+    
+    // 计算总分
+    calculateTotalScore() {
+      const { selectedIndicators, kpiValues } = this.data;
+      let total = 0;
+      
+      for (const indicator of selectedIndicators) {
+        total += kpiValues[indicator] || 0;
+      }
+      
+      this.setData({
+        totalScore: total
+      });
+    },
+
+    // 生成规则名称
+    generateRuleName() {
+      const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
+      
+      // 使用统一的规则名称生成器
+      const ruleName = generateLasiRuleName(selectedIndicators, kpiValues, totalCalculationType);
+      
+      this.setData({ generatedRuleName: ruleName });
+    },
+
+    // 通知父组件配置变化
+    notifyConfigChange() {
+      const config = this.buildConfigFromUI();
+      const { generatedRuleName } = this.data;
+      
+      console.log('🎯 [LasiKPI] 通知配置变化:', { config, generatedRuleName });
+      
+      // 触发事件通知父组件
+      this.triggerEvent('kpiConfigChange', {
+        config,
+        selectedIndicators: this.data.selectedIndicators,
+        hasTotalType: this.data.selectedIndicators.includes('total'),
+        generatedRuleName
+      });
+    },
+
+    // 从UI状态构建配置对象
+    buildConfigFromUI() {
+      const { selectedIndicators, totalCalculationType, kpiValues } = this.data;
+      
+      return {
+        indicators: selectedIndicators,
+        totalCalculationType,
+        kpiValues: { ...kpiValues }
+      };
+    },
+
+    // 同步Store数据（供父组件调用）
+    syncWithStore(storeData) {
+      console.log('🎯 [LasiKPI] 同步Store数据:', storeData);
+      
+      if (storeData?.config?.kpiConfig) {
+        // 通过properties更新，会触发observer
+        // 这里只是记录日志，实际更新通过父组件传props
+      }
+    },
+
+    // === 兼容性方法（供旧代码调用） ===
+    
+    // 获取配置结果 - 返回指定格式的数组
+    getConfigResult() {
+      const { selectedIndicators, kpiValues, totalCalculationType } = this.data;
+      const result = [];
+      
+      // 添加选中的KPI配置
+      for (const indicator of selectedIndicators) {
+        if (indicator === 'total') {
+          // 总杆类型需要特殊处理
+          result.push({
+            kpi: totalCalculationType,
+            value: kpiValues.total
+          });
+        } else {
+          result.push({
+            kpi: indicator,
+            value: kpiValues[indicator]
+          });
+        }
+      }
+      
+      return result;
+    },
+
+    // 获取配置数据（供SysEdit页面调用）
+    getConfigData() {
+      const config = this.buildConfigFromUI();
+      
+      // 返回扁平化的数据结构，与UserRuleEdit的collectConfigData方法兼容
+      return {
+        kpis: JSON.stringify(config)
+      };
+    }
+  }
 });

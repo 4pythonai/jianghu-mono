@@ -43,6 +43,8 @@
                 wx:if="{{item.name === 'LasiKPI'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                config="{{storeConfig.kpiConfig}}"
+                displayValue="{{kpiDisplayValue}}"
                 bind:kpiConfigChange="onLasiKpiConfigChange"
               />
 
@@ -80,7 +82,9 @@
                 wx:if="{{item.name === 'LasiKoufen'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                bind:baodongConfigChange="onLasiBaodongConfigChange"
+                config="{{storeConfig.baodongConfig}}"
+                displayValue="{{baodongDisplayValue}}"
+                bind:configChange="onLasiKoufenConfigChange"
               />
             </view>
           </view>

@@ -317,6 +317,30 @@ export const Gamble4PLasiStore = observable({
 
   // === 计算属性（用于组件显示） ===
   
+  // 获取KPI配置的显示值
+  get kpiDisplayValue() {
+    const { indicators, totalCalculationType, kpiValues } = this.config.kpiConfig;
+    
+    if (!indicators || indicators.length === 0) {
+      return '请配置KPI规则';
+    }
+    
+    // 格式化指标显示
+    const indicatorTexts = [];
+    if (indicators.includes('best')) {
+      indicatorTexts.push(`较好${kpiValues.best}分`);
+    }
+    if (indicators.includes('worst')) {
+      indicatorTexts.push(`较差${kpiValues.worst}分`);
+    }
+    if (indicators.includes('total')) {
+      const totalTypeText = totalCalculationType === 'multiply_total' ? '杆数相乘' : '杆数相加';
+      indicatorTexts.push(`总杆${kpiValues.total}分(${totalTypeText})`);
+    }
+    
+    return indicatorTexts.join(' / ');
+  },
+
   // 获取吃肉配置的显示值
   get eatmeatDisplayValue() {
     const { eatingRange, meatValueConfig, meatMaxValue } = this.config.eatmeatConfig;
@@ -399,6 +423,55 @@ export const Gamble4PLasiStore = observable({
         }
         return '请配置顶洞规则';
     }
+  },
+
+  // 获取包洞配置的显示值
+  get baodongDisplayValue() {
+    const { dutyConfig, partnerDutyCondition, badScoreBaseLine, badScoreMaxLost } = this.config.baodongConfig;
+    
+    // 格式化包洞规则显示
+    let ruleText = '';
+    if (dutyConfig === 'NODUTY') {
+      ruleText = '不包洞';
+    } else if (badScoreBaseLine?.startsWith('Par+')) {
+      const value = badScoreBaseLine.replace('Par+', '');
+      ruleText = `帕+${value}包洞`;
+    } else if (badScoreBaseLine?.startsWith('DoublePar+')) {
+      const value = badScoreBaseLine.replace('DoublePar+', '');
+      ruleText = `双帕+${value}包洞`;
+    } else if (badScoreBaseLine?.startsWith('ScoreDiff_')) {
+      const value = badScoreBaseLine.replace('ScoreDiff_', '');
+      ruleText = `杆差${value}包洞`;
+    } else {
+      ruleText = '不包洞';
+    }
+
+    // 如果是不包洞，直接返回
+    if (dutyConfig === 'NODUTY') {
+      return ruleText;
+    }
+
+    // 格式化队友责任条件显示
+    let conditionText = '';
+    switch (partnerDutyCondition) {
+      case 'DUTY_DINGTOU':
+        conditionText = '同伴顶头包洞';
+        break;
+      case 'PARTNET_IGNORE':
+        conditionText = '与同伴成绩无关';
+        break;
+      default:
+        conditionText = '同伴顶头包洞';
+    }
+
+    // 格式化封顶显示
+    let maxLostText = '';
+    if (badScoreMaxLost && badScoreMaxLost !== 10000000) {
+      maxLostText = `/${badScoreMaxLost}分封顶`;
+    }
+
+    // 组合显示值
+    return `${ruleText}/${conditionText}${maxLostText}`;
   },
 
   // 检查吃肉功能是否被禁用（根据顶洞配置）

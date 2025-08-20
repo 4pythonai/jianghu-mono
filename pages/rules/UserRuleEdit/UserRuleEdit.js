@@ -22,9 +22,11 @@ Page({
             isStoreInitialized: 'isInitialized',
             isDirty: 'isDirty',
             // 计算属性
+            kpiDisplayValue: 'kpiDisplayValue',
             eatmeatDisplayValue: 'eatmeatDisplayValue',
             isEatmeatDisabled: 'isEatmeatDisabled',
-            dingdongDisplayValue: 'dingdongDisplayValue'
+            dingdongDisplayValue: 'dingdongDisplayValue',
+            baodongDisplayValue: 'baodongDisplayValue'
         },
         actions: {
             // 从Store获取方法
@@ -225,6 +227,13 @@ Page({
         const { config } = e.detail
         console.log('🕳️ [UserRuleEdit] 顶洞配置变化:', config)
         this.updateDingdongConfig(config)
+    },
+
+    // 包洞配置变化
+    onLasiKoufenConfigChange(e) {
+        const { config } = e.detail
+        console.log('🏳️ [UserRuleEdit] 包洞配置变化:', config)
+        this.updateBaodongConfig(config)
     },
 
     // === 保存和验证 ===
