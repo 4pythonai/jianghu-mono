@@ -39,12 +39,12 @@ Component({
       'WorseThanPar': '比帕更差'
     },
     eatRangeKeys: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
-    
+
     // 选项范围
     eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1),
     meatScoreRange: [1, 2, 3, 4, 5],
     topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1),
-    
+
     // 肉分值计算选项
     meatValueOptions: [
       { label: '肉算固定分', value: 'MEAT_AS_X' },
@@ -53,7 +53,7 @@ Component({
       { label: '分值翻倍(含奖励)', value: 'DOUBLE_WITH_REWARD' },
       { label: '分值翻倍(不含奖励)', value: 'DOUBLE_WITHOUT_REWARD' }
     ],
-    
+
     // 封顶选项
     topOptions: ["不封顶", "X分封顶"],
 
@@ -68,7 +68,7 @@ Component({
       meatValueConfig: 'DOUBLE_WITHOUT_REWARD',
       meatMaxValue: 10000000
     },
-    
+
     // UI选择状态
     meatValueOption: 4,      // 肉分值计算方式选择索引
     meatScoreValue: 1,       // 肉固定分值
@@ -78,17 +78,12 @@ Component({
 
   lifetimes: {
     attached() {
-      console.log('🎯 [LasiEatmeat] 组件加载，props:', {
-        config: this.properties.config,
-        displayValue: this.properties.displayValue,
-        mode: this.properties.mode,
-        disabled: this.properties.disabled
-      });
+      console.log(' 🟢🟡🟠🔴 this.properties   组件加载，🟢🟡🟠🔴 props:', this.properties);
     }
   },
 
   observers: {
-    'config': function(newConfig) {
+    'config': function (newConfig) {
       if (newConfig) {
         console.log('🎯 [LasiEatmeat] 配置更新:', newConfig);
         this.updateEditingConfig(newConfig);
@@ -100,11 +95,11 @@ Component({
     // 根据传入的config更新编辑状态
     updateEditingConfig(config) {
       const { eatingRange, meatValueConfig, meatMaxValue } = config;
-      
+
       // 解析肉分值计算方式
       let meatValueOption = 4;  // 默认'DOUBLE_WITHOUT_REWARD'
       let meatScoreValue = 1;
-      
+
       if (meatValueConfig?.startsWith('MEAT_AS_')) {
         meatValueOption = 0;
         const score = Number.parseInt(meatValueConfig.replace('MEAT_AS_', ''));
@@ -125,11 +120,11 @@ Component({
             break;
         }
       }
-      
+
       // 解析封顶配置
       const topSelected = (meatMaxValue === 10000000) ? 0 : 1;
       const topScoreLimit = (meatMaxValue === 10000000) ? 3 : meatMaxValue;
-      
+
       this.setData({
         editingConfig: {
           eatingRange: eatingRange || this.data.editingConfig.eatingRange,
@@ -144,7 +139,7 @@ Component({
     },
 
     // === UI事件处理 ===
-    
+
     // 显示配置弹窗
     onShowConfig() {
       if (this.properties.disabled) {
@@ -155,12 +150,12 @@ Component({
         });
         return;
       }
-      
+
       // 打开弹窗前同步当前配置
       if (this.properties.config) {
         this.updateEditingConfig(this.properties.config);
       }
-      
+
       this.setData({ visible: true });
     },
 
@@ -172,26 +167,26 @@ Component({
     // 确认配置
     onConfirm() {
       const config = this.buildConfigFromUI();
-      
+
       console.log('🎯 [LasiEatmeat] 确认配置:', config);
-      
+
       // 触发事件通知父组件
       this.triggerEvent('configChange', { config });
-      
+
       this.setData({ visible: false });
     },
 
     // === 配置项变更事件 ===
-    
+
     // 吃肉数量改变
     onEatValueChange(e) {
       const keyIndex = e.currentTarget.dataset.index;
       const value = this.data.eatValueRange[e.detail.value];
       const key = this.data.eatRangeKeys[keyIndex];
-      
+
       const newEatingRange = { ...this.data.editingConfig.eatingRange };
       newEatingRange[key] = value;
-      
+
       this.setData({
         'editingConfig.eatingRange': newEatingRange
       });
@@ -229,11 +224,11 @@ Component({
     },
 
     // === 辅助方法 ===
-    
+
     // 从UI状态构建配置对象
     buildConfigFromUI() {
       const { meatValueOption, meatScoreValue, topSelected, topScoreLimit, editingConfig } = this.data;
-      
+
       // 构建肉分值配置
       let meatValueConfig = 'DOUBLE_WITHOUT_REWARD';
       switch (meatValueOption) {
@@ -253,10 +248,10 @@ Component({
           meatValueConfig = 'DOUBLE_WITHOUT_REWARD';
           break;
       }
-      
+
       // 构建封顶配置
       const meatMaxValue = (meatValueOption === 1 && topSelected === 1) ? topScoreLimit : 10000000;
-      
+
       return {
         eatingRange: editingConfig.eatingRange,
         meatValueConfig,
@@ -267,7 +262,7 @@ Component({
     // 同步Store数据（供父组件调用）
     syncWithStore(storeData) {
       console.log('🎯 [LasiEatmeat] 同步Store数据:', storeData);
-      
+
       if (storeData?.config?.eatmeatConfig) {
         // 通过properties更新，会触发observer
         // 这里只是记录日志，实际更新通过父组件传props

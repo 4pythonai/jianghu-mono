@@ -7,6 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 用中文回答我 ,每次都用审视的目光，仔细看我输入的潜在问题，你要指出我的问题，并给出明显在我思考框架之外的建议，如果你觉得我说的太离谱了，请给出
 严厉的批评,帮我瞬间清醒 
 
+
+## 框架特定
+
+Mobx:
+纯受控组件模式 + 防抖机制是有效的解决方案
+
 ## Project Overview
 
 这是一个基于微信小程序的高尔夫运动应用，主要功能包括：

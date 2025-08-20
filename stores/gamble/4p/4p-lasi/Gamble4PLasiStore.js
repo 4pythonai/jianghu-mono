@@ -20,8 +20,6 @@ export const Gamble4PLasiStore = observable({
     gambleUserName: '',
     creator_id: null,
     userRuleId: null,       // 编辑模式时的规则ID
-    createTime: null,
-    updateTime: null
   },
 
   // === 标准化数据结构 ===
@@ -54,7 +52,7 @@ export const Gamble4PLasiStore = observable({
 
     // 4. 顶洞规则配置
     dingdongConfig: {
-      mode: 'DrawEqual',     // 'NoDraw' | 'DrawEqual' | 'Diff_X'
+      drawConfig: 'DrawEqual',     // 'NoDraw' | 'DrawEqual' | 'Diff_X'
       drawOptions: {}        // 平洞时的特殊配置
     },
 
@@ -89,7 +87,7 @@ export const Gamble4PLasiStore = observable({
     REWARD_CONFIG: REWARD_DEFAULTS.DEFAULT_REWARD_JSON,
 
     DINGDONG_CONFIG: {
-      mode: 'DrawEqual',
+      drawConfig: 'DrawEqual',
       drawOptions: {}
     },
 
@@ -102,20 +100,23 @@ export const Gamble4PLasiStore = observable({
   },
 
   // === 初始化方法 ===
-  initialize: action(function (mode, existingData = null) {
+  initializeStore: action(function (mode, existingData = null) {
     console.log('🔄 [Gamble4PLasiStore] 初始化:', { mode, existingData });
 
     this.mode = mode;
+
     this.isDirty = false;
+    if (mode === 'edit' && existingData) {
+      this.initializeForEdit(existingData);
+    }
 
     if (mode === 'create') {
       this.initializeForCreate();
-    } else if (mode === 'edit' && existingData) {
-      this.initializeForEdit(existingData);
-    } else if (mode === 'view' && existingData) {
+    }
+
+
+    if (mode === 'view' && existingData) {
       this.initializeForView(existingData);
-    } else {
-      throw new Error('无效的初始化参数');
     }
 
     this.isInitialized = true;
@@ -129,8 +130,6 @@ export const Gamble4PLasiStore = observable({
       gambleUserName: this.generateDefaultName(),
       creator_id: null,
       userRuleId: null,
-      createTime: new Date().toISOString(),
-      updateTime: null
     };
 
     // 使用默认配置
@@ -153,8 +152,6 @@ export const Gamble4PLasiStore = observable({
       gambleUserName: normalizedData.gambleUserName || this.generateDefaultName(),
       creator_id: normalizedData.creator_id,
       userRuleId: normalizedData.userRuleId,
-      createTime: normalizedData.createTime,
-      updateTime: new Date().toISOString()
     };
 
     this.config = {
@@ -181,7 +178,6 @@ export const Gamble4PLasiStore = observable({
     normalized.gambleUserName = inputData.gambleUserName;
     normalized.creator_id = inputData.creator_id;
     normalized.userRuleId = inputData.userRuleId;
-    normalized.createTime = inputData.createTime;
 
     // KPI配置处理
     if (inputData.kpis) {
@@ -209,10 +205,12 @@ export const Gamble4PLasiStore = observable({
     normalized.rewardConfig = this.parseRewardConfig(inputData.RewardConfig);
 
     // 顶洞配置处理
+    console.log('🔍 [Gamble4PLasiStore] 原始顶洞配置:', inputData.drawConfig);
     normalized.dingdongConfig = {
-      mode: inputData.drawConfig || this.DEFAULTS.DINGDONG_CONFIG.mode,
+      drawConfig: inputData.drawConfig || this.DEFAULTS.DINGDONG_CONFIG.drawConfig,
       drawOptions: {}
     };
+    console.log('🔍 [Gamble4PLasiStore] 标准化后顶洞配置:', normalized.dingdongConfig);
 
     // 包洞配置处理
     normalized.baodongConfig = {
@@ -277,9 +275,20 @@ export const Gamble4PLasiStore = observable({
 
   updateDingdongConfig: action(function (config) {
     console.log('✏️ 更新顶洞配置:', config);
-    Object.assign(this.config.dingdongConfig, config);
+    console.log('🔍 [Gamble4PLasiStore] 更新前，当前dingdongConfig:', this.config.dingdongConfig);
+    console.log('🔍 [Gamble4PLasiStore] 更新前，drawConfig值:', this.config.dingdongConfig.drawConfig);
+
+    // 直接替换整个对象，而不是使用Object.assign
+    this.config.dingdongConfig = { ...config };
+
+    console.log('🔍 [Gamble4PLasiStore] 更新后，当前dingdongConfig:', this.config.dingdongConfig);
+    console.log('🔍 [Gamble4PLasiStore] 更新后，drawConfig值:', this.config.dingdongConfig.drawConfig);
+
     this.markDirty();
     this.autoUpdateRuleName();
+
+    // 检查autoUpdateRuleName后是否被修改
+    console.log('🔍 [Gamble4PLasiStore] autoUpdateRuleName后，drawConfig值:', this.config.dingdongConfig.drawConfig);
   }),
 
   updateBaodongConfig: action(function (config) {
@@ -316,15 +325,15 @@ export const Gamble4PLasiStore = observable({
   },
 
   // === 计算属性（用于组件显示） ===
-  
+
   // 获取KPI配置的显示值
   get kpiDisplayValue() {
     const { indicators, totalCalculationType, kpiValues } = this.config.kpiConfig;
-    
+
     if (!indicators || indicators.length === 0) {
       return '请配置KPI规则';
     }
-    
+
     // 格式化指标显示
     const indicatorTexts = [];
     if (indicators.includes('best')) {
@@ -337,14 +346,14 @@ export const Gamble4PLasiStore = observable({
       const totalTypeText = totalCalculationType === 'multiply_total' ? '杆数相乘' : '杆数相加';
       indicatorTexts.push(`总杆${kpiValues.total}分(${totalTypeText})`);
     }
-    
+
     return indicatorTexts.join(' / ');
   },
 
   // 获取吃肉配置的显示值
   get eatmeatDisplayValue() {
     const { eatingRange, meatValueConfig, meatMaxValue } = this.config.eatmeatConfig;
-    
+
     // 格式化肉分值计算方式
     let meatValueText = '';
     if (meatValueConfig?.startsWith('MEAT_AS_')) {
@@ -408,17 +417,17 @@ export const Gamble4PLasiStore = observable({
 
   // 获取顶洞配置的显示值
   get dingdongDisplayValue() {
-    const { mode } = this.config.dingdongConfig;
-    
-    switch (mode) {
+    const { drawConfig } = this.config.dingdongConfig;
+
+    switch (drawConfig) {
       case 'DrawEqual':
         return '得分打平';
       case 'NoDraw':
         return '无顶洞';
       default:
         // 处理 Diff_X 格式
-        if (mode?.startsWith('Diff_')) {
-          const score = mode.replace('Diff_', '');
+        if (drawConfig?.startsWith('Diff_')) {
+          const score = drawConfig.replace('Diff_', '');
           return `得分${score}分以内`;
         }
         return '请配置顶洞规则';
@@ -428,7 +437,7 @@ export const Gamble4PLasiStore = observable({
   // 获取包洞配置的显示值
   get baodongDisplayValue() {
     const { dutyConfig, partnerDutyCondition, badScoreBaseLine, badScoreMaxLost } = this.config.baodongConfig;
-    
+
     // 格式化包洞规则显示
     let ruleText = '';
     if (dutyConfig === 'NODUTY') {
@@ -476,7 +485,7 @@ export const Gamble4PLasiStore = observable({
 
   // 检查吃肉功能是否被禁用（根据顶洞配置）
   get isEatmeatDisabled() {
-    return this.config.dingdongConfig?.mode === 'NoDraw';
+    return this.config.dingdongConfig?.drawConfig === 'NoDraw';
   },
 
   // === 数据导出方法 ===
@@ -505,7 +514,7 @@ export const Gamble4PLasiStore = observable({
       RewardConfig: JSON.stringify(this.config.rewardConfig),
 
       // 顶洞配置
-      drawConfig: this.config.dingdongConfig.mode,
+      drawConfig: this.config.dingdongConfig.drawConfig,
 
       // 包洞配置
       dutyConfig: this.config.baodongConfig.dutyConfig,

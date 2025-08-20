@@ -7,7 +7,6 @@
 const app = getApp()
 import { storeBindingsBehavior } from 'mobx-miniprogram-bindings'
 import { Gamble4PLasiStore } from '../../../stores/gamble/4p/4p-lasi/Gamble4PLasiStore.js'
-// const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig.js') // 暂时移除，重构后不再需要
 
 Page({
     behaviors: [storeBindingsBehavior],
@@ -30,7 +29,7 @@ Page({
         },
         actions: {
             // 从Store获取方法
-            initializeStore: 'initialize',
+            initializeStore: 'initializeStore',
             updateKpiConfig: 'updateKpiConfig',
             updateEatmeatConfig: 'updateEatmeatConfig',
             updateRewardConfig: 'updateRewardConfig',
@@ -137,10 +136,6 @@ Page({
             const ruleData = JSON.parse(decodeURIComponent(encodedRuleData))
             console.log('📊 [UserRuleEdit] 解析的规则数据:', ruleData)
 
-            // 验证数据
-            if (!ruleData.gambleSysName || ruleData.gambleSysName !== '4p-lasi') {
-                throw new Error('不支持的游戏类型')
-            }
 
             // 使用Store的edit模式初始化
             this.initializeStore(this.data.pageMode, ruleData)
@@ -148,7 +143,6 @@ Page({
             // 设置页面标题
             const title = this.data.pageMode === 'view' ? '查看拉丝规则' : '编辑拉丝规则'
             wx.setNavigationBarTitle({ title })
-
             this.setData({ loading: false })
 
         } catch (error) {
@@ -227,6 +221,30 @@ Page({
         const { config } = e.detail
         console.log('🕳️ [UserRuleEdit] 顶洞配置变化:', config)
         this.updateDingdongConfig(config)
+
+        // 手动同步配置到组件，绕过MobX响应式更新问题
+        setTimeout(() => {
+            const componentInstance = this.selectComponent('#LasiDingDong');
+            if (componentInstance && componentInstance.updateSelectedState) {
+                console.log('🔧 [UserRuleEdit] 手动同步配置到组件:', config);
+                componentInstance.updateSelectedState(config);
+            }
+        }, 50);
+
+        // 手动触发页面更新，确保MobX响应式更新被正确处理
+        this.setData({
+            storeConfig: this.data.storeConfig
+        });
+
+        // 立即检查Store状态
+        console.log('🔍 [UserRuleEdit] Store更新后立即，drawConfig值:', this.data.storeConfig.dingdongConfig.drawConfig);
+
+        // 检查Store更新后的状态
+        setTimeout(() => {
+            console.log('🔍 [UserRuleEdit] Store更新后，当前storeConfig:', this.data.storeConfig);
+            console.log('🔍 [UserRuleEdit] Store更新后，dingdongConfig:', this.data.storeConfig.dingdongConfig);
+            console.log('🔍 [UserRuleEdit] Store更新后，drawConfig值:', this.data.storeConfig.dingdongConfig.drawConfig);
+        }, 100);
     },
 
     // 包洞配置变化
@@ -265,14 +283,7 @@ Page({
             return
         }
 
-        // 查看模式不允许保存
-        if (this.data.pageMode === 'view') {
-            wx.showToast({
-                title: '查看模式不能保存',
-                icon: 'none'
-            })
-            return
-        }
+
 
         this.setData({ saving: true })
 
