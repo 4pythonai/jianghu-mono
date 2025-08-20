@@ -136,6 +136,11 @@ Component({
     onSelect(e) {
       const index = Number.parseInt(e.currentTarget.dataset.index);
       this.setData({ selected: index });
+      
+      // 立即同步到store（选择即保存）
+      const config = this.buildConfigFromUI();
+      console.log('🕳️ [LasiDingDong] 选择即保存配置:', config);
+      this.triggerEvent('configChange', { config });
     },
 
     // 分数差选择
@@ -143,6 +148,11 @@ Component({
       const selectedIndex = e.detail.value;
       const selectedScore = this.data.diffScores[selectedIndex];
       this.setData({ selectedDiffScore: selectedScore });
+      
+      // 立即同步到store（选择即保存）
+      const config = this.buildConfigFromUI();
+      console.log('🕳️ [LasiDingDong] 分数选择即保存配置:', config);
+      this.triggerEvent('configChange', { config });
     },
 
     // === 辅助方法 ===

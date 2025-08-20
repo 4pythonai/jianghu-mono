@@ -20,19 +20,19 @@
     <view class="modal-title">奖励规则</view>
     <view class="main-content">
       <view
-        class="reward-panel {{rewardType === 'add' ? 'active' : 'inactive'}}"
+        class="reward-panel {{editingConfig.rewardType === 'add' ? 'active' : 'inactive'}}"
         bindtap="onRewardTypeChange"
         data-type="add"
       >
         <view class="panel-header">
-          <view class="radio-outer {{rewardType === 'add' ? 'checked' : ''}}">
-            <view class="radio-inner" wx:if="{{rewardType === 'add'}}"></view>
+          <view class="radio-outer {{editingConfig.rewardType === 'add' ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{editingConfig.rewardType === 'add'}}"></view>
           </view>
           <text class="reward-title">加法奖励</text>
         </view>
 
         <view class="reward-items">
-          <view class="reward-item" wx:for="{{addRewardItems}}" wx:key="scoreName">
+          <view class="reward-item" wx:for="{{editingConfig.addRewardItems}}" wx:key="scoreName">
             <text
               class="score-name"
             >{{item.scoreName === 'Par' ? '帕' : item.scoreName === 'Birdie' ? '鸟' : item.scoreName === 'Eagle' ? '鹰' : item.scoreName === 'Albatross/HIO' ? '信天翁/HIO' : item.scoreName}}</text>
@@ -55,32 +55,32 @@
           <view class="precondition-title">奖励前置条件 (当含有总杆PK时)</view>
           <view class="precondition-options">
             <view
-              class="precondition-option {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              class="precondition-option {{editingConfig.rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
               bindtap="{{showPreCondition ? 'onPreConditionChange' : 'noTap'}}"
               data-value="total_win"
             >
               <view
-                class="radio-dot {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+                class="radio-dot {{editingConfig.rewardPreCondition === 'total_win' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
               ></view>
               <text class="precondition-text">总成绩赢才奖</text>
             </view>
             <view
-              class="precondition-option {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              class="precondition-option {{editingConfig.rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
               bindtap="{{showPreCondition ? 'onPreConditionChange' : 'noTap'}}"
               data-value="total_not_fail"
             >
               <view
-                class="radio-dot {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+                class="radio-dot {{editingConfig.rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
               ></view>
               <text class="precondition-text">总成绩不输才奖</text>
             </view>
             <view
-              class="precondition-option {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+              class="precondition-option {{editingConfig.rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
               bindtap="{{showPreCondition ? 'onPreConditionChange' : 'noTap'}}"
               data-value="total_ignore"
             >
               <view
-                class="radio-dot {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
+                class="radio-dot {{editingConfig.rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{!showPreCondition ? 'disabled' : ''}}"
               ></view>
               <text class="precondition-text">与总成绩无关</text>
             </view>
@@ -89,19 +89,19 @@
       </view>
 
       <view
-        class="reward-panel {{rewardType === 'multiply' ? 'active' : 'inactive'}}"
+        class="reward-panel {{editingConfig.rewardType === 'multiply' ? 'active' : 'inactive'}}"
         bindtap="onRewardTypeChange"
         data-type="multiply"
       >
         <view class="panel-header">
-          <view class="radio-outer {{rewardType === 'multiply' ? 'checked' : ''}}">
-            <view class="radio-inner" wx:if="{{rewardType === 'multiply'}}"></view>
+          <view class="radio-outer {{editingConfig.rewardType === 'multiply' ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{editingConfig.rewardType === 'multiply'}}"></view>
           </view>
           <text class="reward-title">乘法奖励</text>
         </view>
 
         <view class="reward-items">
-          <view class="reward-item" wx:for="{{multiplyRewardItems}}" wx:key="scoreName">
+          <view class="reward-item" wx:for="{{editingConfig.multiplyRewardItems}}" wx:key="scoreName">
             <text
               class="score-name"
             >{{item.scoreName === 'Par' ? '帕' : item.scoreName === 'Birdie' ? '鸟' : item.scoreName === 'Eagle' ? '鹰' : item.scoreName === 'Albatross/HIO' ? '信天翁/HIO' : item.scoreName === 'Birdie+Birdie' ? '鸟+鸟' : item.scoreName === 'Birdie+Eagle' ? '鸟+鹰' : item.scoreName === 'Eagle+Eagle' ? '鹰+鹰' : item.scoreName}}</text>
