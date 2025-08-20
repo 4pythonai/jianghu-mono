@@ -6,7 +6,7 @@
             "name": "siliconflow",
             "options": {
                 "baseURL": "https://api.siliconflow.cn/v1",
-                "apiKey": "{env:SILICONFLOW_API_KEY}"
+                "apiKey": "sk-fosayqloqlwjilavjlfzpoeohfkytaszeuolzobnygqlvlch"
             },
             "models": {
                 "moonshotai/Kimi-K2-Instruct": {

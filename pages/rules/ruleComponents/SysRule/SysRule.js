@@ -234,10 +234,25 @@ Component({
             console.log('📋 [SysRule] 卡片点击跳转规则配置页:', title);
 
             // 跳转到新的SysEdit页面
-            wx.navigateTo({
-                url: `/pages/rules/SysEdit/SysEdit?gameType=${title}`,
+            // wx.navigateTo({
+            //     url: `/pages/rules/SysEdit/SysEdit?gameType=${title}`,
+            //     success: () => {
+            //         console.log('📋 [SysRule] 成功跳转到SysEdit页面, 游戏类型:', title);
+            //     },
+            //     fail: (err) => {
+            //         console.error('📋 [SysRule] 跳转失败:', err);
+            //         wx.showToast({
+            //             title: '页面跳转失败',
+            //             icon: 'none'
+            //         });
+            //     }
+            // });
+
+            // /pages/rules/
+            wx.redirectTo({
+                url: '/pages/UnifiedConfigPage/UnifiedConfigPage?mode=system-add&gameType=4p-lasi',
                 success: () => {
-                    console.log('📋 [SysRule] 成功跳转到SysEdit页面, 游戏类型:', title);
+                    console.log('📋 [SysRule] 成功跳转到UnifiedConfigPage页面, 游戏类型:', title);
                 },
                 fail: (err) => {
                     console.error('📋 [SysRule] 跳转失败:', err);
@@ -246,7 +261,7 @@ Component({
                         icon: 'none'
                     });
                 }
-            });
+            })
         }
     }
 }); 
