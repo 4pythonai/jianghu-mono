@@ -46,14 +46,6 @@
                 bind:kpiConfigChange="onLasiKpiConfigChange"
               />
 
-              <!-- 吃肉规则配置 -->
-              <LasiEatmeat
-                wx:if="{{item.name === 'LasiEatmeat'}}"
-                id="{{item.name}}"
-                mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                bind:eatmeatConfigChange="onLasiEatmeatConfigChange"
-              />
-
               <!-- 奖励规则配置 -->
               <LasiRewardConfig
                 wx:if="{{item.name === 'LasiRewardConfig'}}"
@@ -68,6 +60,22 @@
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 bind:dingdongConfigChange="onLasiDingdongConfigChange"
+              />
+
+              <!-- 吃肉规则配置 -->
+              <LasiEatmeat
+                wx:if="{{item.name === 'LasiEatmeat'}}"
+                id="{{item.name}}"
+                mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                bind:eatmeatConfigChange="onLasiEatmeatConfigChange"
+              />
+
+              <!-- 包洞规则配置 -->
+              <LasiKoufen
+                wx:if="{{item.name === 'LasiKoufen'}}"
+                id="{{item.name}}"
+                mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                bind:baodongConfigChange="onLasiBaodongConfigChange"
               />
             </view>
           </view>
