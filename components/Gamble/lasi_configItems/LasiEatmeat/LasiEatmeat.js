@@ -71,7 +71,6 @@ Component({
       meatMaxValue: 10000000
     },
 
-    // UI计算状态（由observer更新）
     currentConfig: null,
     currentMeatValueOption: 4,
     currentMeatScore: 1,

@@ -117,43 +117,44 @@ Component({
 
     // UI事件处理
     onSelectIndicator(e) {
+      const config = this.properties.config;
+      if (!config) return;
+      
       const { value } = e.currentTarget.dataset;
-      const config = this.data.currentConfig;
-
       const newIndicators = config.indicators.includes(value)
         ? config.indicators.filter(item => item !== value)
         : [...config.indicators, value];
 
-      const newConfig = {
+      this.handleConfigChange({
         ...config,
         indicators: newIndicators
-      };
-
-      this.handleConfigChange(newConfig);
+      });
     },
 
     onToggleTotalType() {
+      const config = this.properties.config;
+      if (!config) return;
+      
       const newType = this.data.totalCalculationType === 'add_total' ? 'multiply_total' : 'add_total';
-      const config = {
-        ...this.data.currentConfig,
+      this.handleConfigChange({
+        ...config,
         totalCalculationType: newType
-      };
-      this.handleConfigChange(config);
+      });
     },
 
     onKpiValueChange(e) {
+      const config = this.properties.config;
+      if (!config) return;
+      
       const { kpi } = e.currentTarget.dataset;
       const value = this.data.valueRange[e.detail.value];
-
-      const newKpiValues = { ...this.data.currentConfig.kpiValues };
+      const newKpiValues = { ...config.kpiValues };
       newKpiValues[kpi] = value;
 
-      const config = {
-        ...this.data.currentConfig,
+      this.handleConfigChange({
+        ...config,
         kpiValues: newKpiValues
-      };
-
-      this.handleConfigChange(config);
+      });
     },
 
     // 统一的配置变更处理
@@ -174,9 +175,5 @@ Component({
       });
     },
 
-    // 辅助方法
-    getCurrentConfig() {
-      return this.properties.config;
-    }
   }
 });

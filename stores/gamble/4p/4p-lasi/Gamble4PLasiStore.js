@@ -212,6 +212,27 @@ export const Gamble4PLasiStore = observable({
     this.markDirty();
   }),
 
+  // === 复合更新方法（简化页面逻辑）===
+  updateBaoDongConfig: action(function (config) {
+    if (config.dutyConfig) this.dutyConfig = config.dutyConfig;
+    if (config.PartnerDutyCondition) this.PartnerDutyCondition = config.PartnerDutyCondition;
+    if (config.badScoreBaseLine) this.badScoreBaseLine = config.badScoreBaseLine;
+    if (config.badScoreMaxLost) this.badScoreMaxLost = parseInt(config.badScoreMaxLost) || this.DEFAULTS.badScoreMaxLost;
+    this.markDirty();
+  }),
+
+  updateEatmeatConfig: action(function (config) {
+    if (config.eatingRange) this.eatingRange = { ...config.eatingRange };
+    if (config.meatValueConfig) this.meatValueConfig = config.meatValueConfig;
+    if (config.meatMaxValue) this.meatMaxValue = parseInt(config.meatMaxValue) || this.DEFAULTS.meatMaxValue;
+    this.markDirty();
+  }),
+
+  updateDingDongConfig: action(function (config) {
+    if (config.drawConfig) this.drawConfig = config.drawConfig;
+    this.markDirty();
+  }),
+
   // === 辅助方法 ===
   markDirty: action(function () {
     this.isDirty = true;

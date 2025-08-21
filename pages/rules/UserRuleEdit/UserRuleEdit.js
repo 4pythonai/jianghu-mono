@@ -13,7 +13,7 @@ Page({
             storeMode: 'mode',
             isStoreInitialized: 'isInitialized',
             isDirty: 'isDirty',
-            
+
             // 直接绑定数据库字段
             gambleUserName: 'gambleUserName',
             kpis: 'kpis',
@@ -26,30 +26,27 @@ Page({
             PartnerDutyCondition: 'PartnerDutyCondition',
             badScoreBaseLine: 'badScoreBaseLine',
             badScoreMaxLost: 'badScoreMaxLost',
-            
+
             // 计算属性
             isEatmeatDisabled: 'isEatmeatDisabled',
             showPreCondition: 'showPreCondition',
             kpiDisplayValue: 'kpiDisplayValue'
         },
         actions: {
-            // 从Store获取方法
+            // 基础方法
             initializeStore: 'initializeStore',
             initializeForCreate: 'initializeForCreate',
             initializeForEdit: 'initializeForEdit',
-            updateKpis: 'updateKpis',
-            updateEatingRange: 'updateEatingRange',
-            updateRewardConfig: 'updateRewardConfig',
-            updateMeatValueConfig: 'updateMeatValueConfig',
-            updateMeatMaxValue: 'updateMeatMaxValue',
-            updateDrawConfig: 'updateDrawConfig',
-            updateDutyConfig: 'updateDutyConfig',
-            updatePartnerDutyCondition: 'updatePartnerDutyCondition',
-            updateBadScoreBaseLine: 'updateBadScoreBaseLine',
-            updateBadScoreMaxLost: 'updateBadScoreMaxLost',
-            updateRuleName: 'updateRuleName',
             getSaveData: 'getSaveData',
-            resetStore: 'reset'
+            resetStore: 'reset',
+
+            // 简化的配置更新方法
+            updateKpis: 'updateKpis',
+            updateRewardConfig: 'updateRewardConfig',
+            updateBaoDongConfig: 'updateBaoDongConfig',
+            updateEatmeatConfig: 'updateEatmeatConfig',
+            updateDingDongConfig: 'updateDingDongConfig',
+            updateRuleName: 'updateRuleName'
         }
     },
 
@@ -103,35 +100,13 @@ Page({
     },
 
 
-
-
-    // === Store数据变化监听 ===
-
-    // 监听Store初始化完成
+    // Store初始化完成处理（MobX自动处理数据同步）
     _storeInitializedHandler() {
         if (this.data.isStoreInitialized) {
-            console.log('✅ [UserRuleEdit] Store初始化完成，同步组件数据')
-            this.syncComponentsWithStore()
+            console.log('✅ [UserRuleEdit] Store初始化完成，MobX将自动同步组件数据')
         }
     },
 
-    // 同步组件数据
-    syncComponentsWithStore() {
-        const componentData = this.getComponentData()
-        console.log('🔄 [UserRuleEdit] 向子组件同步数据:', componentData)
-
-        // 延迟执行确保组件已渲染
-        setTimeout(() => {
-            this.data.configComponents.forEach(component => {
-                const componentInstance = this.selectComponent(`#${component.name}`)
-                if (componentInstance && componentInstance.syncWithStore) {
-                    componentInstance.syncWithStore(componentData)
-                }
-            })
-        }, 100)
-    },
-
-    // === 事件处理 ===
 
     // 规则名称手动输入
     onRuleNameInput(e) {
@@ -140,57 +115,33 @@ Page({
         this.updateRuleName(value)
     },
 
-    // LasiKPI配置变化 - 可能触发规则名自动更新
-
-    // 通用配置变更处理 - 解耦具体组件逻辑
+    // 薄薄的协调层 - 简化的配置变更处理
     onConfigChange(e) {
         const { componentType, config, generatedRuleName } = e.detail;
-        // 根据组件类型调用对应的Store更新方法
-        const updateMethods = {
-            'dingdong': () => {
-                this.updateDrawConfig(config.drawConfig);
-                // 不需要_syncConfigToUI，MobX会自动更新
-            },
-            'baodong': () => {
-                // 包洞配置有多个字段，需要分别更新
-                if (config.dutyConfig) this.updateDutyConfig(config.dutyConfig);
-                if (config.PartnerDutyCondition) this.updatePartnerDutyCondition(config.PartnerDutyCondition);
-                if (config.badScoreBaseLine) this.updateBadScoreBaseLine(config.badScoreBaseLine);
-                if (config.badScoreMaxLost) this.updateBadScoreMaxLost(config.badScoreMaxLost);
-            },
-            'kpi': () => {
-                this.updateKpis(config);
-                
-                // KPI特殊逻辑：如果有生成的规则名且用户未手动编辑，则自动更新
-                if (generatedRuleName && !this.data.isManualRuleName && this.data.pageMode === 'create') {
-                    this.updateRuleName(generatedRuleName);
-                }
-            },
-            'eatmeat': () => {
-                // 吃肉配置有多个字段，需要分别更新
-                if (config.eatingRange) this.updateEatingRange(config.eatingRange);
-                if (config.meatValueConfig) this.updateMeatValueConfig(config.meatValueConfig);
-                if (config.meatMaxValue) this.updateMeatMaxValue(config.meatMaxValue);
-            },
 
-            'reward': () => {
-                this.updateRewardConfig(config);
-            }
+        // 薄薄的路由：直接映射到Store复合方法
+        const actionMap = {
+            'kpi': 'updateKpis',
+            'dingdong': 'updateDingDongConfig',
+            'baodong': 'updateBaoDongConfig',
+            'eatmeat': 'updateEatmeatConfig',
+            'reward': 'updateRewardConfig'
         };
 
-        const updateMethod = updateMethods[componentType];
-        if (updateMethod) {
-            updateMethod();
+        const action = actionMap[componentType];
+        if (action && this[action]) {
+            this[action](config);
         } else {
             console.warn(`🚨 [UserRuleEdit] 未知的组件类型: ${componentType}`);
         }
+
+        // 只处理跨组件协调逻辑：规则名自动更新
+        if (generatedRuleName && !this.data.isManualRuleName && this.data.pageMode === 'create') {
+            this.updateRuleName(generatedRuleName);
+        }
     },
 
-    // MobX会自动处理响应式更新，不需要手动同步
-
-
-
-    // 表单验证
+    // === 表单验证和保存 ===
     validateForm() {
         if (!this.data.gambleUserName?.trim()) {
             wx.showToast({
@@ -224,7 +175,7 @@ Page({
 
         // 根据模式调用不同的API
         const res = this.data.pageMode === 'create'
-            ? await app.api.gamble.createGambleRule(saveData)
+            ? await app.api.gamble.addGambleRule(saveData)
             : await app.api.gamble.updateGambleRule({
                 id: this.data.ruleId,
                 ...saveData
