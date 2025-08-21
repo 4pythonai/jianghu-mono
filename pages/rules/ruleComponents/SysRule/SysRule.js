@@ -233,26 +233,9 @@ Component({
             const { title } = e.currentTarget.dataset;
             console.log('📋 [SysRule] 卡片点击跳转规则配置页:', title);
 
-            // 跳转到新的SysEdit页面
-            // wx.navigateTo({
-            //     url: `/pages/rules/SysEdit/SysEdit?gameType=${title}`,
-            //     success: () => {
-            //         console.log('📋 [SysRule] 成功跳转到SysEdit页面, 游戏类型:', title);
-            //     },
-            //     fail: (err) => {
-            //         console.error('📋 [SysRule] 跳转失败:', err);
-            //         wx.showToast({
-            //             title: '页面跳转失败',
-            //             icon: 'none'
-            //         });
-            //     }
-            // });
-            // pages/rules/UserRuleEdit/UserRuleEdit pageMode=edit
-            // /pages/rules/
-            // wx.navigateTo({ url: `/pages/rules/UserRuleEdit/UserRuleEdit?pageMode=edit&ruleId=${item.userRuleId}&ruleData=${encodedRuleData}` });
 
             wx.redirectTo({
-                url: '/pages/rules/UserRuleEdit/UserRuleEdit?pageMode=create&gambleSysName=4p-lasi',
+                url: '/pages/rules/RuleEditer/RuleEditer?pageMode=create&gambleType=4p-lasi',
                 success: () => {
                     console.log('📋 [SysRule] 成功跳转到UnifiedConfigPage页面, 游戏类型:', title);
                 },

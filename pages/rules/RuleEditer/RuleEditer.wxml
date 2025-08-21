@@ -9,26 +9,21 @@
   <view wx:else class="main-content">
     <!-- 页面标题 -->
     <view class="page-header">
-      <view
-        class="header-title"
-      >{{pageMode === 'create' ? '新建规则' : pageMode === 'view' ? '查看规则' : '编辑规则'}}</view>
+      <view class="header-title">{{pageMode === 'create' ? '新建规则' : pageMode === 'view' ? '查看规则' : '编辑规则'}}</view>
       <view class="header-subtitle">{{gambleHumanName}} / {{gambleUserName || '未命名规则'}}</view>
     </view>
 
     <!-- 配置表单 -->
     <view class="config-form">
-      <!-- 规则名称 -->
-      <view class="form-section">
-        <view class="form-label">规则名称</view>
-        <input
-          class="form-input"
-          value="{{gambleUserName}}"
-          bindinput="onRuleNameInput"
-          placeholder="请输入规则名称"
-          maxlength="50"
-          disabled="{{pageMode === 'view'}}"
-        />
-      </view>
+      <!-- 规则名称组件 -->
+      <RuleName
+        value="{{gambleUserName}}"
+        pageMode="{{pageMode}}"
+        gameType="4p-lasi"
+        kpiConfig="{{kpis}}"
+        showGenerateHint="{{true}}"
+        bind:change="onRuleNameChange"
+      />
 
       <!-- 配置组件区域 - 固定为4人拉丝 -->
       <view class="config-components">

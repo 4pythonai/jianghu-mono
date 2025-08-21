@@ -109,8 +109,10 @@ Component({
         // 编辑规则
         onEditRule(e) {
             const { item } = e.detail || e.currentTarget.dataset;
+            console.log('🔄 [MyRules] 编辑规则:', item);
+            const { gambleSysName } = item;
             const encodedRuleData = encodeURIComponent(JSON.stringify(item));
-            wx.navigateTo({ url: `/pages/rules/UserRuleEdit/UserRuleEdit?pageMode=edit&ruleId=${item.userRuleId}&ruleData=${encodedRuleData}` });
+            wx.navigateTo({ url: `/pages/rules/RuleEditer/RuleEditer?pageMode=edit&ruleId=${item.userRuleId}&ruleData=${encodedRuleData}&gambleType=${gambleSysName}` });
         },
 
         // 查看规则详情 - 跳转到运行时配置页面

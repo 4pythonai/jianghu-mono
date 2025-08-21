@@ -3,6 +3,7 @@
 		"pages/live/live",
 		"pages/events/events",
 		"pages/community/community",
+		"pages/rules/rules",
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
 		"pages/groupsList/groupsList",
@@ -25,9 +26,8 @@
 		"pages/gameOperation/poster/poster",
 		"pages/gameOperation/personalBilingBook/personalBilingBook",
 		"pages/gameOperation/socreStyle/socreStyle",
-		"pages/rules/rules",
 		"pages/rules/SysEdit/SysEdit",
-		"pages/rules/UserRuleEdit/UserRuleEdit",
+		"pages/rules/RuleEditer/RuleEditer",
 		"pages/gambleRuntimeConfig/addRuntime/addRuntime",
 		"pages/gambleRuntimeConfig/editRuntime/editRuntime",
 		"pages/gambleResult/gambleResult"
@@ -62,7 +62,7 @@
 				"selectedIconPath": "images/tabbar/add_selected.png"
 			},
 			{
-				"pagePath": "pages/community/community",
+				"pagePath": "pages/rules/rules",
 				"text": "江湖",
 				"iconPath": "images/tabbar/community.png",
 				"selectedIconPath": "images/tabbar/community_selected.png"
