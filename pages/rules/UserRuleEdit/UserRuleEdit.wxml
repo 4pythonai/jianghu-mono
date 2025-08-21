@@ -79,14 +79,14 @@
               />
 
               <!-- 包洞规则配置 -->
-              <!-- <LasiKoufen
+              <LasiKoufen
                 wx:if="{{item.name === 'LasiKoufen'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.baodongConfig}}"
                 displayValue="{{baodongDisplayValue}}"
                 bind:configChange="onConfigChange"
-              />-->
+              />
             </view>
           </view>
         </block>

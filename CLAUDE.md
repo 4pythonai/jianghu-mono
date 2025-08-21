@@ -67,7 +67,24 @@ onConfigChange() {
 - `util.parseIntFromString(str, prefix)` - 从带前缀的字符串中提取数字
 - `util.indexOf(array, value)` - 查找数组索引
 
-**开发原则**：在WXML中进行任何字符串操作前，先检查`utils/es.wxs`是否有对应工具函数，没有则需要先实现。
+**⚠️ WXML中的函数调用限制**
+- WXML模板表达式中**不能调用JavaScript函数**（如`{{getCurrentConfig()}}`、`{{formatDate()}}`等）
+- **只支持简单的数据绑定和表达式**：`{{data.property}}`、`{{a + b}}`、`{{condition ? a : b}}`
+- **解决方案**：使用observers将函数计算结果转换为data属性
+
+```html
+<!-- ❌ 错误：在WXML中调用函数 -->
+<view wx:if="{{getCurrentMeatValueOption() === 0}}">
+<text>{{formatDisplayValue()}}</text>
+
+<!-- ✅ 正确：使用计算好的data属性 -->
+<view wx:if="{{currentMeatValueOption === 0}}">
+<text>{{displayValue}}</text>
+```
+
+**开发原则**：
+- 在WXML中进行任何字符串操作前，先检查`utils/es.wxs`是否有对应工具函数，没有则需要先实现
+- 任何需要在WXML中使用的计算逻辑，都应该在JS中通过observers计算后存储到data中
 
 ## Project Overview
 
