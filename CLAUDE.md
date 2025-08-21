@@ -44,6 +44,31 @@ onConfigChange() {
 - UI状态直接计算自properties，不维护内部状态
 - 使用observers将复杂计算转换为简单的data绑定
 
+### 微信小程序WXML开发注意事项：
+
+**⚠️ WXML中的字符串操作限制**
+- WXML模板中**不能直接使用JavaScript字符串方法**（如`.includes()`, `.indexOf()`, `.substring()`等）
+- **必须使用WXS模块中定义的工具函数**进行字符串操作
+- 所有字符串处理逻辑都需要在`utils/es.wxs`中实现
+
+```html
+<!-- ❌ 错误：直接使用JavaScript方法 -->
+<view wx:if="{{config.drawConfig.includes('Diff_')}}">
+<text>{{config.drawConfig.substring(5)}}</text>
+
+<!-- ✅ 正确：使用WXS工具函数 -->
+<wxs src="/utils/es.wxs" module="util" />
+<view wx:if="{{util.includes(config.drawConfig, 'Diff_')}}">
+<text>{{util.parseIntFromString(config.drawConfig, 'Diff_')}}</text>
+```
+
+**常用WXS工具函数示例**：
+- `util.includes(str, substring)` - 检查字符串包含
+- `util.parseIntFromString(str, prefix)` - 从带前缀的字符串中提取数字
+- `util.indexOf(array, value)` - 查找数组索引
+
+**开发原则**：在WXML中进行任何字符串操作前，先检查`utils/es.wxs`是否有对应工具函数，没有则需要先实现。
+
 ## Project Overview
 
 这是一个基于微信小程序的高尔夫运动应用，主要功能包括：

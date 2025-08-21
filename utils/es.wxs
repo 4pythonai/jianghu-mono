@@ -7,5 +7,12 @@ function includes(arr, value) {
     return arr.indexOf(value) >= 0;
 }
 
+function parseIntFromString(str, prefix) {
+    if (!str || typeof str !== 'string') return null;
+    if (str.indexOf(prefix) !== 0) return null;
+    var numStr = str.substring(prefix.length);
+    var num = parseInt(numStr);
+    return isNaN(num) ? null : num;
+}
 
-module.exports = { includes: includes, indexOf: indexOf, includes: includes };
+module.exports = { includes: includes, indexOf: indexOf, parseIntFromString: parseIntFromString };

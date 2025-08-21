@@ -24,6 +24,7 @@ Component({
 
   data: {
     visible: false,
+    defaultDiffScore: 1, // 统一默认值管理
     diffScores: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] // 提供选项数组给picker
   },
 
@@ -56,14 +57,25 @@ Component({
     onSelect(e) {
       const index = Number.parseInt(e.currentTarget.dataset.index);
       const config = this.buildConfigFromSelection(index);
-      this.triggerEvent('configChange', { config });
+      this.handleConfigChange(config);
     },
 
     onDiffScoreChange(e) {
       const selectedIndex = e.detail.value;
       const selectedScore = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10][selectedIndex];
       const config = this.buildConfigFromDiffScore(selectedScore);
-      this.triggerEvent('configChange', { config });
+      this.handleConfigChange(config);
+    },
+
+    // 统一的配置变更处理 - 组件内部处理具体逻辑
+    handleConfigChange(config) {
+      console.log('🕳️ [LasiDingDong] 顶洞配置变化:', config);
+      
+      // 触发通用的配置变更事件，只传递必要信息
+      this.triggerEvent('configChange', { 
+        componentType: 'dingdong',
+        config: config
+      });
     },
 
     // 辅助方法
@@ -71,24 +83,21 @@ Component({
       const currentDiffScore = this.getCurrentDiffScore(this.properties.config);
 
       let drawConfig = 'DrawEqual';
-      let drawOptions = {};
 
       if (index === 0) {
         drawConfig = 'DrawEqual';
       } else if (index === 1) {
         drawConfig = `Diff_${currentDiffScore}`;
-        drawOptions = { diffScore: currentDiffScore };
       } else if (index === 2) {
         drawConfig = 'NoDraw';
       }
 
-      return { drawConfig, drawOptions };
+      return { drawConfig };
     },
 
     buildConfigFromDiffScore(diffScore) {
       return {
-        drawConfig: `Diff_${diffScore}`,
-        drawOptions: { diffScore }
+        drawConfig: `Diff_${diffScore}`
       };
     },
 
@@ -96,9 +105,9 @@ Component({
       const drawConfig = config?.drawConfig;
       if (drawConfig?.startsWith('Diff_')) {
         const score = Number.parseInt(drawConfig.replace('Diff_', ''));
-        return Number.isNaN(score) ? 1 : score;
+        return Number.isNaN(score) ? this.data.defaultDiffScore : score;
       }
-      return 1;
+      return this.data.defaultDiffScore;
     }
   }
 });

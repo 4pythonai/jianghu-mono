@@ -189,63 +189,70 @@ Page({
     },
 
     // LasiKPI配置变化 - 可能触发规则名自动更新
-    onLasiKpiConfigChange(e) {
-        const { config, generatedRuleName } = e.detail
-        console.log('📊 [UserRuleEdit] KPI配置变化:', { config, generatedRuleName })
 
-        // 更新Store中的KPI配置
-        this.updateKpiConfig(config)
+    // 通用配置变更处理 - 解耦具体组件逻辑
+    onConfigChange(e) {
+        const { componentType, config, generatedRuleName } = e.detail;
+        console.log(`🔧 [UserRuleEdit] ${componentType}配置变化:`, config);
 
-        // 如果有生成的规则名且用户未手动编辑，则自动更新
-        if (generatedRuleName && !this.data.isManualRuleName && this.data.pageMode === 'create') {
-            this.updateRuleName(generatedRuleName)
+        // 根据组件类型调用对应的Store更新方法
+        const updateMethods = {
+            'dingdong': () => {
+                console.log('🔍 [UserRuleEdit] 更新前dingdongConfig:', this.data.storeConfig.dingdongConfig);
+                this.updateDingdongConfig(config);
+                this._syncConfigToUI('dingdongConfig');
+            },
+            'baodong': () => {
+                this.updateBaodongConfig(config);
+                this._syncConfigToUI('baodongConfig');
+            },
+            'kpi': () => {
+                console.log('📊 [UserRuleEdit] KPI配置变化:', { config, generatedRuleName });
+                this.updateKpiConfig(config);
+                this._syncConfigToUI('kpiConfig');
+                
+                // KPI特殊逻辑：如果有生成的规则名且用户未手动编辑，则自动更新
+                if (generatedRuleName && !this.data.isManualRuleName && this.data.pageMode === 'create') {
+                    this.updateRuleName(generatedRuleName);
+                }
+            },
+            'eatmeat': () => {
+                console.log('🥩 [UserRuleEdit] 吃肉配置变化:', config);
+                this.updateEatmeatConfig(config);
+                this._syncConfigToUI('eatmeatConfig');
+            },
+            'reward': () => {
+                console.log('🏆 [UserRuleEdit] 奖励配置变化:', config);
+                this.updateRewardConfig(config);
+                this._syncConfigToUI('rewardConfig');
+            }
+        };
+
+        const updateMethod = updateMethods[componentType];
+        if (updateMethod) {
+            updateMethod();
+        } else {
+            console.warn(`🚨 [UserRuleEdit] 未知的组件类型: ${componentType}`);
         }
     },
 
-    // 吃肉配置变化
-    onLasiEatmeatConfigChange(e) {
-        const { config } = e.detail
-        console.log('🥩 [UserRuleEdit] 吃肉配置变化:', config)
-        this.updateEatmeatConfig(config)
-    },
-
-    // 奖励配置变化
-    onLasiRewardConfigChange(e) {
-        const { config } = e.detail
-        console.log('🏆 [UserRuleEdit] 奖励配置变化:', config)
-        this.updateRewardConfig(config)
-    },
-
-    // 顶洞配置变化
-    onLasiDingdongConfigChange(e) {
-        const { config } = e.detail
-        console.log('🕳️ [UserRuleEdit] 顶洞配置变化:', config)
-        console.log('🔍 [UserRuleEdit] 更新前this.data.storeConfig.dingdongConfig:', this.data.storeConfig.dingdongConfig)
-        
-        this.updateDingdongConfig(config)
-        
-        // 立即检查更新后的状态并强制同步
+    // 通用的UI同步方法 - 处理MobX响应式更新问题
+    _syncConfigToUI(configKey) {
         setTimeout(() => {
-            // 直接从Store获取最新配置
-            const latestConfig = this._getStoreInstance().config.dingdongConfig;
-            console.log('🔍 [UserRuleEdit] Store中的最新dingdongConfig:', latestConfig)
-            console.log('🔍 [UserRuleEdit] 页面中的storeConfig.dingdongConfig:', this.data.storeConfig.dingdongConfig)
+            const storeInstance = this._getStoreInstance();
+            const latestConfig = storeInstance.config[configKey];
+            console.log(`🔍 [UserRuleEdit] Store中的最新${configKey}:`, latestConfig);
+            console.log(`🔍 [UserRuleEdit] 页面中的storeConfig.${configKey}:`, this.data.storeConfig[configKey]);
             
-            // 强制同步：直接设置组件需要的config
+            // 强制同步最新状态到页面
             this.setData({
-                'storeConfig.dingdongConfig': latestConfig
-            })
+                [`storeConfig.${configKey}`]: latestConfig
+            });
             
-            console.log('✅ [UserRuleEdit] 强制同步完成')
-        }, 50)
+            console.log(`✅ [UserRuleEdit] ${configKey}强制同步完成`);
+        }, 50);
     },
 
-    // 包洞配置变化
-    onLasiKoufenConfigChange(e) {
-        const { config } = e.detail
-        console.log('🏳️ [UserRuleEdit] 包洞配置变化:', config)
-        this.updateBaodongConfig(config)
-    },
 
     // === 保存和验证 ===
 

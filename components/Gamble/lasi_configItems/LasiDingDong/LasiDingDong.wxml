@@ -43,15 +43,15 @@
             wx:if="{{config.drawConfig && util.includes(config.drawConfig, 'Diff_')}}"
             class="score-picker"
             range="{{diffScores}}"
-            value="{{diffScores.indexOf(config.drawOptions.diffScore || 1)}}"
+            value="{{diffScores.indexOf(util.parseIntFromString(config.drawConfig, 'Diff_') || defaultDiffScore)}}"
             bindchange="onDiffScoreChange"
           >
-            <view class="picker-value">{{config.drawOptions.diffScore || 1}}</view>
+            <view class="picker-value">{{util.parseIntFromString(config.drawConfig, 'Diff_') || defaultDiffScore}}</view>
           </picker>
           <text wx:if="{{config.drawConfig && util.includes(config.drawConfig, 'Diff_')}}">分以内</text>
 
           <!-- 显示当前选中但未激活的选项文本 -->
-          <text wx:if="{{!(config.drawConfig && util.includes(config.drawConfig, 'Diff_'))}}">{{config.drawOptions.diffScore || 1}}分以内</text>
+          <text wx:if="{{!(config.drawConfig && util.includes(config.drawConfig, 'Diff_'))}}">{{util.parseIntFromString(config.drawConfig, 'Diff_') || defaultDiffScore}}分以内</text>
         </view>
       </view>
 

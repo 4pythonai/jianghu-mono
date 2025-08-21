@@ -45,7 +45,7 @@
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.kpiConfig}}"
                 displayValue="{{kpiDisplayValue}}"
-                bind:kpiConfigChange="onLasiKpiConfigChange"
+                bind:configChange="onConfigChange"
               />-->
 
               <!-- 奖励规则配置 -->
@@ -54,7 +54,7 @@
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.rewardConfig}}"
-                bind:rewardConfigChange="onLasiRewardConfigChange"
+                bind:configChange="onConfigChange"
               />-->
 
               <!-- 顶洞规则配置 -->
@@ -64,19 +64,19 @@
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.dingdongConfig}}"
                 displayValue="{{dingdongDisplayValue}}"
-                bind:configChange="onLasiDingdongConfigChange"
+                bind:configChange="onConfigChange"
               />
 
               <!-- 吃肉规则配置 -->
-              <!-- <LasiEatmeat
+              <LasiEatmeat
                 wx:if="{{item.name === 'LasiEatmeat'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.eatmeatConfig}}"
                 displayValue="{{eatmeatDisplayValue}}"
                 disabled="{{isEatmeatDisabled}}"
-                bind:configChange="onLasiEatmeatConfigChange"
-              />-->
+                bind:configChange="onConfigChange"
+              />
 
               <!-- 包洞规则配置 -->
               <!-- <LasiKoufen
@@ -85,7 +85,7 @@
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.baodongConfig}}"
                 displayValue="{{baodongDisplayValue}}"
-                bind:configChange="onLasiKoufenConfigChange"
+                bind:configChange="onConfigChange"
               />-->
             </view>
           </view>
