@@ -22,53 +22,12 @@ export const Gamble4PLasiStore = observable({
     userRuleId: null,       // 编辑模式时的规则ID
   },
 
-  // === 标准化数据结构 ===
-  storeConfig: {
-    // 1. 拉丝KPI配置
-    kpiConfig: {
-      indicators: [],                    // 选择的指标列表 ['best', 'worst', 'total']
-      totalCalculationType: 'add_total', // 'add_total' | 'multiply_total'
-      kpiValues: {
-        best: 1,    // 较好成绩PK分值
-        worst: 1,   // 较差成绩PK分值
-        total: 1    // 双方总杆PK分值
-      }
-    },
-
-    // 2. 吃肉规则配置
-    eatmeatConfig: {
-      eatingRange: {
-        "BetterThanBirdie": 4,
-        "Birdie": 2,
-        "Par": 1,
-        "WorseThanPar": 0
-      },
-      meatValueConfig: 'MEAT_AS_1',     // 肉分值计算方式
-      meatMaxValue: 10000000            // 封顶值
-    },
-
-    // 3. 奖励规则配置
-    rewardConfig: { ...REWARD_DEFAULTS.DEFAULT_REWARD_JSON },
-
-    // 4. 顶洞规则配置
-    dingdongConfig: {
-      drawConfig: 'DrawEqual',     // 'NoDraw' | 'DrawEqual' | 'Diff_X'
-      drawOptions: {}        // 平洞时的特殊配置
-    },
-
-    // 5. 包洞规则配置
-    baodongConfig: {
-      dutyConfig: 'NODUTY',                    // 包洞责任配置
-      partnerDutyCondition: 'DUTY_DINGTOU',   // 队友责任条件
-      badScoreBaseLine: 'Par+4',              // 坏球基准线
-      badScoreMaxLost: 10000000               // 坏球最大损失
-    }
-  },
+  storeConfig: {},
 
   // === 默认配置常量 ===
   DEFAULTS: {
     KPI_CONFIG: {
-      indicators: [],
+      indicators: ['best', 'worst', 'total'],
       totalCalculationType: 'add_total',
       kpiValues: { best: 1, worst: 1, total: 1 }
     },
