@@ -220,31 +220,24 @@ Page({
     onLasiDingdongConfigChange(e) {
         const { config } = e.detail
         console.log('🕳️ [UserRuleEdit] 顶洞配置变化:', config)
+        console.log('🔍 [UserRuleEdit] 更新前this.data.storeConfig.dingdongConfig:', this.data.storeConfig.dingdongConfig)
+        
         this.updateDingdongConfig(config)
-
-        // 手动同步配置到组件，绕过MobX响应式更新问题
+        
+        // 立即检查更新后的状态并强制同步
         setTimeout(() => {
-            const componentInstance = this.selectComponent('#LasiDingDong');
-            if (componentInstance && componentInstance.updateSelectedState) {
-                console.log('🔧 [UserRuleEdit] 手动同步配置到组件:', config);
-                componentInstance.updateSelectedState(config);
-            }
-        }, 50);
-
-        // 手动触发页面更新，确保MobX响应式更新被正确处理
-        this.setData({
-            storeConfig: this.data.storeConfig
-        });
-
-        // 立即检查Store状态
-        console.log('🔍 [UserRuleEdit] Store更新后立即，drawConfig值:', this.data.storeConfig.dingdongConfig.drawConfig);
-
-        // 检查Store更新后的状态
-        setTimeout(() => {
-            console.log('🔍 [UserRuleEdit] Store更新后，当前storeConfig:', this.data.storeConfig);
-            console.log('🔍 [UserRuleEdit] Store更新后，dingdongConfig:', this.data.storeConfig.dingdongConfig);
-            console.log('🔍 [UserRuleEdit] Store更新后，drawConfig值:', this.data.storeConfig.dingdongConfig.drawConfig);
-        }, 100);
+            // 直接从Store获取最新配置
+            const latestConfig = this._getStoreInstance().config.dingdongConfig;
+            console.log('🔍 [UserRuleEdit] Store中的最新dingdongConfig:', latestConfig)
+            console.log('🔍 [UserRuleEdit] 页面中的storeConfig.dingdongConfig:', this.data.storeConfig.dingdongConfig)
+            
+            // 强制同步：直接设置组件需要的config
+            this.setData({
+                'storeConfig.dingdongConfig': latestConfig
+            })
+            
+            console.log('✅ [UserRuleEdit] 强制同步完成')
+        }, 50)
     },
 
     // 包洞配置变化
@@ -407,6 +400,11 @@ Page({
     },
 
     // === 辅助方法 ===
+    
+    // 获取Store实例
+    _getStoreInstance() {
+        return Gamble4PLasiStore;
+    },
 
     // 显示错误并返回
     showErrorAndReturn(message) {

@@ -10,8 +10,39 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 框架特定
 
-Mobx:
-纯受控组件模式 + 防抖机制是有效的解决方案
+### MobX 关键注意事项：
+
+**1. 响应式更新限制**
+- MobX在微信小程序中对**嵌套对象的深度响应式更新可能失效**
+- `storeBindings`绑定整个对象时，内部属性变化可能不会触发页面更新
+- **解决方案**：在Store更新后手动强制同步到页面数据
+
+```javascript
+// ❌ 问题示例：嵌套对象更新可能不响应
+storeBindings: {
+  fields: {
+    storeConfig: 'config'  // config.dingdongConfig变化可能不会触发更新
+  }
+}
+
+// ✅ 解决方案：手动强制同步
+onConfigChange() {
+  this.updateStoreConfig(newConfig)
+  
+  // 强制同步最新状态到页面
+  setTimeout(() => {
+    const latestConfig = this._getStoreInstance().config.dingdongConfig
+    this.setData({
+      'storeConfig.dingdongConfig': latestConfig
+    })
+  }, 50)
+}
+```
+
+**2. 纯受控组件设计模式**
+- 纯受控组件模式 + 防抖机制是有效的解决方案
+- UI状态直接计算自properties，不维护内部状态
+- 使用observers将复杂计算转换为简单的data绑定
 
 ## Project Overview
 

@@ -39,23 +39,23 @@
             <!-- 4人拉丝配置组件 -->
             <view class="component-content">
               <!-- KPI配置 -->
-              <LasiKPI
+              <!-- <LasiKPI
                 wx:if="{{item.name === 'LasiKPI'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.kpiConfig}}"
                 displayValue="{{kpiDisplayValue}}"
                 bind:kpiConfigChange="onLasiKpiConfigChange"
-              />
+              />-->
 
               <!-- 奖励规则配置 -->
-              <LasiRewardConfig
+              <!-- <LasiRewardConfig
                 wx:if="{{item.name === 'LasiRewardConfig'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.rewardConfig}}"
                 bind:rewardConfigChange="onLasiRewardConfigChange"
-              />
+              />-->
 
               <!-- 顶洞规则配置 -->
               <LasiDingDong
@@ -68,7 +68,7 @@
               />
 
               <!-- 吃肉规则配置 -->
-              <LasiEatmeat
+              <!-- <LasiEatmeat
                 wx:if="{{item.name === 'LasiEatmeat'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
@@ -76,17 +76,17 @@
                 displayValue="{{eatmeatDisplayValue}}"
                 disabled="{{isEatmeatDisabled}}"
                 bind:configChange="onLasiEatmeatConfigChange"
-              />
+              />-->
 
               <!-- 包洞规则配置 -->
-              <LasiKoufen
+              <!-- <LasiKoufen
                 wx:if="{{item.name === 'LasiKoufen'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.baodongConfig}}"
                 displayValue="{{baodongDisplayValue}}"
                 bind:configChange="onLasiKoufenConfigChange"
-              />
+              />-->
             </view>
           </view>
         </block>
