@@ -12,20 +12,18 @@ Page({
             // 从Store获取状态
             storeMode: 'mode',
             storeMetadata: 'metadata',
-            storeConfig: 'config',
+            storeConfig: 'storeConfig',
             isStoreInitialized: 'isInitialized',
             isDirty: 'isDirty',
             // 计算属性
-            kpiDisplayValue: 'kpiDisplayValue',
-            eatmeatDisplayValue: 'eatmeatDisplayValue',
             isEatmeatDisabled: 'isEatmeatDisabled',
-            dingdongDisplayValue: 'dingdongDisplayValue',
-            baodongDisplayValue: 'baodongDisplayValue',
             showPreCondition: 'showPreCondition'
         },
         actions: {
             // 从Store获取方法
             initializeStore: 'initializeStore',
+            initializeForCreate: 'initializeForCreate',
+            initializeForEdit: 'initializeForEdit',
             updateKpiConfig: 'updateKpiConfig',
             updateEatmeatConfig: 'updateEatmeatConfig',
             updateRewardConfig: 'updateRewardConfig',
@@ -57,14 +55,11 @@ Page({
             { name: 'LasiBaoDong', title: '包洞规则' }
         ],
 
-        // === UI状态 ===
         isManualRuleName: false     // 是否手动编辑过规则名
     },
 
     onLoad(options) {
         console.log('🔄 [UserRuleEdit] 页面加载，参数:', options)
-
-        // 解析参数确定页面模式
         this.parseOptions(options)
     },
 
@@ -82,57 +77,16 @@ Page({
 
         // 根据模式初始化Store
         if (pageMode === 'create') {
-            this.initializeForCreate()
-        } else if ((pageMode === 'edit' || pageMode === 'view') && ruleData) {
+            this.initializeForCreate('4p-lasi')
+        }
+
+        if ((pageMode === 'edit' || pageMode === 'view') && ruleData) {
             this.initializeForEdit(ruleData)
-        } else {
-            this.showErrorAndReturn('参数错误：缺少必要参数')
         }
     },
 
-    // 新建模式初始化
-    initializeForCreate() {
-        console.log('🆕 [UserRuleEdit] 初始化新建模式')
-        this.setData({ loading: true })
-        try {
-            // 使用Store的create模式初始化
-            this.initializeStore('create')
-
-            // 设置页面标题
-            wx.setNavigationBarTitle({
-                title: '新建拉丝规则'
-            })
-            this.setData({ loading: false })
-        } catch (error) {
-            console.error('❌ [UserRuleEdit] 新建模式初始化失败:', error)
-            this.showErrorAndReturn('初始化失败')
-        }
-    },
-
-    // 编辑模式初始化
-    initializeForEdit(encodedRuleData) {
-        console.log('✏️ [UserRuleEdit] 初始化编辑模式')
-        this.setData({ loading: true })
-
-        try {
-            // 解析规则数据
-            const ruleData = JSON.parse(decodeURIComponent(encodedRuleData))
-            console.log('📊 [UserRuleEdit] 解析的规则数据:', ruleData)
 
 
-            // 使用Store的edit模式初始化
-            this.initializeStore(this.data.pageMode, ruleData)
-
-            // 设置页面标题
-            const title = this.data.pageMode === 'view' ? '查看拉丝规则' : '编辑拉丝规则'
-            wx.setNavigationBarTitle({ title })
-            this.setData({ loading: false })
-
-        } catch (error) {
-            console.error('❌ [UserRuleEdit] 编辑模式初始化失败:', error)
-            this.showErrorAndReturn('数据解析失败')
-        }
-    },
 
     // === Store数据变化监听 ===
 
@@ -165,8 +119,6 @@ Page({
     // 规则名称手动输入
     onRuleNameInput(e) {
         const value = e.detail.value.trim()
-        console.log('✏️ [UserRuleEdit] 手动更新规则名:', value)
-
         this.setData({ isManualRuleName: true })
         this.updateRuleName(value)
     },
@@ -176,12 +128,9 @@ Page({
     // 通用配置变更处理 - 解耦具体组件逻辑
     onConfigChange(e) {
         const { componentType, config, generatedRuleName } = e.detail;
-        console.log(`🔧 [UserRuleEdit] ${componentType}配置变化:`, config);
-
         // 根据组件类型调用对应的Store更新方法
         const updateMethods = {
             'dingdong': () => {
-                console.log('🔍 [UserRuleEdit] 更新前dingdongConfig:', this.data.storeConfig.dingdongConfig);
                 this.updateDingdongConfig(config);
                 this._syncConfigToUI('dingdongConfig');
             },
@@ -190,7 +139,6 @@ Page({
                 this._syncConfigToUI('baodongConfig');
             },
             'kpi': () => {
-                console.log('📊 [UserRuleEdit] KPI配置变化:', { config, generatedRuleName });
                 this.updateKpiConfig(config);
                 this._syncConfigToUI('kpiConfig');
 
@@ -200,12 +148,11 @@ Page({
                 }
             },
             'eatmeat': () => {
-                console.log('🥩 [UserRuleEdit] 吃肉配置变化:', config);
                 this.updateEatmeatConfig(config);
                 this._syncConfigToUI('eatmeatConfig');
             },
+
             'reward': () => {
-                console.log('🏆 [UserRuleEdit] 奖励配置变化:', config);
                 this.updateRewardConfig(config);
                 this._syncConfigToUI('rewardConfig');
             }
@@ -223,7 +170,7 @@ Page({
     _syncConfigToUI(configKey) {
         setTimeout(() => {
             const storeInstance = this._getStoreInstance();
-            const latestConfig = storeInstance.config[configKey];
+            const latestConfig = storeInstance.storeConfig[configKey];
             console.log(`🔍 [UserRuleEdit] Store中的最新${configKey}:`, latestConfig);
             console.log(`🔍 [UserRuleEdit] 页面中的storeConfig.${configKey}:`, this.data.storeConfig[configKey]);
 
@@ -237,7 +184,6 @@ Page({
     },
 
 
-    // === 保存和验证 ===
 
     // 表单验证
     validateForm() {
@@ -267,38 +213,35 @@ Page({
         }
         this.setData({ saving: true })
 
-        {
-            // 从Store获取保存数据
-            const saveData = this.getSaveData()
-            console.log('💾 [UserRuleEdit] 准备保存数据:', saveData)
 
-            // 根据模式调用不同的API
-            const res = this.data.pageMode === 'create'
-                ? await app.api.gamble.createGambleRule(saveData)
-                : await app.api.gamble.updateGambleRule({
-                    id: this.data.ruleId,
-                    ...saveData
-                })
+        // 从Store获取保存数据
+        const saveData = this.getSaveData()
 
-            console.log('✅ [UserRuleEdit] API响应:', res)
+        // 根据模式调用不同的API
+        const res = this.data.pageMode === 'create'
+            ? await app.api.gamble.createGambleRule(saveData)
+            : await app.api.gamble.updateGambleRule({
+                id: this.data.ruleId,
+                ...saveData
+            })
 
-            if (res.code === 200) {
-                const message = this.data.pageMode === 'create' ? '规则创建成功' : '规则更新成功'
-                wx.showToast({
-                    title: message,
-                    icon: 'success'
-                })
 
-                // 延迟返回上一页并刷新
-                setTimeout(() => {
-                    this.navigateBackWithRefresh()
-                }, 1500)
-            } else {
-                wx.showToast({
-                    title: '保存失败，请重试',
-                    icon: 'none'
-                })
-            }
+        if (res.code === 200) {
+            const message = this.data.pageMode === 'create' ? '规则创建成功' : '规则更新成功'
+            wx.showToast({
+                title: message,
+                icon: 'success'
+            })
+
+            // 延迟返回上一页并刷新
+            setTimeout(() => {
+                this.navigateBackWithRefresh()
+            }, 1500)
+        } else {
+            wx.showToast({
+                title: '保存失败，请重试',
+                icon: 'none'
+            })
         }
 
     },
@@ -371,21 +314,12 @@ Page({
         }
     },
 
-    // === 辅助方法 ===
 
     // 获取Store实例
     _getStoreInstance() {
         return Gamble4PLasiStore;
     },
 
-    // 显示错误并返回
-    showErrorAndReturn(message) {
-        wx.showToast({
-            title: message,
-            icon: 'none'
-        })
-        setTimeout(() => wx.navigateBack(), 1500)
-    },
 
     // 返回上一页并刷新
     navigateBackWithRefresh() {
@@ -397,8 +331,6 @@ Page({
         wx.navigateBack()
     },
 
-    // === 生命周期 ===
-
     onShow() {
         // 监听Store初始化状态
         if (this.data.isStoreInitialized) {
@@ -408,7 +340,6 @@ Page({
 
     onUnload() {
         console.log('🚪 [UserRuleEdit] 页面卸载，重置Store')
-        // 页面卸载时重置Store
         this.resetStore()
     }
 })

@@ -247,10 +247,12 @@ Component({
             //         });
             //     }
             // });
-
+            // pages/rules/UserRuleEdit/UserRuleEdit pageMode=edit
             // /pages/rules/
+            // wx.navigateTo({ url: `/pages/rules/UserRuleEdit/UserRuleEdit?pageMode=edit&ruleId=${item.userRuleId}&ruleData=${encodedRuleData}` });
+
             wx.redirectTo({
-                url: '/pages/UnifiedConfigPage/UnifiedConfigPage?mode=system-add&gameType=4p-lasi',
+                url: '/pages/rules/UserRuleEdit/UserRuleEdit?pageMode=create&gambleSysName=4p-lasi',
                 success: () => {
                     console.log('📋 [SysRule] 成功跳转到UnifiedConfigPage页面, 游戏类型:', title);
                 },

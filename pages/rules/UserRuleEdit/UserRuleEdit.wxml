@@ -64,7 +64,6 @@
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.dingdongConfig}}"
-                displayValue="{{dingdongDisplayValue}}"
                 bind:configChange="onConfigChange"
               />
 
@@ -74,7 +73,6 @@
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.eatmeatConfig}}"
-                displayValue="{{eatmeatDisplayValue}}"
                 disabled="{{isEatmeatDisabled}}"
                 bind:configChange="onConfigChange"
               />
@@ -85,7 +83,6 @@
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.baodongConfig}}"
-                displayValue="{{baodongDisplayValue}}"
                 bind:configChange="onConfigChange"
               />
             </view>

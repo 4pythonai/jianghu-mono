@@ -3,7 +3,7 @@
  * 支持新建/编辑模式，统一数据结构，标准化接口
  */
 
-import { observable, action, computed } from 'mobx-miniprogram'
+import { observable, action } from 'mobx-miniprogram'
 import { gameStore } from '../../../gameStore'
 import { REWARD_DEFAULTS } from '../../../../utils/rewardDefaults.js'
 
@@ -23,7 +23,7 @@ export const Gamble4PLasiStore = observable({
   },
 
   // === 标准化数据结构 ===
-  config: {
+  storeConfig: {
     // 1. 拉丝KPI配置
     kpiConfig: {
       indicators: [],                    // 选择的指标列表 ['best', 'worst', 'total']
@@ -100,7 +100,7 @@ export const Gamble4PLasiStore = observable({
   },
 
   // === 初始化方法 ===
-  initializeStore: action(function (mode, existingData = null) {
+  initializeStore: action(function (mode, sysname, existingData = null) {
     console.log('🔄 [Gamble4PLasiStore] 初始化:', { mode, existingData });
 
     this.mode = mode;
@@ -111,7 +111,7 @@ export const Gamble4PLasiStore = observable({
     }
 
     if (mode === 'create') {
-      this.initializeForCreate();
+      this.initializeForCreate(sysname);
     }
 
 
@@ -124,7 +124,7 @@ export const Gamble4PLasiStore = observable({
   }),
 
   // 新建模式初始化
-  initializeForCreate: action(function () {
+  initializeForCreate: action(function (gambleSysName) {
     this.metadata = {
       gambleSysName: '4p-lasi',
       gambleUserName: this.generateDefaultName(),
@@ -133,7 +133,7 @@ export const Gamble4PLasiStore = observable({
     };
 
     // 使用默认配置
-    this.config = {
+    this.storeConfig = {
       kpiConfig: { ...this.DEFAULTS.KPI_CONFIG },
       eatmeatConfig: { ...this.DEFAULTS.EATMEAT_CONFIG },
       rewardConfig: { ...this.DEFAULTS.REWARD_CONFIG },
@@ -142,8 +142,14 @@ export const Gamble4PLasiStore = observable({
     };
   }),
 
+
+
+
   // 编辑模式初始化
-  initializeForEdit: action(function (existingData) {
+  initializeForEdit: action(function (ruleData) {
+
+    const existingData = JSON.parse(decodeURIComponent(ruleData))
+
     // 标准化传入的数据
     const normalizedData = this.normalizeInputData(existingData);
 
@@ -154,7 +160,7 @@ export const Gamble4PLasiStore = observable({
       userRuleId: normalizedData.userRuleId,
     };
 
-    this.config = {
+    this.storeConfig = {
       kpiConfig: normalizedData.kpiConfig || { ...this.DEFAULTS.KPI_CONFIG },
       eatmeatConfig: normalizedData.eatmeatConfig || { ...this.DEFAULTS.EATMEAT_CONFIG },
       rewardConfig: normalizedData.rewardConfig || { ...this.DEFAULTS.REWARD_CONFIG },
@@ -254,50 +260,50 @@ export const Gamble4PLasiStore = observable({
   // === 配置更新方法 ===
   updateKpiConfig: action(function (config) {
     console.log('✏️ 更新KPI配置:', config);
-    Object.assign(this.config.kpiConfig, config);
+    Object.assign(this.storeConfig.kpiConfig, config);
     this.markDirty();
     this.autoUpdateRuleName();
   }),
 
   updateEatmeatConfig: action(function (config) {
     console.log('✏️ 更新吃肉配置:', config);
-    Object.assign(this.config.eatmeatConfig, config);
+    Object.assign(this.storeConfig.eatmeatConfig, config);
     this.markDirty();
     this.autoUpdateRuleName();
   }),
 
   updateRewardConfig: action(function (config) {
     console.log('✏️ [Store] 更新奖励配置:', config);
-    console.log('✏️ [Store] 更新前rewardConfig:', this.config.rewardConfig);
+    console.log('✏️ [Store] 更新前rewardConfig:', this.storeConfig.rewardConfig);
     // 直接替换整个对象，而不是使用Object.assign（类似dingdongConfig的处理方式）
-    this.config.rewardConfig = { ...this.config.rewardConfig, ...config };
-    console.log('✏️ [Store] 更新后rewardConfig:', this.config.rewardConfig);
-    console.log('✏️ [Store] 更新后rewardPreCondition:', this.config.rewardConfig.rewardPreCondition);
+    this.storeConfig.rewardConfig = { ...this.storeConfig.rewardConfig, ...config };
+    console.log('✏️ [Store] 更新后rewardConfig:', this.storeConfig.rewardConfig);
+    console.log('✏️ [Store] 更新后rewardPreCondition:', this.storeConfig.rewardConfig.rewardPreCondition);
     this.markDirty();
     this.autoUpdateRuleName();
   }),
 
   updateDingdongConfig: action(function (config) {
     console.log('✏️ 更新顶洞配置:', config);
-    console.log('🔍 [Gamble4PLasiStore] 更新前，当前dingdongConfig:', this.config.dingdongConfig);
-    console.log('🔍 [Gamble4PLasiStore] 更新前，drawConfig值:', this.config.dingdongConfig.drawConfig);
+    console.log('🔍 [Gamble4PLasiStore] 更新前，当前dingdongConfig:', this.storeConfig.dingdongConfig);
+    console.log('🔍 [Gamble4PLasiStore] 更新前，drawConfig值:', this.storeConfig.dingdongConfig.drawConfig);
 
     // 直接替换整个对象，而不是使用Object.assign
-    this.config.dingdongConfig = { ...config };
+    this.storeConfig.dingdongConfig = { ...config };
 
-    console.log('🔍 [Gamble4PLasiStore] 更新后，当前dingdongConfig:', this.config.dingdongConfig);
-    console.log('🔍 [Gamble4PLasiStore] 更新后，drawConfig值:', this.config.dingdongConfig.drawConfig);
+    console.log('🔍 [Gamble4PLasiStore] 更新后，当前dingdongConfig:', this.storeConfig.dingdongConfig);
+    console.log('🔍 [Gamble4PLasiStore] 更新后，drawConfig值:', this.storeConfig.dingdongConfig.drawConfig);
 
     this.markDirty();
     this.autoUpdateRuleName();
 
     // 检查autoUpdateRuleName后是否被修改
-    console.log('🔍 [Gamble4PLasiStore] autoUpdateRuleName后，drawConfig值:', this.config.dingdongConfig.drawConfig);
+    console.log('🔍 [Gamble4PLasiStore] autoUpdateRuleName后，drawConfig值:', this.storeConfig.dingdongConfig.drawConfig);
   }),
 
   updateBaodongConfig: action(function (config) {
     console.log('✏️ 更新包洞配置:', config);
-    Object.assign(this.config.baodongConfig, config);
+    Object.assign(this.storeConfig.baodongConfig, config);
     this.markDirty();
     this.autoUpdateRuleName();
   }),
@@ -331,12 +337,12 @@ export const Gamble4PLasiStore = observable({
 
   // 检查吃肉功能是否被禁用（根据顶洞配置）
   get isEatmeatDisabled() {
-    return this.config.dingdongConfig?.drawConfig === 'NoDraw';
+    return this.storeConfig.dingdongConfig?.drawConfig === 'NoDraw';
   },
 
   // 检查是否应该显示奖励前置条件（根据KPI中是否包含总杆类型）
   get showPreCondition() {
-    return this.config.kpiConfig?.indicators?.includes('total') || false;
+    return this.storeConfig.kpiConfig?.indicators?.includes('total') || false;
   },
 
   // === 数据导出方法 ===
@@ -351,27 +357,27 @@ export const Gamble4PLasiStore = observable({
 
       // KPI配置 - 转为JSON字符串
       kpis: JSON.stringify({
-        indicators: this.config.kpiConfig.indicators,
-        totalCalculationType: this.config.kpiConfig.totalCalculationType,
-        kpiValues: this.config.kpiConfig.kpiValues
+        indicators: this.storeConfig.kpiConfig.indicators,
+        totalCalculationType: this.storeConfig.kpiConfig.totalCalculationType,
+        kpiValues: this.storeConfig.kpiConfig.kpiValues
       }),
 
       // 吃肉配置
-      eatingRange: JSON.stringify(this.config.eatmeatConfig.eatingRange),
-      meatValueConfig: this.config.eatmeatConfig.meatValueConfig,
-      meatMaxValue: this.config.eatmeatConfig.meatMaxValue.toString(),
+      eatingRange: JSON.stringify(this.storeConfig.eatmeatConfig.eatingRange),
+      meatValueConfig: this.storeConfig.eatmeatConfig.meatValueConfig,
+      meatMaxValue: this.storeConfig.eatmeatConfig.meatMaxValue.toString(),
 
       // 奖励配置 - 转为JSON字符串
-      RewardConfig: JSON.stringify(this.config.rewardConfig),
+      RewardConfig: JSON.stringify(this.storeConfig.rewardConfig),
 
       // 顶洞配置
-      drawConfig: this.config.dingdongConfig.drawConfig,
+      drawConfig: this.storeConfig.dingdongConfig.drawConfig,
 
       // 包洞配置
-      dutyConfig: this.config.baodongConfig.dutyConfig,
-      PartnerDutyCondition: this.config.baodongConfig.partnerDutyCondition,
-      badScoreBaseLine: this.config.baodongConfig.badScoreBaseLine,
-      badScoreMaxLost: this.config.baodongConfig.badScoreMaxLost.toString(),
+      dutyConfig: this.storeConfig.baodongConfig.dutyConfig,
+      PartnerDutyCondition: this.storeConfig.baodongConfig.partnerDutyCondition,
+      badScoreBaseLine: this.storeConfig.baodongConfig.badScoreBaseLine,
+      badScoreMaxLost: this.storeConfig.baodongConfig.badScoreMaxLost.toString(),
 
       playersNumber: "4"
     };
@@ -382,11 +388,11 @@ export const Gamble4PLasiStore = observable({
     return {
       metadata: { ...this.metadata },
       config: {
-        kpiConfig: { ...this.config.kpiConfig },
-        eatmeatConfig: { ...this.config.eatmeatConfig },
-        rewardConfig: { ...this.config.rewardConfig },
-        dingdongConfig: { ...this.config.dingdongConfig },
-        baodongConfig: { ...this.config.baodongConfig }
+        kpiConfig: { ...this.storeConfig.kpiConfig },
+        eatmeatConfig: { ...this.storeConfig.eatmeatConfig },
+        rewardConfig: { ...this.storeConfig.rewardConfig },
+        dingdongConfig: { ...this.storeConfig.dingdongConfig },
+        baodongConfig: { ...this.storeConfig.baodongConfig }
       },
       mode: this.mode,
       isDirty: this.isDirty
@@ -399,7 +405,7 @@ export const Gamble4PLasiStore = observable({
     this.isInitialized = false;
     this.isDirty = false;
     this.metadata = {};
-    this.config = {};
+    this.storeConfig = {};
   }),
 
   // === 调试方法 ===
@@ -409,7 +415,7 @@ export const Gamble4PLasiStore = observable({
       isInitialized: this.isInitialized,
       isDirty: this.isDirty,
       metadata: this.metadata,
-      config: this.config
+      storeConfig: this.storeConfig
     });
   }
 });
