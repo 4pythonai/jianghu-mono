@@ -28,7 +28,6 @@
 		"pages/rules/rules",
 		"pages/rules/SysEdit/SysEdit",
 		"pages/rules/UserRuleEdit/UserRuleEdit",
-		"pages/UnifiedConfigPage/UnifiedConfigPage",
 		"pages/gambleRuntimeConfig/addRuntime/addRuntime",
 		"pages/gambleRuntimeConfig/editRuntime/editRuntime",
 		"pages/gambleResult/gambleResult"

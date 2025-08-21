@@ -29,7 +29,7 @@ Component({
     // 默认配置
     defaultConfig: {
       dutyConfig: 'NODUTY',
-      partnerDutyCondition: 'DUTY_DINGTOU',
+      PartnerDutyCondition: 'DUTY_DINGTOU',
       badScoreBaseLine: 'Par+4',
       badScoreMaxLost: 10000000
     },
@@ -87,11 +87,11 @@ Component({
 
       // 计算显示值
       const displayValue = this.computeDisplayValue(config);
-      
+
       this.setData({
         currentConfig: config,
         dutyConfig: dutyConfig,
-        PartnerDutyCondition: config.partnerDutyCondition || 'DUTY_DINGTOU',
+        PartnerDutyCondition: config.PartnerDutyCondition || 'DUTY_DINGTOU',
         parPlusValue: parPlusValue,
         doubleParPlusValue: doubleParPlusValue,
         strokeDiffValue: strokeDiffValue,
@@ -145,7 +145,7 @@ Component({
       const condition = e.currentTarget.dataset.condition;
       const config = {
         ...this.data.currentConfig,
-        partnerDutyCondition: condition
+        PartnerDutyCondition: condition
       };
       this.handleConfigChange(config);
     },
@@ -200,9 +200,9 @@ Component({
     // 计算显示值
     computeDisplayValue(config) {
       if (!config) return '请配置包洞规则';
-      
-      const { dutyConfig, partnerDutyCondition, badScoreBaseLine, badScoreMaxLost } = config;
-      
+
+      const { dutyConfig, PartnerDutyCondition, badScoreBaseLine, badScoreMaxLost } = config;
+
       // 格式化包洞规则显示
       let ruleText = '';
       if (dutyConfig === 'NODUTY') {
@@ -219,15 +219,15 @@ Component({
       } else {
         ruleText = '不包洞';
       }
-      
+
       // 如果是不包洞，直接返回
       if (dutyConfig === 'NODUTY') {
         return ruleText;
       }
-      
+
       // 格式化队友责任条件显示
       let conditionText = '';
-      switch (partnerDutyCondition) {
+      switch (PartnerDutyCondition) {
         case 'DUTY_DINGTOU':
           conditionText = '同伴顶头包洞';
           break;
@@ -237,13 +237,13 @@ Component({
         default:
           conditionText = '同伴顶头包洞';
       }
-      
+
       // 格式化封顶显示
       let maxLostText = '';
       if (badScoreMaxLost && badScoreMaxLost !== 10000000) {
         maxLostText = `/${badScoreMaxLost}分封顶`;
       }
-      
+
       // 组合显示值
       return `${ruleText}/${conditionText}${maxLostText}`;
     },

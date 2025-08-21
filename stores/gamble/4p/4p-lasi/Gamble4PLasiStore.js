@@ -52,7 +52,7 @@ export const Gamble4PLasiStore = observable({
 
     BAODONG_CONFIG: {
       dutyConfig: 'NODUTY',
-      partnerDutyCondition: 'DUTY_DINGTOU',
+      PartnerDutyCondition: 'DUTY_DINGTOU',
       badScoreBaseLine: 'Par+4',
       badScoreMaxLost: 10000000
     }
@@ -170,17 +170,15 @@ export const Gamble4PLasiStore = observable({
     normalized.rewardConfig = this.parseRewardConfig(inputData.RewardConfig);
 
     // 顶洞配置处理
-    console.log('🔍 [Gamble4PLasiStore] 原始顶洞配置:', inputData.drawConfig);
     normalized.dingdongConfig = {
       drawConfig: inputData.drawConfig || this.DEFAULTS.DINGDONG_CONFIG.drawConfig,
       drawOptions: {}
     };
-    console.log('🔍 [Gamble4PLasiStore] 标准化后顶洞配置:', normalized.dingdongConfig);
 
     // 包洞配置处理
     normalized.baodongConfig = {
       dutyConfig: inputData.dutyConfig || this.DEFAULTS.BAODONG_CONFIG.dutyConfig,
-      partnerDutyCondition: inputData.PartnerDutyCondition || this.DEFAULTS.BAODONG_CONFIG.partnerDutyCondition,
+      PartnerDutyCondition: inputData.PartnerDutyCondition || this.DEFAULTS.BAODONG_CONFIG.PartnerDutyCondition,
       badScoreBaseLine: inputData.badScoreBaseLine || this.DEFAULTS.BAODONG_CONFIG.badScoreBaseLine,
       badScoreMaxLost: parseInt(inputData.badScoreMaxLost) || this.DEFAULTS.BAODONG_CONFIG.badScoreMaxLost
     };
@@ -232,36 +230,18 @@ export const Gamble4PLasiStore = observable({
   }),
 
   updateRewardConfig: action(function (config) {
-    console.log('✏️ [Store] 更新奖励配置:', config);
-    console.log('✏️ [Store] 更新前rewardConfig:', this.storeConfig.rewardConfig);
-    // 直接替换整个对象，而不是使用Object.assign（类似dingdongConfig的处理方式）
     this.storeConfig.rewardConfig = { ...this.storeConfig.rewardConfig, ...config };
-    console.log('✏️ [Store] 更新后rewardConfig:', this.storeConfig.rewardConfig);
-    console.log('✏️ [Store] 更新后rewardPreCondition:', this.storeConfig.rewardConfig.rewardPreCondition);
     this.markDirty();
     this.autoUpdateRuleName();
   }),
 
   updateDingdongConfig: action(function (config) {
-    console.log('✏️ 更新顶洞配置:', config);
-    console.log('🔍 [Gamble4PLasiStore] 更新前，当前dingdongConfig:', this.storeConfig.dingdongConfig);
-    console.log('🔍 [Gamble4PLasiStore] 更新前，drawConfig值:', this.storeConfig.dingdongConfig.drawConfig);
-
-    // 直接替换整个对象，而不是使用Object.assign
     this.storeConfig.dingdongConfig = { ...config };
-
-    console.log('🔍 [Gamble4PLasiStore] 更新后，当前dingdongConfig:', this.storeConfig.dingdongConfig);
-    console.log('🔍 [Gamble4PLasiStore] 更新后，drawConfig值:', this.storeConfig.dingdongConfig.drawConfig);
-
     this.markDirty();
     this.autoUpdateRuleName();
-
-    // 检查autoUpdateRuleName后是否被修改
-    console.log('🔍 [Gamble4PLasiStore] autoUpdateRuleName后，drawConfig值:', this.storeConfig.dingdongConfig.drawConfig);
   }),
 
   updateBaodongConfig: action(function (config) {
-    console.log('✏️ 更新包洞配置:', config);
     Object.assign(this.storeConfig.baodongConfig, config);
     this.markDirty();
     this.autoUpdateRuleName();
@@ -334,7 +314,7 @@ export const Gamble4PLasiStore = observable({
 
       // 包洞配置
       dutyConfig: this.storeConfig.baodongConfig.dutyConfig,
-      PartnerDutyCondition: this.storeConfig.baodongConfig.partnerDutyCondition,
+      PartnerDutyCondition: this.storeConfig.baodongConfig.PartnerDutyCondition,
       badScoreBaseLine: this.storeConfig.baodongConfig.badScoreBaseLine,
       badScoreMaxLost: this.storeConfig.baodongConfig.badScoreMaxLost.toString(),
 

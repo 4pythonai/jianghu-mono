@@ -59,20 +59,7 @@ class BaseRuleParser {
         let detail = '';
 
         if (eatingRange) {
-            let eatRangeObj = null;
-
-            // 处理eatingRange，可能是字符串或对象
-            if (typeof eatingRange === 'string') {
-                try {
-                    eatRangeObj = JSON.parse(eatingRange);
-                } catch (error) {
-                    console.error('解析eatingRange JSON字符串失败:', error);
-                    eatRangeObj = null;
-                }
-            } else if (typeof eatingRange === 'object' && !Array.isArray(eatingRange)) {
-                eatRangeObj = eatingRange;
-            }
-
+            let eatRangeObj = eatingRange;
             if (eatRangeObj) {
                 const eatDetails = GOLF_SCORE_TYPES.KEYS.map(key => {
                     const value = eatRangeObj[key];
@@ -156,11 +143,8 @@ class BaseRuleParser {
         if (!RewardConfig) return null;
 
         try {
-            // 如果RewardConfig是字符串，需要解析JSON
-            const config = typeof RewardConfig === 'string' ? JSON.parse(RewardConfig) : RewardConfig;
-
+            const config = RewardConfig;
             const { rewardType, rewardPreCondition, rewardPair } = config;
-
             let detail = '';
 
             // 解析奖励类型
