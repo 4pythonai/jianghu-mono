@@ -15,9 +15,11 @@ class G4PlasiParser  extends CI_Model {
     $gambleUserName = $config['gambleUserName'];
 
     $_reward = [];
-    $_reward['rewardPair'] = $config['RewardConfig']['rewardPair'];
-    $_reward['rewardPreCondition'] = $config['RewardConfig']['rewardPreCondition'];
-    $_reward['rewardType'] = $config['RewardConfig']['rewardType'];
+
+    $tmp = json_decode($config['RewardConfig'], true);
+    $_reward['rewardPair'] = $tmp['rewardPair'];
+    $_reward['rewardPreCondition'] = $tmp['rewardPreCondition'];
+    $_reward['rewardType'] = $tmp['rewardType'];
 
 
 
@@ -57,13 +59,12 @@ class G4PlasiParser  extends CI_Model {
       'RewardConfig' => json_encode($_reward),
       'dutyConfig' => $config['dutyConfig'],
       'PartnerDutyCondition' => $config['PartnerDutyCondition'],
-
-      'badScoreBaseLine' => 'Par+4', // 默认值
+      'badScoreBaseLine' => $config['badScoreBaseLine'],
       'badScoreMaxLost' => 10000000, // 默认值
       'drawConfig' => $config['drawConfig'],
       'meatValueConfig' => $config['meatValueConfig'],
       'meatMaxValue' => $config['meatMaxValue'],
-      'eatingRange' => json_encode($config['eatingRange'] ?? []),
+      'eatingRange' =>  $config['eatingRange'],
       'kpis' => json_encode($_kpis),
 
     ];

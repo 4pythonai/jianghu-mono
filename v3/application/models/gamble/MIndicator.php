@@ -40,9 +40,7 @@ class MIndicator extends CI_Model {
         $attenders = $context->attenders;
         $hole['KPI_INDICATORS'] = [];
 
-
         foreach ($context->kpiBranches as $kpiname) {
-
 
             if ($context->gambleSysName == '4p-8421' && $kpiname == 'k8421') {
                 $this->MIndicator8421->calculateTeam8421Indicators($hole, $context, $attenders, $kpiname);
@@ -66,7 +64,7 @@ class MIndicator extends CI_Model {
                 $this->MIndicatorLasi->calculateAddTotalIndicators($hole, $context, $attenders, $kpiname);
             }
 
-            // add_reward,加法奖励,这是额外添加的kpi
+            // add_reward,加法奖励,这是额外添加的kpi,且必须放在后面,因为加法奖励会考虑"头/Best"的情况
             if ($context->gambleSysName == '4p-lasi' && $kpiname == 'add_reward') {
                 $this->MIndicatorLasi->calculateAddRewardIndicators($hole, $context, $attenders, $kpiname);
             }

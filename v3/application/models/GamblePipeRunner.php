@@ -147,12 +147,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             // 计算所有分项指标
             $this->MIndicator->calculateKPIs($hole, $context);
 
-            // 判断输赢
+            // 判断输赢,设置点数
             $this->MPoints->setWinnerFailerAndPoints($hole, $context);
-
-
-
-
 
             // 进行排名计算( 排名必须在输赢判定后,因为排名可能用到输赢)
             $this->MRanking->rankAttendersWithContext($index, $hole, $context);
@@ -162,11 +158,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
             $this->MMoney->setHolePointsDetail($hole, $context);
 
-
             // 设置 duty
             $this->MMoney->dutyHandler($hole, $context);
-
-
 
             // 处理吃肉逻辑（在 winner_detail 设置之后）
             $this->MMeat->processEating($hole, $context);
@@ -221,15 +214,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'roadLength' => $this->context->roadLength,
             'kpiBranches' => $this->context->kpiBranches,
         ];
-
-
         return $tmp;
     }
-
-
-
-
-
 
 
     // Getter 方法用于上下文对象
@@ -264,8 +250,6 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     public function getStartHoleindex() {
         return $this->startHoleindex;
     }
-
-
 
     public function getScores() {
         return $this->scores;

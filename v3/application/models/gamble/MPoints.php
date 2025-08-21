@@ -4,30 +4,16 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-
-
-
 class MPoints extends CI_Model {
-
-
     public function __construct() {
         parent::__construct();
         $this->load->model('gamble/Indicators/MIndicator8421');
         $this->load->model('gamble/Indicators/MIndicatorLasi');
     }
 
-
-
-
-
-
-
-
     public function setWinnerFailerAndPoints(&$hole, $context) {
 
         $kpiIndicatorRedBlue = $this->summarizeKpiIndicatorsConcise($hole['KPI_INDICATORS']);
-
-
         $indicatorBlue = $kpiIndicatorRedBlue['indicatorBlue'];
         $indicatorRed = $kpiIndicatorRedBlue['indicatorRed'];
 
@@ -43,10 +29,7 @@ class MPoints extends CI_Model {
             $hole['draw'] = 'n';
         }
 
-
         $points = abs($indicatorRed);
-
-
 
         if ($indicatorBlue > $indicatorRed) {
             $hole['winner'] = 'blue';
@@ -138,7 +121,7 @@ class MPoints extends CI_Model {
 
 
 
-    // 得到当前洞的倍数
+    // 得到当前洞的踢一脚的倍数
     private  function getCurrentHoleMultiplier($hole, $kickConfig) {
         // 如果 kickConfig 为 null，直接返回1
         if ($kickConfig === null) {
