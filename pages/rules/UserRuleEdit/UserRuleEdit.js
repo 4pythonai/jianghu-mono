@@ -11,27 +11,44 @@ Page({
         fields: {
             // 从Store获取状态
             storeMode: 'mode',
-            storeMetadata: 'metadata',
-            storeConfig: 'storeConfig',
             isStoreInitialized: 'isInitialized',
             isDirty: 'isDirty',
+            
+            // 直接绑定数据库字段
+            gambleUserName: 'gambleUserName',
+            kpis: 'kpis',
+            eatingRange: 'eatingRange',
+            RewardConfig: 'RewardConfig',
+            meatValueConfig: 'meatValueConfig',
+            meatMaxValue: 'meatMaxValue',
+            drawConfig: 'drawConfig',
+            dutyConfig: 'dutyConfig',
+            PartnerDutyCondition: 'PartnerDutyCondition',
+            badScoreBaseLine: 'badScoreBaseLine',
+            badScoreMaxLost: 'badScoreMaxLost',
+            
             // 计算属性
             isEatmeatDisabled: 'isEatmeatDisabled',
-            showPreCondition: 'showPreCondition'
+            showPreCondition: 'showPreCondition',
+            kpiDisplayValue: 'kpiDisplayValue'
         },
         actions: {
             // 从Store获取方法
             initializeStore: 'initializeStore',
             initializeForCreate: 'initializeForCreate',
             initializeForEdit: 'initializeForEdit',
-            updateKpiConfig: 'updateKpiConfig',
-            updateEatmeatConfig: 'updateEatmeatConfig',
+            updateKpis: 'updateKpis',
+            updateEatingRange: 'updateEatingRange',
             updateRewardConfig: 'updateRewardConfig',
-            updateDingdongConfig: 'updateDingdongConfig',
-            updateBaodongConfig: 'updateBaodongConfig',
+            updateMeatValueConfig: 'updateMeatValueConfig',
+            updateMeatMaxValue: 'updateMeatMaxValue',
+            updateDrawConfig: 'updateDrawConfig',
+            updateDutyConfig: 'updateDutyConfig',
+            updatePartnerDutyCondition: 'updatePartnerDutyCondition',
+            updateBadScoreBaseLine: 'updateBadScoreBaseLine',
+            updateBadScoreMaxLost: 'updateBadScoreMaxLost',
             updateRuleName: 'updateRuleName',
             getSaveData: 'getSaveData',
-            getComponentData: 'getComponentData',
             resetStore: 'reset'
         }
     },
@@ -131,30 +148,33 @@ Page({
         // 根据组件类型调用对应的Store更新方法
         const updateMethods = {
             'dingdong': () => {
-                this.updateDingdongConfig(config);
-                this._syncConfigToUI('dingdongConfig');
+                this.updateDrawConfig(config.drawConfig);
+                // 不需要_syncConfigToUI，MobX会自动更新
             },
             'baodong': () => {
-                this.updateBaodongConfig(config);
-                this._syncConfigToUI('baodongConfig');
+                // 包洞配置有多个字段，需要分别更新
+                if (config.dutyConfig) this.updateDutyConfig(config.dutyConfig);
+                if (config.PartnerDutyCondition) this.updatePartnerDutyCondition(config.PartnerDutyCondition);
+                if (config.badScoreBaseLine) this.updateBadScoreBaseLine(config.badScoreBaseLine);
+                if (config.badScoreMaxLost) this.updateBadScoreMaxLost(config.badScoreMaxLost);
             },
             'kpi': () => {
-                this.updateKpiConfig(config);
-                this._syncConfigToUI('kpiConfig');
-
+                this.updateKpis(config);
+                
                 // KPI特殊逻辑：如果有生成的规则名且用户未手动编辑，则自动更新
                 if (generatedRuleName && !this.data.isManualRuleName && this.data.pageMode === 'create') {
                     this.updateRuleName(generatedRuleName);
                 }
             },
             'eatmeat': () => {
-                this.updateEatmeatConfig(config);
-                this._syncConfigToUI('eatmeatConfig');
+                // 吃肉配置有多个字段，需要分别更新
+                if (config.eatingRange) this.updateEatingRange(config.eatingRange);
+                if (config.meatValueConfig) this.updateMeatValueConfig(config.meatValueConfig);
+                if (config.meatMaxValue) this.updateMeatMaxValue(config.meatMaxValue);
             },
 
             'reward': () => {
                 this.updateRewardConfig(config);
-                this._syncConfigToUI('rewardConfig');
             }
         };
 
@@ -166,28 +186,13 @@ Page({
         }
     },
 
-    // 通用的UI同步方法 - 处理MobX响应式更新问题
-    _syncConfigToUI(configKey) {
-        setTimeout(() => {
-            const storeInstance = this._getStoreInstance();
-            const latestConfig = storeInstance.storeConfig[configKey];
-            console.log(`🔍 [UserRuleEdit] Store中的最新${configKey}:`, latestConfig);
-            console.log(`🔍 [UserRuleEdit] 页面中的storeConfig.${configKey}:`, this.data.storeConfig[configKey]);
-
-            // 强制同步最新状态到页面
-            this.setData({
-                [`storeConfig.${configKey}`]: latestConfig
-            });
-
-            console.log(`✅ [UserRuleEdit] ${configKey}强制同步完成`);
-        }, 50);
-    },
+    // MobX会自动处理响应式更新，不需要手动同步
 
 
 
     // 表单验证
     validateForm() {
-        if (!this.data.storeMetadata?.gambleUserName?.trim()) {
+        if (!this.data.gambleUserName?.trim()) {
             wx.showToast({
                 title: '请输入规则名称',
                 icon: 'none'
@@ -195,7 +200,7 @@ Page({
             return false
         }
 
-        if (this.data.storeMetadata.gambleUserName.trim().length < 2) {
+        if (this.data.gambleUserName.trim().length < 2) {
             wx.showToast({
                 title: '规则名称至少2个字符',
                 icon: 'none'

@@ -5,11 +5,32 @@
 
 Component({
   properties: {
-    config: {
-      type: Object,
-      value: null,
+    dutyConfig: {
+      type: String,
+      value: 'NODUTY',
       observer: function (newVal) {
-        console.log('🔍 [LasiBaoDong] config properties更新:', newVal);
+        console.log('🔍 [LasiBaoDong] dutyConfig更新:', newVal);
+      }
+    },
+    PartnerDutyCondition: {
+      type: String,
+      value: 'DUTY_DINGTOU',
+      observer: function (newVal) {
+        console.log('🔍 [LasiBaoDong] PartnerDutyCondition更新:', newVal);
+      }
+    },
+    badScoreBaseLine: {
+      type: String,
+      value: 'Par+4',
+      observer: function (newVal) {
+        console.log('🔍 [LasiBaoDong] badScoreBaseLine更新:', newVal);
+      }
+    },
+    badScoreMaxLost: {
+      type: Number,
+      value: 10000000,
+      observer: function (newVal) {
+        console.log('🔍 [LasiBaoDong] badScoreMaxLost更新:', newVal);
       }
     },
     mode: {
@@ -36,8 +57,8 @@ Component({
 
     // UI计算状态（由observer更新）
     currentConfig: null,
-    dutyConfig: 'NODUTY',
-    PartnerDutyCondition: 'DUTY_DINGTOU',
+    currentDutyConfig: 'NODUTY',
+    currentPartnerDutyCondition: 'DUTY_DINGTOU',
     parPlusValue: 4,
     doubleParPlusValue: 1,
     strokeDiffValue: 3,
@@ -46,14 +67,19 @@ Component({
 
   lifetimes: {
     attached() {
-      console.log('🎬 [LasiBaoDong] 组件初始化，当前config:', this.properties.config);
+      console.log('🎬 [LasiBaoDong] 组件初始化，当前属性:', {
+        dutyConfig: this.properties.dutyConfig,
+        PartnerDutyCondition: this.properties.PartnerDutyCondition,
+        badScoreBaseLine: this.properties.badScoreBaseLine,
+        badScoreMaxLost: this.properties.badScoreMaxLost
+      });
       this.updateCurrentConfig();
     }
   },
 
   observers: {
-    'config': function (newConfig) {
-      console.log('🔍 [LasiBaoDong] config变化:', newConfig);
+    'dutyConfig, PartnerDutyCondition, badScoreBaseLine, badScoreMaxLost': function (dutyConfig, PartnerDutyCondition, badScoreBaseLine, badScoreMaxLost) {
+      console.log('🔍 [LasiBaoDong] 属性变化:', { dutyConfig, PartnerDutyCondition, badScoreBaseLine, badScoreMaxLost });
       this.updateCurrentConfig();
     }
   },
@@ -88,10 +114,15 @@ Component({
       // 计算显示值
       const displayValue = this.computeDisplayValue(config);
 
+      console.log('🔍 [LasiBaoDong] setData前:', {
+        'config.PartnerDutyCondition': config.PartnerDutyCondition,
+        'currentPartnerDutyCondition': config.PartnerDutyCondition || 'DUTY_DINGTOU'
+      });
+
       this.setData({
         currentConfig: config,
-        dutyConfig: dutyConfig,
-        PartnerDutyCondition: config.PartnerDutyCondition || 'DUTY_DINGTOU',
+        currentDutyConfig: dutyConfig,
+        currentPartnerDutyCondition: config.PartnerDutyCondition || 'DUTY_DINGTOU',
         parPlusValue: parPlusValue,
         doubleParPlusValue: doubleParPlusValue,
         strokeDiffValue: strokeDiffValue,
@@ -152,7 +183,7 @@ Component({
 
     onParPlusChange(e) {
       const value = this.data.parPlusRange[e.detail.value];
-      if (this.data.dutyConfig === 'par_plus_x') {
+      if (this.data.currentDutyConfig === 'par_plus_x') {
         const config = {
           ...this.data.currentConfig,
           badScoreBaseLine: `Par+${value}`
@@ -163,7 +194,7 @@ Component({
 
     onDoubleParPlusChange(e) {
       const value = this.data.doubleParPlusRange[e.detail.value];
-      if (this.data.dutyConfig === 'double_par_plus_x') {
+      if (this.data.currentDutyConfig === 'double_par_plus_x') {
         const config = {
           ...this.data.currentConfig,
           badScoreBaseLine: `DoublePar+${value}`
@@ -174,7 +205,7 @@ Component({
 
     onStrokeDiffChange(e) {
       const value = this.data.strokeDiffRange[e.detail.value];
-      if (this.data.dutyConfig === 'stroke_diff_x') {
+      if (this.data.currentDutyConfig === 'stroke_diff_x') {
         const config = {
           ...this.data.currentConfig,
           badScoreBaseLine: `ScoreDiff_${value}`
@@ -250,7 +281,12 @@ Component({
 
     // 辅助方法
     getCurrentConfig() {
-      return this.properties.config || this.data.defaultConfig;
+      return {
+        dutyConfig: this.properties.dutyConfig || this.data.defaultConfig.dutyConfig,
+        PartnerDutyCondition: this.properties.PartnerDutyCondition || this.data.defaultConfig.PartnerDutyCondition,
+        badScoreBaseLine: this.properties.badScoreBaseLine || this.data.defaultConfig.badScoreBaseLine,
+        badScoreMaxLost: this.properties.badScoreMaxLost || this.data.defaultConfig.badScoreMaxLost
+      };
     }
   }
 });

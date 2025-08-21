@@ -1,6 +1,6 @@
 /**
- * 重构后的统一4人拉丝Store
- * 支持新建/编辑模式，统一数据结构，标准化接口
+ * 4人拉丝Store - 直接对应数据库表结构
+ * 不进行对象包装，字段直接映射到数据库
  */
 
 import { observable, action } from 'mobx-miniprogram'
@@ -14,48 +14,49 @@ export const Gamble4PLasiStore = observable({
   isInitialized: false,    // 是否已初始化
   isDirty: false,          // 数据是否被修改
 
-  // === 基础信息 ===
-  metadata: {
-    gambleSysName: '4p-lasi',
-    gambleUserName: '',
-    creator_id: null,
-    userRuleId: null,       // 编辑模式时的规则ID
-  },
+  // === 直接对应数据库字段 ===
+  // 基础信息
+  gambleSysName: '4p-lasi',
+  gambleUserName: '',
+  creator_id: null,
+  userRuleId: null,
+  playersNumber: 4,
 
-  storeConfig: {},
+  // JSON字段
+  kpis: null,               // JSON - KPI配置
+  eatingRange: null,        // JSON - 吃肉范围配置
+  RewardConfig: null,       // JSON - 奖励配置
 
-  // === 默认配置常量 ===
+  // 字符串/数值字段
+  meatValueConfig: 'MEAT_AS_1',      // varchar - 肉值配置
+  meatMaxValue: 10000000,            // int - 最大肉值
+  drawConfig: 'DrawEqual',           // varchar - 抽签配置
+  dutyConfig: 'NODUTY',              // varchar - 责任配置
+  PartnerDutyCondition: 'DUTY_DINGTOU',  // char - 搭档责任条件
+  badScoreBaseLine: 'Par+4',         // varchar - 坏成绩基线
+  badScoreMaxLost: 10000000,         // int - 最大损失
+
+  // === 默认值常量 ===
   DEFAULTS: {
-    KPI_CONFIG: {
+    kpis: {
       indicators: ['best', 'worst', 'total'],
       totalCalculationType: 'add_total',
       kpiValues: { best: 1, worst: 1, total: 1 }
     },
-
-    EATMEAT_CONFIG: {
-      eatingRange: {
-        "BetterThanBirdie": 4,
-        "Birdie": 2,
-        "Par": 1,
-        "WorseThanPar": 0
-      },
-      meatValueConfig: 'MEAT_AS_1',
-      meatMaxValue: 10000000
+    eatingRange: {
+      "BetterThanBirdie": 4,
+      "Birdie": 2,
+      "Par": 1,
+      "WorseThanPar": 0
     },
-
-    REWARD_CONFIG: REWARD_DEFAULTS.DEFAULT_REWARD_JSON,
-
-    DINGDONG_CONFIG: {
-      drawConfig: 'DrawEqual',
-      drawOptions: {}
-    },
-
-    BAODONG_CONFIG: {
-      dutyConfig: 'NODUTY',
-      PartnerDutyCondition: 'DUTY_DINGTOU',
-      badScoreBaseLine: 'Par+4',
-      badScoreMaxLost: 10000000
-    }
+    RewardConfig: REWARD_DEFAULTS.DEFAULT_REWARD_JSON,
+    meatValueConfig: 'MEAT_AS_1',
+    meatMaxValue: 10000000,
+    drawConfig: 'DrawEqual',
+    dutyConfig: 'NODUTY',
+    PartnerDutyCondition: 'DUTY_DINGTOU',
+    badScoreBaseLine: 'Par+4',
+    badScoreMaxLost: 10000000
   },
 
   // === 初始化方法 ===
@@ -63,18 +64,13 @@ export const Gamble4PLasiStore = observable({
     console.log('🔄 [Gamble4PLasiStore] 初始化:', { mode, existingData });
 
     this.mode = mode;
-
     this.isDirty = false;
+
     if (mode === 'edit' && existingData) {
       this.initializeForEdit(existingData);
-    }
-
-    if (mode === 'create') {
-      this.initializeForCreate(sysname);
-    }
-
-
-    if (mode === 'view' && existingData) {
+    } else if (mode === 'create') {
+      this.initializeForCreate();
+    } else if (mode === 'view' && existingData) {
       this.initializeForView(existingData);
     }
 
@@ -82,50 +78,63 @@ export const Gamble4PLasiStore = observable({
     console.log('✅ [Gamble4PLasiStore] 初始化完成');
   }),
 
-  // 新建模式初始化
-  initializeForCreate: action(function (gambleSysName) {
-    this.metadata = {
-      gambleSysName: '4p-lasi',
-      gambleUserName: this.generateDefaultName(),
-      creator_id: null,
-      userRuleId: null,
-    };
+  // 新建模式初始化 - 使用默认值
+  initializeForCreate: action(function () {
+    this.gambleSysName = '4p-lasi';
+    this.gambleUserName = this.generateDefaultName();
+    this.creator_id = null;
+    this.userRuleId = null;
+    this.playersNumber = 4;
 
-    // 使用默认配置
-    this.storeConfig = {
-      kpiConfig: { ...this.DEFAULTS.KPI_CONFIG },
-      eatmeatConfig: { ...this.DEFAULTS.EATMEAT_CONFIG },
-      rewardConfig: { ...this.DEFAULTS.REWARD_CONFIG },
-      dingdongConfig: { ...this.DEFAULTS.DINGDONG_CONFIG },
-      baodongConfig: { ...this.DEFAULTS.BAODONG_CONFIG }
-    };
+    // JSON字段使用默认值
+    this.kpis = { ...this.DEFAULTS.kpis };
+    this.eatingRange = { ...this.DEFAULTS.eatingRange };
+    this.RewardConfig = { ...this.DEFAULTS.RewardConfig };
+
+    // 字符串/数值字段使用默认值
+    this.meatValueConfig = this.DEFAULTS.meatValueConfig;
+    this.meatMaxValue = this.DEFAULTS.meatMaxValue;
+    this.drawConfig = this.DEFAULTS.drawConfig;
+    this.dutyConfig = this.DEFAULTS.dutyConfig;
+    this.PartnerDutyCondition = this.DEFAULTS.PartnerDutyCondition;
+    this.badScoreBaseLine = this.DEFAULTS.badScoreBaseLine;
+    this.badScoreMaxLost = this.DEFAULTS.badScoreMaxLost;
   }),
 
-
-
-
-  // 编辑模式初始化
+  // 编辑模式初始化 - 从数据库数据加载
   initializeForEdit: action(function (ruleData) {
+    const existingData = JSON.parse(decodeURIComponent(ruleData));
+    console.log("🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴🟡🟠🔴", existingData)
 
-    const existingData = JSON.parse(decodeURIComponent(ruleData))
+    // 直接赋值数据库字段
+    this.gambleSysName = '4p-lasi';
+    this.gambleUserName = existingData.gambleUserName || this.generateDefaultName();
+    this.creator_id = existingData.creator_id;
+    this.userRuleId = existingData.userRuleId;
+    this.playersNumber = parseInt(existingData.playersNumber) || 4;
 
-    // 标准化传入的数据
-    const normalizedData = this.normalizeInputData(existingData);
+    // JSON字段解析
+    this.kpis = this.parseJsonField(existingData.kpis, this.DEFAULTS.kpis);
+    this.eatingRange = this.parseJsonField(existingData.eatingRange, this.DEFAULTS.eatingRange);
+    this.RewardConfig = this.parseJsonField(existingData.RewardConfig, this.DEFAULTS.RewardConfig);
 
-    this.metadata = {
-      gambleSysName: '4p-lasi',
-      gambleUserName: normalizedData.gambleUserName || this.generateDefaultName(),
-      creator_id: normalizedData.creator_id,
-      userRuleId: normalizedData.userRuleId,
-    };
-
-    this.storeConfig = {
-      kpiConfig: normalizedData.kpiConfig || { ...this.DEFAULTS.KPI_CONFIG },
-      eatmeatConfig: normalizedData.eatmeatConfig || { ...this.DEFAULTS.EATMEAT_CONFIG },
-      rewardConfig: normalizedData.rewardConfig || { ...this.DEFAULTS.REWARD_CONFIG },
-      dingdongConfig: normalizedData.dingdongConfig || { ...this.DEFAULTS.DINGDONG_CONFIG },
-      baodongConfig: normalizedData.baodongConfig || { ...this.DEFAULTS.BAODONG_CONFIG }
-    };
+    // 字符串/数值字段
+    this.meatValueConfig = existingData.meatValueConfig || this.DEFAULTS.meatValueConfig;
+    this.meatMaxValue = parseInt(existingData.meatMaxValue) || this.DEFAULTS.meatMaxValue;
+    this.drawConfig = existingData.drawConfig || this.DEFAULTS.drawConfig;
+    this.dutyConfig = existingData.dutyConfig || this.DEFAULTS.dutyConfig;
+    // 处理历史数据中可能缺失的PartnerDutyCondition字段
+    if (existingData.PartnerDutyCondition) {
+      this.PartnerDutyCondition = existingData.PartnerDutyCondition;
+    } else {
+      // 如果没有该字段，根据dutyConfig推断
+      this.PartnerDutyCondition = existingData.dutyConfig === 'NODUTY' 
+        ? 'DUTY_DINGTOU'  // 不包洞时默认
+        : 'PARTNET_IGNORE'; // 包洞时默认与同伴无关
+    }
+    console.log('🔍 推断PartnerDutyCondition:', this.PartnerDutyCondition);
+    this.badScoreBaseLine = existingData.badScoreBaseLine || this.DEFAULTS.badScoreBaseLine;
+    this.badScoreMaxLost = parseInt(existingData.badScoreMaxLost) || this.DEFAULTS.badScoreMaxLost;
   }),
 
   // 查看模式初始化
@@ -133,136 +142,16 @@ export const Gamble4PLasiStore = observable({
     this.initializeForEdit(existingData);
   }),
 
-  // === 数据标准化方法 ===
-  normalizeInputData: function (inputData) {
-    console.log('🔄 标准化输入数据:', inputData);
-
-    const normalized = {};
-
-    // 基础信息
-    normalized.gambleUserName = inputData.gambleUserName;
-    normalized.creator_id = inputData.creator_id;
-    normalized.userRuleId = inputData.userRuleId;
-
-    // KPI配置处理
-    if (inputData.kpis) {
-      try {
-        const kpis = typeof inputData.kpis === 'string' ? JSON.parse(inputData.kpis) : inputData.kpis;
-        normalized.kpiConfig = {
-          indicators: kpis.indicators || [],
-          totalCalculationType: kpis.totalCalculationType || 'add_total',
-          kpiValues: kpis.kpiValues || this.DEFAULTS.KPI_CONFIG.kpiValues
-        };
-      } catch (e) {
-        console.error('KPI配置解析失败:', e);
-        normalized.kpiConfig = { ...this.DEFAULTS.KPI_CONFIG };
-      }
-    }
-
-    // 吃肉配置处理
-    normalized.eatmeatConfig = {
-      eatingRange: this.parseEatingRange(inputData.eatingRange),
-      meatValueConfig: inputData.meatValueConfig || this.DEFAULTS.EATMEAT_CONFIG.meatValueConfig,
-      meatMaxValue: parseInt(inputData.meatMaxValue) || this.DEFAULTS.EATMEAT_CONFIG.meatMaxValue
-    };
-
-    // 奖励配置处理
-    normalized.rewardConfig = this.parseRewardConfig(inputData.RewardConfig);
-
-    // 顶洞配置处理
-    normalized.dingdongConfig = {
-      drawConfig: inputData.drawConfig || this.DEFAULTS.DINGDONG_CONFIG.drawConfig,
-      drawOptions: {}
-    };
-
-    // 包洞配置处理
-    normalized.baodongConfig = {
-      dutyConfig: inputData.dutyConfig || this.DEFAULTS.BAODONG_CONFIG.dutyConfig,
-      PartnerDutyCondition: inputData.PartnerDutyCondition || this.DEFAULTS.BAODONG_CONFIG.PartnerDutyCondition,
-      badScoreBaseLine: inputData.badScoreBaseLine || this.DEFAULTS.BAODONG_CONFIG.badScoreBaseLine,
-      badScoreMaxLost: parseInt(inputData.badScoreMaxLost) || this.DEFAULTS.BAODONG_CONFIG.badScoreMaxLost
-    };
-
-    return normalized;
-  },
-
-  // 解析吃肉范围配置
-  parseEatingRange: function (eatingRangeData) {
-    if (!eatingRangeData) return { ...this.DEFAULTS.EATMEAT_CONFIG.eatingRange };
-
+  // === 工具方法 ===
+  parseJsonField: function (field, defaultValue) {
+    if (!field) return { ...defaultValue };
     try {
-      return typeof eatingRangeData === 'string'
-        ? JSON.parse(eatingRangeData)
-        : eatingRangeData;
+      return typeof field === 'string' ? JSON.parse(field) : field;
     } catch (e) {
-      console.error('吃肉范围解析失败:', e);
-      return { ...this.DEFAULTS.EATMEAT_CONFIG.eatingRange };
+      console.error('JSON字段解析失败:', e);
+      return { ...defaultValue };
     }
   },
-
-  // 解析奖励配置
-  parseRewardConfig: function (rewardConfigData) {
-    if (!rewardConfigData) return { ...this.DEFAULTS.REWARD_CONFIG };
-
-    try {
-      return typeof rewardConfigData === 'string'
-        ? JSON.parse(rewardConfigData)
-        : rewardConfigData;
-    } catch (e) {
-      console.error('奖励配置解析失败:', e);
-      return { ...this.DEFAULTS.REWARD_CONFIG };
-    }
-  },
-
-  // === 配置更新方法 ===
-  updateKpiConfig: action(function (config) {
-    console.log('✏️ 更新KPI配置:', config);
-    Object.assign(this.storeConfig.kpiConfig, config);
-    this.markDirty();
-    this.autoUpdateRuleName();
-  }),
-
-  updateEatmeatConfig: action(function (config) {
-    console.log('✏️ 更新吃肉配置:', config);
-    Object.assign(this.storeConfig.eatmeatConfig, config);
-    this.markDirty();
-    this.autoUpdateRuleName();
-  }),
-
-  updateRewardConfig: action(function (config) {
-    this.storeConfig.rewardConfig = { ...this.storeConfig.rewardConfig, ...config };
-    this.markDirty();
-    this.autoUpdateRuleName();
-  }),
-
-  updateDingdongConfig: action(function (config) {
-    this.storeConfig.dingdongConfig = { ...config };
-    this.markDirty();
-    this.autoUpdateRuleName();
-  }),
-
-  updateBaodongConfig: action(function (config) {
-    Object.assign(this.storeConfig.baodongConfig, config);
-    this.markDirty();
-    this.autoUpdateRuleName();
-  }),
-
-  updateRuleName: action(function (name) {
-    this.metadata.gambleUserName = name;
-    this.markDirty();
-  }),
-
-  // === 辅助方法 ===
-  markDirty: action(function () {
-    this.isDirty = true;
-    this.metadata.updateTime = new Date().toISOString();
-  }),
-
-  autoUpdateRuleName: action(function () {
-    if (this.mode === 'create') {
-      this.metadata.gambleUserName = this.generateDefaultName();
-    }
-  }),
 
   generateDefaultName: function () {
     const timestamp = new Date().toLocaleTimeString('zh-CN', {
@@ -273,15 +162,82 @@ export const Gamble4PLasiStore = observable({
     return `拉丝规则_${timestamp}`;
   },
 
+  // === 直接字段更新方法 ===
+  updateKpis: action(function (newKpis) {
+    this.kpis = { ...newKpis };
+    this.markDirty();
+  }),
 
+  updateEatingRange: action(function (newEatingRange) {
+    this.eatingRange = { ...newEatingRange };
+    this.markDirty();
+  }),
+
+  updateRewardConfig: action(function (newRewardConfig) {
+    this.RewardConfig = { ...newRewardConfig };
+    this.markDirty();
+  }),
+
+  updateMeatValueConfig: action(function (newValue) {
+    this.meatValueConfig = newValue;
+    this.markDirty();
+  }),
+
+  updateMeatMaxValue: action(function (newValue) {
+    this.meatMaxValue = parseInt(newValue) || this.DEFAULTS.meatMaxValue;
+    this.markDirty();
+  }),
+
+  updateDrawConfig: action(function (newValue) {
+    this.drawConfig = newValue;
+    this.markDirty();
+  }),
+
+  updateDutyConfig: action(function (newValue) {
+    this.dutyConfig = newValue;
+    this.markDirty();
+  }),
+
+  updatePartnerDutyCondition: action(function (newValue) {
+    this.PartnerDutyCondition = newValue;
+    this.markDirty();
+  }),
+
+  updateBadScoreBaseLine: action(function (newValue) {
+    this.badScoreBaseLine = newValue;
+    this.markDirty();
+  }),
+
+  updateBadScoreMaxLost: action(function (newValue) {
+    this.badScoreMaxLost = parseInt(newValue) || this.DEFAULTS.badScoreMaxLost;
+    this.markDirty();
+  }),
+
+  updateRuleName: action(function (name) {
+    this.gambleUserName = name;
+    this.markDirty();
+  }),
+
+  // === 辅助方法 ===
+  markDirty: action(function () {
+    this.isDirty = true;
+  }),
+
+  // === 计算属性 ===
   // 检查吃肉功能是否被禁用（根据顶洞配置）
   get isEatmeatDisabled() {
-    return this.storeConfig.dingdongConfig?.drawConfig === 'NoDraw';
+    return this.drawConfig === 'NoDraw';
   },
 
   // 检查是否应该显示奖励前置条件（根据KPI中是否包含总杆类型）
   get showPreCondition() {
-    return this.storeConfig.kpiConfig?.indicators?.includes('total') || false;
+    return this.kpis?.indicators?.includes('total') || false;
+  },
+
+  // KPI显示值
+  get kpiDisplayValue() {
+    if (!this.kpis?.indicators) return '';
+    return this.kpis.indicators.join(',');
   },
 
   // === 数据导出方法 ===
@@ -289,52 +245,25 @@ export const Gamble4PLasiStore = observable({
   getSaveData: function () {
     return {
       gameid: gameStore.gameid,
-      gambleUserName: this.metadata.gambleUserName,
-      gambleSysName: this.metadata.gambleSysName,
-      creator_id: this.metadata.creator_id,
-      userRuleId: this.metadata.userRuleId,
+      gambleUserName: this.gambleUserName,
+      gambleSysName: this.gambleSysName,
+      creator_id: this.creator_id,
+      userRuleId: this.userRuleId,
+      playersNumber: this.playersNumber.toString(),
 
-      // KPI配置 - 转为JSON字符串
-      kpis: JSON.stringify({
-        indicators: this.storeConfig.kpiConfig.indicators,
-        totalCalculationType: this.storeConfig.kpiConfig.totalCalculationType,
-        kpiValues: this.storeConfig.kpiConfig.kpiValues
-      }),
+      // JSON字段 - 转为JSON字符串
+      kpis: JSON.stringify(this.kpis),
+      eatingRange: JSON.stringify(this.eatingRange),
+      RewardConfig: JSON.stringify(this.RewardConfig),
 
-      // 吃肉配置
-      eatingRange: JSON.stringify(this.storeConfig.eatmeatConfig.eatingRange),
-      meatValueConfig: this.storeConfig.eatmeatConfig.meatValueConfig,
-      meatMaxValue: this.storeConfig.eatmeatConfig.meatMaxValue.toString(),
-
-      // 奖励配置 - 转为JSON字符串
-      RewardConfig: JSON.stringify(this.storeConfig.rewardConfig),
-
-      // 顶洞配置
-      drawConfig: this.storeConfig.dingdongConfig.drawConfig,
-
-      // 包洞配置
-      dutyConfig: this.storeConfig.baodongConfig.dutyConfig,
-      PartnerDutyCondition: this.storeConfig.baodongConfig.PartnerDutyCondition,
-      badScoreBaseLine: this.storeConfig.baodongConfig.badScoreBaseLine,
-      badScoreMaxLost: this.storeConfig.baodongConfig.badScoreMaxLost.toString(),
-
-      playersNumber: "4"
-    };
-  },
-
-  // 获取组件使用的数据格式（标准化对象格式）
-  getComponentData: function () {
-    return {
-      metadata: { ...this.metadata },
-      config: {
-        kpiConfig: { ...this.storeConfig.kpiConfig },
-        eatmeatConfig: { ...this.storeConfig.eatmeatConfig },
-        rewardConfig: { ...this.storeConfig.rewardConfig },
-        dingdongConfig: { ...this.storeConfig.dingdongConfig },
-        baodongConfig: { ...this.storeConfig.baodongConfig }
-      },
-      mode: this.mode,
-      isDirty: this.isDirty
+      // 字符串/数值字段
+      meatValueConfig: this.meatValueConfig,
+      meatMaxValue: this.meatMaxValue.toString(),
+      drawConfig: this.drawConfig,
+      dutyConfig: this.dutyConfig,
+      PartnerDutyCondition: this.PartnerDutyCondition,
+      badScoreBaseLine: this.badScoreBaseLine,
+      badScoreMaxLost: this.badScoreMaxLost.toString()
     };
   },
 
@@ -343,8 +272,25 @@ export const Gamble4PLasiStore = observable({
     this.mode = null;
     this.isInitialized = false;
     this.isDirty = false;
-    this.metadata = {};
-    this.storeConfig = {};
+
+    // 重置所有字段到默认值
+    this.gambleSysName = '4p-lasi';
+    this.gambleUserName = '';
+    this.creator_id = null;
+    this.userRuleId = null;
+    this.playersNumber = 4;
+
+    this.kpis = null;
+    this.eatingRange = null;
+    this.RewardConfig = null;
+
+    this.meatValueConfig = 'MEAT_AS_1';
+    this.meatMaxValue = 10000000;
+    this.drawConfig = 'DrawEqual';
+    this.dutyConfig = 'NODUTY';
+    this.PartnerDutyCondition = 'DUTY_DINGTOU';
+    this.badScoreBaseLine = 'Par+4';
+    this.badScoreMaxLost = 10000000;
   }),
 
   // === 调试方法 ===
@@ -353,8 +299,9 @@ export const Gamble4PLasiStore = observable({
       mode: this.mode,
       isInitialized: this.isInitialized,
       isDirty: this.isDirty,
-      metadata: this.metadata,
-      storeConfig: this.storeConfig
+      gambleUserName: this.gambleUserName,
+      kpis: this.kpis,
+      drawConfig: this.drawConfig
     });
   }
 });

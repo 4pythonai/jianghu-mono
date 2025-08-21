@@ -5,11 +5,11 @@
 
 Component({
   properties: {
-    config: {
-      type: Object,
-      value: null,
-      observer: function(newVal) {
-        console.log('🔍 [LasiDingDong] config properties更新:', newVal);
+    drawConfig: {
+      type: String,
+      value: 'DrawEqual',
+      observer: function (newVal) {
+        console.log('🔍 [LasiDingDong] drawConfig properties更新:', newVal);
       }
     },
     mode: {
@@ -27,14 +27,16 @@ Component({
 
   lifetimes: {
     attached() {
-      console.log('🎬 [LasiDingDong] 组件初始化，当前config:', this.properties.config);
+
+      console.log('🎬 [顶洞] 组件初始化 ❤️🧡💛💚❤️🧡💛💚 当前drawConfig:', this.properties.drawConfig);
+
       this.updateDisplayValue();
     }
   },
 
   observers: {
-    'config': function(newConfig) {
-      console.log('🔍 [LasiDingDong] config变化:', newConfig);
+    'drawConfig': function (newDrawConfig) {
+      console.log('🔍 [LasiDingDong] drawConfig变化:', newDrawConfig);
       this.updateDisplayValue();
     }
   },
@@ -75,21 +77,24 @@ Component({
     // 统一的配置变更处理 - 组件内部处理具体逻辑
     handleConfigChange(config) {
       console.log('🕳️ [LasiDingDong] 顶洞配置变化:', config);
+
+      // 提取drawConfig字符串值
+      const drawConfigValue = typeof config === 'string' ? config : config.drawConfig;
       
       // 更新本地显示值
-      const displayValue = this.computeDisplayValue(config);
+      const displayValue = this.computeDisplayValue(drawConfigValue);
       this.setData({ displayValue });
-      
+
       // 触发通用的配置变更事件，只传递必要信息
-      this.triggerEvent('configChange', { 
+      this.triggerEvent('configChange', {
         componentType: 'dingdong',
-        config: config
+        config: { drawConfig: drawConfigValue }
       });
     },
 
     // 辅助方法
     buildConfigFromSelection(index) {
-      const currentDiffScore = this.getCurrentDiffScore(this.properties.config);
+      const currentDiffScore = this.getCurrentDiffScore(this.properties.drawConfig);
 
       let drawConfig = 'DrawEqual';
 
@@ -110,8 +115,7 @@ Component({
       };
     },
 
-    getCurrentDiffScore(config) {
-      const drawConfig = config?.drawConfig;
+    getCurrentDiffScore(drawConfig) {
       if (drawConfig?.startsWith('Diff_')) {
         const score = Number.parseInt(drawConfig.replace('Diff_', ''));
         return Number.isNaN(score) ? this.data.defaultDiffScore : score;
@@ -120,11 +124,9 @@ Component({
     },
 
     // 计算显示值
-    computeDisplayValue(config) {
-      if (!config) return '请配置顶洞规则';
-      
-      const { drawConfig } = config;
-      
+    computeDisplayValue(drawConfig) {
+      if (!drawConfig) return '请配置顶洞规则';
+
       switch (drawConfig) {
         case 'DrawEqual':
           return '得分打平';
@@ -142,8 +144,8 @@ Component({
 
     // 更新显示值
     updateDisplayValue() {
-      const config = this.properties.config;
-      const displayValue = this.computeDisplayValue(config);
+      const drawConfig = this.properties.drawConfig;
+      const displayValue = this.computeDisplayValue(drawConfig);
       this.setData({ displayValue });
     }
   }

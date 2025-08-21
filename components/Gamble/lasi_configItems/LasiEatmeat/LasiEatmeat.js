@@ -5,11 +5,25 @@
 
 Component({
   properties: {
-    config: {
+    eatingRange: {
       type: Object,
       value: null,
       observer: function (newVal) {
-        console.log('🔍 [LasiEatmeat] config properties更新:', newVal);
+        console.log('🔍 [LasiEatmeat] eatingRange更新:', newVal);
+      }
+    },
+    meatValueConfig: {
+      type: String,
+      value: 'MEAT_AS_1',
+      observer: function (newVal) {
+        console.log('🔍 [LasiEatmeat] meatValueConfig更新:', newVal);
+      }
+    },
+    meatMaxValue: {
+      type: Number,
+      value: 10000000,
+      observer: function (newVal) {
+        console.log('🔍 [LasiEatmeat] meatMaxValue更新:', newVal);
       }
     },
     mode: {
@@ -68,14 +82,13 @@ Component({
 
   lifetimes: {
     attached() {
-      console.log('🎬 [LasiEatmeat] 组件初始化，当前config:', this.properties.config);
       this.updateCurrentConfig();
     }
   },
 
   observers: {
-    'config': function (newConfig) {
-      console.log('🔍 [LasiEatmeat] config变化:', newConfig);
+    'eatingRange, meatValueConfig, meatMaxValue': function (eatingRange, meatValueConfig, meatMaxValue) {
+      console.log('🔍 [LasiEatmeat] 属性变化:', { eatingRange, meatValueConfig, meatMaxValue });
       this.updateCurrentConfig();
     }
   },
@@ -284,35 +297,39 @@ Component({
 
     // 辅助方法
     getCurrentConfig() {
-      return this.properties.config || this.data.defaultConfig;
+      return {
+        eatingRange: this.properties.eatingRange || this.data.defaultConfig.eatingRange,
+        meatValueConfig: this.properties.meatValueConfig || this.data.defaultConfig.meatValueConfig,
+        meatMaxValue: this.properties.meatMaxValue || this.data.defaultConfig.meatMaxValue
+      };
     },
 
     getCurrentMeatValueOption() {
-      const config = this.getCurrentConfig();
-      if (config.meatValueConfig?.startsWith('MEAT_AS_')) {
+      const meatValueConfig = this.properties.meatValueConfig;
+      if (meatValueConfig?.startsWith('MEAT_AS_')) {
         return 0;
       }
-      const index = this.data.meatValueOptions.findIndex(opt => opt.value === config.meatValueConfig);
+      const index = this.data.meatValueOptions.findIndex(opt => opt.value === meatValueConfig);
       return index >= 0 ? index : 4; // 默认 DOUBLE_WITHOUT_REWARD
     },
 
     getCurrentMeatScore() {
-      const config = this.getCurrentConfig();
-      if (config.meatValueConfig?.startsWith('MEAT_AS_')) {
-        const score = Number.parseInt(config.meatValueConfig.replace('MEAT_AS_', ''));
+      const meatValueConfig = this.properties.meatValueConfig;
+      if (meatValueConfig?.startsWith('MEAT_AS_')) {
+        const score = Number.parseInt(meatValueConfig.replace('MEAT_AS_', ''));
         return Number.isNaN(score) ? 1 : score;
       }
       return 1;
     },
 
     getCurrentTopSelected() {
-      const config = this.getCurrentConfig();
-      return config.meatMaxValue === 10000000 ? 0 : 1;
+      const meatMaxValue = this.properties.meatMaxValue;
+      return meatMaxValue === 10000000 ? 0 : 1;
     },
 
     getCurrentTopScoreLimit() {
-      const config = this.getCurrentConfig();
-      return config.meatMaxValue === 10000000 ? 3 : config.meatMaxValue;
+      const meatMaxValue = this.properties.meatMaxValue;
+      return meatMaxValue === 10000000 ? 3 : meatMaxValue;
     }
   }
 });

@@ -12,9 +12,7 @@
       <view
         class="header-title"
       >{{pageMode === 'create' ? '新建规则' : pageMode === 'view' ? '查看规则' : '编辑规则'}}</view>
-      <view
-        class="header-subtitle"
-      >{{gambleHumanName}} / {{storeMetadata.gambleUserName || '未命名规则'}}</view>
+      <view class="header-subtitle">{{gambleHumanName}} / {{gambleUserName || '未命名规则'}}</view>
     </view>
 
     <!-- 配置表单 -->
@@ -24,7 +22,7 @@
         <view class="form-label">规则名称</view>
         <input
           class="form-input"
-          value="{{storeMetadata.gambleUserName}}"
+          value="{{gambleUserName}}"
           bindinput="onRuleNameInput"
           placeholder="请输入规则名称"
           maxlength="50"
@@ -43,7 +41,7 @@
                 wx:if="{{item.name === 'LasiKPI'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                config="{{storeConfig.kpiConfig}}"
+                config="{{kpis}}"
                 displayValue="{{kpiDisplayValue}}"
                 bind:configChange="onConfigChange"
               />
@@ -53,7 +51,7 @@
                 wx:if="{{item.name === 'LasiRewardConfig'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                config="{{storeConfig.rewardConfig}}"
+                config="{{RewardConfig}}"
                 showPreCondition="{{showPreCondition}}"
                 bind:configChange="onConfigChange"
               />
@@ -63,7 +61,7 @@
                 wx:if="{{item.name === 'LasiDingDong'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                config="{{storeConfig.dingdongConfig}}"
+                drawConfig="{{drawConfig}}"
                 bind:configChange="onConfigChange"
               />
 
@@ -72,7 +70,9 @@
                 wx:if="{{item.name === 'LasiEatmeat'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                config="{{storeConfig.eatmeatConfig}}"
+                eatingRange="{{eatingRange}}"
+                meatValueConfig="{{meatValueConfig}}"
+                meatMaxValue="{{meatMaxValue}}"
                 disabled="{{isEatmeatDisabled}}"
                 bind:configChange="onConfigChange"
               />
@@ -82,7 +82,10 @@
                 wx:if="{{item.name === 'LasiBaoDong'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                config="{{storeConfig.baodongConfig}}"
+                dutyConfig="{{dutyConfig}}"
+                PartnerDutyCondition="{{PartnerDutyCondition}}"
+                badScoreBaseLine="{{badScoreBaseLine}}"
+                badScoreMaxLost="{{badScoreMaxLost}}"
                 bind:configChange="onConfigChange"
               />
             </view>

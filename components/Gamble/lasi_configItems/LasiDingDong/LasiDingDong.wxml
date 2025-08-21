@@ -22,8 +22,8 @@
     <view class="modal-list">
       <!-- 得分打平选项 -->
       <view class="modal-item" catchtap="onSelect" data-index="0">
-        <view class="radio-outer {{config.drawConfig === 'DrawEqual' ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{config.drawConfig === 'DrawEqual'}}"></view>
+        <view class="radio-outer {{drawConfig === 'DrawEqual' ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{drawConfig === 'DrawEqual'}}"></view>
         </view>
         <view class="option-content">
           <text>得分打平</text>
@@ -32,33 +32,33 @@
 
       <!-- 得分X分以内选项 -->
       <view class="modal-item" catchtap="onSelect" data-index="1">
-        <view class="radio-outer {{config.drawConfig && util.includes(config.drawConfig, 'Diff_') ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{config.drawConfig && util.includes(config.drawConfig, 'Diff_')}}"></view>
+        <view class="radio-outer {{drawConfig && util.includes(drawConfig, 'Diff_') ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{drawConfig && util.includes(drawConfig, 'Diff_')}}"></view>
         </view>
         <view class="option-content">
           <text>得分</text>
 
           <!-- 分数选择器 -->
           <picker
-            wx:if="{{config.drawConfig && util.includes(config.drawConfig, 'Diff_')}}"
+            wx:if="{{drawConfig && util.includes(drawConfig, 'Diff_')}}"
             class="score-picker"
             range="{{diffScores}}"
-            value="{{diffScores.indexOf(util.parseIntFromString(config.drawConfig, 'Diff_') || defaultDiffScore)}}"
+            value="{{diffScores.indexOf(util.parseIntFromString(drawConfig, 'Diff_') || defaultDiffScore)}}"
             bindchange="onDiffScoreChange"
           >
-            <view class="picker-value">{{util.parseIntFromString(config.drawConfig, 'Diff_') || defaultDiffScore}}</view>
+            <view class="picker-value">{{util.parseIntFromString(drawConfig, 'Diff_') || defaultDiffScore}}</view>
           </picker>
-          <text wx:if="{{config.drawConfig && util.includes(config.drawConfig, 'Diff_')}}">分以内</text>
+          <text wx:if="{{drawConfig && util.includes(drawConfig, 'Diff_')}}">分以内</text>
 
           <!-- 显示当前选中但未激活的选项文本 -->
-          <text wx:if="{{!(config.drawConfig && util.includes(config.drawConfig, 'Diff_'))}}">{{util.parseIntFromString(config.drawConfig, 'Diff_') || defaultDiffScore}}分以内</text>
+          <text wx:if="{{!(drawConfig && util.includes(drawConfig, 'Diff_'))}}">{{util.parseIntFromString(drawConfig, 'Diff_') || defaultDiffScore}}分以内</text>
         </view>
       </view>
 
       <!-- 无顶洞选项 -->
       <view class="modal-item" catchtap="onSelect" data-index="2">
-        <view class="radio-outer {{config.drawConfig === 'NoDraw' ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{config.drawConfig === 'NoDraw'}}"></view>
+        <view class="radio-outer {{drawConfig === 'NoDraw' ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{drawConfig === 'NoDraw'}}"></view>
         </view>
         <view class="option-content">
           <text>无顶洞</text>

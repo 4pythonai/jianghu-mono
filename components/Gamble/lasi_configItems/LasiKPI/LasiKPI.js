@@ -10,7 +10,7 @@ Component({
     config: {
       type: Object,
       value: null,
-      observer: function(newVal) {
+      observer: function (newVal) {
         console.log('🔍 [LasiKPI] config properties更新:', newVal);
       }
     },
@@ -47,13 +47,13 @@ Component({
 
   lifetimes: {
     attached() {
-      console.log('🎬 [LasiKPI] 组件初始化，当前config:', this.properties.config);
+      console.log('🎬 [LasiKPI] 组件初始化 ❤️🧡💛💚❤️🧡💛💚 当前config:', this.properties.config);
       this.updateCurrentConfig();
     }
   },
 
   observers: {
-    'config': function(newConfig) {
+    'config': function (newConfig) {
       console.log('🔍 [LasiKPI] config变化:', newConfig);
       this.updateCurrentConfig();
     }
@@ -63,7 +63,7 @@ Component({
     // 更新当前配置状态
     updateCurrentConfig() {
       const config = this.properties.config;
-      
+
       // 完全受控：如果没有config，清空UI状态
       if (!config) {
         this.setData({
@@ -84,7 +84,7 @@ Component({
         });
         return;
       }
-      
+
       // 构建选中状态映射
       const isSelected = {
         best: config.indicators.includes('best'),
@@ -100,8 +100,8 @@ Component({
 
       // 生成规则名称
       const generatedRuleName = generateLasiRuleName(
-        config.indicators, 
-        config.kpiValues, 
+        config.indicators,
+        config.kpiValues,
         config.totalCalculationType
       );
 
@@ -119,7 +119,7 @@ Component({
     onSelectIndicator(e) {
       const { value } = e.currentTarget.dataset;
       const config = this.data.currentConfig;
-      
+
       const newIndicators = config.indicators.includes(value)
         ? config.indicators.filter(item => item !== value)
         : [...config.indicators, value];
@@ -128,7 +128,7 @@ Component({
         ...config,
         indicators: newIndicators
       };
-      
+
       this.handleConfigChange(newConfig);
     },
 
@@ -152,22 +152,22 @@ Component({
         ...this.data.currentConfig,
         kpiValues: newKpiValues
       };
-      
+
       this.handleConfigChange(config);
     },
 
     // 统一的配置变更处理
     handleConfigChange(config) {
       console.log('🎯 [LasiKPI] KPI配置变化:', config);
-      
+
       // 生成规则名称
       const generatedRuleName = generateLasiRuleName(
-        config.indicators, 
-        config.kpiValues, 
+        config.indicators,
+        config.kpiValues,
         config.totalCalculationType
       );
-      
-      this.triggerEvent('configChange', { 
+
+      this.triggerEvent('configChange', {
         componentType: 'kpi',
         config: config,
         generatedRuleName: generatedRuleName
