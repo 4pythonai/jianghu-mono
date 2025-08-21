@@ -25,7 +25,8 @@ Page({
             eatmeatDisplayValue: 'eatmeatDisplayValue',
             isEatmeatDisabled: 'isEatmeatDisabled',
             dingdongDisplayValue: 'dingdongDisplayValue',
-            baodongDisplayValue: 'baodongDisplayValue'
+            baodongDisplayValue: 'baodongDisplayValue',
+            showPreCondition: 'showPreCondition'
         },
         actions: {
             // 从Store获取方法

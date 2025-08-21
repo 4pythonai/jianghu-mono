@@ -49,13 +49,14 @@
               />
 
               <!-- 奖励规则配置 -->
-              <!-- <LasiRewardConfig
+              <LasiRewardConfig
                 wx:if="{{item.name === 'LasiRewardConfig'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.rewardConfig}}"
+                showPreCondition="{{showPreCondition}}"
                 bind:configChange="onConfigChange"
-              />-->
+              />
 
               <!-- 顶洞规则配置 -->
               <LasiDingDong

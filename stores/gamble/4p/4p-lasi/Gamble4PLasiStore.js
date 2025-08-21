@@ -267,8 +267,12 @@ export const Gamble4PLasiStore = observable({
   }),
 
   updateRewardConfig: action(function (config) {
-    console.log('✏️ 更新奖励配置:', config);
-    Object.assign(this.config.rewardConfig, config);
+    console.log('✏️ [Store] 更新奖励配置:', config);
+    console.log('✏️ [Store] 更新前rewardConfig:', this.config.rewardConfig);
+    // 直接替换整个对象，而不是使用Object.assign（类似dingdongConfig的处理方式）
+    this.config.rewardConfig = { ...this.config.rewardConfig, ...config };
+    console.log('✏️ [Store] 更新后rewardConfig:', this.config.rewardConfig);
+    console.log('✏️ [Store] 更新后rewardPreCondition:', this.config.rewardConfig.rewardPreCondition);
     this.markDirty();
     this.autoUpdateRuleName();
   }),
@@ -486,6 +490,11 @@ export const Gamble4PLasiStore = observable({
   // 检查吃肉功能是否被禁用（根据顶洞配置）
   get isEatmeatDisabled() {
     return this.config.dingdongConfig?.drawConfig === 'NoDraw';
+  },
+
+  // 检查是否应该显示奖励前置条件（根据KPI中是否包含总杆类型）
+  get showPreCondition() {
+    return this.config.kpiConfig?.indicators?.includes('total') || false;
   },
 
   // === 数据导出方法 ===
