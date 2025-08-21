@@ -77,16 +77,8 @@ Page({
 
     // 解析URL参数，确定页面模式
     parseOptions(options) {
-        const { mode, ruleId, ruleData } = options
-
-        // 确定页面模式
-        let pageMode = 'edit' // 默认编辑模式
-        if (mode === 'create') {
-            pageMode = 'create'
-        } else if (mode === 'view') {
-            pageMode = 'view'
-        }
-
+        const { pageMode, ruleId, ruleData } = options
+        console.log("🟡🟠🔴🟡🟠🔴", options)
         this.setData({
             pageMode,
             ruleId: ruleId || null,

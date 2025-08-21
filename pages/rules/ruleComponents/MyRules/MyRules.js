@@ -110,7 +110,7 @@ Component({
         onEditRule(e) {
             const { item } = e.detail || e.currentTarget.dataset;
             const encodedRuleData = encodeURIComponent(JSON.stringify(item));
-            wx.navigateTo({ url: `/pages/rules/UserRuleEdit/UserRuleEdit?ruleId=${item.userRuleId}&ruleData=${encodedRuleData}` });
+            wx.navigateTo({ url: `/pages/rules/UserRuleEdit/UserRuleEdit?pageMode=edit&ruleId=${item.userRuleId}&ruleData=${encodedRuleData}` });
         },
 
         // 查看规则详情 - 跳转到运行时配置页面

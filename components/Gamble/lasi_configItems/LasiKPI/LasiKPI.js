@@ -27,24 +27,13 @@ Component({
   data: {
     // 分值范围（1-5分）
     valueRange: [1, 2, 3, 4, 5],
-    
-    // 默认配置
-    defaultConfig: {
-      indicators: ['best', 'worst', 'total'],
-      totalCalculationType: 'add_total',
-      kpiValues: {
-        best: 1,
-        worst: 1,
-        total: 1
-      }
-    },
 
     // UI计算状态（由observer更新）
     currentConfig: null,
     isSelected: {
-      best: true,
-      worst: true,
-      total: true
+      best: false,
+      worst: false,
+      total: false
     },
     totalCalculationType: 'add_total',
     kpiValues: {
@@ -52,7 +41,7 @@ Component({
       worst: 1,
       total: 1
     },
-    totalScore: 3,
+    totalScore: 0,
     generatedRuleName: ''
   },
 
@@ -73,7 +62,28 @@ Component({
   methods: {
     // 更新当前配置状态
     updateCurrentConfig() {
-      const config = this.getCurrentConfig();
+      const config = this.properties.config;
+      
+      // 完全受控：如果没有config，清空UI状态
+      if (!config) {
+        this.setData({
+          currentConfig: null,
+          isSelected: {
+            best: false,
+            worst: false,
+            total: false
+          },
+          totalCalculationType: 'add_total',
+          kpiValues: {
+            best: 1,
+            worst: 1,
+            total: 1
+          },
+          totalScore: 0,
+          generatedRuleName: ''
+        });
+        return;
+      }
       
       // 构建选中状态映射
       const isSelected = {
@@ -166,7 +176,7 @@ Component({
 
     // 辅助方法
     getCurrentConfig() {
-      return this.properties.config || this.data.defaultConfig;
+      return this.properties.config;
     }
   }
 });
