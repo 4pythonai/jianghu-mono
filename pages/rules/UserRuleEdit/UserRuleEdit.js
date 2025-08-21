@@ -1,8 +1,3 @@
-/**
- * 用户规则编辑/新建页面 - 重构版
- * 使用统一的Gamble4PLasiStore管理状态
- * 支持mode驱动的新建/编辑/查看行为
- */
 
 const app = getApp()
 import { storeBindingsBehavior } from 'mobx-miniprogram-bindings'
@@ -98,9 +93,7 @@ Page({
     // 新建模式初始化
     initializeForCreate() {
         console.log('🆕 [UserRuleEdit] 初始化新建模式')
-
         this.setData({ loading: true })
-
         try {
             // 使用Store的create模式初始化
             this.initializeStore('create')
@@ -109,9 +102,7 @@ Page({
             wx.setNavigationBarTitle({
                 title: '新建拉丝规则'
             })
-
             this.setData({ loading: false })
-
         } catch (error) {
             console.error('❌ [UserRuleEdit] 新建模式初始化失败:', error)
             this.showErrorAndReturn('初始化失败')
@@ -121,7 +112,6 @@ Page({
     // 编辑模式初始化
     initializeForEdit(encodedRuleData) {
         console.log('✏️ [UserRuleEdit] 初始化编辑模式')
-
         this.setData({ loading: true })
 
         try {
@@ -271,62 +261,46 @@ Page({
     },
 
     // 保存规则
-    onSaveRule() {
+    async onSaveRule() {
         if (!this.validateForm()) {
             return
         }
-
-
-
         this.setData({ saving: true })
 
-        try {
+        {
             // 从Store获取保存数据
             const saveData = this.getSaveData()
             console.log('💾 [UserRuleEdit] 准备保存数据:', saveData)
 
             // 根据模式调用不同的API
-            const apiPromise = this.data.pageMode === 'create'
-                ? app.api.gamble.createGambleRule(saveData)
-                : app.api.gamble.updateGambleRule({
+            const res = this.data.pageMode === 'create'
+                ? await app.api.gamble.createGambleRule(saveData)
+                : await app.api.gamble.updateGambleRule({
                     id: this.data.ruleId,
                     ...saveData
                 })
 
-            apiPromise
-                .then(res => {
-                    console.log('✅ [UserRuleEdit] 保存成功:', res)
+            console.log('✅ [UserRuleEdit] API响应:', res)
 
-                    const message = this.data.pageMode === 'create' ? '规则创建成功' : '规则更新成功'
-                    wx.showToast({
-                        title: message,
-                        icon: 'success'
-                    })
-
-                    // 延迟返回上一页并刷新
-                    setTimeout(() => {
-                        this.navigateBackWithRefresh()
-                    }, 1500)
-                })
-                .catch(err => {
-                    console.error('❌ [UserRuleEdit] 保存失败:', err)
-                    wx.showToast({
-                        title: '保存失败，请重试',
-                        icon: 'none'
-                    })
-                })
-                .finally(() => {
-                    this.setData({ saving: false })
+            if (res.code === 200) {
+                const message = this.data.pageMode === 'create' ? '规则创建成功' : '规则更新成功'
+                wx.showToast({
+                    title: message,
+                    icon: 'success'
                 })
 
-        } catch (error) {
-            console.error('❌ [UserRuleEdit] 保存数据准备失败:', error)
-            wx.showToast({
-                title: '数据准备失败',
-                icon: 'none'
-            })
-            this.setData({ saving: false })
+                // 延迟返回上一页并刷新
+                setTimeout(() => {
+                    this.navigateBackWithRefresh()
+                }, 1500)
+            } else {
+                wx.showToast({
+                    title: '保存失败，请重试',
+                    icon: 'none'
+                })
+            }
         }
+
     },
 
     // 删除规则 - 仅编辑模式可用
@@ -349,30 +323,28 @@ Page({
     },
 
     // 执行删除
-    executeDelete() {
+    async executeDelete() {
         this.setData({ saving: true })
 
-        app.api.gamble.deleteGambleRule(this.data.ruleId)
-            .then(res => {
-                console.log('🗑️ [UserRuleEdit] 删除成功:', res)
-                wx.showToast({
-                    title: '规则已删除',
-                    icon: 'success'
-                })
-                setTimeout(() => {
-                    this.navigateBackWithRefresh()
-                }, 1500)
+        const res = await app.api.gamble.deleteGambleRule(this.data.ruleId)
+
+        if (res.code === 200) {
+            console.log('🗑️ [UserRuleEdit] 删除成功:', res)
+            wx.showToast({
+                title: '规则已删除',
+                icon: 'success'
             })
-            .catch(err => {
-                console.error('❌ [UserRuleEdit] 删除失败:', err)
-                wx.showToast({
-                    title: '删除失败，请重试',
-                    icon: 'none'
-                })
+            setTimeout(() => {
+                this.navigateBackWithRefresh()
+            }, 1500)
+        } else {
+            wx.showToast({
+                title: '删除失败，请重试',
+                icon: 'none'
             })
-            .finally(() => {
-                this.setData({ saving: false })
-            })
+        }
+
+        this.setData({ saving: false })
     },
 
     // 取消编辑
