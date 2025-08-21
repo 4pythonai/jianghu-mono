@@ -126,15 +126,7 @@ export const Gamble4PLasiStore = observable({
     this.drawConfig = existingData.drawConfig || this.DEFAULTS.drawConfig;
     this.dutyConfig = existingData.dutyConfig || this.DEFAULTS.dutyConfig;
     // 处理历史数据中可能缺失的PartnerDutyCondition字段
-    if (existingData.PartnerDutyCondition) {
-      this.PartnerDutyCondition = existingData.PartnerDutyCondition;
-    } else {
-      // 如果没有该字段，根据dutyConfig推断
-      this.PartnerDutyCondition = existingData.dutyConfig === 'NODUTY'
-        ? 'DUTY_DINGTOU'  // 不包洞时默认
-        : 'PARTNET_IGNORE'; // 包洞时默认与同伴无关
-    }
-    console.log('🔍 推断PartnerDutyCondition:', this.PartnerDutyCondition);
+    this.PartnerDutyCondition = existingData.PartnerDutyCondition;
     this.badScoreBaseLine = existingData.badScoreBaseLine || this.DEFAULTS.badScoreBaseLine;
     this.badScoreMaxLost = parseInt(existingData.badScoreMaxLost) || this.DEFAULTS.badScoreMaxLost;
   }),
