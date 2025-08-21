@@ -5,7 +5,7 @@
   <view class="form-select" bindtap="onShowConfig">
     <input
       class="form-input {{disabled ? 'conditionally-disabled' : ''}}"
-      value="{{computedDisplayValue || displayValue}}"
+      value="{{displayValue}}"
       disabled="{{disabled}}"
     />
     <view class="select-arrow">
@@ -57,7 +57,7 @@
           <view class="precondition-options">
             <view
               class="precondition-option {{rewardPreCondition === 'total_win' ? 'selected' : ''}} {{(!showPreCondition || addInputDisabled) ? 'disabled' : ''}}"
-              bindtap="{{(showPreCondition && !addInputDisabled) ? 'onPreConditionChange' : 'noTap'}}"
+              catchtap="{{(showPreCondition && !addInputDisabled) ? 'onPreConditionChange' : 'noTap'}}"
               data-value="total_win"
             >
               <view
@@ -67,7 +67,7 @@
             </view>
             <view
               class="precondition-option {{rewardPreCondition === 'total_not_fail' ? 'selected' : ''}} {{(!showPreCondition || addInputDisabled) ? 'disabled' : ''}}"
-              bindtap="{{(showPreCondition && !addInputDisabled) ? 'onPreConditionChange' : 'noTap'}}"
+              catchtap="{{(showPreCondition && !addInputDisabled) ? 'onPreConditionChange' : 'noTap'}}"
               data-value="total_not_fail"
             >
               <view
@@ -77,7 +77,7 @@
             </view>
             <view
               class="precondition-option {{rewardPreCondition === 'total_ignore' ? 'selected' : ''}} {{(!showPreCondition || addInputDisabled) ? 'disabled' : ''}}"
-              bindtap="{{(showPreCondition && !addInputDisabled) ? 'onPreConditionChange' : 'noTap'}}"
+              catchtap="{{(showPreCondition && !addInputDisabled) ? 'onPreConditionChange' : 'noTap'}}"
               data-value="total_ignore"
             >
               <view

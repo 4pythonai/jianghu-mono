@@ -73,6 +73,18 @@ Component({
         // 空方法，用于处理禁用状态下的点击事件
         noTap() {
             return;
+        },
+
+        // 处理子组件配置变更事件
+        onConfigChange(e) {
+            console.log('📋 [ConfigWrapper] 接收到配置变更事件:', e.detail);
+            
+            // 向父组件传递配置变更事件
+            this.triggerEvent('configChange', {
+                componentName: this.properties.componentName,
+                componentType: e.detail.componentType,
+                config: e.detail.config
+            });
         }
     }
 }); 

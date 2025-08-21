@@ -24,7 +24,7 @@
     </block>
 
     <block wx:elif="{{componentName === 'LasiRewardConfig'}}">
-      <LasiRewardConfig id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
+      <LasiRewardConfig id="{{componentName}}" mode="{{mode}}" config="{{configData}}" bindconfigChange="onConfigChange" showPreCondition="{{true}}" />
     </block>
 
     <block wx:elif="{{componentName === 'LasiEatmeat'}}">

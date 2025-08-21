@@ -12,10 +12,6 @@ Component({
         console.log('🔍 [LasiDingDong] config properties更新:', newVal);
       }
     },
-    displayValue: {
-      type: String,
-      value: '请配置顶洞规则'
-    },
     mode: {
       type: String,
       value: 'UserEdit'
@@ -25,12 +21,21 @@ Component({
   data: {
     visible: false,
     defaultDiffScore: 1, // 统一默认值管理
-    diffScores: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] // 提供选项数组给picker
+    diffScores: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], // 提供选项数组给picker
+    displayValue: '请配置顶洞规则'
   },
 
   lifetimes: {
     attached() {
       console.log('🎬 [LasiDingDong] 组件初始化，当前config:', this.properties.config);
+      this.updateDisplayValue();
+    }
+  },
+
+  observers: {
+    'config': function(newConfig) {
+      console.log('🔍 [LasiDingDong] config变化:', newConfig);
+      this.updateDisplayValue();
     }
   },
 
@@ -71,6 +76,10 @@ Component({
     handleConfigChange(config) {
       console.log('🕳️ [LasiDingDong] 顶洞配置变化:', config);
       
+      // 更新本地显示值
+      const displayValue = this.computeDisplayValue(config);
+      this.setData({ displayValue });
+      
       // 触发通用的配置变更事件，只传递必要信息
       this.triggerEvent('configChange', { 
         componentType: 'dingdong',
@@ -108,6 +117,34 @@ Component({
         return Number.isNaN(score) ? this.data.defaultDiffScore : score;
       }
       return this.data.defaultDiffScore;
+    },
+
+    // 计算显示值
+    computeDisplayValue(config) {
+      if (!config) return '请配置顶洞规则';
+      
+      const { drawConfig } = config;
+      
+      switch (drawConfig) {
+        case 'DrawEqual':
+          return '得分打平';
+        case 'NoDraw':
+          return '无顶洞';
+        default:
+          // 处理 Diff_X 格式
+          if (drawConfig?.startsWith('Diff_')) {
+            const score = drawConfig.replace('Diff_', '');
+            return `得分${score}分以内`;
+          }
+          return '请配置顶洞规则';
+      }
+    },
+
+    // 更新显示值
+    updateDisplayValue() {
+      const config = this.properties.config;
+      const displayValue = this.computeDisplayValue(config);
+      this.setData({ displayValue });
     }
   }
 });

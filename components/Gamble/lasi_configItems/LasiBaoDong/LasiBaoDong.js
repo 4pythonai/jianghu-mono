@@ -12,10 +12,6 @@ Component({
         console.log('🔍 [LasiBaoDong] config properties更新:', newVal);
       }
     },
-    displayValue: {
-      type: String,
-      value: '请配置包洞规则'
-    },
     mode: {
       type: String,
       value: 'UserEdit'
@@ -44,7 +40,8 @@ Component({
     PartnerDutyCondition: 'DUTY_DINGTOU',
     parPlusValue: 4,
     doubleParPlusValue: 1,
-    strokeDiffValue: 3
+    strokeDiffValue: 3,
+    displayValue: '请配置包洞规则'
   },
 
   lifetimes: {
@@ -88,13 +85,17 @@ Component({
         strokeDiffValue = Number.isNaN(value) ? 3 : value;
       }
 
+      // 计算显示值
+      const displayValue = this.computeDisplayValue(config);
+      
       this.setData({
         currentConfig: config,
         dutyConfig: dutyConfig,
         PartnerDutyCondition: config.partnerDutyCondition || 'DUTY_DINGTOU',
         parPlusValue: parPlusValue,
         doubleParPlusValue: doubleParPlusValue,
-        strokeDiffValue: strokeDiffValue
+        strokeDiffValue: strokeDiffValue,
+        displayValue: displayValue
       });
     },
 
@@ -186,10 +187,65 @@ Component({
     handleConfigChange(config) {
       console.log('🏳️ [LasiBaoDong] 包洞配置变化:', config);
 
+      // 更新本地显示值
+      const displayValue = this.computeDisplayValue(config);
+      this.setData({ displayValue });
+
       this.triggerEvent('configChange', {
         componentType: 'baodong',
         config: config
       });
+    },
+
+    // 计算显示值
+    computeDisplayValue(config) {
+      if (!config) return '请配置包洞规则';
+      
+      const { dutyConfig, partnerDutyCondition, badScoreBaseLine, badScoreMaxLost } = config;
+      
+      // 格式化包洞规则显示
+      let ruleText = '';
+      if (dutyConfig === 'NODUTY') {
+        ruleText = '不包洞';
+      } else if (badScoreBaseLine?.startsWith('Par+')) {
+        const value = badScoreBaseLine.replace('Par+', '');
+        ruleText = `帕+${value}包洞`;
+      } else if (badScoreBaseLine?.startsWith('DoublePar+')) {
+        const value = badScoreBaseLine.replace('DoublePar+', '');
+        ruleText = `双帕+${value}包洞`;
+      } else if (badScoreBaseLine?.startsWith('ScoreDiff_')) {
+        const value = badScoreBaseLine.replace('ScoreDiff_', '');
+        ruleText = `杆差${value}包洞`;
+      } else {
+        ruleText = '不包洞';
+      }
+      
+      // 如果是不包洞，直接返回
+      if (dutyConfig === 'NODUTY') {
+        return ruleText;
+      }
+      
+      // 格式化队友责任条件显示
+      let conditionText = '';
+      switch (partnerDutyCondition) {
+        case 'DUTY_DINGTOU':
+          conditionText = '同伴顶头包洞';
+          break;
+        case 'PARTNET_IGNORE':
+          conditionText = '与同伴成绩无关';
+          break;
+        default:
+          conditionText = '同伴顶头包洞';
+      }
+      
+      // 格式化封顶显示
+      let maxLostText = '';
+      if (badScoreMaxLost && badScoreMaxLost !== 10000000) {
+        maxLostText = `/${badScoreMaxLost}分封顶`;
+      }
+      
+      // 组合显示值
+      return `${ruleText}/${conditionText}${maxLostText}`;
     },
 
     // 辅助方法

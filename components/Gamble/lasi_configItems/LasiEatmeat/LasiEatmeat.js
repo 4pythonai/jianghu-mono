@@ -8,13 +8,9 @@ Component({
     config: {
       type: Object,
       value: null,
-      observer: function(newVal) {
+      observer: function (newVal) {
         console.log('🔍 [LasiEatmeat] config properties更新:', newVal);
       }
-    },
-    displayValue: {
-      type: String,
-      value: '请配置吃肉规则'
     },
     mode: {
       type: String,
@@ -28,7 +24,7 @@ Component({
 
   data: {
     visible: false,
-    
+
     // 静态配置数据
     eatRangeLabels: {
       'BetterThanBirdie': '比鸟更好',
@@ -48,7 +44,7 @@ Component({
       { label: '分值翻倍(不含奖励)', value: 'DOUBLE_WITHOUT_REWARD' }
     ],
     topOptions: ["不封顶", "X分封顶"],
-    
+
     // 默认配置
     defaultConfig: {
       eatingRange: {
@@ -66,7 +62,8 @@ Component({
     currentMeatValueOption: 4,
     currentMeatScore: 1,
     currentTopSelected: 0,
-    currentTopScoreLimit: 3
+    currentTopScoreLimit: 3,
+    displayValue: '请配置吃肉规则'
   },
 
   lifetimes: {
@@ -77,7 +74,7 @@ Component({
   },
 
   observers: {
-    'config': function(newConfig) {
+    'config': function (newConfig) {
       console.log('🔍 [LasiEatmeat] config变化:', newConfig);
       this.updateCurrentConfig();
     }
@@ -87,11 +84,11 @@ Component({
     // 更新当前配置状态
     updateCurrentConfig() {
       const config = this.getCurrentConfig();
-      
+
       // 计算肉分值选项
       let meatValueOption = 4;
       let meatScore = 1;
-      
+
       if (config.meatValueConfig?.startsWith('MEAT_AS_')) {
         meatValueOption = 0;
         const score = Number.parseInt(config.meatValueConfig.replace('MEAT_AS_', ''));
@@ -100,17 +97,21 @@ Component({
         const index = this.data.meatValueOptions.findIndex(opt => opt.value === config.meatValueConfig);
         meatValueOption = index >= 0 ? index : 4;
       }
-      
+
       // 计算封顶选项
       const topSelected = config.meatMaxValue === 10000000 ? 0 : 1;
       const topScoreLimit = config.meatMaxValue === 10000000 ? 3 : config.meatMaxValue;
-      
+
+      // 计算显示值
+      const displayValue = this.computeDisplayValue(config);
+
       this.setData({
         currentConfig: config,
         currentMeatValueOption: meatValueOption,
         currentMeatScore: meatScore,
         currentTopSelected: topSelected,
-        currentTopScoreLimit: topScoreLimit
+        currentTopScoreLimit: topScoreLimit,
+        displayValue: displayValue
       });
     },
 
@@ -145,35 +146,35 @@ Component({
       const keyIndex = e.currentTarget.dataset.index;
       const value = this.data.eatValueRange[e.detail.value];
       const key = this.data.eatRangeKeys[keyIndex];
-      
+
       const currentConfig = this.data.currentConfig;
       const newEatingRange = { ...currentConfig.eatingRange };
       newEatingRange[key] = value;
-      
+
       const config = {
         ...currentConfig,
         eatingRange: newEatingRange
       };
-      
+
       this.handleConfigChange(config);
     },
 
     onMeatValueChange(e) {
       const index = Number.parseInt(e.currentTarget.dataset.index);
       const meatValueConfig = this.data.meatValueOptions[index].value;
-      
+
       const currentConfig = this.data.currentConfig;
       let config = {
         ...currentConfig,
         meatValueConfig: meatValueConfig
       };
-      
+
       // 如果不是固定分模式，重置为默认分值
       if (meatValueConfig !== 'MEAT_AS_X') {
         // 重置封顶配置
         config.meatMaxValue = 10000000;
       }
-      
+
       this.handleConfigChange(config);
     },
 
@@ -189,7 +190,7 @@ Component({
     onTopSelect(e) {
       const index = Number.parseInt(e.currentTarget.dataset.index);
       const currentConfig = this.data.currentConfig;
-      
+
       if (currentConfig.meatValueConfig !== 'SINGLE_DOUBLE') {
         wx.showToast({
           title: '请先选择"分值翻倍"',
@@ -198,12 +199,12 @@ Component({
         });
         return;
       }
-      
+
       const config = {
         ...currentConfig,
         meatMaxValue: index === 0 ? 10000000 : this.data.currentTopScoreLimit
       };
-      
+
       this.handleConfigChange(config);
     },
 
@@ -219,11 +220,66 @@ Component({
     // 统一的配置变更处理
     handleConfigChange(config) {
       console.log('🥩 [LasiEatmeat] 吃肉配置变化:', config);
-      
-      this.triggerEvent('configChange', { 
+
+      // 更新本地显示值
+      const displayValue = this.computeDisplayValue(config);
+      this.setData({ displayValue });
+
+      // 直接发送对象格式，不要在组件层转换为字符串
+      // Store层会在保存到数据库时统一处理字符串转换
+      this.triggerEvent('configChange', {
         componentType: 'eatmeat',
         config: config
       });
+    },
+
+    // 计算显示值
+    computeDisplayValue(config) {
+      if (!config) return '请配置吃肉规则';
+
+      const { meatValueConfig, meatMaxValue } = config;
+
+      // 格式化肉分值计算方式
+      let meatValueText = '';
+      if (meatValueConfig?.startsWith('MEAT_AS_')) {
+        const score = meatValueConfig.replace('MEAT_AS_', '');
+        meatValueText = `肉算${score}分`;
+      } else {
+        switch (meatValueConfig) {
+          case 'SINGLE_DOUBLE':
+            meatValueText = '分值翻倍';
+            break;
+          case 'CONTINUE_DOUBLE':
+            meatValueText = '分值连续翻倍';
+            break;
+          case 'DOUBLE_WITH_REWARD':
+            meatValueText = '分值翻倍(含奖励)';
+            break;
+          case 'DOUBLE_WITHOUT_REWARD':
+            meatValueText = '分值翻倍(不含奖励)';
+            break;
+          default:
+            meatValueText = '请配置吃肉规则';
+        }
+      }
+
+      // 格式化封顶值 - 只有在选择“分值翻倍”时才显示封顶信息
+      let meatMaxText = '';
+      if (meatValueConfig === 'SINGLE_DOUBLE') {
+        if (meatMaxValue === 10000000) {
+          meatMaxText = '不封顶';
+        } else {
+          meatMaxText = `${meatMaxValue}分封顶`;
+        }
+      }
+
+      // 组合显示文本
+      let result = meatValueText;
+      if (meatMaxText) {
+        result += `/${meatMaxText}`;
+      }
+
+      return result || '请配置吃肉规则';
     },
 
     // 辅助方法

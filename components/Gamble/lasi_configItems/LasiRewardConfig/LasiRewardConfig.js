@@ -14,10 +14,6 @@ Component({
         console.log('🔍 [LasiRewardConfig] config properties更新:', newVal);
       }
     },
-    displayValue: {
-      type: String,
-      value: '请配置奖励规则'
-    },
     mode: {
       type: String,
       value: 'UserEdit'
@@ -43,11 +39,9 @@ Component({
     multiplyInputDisabled: false,
 
     // 计算的显示值
-    computedDisplayValue: '请配置奖励规则'
+    displayValue: '请配置奖励规则'
   },
 
-  // 用户交互标记（防止自动更新覆盖用户选择）
-  _userInteracting: false,
 
   lifetimes: {
     attached() {
@@ -63,10 +57,8 @@ Component({
         '当前data.rewardPreCondition': this.data.rewardPreCondition,
         'newConfig.rewardPreCondition': newConfig?.rewardPreCondition
       });
-      // 只在初始化或者没有用户交互时才更新
-      if (!this._userInteracting) {
-        this.updateCurrentConfig();
-      }
+      // 纯受控组件：始终根据外部config更新内部状态
+      this.updateCurrentConfig();
     },
 
     'rewardType': function (newRewardType) {
@@ -83,7 +75,6 @@ Component({
         const store = app.globalData?.Gamble4PLasiStore;
 
         if (store && store.DEFAULTS && store.DEFAULTS.REWARD_CONFIG) {
-          console.log('📦 [LasiRewardConfig] 从Store获取缺省配置:', store.DEFAULTS.REWARD_CONFIG);
           return store.DEFAULTS.REWARD_CONFIG;
         }
       } catch (error) {
@@ -100,12 +91,6 @@ Component({
       this.setData({
         addInputDisabled: rewardType === 'multiply',
         multiplyInputDisabled: rewardType === 'add'
-      });
-
-      console.log('🔐 [LasiRewardConfig] 输入禁用状态更新:', {
-        rewardType,
-        addInputDisabled: this.data.addInputDisabled,
-        multiplyInputDisabled: this.data.multiplyInputDisabled
       });
     },
 
@@ -136,19 +121,17 @@ Component({
       return validRewards.length > 2 ? `${displayText}...` : displayText;
     },
 
-    // 更新当前配置状态
+    // 更新当前配置状态 - 纯受控组件模式
     updateCurrentConfig() {
       const config = this.getCurrentConfig();
-
-      console.log('🔄 [LasiRewardConfig] updateCurrentConfig:', {
-        'properties.config': this.properties.config,
-        'computed config': config,
+      
+      console.log('🔄 [LasiRewardConfig] 更新配置状态:', {
         'config.rewardPreCondition': config.rewardPreCondition,
-        'data.rewardPreCondition': this.data.rewardPreCondition
+        'config.rewardType': config.rewardType
       });
 
       // 计算显示值
-      const computedDisplayValue = this.computeDisplayValue(config);
+      const displayValue = this.computeDisplayValue(config);
 
       this.setData({
         currentConfig: config,
@@ -156,18 +139,11 @@ Component({
         rewardPreCondition: config.rewardPreCondition,
         addRewardItems: config.addRewardItems,
         multiplyRewardItems: config.multiplyRewardItems,
-        computedDisplayValue: computedDisplayValue
+        displayValue: displayValue
       });
 
       // 触发禁用状态更新
       this.updatePanelDisabledStates(config.rewardType);
-
-      console.log('✅ [LasiRewardConfig] setData完成:', {
-        '新rewardPreCondition': this.data.rewardPreCondition,
-        '新rewardType': this.data.rewardType,
-        '新displayValue': computedDisplayValue,
-        '完整data': this.data
-      });
     },
 
     // UI事件处理
@@ -188,16 +164,6 @@ Component({
       // 阻止事件冒泡，什么都不做
     },
 
-    // 调试方法 - 检查当前状态
-    debugCurrentState() {
-      console.log('🐛 [LasiRewardConfig] 当前状态:', {
-        rewardPreCondition: this.data.rewardPreCondition,
-        showPreCondition: this.properties.showPreCondition,
-        visible: this.data.visible,
-        currentConfig: this.data.currentConfig
-      });
-    },
-
     onInputTap(e) {
       // 阻止事件冒泡，防止触发面板切换
       return false;
@@ -206,8 +172,9 @@ Component({
     // 配置变更事件
     onRewardTypeChange(e) {
       const { type } = e.currentTarget.dataset;
+      // ✅ 使用getCurrentConfig()获取最新完整配置
       const config = {
-        ...this.data.currentConfig,
+        ...this.getCurrentConfig(),
         rewardType: type
       };
       this.handleConfigChange(config);
@@ -216,8 +183,9 @@ Component({
     onRewardValueChange(e) {
       const { scoreName, rewardType } = e.currentTarget.dataset;
       const value = Number.parseInt(e.detail.value) || 0;
-
-      const config = { ...this.data.currentConfig };
+      
+      // ✅ 使用getCurrentConfig()获取最新完整配置，确保不丢失任何字段
+      const config = { ...this.getCurrentConfig() };
 
       if (rewardType === 'add') {
         config.addRewardItems = config.addRewardItems.map(item => {
@@ -240,48 +208,21 @@ Component({
 
     onPreConditionChange(e) {
       const { value } = e.currentTarget.dataset;
-      const timestamp = Date.now();
-
-      // 设置用户交互标记，防止自动更新覆盖用户选择
-      this._userInteracting = true;
-
-      console.log('🎯 [LasiRewardConfig] 前置条件点击:', {
-        value,
-        showPreCondition: this.properties.showPreCondition,
-        currentConfig: this.data.currentConfig,
-        '点击时间戳': timestamp
-      });
-
-      // 立即更新本地UI状态
-      this.setData({
-        rewardPreCondition: value
-      });
-      console.log('✅ [LasiRewardConfig] 立即UI更新完成:', {
-        '新值': value,
-        '时间戳': timestamp
-      });
-
+      
+      // 纯受控组件：直接构建新配置并触发变更
       const config = {
-        ...this.data.currentConfig,
+        ...this.getCurrentConfig(),
         rewardPreCondition: value
       };
       this.handleConfigChange(config);
-
-      // 延迟清除交互标记，给Store更新充足时间
-      setTimeout(() => {
-        this._userInteracting = false;
-        console.log('🔄 [LasiRewardConfig] 用户交互标记已清除');
-      }, 200);
     },
 
     // 统一的配置变更处理
     handleConfigChange(config) {
-      console.log('🏆 [LasiRewardConfig] 奖励配置变化:', config);
-
       // 更新本地显示值
-      const computedDisplayValue = this.computeDisplayValue(config);
+      const displayValue = this.computeDisplayValue(config);
       this.setData({
-        computedDisplayValue: computedDisplayValue
+        displayValue: displayValue
       });
 
       // 构建完整的配置数据
@@ -307,8 +248,8 @@ Component({
         return this._getStoreDefaults();
       }
 
-      // 编辑/查看模式，使用传入的config
-      const config = this.properties.config || this._getStoreDefaults();
+      // ✅ 深拷贝，避免污染原始config对象
+      const config = JSON.parse(JSON.stringify(this.properties.config || this._getStoreDefaults()));
 
       // 确保有默认的奖励项目数据
       if (!config.addRewardItems || config.addRewardItems.length === 0) {
@@ -318,12 +259,22 @@ Component({
         config.multiplyRewardItems = [...REWARD_DEFAULTS.MULTIPLY_REWARD_ITEMS];
       }
 
-      // 如果有rewardPair但对应的数组为空，从rewardPair恢复数据
+      // 如果有rewardPair，将数据映射到对应的数组中
       if (config.rewardPair && config.rewardPair.length > 0) {
-        if (config.rewardType === 'add' && config.addRewardItems.length === 0) {
-          config.addRewardItems = [...config.rewardPair];
-        } else if (config.rewardType === 'multiply' && config.multiplyRewardItems.length === 0) {
-          config.multiplyRewardItems = [...config.rewardPair];
+
+        if (config.rewardType === 'add') {
+          // 将rewardPair的数据合并到addRewardItems中，保持现有结构
+          config.addRewardItems = config.addRewardItems.map(item => {
+            const pairItem = config.rewardPair.find(p => p.scoreName === item.scoreName);
+            return pairItem ? { ...item, rewardValue: pairItem.rewardValue } : item;
+          });
+        } else if (config.rewardType === 'multiply') {
+          // 将rewardPair的数据合并到multiplyRewardItems中，保持现有结构  
+          config.multiplyRewardItems = config.multiplyRewardItems.map(item => {
+            const pairItem = config.rewardPair.find(p => p.scoreName === item.scoreName);
+            return pairItem ? { ...item, rewardValue: pairItem.rewardValue } : item;
+          });
+          console.log('✅ [LasiRewardConfig] 处理后multiplyRewardItems:', config.multiplyRewardItems);
         }
       }
 
