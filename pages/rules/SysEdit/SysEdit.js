@@ -77,7 +77,7 @@ Page({
                 break;
             case '4p-lasi':
                 components = [
-                    { name: 'LasiKoufen', title: '扣分规则' },
+                    { name: 'LasiBaoDong', title: '扣分规则' },
                     { name: 'LasiKPI', title: 'KPI规则' },
                     { name: 'LasiRewardConfig', title: '奖励配置' },
                     { name: 'LasiEatmeat', title: '吃肉规则' },

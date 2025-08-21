@@ -58,7 +58,7 @@ Page({
             { name: 'LasiRewardConfig', title: '奖励配置' },
             { name: 'LasiDingDong', title: '顶洞规则' },
             { name: 'LasiEatmeat', title: '吃肉规则' },
-            { name: 'LasiKoufen', title: '包洞规则' }
+            { name: 'LasiBaoDong', title: '包洞规则' }
         ],
 
         // === UI状态 ===
@@ -210,7 +210,7 @@ Page({
                 console.log('📊 [UserRuleEdit] KPI配置变化:', { config, generatedRuleName });
                 this.updateKpiConfig(config);
                 this._syncConfigToUI('kpiConfig');
-                
+
                 // KPI特殊逻辑：如果有生成的规则名且用户未手动编辑，则自动更新
                 if (generatedRuleName && !this.data.isManualRuleName && this.data.pageMode === 'create') {
                     this.updateRuleName(generatedRuleName);
@@ -243,12 +243,12 @@ Page({
             const latestConfig = storeInstance.config[configKey];
             console.log(`🔍 [UserRuleEdit] Store中的最新${configKey}:`, latestConfig);
             console.log(`🔍 [UserRuleEdit] 页面中的storeConfig.${configKey}:`, this.data.storeConfig[configKey]);
-            
+
             // 强制同步最新状态到页面
             this.setData({
                 [`storeConfig.${configKey}`]: latestConfig
             });
-            
+
             console.log(`✅ [UserRuleEdit] ${configKey}强制同步完成`);
         }, 50);
     },
@@ -407,7 +407,7 @@ Page({
     },
 
     // === 辅助方法 ===
-    
+
     // 获取Store实例
     _getStoreInstance() {
         return Gamble4PLasiStore;

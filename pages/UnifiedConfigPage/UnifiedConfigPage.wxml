@@ -5,7 +5,6 @@
 -->
 
 <view class="unified-config-page">
-  
   <!-- 🔖 页面头部信息 -->
   <view class="page-header">
     <text class="page-title">{{gameName}} - 规则配置</text>
@@ -19,10 +18,10 @@
     <view class="section-header">
       <text class="section-title">基础信息</text>
     </view>
-    
+
     <view class="config-item">
       <text class="config-label">规则名称*</text>
-      <input 
+      <input
         class="config-input rule-name-input"
         value="{{ruleName}}"
         bindinput="onRuleNameInput"
@@ -37,7 +36,7 @@
     <view class="section-header">
       <text class="section-title">详细配置</text>
     </view>
-    
+
     <!-- 动态组件渲染容器 -->
     <view class="components-container">
       <block wx:for="{{configComponents}}" wx:key="name">
@@ -46,59 +45,58 @@
             <text class="component-title">{{item.title}}</text>
             <view class="required-badge" wx:if="{{item.required}}">必填</view>
           </view>
-          
+
           <view class="component-content">
             <!-- 拉丝配置 -->
-            <LasiKoufen 
-              wx:if="{{item.name === 'LasiKoufen'}}"
-              id="LasiKoufen"
+            <LasiBaoDong
+              wx:if="{{item.name === 'LasiBaoDong'}}"
+              id="LasiBaoDong"
               bind:configChange="onComponentConfigChange"
             />
-            
-            <LasiKPI 
+
+            <LasiKPI
               wx:if="{{item.name === 'LasiKPI'}}"
               id="LasiKPI"
               bind:configChange="onComponentConfigChange"
             />
-            
-            <LasiRewardConfig 
+
+            <LasiRewardConfig
               wx:if="{{item.name === 'LasiRewardConfig'}}"
               id="LasiRewardConfig"
               bind:configChange="onComponentConfigChange"
             />
-            
-            <LasiEatmeat 
+
+            <LasiEatmeat
               wx:if="{{item.name === 'LasiEatmeat'}}"
               id="LasiEatmeat"
               bind:configChange="onComponentConfigChange"
             />
-            
-            <LasiDingDong 
+
+            <LasiDingDong
               wx:if="{{item.name === 'LasiDingDong'}}"
               id="LasiDingDong"
               bind:configChange="onComponentConfigChange"
             />
-            
+
             <!-- 8421配置 -->
-            <E8421Koufen 
+            <E8421Koufen
               wx:if="{{item.name === 'E8421Koufen'}}"
               id="E8421Koufen"
               bind:configChange="onComponentConfigChange"
             />
-            
-            <Draw8421 
+
+            <Draw8421
               wx:if="{{item.name === 'Draw8421'}}"
               id="Draw8421"
               bind:configChange="onComponentConfigChange"
             />
-            
-            <E8421Meat 
+
+            <E8421Meat
               wx:if="{{item.name === 'E8421Meat'}}"
               id="E8421Meat"
               bind:configChange="onComponentConfigChange"
             />
           </view>
-          
         </view>
       </block>
     </view>
@@ -116,7 +114,6 @@
     <text class="empty-text">未找到可用的配置组件</text>
     <text class="empty-desc">请检查游戏类型是否正确：{{gameType}}</text>
   </view>
-
 </view>
 
 <!-- 🎯 操作按钮浮动层 -->
@@ -124,15 +121,13 @@
   <button class="cancel-btn" bindtap="onCancel">
     <text class="btn-text">取消</text>
   </button>
-  <button 
-    class="save-btn" 
+  <button
+    class="save-btn"
     bindtap="onSaveRule"
     loading="{{saving}}"
     disabled="{{saving || !ruleName || ruleName.length < 2}}"
   >
-    <text class="btn-text">
-      {{saving ? '保存中...' : (mode === 'edit' ? '更新规则' : '保存规则')}}
-    </text>
+    <text class="btn-text">{{saving ? '保存中...' : (mode === 'edit' ? '更新规则' : '保存规则')}}</text>
   </button>
 </view>
 

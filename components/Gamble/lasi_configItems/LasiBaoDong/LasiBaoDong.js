@@ -8,8 +8,8 @@ Component({
     config: {
       type: Object,
       value: null,
-      observer: function(newVal) {
-        console.log('🔍 [LasiKoufen] config properties更新:', newVal);
+      observer: function (newVal) {
+        console.log('🔍 [LasiBaoDong] config properties更新:', newVal);
       }
     },
     displayValue: {
@@ -24,12 +24,12 @@ Component({
 
   data: {
     visible: false,
-    
+
     // 数值选择范围
     parPlusRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
     doubleParPlusRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
     strokeDiffRange: Array.from({ length: 21 }, (_, i) => i + 1), // 1-21
-    
+
     // 默认配置
     defaultConfig: {
       dutyConfig: 'NODUTY',
@@ -49,14 +49,14 @@ Component({
 
   lifetimes: {
     attached() {
-      console.log('🎬 [LasiKoufen] 组件初始化，当前config:', this.properties.config);
+      console.log('🎬 [LasiBaoDong] 组件初始化，当前config:', this.properties.config);
       this.updateCurrentConfig();
     }
   },
 
   observers: {
-    'config': function(newConfig) {
-      console.log('🔍 [LasiKoufen] config变化:', newConfig);
+    'config': function (newConfig) {
+      console.log('🔍 [LasiBaoDong] config变化:', newConfig);
       this.updateCurrentConfig();
     }
   },
@@ -65,13 +65,13 @@ Component({
     // 更新当前配置状态
     updateCurrentConfig() {
       const config = this.getCurrentConfig();
-      
+
       // 解析包洞规则类型
       let dutyConfig = 'NODUTY';
       let parPlusValue = 4;
       let doubleParPlusValue = 1;
       let strokeDiffValue = 3;
-      
+
       if (config.dutyConfig === 'NODUTY') {
         dutyConfig = 'NODUTY';
       } else if (config.badScoreBaseLine?.startsWith('Par+')) {
@@ -87,7 +87,7 @@ Component({
         const value = Number.parseInt(config.badScoreBaseLine.replace('ScoreDiff_', ''));
         strokeDiffValue = Number.isNaN(value) ? 3 : value;
       }
-      
+
       this.setData({
         currentConfig: config,
         dutyConfig: dutyConfig,
@@ -120,9 +120,9 @@ Component({
     onHoleRuleChange(e) {
       const type = e.currentTarget.dataset.type;
       const currentConfig = this.data.currentConfig;
-      
+
       let config = { ...currentConfig };
-      
+
       if (type === 'NODUTY') {
         config.dutyConfig = 'NODUTY';
         config.badScoreBaseLine = 'NoSub';
@@ -136,7 +136,7 @@ Component({
         config.dutyConfig = 'DUTY';
         config.badScoreBaseLine = `ScoreDiff_${this.data.strokeDiffValue}`;
       }
-      
+
       this.handleConfigChange(config);
     },
 
@@ -184,9 +184,9 @@ Component({
 
     // 统一的配置变更处理
     handleConfigChange(config) {
-      console.log('🏳️ [LasiKoufen] 包洞配置变化:', config);
-      
-      this.triggerEvent('configChange', { 
+      console.log('🏳️ [LasiBaoDong] 包洞配置变化:', config);
+
+      this.triggerEvent('configChange', {
         componentType: 'baodong',
         config: config
       });

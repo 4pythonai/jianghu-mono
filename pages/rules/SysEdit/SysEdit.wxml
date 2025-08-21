@@ -42,8 +42,8 @@
 
             <!-- 4p-lasi 配置组件 -->
             <block wx:elif="{{_gambleSysName === '4p-lasi'}}">
-              <LasiKoufen
-                wx:if="{{item.name === 'LasiKoufen'}}"
+              <LasiBaoDong
+                wx:if="{{item.name === 'LasiBaoDong'}}"
                 id="{{item.name}}"
                 mode="SysConfig"
               />

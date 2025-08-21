@@ -39,14 +39,14 @@
             <!-- 4人拉丝配置组件 -->
             <view class="component-content">
               <!-- KPI配置 -->
-              <!-- <LasiKPI
+              <LasiKPI
                 wx:if="{{item.name === 'LasiKPI'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.kpiConfig}}"
                 displayValue="{{kpiDisplayValue}}"
                 bind:configChange="onConfigChange"
-              />-->
+              />
 
               <!-- 奖励规则配置 -->
               <!-- <LasiRewardConfig
@@ -79,8 +79,8 @@
               />
 
               <!-- 包洞规则配置 -->
-              <LasiKoufen
-                wx:if="{{item.name === 'LasiKoufen'}}"
+              <LasiBaoDong
+                wx:if="{{item.name === 'LasiBaoDong'}}"
                 id="{{item.name}}"
                 mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                 config="{{storeConfig.baodongConfig}}"

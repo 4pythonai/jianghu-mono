@@ -21,7 +21,7 @@ const GamesRegistry = {
         componentSchema: [
           {
             type: 'lasi-koufen',
-            name: 'LasiKoufen',
+            name: 'LasiBaoDong',
             title: '扣分规则',
             category: 'calculation',
             required: true,
@@ -79,7 +79,7 @@ const GamesRegistry = {
         ]
       }
     },
-    
+
     '4p-8421': {
       game: {
         id: '4p-8421',
@@ -135,7 +135,7 @@ const GamesRegistry = {
   getDefaultConfig(gameType) {
     const components = this.getGambleComponents(gameType);
     const config = {};
-    
+
     components.forEach(comp => {
       if (comp.name === 'LasiEatmeat') {
         config.eatingRange = comp.config.eatingRange;
@@ -143,7 +143,7 @@ const GamesRegistry = {
         config.meatMaxValue = 10000000;
       }
     });
-    
+
     return config;
   }
 };

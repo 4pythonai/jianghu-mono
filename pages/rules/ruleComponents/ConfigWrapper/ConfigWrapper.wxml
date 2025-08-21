@@ -4,69 +4,37 @@
   <view class="component-content">
     <!-- 动态加载配置组件 -->
     <block wx:if="{{componentName === 'E8421Koufen'}}">
-      <E8421Koufen 
-        id="{{componentName}}"
-        mode="{{mode}}"
-        configData="{{configData}}"
-      />
+      <E8421Koufen id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
     </block>
-    
+
     <block wx:elif="{{componentName === 'Draw8421'}}">
-      <Draw8421 
-        id="{{componentName}}"
-        mode="{{mode}}"
-        configData="{{configData}}"
-      />
+      <Draw8421 id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
     </block>
-    
+
     <block wx:elif="{{componentName === 'E8421Meat'}}">
-      <E8421Meat 
-        id="{{componentName}}"
-        mode="{{mode}}"
-        configData="{{configData}}"
-      />
+      <E8421Meat id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
     </block>
-    
-    <block wx:elif="{{componentName === 'LasiKoufen'}}">
-      <LasiKoufen 
-        id="{{componentName}}"
-        mode="{{mode}}"
-        configData="{{configData}}"
-      />
+
+    <block wx:elif="{{componentName === 'LasiBaoDong'}}">
+      <LasiBaoDong id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
     </block>
-    
+
     <block wx:elif="{{componentName === 'LasiKPI'}}">
-      <LasiKPI 
-        id="{{componentName}}"
-        mode="{{mode}}"
-        configData="{{configData}}"
-      />
+      <LasiKPI id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
     </block>
-    
+
     <block wx:elif="{{componentName === 'LasiRewardConfig'}}">
-      <LasiRewardConfig 
-        id="{{componentName}}"
-        mode="{{mode}}"
-        configData="{{configData}}"
-      />
+      <LasiRewardConfig id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
     </block>
-    
+
     <block wx:elif="{{componentName === 'LasiEatmeat'}}">
-      <LasiEatmeat 
-        id="{{componentName}}"
-        mode="{{mode}}"
-        configData="{{configData}}"
-      />
+      <LasiEatmeat id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
     </block>
-    
+
     <block wx:elif="{{componentName === 'LasiDingDong'}}">
-      <LasiDingDong 
-        id="{{componentName}}"
-        mode="{{mode}}"
-        configData="{{configData}}"
-      />
+      <LasiDingDong id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
     </block>
-    
+
     <!-- 默认配置组件 -->
     <block wx:else>
       <view class="default-config">
@@ -74,4 +42,4 @@
       </view>
     </block>
   </view>
-</view> 
+</view>

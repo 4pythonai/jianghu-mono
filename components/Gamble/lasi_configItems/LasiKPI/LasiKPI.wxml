@@ -34,7 +34,7 @@
                 bindchange="onKpiValueChange"
                 data-kpi="best"
                 value="{{kpiValues.best - 1}}"
-                range="{{[1,2,3,4,5]}}"
+                range="{{valueRange}}"
               >
                 <view class="kpi-value">{{kpiValues.best}} 分</view>
               </picker>
@@ -60,7 +60,7 @@
                 bindchange="onKpiValueChange"
                 data-kpi="worst"
                 value="{{kpiValues.worst - 1}}"
-                range="{{[1,2,3,4,5]}}"
+                range="{{valueRange}}"
               >
                 <view class="kpi-value">{{kpiValues.worst}} 分</view>
               </picker>
@@ -88,7 +88,7 @@
                 bindchange="onKpiValueChange"
                 data-kpi="total"
                 value="{{kpiValues.total - 1}}"
-                range="{{[1,2,3,4,5]}}"
+                range="{{valueRange}}"
               >
                 <view class="kpi-value">{{kpiValues.total}} 分</view>
               </picker>
