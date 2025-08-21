@@ -38,11 +38,13 @@ export const Gamble4PLasiStore = observable({
 
   // === 默认值常量 ===
   DEFAULTS: {
+
     kpis: {
       indicators: ['best', 'worst', 'total'],
       totalCalculationType: 'add_total',
       kpiValues: { best: 1, worst: 1, total: 1 }
     },
+
     eatingRange: {
       "BetterThanBirdie": 4,
       "Birdie": 2,
@@ -128,7 +130,7 @@ export const Gamble4PLasiStore = observable({
       this.PartnerDutyCondition = existingData.PartnerDutyCondition;
     } else {
       // 如果没有该字段，根据dutyConfig推断
-      this.PartnerDutyCondition = existingData.dutyConfig === 'NODUTY' 
+      this.PartnerDutyCondition = existingData.dutyConfig === 'NODUTY'
         ? 'DUTY_DINGTOU'  // 不包洞时默认
         : 'PARTNET_IGNORE'; // 包洞时默认与同伴无关
     }
