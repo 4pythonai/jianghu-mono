@@ -356,7 +356,7 @@ export const Gamble4PLasiStore = observable({
 
   // 获取吃肉配置的显示值
   get eatmeatDisplayValue() {
-    const { eatingRange, meatValueConfig, meatMaxValue } = this.config.eatmeatConfig;
+    const { meatValueConfig, meatMaxValue } = this.config.eatmeatConfig;
 
     // 格式化肉分值计算方式
     let meatValueText = '';
@@ -382,20 +382,6 @@ export const Gamble4PLasiStore = observable({
       }
     }
 
-    // 格式化吃肉范围展示
-    let eatingRangeText = '';
-    if (eatingRange && typeof eatingRange === 'object') {
-      const parts = [];
-      if (eatingRange.BetterThanBirdie > 0) parts.push(`更好+${eatingRange.BetterThanBirdie}`);
-      if (eatingRange.Birdie > 0) parts.push(`鸟+${eatingRange.Birdie}`);
-      if (eatingRange.Par > 0) parts.push(`帕+${eatingRange.Par}`);
-      if (eatingRange.WorseThanPar > 0) parts.push(`更差+${eatingRange.WorseThanPar}`);
-
-      if (parts.length > 0) {
-        eatingRangeText = `给${parts.join(', ')}`;
-      }
-    }
-
     // 格式化封顶值 - 只有在选择"分值翻倍"时才显示封顶信息
     let meatMaxText = '';
     if (meatValueConfig === 'SINGLE_DOUBLE') {
@@ -410,10 +396,6 @@ export const Gamble4PLasiStore = observable({
     let result = meatValueText;
     if (meatMaxText) {
       result += `/${meatMaxText}`;
-    }
-
-    if (eatingRangeText) {
-      result = `${result} (${eatingRangeText})`;
     }
 
     return result || '请配置吃肉规则';

@@ -40,7 +40,10 @@ Component({
 
     // 输入禁用状态控制
     addInputDisabled: false,
-    multiplyInputDisabled: false
+    multiplyInputDisabled: false,
+
+    // 计算的显示值
+    computedDisplayValue: '请配置奖励规则'
   },
 
   // 用户交互标记（防止自动更新覆盖用户选择）
@@ -78,7 +81,7 @@ Component({
       try {
         const app = getApp();
         const store = app.globalData?.Gamble4PLasiStore;
-        
+
         if (store && store.DEFAULTS && store.DEFAULTS.REWARD_CONFIG) {
           console.log('📦 [LasiRewardConfig] 从Store获取缺省配置:', store.DEFAULTS.REWARD_CONFIG);
           return store.DEFAULTS.REWARD_CONFIG;
@@ -86,7 +89,7 @@ Component({
       } catch (error) {
         console.warn('⚠️ [LasiRewardConfig] 无法从Store获取缺省配置:', error);
       }
-      
+
       // 降级到本地默认配置
       return REWARD_DEFAULTS.DEFAULT_REWARD_JSON;
     },
@@ -98,12 +101,39 @@ Component({
         addInputDisabled: rewardType === 'multiply',
         multiplyInputDisabled: rewardType === 'add'
       });
-      
+
       console.log('🔐 [LasiRewardConfig] 输入禁用状态更新:', {
         rewardType,
         addInputDisabled: this.data.addInputDisabled,
         multiplyInputDisabled: this.data.multiplyInputDisabled
       });
+    },
+
+    // 计算显示值
+    computeDisplayValue(config) {
+      if (!config) return '请配置奖励规则';
+
+      const typeText = config.rewardType === 'add' ? '加法奖励' : '乘法奖励';
+      const items = config.rewardType === 'add' ? config.addRewardItems : config.multiplyRewardItems;
+
+      if (!items || items.length === 0) return typeText;
+
+      // 获取有效奖励值（非0值）
+      const validRewards = items.filter(item => item.rewardValue > 0);
+      if (validRewards.length === 0) return typeText;
+
+      // 显示前2个有效奖励
+      const prefix = config.rewardType === 'add' ? '+' : '×';
+      const rewardTexts = validRewards.slice(0, 2).map(item => {
+        const scoreName = item.scoreName === 'Par' ? '帕' :
+          item.scoreName === 'Birdie' ? '鸟' :
+            item.scoreName === 'Eagle' ? '鹰' :
+              item.scoreName === 'Albatross/HIO' ? '信天翁/HIO' : item.scoreName;
+        return `${scoreName}${prefix}${item.rewardValue}`;
+      });
+
+      const displayText = typeText + ":" + rewardTexts.join('，');
+      return validRewards.length > 2 ? `${displayText}...` : displayText;
     },
 
     // 更新当前配置状态
@@ -117,12 +147,16 @@ Component({
         'data.rewardPreCondition': this.data.rewardPreCondition
       });
 
+      // 计算显示值
+      const computedDisplayValue = this.computeDisplayValue(config);
+
       this.setData({
         currentConfig: config,
         rewardType: config.rewardType,
         rewardPreCondition: config.rewardPreCondition,
         addRewardItems: config.addRewardItems,
-        multiplyRewardItems: config.multiplyRewardItems
+        multiplyRewardItems: config.multiplyRewardItems,
+        computedDisplayValue: computedDisplayValue
       });
 
       // 触发禁用状态更新
@@ -131,6 +165,7 @@ Component({
       console.log('✅ [LasiRewardConfig] setData完成:', {
         '新rewardPreCondition': this.data.rewardPreCondition,
         '新rewardType': this.data.rewardType,
+        '新displayValue': computedDisplayValue,
         '完整data': this.data
       });
     },
@@ -243,6 +278,12 @@ Component({
     handleConfigChange(config) {
       console.log('🏆 [LasiRewardConfig] 奖励配置变化:', config);
 
+      // 更新本地显示值
+      const computedDisplayValue = this.computeDisplayValue(config);
+      this.setData({
+        computedDisplayValue: computedDisplayValue
+      });
+
       // 构建完整的配置数据
       const fullConfig = {
         rewardType: config.rewardType,
@@ -265,7 +306,7 @@ Component({
         console.log('🆕 [LasiRewardConfig] 新建模式，从Store获取缺省配置');
         return this._getStoreDefaults();
       }
-      
+
       // 编辑/查看模式，使用传入的config
       const config = this.properties.config || this._getStoreDefaults();
 
