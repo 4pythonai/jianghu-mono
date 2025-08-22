@@ -125,10 +125,12 @@ export const Gamble4PLasiStore = observable({
     this.meatMaxValue = parseInt(existingData.meatMaxValue) || this.DEFAULTS.meatMaxValue;
     this.drawConfig = existingData.drawConfig || this.DEFAULTS.drawConfig;
     this.dutyConfig = existingData.dutyConfig || this.DEFAULTS.dutyConfig;
-    // 处理历史数据中可能缺失的PartnerDutyCondition字段
+
+    // 处理历史数据中可能缺失的 PartnerDutyCondition 字段
     this.PartnerDutyCondition = existingData.PartnerDutyCondition;
     this.badScoreBaseLine = existingData.badScoreBaseLine || this.DEFAULTS.badScoreBaseLine;
     this.badScoreMaxLost = parseInt(existingData.badScoreMaxLost) || this.DEFAULTS.badScoreMaxLost;
+
   }),
 
   // 查看模式初始化

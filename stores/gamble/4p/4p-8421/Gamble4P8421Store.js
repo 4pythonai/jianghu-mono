@@ -23,7 +23,7 @@ export const NewG48421Store = observable({
 
   // 8421配置字段 (与LasiStore保持一致的结构)
   drawConfig: null,        // 字符串 - 平局配置
-  
+
   // 字符串/数值字段 (与LasiStore一致)
   meatValueConfig: 'MEAT_AS_1',      // varchar - 肉值配置
   meatMaxValue: 10000000,            // int - 最大肉值
@@ -77,7 +77,7 @@ export const NewG48421Store = observable({
     this.playersNumber = 4;
 
     // JSON字段使用默认值 (暂无)
-    
+
     // 字符串/数值字段使用默认值
     this.drawConfig = this.DEFAULTS.drawConfig;
     this.meatValueConfig = this.DEFAULTS.meatValueConfig;
@@ -97,22 +97,22 @@ export const NewG48421Store = observable({
 
     // 直接赋值数据库字段
     this.gambleSysName = '4p-8421';
-    this.gambleUserName = existingData.gambleUserName || this.generateDefaultName();
+    this.gambleUserName = existingData.gambleUserName;
     this.creator_id = existingData.creator_id;
     this.userRuleId = existingData.userRuleId;
-    this.playersNumber = parseInt(existingData.playersNumber) || 4;
+    this.playersNumber = parseInt(existingData.playersNumber);
 
     // JSON字段解析 (只有真正的JSON字段才用parseJsonField)
     // 暂无JSON字段需要解析
-    
+
     // 字符串/数值字段直接赋值 (像LasiStore一样)
-    this.drawConfig = existingData.drawConfig || this.DEFAULTS.drawConfig;
-    this.meatValueConfig = existingData.meatValueConfig || this.DEFAULTS.meatValueConfig;
-    this.meatMaxValue = existingData.meatMaxValue || this.DEFAULTS.meatMaxValue;
-    this.dutyConfig = existingData.dutyConfig || this.DEFAULTS.dutyConfig;
-    this.badScoreBaseLine = existingData.badScoreBaseLine || this.DEFAULTS.badScoreBaseLine;
-    this.badScoreMaxLost = existingData.badScoreMaxLost || this.DEFAULTS.badScoreMaxLost;
-    this.eatingRange = existingData.eatingRange || this.DEFAULTS.eatingRange;
+    this.drawConfig = existingData.drawConfig;
+    this.meatValueConfig = existingData.meatValueConfig;
+    this.meatMaxValue = existingData.meatMaxValue;
+    this.dutyConfig = existingData.dutyConfig;
+    this.badScoreBaseLine = existingData.badScoreBaseLine;
+    this.badScoreMaxLost = existingData.badScoreMaxLost;
+    this.eatingRange = existingData.eatingRange;
   }),
 
   // 查看模式初始化
