@@ -5,7 +5,6 @@
 
 import { observable, action } from 'mobx-miniprogram'
 import { gameStore } from '../../../gameStore'
-import GamesRegistry from '../../../../utils/GamesRegistry.js'
 
 export const NewG48421Store = observable({
 
