@@ -2,6 +2,7 @@
 import { gameStore } from '../../../stores/gameStore'
 import { runtimeStore } from '../../../stores/runtimeStore'
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
+const navigationHelper = require('../../../utils/navigationHelper.js')
 
 const app = getApp();
 
@@ -151,14 +152,18 @@ Page({
     },
 
     // 添加游戏按钮点击事件
-    handleAddGame() {
-        // 跳转到游戏规则页面
-        wx.navigateTo({
-            url: '/pages/rules/rules',
-            success: () => {
-                console.log('🎮 成功跳转到游戏规则页面');
-            }
-        });
+    async handleAddGame() {
+        try {
+            // 跳转到游戏规则页面
+            await navigationHelper.navigateTo('/pages/rules/rules');
+            console.log('🎮 成功跳转到游戏规则页面');
+        } catch (err) {
+            console.error('🎮 跳转游戏规则页面失败:', err);
+            wx.showToast({
+                title: '页面跳转失败',
+                icon: 'none'
+            });
+        }
     },
 
     // 刷新运行时配置 - 优化后的方法
@@ -332,16 +337,48 @@ Page({
             .join('&');
 
         // 跳转到赌球结果页面
-        wx.navigateTo({
-            url: `/pages/gambleResult/gambleResult?${queryString}`
-        });
+        navigationHelper.navigateTo(`/pages/gambleResult/gambleResult?${queryString}`)
+            .catch(err => {
+                console.error('跳转赌球结果页面失败:', err);
+                wx.showToast({ title: '页面跳转失败', icon: 'none' });
+            });
     },
 
     // 处理运行时配置项点击事件 - 跳转到配置页面
-    onRuntimeItemClick(e) {
+    async onRuntimeItemClick(e) {
         const { config } = e.currentTarget.dataset;
         console.log(config);
-        wx.navigateTo({ url: `/pages/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}` });
+        
+        try {
+            await navigationHelper.navigateTo(`/pages/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}`);
+        } catch (err) {
+            console.error('跳转运行时配置页面失败:', err);
+            
+            // 如果是页面栈问题，提供用户选择
+            if (err.message.includes('页面栈')) {
+                wx.showModal({
+                    title: '页面层级过多',
+                    content: '当前页面层级较多，是否清理页面栈后重新跳转？',
+                    confirmText: '清理跳转',
+                    cancelText: '取消',
+                    success: async (res) => {
+                        if (res.confirm) {
+                            try {
+                                // 尝试智能清理页面栈
+                                await navigationHelper.smartCleanPageStack();
+                                // 清理后重新尝试跳转
+                                await navigationHelper.navigateTo(`/pages/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}`);
+                            } catch (cleanErr) {
+                                console.error('清理后跳转仍然失败:', cleanErr);
+                                wx.showToast({ title: '跳转失败，请返回主页重试', icon: 'none' });
+                            }
+                        }
+                    }
+                });
+            } else {
+                wx.showToast({ title: '页面跳转失败', icon: 'none' });
+            }
+        }
     },
 
     // 游戏设置相关事件处理

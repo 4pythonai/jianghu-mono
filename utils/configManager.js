@@ -5,6 +5,7 @@
  */
 const { gameStore } = require('../stores/gameStore');
 const { holeRangeStore } = require('../stores/holeRangeStore');
+const navigationHelper = require('./navigationHelper.js');
 
 class ConfigManager {
     constructor() {
@@ -337,17 +338,20 @@ class ConfigManager {
                         }
                     }
 
-                    wx.redirectTo({
-                        url: targetUrl,
-                        success: () => {
+                    navigationHelper.navigateTo(targetUrl)
+                        .then(() => {
                             console.log(`[ConfigManager] 成功跳转到: ${targetUrl}`);
-                        },
-                        fail: (err) => {
+                        })
+                        .catch((err) => {
                             console.error(`[ConfigManager] 跳转失败:`, err);
-                            // 如果跳转失败，使用navigateBack
-                            wx.navigateBack();
-                        }
-                    });
+                            // 只有在真正失败时才执行降级操作
+                            if (!err.message.includes('页面栈超限自动降级')) {
+                                navigationHelper.navigateBack()
+                                    .catch(() => {
+                                        console.error(`[ConfigManager] navigateBack 也失败了`);
+                                    });
+                            }
+                        });
                 }, 300);
 
                 return { success: true };

@@ -108,12 +108,19 @@ Page({
             }
         }
 
+        // 引入 navigationHelper
+        const navigationHelper = require('../../../utils/navigationHelper.js');
+
         // 如果找到了最终目标页面, 直接调用它的方法
         if (targetPage && typeof targetPage.onCombinationSelected === 'function') {
             targetPage.onCombinationSelected(combination, this.data.groupIndex, this.data.slotIndex);
             // 计算需要返回的层级
             const deltaLevel = pages.length - pages.indexOf(targetPage) - 1;
-            wx.navigateBack({ delta: deltaLevel });
+            navigationHelper.navigateBack(deltaLevel)
+                .catch(err => {
+                    console.error('智能返回失败:', err);
+                    wx.showToast({ title: '返回失败', icon: 'none' });
+                });
             return;
         }
 
@@ -121,7 +128,11 @@ Page({
         const playerSelector = this.selectComponent('/components/PlayerSelector/PlayerSelector');
         if (playerSelector) {
             playerSelector.addPlayerToSlot(this.data.slotIndex, combination[0], 'combineSelect');
-            wx.navigateBack();
+            navigationHelper.navigateBack()
+                .catch(err => {
+                    console.error('返回失败:', err);
+                    wx.showToast({ title: '返回失败', icon: 'none' });
+                });
             return;
         }
 

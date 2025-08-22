@@ -94,20 +94,27 @@ Component({
 
             console.log('📊 处理后的分组数据:', processedGroups);
 
+            // 引入导航助手
+            const navigationHelper = require('../../utils/navigationHelper.js');
+
             if (!processedGroups || processedGroups.length === 0) {
                 console.warn('⚠️ 游戏没有分组数据, 直接进入游戏详情');
-                wx.navigateTo({
-                    url: `/pages/gameDetail/gameDetail?gameid=${gameid}`
-                });
+                navigationHelper.navigateTo(`/pages/gameDetail/gameDetail?gameid=${gameid}`)
+                    .catch(err => {
+                        console.error('跳转游戏详情失败:', err);
+                        wx.showToast({ title: '页面跳转失败', icon: 'none' });
+                    });
                 return;
             }
 
             if (processedGroups.length === 1) {
                 const groupid = processedGroups[0]?.groupid;
                 console.log('📍 单组游戏, 直接进入详情页面', { gameid, groupid });
-                wx.navigateTo({
-                    url: `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}`
-                });
+                navigationHelper.navigateTo(`/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}`)
+                    .catch(err => {
+                        console.error('跳转游戏详情失败:', err);
+                        wx.showToast({ title: '页面跳转失败', icon: 'none' });
+                    });
             } else {
                 console.log('📋 多组游戏, 进入分组列表页面', { gameid, groupsCount: processedGroups.length });
 
@@ -120,9 +127,11 @@ Component({
                     groups: processedGroups
                 };
 
-                wx.navigateTo({
-                    url: `/pages/groupsList/groupsList?gameid=${gameid}`
-                });
+                navigationHelper.navigateTo(`/pages/groupsList/groupsList?gameid=${gameid}`)
+                    .catch(err => {
+                        console.error('跳转分组列表失败:', err);
+                        wx.showToast({ title: '页面跳转失败', icon: 'none' });
+                    });
             }
         }
     }

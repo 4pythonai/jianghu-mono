@@ -7,6 +7,52 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 用中文回答我 ,每次都用审视的目光，仔细看我输入的潜在问题，你要指出我的问题，并给出明显在我思考框架之外的建议，如果你觉得我说的太离谱了，请给出
 严厉的批评,帮我瞬间清醒 
 
+## 页面导航设计规范
+
+### 🚀 导航工具类使用
+
+**统一使用 `utils/navigationHelper.js` 进行页面跳转，禁止直接使用 wx.navigateTo 等原生API**
+
+```javascript
+import navigationHelper from '/utils/navigationHelper.js'
+
+// ✅ 正确使用
+navigationHelper.navigateTo('/pages/example/example')
+navigationHelper.smartNavigate('/pages/example/example') // 智能选择跳转方式
+```
+
+### 📱 跳转方式选择规范
+
+| 跳转方式 | 使用场景 | 示例 |
+|---------|---------|------|
+| `navigateTo` | 层级导航：列表→详情、表单→选择器 | 游戏列表→游戏详情、创建游戏→选择球场 |
+| `redirectTo` | 页面替换：登录成功、流程完成、错误修正 | 登录成功→首页、配置保存→结果页 |
+| `switchTab` | Tab页面切换 | 底部导航栏切换 |
+| `navigateBack` | 返回上级页面 | 取消操作、完成任务返回 |
+| `reLaunch` | 应用重启：登录过期、严重错误 | 用户退出登录 |
+
+### ⚠️ 关键原则
+
+**1. 用户预期一致性**
+- 用户点击"返回"按钮应该回到**上一个有意义的页面**
+- 避免让用户"迷失"在页面层次中
+
+**2. 页面栈管理**
+- 监控页面栈深度（最大10层）
+- 深度接近限制时自动使用 `redirectTo` 替换
+- 重要流程完成后清理不必要的中间页面
+
+**3. 跳转失败处理**
+- 所有跳转都必须有失败降级策略
+- 记录跳转日志便于问题诊断
+
+```javascript
+// ❌ 错误：没有考虑用户返回路径
+wx.redirectTo({ url: '/pages/rules/rules' }) // 用户无法返回编辑页面
+
+// ✅ 正确：保留用户返回路径  
+navigationHelper.navigateTo('/pages/rules/rules') // 用户可以返回继续编辑
+```
 
 ## 框架特定
 

@@ -203,7 +203,7 @@ Page({
             setTimeout(() => {
                 if (this.data.pageMode === 'create') {
                     // 创建模式：跳转到rules页面的"我的规则"tab，显示新创建的规则
-                    wx.redirectTo({
+                    wx.navigateTo({
                         url: '/pages/rules/rules?activeTab=0'
                     })
                 } else {

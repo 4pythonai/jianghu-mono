@@ -91,14 +91,18 @@ Component({
         },
 
 
-        handleAddGame() {
-            // 跳转到游戏规则页面
-            wx.navigateTo({
-                url: '/pages/rules/rules',
-                success: () => {
-                    console.log('🎮 成功跳转到游戏规则页面');
-                }
-            });
+        async handleAddGame() {
+            // 引入导航助手
+            const navigationHelper = require('../../../utils/navigationHelper.js');
+            
+            try {
+                // 跳转到游戏规则页面
+                await navigationHelper.navigateTo('/pages/rules/rules');
+                console.log('🎮 成功跳转到游戏规则页面');
+            } catch (err) {
+                console.error('🎮 跳转游戏规则页面失败:', err);
+                wx.showToast({ title: '页面跳转失败', icon: 'none' });
+            }
         },
 
 
@@ -108,21 +112,19 @@ Component({
         /**
          * 导航栏图标按钮点击事件
          */
-        gotoRuntimeConfigList() {
+        async gotoRuntimeConfigList() {
+            // 引入导航助手
+            const navigationHelper = require('../../../utils/navigationHelper.js');
+            
             const gameid = this.properties.gameid;
             const groupid = this.properties.groupid;
-            wx.navigateTo({
-                url: `/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`,
-                success: () => {
-                },
-                fail: (error) => {
-                    console.error('[GambleSummary] 跳转失败:', error);
-                    wx.showToast({
-                        title: '跳转失败，请重试',
-                        icon: 'none'
-                    });
-                }
-            });
+            
+            try {
+                await navigationHelper.navigateTo(`/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`);
+            } catch (error) {
+                console.error('[GambleSummary] 跳转失败:', error);
+                wx.showToast({ title: '页面跳转失败', icon: 'none' });
+            }
         },
 
         /**

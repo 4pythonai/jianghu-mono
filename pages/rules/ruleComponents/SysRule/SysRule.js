@@ -234,7 +234,7 @@ Component({
             console.log('📋 [SysRule] 卡片点击跳转规则配置页:', title);
 
 
-            wx.redirectTo({
+            wx.navigateTo({
                 url: '/pages/rules/RuleEditer/RuleEditer?pageMode=create&gambleType=' + title,
                 success: () => {
                     console.log('📋 [SysRule] 成功跳转到 U, 游戏类型:', title);
