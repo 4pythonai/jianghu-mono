@@ -16,13 +16,13 @@ Page({
         });
         const gameid = options?.gameid;
         const groupid = options?.groupid;
-        const tab = options?.tab;
+        const activeTab = options?.activeTab;
 
-        // 设置初始tab，如果传入了tab参数则使用，否则默认为0
-        const currentTab = tab !== undefined ? Number.parseInt(tab) : 0;
+        // 设置初始tab，如果传入了activeTab参数则使用，否则默认为0
+        const currentTab = activeTab !== undefined ? Number.parseInt(activeTab) : 0;
         this.setData({ gameid, groupid, currentTab });
 
-        console.log('[gameDetail] 页面加载，参数:', { gameid, groupid, tab, currentTab });
+        console.log('[gameDetail] 页面加载，参数:', { gameid, groupid, activeTab, currentTab });
 
         // 主动加载游戏数据
         if (gameid) {

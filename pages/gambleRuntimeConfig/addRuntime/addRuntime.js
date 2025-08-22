@@ -12,11 +12,11 @@ const {
     toJS,
     configManager,
     GambleRelatedInitor,
+    ConfigValidator,
     setRuntimeConfigData,
     collectAllConfigs: sharedCollectAllConfigs,
     onReSelectRule: sharedOnReSelectRule,
-    onCancelConfig: sharedOnCancelConfig,
-    onConfirmConfigCommon
+    onCancelConfig: sharedOnCancelConfig
 } = getBaseImportsWithMixin();
 
 Page({
@@ -125,25 +125,22 @@ Page({
 
     // 确认配置 - 使用共享方法
     async onConfirmConfig() {
-        // 新增模式下，保存成功后跳转到规则页面
-        const result = await onConfirmConfigCommon(this, false); // false 表示新增模式
+        const { runtimeConfig, gambleSysName, players, gameid, groupid, configId } = this.data;
 
-        // 如果保存成功，手动调用跳转（因为onConfirmConfigCommon内部会调用saveGambleConfig）
-        if (result?.success) {
-            // 延迟跳转，确保数据保存完成
-            setTimeout(() => {
-                wx.redirectTo({
-                    url: '/pages/rules/rules?activeTab=0',
-                    success: () => {
-                        console.log('[AddRuntime] 成功跳转到规则页面');
-                    },
-                    fail: (err) => {
-                        console.error('[AddRuntime] 跳转失败:', err);
-                        // 如果跳转失败，使用navigateBack
-                        wx.navigateBack();
-                    }
-                });
-            }, 500);
+        // 从各个组件收集最新配置
+        sharedCollectAllConfigs(this, this.data.needsStroking);
+
+        // 验证配置
+        if (!ConfigValidator.validateAndShow(runtimeConfig, players, gambleSysName)) {
+            return { success: false, error: '配置验证失败' };
+        }
+
+        // 直接调用configManager.saveGambleConfig，明确指定跳转到gameDetail
+        try {
+            await configManager.saveGambleConfig(runtimeConfig, gameid, groupid, configId, this, false, 'gameDetail');
+        } catch (error) {
+            console.error('[AddRuntime] 保存配置失败:', error);
+            return { success: false, error: error.message };
         }
     },
 

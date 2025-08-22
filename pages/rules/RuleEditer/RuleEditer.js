@@ -199,9 +199,17 @@ Page({
                 icon: 'success'
             })
 
-            // 延迟返回上一页并刷新
+            // 延迟跳转页面
             setTimeout(() => {
-                this.navigateBackWithRefresh()
+                if (this.data.pageMode === 'create') {
+                    // 创建模式：跳转到rules页面的"我的规则"tab，显示新创建的规则
+                    wx.redirectTo({
+                        url: '/pages/rules/rules?activeTab=0'
+                    })
+                } else {
+                    // 编辑模式：返回上一页并刷新
+                    this.navigateBackWithRefresh()
+                }
             }, 1500)
         } else {
             wx.showToast({

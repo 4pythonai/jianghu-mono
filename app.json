@@ -2,13 +2,12 @@
 	"pages": [
 		"pages/live/live",
 		"pages/events/events",
+		"pages/createGame/createGame",
 		"pages/community/community",
-		"pages/rules/rules",
 		"pages/mine/mine",
 		"pages/gameDetail/gameDetail",
 		"pages/groupsList/groupsList",
 		"pages/gameDetail/RuntimeConfigList/RuntimeConfigList",
-		"pages/createGame/createGame",
 		"pages/createGame/moreCreate/moreCreate",
 		"pages/createGame/commonCreate/commonCreate",
 		"pages/createGame/quickCreate/quickCreate",
@@ -29,7 +28,8 @@
 		"pages/rules/RuleEditer/RuleEditer",
 		"pages/gambleRuntimeConfig/addRuntime/addRuntime",
 		"pages/gambleRuntimeConfig/editRuntime/editRuntime",
-		"pages/gambleResult/gambleResult"
+		"pages/gambleResult/gambleResult",
+		"pages/rules/rules"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",
@@ -61,7 +61,7 @@
 				"selectedIconPath": "images/tabbar/add_selected.png"
 			},
 			{
-				"pagePath": "pages/rules/rules",
+				"pagePath": "pages/community/community",
 				"text": "江湖",
 				"iconPath": "images/tabbar/community.png",
 				"selectedIconPath": "images/tabbar/community_selected.png"

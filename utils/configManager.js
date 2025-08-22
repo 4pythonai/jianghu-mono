@@ -327,11 +327,11 @@ class ConfigManager {
                         targetUrl = `/pages/rules/rules?activeTab=0`;
                     } else if (redirectTo === 'gameDetail') {
                         // 明确指定跳转到游戏详情页面
-                        targetUrl = `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`;
+                        targetUrl = `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&activeTab=2`;
                     } else {
                         // 自动判断：新增模式下跳转到规则页面，编辑模式下跳转到游戏详情页面
                         if (isEdit) {
-                            targetUrl = `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&tab=2`;
+                            targetUrl = `/pages/gameDetail/gameDetail?gameid=${gameid}&groupid=${groupid}&activeTab=2`;
                         } else {
                             targetUrl = `/pages/rules/rules?activeTab=0`;
                         }
