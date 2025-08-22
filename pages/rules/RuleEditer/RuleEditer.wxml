@@ -23,7 +23,6 @@
         pageMode="{{pageMode}}"
         gameType="{{gambleType}}"
         kpiConfig="{{kpis}}"
-        pointDeduction="{{pointDeduction}}"
         drawConfig="{{drawConfig}}"
         meatRules="{{meatRules}}"
         showGenerateHint="{{true}}"
@@ -98,7 +97,9 @@
                   wx:if="{{item.name === 'E8421Koufen'}}"
                   id="{{item.name}}"
                   mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
-                  configData="{{pointDeduction}}"
+                  badScoreBaseLine="{{badScoreBaseLine}}"
+                  badScoreMaxLost="{{badScoreMaxLost}}"
+                  dutyConfig="{{dutyConfig}}"
                   bind:configChange="onConfigChange"
                 />
 
@@ -106,9 +107,9 @@
                 <E8421Meat
                   wx:if="{{item.name === 'E8421Meat'}}"
                   id="{{item.name}}"
-                  eatingRange="{{meatRules.eatingRange}}"
-                  meatValueConfig="{{meatRules.meatValueConfig}}"
-                  meatMaxValue="{{meatRules.meatMaxValue}}"
+                  eatingRange="{{eatingRange}}"
+                  meatValueConfig="{{meatValueConfig}}"
+                  meatMaxValue="{{meatMaxValue}}"
                   disabled="{{false}}"
                   bind:configChange="onConfigChange"
                 />
@@ -119,6 +120,7 @@
                   id="{{item.name}}"
                   mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
                   configData="{{drawConfig}}"
+                  drawConfig="{{drawConfig}}"
                   bind:configChange="onConfigChange"
                 />
               </block>

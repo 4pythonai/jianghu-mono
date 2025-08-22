@@ -85,10 +85,16 @@ const GAMBLE_EDITOR_CONFIGS = {
         isDirty: 'isDirty',
         gambleUserName: 'gambleUserName',
 
-        // 配置数据
-        pointDeduction: 'pointDeduction',
+        // 配置数据 (与LasiStore保持一致)
         drawConfig: 'drawConfig',
-        meatRules: 'meatRules'
+        
+        // 字符串/数值字段 (与LasiStore保持一致)
+        badScoreBaseLine: 'badScoreBaseLine',
+        badScoreMaxLost: 'badScoreMaxLost',
+        dutyConfig: 'dutyConfig',
+        meatValueConfig: 'meatValueConfig',
+        meatMaxValue: 'meatMaxValue',
+        eatingRange: 'eatingRange'
       },
       actions: {
         initializeStore: 'initializeStore',
@@ -98,13 +104,13 @@ const GAMBLE_EDITOR_CONFIGS = {
         // 配置更新方法
         updateKoufenConfig: 'updateKoufenConfig',
         updateMeatConfig: 'updateMeatConfig',
-        updateDrawConfig: 'updateDrawConfig'
+        updateDrawConfigAlias: 'updateDrawConfigAlias'
       }
     },
     actionMap: {
       'koufen': 'updateKoufenConfig',
       'meat': 'updateMeatConfig',
-      'draw': 'updateDrawConfig'
+      'dingdong': 'updateDrawConfigAlias'
     }
   }
 

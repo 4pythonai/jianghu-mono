@@ -21,31 +21,31 @@ export const NewG48421Store = observable({
   userRuleId: null,
   playersNumber: 4,
 
-  // 8421特有的配置字段
-  pointDeduction: null,    // JSON - 扣分配置
-  drawConfig: null,        // JSON - 平局配置
-  meatRules: null,         // JSON - 吃肉规则
+  // 8421配置字段 (与LasiStore保持一致的结构)
+  drawConfig: null,        // 字符串 - 平局配置
+  
+  // 字符串/数值字段 (与LasiStore一致)
+  meatValueConfig: 'MEAT_AS_1',      // varchar - 肉值配置
+  meatMaxValue: 10000000,            // int - 最大肉值
+  dutyConfig: 'NODUTY',              // varchar - 责任配置
+  badScoreBaseLine: 'Par+4',         // varchar - 坏成绩基线
+  badScoreMaxLost: 10000000,         // int - 最大损失
+  eatingRange: null,                 // JSON - 吃肉范围配置
 
   // === 默认值常量 ===
   DEFAULTS: {
-    pointDeduction: {
-      deductionRules: [],
-      multiplierOptions: [1, 2, 3, 4, 5]
-    },
-    drawConfig: {
-      mode: 'standard',
-      drawOptions: {},
-      doubleDownEnabled: false
-    },
-    meatRules: {
-      eatingRange: {
-        "BetterThanBirdie": 1,
-        "Birdie": 1,
-        "Par": 1,
-        "WorseThanPar": 1
-      },
-      meatValueConfig: 'MEAT_AS_1',
-      meatMaxValue: 10000000
+    drawConfig: 'DrawEqual',
+    // 字符串/数值字段默认值
+    meatValueConfig: 'MEAT_AS_1',
+    meatMaxValue: 10000000,
+    dutyConfig: 'NODUTY',
+    badScoreBaseLine: 'Par+4',
+    badScoreMaxLost: 10000000,
+    eatingRange: {
+      "BetterThanBirdie": 1,
+      "Birdie": 1,
+      "Par": 1,
+      "WorseThanPar": 1
     }
   },
 
@@ -76,14 +76,22 @@ export const NewG48421Store = observable({
     this.userRuleId = null;
     this.playersNumber = 4;
 
-    // JSON字段使用默认值
-    this.pointDeduction = { ...this.DEFAULTS.pointDeduction };
-    this.drawConfig = { ...this.DEFAULTS.drawConfig };
-    this.meatRules = { ...this.DEFAULTS.meatRules };
+    // JSON字段使用默认值 (暂无)
+    
+    // 字符串/数值字段使用默认值
+    this.drawConfig = this.DEFAULTS.drawConfig;
+    this.meatValueConfig = this.DEFAULTS.meatValueConfig;
+    this.meatMaxValue = this.DEFAULTS.meatMaxValue;
+    this.dutyConfig = this.DEFAULTS.dutyConfig;
+    this.badScoreBaseLine = this.DEFAULTS.badScoreBaseLine;
+    this.badScoreMaxLost = this.DEFAULTS.badScoreMaxLost;
+    this.eatingRange = { ...this.DEFAULTS.eatingRange };
   }),
 
   // 编辑模式初始化 - 从数据库数据加载
   initializeForEdit: action(function (ruleData) {
+    console.log('🔍 [NewG48421Store] 原始ruleData:', ruleData);
+    console.log('🔍 [NewG48421Store] ruleData类型:', typeof ruleData);
     const existingData = JSON.parse(decodeURIComponent(ruleData));
     console.log('🟡 [NewG48421Store] 编辑模式数据:', existingData);
 
@@ -94,10 +102,17 @@ export const NewG48421Store = observable({
     this.userRuleId = existingData.userRuleId;
     this.playersNumber = parseInt(existingData.playersNumber) || 4;
 
-    // JSON字段解析
-    this.pointDeduction = this.parseJsonField(existingData.pointDeduction, this.DEFAULTS.pointDeduction);
-    this.drawConfig = this.parseJsonField(existingData.drawConfig, this.DEFAULTS.drawConfig);
-    this.meatRules = this.parseJsonField(existingData.meatRules, this.DEFAULTS.meatRules);
+    // JSON字段解析 (只有真正的JSON字段才用parseJsonField)
+    // 暂无JSON字段需要解析
+    
+    // 字符串/数值字段直接赋值 (像LasiStore一样)
+    this.drawConfig = existingData.drawConfig || this.DEFAULTS.drawConfig;
+    this.meatValueConfig = existingData.meatValueConfig || this.DEFAULTS.meatValueConfig;
+    this.meatMaxValue = existingData.meatMaxValue || this.DEFAULTS.meatMaxValue;
+    this.dutyConfig = existingData.dutyConfig || this.DEFAULTS.dutyConfig;
+    this.badScoreBaseLine = existingData.badScoreBaseLine || this.DEFAULTS.badScoreBaseLine;
+    this.badScoreMaxLost = existingData.badScoreMaxLost || this.DEFAULTS.badScoreMaxLost;
+    this.eatingRange = existingData.eatingRange || this.DEFAULTS.eatingRange;
   }),
 
   // 查看模式初始化
@@ -125,19 +140,41 @@ export const NewG48421Store = observable({
     return `8421规则_${timestamp}`;
   },
 
-  // === 直接字段更新方法 ===
-  updatePointDeduction: action(function (config) {
-    this.pointDeduction = { ...config };
+  // === 直接字段更新方法 (与LasiStore保持一致) ===
+
+  updateDrawConfig: action(function (newValue) {
+    this.drawConfig = newValue;  // 字符串直接赋值
     this.markDirty();
   }),
 
-  updateDrawConfig: action(function (config) {
-    this.drawConfig = { ...config };
+
+  updateEatingRange: action(function (newEatingRange) {
+    this.eatingRange = { ...newEatingRange };  // 对象展开
     this.markDirty();
   }),
 
-  updateMeatRules: action(function (config) {
-    this.meatRules = { ...config };
+  updateMeatValueConfig: action(function (newValue) {
+    this.meatValueConfig = newValue;  // 字符串直接赋值
+    this.markDirty();
+  }),
+
+  updateMeatMaxValue: action(function (newValue) {
+    this.meatMaxValue = newValue;  // 数值直接赋值
+    this.markDirty();
+  }),
+
+  updateDutyConfig: action(function (newValue) {
+    this.dutyConfig = newValue;  // 字符串直接赋值
+    this.markDirty();
+  }),
+
+  updateBadScoreBaseLine: action(function (newValue) {
+    this.badScoreBaseLine = newValue;  // 字符串直接赋值
+    this.markDirty();
+  }),
+
+  updateBadScoreMaxLost: action(function (newValue) {
+    this.badScoreMaxLost = newValue;  // 数值直接赋值
     this.markDirty();
   }),
 
@@ -148,15 +185,39 @@ export const NewG48421Store = observable({
 
   // === 复合更新方法（简化页面逻辑）===
   updateKoufenConfig: action(function (config) {
-    this.updatePointDeduction(config);
+    // 扣分配置包含多个字段
+    if (config.badScoreBaseLine !== undefined) {
+      this.badScoreBaseLine = config.badScoreBaseLine;
+    }
+    if (config.badScoreMaxLost !== undefined) {
+      this.badScoreMaxLost = config.badScoreMaxLost;
+    }
+    if (config.dutyConfig !== undefined) {
+      this.dutyConfig = config.dutyConfig;
+    }
+    this.markDirty();
   }),
 
   updateMeatConfig: action(function (config) {
-    this.updateMeatRules(config);
+    // 吃肉配置包含多个字段
+    if (config.eatingRange !== undefined) {
+      this.eatingRange = { ...config.eatingRange };
+    }
+    if (config.meatValueConfig !== undefined) {
+      this.meatValueConfig = config.meatValueConfig;
+    }
+    if (config.meatMaxValue !== undefined) {
+      this.meatMaxValue = config.meatMaxValue;
+    }
+    this.markDirty();
   }),
 
-  updateDrawConfig: action(function (config) {
-    this.updateDrawConfig(config);
+  updateDrawConfigAlias: action(function (config) {
+    // 平局配置 - 从对象中提取drawConfig字符串
+    if (config && config.drawConfig !== undefined) {
+      this.drawConfig = config.drawConfig;
+      this.markDirty();
+    }
   }),
 
   // === 辅助方法 ===
@@ -176,9 +237,15 @@ export const NewG48421Store = observable({
       playersNumber: this.playersNumber.toString(),
 
       // JSON字段 - 转为JSON字符串
-      pointDeduction: JSON.stringify(this.pointDeduction),
-      drawConfig: JSON.stringify(this.drawConfig),
-      meatRules: JSON.stringify(this.meatRules)
+      eatingRange: JSON.stringify(this.eatingRange),
+
+      // 字符串/数值字段 (与LasiStore保持一致)
+      drawConfig: this.drawConfig,
+      meatValueConfig: this.meatValueConfig,
+      meatMaxValue: this.meatMaxValue,
+      dutyConfig: this.dutyConfig,
+      badScoreBaseLine: this.badScoreBaseLine,
+      badScoreMaxLost: this.badScoreMaxLost
     };
   },
 
@@ -195,9 +262,7 @@ export const NewG48421Store = observable({
     this.userRuleId = null;
     this.playersNumber = 4;
 
-    this.pointDeduction = null;
     this.drawConfig = null;
-    this.meatRules = null;
   }),
 
   // === 调试方法 ===
@@ -207,8 +272,10 @@ export const NewG48421Store = observable({
       isInitialized: this.isInitialized,
       isDirty: this.isDirty,
       gambleUserName: this.gambleUserName,
-      pointDeduction: this.pointDeduction,
-      drawConfig: this.drawConfig
+      drawConfig: this.drawConfig,
+      badScoreBaseLine: this.badScoreBaseLine,
+      badScoreMaxLost: this.badScoreMaxLost,
+      dutyConfig: this.dutyConfig
     });
   }
 });

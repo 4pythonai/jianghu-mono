@@ -4,7 +4,15 @@
   <view class="component-content">
     <!-- 动态加载配置组件 -->
     <block wx:if="{{componentName === 'E8421Koufen'}}">
-      <E8421Koufen id="{{componentName}}" mode="{{mode}}" configData="{{configData}}" />
+      <E8421Koufen 
+        id="{{componentName}}" 
+        mode="{{mode}}" 
+        configData="{{configData}}"
+        badScoreBaseLine="{{configData.badScoreBaseLine}}"
+        badScoreMaxLost="{{configData.badScoreMaxLost}}"
+        dutyConfig="{{configData.dutyConfig}}"
+        bindconfigChange="onConfigChange"
+      />
     </block>
 
     <block wx:elif="{{componentName === 'Draw8421'}}">

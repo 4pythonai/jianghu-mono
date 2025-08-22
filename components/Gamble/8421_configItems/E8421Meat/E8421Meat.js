@@ -29,6 +29,16 @@ Component({
     disabled: {
       type: Boolean,
       value: false
+    },
+    configData: {
+      type: Object,
+      value: null,
+      observer: function (newVal) {
+        console.log('🔍 [E8421Meat] configData更新:', newVal);
+        if (newVal) {
+          this.initConfigData(newVal);
+        }
+      }
     }
   },
 
@@ -226,9 +236,8 @@ Component({
     handleConfigChange(config) {
       console.log('🥩 [E8421Meat] 吃肉配置变化:', config);
 
-      // 更新本地显示值
-      const displayValue = this.computeDisplayValue(config);
-      this.setData({ displayValue });
+      // 重新计算UI状态，确保界面正确显示
+      this.updateConfigFromObject(config);
 
       // 发送配置变更事件
       this.triggerEvent('configChange', {
@@ -280,6 +289,38 @@ Component({
       return result || '请配置吃肉规则';
     },
 
+    // 根据配置对象重新计算UI状态
+    updateConfigFromObject(config) {
+      // 计算肉分值选项
+      let meatValueOption = 0;
+      let meatScore = 1;
+
+      if (config.meatValueConfig?.startsWith('MEAT_AS_')) {
+        meatValueOption = 0;
+        const score = Number.parseInt(config.meatValueConfig.replace('MEAT_AS_', ''));
+        meatScore = Number.isNaN(score) ? 1 : score;
+      } else {
+        const index = this.data.meatValueOptions.findIndex(opt => opt.value === config.meatValueConfig);
+        meatValueOption = index >= 0 ? index : 0;
+      }
+
+      // 计算封顶选项
+      const topSelected = config.meatMaxValue === 10000000 ? 0 : 1;
+      const topScoreLimit = config.meatMaxValue === 10000000 ? 3 : config.meatMaxValue;
+
+      // 计算显示值
+      const displayValue = this.computeDisplayValue(config);
+
+      this.setData({
+        currentConfig: config,
+        currentMeatValueOption: meatValueOption,
+        currentMeatScore: meatScore,
+        currentTopSelected: topSelected,
+        currentTopScoreLimit: topScoreLimit,
+        displayValue: displayValue
+      });
+    },
+
     // 辅助方法
     getCurrentConfig() {
       return {
@@ -315,6 +356,29 @@ Component({
     getCurrentTopScoreLimit() {
       const meatMaxValue = this.properties.meatMaxValue;
       return meatMaxValue === 10000000 ? 3 : meatMaxValue;
+    },
+
+    // ConfigWrapper接口：初始化配置数据
+    initConfigData(configData) {
+      console.log('🎯 [E8421Meat] 初始化配置数据:', configData);
+      
+      if (!configData) return;
+      
+      // 从configData构造完整配置对象
+      const config = {
+        eatingRange: configData.eatingRange || this.data.defaultConfig.eatingRange,
+        meatValueConfig: configData.meatValueConfig || this.data.defaultConfig.meatValueConfig,
+        meatMaxValue: configData.meatMaxValue || this.data.defaultConfig.meatMaxValue
+      };
+      
+      // 更新UI状态
+      this.updateConfigFromObject(config);
+    },
+
+    // ConfigWrapper接口：获取当前配置
+    getConfigData() {
+      return this.getCurrentConfig();
     }
+
   }
 });

@@ -26,11 +26,7 @@ Component({
       value: null
     },
 
-    // 8421游戏类型的配置数据
-    pointDeduction: {
-      type: Object,
-      value: null
-    },
+
 
     drawConfig: {
       type: Object,
@@ -73,12 +69,6 @@ Component({
       }
     },
 
-    // 监听8421配置变化，自动生成规则名称
-    'pointDeduction, drawConfig, meatRules': function (pointDeduction, drawConfig, meatRules) {
-      if (this.data.gameType === '4p-8421') {
-        this._generate8421RuleName(pointDeduction, drawConfig, meatRules)
-      }
-    }
   },
 
   methods: {
@@ -116,10 +106,10 @@ Component({
     },
 
     // 根据8421配置生成规则名称
-    _generate8421RuleName(pointDeduction, drawConfig, meatRules) {
+    _generate8421RuleName(drawConfig, meatRules) {
       if (this.data.gameType !== '4p-8421') return
 
-      const generatedName = generate8421RuleName(pointDeduction, drawConfig, meatRules)
+      const generatedName = generate8421RuleName(drawConfig, meatRules)
 
       this.setData({ generatedName })
 

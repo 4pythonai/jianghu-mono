@@ -20,6 +20,16 @@ Component({
     disabled: {
       type: Boolean,
       value: false
+    },
+    configData: {
+      type: String,
+      value: null,
+      observer: function (newVal) {
+        console.log('🔍 [Draw8421] configData更新:', newVal);
+        if (newVal) {
+          this.initConfigData(newVal);
+        }
+      }
     }
   },
 
@@ -201,6 +211,28 @@ Component({
       return {
         drawConfig: this.properties.drawConfig || this.data.defaultConfig.drawConfig
       };
+    },
+
+    // ConfigWrapper接口：初始化配置数据
+    initConfigData(configData) {
+      console.log('🎯 [Draw8421] 初始化配置数据:', configData);
+      
+      if (!configData) return;
+      
+      // configData本身就是drawConfig字符串
+      const drawConfig = configData || this.data.defaultConfig.drawConfig;
+      
+      // 设置配置对象
+      const config = { drawConfig };
+      
+      // 更新UI状态
+      this.updateConfigFromObject(config);
+    },
+
+    // ConfigWrapper接口：获取当前配置
+    getConfigData() {
+      return this.getCurrentConfig().drawConfig;
     }
+
   }
 });

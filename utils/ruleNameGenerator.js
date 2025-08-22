@@ -81,12 +81,11 @@ function generateLasiRuleName(indicators, kpiValues, totalCalculationType = 'add
 
 /**
  * 生成8421规则名称
- * @param {Object} pointDeduction - 扣分配置
  * @param {Object} drawConfig - 平局配置
  * @param {Object} meatRules - 吃肉规则配置
  * @returns {string} 生成的规则名称
  */
-function generate8421RuleName(pointDeduction, drawConfig, meatRules) {
+function generate8421RuleName(drawConfig, meatRules) {
     const timestamp = new Date().toLocaleTimeString('zh-CN', {
         hour12: false,
         hour: '2-digit',

@@ -34,7 +34,7 @@ Component({
     disabled: {
       type: Boolean,
       value: false
-    }
+    },
   },
 
   data: {
@@ -81,6 +81,7 @@ Component({
     // 更新当前配置状态
     updateCurrentConfig() {
       const config = this.getCurrentConfig();
+      console.log('🔧 [E8421Koufen] updateCurrentConfig 原始配置:', config);
 
       // 解析扣分基线配置
       let selectedStart = 0;
@@ -115,6 +116,16 @@ Component({
         default:
           selectedDuty = 0;
       }
+
+      console.log('🔧 [E8421Koufen] 解析结果:', {
+        selectedStart,
+        paScore,
+        doubleParScore,
+        selectedMax,
+        maxSubScore,
+        selectedDuty,
+        badScoreBaseLine: config.badScoreBaseLine
+      });
 
       // 计算显示值
       const displayValue = this.computeDisplayValue(config);
@@ -300,6 +311,16 @@ Component({
           selectedDuty = 0;
       }
 
+      console.log('🔧 [E8421Koufen] 解析结果:', {
+        selectedStart,
+        paScore,
+        doubleParScore,
+        selectedMax,
+        maxSubScore,
+        selectedDuty,
+        badScoreBaseLine: config.badScoreBaseLine
+      });
+
       // 计算显示值
       const displayValue = this.computeDisplayValue(config);
 
@@ -348,6 +369,7 @@ Component({
         dutyConfig: this.properties.dutyConfig || this.data.defaultConfig.dutyConfig
       };
     },
+
 
   }
 });
