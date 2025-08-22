@@ -33,85 +33,84 @@
           </picker>
         </view>
       </block>
-    </view>
-
-    <!-- 肉的分值配置 -->
-    <view class="modal-divider"></view>
-    <view class="eat-row">肉的分值</view>
+      
+      <view class="modal-divider"></view>
+      <view class="eat-row">肉的分值</view>
 
       <view class="modal-item" bindtap="onMeatValueChange" data-index="0">
-        <view class="radio-outer {{currentMeatValueOption === 0 ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{currentMeatValueOption === 0}}"></view>
-        </view>
-        <view class="option-content">
-          <text>肉算</text>
-          <picker
-            wx:if="{{currentMeatValueOption === 0}}"
-            class="score-picker"
-            range="{{meatScoreRange}}"
-            value="{{currentMeatScore - 1}}"
-            bindchange="onMeatScoreChange"
-          >
-            <view class="picker-value">{{currentMeatScore}}</view>
-          </picker>
-          <text wx:if="{{currentMeatValueOption !== 0}}">{{currentMeatScore}}</text>
-          <text>分</text>
-        </view>
-      </view>
-
-      <view class="modal-item" bindtap="onMeatValueChange" data-index="1">
-        <view class="radio-outer {{currentMeatValueOption === 1 ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{currentMeatValueOption === 1}}"></view>
-        </view>
-        <text>分值翻倍</text>
-      </view>
-
-      <view class="modal-item" bindtap="onMeatValueChange" data-index="2">
-        <view class="radio-outer {{currentMeatValueOption === 2 ? 'checked' : ''}}">
-          <view class="radio-inner" wx:if="{{currentMeatValueOption === 2}}"></view>
-        </view>
-        <text>分值连续翻倍</text>
-      </view>
-
-    <!-- 肉值封顶配置 -->
-    <view class="modal-divider"></view>
-    <view class="eat-row">肉值封顶</view>
-    
-    <view
-      class="modal-item {{currentMeatValueOption !== 1 ? 'disabled' : ''}}"
-      bindtap="onTopSelect"
-      data-index="0"
-    >
-      <view class="radio-outer {{currentTopSelected === 0 ? 'checked' : ''}}">
-        <view class="radio-inner" wx:if="{{currentTopSelected === 0}}"></view>
-      </view>
-      <text>不封顶</text>
-    </view>
-
-    <view
-      class="modal-item {{currentMeatValueOption !== 1 ? 'disabled' : ''}}"
-      bindtap="onTopSelect"
-      data-index="1"
-    >
-      <view class="radio-outer {{currentTopSelected === 1 ? 'checked' : ''}}">
-        <view class="radio-inner" wx:if="{{currentTopSelected === 1}}"></view>
+      <view class="radio-outer {{currentMeatValueOption === 0 ? 'checked' : ''}}">
+        <view class="radio-inner" wx:if="{{currentMeatValueOption === 0}}"></view>
       </view>
       <view class="option-content">
+        <text>肉算</text>
         <picker
-          wx:if="{{currentTopSelected === 1}}"
+          wx:if="{{currentMeatValueOption === 0}}"
           class="score-picker"
-          range="{{topScoreRange}}"
-          value="{{currentTopScoreLimit - 1}}"
-          bindchange="onTopScoreChange"
-          disabled="{{currentMeatValueOption !== 1}}"
+          range="{{meatScoreRange}}"
+          value="{{currentMeatScore - 1}}"
+          bindchange="onMeatScoreChange"
         >
-          <view class="picker-value">{{currentTopScoreLimit}}</view>
+          <view class="picker-value">{{currentMeatScore}}</view>
         </picker>
-        <text wx:if="{{currentTopSelected !== 1}}">{{currentTopScoreLimit}}</text>
-        <text>分封顶</text>
+        <text wx:if="{{currentMeatValueOption !== 0}}">{{currentMeatScore}}</text>
+        <text>分</text>
       </view>
     </view>
-    
+
+    <view class="modal-item" bindtap="onMeatValueChange" data-index="1">
+      <view class="radio-outer {{currentMeatValueOption === 1 ? 'checked' : ''}}">
+        <view class="radio-inner" wx:if="{{currentMeatValueOption === 1}}"></view>
+      </view>
+      <text>分值翻倍</text>
+    </view>
+
+    <view class="modal-item" bindtap="onMeatValueChange" data-index="2">
+      <view class="radio-outer {{currentMeatValueOption === 2 ? 'checked' : ''}}">
+        <view class="radio-inner" wx:if="{{currentMeatValueOption === 2}}"></view>
+      </view>
+      <text>分值连续翻倍</text>
+      </view>
+
+      <!-- 肉值封顶配置 -->
+      <view class="modal-divider"></view>
+      <view class="eat-row">肉值封顶</view>
+
+      <view
+        class="modal-item {{currentMeatValueOption !== 1 ? 'disabled' : ''}}"
+        bindtap="onTopSelect"
+        data-index="0"
+      >
+        <view class="radio-outer {{currentTopSelected === 0 ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{currentTopSelected === 0}}"></view>
+        </view>
+        <text>不封顶</text>
+      </view>
+
+      <view
+        class="modal-item {{currentMeatValueOption !== 1 ? 'disabled' : ''}}"
+        bindtap="onTopSelect"
+        data-index="1"
+      >
+        <view class="radio-outer {{currentTopSelected === 1 ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{currentTopSelected === 1}}"></view>
+        </view>
+        <view class="option-content">
+          <picker
+            wx:if="{{currentTopSelected === 1}}"
+            class="score-picker"
+            range="{{topScoreRange}}"
+            value="{{currentTopScoreLimit - 1}}"
+            bindchange="onTopScoreChange"
+            disabled="{{currentMeatValueOption !== 1}}"
+          >
+            <view class="picker-value">{{currentTopScoreLimit}}</view>
+          </picker>
+          <text wx:if="{{currentTopSelected !== 1}}">{{currentTopScoreLimit}}</text>
+          <text>分封顶</text>
+        </view>
+      </view>
+    </view>
+
     <view class="modal-actions">
       <button class="modal-btn cancel" bindtap="onCancel">取消</button>
       <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
