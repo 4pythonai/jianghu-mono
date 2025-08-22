@@ -1,94 +1,99 @@
-import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
+/**
+ * Draw8421顶洞配置组件 - 简化版
+ * 纯受控组件，所有数据通过props传入，UI变化通过事件通知父组件
+ */
+const ruleFormatter = require('../../../../utils/formatters/ruleFormatter.js')
 
 Component({
   properties: {
+    drawConfig: {
+      type: String,
+      value: 'DrawEqual',
+      observer: function (newVal) {
+        console.log('🔍 [Draw8421] drawConfig更新:', newVal);
+      }
+    },
+    mode: {
+      type: String,
+      value: 'UserEdit'
+    },
+    disabled: {
+      type: Boolean,
+      value: false
+    }
   },
 
   data: {
-    // 组件内部状态
     visible: false,
-    displayValue: '请配置顶洞规则',
 
-    options: [
-      'DrawEqual',
-      'Diff_1',
-      'NoDraw'
-    ],
-    selected: 0,
-    // 分数选择器相关
+    // 静态配置数据
+    options: ['得分打平', '得分X分以内', '无顶洞'],
     diffScores: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    selectedDiffScore: 1
+
+    // 默认配置
+    defaultConfig: {
+      drawConfig: 'DrawEqual'
+    },
+
+    currentConfig: null,
+    currentSelected: 0,
+    currentDiffScore: 1,
+    displayValue: '请配置顶洞规则'
   },
 
-
-  attached() {
-
-    if (this.properties.mode === 'SysConfig') {
-      // SysConfig模式：使用独立的配置数据，不依赖Store
-      // 使用默认配置初始化，但保持用户之前的选择
-      this.setData({
-        selected: this.data.selected || 0,
-        selectedDiffScore: this.data.selectedDiffScore || 1
-      });
-    } else if (this.properties.mode === 'UserEdit') {
-      // UserEdit模式：等待外部数据初始化，不自动从Store加载
-      // 设置默认值，避免显示"请配置顶洞规则"
-      this.setData({
-        selected: 0,
-        selectedDiffScore: 1
-      });
+  lifetimes: {
+    attached() {
+      this.updateCurrentConfig();
     }
-    // 计算显示值
-    this.updateDisplayValue();
+  },
+
+  observers: {
+    'drawConfig': function (drawConfig) {
+      console.log('🔍 [Draw8421] 属性变化:', { drawConfig });
+      this.updateCurrentConfig();
+    }
   },
 
   methods: {
-    // 计算显示值 - 使用工具类简化
-    updateDisplayValue() {
-      if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
-        // 使用工具类格式化显示值
-        const { selected, selectedDiffScore } = this.data;
+    // 更新当前配置状态
+    updateCurrentConfig() {
+      const config = this.getCurrentConfig();
 
-        // 构建配置数据用于格式化
-        let drawConfig = '';
-        if (selected === 0) {
-          drawConfig = 'DrawEqual';
-        } else if (selected === 1) {
-          drawConfig = `Diff_${selectedDiffScore}`;
-        } else if (selected === 2) {
-          drawConfig = 'NoDraw';
-        }
+      // 解析drawConfig配置
+      let selected = 0;
+      let diffScore = 1;
 
-
-        // 使用工具类格式化
-        const displayValue = ruleFormatter.formatDrawRule(drawConfig);
-
-        this.setData({ displayValue });
-      } else {
-        // 使用Store数据
-        const store = G4P8421Store;
-        const displayValue = ruleFormatter.formatDrawRule(store.drawConfig);
-
-        this.setData({ displayValue });
+      if (config.drawConfig === 'DrawEqual') {
+        selected = 0;
+      } else if (config.drawConfig === 'NoDraw') {
+        selected = 2;
+      } else if (config.drawConfig?.startsWith('Diff_')) {
+        selected = 1;
+        const score = Number.parseInt(config.drawConfig.replace('Diff_', ''));
+        diffScore = Number.isNaN(score) ? 1 : score;
       }
+
+      // 计算显示值
+      const displayValue = this.computeDisplayValue(config);
+
+      this.setData({
+        currentConfig: config,
+        currentSelected: selected,
+        currentDiffScore: diffScore,
+        displayValue: displayValue
+      });
     },
 
-
-    // 事件处理方法
-    onSelect(e) {
-      const index = Number.parseInt(e.currentTarget.dataset.index);
-      this.setData({ selected: index });
-    },
-
-    onDiffScoreChange(e) {
-      const selectedIndex = e.detail.value;
-      const selectedScore = this.data.diffScores[selectedIndex];
-      this.setData({ selectedDiffScore: selectedScore });
-    },
-
-    // UI控制方法
+    // UI事件处理
     onShowConfig() {
+      if (this.properties.disabled) {
+        wx.showToast({
+          title: '当前规则下顶洞功能已禁用',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
       this.setData({ visible: true });
     },
 
@@ -96,94 +101,106 @@ Component({
       this.setData({ visible: false });
     },
 
-    noTap() {
-      // 空方法，用于处理禁用状态下的点击事件
-    },
-
     onConfirm() {
-      let selectedValue = '';
-
-      // 根据选择的选项生成配置值
-      if (this.data.selected === 0) {
-        selectedValue = 'DrawEqual';
-      } else if (this.data.selected === 1) {
-        selectedValue = `Diff_${this.data.selectedDiffScore}`;
-      } else if (this.data.selected === 2) {
-        selectedValue = 'NoDraw';
-      }
-
-      // 更新显示值
-      this.updateDisplayValue();
-      // 关闭弹窗
       this.setData({ visible: false });
-      // 向父组件传递事件
-      this.triggerEvent('confirm', {
-        value: selectedValue
-      });
     },
 
+    // 防止事件冒泡的空方法
+    noTap() {
+      // 阻止事件冒泡，什么都不做
+    },
 
-    /**
-     * 将Draw8421组件状态转换为配置数据
-     * @param {Object} componentState - 组件状态
-     * @returns {Object} 配置数据
-     */
-    convertDraw8421ToConfig(componentState) {
-      const { selected, selectedDiffScore } = componentState;
-
-      // 根据选择的选项生成配置值
-      let drawConfig = '';
-      if (selected === 0) {
+    // 配置变更事件
+    onSelect(e) {
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      const currentConfig = this.data.currentConfig;
+      
+      let drawConfig = 'DrawEqual';
+      if (index === 0) {
         drawConfig = 'DrawEqual';
-      } else if (selected === 1) {
-        drawConfig = `Diff_${selectedDiffScore}`;
-      } else if (selected === 2) {
+      } else if (index === 1) {
+        drawConfig = `Diff_${this.data.currentDiffScore}`;
+      } else if (index === 2) {
         drawConfig = 'NoDraw';
       }
 
-      return { drawConfig };
-    },
-
-    // 获取配置数据 - 使用工具类简化
-    getConfigData() {
-      const componentState = {
-        selected: this.data.selected,
-        selectedDiffScore: this.data.selectedDiffScore
+      const config = {
+        ...currentConfig,
+        drawConfig: drawConfig
       };
-      const configData = this.convertDraw8421ToConfig(componentState);
-      return configData;
+
+      this.handleConfigChange(config);
     },
 
-    /**
-     * 将配置数据转换为Draw8421组件状态
-     * @param {Object} configData - 配置数据
-     * @returns {Object} 组件状态
-     */
-    convertConfigToDraw8421(configData) {
-      const { drawConfig } = configData;
-      const state = {};
+    onDiffScoreChange(e) {
+      const score = this.data.diffScores[e.detail.value];
+      const currentConfig = this.data.currentConfig;
+      
+      const config = {
+        ...currentConfig,
+        drawConfig: `Diff_${score}`
+      };
+      
+      this.handleConfigChange(config);
+    },
 
-      if (drawConfig === 'DrawEqual') {
-        state.selected = 0;
-      } else if (drawConfig === 'NoDraw') {
-        state.selected = 2;
-      } else if (drawConfig?.startsWith('Diff_')) {
-        state.selected = 1;
-        const score = Number.parseInt(drawConfig.replace('Diff_', ''));
-        state.selectedDiffScore = Number.isNaN(score) ? 1 : score;
-      } else {
-        state.selected = 0;
-        state.selectedDiffScore = 1;
+    // 根据配置对象重新计算UI状态
+    updateConfigFromObject(config) {
+      // 解析drawConfig配置
+      let selected = 0;
+      let diffScore = 1;
+
+      if (config.drawConfig === 'DrawEqual') {
+        selected = 0;
+      } else if (config.drawConfig === 'NoDraw') {
+        selected = 2;
+      } else if (config.drawConfig?.startsWith('Diff_')) {
+        selected = 1;
+        const score = Number.parseInt(config.drawConfig.replace('Diff_', ''));
+        diffScore = Number.isNaN(score) ? 1 : score;
       }
 
-      return state;
+      // 计算显示值
+      const displayValue = this.computeDisplayValue(config);
+
+      this.setData({
+        currentConfig: config,
+        currentSelected: selected,
+        currentDiffScore: diffScore,
+        displayValue: displayValue
+      });
     },
 
-    // 初始化配置数据 - 使用工具类简化
-    initConfigData(configData) {
-      const componentState = this.convertConfigToDraw8421(configData);
-      this.setData(componentState);
-      this.updateDisplayValue();
+    // 统一的配置变更处理
+    handleConfigChange(config) {
+      console.log('🎯 [Draw8421] 顶洞配置变化:', config);
+
+      // 重新计算UI状态，确保界面正确显示
+      this.updateConfigFromObject(config);
+
+      // 直接发送对象格式，不要在组件层转换为字符串
+      // Store层会在保存到数据库时统一处理字符串转换
+      this.triggerEvent('configChange', {
+        componentType: 'dingdong',
+        config: config
+      });
+    },
+
+    // 计算显示值
+    computeDisplayValue(config) {
+      if (!config) return '请配置顶洞规则';
+
+      const { drawConfig } = config;
+
+      // 使用工具类格式化显示值
+      return ruleFormatter.formatDrawRule(drawConfig);
+    },
+
+    // 辅助方法
+    getCurrentConfig() {
+      return {
+        drawConfig: this.properties.drawConfig || this.data.defaultConfig.drawConfig
+      };
     }
   }
 });

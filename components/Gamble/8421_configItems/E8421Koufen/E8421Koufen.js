@@ -1,218 +1,149 @@
-import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
+/**
+ * E8421扣分配置组件 - 简化版
+ * 纯受控组件，所有数据通过props传入，UI变化通过事件通知父组件
+ */
+const ruleFormatter = require('../../../../utils/formatters/ruleFormatter.js')
 
 Component({
   properties: {
-    // 模式：SysConfig | UserEdit
+    badScoreBaseLine: {
+      type: String,
+      value: 'Par+4',
+      observer: function (newVal) {
+        console.log('🔍 [E8421Koufen] badScoreBaseLine更新:', newVal);
+      }
+    },
+    badScoreMaxLost: {
+      type: Number,
+      value: 10000000,
+      observer: function (newVal) {
+        console.log('🔍 [E8421Koufen] badScoreMaxLost更新:', newVal);
+      }
+    },
+    dutyConfig: {
+      type: String,
+      value: 'NODUTY',
+      observer: function (newVal) {
+        console.log('🔍 [E8421Koufen] dutyConfig更新:', newVal);
+      }
+    },
     mode: {
       type: String,
-      value: 'SysConfig'
+      value: 'UserEdit'
     },
-    // 配置数据
-    configData: {
-      type: Object,
-      value: null
+    disabled: {
+      type: Boolean,
+      value: false
     }
   },
+
   data: {
-    // 组件内部状态
     visible: false,
-    displayValue: '请配置扣分规则',
 
-    // 扣分开始条件 (badScoreBaseLine)
-    badScoreBaseLine: ['从帕+X开始扣分', '从双帕+Y开始扣分', '不扣分'],
-    selectedStart: 0,
-
-    // 可编辑的数字变量
-    paScore: 4, // 帕的分数, 默认4
-    doubleParScore: 0, // 双帕的分数, 默认0
-    maxSubScore: 2, // 封顶分数, 默认2
-
-    // 数字选择器范围
+    // 静态配置数据
+    badScoreBaseLineOptions: ['从帕+X开始扣分', '从双帕+Y开始扣分', '不扣分'],
     paScoreRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
     doubleParScoreRange: Array.from({ length: 21 }, (_, i) => i), // 0-20
     maxSubScoreRange: Array.from({ length: 21 }, (_, i) => i + 1), // 1-21
-
-    // 扣分封顶 (badScoreMaxLost)
     maxOptions: ['不封顶', '扣X分封顶'],
-    selectedMax: 0,
-
-    // 同伴惩罚 (dutyConfig)
     dutyOptions: ['不包负分', '同伴顶头包负分', '包负分'],
-    selectedDuty: 0
+
+    // 默认配置
+    defaultConfig: {
+      badScoreBaseLine: 'Par+4',
+      badScoreMaxLost: 10000000,
+      dutyConfig: 'NODUTY'
+    },
+
+    currentConfig: null,
+    currentSelectedStart: 0,
+    currentPaScore: 4,
+    currentDoubleParScore: 0,
+    currentSelectedMax: 0,
+    currentMaxSubScore: 2,
+    currentSelectedDuty: 0,
+    displayValue: '请配置扣分规则'
   },
-  // 组件生命周期
   lifetimes: {
     attached() {
-
-      // 根据模式初始化组件
-      if (this.properties.mode === 'UserEdit') {
-        // UserEdit模式：等待外部数据初始化，不自动从Store加载
-        // 设置默认值，避免显示"请配置扣分规则"
-        this.setData({
-          selectedStart: 0,
-          selectedMax: 0,
-          selectedDuty: 0,
-          paScore: 4,
-          doubleParScore: 0,
-          maxSubScore: 2
-        });
-      } else if (this.properties.mode === 'SysConfig') {
-        // SysConfig模式：使用独立的配置数据，不依赖Store
-        // 使用默认配置初始化，但保持用户之前的选择
-        this.setData({
-          selectedStart: this.data.selectedStart || 0,
-          selectedMax: this.data.selectedMax || 0,
-          selectedDuty: this.data.selectedDuty || 0,
-          paScore: this.data.paScore || 4,
-          doubleParScore: this.data.doubleParScore || 0,
-          maxSubScore: this.data.maxSubScore || 2
-        });
-      }
-      // 计算显示值
-      this.updateDisplayValue();
+      this.updateCurrentConfig();
     }
   },
 
   observers: {
-    // 监听配置数据变化
-    'configData': function (configData) {
-      if (configData && this.properties.mode === 'UserEdit') {
-        this.initializeFromConfigData(configData);
-        this.updateDisplayValue();
-      }
+    'badScoreBaseLine, badScoreMaxLost, dutyConfig': function (badScoreBaseLine, badScoreMaxLost, dutyConfig) {
+      console.log('🔍 [E8421Koufen] 属性变化:', { badScoreBaseLine, badScoreMaxLost, dutyConfig });
+      this.updateCurrentConfig();
     }
   },
 
   methods: {
-    // 空方法，用于处理禁用状态下的点击事件
-    noTap() {
-      // 什么都不做，阻止事件处理
-    },
+    // 更新当前配置状态
+    updateCurrentConfig() {
+      const config = this.getCurrentConfig();
 
-    // 计算显示值 - 使用工具类简化
-    updateDisplayValue() {
-      if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
-        // 使用工具类格式化显示值
-        const { selectedStart, selectedMax, paScore, doubleParScore, maxSubScore } = this.data;
+      // 解析扣分基线配置
+      let selectedStart = 0;
+      let paScore = 4;
+      let doubleParScore = 0;
 
-        // 构建配置数据用于格式化
-        let badScoreBaseLine = '';
-        const selectedStartNum = Number(selectedStart); // 转换为数字
-        if (selectedStartNum === 0) {
-          badScoreBaseLine = `Par+${paScore}`;
-        } else if (selectedStartNum === 1) {
-          badScoreBaseLine = `DoublePar+${doubleParScore}`;
-        } else if (selectedStartNum === 2) {
-          badScoreBaseLine = 'NoSub';
-        }
-
-        const selectedMaxNum = Number(selectedMax); // 转换为数字
-        const badScoreMaxLost = selectedMaxNum === 0 ? 10000000 : maxSubScore;
-
-        // 使用工具类格式化
-        const displayValue = ruleFormatter.formatKoufenRule(badScoreBaseLine, badScoreMaxLost);
-
-        this.setData({ displayValue });
-      } else {
-        // 使用Store数据
-        const store = G4P8421Store;
-        let displayValue = '';
-
-        if (store.badScoreBaseLine === 'NoSub') {
-          displayValue = '不扣分';
-        } else if (store.badScoreBaseLine?.startsWith('Par+')) {
-          const score = store.badScoreBaseLine.replace('Par+', '');
-          displayValue = `帕+${score}`;
-        } else if (store.badScoreBaseLine?.startsWith('DoublePar+')) {
-          const score = store.badScoreBaseLine.replace('DoublePar+', '');
-          displayValue = `双帕+${score}`;
-        }
-
-        if (store.badScoreMaxLost === 10000000) {
-          displayValue += '/不封顶';
-        } else {
-          displayValue += `/扣${store.badScoreMaxLost}分封顶`;
-        }
-
-        this.setData({ displayValue });
-      }
-    },
-
-
-
-
-    /**
-     * 解析 dutyConfig 配置
-     * @param {string} value - 配置值，如 "DUTY_DINGTOU"
-     * @returns {Object} 解析结果，如 { type: 'DUTY_DINGTOU', index: 1 }
-     */
-    parseDutyConfig(value) {
-      if (!value || typeof value !== 'string') {
-        return {
-          type: 'NODUTY',
-          index: 0
-        };
+      if (config.badScoreBaseLine === 'NoSub') {
+        selectedStart = 2;
+      } else if (config.badScoreBaseLine?.startsWith('Par+')) {
+        selectedStart = 0;
+        const score = Number.parseInt(config.badScoreBaseLine.replace('Par+', ''));
+        paScore = Number.isNaN(score) ? 4 : score;
+      } else if (config.badScoreBaseLine?.startsWith('DoublePar+')) {
+        selectedStart = 1;
+        const score = Number.parseInt(config.badScoreBaseLine.replace('DoublePar+', ''));
+        doubleParScore = Number.isNaN(score) ? 0 : score;
       }
 
-      const dutyMap = {
-        'NODUTY': 0,
-        'DUTY_DINGTOU': 1,
-        'DUTY_NEGATIVE': 2
-      };
+      // 解析封顶配置
+      const selectedMax = config.badScoreMaxLost === 10000000 ? 0 : 1;
+      const maxSubScore = config.badScoreMaxLost === 10000000 ? 2 : config.badScoreMaxLost;
 
-      return {
-        type: value,
-        index: dutyMap[value] !== undefined ? dutyMap[value] : 0
-      };
-    },
-
-
-
-    // 事件处理方法
-    onSelectStart(e) {
-      const index = e.currentTarget.dataset.index;
-      this.setData({ selectedStart: index });
-      this.updateDisplayValue();
-    },
-
-    onSelectMax(e) {
-      // 如果选择了"不扣分"，则禁用封顶和同伴惩罚选项
-      if (Number(this.data.selectedStart) === 2) {
-        return;
+      // 解析同伴惩罚配置
+      let selectedDuty = 0;
+      switch (config.dutyConfig) {
+        case 'DUTY_DINGTOU':
+          selectedDuty = 1;
+          break;
+        case 'DUTY_NEGATIVE':
+          selectedDuty = 2;
+          break;
+        default:
+          selectedDuty = 0;
       }
-      const index = e.currentTarget.dataset.index;
-      this.setData({ selectedMax: index });
-      this.updateDisplayValue();
+
+      // 计算显示值
+      const displayValue = this.computeDisplayValue(config);
+
+      this.setData({
+        currentConfig: config,
+        currentSelectedStart: selectedStart,
+        currentPaScore: paScore,
+        currentDoubleParScore: doubleParScore,
+        currentSelectedMax: selectedMax,
+        currentMaxSubScore: maxSubScore,
+        currentSelectedDuty: selectedDuty,
+        displayValue: displayValue
+      });
     },
 
-    onSelectDuty(e) {
-      // 如果选择了"不扣分"，则禁用封顶和同伴惩罚选项
-      if (Number(this.data.selectedStart) === 2) {
-        return;
-      }
-      const index = e.currentTarget.dataset.index;
-      this.setData({ selectedDuty: index });
-      this.updateDisplayValue();
-    },
 
-    onPaScoreChange(e) {
-      this.setData({ paScore: e.detail.value });
-      this.updateDisplayValue();
-    },
 
-    onDoubleParScoreChange(e) {
-      this.setData({ doubleParScore: e.detail.value });
-      this.updateDisplayValue();
-    },
 
-    onMaxSubScoreChange(e) {
-      this.setData({ maxSubScore: e.detail.value });
-      this.updateDisplayValue();
-    },
-
-    // UI控制方法
+    // UI事件处理
     onShowConfig() {
+      if (this.properties.disabled) {
+        wx.showToast({
+          title: '当前规则下扣分功能已禁用',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
       this.setData({ visible: true });
     },
 
@@ -222,139 +153,201 @@ Component({
 
     onConfirm() {
       this.setData({ visible: false });
-      this.updateDisplayValue();
     },
 
-    /**
- * 将配置数据转换为E8421Koufen组件状态
- * @param {Object} configData - 配置数据
- * @returns {Object} 组件状态
- */
-    convertConfigToE8421Koufen(configData) {
-      const { badScoreBaseLine, badScoreMaxLost, dutyConfig } = configData;
-      const state = {};
-
-      // 解析扣分基线
-      if (badScoreBaseLine === 'NoSub') {
-        state.selectedStart = 2;
-      } else if (badScoreBaseLine?.startsWith('Par+')) {
-        state.selectedStart = 0;
-        const score = Number.parseInt(badScoreBaseLine.replace('Par+', ''));
-        state.paScore = Number.isNaN(score) ? 4 : score;
-      } else if (badScoreBaseLine?.startsWith('DoublePar+')) {
-        state.selectedStart = 1;
-        const score = Number.parseInt(badScoreBaseLine.replace('DoublePar+', ''));
-        state.doubleParScore = Number.isNaN(score) ? 0 : score;
-      } else {
-        state.selectedStart = 0;
-        state.paScore = 4;
-      }
-
-      // 解析封顶配置
-      const maxLostValue = Number(badScoreMaxLost);
-      if (maxLostValue === 10000000) {
-        state.selectedMax = 0;
-      } else {
-        state.selectedMax = 1;
-        state.maxSubScore = maxLostValue > 0 ? maxLostValue : 2;
-      }
-
-      // 解析同伴惩罚配置
-      switch (dutyConfig) {
-        case 'NODUTY':
-          state.selectedDuty = 0;
-          break;
-        case 'DUTY_DINGTOU':
-          state.selectedDuty = 1;
-          break;
-        case 'DUTY_NEGATIVE':
-          state.selectedDuty = 2;
-          break;
-        default:
-          state.selectedDuty = 0;
-      }
-
-      return state;
+    // 防止事件冒泡的空方法
+    noTap() {
+      // 阻止事件冒泡，什么都不做
     },
 
 
-    // 从配置数据初始化 - 使用工具类简化
-    initializeFromConfigData(configData) {
 
-      // 使用工具类转换配置数据为组件状态
-      const componentState = this.convertConfigToE8421Koufen(configData);
-
-      this.setData(componentState);
-    },
-
-
-    /**
-     * 将E8421Koufen组件状态转换为配置数据
-     * @param {Object} componentState - 组件状态
-     * @returns {Object} 配置数据
-     */
-    convertE8421KoufenToConfig(componentState) {
-      const { selectedStart, selectedMax, selectedDuty, paScore, doubleParScore, maxSubScore } = componentState;
-
-      // 构建扣分基线
-      let badScoreBaseLine = null;
-      switch (selectedStart) {
-        case 0:
-          badScoreBaseLine = `Par+${paScore}`;
-          break;
-        case 1:
-          badScoreBaseLine = `DoublePar+${doubleParScore}`;
-          break;
-        case 2:
-          badScoreBaseLine = 'NoSub';
-          break;
+    // 配置变更事件
+    onSelectStart(e) {
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      const currentConfig = this.data.currentConfig;
+      
+      let badScoreBaseLine = 'NoSub';
+      if (index === 0) {
+        badScoreBaseLine = `Par+${this.data.currentPaScore}`;
+      } else if (index === 1) {
+        badScoreBaseLine = `DoublePar+${this.data.currentDoubleParScore}`;
       }
 
-      // 构建封顶配置
-      const badScoreMaxLost = selectedMax === 0 ? 10000000 : maxSubScore;
+      const config = {
+        ...currentConfig,
+        badScoreBaseLine: badScoreBaseLine
+      };
 
-      // 构建同伴惩罚配置
-      let dutyConfig = null;
-      switch (selectedDuty) {
-        case 0:
-          dutyConfig = 'NODUTY';
-          break;
+      this.handleConfigChange(config);
+    },
+
+    onSelectMax(e) {
+      // 如果选择了"不扣分"，则禁用封顶选项
+      if (this.data.currentSelectedStart === 2) {
+        return;
+      }
+      
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      const currentConfig = this.data.currentConfig;
+      
+      const config = {
+        ...currentConfig,
+        badScoreMaxLost: index === 0 ? 10000000 : this.data.currentMaxSubScore
+      };
+
+      this.handleConfigChange(config);
+    },
+
+    onSelectDuty(e) {
+      // 如果选择了"不扣分"，则禁用同伴惩罚选项
+      if (this.data.currentSelectedStart === 2) {
+        return;
+      }
+      
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      const currentConfig = this.data.currentConfig;
+      
+      let dutyConfig = 'NODUTY';
+      switch (index) {
         case 1:
           dutyConfig = 'DUTY_DINGTOU';
           break;
         case 2:
           dutyConfig = 'DUTY_NEGATIVE';
           break;
+        default:
+          dutyConfig = 'NODUTY';
       }
 
+      const config = {
+        ...currentConfig,
+        dutyConfig: dutyConfig
+      };
+
+      this.handleConfigChange(config);
+    },
+
+    onPaScoreChange(e) {
+      const score = this.data.paScoreRange[e.detail.value];
+      const currentConfig = this.data.currentConfig;
+      
+      const config = {
+        ...currentConfig,
+        badScoreBaseLine: `Par+${score}`
+      };
+      
+      this.handleConfigChange(config);
+    },
+
+    onDoubleParScoreChange(e) {
+      const score = this.data.doubleParScoreRange[e.detail.value];
+      const currentConfig = this.data.currentConfig;
+      
+      const config = {
+        ...currentConfig,
+        badScoreBaseLine: `DoublePar+${score}`
+      };
+      
+      this.handleConfigChange(config);
+    },
+
+    onMaxSubScoreChange(e) {
+      const score = this.data.maxSubScoreRange[e.detail.value];
+      const currentConfig = this.data.currentConfig;
+      
+      const config = {
+        ...currentConfig,
+        badScoreMaxLost: score
+      };
+      
+      this.handleConfigChange(config);
+    },
+
+    // 根据配置对象重新计算UI状态
+    updateConfigFromObject(config) {
+      // 解析扣分基线配置
+      let selectedStart = 0;
+      let paScore = 4;
+      let doubleParScore = 0;
+
+      if (config.badScoreBaseLine === 'NoSub') {
+        selectedStart = 2;
+      } else if (config.badScoreBaseLine?.startsWith('Par+')) {
+        selectedStart = 0;
+        const score = Number.parseInt(config.badScoreBaseLine.replace('Par+', ''));
+        paScore = Number.isNaN(score) ? 4 : score;
+      } else if (config.badScoreBaseLine?.startsWith('DoublePar+')) {
+        selectedStart = 1;
+        const score = Number.parseInt(config.badScoreBaseLine.replace('DoublePar+', ''));
+        doubleParScore = Number.isNaN(score) ? 0 : score;
+      }
+
+      // 解析封顶配置
+      const selectedMax = config.badScoreMaxLost === 10000000 ? 0 : 1;
+      const maxSubScore = config.badScoreMaxLost === 10000000 ? 2 : config.badScoreMaxLost;
+
+      // 解析同伴惩罚配置
+      let selectedDuty = 0;
+      switch (config.dutyConfig) {
+        case 'DUTY_DINGTOU':
+          selectedDuty = 1;
+          break;
+        case 'DUTY_NEGATIVE':
+          selectedDuty = 2;
+          break;
+        default:
+          selectedDuty = 0;
+      }
+
+      // 计算显示值
+      const displayValue = this.computeDisplayValue(config);
+
+      this.setData({
+        currentConfig: config,
+        currentSelectedStart: selectedStart,
+        currentPaScore: paScore,
+        currentDoubleParScore: doubleParScore,
+        currentSelectedMax: selectedMax,
+        currentMaxSubScore: maxSubScore,
+        currentSelectedDuty: selectedDuty,
+        displayValue: displayValue
+      });
+    },
+
+    // 统一的配置变更处理
+    handleConfigChange(config) {
+      console.log('📊 [E8421Koufen] 扣分配置变化:', config);
+
+      // 重新计算UI状态，确保界面正确显示
+      this.updateConfigFromObject(config);
+
+      // 直接发送对象格式，不要在组件层转换为字符串
+      // Store层会在保存到数据库时统一处理字符串转换
+      this.triggerEvent('configChange', {
+        componentType: 'koufen',
+        config: config
+      });
+    },
+
+    // 计算显示值
+    computeDisplayValue(config) {
+      if (!config) return '请配置扣分规则';
+
+      const { badScoreBaseLine, badScoreMaxLost } = config;
+
+      // 使用工具类格式化显示值
+      return ruleFormatter.formatKoufenRule(badScoreBaseLine, badScoreMaxLost);
+    },
+
+    // 辅助方法
+    getCurrentConfig() {
       return {
-        badScoreBaseLine,
-        badScoreMaxLost,
-        dutyConfig
+        badScoreBaseLine: this.properties.badScoreBaseLine || this.data.defaultConfig.badScoreBaseLine,
+        badScoreMaxLost: this.properties.badScoreMaxLost || this.data.defaultConfig.badScoreMaxLost,
+        dutyConfig: this.properties.dutyConfig || this.data.defaultConfig.dutyConfig
       };
     },
 
-    // 获取配置数据 - 使用工具类简化
-    getConfigData() {
-      const componentState = {
-        selectedStart: this.data.selectedStart,
-        selectedMax: this.data.selectedMax,
-        selectedDuty: this.data.selectedDuty,
-        paScore: this.data.paScore,
-        doubleParScore: this.data.doubleParScore,
-        maxSubScore: this.data.maxSubScore
-      };
-
-      // 使用工具类转换组件状态为配置数据
-      const configData = this.convertE8421KoufenToConfig(componentState);
-
-      return configData;
-    },
-
-    // 初始化配置数据 - 兼容性方法
-    initConfigData(configData) {
-      this.initializeFromConfigData(configData);
-      this.updateDisplayValue();
-    }
   }
 });

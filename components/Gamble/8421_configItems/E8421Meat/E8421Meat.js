@@ -1,24 +1,41 @@
-import { G4P8421Store } from '../../../../stores/gamble/4p/4p-8421/gamble_4P_8421_Store.js'
-import { reaction } from 'mobx-miniprogram'
-import ruleFormatter from '../../../../utils/formatters/ruleFormatter.js'
+/**
+ * E8421吃肉配置组件 - 纯受控组件
+ * 所有数据通过props传入，UI变化通过事件通知父组件
+ */
 
 Component({
   properties: {
+    eatingRange: {
+      type: Object,
+      value: null,
+      observer: function (newVal) {
+        console.log('🔍 [E8421Meat] eatingRange更新:', newVal);
+      }
+    },
+    meatValueConfig: {
+      type: String,
+      value: 'MEAT_AS_1',
+      observer: function (newVal) {
+        console.log('🔍 [E8421Meat] meatValueConfig更新:', newVal);
+      }
+    },
+    meatMaxValue: {
+      type: Number,
+      value: 10000000,
+      observer: function (newVal) {
+        console.log('🔍 [E8421Meat] meatMaxValue更新:', newVal);
+      }
+    },
+    disabled: {
+      type: Boolean,
+      value: false
+    }
   },
 
   data: {
-    // 组件内部状态
     visible: false,
-    displayValue: '请配置吃肉规则',
-    isDisabled: false,
 
-    // 直接使用固定的默认配置
-    eatingRange: {
-      "BetterThanBirdie": 1,
-      "Birdie": 1,
-      "Par": 1,
-      "WorseThanPar": 1
-    },
+    // 静态配置数据
     eatRangeLabels: {
       'BetterThanBirdie': '比鸟更好',
       'Birdie': '鸟',
@@ -26,174 +43,93 @@ Component({
       'WorseThanPar': '比帕更差'
     },
     eatRangeKeys: ['BetterThanBirdie', 'Birdie', 'Par', 'WorseThanPar'],
-
-    meatValueOption: 0,
+    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1),
+    meatScoreRange: [1, 2, 3, 4, 5],
+    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1),
+    meatValueOptions: [
+      { label: '肉算固定分', value: 'MEAT_AS_X' },
+      { label: '分值翻倍', value: 'SINGLE_DOUBLE' },
+      { label: '分值连续翻倍', value: 'CONTINUE_DOUBLE' }
+    ],
     topOptions: ["不封顶", "X分封顶"],
-    topSelected: 0,
 
-    // 新增可编辑变量
-    topScoreLimit: 3, // 封顶分数, 默认3
-    meatScoreValue: 1, // 肉算x分中的x值, 默认1
-
-    // 数字选择器范围 - 直接定义
-    eatValueRange: Array.from({ length: 20 }, (_, i) => i + 1), // 1-20, 吃肉数量范围
-    topScoreRange: Array.from({ length: 20 }, (_, i) => i + 1),  // 1-20, 封顶分数范围
-    meatScoreRange: [1, 2, 3, 4, 5], // 肉分值范围 1-5
-  },
-  // 组件生命周期
-  lifetimes: {
-    attached() {
-      console.log('🎯 [E8421Meat] 组件加载，模式:', this.properties.mode);
-
-      if (this.properties.mode === 'SysConfig') {
-        // SysConfig模式：使用独立的配置数据，不依赖Store
-        // 使用默认配置初始化，但保持用户之前的选择
-        this.setData({
-          eatingRange: this.data.eatingRange || {
-            "BetterThanBirdie": 1,
-            "Birdie": 1,
-            "Par": 1,
-            "WorseThanPar": 1
-          },
-          meatValueOption: this.data.meatValueOption || 0,
-          meatScoreValue: this.data.meatScoreValue || 1,
-          topSelected: this.data.topSelected || 0,
-          topScoreLimit: this.data.topScoreLimit || 3
-        });
-      } else if (this.properties.mode === 'UserEdit') {
-        // UserEdit模式：等待外部数据初始化，不自动从Store加载
-        // 设置默认值，避免显示"请配置吃肉规则"
-        this.setData({
-          eatingRange: {
-            "BetterThanBirdie": 1,
-            "Birdie": 1,
-            "Par": 1,
-            "WorseThanPar": 1
-          },
-          meatValueOption: 0,
-          meatScoreValue: 1,
-          topSelected: 0,
-          topScoreLimit: 3
-        });
-      }
-
-      // 计算显示值
-      this.updateDisplayValue();
-      // 检查禁用状态
-      this.checkDisabledState();
-
-      // 监听顶洞规则变化
-      this._storeReaction = reaction(
-        () => G4P8421Store.drawConfig,
-        () => {
-          this.checkDisabledState();
-        }
-      );
+    // 默认配置
+    defaultConfig: {
+      eatingRange: {
+        "BetterThanBirdie": 1,
+        "Birdie": 1,
+        "Par": 1,
+        "WorseThanPar": 1
+      },
+      meatValueConfig: 'MEAT_AS_1',
+      meatMaxValue: 10000000
     },
 
-    detached() {
-      // 清理reaction
-      if (this._storeReaction) {
-        this._storeReaction();
-      }
+    currentConfig: null,
+    currentMeatValueOption: 0,
+    currentMeatScore: 1,
+    currentTopSelected: 0,
+    currentTopScoreLimit: 3,
+    displayValue: '请配置吃肉规则'
+  },
+  lifetimes: {
+    attached() {
+      this.updateCurrentConfig();
+    }
+  },
+
+  observers: {
+    'eatingRange, meatValueConfig, meatMaxValue': function (eatingRange, meatValueConfig, meatMaxValue) {
+      console.log('🔍 [E8421Meat] 属性变化:', { eatingRange, meatValueConfig, meatMaxValue });
+      this.updateCurrentConfig();
     }
   },
   methods: {
-    // 检查禁用状态
-    checkDisabledState() {
-      const isDisabled = G4P8421Store.drawConfig === 'NoDraw';
-      this.setData({ isDisabled });
-    },
+    // 更新当前配置状态
+    updateCurrentConfig() {
+      const config = this.getCurrentConfig();
 
-    // 计算显示值
-    updateDisplayValue() {
-      if (this.properties.mode === 'SysConfig' || this.properties.mode === 'UserEdit' || this.properties.mode === undefined) {
-        // 使用组件内部状态
-        const { meatValueOption, meatScoreValue, topSelected, topScoreLimit } = this.data;
-        let displayValue = '';
+      // 计算肉分值选项
+      let meatValueOption = 0;
+      let meatScore = 1;
 
-        // 映射英文格式到中文显示
-        if (meatValueOption === 0) {
-          displayValue = `肉算${meatScoreValue}分`;
-        } else if (meatValueOption === 1) {
-          displayValue = '分值翻倍';
-        } else if (meatValueOption === 2) {
-          displayValue = '分值连续翻倍';
-        } else {
-          displayValue = '请配置吃肉规则';
-        }
-
-        // 添加封顶信息
-        if (meatValueOption === 1 && topSelected === 1) {
-          displayValue += `/${topScoreLimit}分封顶`;
-        } else if (meatValueOption === 1 && topSelected === 0) {
-          displayValue += '/不封顶';
-        }
-
-        this.setData({ displayValue });
-        console.log('🎯 [E8421Meat] 吃肉规则显示值已更新:', displayValue);
+      if (config.meatValueConfig?.startsWith('MEAT_AS_')) {
+        meatValueOption = 0;
+        const score = Number.parseInt(config.meatValueConfig.replace('MEAT_AS_', ''));
+        meatScore = Number.isNaN(score) ? 1 : score;
       } else {
-        // 使用Store数据
-        const store = G4P8421Store;
-        const displayValue = ruleFormatter.formatMeatRule(store.meatValueConfig, store.meatMaxValue);
-
-        this.setData({ displayValue });
+        const index = this.data.meatValueOptions.findIndex(opt => opt.value === config.meatValueConfig);
+        meatValueOption = index >= 0 ? index : 0;
       }
+
+      // 计算封顶选项
+      const topSelected = config.meatMaxValue === 10000000 ? 0 : 1;
+      const topScoreLimit = config.meatMaxValue === 10000000 ? 3 : config.meatMaxValue;
+
+      // 计算显示值
+      const displayValue = this.computeDisplayValue(config);
+
+      this.setData({
+        currentConfig: config,
+        currentMeatValueOption: meatValueOption,
+        currentMeatScore: meatScore,
+        currentTopSelected: topSelected,
+        currentTopScoreLimit: topScoreLimit,
+        displayValue: displayValue
+      });
     },
 
 
-
-
-
-    // 事件处理方法
-    onEatValueChange(e) {
-      const key = e.currentTarget.dataset.key;
-      const selectedIndex = e.detail.value;
-      const selectedValue = this.data.eatValueRange[selectedIndex];
-      console.log('🎯 [E8421Meat] 选择吃肉数量:', key, selectedValue);
-      const eatingRange = { ...this.data.eatingRange };
-      eatingRange[key] = selectedValue;
-      this.setData({ eatingRange });
-    },
-
-    onMeatValueChange(e) {
-      const index = Number.parseInt(e.currentTarget.dataset.index);
-      console.log('🎯 [E8421Meat] 选择选项:', index, '当前meatValueOption:', this.data.meatValueOption);
-      this.setData({ meatValueOption: index });
-      console.log('🎯 [E8421Meat] 设置后meatValueOption:', index);
-    },
-
-    onMeatScoreChange(e) {
-      const selectedIndex = e.detail.value;
-      const selectedScore = this.data.meatScoreRange[selectedIndex];
-      console.log('🎯 [E8421Meat] 选择肉分值:', selectedScore);
-      this.setData({ meatScoreValue: selectedScore });
-    },
-
-    onTopSelect(e) {
-      // 如果选择了"分值翻倍"以外的选项，则禁用封顶选项
-      if (Number(this.data.meatValueOption) !== 1) {
-        console.log('🎯 [E8421Meat] onTopSelect 被调用，但当前状态不是分值翻倍，忽略操作');
+    // UI事件处理
+    onShowConfig() {
+      if (this.properties.disabled) {
+        wx.showToast({
+          title: '当前规则下吃肉功能已禁用',
+          icon: 'none',
+          duration: 2000
+        });
         return;
       }
-      const index = Number.parseInt(e.currentTarget.dataset.index);
-      console.log('🎯 [E8421Meat] 选择封顶选项:', index);
-      this.setData({ topSelected: index });
-    },
-
-    noop() {
-      // 空方法，用于处理禁用状态下的点击事件
-    },
-
-    onTopScoreChange(e) {
-      const selectedIndex = e.detail.value;
-      const selectedScore = this.data.topScoreRange[selectedIndex];
-      console.log('🎯 [E8421Meat] 选择封顶分数:', selectedScore);
-      this.setData({ topScoreLimit: selectedScore });
-    },
-
-    // UI控制方法
-    onShowConfig() {
       this.setData({ visible: true });
     },
 
@@ -202,128 +138,183 @@ Component({
     },
 
     onConfirm() {
-      // 更新显示值
-      this.updateDisplayValue();
-      // 关闭弹窗
       this.setData({ visible: false });
-      // 向父组件传递事件
-      this.triggerEvent('confirm', {
-        value: this.getConfigData()
+    },
+
+    // 防止事件冒泡的空方法
+    noTap() {
+      // 阻止事件冒泡，什么都不做
+    },
+
+    // 配置变更事件
+    onEatValueChange(e) {
+      const keyIndex = e.currentTarget.dataset.index;
+      const value = this.data.eatValueRange[e.detail.value];
+      const key = this.data.eatRangeKeys[keyIndex];
+
+      const currentConfig = this.data.currentConfig;
+      const newEatingRange = { ...currentConfig.eatingRange };
+      newEatingRange[key] = value;
+
+      const config = {
+        ...currentConfig,
+        eatingRange: newEatingRange
+      };
+
+      this.handleConfigChange(config);
+    },
+
+    onMeatValueChange(e) {
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      const meatValueConfig = this.data.meatValueOptions[index].value;
+
+      const currentConfig = this.data.currentConfig;
+      let config = {
+        ...currentConfig,
+        meatValueConfig: meatValueConfig
+      };
+
+      // 如果不是固定分模式，重置为默认分值
+      if (meatValueConfig !== 'MEAT_AS_X') {
+        // 重置封顶配置
+        config.meatMaxValue = 10000000;
+      }
+
+      this.handleConfigChange(config);
+    },
+
+    onMeatScoreChange(e) {
+      const score = this.data.meatScoreRange[e.detail.value];
+      const config = {
+        ...this.data.currentConfig,
+        meatValueConfig: `MEAT_AS_${score}`
+      };
+      this.handleConfigChange(config);
+    },
+
+    onTopSelect(e) {
+      const index = Number.parseInt(e.currentTarget.dataset.index);
+      const currentConfig = this.data.currentConfig;
+
+      if (currentConfig.meatValueConfig !== 'SINGLE_DOUBLE') {
+        wx.showToast({
+          title: '请先选择"分值翻倍"',
+          icon: 'none',
+          duration: 1500
+        });
+        return;
+      }
+
+      const config = {
+        ...currentConfig,
+        meatMaxValue: index === 0 ? 10000000 : this.data.currentTopScoreLimit
+      };
+
+      this.handleConfigChange(config);
+    },
+
+    onTopScoreChange(e) {
+      const topScore = this.data.topScoreRange[e.detail.value];
+      const config = {
+        ...this.data.currentConfig,
+        meatMaxValue: topScore
+      };
+      this.handleConfigChange(config);
+    },
+
+    // 统一的配置变更处理
+    handleConfigChange(config) {
+      console.log('🥩 [E8421Meat] 吃肉配置变化:', config);
+
+      // 更新本地显示值
+      const displayValue = this.computeDisplayValue(config);
+      this.setData({ displayValue });
+
+      // 发送配置变更事件
+      this.triggerEvent('configChange', {
+        componentType: 'meat',
+        config: config
       });
     },
 
+    // 计算显示值
+    computeDisplayValue(config) {
+      if (!config) return '请配置吃肉规则';
 
-    /**
- * 将E8421Meat组件状态转换为配置数据
- * @param {Object} componentState - 组件状态
- * @returns {Object} 配置数据
- */
-    convertE8421MeatToConfig(componentState) {
-      const { eatingRange, meatValueOption, meatScoreValue, topSelected, topScoreLimit } = componentState;
+      const { meatValueConfig, meatMaxValue } = config;
 
-      // 构建肉分值配置
-      let meatValueConfig = null;
-      switch (meatValueOption) {
-        case 0:
-          meatValueConfig = `MEAT_AS_${meatScoreValue}`;
-          break;
-        case 1:
-          meatValueConfig = 'SINGLE_DOUBLE';
-          break;
-        case 2:
-          meatValueConfig = 'CONTINUE_DOUBLE';
-          break;
-      }
-
-      // 构建封顶配置
-      const meatMaxValue = topSelected === 0 ? 10000000 : topScoreLimit;
-
-      return {
-        eatingRange,
-        meatValueConfig,
-        meatMaxValue
-      };
-    },
-
-
-    // 获取配置数据 - 使用工具类简化
-    getConfigData() {
-      const componentState = {
-        eatingRange: this.data.eatingRange,
-        meatValueOption: this.data.meatValueOption,
-        meatScoreValue: this.data.meatScoreValue,
-        topSelected: this.data.topSelected,
-        topScoreLimit: this.data.topScoreLimit
-      };
-
-      // 使用工具类转换组件状态为配置数据
-      const configData = this.convertE8421MeatToConfig(componentState);
-      return configData;
-    },
-
-
-    /**
-     * 将配置数据转换为E8421Meat组件状态
-     * @param {Object} configData - 配置数据
-     * @returns {Object} 组件状态
-     */
-    convertConfigToE8421Meat(configData) {
-      const { eatingRange, meatValueConfig, meatMaxValue } = configData;
-      const state = {};
-
-      // 解析eatingRange
-      if (eatingRange) {
-        if (typeof eatingRange === 'string') {
-          try {
-            state.eatingRange = JSON.parse(eatingRange);
-          } catch (error) {
-            state.eatingRange = {
-              "BetterThanBirdie": 1,
-              "Birdie": 1,
-              "Par": 1,
-              "WorseThanPar": 1
-            };
-          }
-        } else {
-          state.eatingRange = eatingRange;
+      // 格式化肉分值计算方式
+      let meatValueText = '';
+      if (meatValueConfig?.startsWith('MEAT_AS_')) {
+        const score = meatValueConfig.replace('MEAT_AS_', '');
+        meatValueText = `肉算${score}分`;
+      } else {
+        switch (meatValueConfig) {
+          case 'SINGLE_DOUBLE':
+            meatValueText = '分值翻倍';
+            break;
+          case 'CONTINUE_DOUBLE':
+            meatValueText = '分值连续翻倍';
+            break;
+          default:
+            meatValueText = '请配置吃肉规则';
         }
       }
 
-      // 解析meatValueConfig
-      if (meatValueConfig?.startsWith('MEAT_AS_')) {
-        state.meatValueOption = 0;
-        const score = Number.parseInt(meatValueConfig.replace('MEAT_AS_', ''));
-        state.meatScoreValue = Number.isNaN(score) ? 1 : score;
-      } else if (meatValueConfig === 'SINGLE_DOUBLE') {
-        state.meatValueOption = 1;
-      } else if (meatValueConfig === 'CONTINUE_DOUBLE') {
-        state.meatValueOption = 2;
-      } else {
-        state.meatValueOption = 0;
-        state.meatScoreValue = 1;
+      // 格式化封顶值 - 只有在选择"分值翻倍"时才显示封顶信息
+      let meatMaxText = '';
+      if (meatValueConfig === 'SINGLE_DOUBLE') {
+        if (meatMaxValue === 10000000) {
+          meatMaxText = '不封顶';
+        } else {
+          meatMaxText = `${meatMaxValue}分封顶`;
+        }
       }
 
-      // 解析meatMaxValue
-      const maxValue = Number(meatMaxValue);
-      if (maxValue === 10000000) {
-        state.topSelected = 0;
-      } else {
-        state.topSelected = 1;
-        state.topScoreLimit = maxValue > 0 ? maxValue : 3;
+      // 组合显示文本
+      let result = meatValueText;
+      if (meatMaxText) {
+        result += `/${meatMaxText}`;
       }
 
-      return state;
+      return result || '请配置吃肉规则';
     },
 
-    // 初始化配置数据 - 使用工具类简化
-    initConfigData(configData) {
+    // 辅助方法
+    getCurrentConfig() {
+      return {
+        eatingRange: this.properties.eatingRange || this.data.defaultConfig.eatingRange,
+        meatValueConfig: this.properties.meatValueConfig || this.data.defaultConfig.meatValueConfig,
+        meatMaxValue: this.properties.meatMaxValue || this.data.defaultConfig.meatMaxValue
+      };
+    },
 
-      // 使用工具类转换配置数据为组件状态
-      const componentState = this.convertConfigToE8421Meat(configData);
+    getCurrentMeatValueOption() {
+      const meatValueConfig = this.properties.meatValueConfig;
+      if (meatValueConfig?.startsWith('MEAT_AS_')) {
+        return 0;
+      }
+      const index = this.data.meatValueOptions.findIndex(opt => opt.value === meatValueConfig);
+      return index >= 0 ? index : 0;
+    },
 
-      this.setData(componentState);
-      this.updateDisplayValue();
+    getCurrentMeatScore() {
+      const meatValueConfig = this.properties.meatValueConfig;
+      if (meatValueConfig?.startsWith('MEAT_AS_')) {
+        const score = Number.parseInt(meatValueConfig.replace('MEAT_AS_', ''));
+        return Number.isNaN(score) ? 1 : score;
+      }
+      return 1;
+    },
 
+    getCurrentTopSelected() {
+      const meatMaxValue = this.properties.meatMaxValue;
+      return meatMaxValue === 10000000 ? 0 : 1;
+    },
+
+    getCurrentTopScoreLimit() {
+      const meatMaxValue = this.properties.meatMaxValue;
+      return meatMaxValue === 10000000 ? 3 : meatMaxValue;
     }
   }
 });

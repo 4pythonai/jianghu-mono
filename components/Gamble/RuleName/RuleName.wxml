@@ -2,20 +2,20 @@
 <view class="rule-name-container">
   <view class="form-section">
     <view class="form-label">规则名称</view>
-    
+
     <!-- 输入框 -->
     <input
       class="form-input"
       value="{{inputValue}}"
       bindinput="onInput"
-      placeholder="请输入规则名称"
+      placeholder="请输入规则名称."
       maxlength="50"
       disabled="{{pageMode === 'view'}}"
     />
-    
+
     <!-- 生成提示 -->
-    <view 
-      class="generate-hint" 
+    <view
+      class="generate-hint"
       wx:if="{{showGenerateHint && pageMode === 'create' && !isManualEdit}}"
     >
       <text class="hint-icon">💡</text>

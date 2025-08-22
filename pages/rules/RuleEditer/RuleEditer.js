@@ -17,7 +17,7 @@ Page({
         initializing: true,         // 初始化状态
 
         // === 游戏配置 ===
-        gambleType: null,             // 游戏类型 (如 '4p-lasi')
+        gambleType: null,             // 游戏类型 
         gameConfig: null,           // 游戏编辑器配置
         dynamicStore: null,         // 动态Store实例
 

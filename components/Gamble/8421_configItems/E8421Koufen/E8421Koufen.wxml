@@ -1,9 +1,9 @@
 <!-- 扣分规则配置组件 -->
 <!-- 显示部分 -->
-<view class="rule-section" wx:if="{{!visible}}">
+<view class="rule-section {{disabled ? 'disabled' : ''}}" wx:if="{{!visible}}">
   <view class="form-label">扣分规则</view>
   <view class="form-select" bindtap="onShowConfig">
-    <input class="form-input" value="{{displayValue}}" disabled />
+    <view class="form-input-simulator {{disabled ? 'conditionally-disabled' : ''}}">{{displayValue}}</view>
     <view class="select-arrow">
       <text class="arrow-circle">▼</text>
     </view>
@@ -16,10 +16,10 @@
     <view class="modal-title">扣分规则</view>
     <view class="modal-list">
       <!-- 扣分开始条件 -->
-      <block wx:for="{{badScoreBaseLine}}" wx:key="index">
+      <block wx:for="{{badScoreBaseLineOptions}}" wx:key="index">
         <view class="modal-item" bindtap="onSelectStart" data-index="{{index}}">
-          <view class="radio-outer {{selectedStart === index ? 'checked' : ''}}">
-            <view class="radio-inner" wx:if="{{selectedStart === index}}"></view>
+          <view class="radio-outer {{currentSelectedStart === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{currentSelectedStart === index}}"></view>
           </view>
           <view class="option-content">
             <text wx:if="{{index === 0}}">从帕+</text>
@@ -28,44 +28,47 @@
 
             <!-- 帕分数选择器 -->
             <picker
-              wx:if="{{index === 0 && selectedStart === 0}}"
+              wx:if="{{index === 0 && currentSelectedStart === 0}}"
               class="score-picker"
               range="{{paScoreRange}}"
-              value="{{paScore}}"
+              value="{{currentPaScore}}"
               bindchange="onPaScoreChange"
             >
-              <view class="picker-value">{{paScore}}</view>
+              <view class="picker-value">{{currentPaScore}}</view>
             </picker>
-            <text wx:if="{{index === 0 && selectedStart === 0}}">开始扣分</text>
+            <text wx:if="{{index === 0 && currentSelectedStart === 0}}">开始扣分</text>
 
             <!-- 双帕分数选择器 -->
             <picker
-              wx:if="{{index === 1 && selectedStart === 1}}"
+              wx:if="{{index === 1 && currentSelectedStart === 1}}"
               class="score-picker"
               range="{{doubleParScoreRange}}"
-              value="{{doubleParScore}}"
+              value="{{currentDoubleParScore}}"
               bindchange="onDoubleParScoreChange"
             >
-              <view class="picker-value">{{doubleParScore}}</view>
+              <view class="picker-value">{{currentDoubleParScore}}</view>
             </picker>
-            <text wx:if="{{index === 1 && selectedStart === 1}}">开始扣分</text>
+            <text wx:if="{{index === 1 && currentSelectedStart === 1}}">开始扣分</text>
 
             <!-- 显示当前选中但未激活的选项文本 -->
-            <text wx:if="{{index === 0 && selectedStart !== 0}}">{{paScore}}开始扣分</text>
-            <text wx:if="{{index === 1 && selectedStart !== 1}}">{{doubleParScore}}开始扣分</text>
+            <text wx:if="{{index === 0 && currentSelectedStart !== 0}}">{{currentPaScore}}开始扣分</text>
+            <text
+              wx:if="{{index === 1 && currentSelectedStart !== 1}}"
+            >{{currentDoubleParScore}}开始扣分</text>
           </view>
         </view>
       </block>
 
       <!-- 扣分封顶 -->
+      <view class="modal-divider"></view>
       <block wx:for="{{maxOptions}}" wx:key="index">
         <view
-          class="modal-item {{selectedStart === 2 ? 'disabled-item' : ''}}"
+          class="modal-item {{currentSelectedStart === 2 ? 'disabled-item' : ''}}"
           bindtap="onSelectMax"
           data-index="{{index}}"
         >
-          <view class="radio-outer {{selectedMax === index ? 'checked' : ''}}">
-            <view class="radio-inner" wx:if="{{selectedMax === index}}"></view>
+          <view class="radio-outer {{currentSelectedMax === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{currentSelectedMax === index}}"></view>
           </view>
           <view class="option-content">
             <text wx:if="{{index === 0}}">{{item}}</text>
@@ -73,18 +76,18 @@
 
             <!-- 封顶分数选择器 -->
             <picker
-              wx:if="{{index === 1 && selectedMax === 1}}"
+              wx:if="{{index === 1 && currentSelectedMax === 1}}"
               class="score-picker"
               range="{{maxSubScoreRange}}"
-              value="{{maxSubScore - 1}}"
+              value="{{currentMaxSubScore - 1}}"
               bindchange="onMaxSubScoreChange"
             >
-              <view class="picker-value">{{maxSubScore}}</view>
+              <view class="picker-value">{{currentMaxSubScore}}</view>
             </picker>
-            <text wx:if="{{index === 1 && selectedMax === 1}}">分封顶</text>
+            <text wx:if="{{index === 1 && currentSelectedMax === 1}}">分封顶</text>
 
             <!-- 显示当前选中但未激活的选项文本 -->
-            <text wx:if="{{index === 1 && selectedMax !== 1}}">{{maxSubScore}}分封顶</text>
+            <text wx:if="{{index === 1 && currentSelectedMax !== 1}}">{{currentMaxSubScore}}分封顶</text>
           </view>
         </view>
       </block>
@@ -95,12 +98,12 @@
       <!-- 同伴惩罚 -->
       <block wx:for="{{dutyOptions}}" wx:key="index">
         <view
-          class="modal-item {{selectedStart === 2 ? 'disabled-item' : ''}}"
+          class="modal-item {{currentSelectedStart === 2 ? 'disabled-item' : ''}}"
           bindtap="onSelectDuty"
           data-index="{{index}}"
         >
-          <view class="radio-outer {{selectedDuty === index ? 'checked' : ''}}">
-            <view class="radio-inner" wx:if="{{selectedDuty === index}}"></view>
+          <view class="radio-outer {{currentSelectedDuty === index ? 'checked' : ''}}">
+            <view class="radio-inner" wx:if="{{currentSelectedDuty === index}}"></view>
           </view>
           <text>{{item}}</text>
         </view>

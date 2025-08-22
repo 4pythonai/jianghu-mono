@@ -235,9 +235,9 @@ Component({
 
 
             wx.redirectTo({
-                url: '/pages/rules/RuleEditer/RuleEditer?pageMode=create&gambleType=4p-lasi',
+                url: '/pages/rules/RuleEditer/RuleEditer?pageMode=create&gambleType=' + title,
                 success: () => {
-                    console.log('📋 [SysRule] 成功跳转到UnifiedConfigPage页面, 游戏类型:', title);
+                    console.log('📋 [SysRule] 成功跳转到 U, 游戏类型:', title);
                 },
                 fail: (err) => {
                     console.error('📋 [SysRule] 跳转失败:', err);

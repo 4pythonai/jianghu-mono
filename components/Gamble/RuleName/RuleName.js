@@ -1,4 +1,4 @@
-const { generateLasiRuleName } = require('../../../utils/ruleNameGenerator.js')
+const { generateLasiRuleName, generate8421RuleName } = require('../../../utils/ruleNameGenerator.js')
 
 Component({
   properties: {
@@ -7,25 +7,41 @@ Component({
       type: String,
       value: ''
     },
-    
+
     // 页面模式：'create' | 'edit' | 'view'
     pageMode: {
       type: String,
       value: 'edit'
     },
-    
+
     // 游戏类型，用于生成规则名称
     gameType: {
       type: String,
       value: '4p-lasi'
     },
-    
+
     // 用于自动生成规则名称的配置数据
     kpiConfig: {
       type: Object,
       value: null
     },
-    
+
+    // 8421游戏类型的配置数据
+    pointDeduction: {
+      type: Object,
+      value: null
+    },
+
+    drawConfig: {
+      type: Object,
+      value: null
+    },
+
+    meatRules: {
+      type: Object,
+      value: null
+    },
+
     // 是否显示自动生成提示
     showGenerateHint: {
       type: Boolean,
@@ -42,7 +58,7 @@ Component({
 
   observers: {
     // 监听外部value变化
-    'value': function(newValue) {
+    'value': function (newValue) {
       if (newValue !== this.data.inputValue) {
         this.setData({
           inputValue: newValue || ''
@@ -51,9 +67,16 @@ Component({
     },
 
     // 监听KPI配置变化，自动生成规则名称
-    'kpiConfig': function(newConfig) {
+    'kpiConfig': function (newConfig) {
       if (newConfig && this.data.gameType === '4p-lasi') {
         this._generateRuleName(newConfig)
+      }
+    },
+
+    // 监听8421配置变化，自动生成规则名称
+    'pointDeduction, drawConfig, meatRules': function (pointDeduction, drawConfig, meatRules) {
+      if (this.data.gameType === '4p-8421') {
+        this._generate8421RuleName(pointDeduction, drawConfig, meatRules)
       }
     }
   },
@@ -66,7 +89,7 @@ Component({
         inputValue: value,
         isManualEdit: true
       })
-      
+
       // 向外部通知值变化
       this._emitChange(value)
     },
@@ -75,21 +98,36 @@ Component({
     // 根据配置生成规则名称
     _generateRuleName(config) {
       if (!config || this.data.gameType !== '4p-lasi') return
-      
+
       const generatedName = generateLasiRuleName(
         config.indicators || [],
         config.kpiValues || {},
         config.totalCalculationType || 'add_total'
       )
-      
+
       this.setData({ generatedName })
-      
+
       // 如果是创建模式且未手动编辑过，自动使用生成的名称
       if (this.data.pageMode === 'create' && !this.data.isManualEdit) {
         this.setData({ inputValue: generatedName })
         this._emitChange(generatedName)
       }
-      
+
+    },
+
+    // 根据8421配置生成规则名称
+    _generate8421RuleName(pointDeduction, drawConfig, meatRules) {
+      if (this.data.gameType !== '4p-8421') return
+
+      const generatedName = generate8421RuleName(pointDeduction, drawConfig, meatRules)
+
+      this.setData({ generatedName })
+
+      // 如果是创建模式且未手动编辑过，自动使用生成的名称
+      if (this.data.pageMode === 'create' && !this.data.isManualEdit) {
+        this.setData({ inputValue: generatedName })
+        this._emitChange(generatedName)
+      }
     },
 
     // 向外部发送变化事件
@@ -116,7 +154,7 @@ Component({
     this.setData({
       inputValue: this.properties.value || ''
     })
-    
+
     // 如果有初始配置，生成规则名称
     if (this.properties.kpiConfig) {
       this._generateRuleName(this.properties.kpiConfig)

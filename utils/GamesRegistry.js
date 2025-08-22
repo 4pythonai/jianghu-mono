@@ -141,6 +141,27 @@ const GamesRegistry = {
         config.eatingRange = comp.config.eatingRange;
         config.meatValueConfig = comp.config.defaultMeatValue;
         config.meatMaxValue = 10000000;
+      } else if (comp.name === 'E8421Koufen') {
+        config.pointDeduction = {
+          deductionRules: [],
+          multiplierOptions: [1, 2, 3, 4, 5]
+        };
+      } else if (comp.name === 'Draw8421') {
+        config.drawConfig = {
+          mode: 'standard',
+          drawOptions: {},
+          doubleDownEnabled: false
+        };
+      } else if (comp.name === 'E8421Meat') {
+        config.meatRules = {
+          eatingRange: {
+            "Win": 2,
+            "Lose": 0,
+            "Draw": 1
+          },
+          meatValueConfig: 'SINGLE_DOUBLE',
+          meatMaxValue: 10000000
+        };
       }
     });
 

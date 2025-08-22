@@ -1,6 +1,6 @@
 /**
- * 拉丝规则名称生成器
- * 统一处理拉丝规则的命名逻辑
+ * 规则名称生成器
+ * 统一处理不同游戏类型的规则命名逻辑
  */
 
 /**
@@ -79,4 +79,20 @@ function generateLasiRuleName(indicators, kpiValues, totalCalculationType = 'add
     return '四人拉丝';
 }
 
-module.exports = { generateLasiRuleName };
+/**
+ * 生成8421规则名称
+ * @param {Object} pointDeduction - 扣分配置
+ * @param {Object} drawConfig - 平局配置
+ * @param {Object} meatRules - 吃肉规则配置
+ * @returns {string} 生成的规则名称
+ */
+function generate8421RuleName(pointDeduction, drawConfig, meatRules) {
+    const timestamp = new Date().toLocaleTimeString('zh-CN', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    return `8421规则_${timestamp}`;
+}
+
+module.exports = { generateLasiRuleName, generate8421RuleName };

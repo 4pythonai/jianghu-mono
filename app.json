@@ -26,7 +26,6 @@
 		"pages/gameOperation/poster/poster",
 		"pages/gameOperation/personalBilingBook/personalBilingBook",
 		"pages/gameOperation/socreStyle/socreStyle",
-		"pages/rules/SysEdit/SysEdit",
 		"pages/rules/RuleEditer/RuleEditer",
 		"pages/gambleRuntimeConfig/addRuntime/addRuntime",
 		"pages/gambleRuntimeConfig/editRuntime/editRuntime",
