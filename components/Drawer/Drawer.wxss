@@ -44,6 +44,7 @@
 	display: flex !important;
 	flex-direction: column !important;
 	overflow: hidden !important;
+	min-height: 0 !important;
 }
 
 /* 标题栏 */
@@ -51,9 +52,10 @@
 	display: flex !important;
 	justify-content: space-between !important;
 	align-items: center !important;
-	padding: 30rpx 30rpx 20rpx !important;
+	padding: 20rpx 30rpx 15rpx !important;
 	border-bottom: 1rpx solid #f0f0f0 !important;
 	background: #f8f9fa !important;
+	flex-shrink: 0 !important;
 }
 
 .drawer-title {
@@ -67,10 +69,10 @@
 	display: flex !important;
 	justify-content: center !important;
 	align-items: center !important;
-	padding: 20rpx 30rpx 40rpx !important;
+	padding: 20rpx 30rpx 20rpx !important;
 	border-top: 1rpx solid #f0f0f0 !important;
 	background: #f8f9fa !important;
-	margin-top: auto !important;
+	flex-shrink: 0 !important;
 }
 
 .close-btn {
@@ -100,8 +102,7 @@
 
 /* 标题列表 */
 .title-list {
-	flex: 0 0 auto !important;
-	max-height: 300rpx !important;
+	flex: 1 !important;
 	overflow-y: auto !important;
 	border-bottom: 1rpx solid #f0f0f0 !important;
 }
@@ -117,7 +118,7 @@
 }
 
 .title-item.active {
-	background: #e3f2fd !important;
+	background: white !important;
 	border-left: 4rpx solid #2196f3 !important;
 }
 
@@ -132,7 +133,7 @@
 }
 
 .title-item.active .title-text {
-	color: #2196f3 !important;
+	color: #034c0e !important;
 	font-weight: 500 !important;
 }
 
@@ -149,9 +150,9 @@
 .hint-container {
 	text-align: center !important;
 	padding: 40rpx !important;
-	background: #f8f9fa !important;
+	background: white !important;
 	border-radius: 16rpx !important;
-	border: 2rpx dashed #dee2e6 !important;
+	border: 2rpx dashed white !important;
 }
 
 .hint-text {
