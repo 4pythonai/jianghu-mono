@@ -166,7 +166,9 @@ class MIndicatorLasi extends CI_Model {
 
 
         $red_addRewardValue = $this->MReward->getAddTypeRewardValue($hole['par'], $redScores[0], $redScores[1], $rewardPair);
+        $this->addDebug($hole, "🧲 加法奖励: 红队 成绩:{$redScores[0]}/{$redScores[1]},奖励值:" . json_encode($red_addRewardValue));
         $blue_addRewardValue = $this->MReward->getAddTypeRewardValue($hole['par'], $blueScores[0], $blueScores[1], $rewardPair);
+        $this->addDebug($hole, "🧲 加法奖励: 蓝队 成绩:{$blueScores[0]}/{$blueScores[1]},奖励值:" . json_encode($blue_addRewardValue));
 
 
         // 是否有"总成绩"
@@ -195,6 +197,7 @@ class MIndicatorLasi extends CI_Model {
                 $blue_reward = 0;
             }
         }
+        $this->addDebug($hole, "🧲 加法奖励: 红队:{$red_reward},蓝队:{$blue_reward}");
 
         $diff = abs($red_reward - $blue_reward);
         if ($red_reward > $blue_reward) {

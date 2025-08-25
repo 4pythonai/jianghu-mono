@@ -136,11 +136,11 @@ class MReward extends CI_Model {
 
     private function getScoreName($par, $score) {
         // HIO (一杆进洞) 是最特殊的情况，优先判断
-        if ($score === 1) {
+        if (intval($score) === 1) {
             return 'Albatross/HIO';
         }
 
-        $diff = $score - $par;
+        $diff = intval($score) - intval($par);
 
         switch ($diff) {
             case -3:

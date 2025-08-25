@@ -42,9 +42,46 @@ class MMeat extends CI_Model {
             $this->addDebug($hole, "🧲吃肉: 大风吹, 吃掉所有肉, 吃掉剩余的{$available_meat_count} 块肉");
         }
 
-        $meatPoints = $this->executeMeatEating($hole, $eating_count, $context);
-
+        $eaten_meat_blocks = $this->consumeMeat($context, $eating_count);
+        $meatPoints = $this->executeMeatEating($hole, $eaten_meat_blocks, $context);
         $this->distributeMeatPoints($hole, $meatPoints);
+    }
+
+
+    /**
+     * @param array $hole 当前洞数据
+     * @param int $eating_count 能吃几块肉
+     * @param GambleContext $context 上下文数据
+     * @return int 吃肉获得的金额
+     */
+    private function executeMeatEating(&$hole, $eaten_meat_blocks, $context) {
+        if (empty($eaten_meat_blocks)) {
+            return 0;
+        }
+
+
+        $points_before_kick = abs($hole['points_before_kick']); // 不要使用踢完以后的 points
+        $meat_value_config = $context->meatValueConfig;
+        $meatMaxValue = $context->meatMaxValue;
+
+        // 与封顶无关  8421 and lasi
+        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
+            return $this->calculateMeatMoney_MEAT_AS($context, $hole, $eaten_meat_blocks, $meat_value_config);
+        }
+
+        // 8421
+        if ($meat_value_config === 'SINGLE_DOUBLE') {
+            return $this->calculateMeatMoney_SINGLE_DOUBLE($context, $hole, $eaten_meat_blocks, $points_before_kick, $meatMaxValue);
+        }
+
+        // 与封顶无关  8421
+        if ($meat_value_config === 'CONTINUE_DOUBLE') {
+            return $this->calculateMeatMoney_CONTINUE_DOUBLE($context, $hole, $eaten_meat_blocks, $points_before_kick);
+        }
+
+        // { label: '分值翻倍(含奖励)', value: 'DOUBLE_WITH_REWARD' },
+        // { label: '分值翻倍(不含奖励)', value: 'DOUBLE_WITHOUT_REWARD' }
+
     }
 
 
@@ -58,52 +95,7 @@ class MMeat extends CI_Model {
     }
 
 
-    /**
-     * @param array $hole 当前洞数据
-     * @param int $eating_count 能吃几块肉
-     * @param GambleContext $context 上下文数据
-     * @return int 吃肉获得的金额
-     */
-    private function executeMeatEating(&$hole, $eating_count, $context) {
-        if ($eating_count <= 0 || empty($context->meat_pool)) {
-            return 0;
-        }
 
-        // 找出可以吃的肉（按顺序，先产生的先吃）
-        $eaten_meat_blocks = $this->consumeMeat($context, $eating_count);
-
-        if (empty($eaten_meat_blocks)) {
-            return 0;
-        }
-
-
-
-        $points = abs($hole['points_before_kick']); // 不要使用踢完以后的 points
-        $meat_value_config = $context->meatValueConfig;
-        $meatMaxValue = $context->meatMaxValue;
-
-        // debug("🧲吃肉: 999 ={eating_count} 到肉" . $context->meatValueConfig);
-        // debug("🧲吃肉: 999 ={meatMaxValue} 到肉" . $context->meatMaxValue);
-
-        // 与封顶无关
-        if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
-            return $this->calculateMeatMoney_MEAT_AS($context, $hole, $eaten_meat_blocks, $meat_value_config);
-        }
-
-        if ($meat_value_config === 'SINGLE_DOUBLE') {
-            return $this->calculateMeatMoney_SINGLE_DOUBLE($context, $hole, $eaten_meat_blocks, $points, $meatMaxValue);
-        }
-
-        // 与封顶无关
-        if ($meat_value_config === 'CONTINUE_DOUBLE') {
-            return $this->calculateMeatMoney_CONTINUE_DOUBLE($context, $hole, $eaten_meat_blocks, $points);
-        }
-
-
-        // { label: '分值翻倍(含奖励)', value: 'DOUBLE_WITH_REWARD' },
-        // { label: '分值翻倍(不含奖励)', value: 'DOUBLE_WITHOUT_REWARD' }
-
-    }
 
 
 
@@ -159,11 +151,13 @@ class MMeat extends CI_Model {
      *    ✅[ 肉 hole ]    basepoints m5
      * 
      *    m1*basepoints +m2*basepoints +m3*basepoints +m4*basepoints 
+     * 
+     * points_before_kick
      */
-    private function calculateMeatMoney_SINGLE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $raw_points, $meatMaxValue) {
+    private function calculateMeatMoney_SINGLE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $points_before_kick, $meatMaxValue) {
 
         // debug(" 肉:🟥🟥🟥🟥 ", $eaten_meat_blocks);
-        // debug(" 肉:🟥 raw_points  ", $raw_points);
+        // debug(" 肉:🟥 points_before_kick  ", $points_before_kick);
 
         $eaten_count = count($eaten_meat_blocks);
         if ($eaten_count === 0) {
@@ -173,10 +167,10 @@ class MMeat extends CI_Model {
         $metal_total = 0;
         foreach ($eaten_meat_blocks as $meat) {
             $meatHoleMultiplier = $this->findCurrentHoleMultiplier($context, $meat['hole_index']);
-            $one_meat_money = $raw_points * $meatHoleMultiplier;
+            $one_meat_money = $points_before_kick * $meatHoleMultiplier;
 
             $one_meat_money = min($one_meat_money, $meatMaxValue);
-            $this->addDebug($currentHole, " raw_points= { $raw_points } 🧲吃了 1 块肉:肉洞的踢一脚导致,使用 multiplier: {$meatHoleMultiplier},得到: {$one_meat_money}");
+            $this->addDebug($currentHole, " points_before_kick= { $points_before_kick } 🧲吃了 1 块肉:肉洞的踢一脚导致,使用 multiplier: {$meatHoleMultiplier},得到: {$one_meat_money}");
             $metal_total += $one_meat_money;
         }
         return   $metal_total;
@@ -184,7 +178,7 @@ class MMeat extends CI_Model {
 
 
 
-    private function calculateMeatMoney_CONTINUE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $points) {
+    private function calculateMeatMoney_CONTINUE_DOUBLE($context, &$currentHole, $eaten_meat_blocks, $points_before_kick) {
 
         // eaten_meat_blocks
         $eaten_count = count($eaten_meat_blocks);
@@ -192,8 +186,6 @@ class MMeat extends CI_Model {
         if ($eaten_count === 0) {
             return 0;
         }
-
-
         // 连续翻倍模式: 1个肉乘以2,2个肉乘以4,3个肉乘以8
 
         $multiplier = $this->findCurrentHoleMultiplier($context, $currentHole['hindex']);
@@ -202,7 +194,7 @@ class MMeat extends CI_Model {
         }
 
         $factor = pow(2, $eaten_count);
-        $meat_money = $multiplier * $points * ($factor - 1);
+        $meat_money = $multiplier * $points_before_kick * ($factor - 1);
         return min($meat_money);
     }
 
@@ -308,9 +300,6 @@ class MMeat extends CI_Model {
             $eating_count = $this->calculateEatingCountByPerformance($winner_performance, $context->eatingRange);
             $this->addDebug($hole, "拉丝吃肉分析: DOUBLE_WITH_REWARD 模式，根据表现 {$winner_performance} 最多可以吃 {$eating_count} 块肉");
         }
-
-
-        // DOUBLE_WITHOUT_REWARD
 
         return $eating_count;
     }
