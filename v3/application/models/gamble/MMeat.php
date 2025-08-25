@@ -61,6 +61,8 @@ class MMeat extends CI_Model {
 
 
         $points_before_kick = abs($hole['points_before_kick']); // 不要使用踢完以后的 points
+
+
         $meat_value_config = $context->meatValueConfig;
         $meatMaxValue = $context->meatMaxValue;
 
@@ -78,6 +80,20 @@ class MMeat extends CI_Model {
         if ($meat_value_config === 'CONTINUE_DOUBLE') {
             return $this->calculateMeatMoney_CONTINUE_DOUBLE($context, $hole, $eaten_meat_blocks, $points_before_kick);
         }
+
+
+        if ($meat_value_config === 'DOUBLE_WITHOUT_REWARD') {
+            $lasiPointsBeforeAddReward = $hole['lasiWinPointsBeforeAddReward'];
+            return $this->calculateMeatMoney_SINGLE_DOUBLE($context, $hole, $eaten_meat_blocks, $lasiPointsBeforeAddReward, $meatMaxValue);
+        }
+
+
+        if ($meat_value_config === 'DOUBLE_WITH_REWARD') {
+            return $this->calculateMeatMoney_SINGLE_DOUBLE($context, $hole, $eaten_meat_blocks, $points_before_kick, $meatMaxValue);
+        }
+
+
+
 
         // { label: '分值翻倍(含奖励)', value: 'DOUBLE_WITH_REWARD' },
         // { label: '分值翻倍(不含奖励)', value: 'DOUBLE_WITHOUT_REWARD' }

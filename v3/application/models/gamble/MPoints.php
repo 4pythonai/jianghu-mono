@@ -13,7 +13,12 @@ class MPoints extends CI_Model {
 
     public function setWinnerFailerAndPoints(&$hole, $context) {
 
-        $kpiIndicatorRedBlue = $this->summarizeKpiIndicatorsConcise($hole['KPI_INDICATORS']);
+        $kpiIndicatorRedBlue = $this->SummarizeKPIsIndicator($hole['KPI_INDICATORS']);
+
+        $kpiIndicatorRedBlueWithoutAddReward = $this->SummarizeNoAddRewardKPIsIndicators($hole['KPI_INDICATORS']);
+
+        // debug($kpiIndicatorRedBlueWithoutAddReward);
+
         $indicatorBlue = $kpiIndicatorRedBlue['indicatorBlue'];
         $indicatorRed = $kpiIndicatorRedBlue['indicatorRed'];
 
@@ -34,21 +39,25 @@ class MPoints extends CI_Model {
         if ($indicatorBlue > $indicatorRed) {
             $hole['winner'] = 'blue';
             $hole['failer'] = 'red';
+            $hole['lasiWinPointsBeforeAddReward'] = $kpiIndicatorRedBlueWithoutAddReward['indicatorBlue'];
             $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队得分: {$indicatorBlue}, 红队得分: {$indicatorRed}, 结果:蓝队获胜";
         }
 
         if ($indicatorBlue < $indicatorRed) {
             $hole['winner'] = 'red';
             $hole['failer'] = 'blue';
+            $hole['lasiWinPointsBeforeAddReward'] = $kpiIndicatorRedBlueWithoutAddReward['indicatorRed'];
             $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队得分: {$indicatorBlue}, 红队得分: {$indicatorRed}, 结果:红队获胜";
         }
 
         if ($indicatorBlue == $indicatorRed) {
             $hole['winner'] = null;
             $hole['failer'] = null;
+            $hole['lasiWinPointsBeforeAddReward'] = 0;
             $hole['debug'][] = "顶洞配置: {$drawConfig}, 蓝队得分: {$indicatorBlue}, 红队得分: {$indicatorRed}, 结果:指标一样,无输赢";
         }
 
+        // 此时,已经决定了输赢,需要计算没有加法奖励的"纯粹的点数",由于可能因为"加法奖励",发生输赢反转,因此, lasiPointsBeforeAddReWard 可能为负数的.
 
 
         $hole['points_before_kick'] = $points;
@@ -78,7 +87,7 @@ class MPoints extends CI_Model {
     }
 
 
-    public function summarizeKpiIndicatorsConcise(array $indicators): array {
+    public function SummarizeKPIsIndicator(array $indicators): array {
         $totalRed = array_sum(array_column($indicators, 'red'));
         $totalBlue = array_sum(array_column($indicators, 'blue'));
 
@@ -87,6 +96,27 @@ class MPoints extends CI_Model {
             'indicatorRed' => $totalRed,
         ];
     }
+
+
+
+    // 去除加法奖励
+    private function SummarizeNoAddRewardKPIsIndicators(array $KPI_INDICATORS): array {
+
+
+        $clean_indicators = $KPI_INDICATORS;
+        unset($clean_indicators['add_reward']);
+
+
+
+        $totalRed = array_sum(array_column($clean_indicators, 'red'));
+        $totalBlue = array_sum(array_column($clean_indicators, 'blue'));
+        return [
+            'indicatorBlue' => $totalBlue,
+            'indicatorRed' => $totalRed,
+        ];
+    }
+
+
 
     /**
      * 根据顶洞配置判断是否为顶洞
