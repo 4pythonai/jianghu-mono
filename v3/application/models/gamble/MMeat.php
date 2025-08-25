@@ -12,9 +12,12 @@ class MMeat extends CI_Model {
      * @param GambleContext $context 上下文数据（通过引用传递）
      */
     public function processEating(&$hole, &$context) {
+
+
         if (!$this->canEatMeat($hole)) {
             return;
         }
+
 
         $best_winner = $this->findBestWinner($hole['winner_detail'] ?? []);
         if (!$best_winner) {
@@ -23,12 +26,15 @@ class MMeat extends CI_Model {
         }
 
         $winner_performance = $this->calculatePerformance($best_winner['computedScore'], $hole);
+
         $this->addDebug($hole, "吃肉分析: 最佳赢家(userid: {$best_winner['userid']})杆数: {$best_winner['computedScore']}, Par: {$hole['par']}, 表现: {$winner_performance}");
 
         $available_meat_count = $this->getAvailableMeatCount($context);
+
         $this->addDebug($hole, "肉池状态: 总共 " . count($context->meat_pool) . " 块肉，可用 {$available_meat_count} 块肉");
 
         $eating_count = $this->determineEatingCount($winner_performance, $context, $available_meat_count, $hole);
+        // debug("🧲吃肉: 888 吃了 ", $eating_count);
 
         // 如果是最后一个洞,且配置了大风吹,则在最后一个洞吃掉所有
         if ($this->ifLastHole($context, $hole)  && $context->bigWind == 'y') {
@@ -76,6 +82,9 @@ class MMeat extends CI_Model {
         $meat_value_config = $context->meatValueConfig;
         $meatMaxValue = $context->meatMaxValue;
 
+        // debug("🧲吃肉: 999 ={eating_count} 到肉" . $context->meatValueConfig);
+        // debug("🧲吃肉: 999 ={meatMaxValue} 到肉" . $context->meatMaxValue);
+
         // 与封顶无关
         if (strpos($meat_value_config, 'MEAT_AS_') === 0) {
             return $this->calculateMeatMoney_MEAT_AS($context, $hole, $eaten_meat_blocks, $meat_value_config);
@@ -89,6 +98,11 @@ class MMeat extends CI_Model {
         if ($meat_value_config === 'CONTINUE_DOUBLE') {
             return $this->calculateMeatMoney_CONTINUE_DOUBLE($context, $hole, $eaten_meat_blocks, $points);
         }
+
+
+        // { label: '分值翻倍(含奖励)', value: 'DOUBLE_WITH_REWARD' },
+        // { label: '分值翻倍(不含奖励)', value: 'DOUBLE_WITHOUT_REWARD' }
+
     }
 
 

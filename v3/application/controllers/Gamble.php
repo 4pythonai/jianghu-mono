@@ -251,12 +251,7 @@ class Gamble extends MY_Controller {
      */
     public function getUserGambleRules() {
         $userid = $this->getUser();
-
-
-
-        try {
-            // 查询用户创建的所有赌球规则，只获取需要的字段
-            $query = "SELECT id as userRuleId, 
+        $query = "SELECT id as userRuleId, 
                      create_time,
                      kpis,
                      RewardConfig,
@@ -266,60 +261,103 @@ class Gamble extends MY_Controller {
                      gambleSysName,
                      gambleUserName,
                      badScoreMaxLost,
-                     meatMaxValue,
+                     CAST(meatMaxValue AS UNSIGNED) as meatMaxValue,
+                     PartnerDutyCondition,
                      meatValueConfig,
-                     playersNumber,
                      badScoreBaseLine,
+                     playersNumber,
+                     CAST(badScoreMaxLost AS SIGNED) as badScoreMaxLost,
                      update_time
                      FROM t_gamble_rules_user 
                      WHERE creator_id = ? and softdeleted='n'
                      ORDER BY create_time DESC";
 
-            $rules = $this->db->query($query, [$userid])->result_array();
+        $rules = $this->db->query($query, [$userid])->result_array();
 
-            // 按人数分组
-            $twoPlayers = [];
-            $threePlayers = [];
-            $fourPlayers = [];
+        // 添加调试信息
+        logtext("getUserGambleRules - User ID: " . $userid);
+        logtext("getUserGambleRules - Raw rules count: " . count($rules));
+        foreach ($rules as $index => $rule) {
+            logtext("getUserGambleRules - Rule " . $index . " ID: " . $rule['userRuleId'] . ", Name: " . $rule['gambleUserName']);
+        }
 
-            foreach ($rules as $rule) {
-                switch ($rule['playersNumber']) {
-                    case 2:
-                        $twoPlayers[] = $rule;
-                        break;
-                    case 3:
-                        $threePlayers[] = $rule;
-                        break;
-                    case 4:
-                        $fourPlayers[] = $rule;
-                        break;
-                }
+        // 修复：使用新的数组而不是引用，避免数据污染
+        $processedRules = [];
+        foreach ($rules as $rule) {
+            $processedRule = $rule; // 创建副本
+
+            if (!empty($processedRule['kpis'])) {
+                $processedRule['kpis'] = json_decode($processedRule['kpis'], true);
             }
 
-            // 构建返回数据
-            $ret = [];
-            $ret['code'] = 200;
-            $ret['message'] = '获取成功';
-            $ret['userRules'] = [
-                'user_id' => $userid,
-                'twoPlayers' => $twoPlayers,
-                'threePlayers' => $threePlayers,
-                'fourPlayers' => $fourPlayers,
-                'total' => [
-                    'twoPlayers' => count($twoPlayers),
-                    'threePlayers' => count($threePlayers),
-                    'fourPlayers' => count($fourPlayers),
-                    'overall' => count($rules)
-                ]
-            ];
+            if (!empty($processedRule['eatingRange'])) {
+                $processedRule['eatingRange'] = json_decode($processedRule['eatingRange'], true);
+            }
 
-            echo json_encode($ret, JSON_UNESCAPED_UNICODE);
-        } catch (Exception $e) {
-            echo json_encode([
-                'code' => 500,
-                'message' => '服务器内部错误：' . $e->getMessage()
-            ], JSON_UNESCAPED_UNICODE);
+            if (!empty($processedRule['RewardConfig'])) {
+                $processedRule['RewardConfig'] = json_decode($processedRule['RewardConfig'], true);
+            }
+
+            // 转换整数型字段
+            if (isset($processedRule['meatMaxValue'])) {
+                $processedRule['meatMaxValue'] = (int)$processedRule['meatMaxValue'];
+            }
+            if (isset($processedRule['badScoreMaxLost'])) {
+                $processedRule['badScoreMaxLost'] = (int)$processedRule['badScoreMaxLost'];
+            }
+            if (isset($processedRule['playersNumber'])) {
+                $processedRule['playersNumber'] = (int)$processedRule['playersNumber'];
+            }
+
+            $processedRules[] = $processedRule;
         }
+
+        // 按人数分组
+        $twoPlayers = [];
+        $threePlayers = [];
+        $fourPlayers = [];
+
+        foreach ($processedRules as $rule) {
+            switch ($rule['playersNumber']) {
+                case 2:
+                    $twoPlayers[] = $rule;
+                    break;
+                case 3:
+                    $threePlayers[] = $rule;
+                    break;
+                case 4:
+                    $fourPlayers[] = $rule;
+                    break;
+            }
+        }
+
+        // 添加分组后的调试信息
+        logtext("getUserGambleRules - Two players count: " . count($twoPlayers));
+        logtext("getUserGambleRules - Three players count: " . count($threePlayers));
+        logtext("getUserGambleRules - Four players count: " . count($fourPlayers));
+
+        foreach ($fourPlayers as $index => $rule) {
+            logtext("getUserGambleRules - Four players rule " . $index . " ID: " . $rule['userRuleId'] . ", Name: " . $rule['gambleUserName']);
+        }
+
+        // 构建返回数据
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '获取成功';
+        $ret['userRules'] = [
+            'user_id' => $userid,
+            'twoPlayers' => $twoPlayers,
+            'threePlayers' => $threePlayers,
+            'fourPlayers' => $fourPlayers,
+            'total' => [
+                'twoPlayers' => count($twoPlayers),
+                'threePlayers' => count($threePlayers),
+                'fourPlayers' => count($fourPlayers),
+                'overall' => count($processedRules)
+            ]
+        ];
+
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
 

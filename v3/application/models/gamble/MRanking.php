@@ -23,7 +23,8 @@ class MRanking extends CI_Model {
         // 加载不同人数的排名模型
         $this->load->model('gamble/MRankingP2');
         $this->load->model('gamble/MRankingP3');
-        $this->load->model('gamble/MRankingP4');
+        $this->load->model('gamble/MRankingP4_8421');
+        $this->load->model('gamble/MRankingP4_lasi');
     }
 
     /**
@@ -45,8 +46,15 @@ class MRanking extends CI_Model {
         }
 
         if (count($context->attenders) == 4) {
-            $tmp_rank = $this->MRankingP4->rankAttenders($holeIndex, $hole, $context);
-            $hole['ranking'] = $tmp_rank;
+            if ($context->gambleSysName == '4p-8421') {
+                $tmp_rank = $this->MRankingP4_8421->rankAttenders($holeIndex, $hole, $context);
+                $hole['ranking'] = $tmp_rank;
+            }
+
+            if ($context->gambleSysName == '4p-lasi') {
+                $tmp_rank = $this->MRankingP4_lasi->rankAttenders($holeIndex, $hole, $context);
+                $hole['ranking'] = $tmp_rank;
+            }
         }
     }
 }

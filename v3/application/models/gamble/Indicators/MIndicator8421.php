@@ -38,6 +38,8 @@ class MIndicator8421 extends CI_Model {
             $_8421_add_sub_max_config = $this->get8421AddSubMaxConfig($context, $attender);
             $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['computedScores'][$attender], $_8421_add_sub_max_config);
 
+            $hole['indicators_8421'][$attender] = $indicator;
+
             if (in_array($attender, $hole['blue'])) {
                 $ind_blue += $indicator;
             }
@@ -49,11 +51,11 @@ class MIndicator8421 extends CI_Model {
 
         $diff = abs($ind_blue - $ind_red);
         if ($ind_blue > $ind_red) {
-            $hole['KPI_INDICATORS'][$kpiname] = ['red' => $diff, 'blue' =>  -1 * $diff];
+            $hole['KPI_INDICATORS'][$kpiname] = ['red' => -1 * $diff, 'blue' =>  $diff];
         }
 
         if ($ind_blue < $ind_red) {
-            $hole['KPI_INDICATORS'][$kpiname] = ['red' => -1 * $diff, 'blue' => $diff];
+            $hole['KPI_INDICATORS'][$kpiname] = ['red' =>  $diff, 'blue' => -1 * $diff];
         }
 
         if ($ind_blue == $ind_red) {

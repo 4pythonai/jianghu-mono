@@ -134,7 +134,12 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
         foreach ($context->usefulHoles as $index => &$hole) {
             $hole['debug'] = [];
-            $hole['indicators'] = [];
+
+
+            if ($context->gambleSysName == '4p-8421') {
+                // 因为 8421 需要每个用户的得分,进行排名
+                $hole['indicators_8421'] = [];
+            }
 
 
             // 红蓝分组 - 直接传递 useful_holes 的引用以确保实时数据
@@ -146,6 +151,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
             // 计算所有分项指标
             $this->MIndicator->calculateKPIs($hole, $context);
+
+
 
             // 判断输赢,设置点数
             $this->MPoints->setWinnerFailerAndPoints($hole, $context);

@@ -26,7 +26,7 @@ class G4P8421Parser  extends CI_Model {
 
             'drawConfig' => $config['drawConfig'],
 
-            'eatingRange' =>  json_encode($config['eatingRange'], JSON_UNESCAPED_UNICODE),
+            'eatingRange' =>   $config['eatingRange'],
             'meatValueConfig' => $config['meatValueConfig'],
             'meatMaxValue' => $config['meatMaxValue'],
         ];

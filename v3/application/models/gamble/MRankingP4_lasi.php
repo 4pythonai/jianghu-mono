@@ -42,7 +42,7 @@ if (!defined('BASEPATH')) {
  * )
  */
 
-class MRankingP4 extends CI_Model {
+class MRankingP4_lasi extends CI_Model {
 
     public function __construct() {
         parent::__construct();
@@ -91,6 +91,8 @@ class MRankingP4 extends CI_Model {
 
         // 按得分排序（得分越高越好）
         usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+
+
             $indicatorA = $hole['indicators'][$auser] ?? 0;
             $indicatorB = $hole['indicators'][$bUser] ?? 0;
 
