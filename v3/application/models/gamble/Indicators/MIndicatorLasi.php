@@ -165,10 +165,11 @@ class MIndicatorLasi extends CI_Model {
         }
 
 
-        $red_addRewardValue = $this->MReward->getAddTypeRewardValue($hole['par'], $redScores[0], $redScores[1], $rewardPair);
-        $this->addDebug($hole, "🧲 加法奖励: 红队 成绩:{$redScores[0]}/{$redScores[1]},奖励值:" . json_encode($red_addRewardValue));
-        $blue_addRewardValue = $this->MReward->getAddTypeRewardValue($hole['par'], $blueScores[0], $blueScores[1], $rewardPair);
-        $this->addDebug($hole, "🧲 加法奖励: 蓝队 成绩:{$blueScores[0]}/{$blueScores[1]},奖励值:" . json_encode($blue_addRewardValue));
+        $red_addRewardValue = $this->MReward->getLasiAddTypeRewardValue($kpiname, 'red', $hole,    $hole['par'], $redScores[0], $redScores[1], $rewardPair);
+        $this->addDebug($hole, "🧲 红方 {$kpiname} 加法奖励: 红队 成绩:{$redScores[0]}/{$redScores[1]},奖励值:" . json_encode($red_addRewardValue));
+
+        $blue_addRewardValue = $this->MReward->getLasiAddTypeRewardValue($kpiname, 'blue', $hole,   $hole['par'], $blueScores[0], $blueScores[1], $rewardPair);
+        $this->addDebug($hole, "🧲 蓝方 {$kpiname} 加法奖励: 蓝队 成绩:{$blueScores[0]}/{$blueScores[1]},奖励值:" . json_encode($blue_addRewardValue));
 
 
         // 是否有"总成绩"

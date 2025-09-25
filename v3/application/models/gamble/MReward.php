@@ -11,9 +11,6 @@ if (!defined('BASEPATH')) {
 class MReward extends CI_Model {
 
 
-
-
-    // 拉丝加法奖励,组合优先覆盖,否则2个分开计算并合计
     public function getAddTypeRewardValue($par, $score1, $score2, $RewardPair) {
         // 获取两个杆数对应的得分名称
         $scoreName1 = $this->getScoreName($par, $score1);
@@ -23,9 +20,6 @@ class MReward extends CI_Model {
         $getValue1 = $this->getAddRewardValue($RewardPair, $scoreName1)['rewardValue'];
         $getValue2 = $this->getAddRewardValue($RewardPair, $scoreName2)['rewardValue'];
 
-        // 构建组合名称和查找组合奖励值
-        $combinationName = $this->buildCombinationName($scoreName1, $scoreName2);
-        $combinationValue = $this->getAddRewardValue($RewardPair, $combinationName)['rewardValue'];
 
         // 初始化返回数组
         $result = [
@@ -39,16 +33,231 @@ class MReward extends CI_Model {
             'finalRewardValue' => 0,
         ];
 
-        // 如果找到组合奖励，返回组合值，否则返回单个值之和
-        if ($combinationValue['find'] == 'y') {
-            $result['findCombination'] = 'y';
-            $result['finalRewardValue'] = $combinationValue['rewardValue'];
-        } else {
-            $result['finalRewardValue'] = $getValue1 + $getValue2;
-        }
+
+        $result['findCombination'] = 'n';
+        $result['finalRewardValue'] = $getValue1 + $getValue2;
 
         return $result;
     }
+
+
+
+
+
+
+    // 拉丝加法奖励,无组合,
+    public function getLasiAddTypeRewardValue($kpiname, $color, $hole, $par, $score1, $score2, $RewardPair) {
+        // 获取两个杆数对应的得分名称
+
+
+        $KPI_INDICATORS = $hole['KPI_INDICATORS'];
+
+
+        if (array_key_exists('best', $KPI_INDICATORS) && array_key_exists('worst', $KPI_INDICATORS)) {
+
+            $scoreName1 = $this->getScoreName($par, $score1);
+            $scoreName2 = $this->getScoreName($par, $score2);
+
+            $kpi_best_factor = abs(intval($KPI_INDICATORS['best']['red']));
+            $kpi_worst_factor = abs(intval($KPI_INDICATORS['worst']['red']));
+
+
+            if ($score1 == $score2) {
+                $getValue1 =  $kpi_best_factor * $this->getAddRewardValue($RewardPair, $scoreName1)['rewardValue'];
+                $getValue2 = $kpi_worst_factor * $this->getAddRewardValue($RewardPair, $scoreName2)['rewardValue'];
+
+
+                // 初始化返回数组
+                $result = [
+                    'Score1' => $score1,
+                    'ScoreName1' => $scoreName1,
+                    'rewardValue1' => $getValue1,
+                    'Score2' => $score2,
+                    'ScoreName2' => $scoreName2,
+                    'rewardValue2' => $getValue2,
+                    'findCombination' => 'n',
+                    'finalRewardValue' => 0,
+                ];
+            }
+
+            if ($score1 < $score2) { // 获取单个奖励值
+                $getValue1 =  $kpi_best_factor * $this->getAddRewardValue($RewardPair, $scoreName1)['rewardValue'];
+                $getValue2 = $kpi_worst_factor * $this->getAddRewardValue($RewardPair, $scoreName2)['rewardValue'];
+
+
+                // 初始化返回数组
+                $result = [
+                    'Score1' => $score1,
+                    'ScoreName1' => $scoreName1,
+                    'rewardValue1' => $getValue1,
+                    'Score2' => $score2,
+                    'ScoreName2' => $scoreName2,
+                    'rewardValue2' => $getValue2,
+                    'findCombination' => 'n',
+                    'finalRewardValue' => 0,
+                ];
+            }
+
+            if ($score1 > $score2) { // 获取单个奖励值
+                $getValue1 =  $kpi_worst_factor * $this->getAddRewardValue($RewardPair, $scoreName1)['rewardValue'];
+                $getValue2 = $kpi_best_factor * $this->getAddRewardValue($RewardPair, $scoreName2)['rewardValue'];
+
+
+                // 初始化返回数组
+                $result = [
+                    'Score1' => $score1,
+                    'ScoreName1' => $scoreName1,
+                    'rewardValue1' => $getValue1,
+                    'Score2' => $score2,
+                    'ScoreName2' => $scoreName2,
+                    'rewardValue2' => $getValue2,
+                    'findCombination' => 'n',
+                    'finalRewardValue' => 0,
+                ];
+            }
+
+
+
+
+            $result['findCombination'] = 'n';
+            $result['finalRewardValue'] = $getValue1 + $getValue2;
+
+            return $result;
+        }
+
+        if (array_key_exists('best', $KPI_INDICATORS) && ! array_key_exists('worst', $KPI_INDICATORS)) {
+
+
+            $scoreName1 = $this->getScoreName($par, $score1);
+            $scoreName2 = $this->getScoreName($par, $score2);
+
+            $kpi_best_factor = abs(intval($KPI_INDICATORS['best']['red']));
+
+            // 获取单个奖励值
+            $getValue1 =  $kpi_best_factor * $this->getAddRewardValue($RewardPair, $scoreName1)['rewardValue'];
+            $getValue2 = $kpi_best_factor * $this->getAddRewardValue($RewardPair, $scoreName2)['rewardValue'];
+
+
+            // 初始化返回数组
+            $result = [
+                'Score1' => $score1,
+                'ScoreName1' => $scoreName1,
+                'rewardValue1' => $getValue1,
+                'Score2' => $score2,
+                'ScoreName2' => $scoreName2,
+                'rewardValue2' => $getValue2,
+                'findCombination' => 'n',
+                'finalRewardValue' => 0,
+            ];
+
+
+            $result['findCombination'] = 'n';
+            $result['finalRewardValue'] = $getValue1 + $getValue2;
+
+            return $result;
+        }
+
+        if (! array_key_exists('best', $KPI_INDICATORS) && array_key_exists('worst', $KPI_INDICATORS)) {
+
+
+            $scoreName1 = $this->getScoreName($par, $score1);
+            $scoreName2 = $this->getScoreName($par, $score2);
+
+            $kpi_worst_factor = abs(intval($KPI_INDICATORS['worst']['red']));
+
+            // 获取单个奖励值
+            $getValue1 =  $kpi_worst_factor * $this->getAddRewardValue($RewardPair, $scoreName1)['rewardValue'];
+            $getValue2 = $kpi_worst_factor * $this->getAddRewardValue($RewardPair, $scoreName2)['rewardValue'];
+
+
+            // 初始化返回数组
+            $result = [
+                'Score1' => $score1,
+                'ScoreName1' => $scoreName1,
+                'rewardValue1' => $getValue1,
+                'Score2' => $score2,
+                'ScoreName2' => $scoreName2,
+                'rewardValue2' => $getValue2,
+                'findCombination' => 'n',
+                'finalRewardValue' => 0,
+            ];
+
+
+            $result['findCombination'] = 'n';
+            $result['finalRewardValue'] = $getValue1 + $getValue2;
+
+            return $result;
+        }
+
+        if (! array_key_exists('best', $KPI_INDICATORS) && ! array_key_exists('worst', $KPI_INDICATORS)) {
+
+            $scoreName1 = $this->getScoreName($par, $score1);
+            $scoreName2 = $this->getScoreName($par, $score2);
+
+
+            // 获取单个奖励值
+            $getValue1 =  $this->getAddRewardValue($RewardPair, $scoreName1)['rewardValue'];
+            $getValue2 =  $this->getAddRewardValue($RewardPair, $scoreName2)['rewardValue'];
+
+
+            // 初始化返回数组
+            $result = [
+                'Score1' => $score1,
+                'ScoreName1' => $scoreName1,
+                'rewardValue1' => $getValue1,
+                'Score2' => $score2,
+                'ScoreName2' => $scoreName2,
+                'rewardValue2' => $getValue2,
+                'findCombination' => 'n',
+                'finalRewardValue' => 0,
+            ];
+
+
+            $result['findCombination'] = 'n';
+            $result['finalRewardValue'] = $getValue1 + $getValue2;
+
+            return $result;
+        }
+    }
+
+
+    private function  ifColorWinBestFactor($color, $KPI_INDICATORS) {
+
+        if (! array_key_exists('best', $KPI_INDICATORS)) {
+            return 1;
+        }
+
+        // 某方在"头"指标上赢了
+        if (intval($KPI_INDICATORS['best'][$color]) > 0) {
+            return  intval($KPI_INDICATORS['best'][$color]);
+        }
+
+        // 双方在"头"指标打平
+        if (intval($KPI_INDICATORS['best'][$color]) == 0) {
+            return  1;
+        }
+    }
+
+
+
+
+    private function  ifColorWinWorstFactor($color, $KPI_INDICATORS) {
+
+        if (!array_key_exists('worst', $KPI_INDICATORS)) {
+            return 1;
+        }
+
+        // 某方在"头"指标上赢了
+        if (intval($KPI_INDICATORS['worst'][$color]) > 0) {
+            return  intval($KPI_INDICATORS['worst'][$color]);
+        }
+
+        // 双方在"头"指标打平
+        if (intval($KPI_INDICATORS['worst'][$color]) == 0) {
+            return  1;
+        }
+    }
+
 
 
 
