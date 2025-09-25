@@ -15,16 +15,16 @@ Component({
         // 排名配置选项
         rankingOptions: [
             {
-                value: 'indicator.reverse',
-                label: '1得分相同按出身得分排序',
+                value: 'stroking.reverse',
+                label: '1受让成绩相同按出身受让成绩排序',
             },
             {
-                value: 'indicator.win_loss.reverse_indicator',
-                label: '2得分相同按输赢排序，输赢相同按前洞输赢排序',
+                value: 'stroking.win_loss.reverse_indicator',
+                label: '2受让成绩相同按输赢排序，输赢相同按前洞输赢排序',
             },
             {
-                value: 'indicator.win_loss.reverse_win',
-                label: '3得分相同按输赢排序，输赢相同按前洞得分排序',
+                value: 'stroking.win_loss.reverse_win',
+                label: '3受让成绩相同按输赢排序，输赢相同按前洞得分排序',
             },
             {
                 value: 'score.reverse',
