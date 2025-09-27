@@ -63,7 +63,7 @@ class MRankingP4_lasi extends CI_Model {
 
         switch ($tieResolveConfig) {
             case 'indicator.reverse':
-                return $this->rankByIndicatorReverse($holeIndex, $hole, $context, $bootStrapOrder);
+                return $this->rankByIndicatorReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder);
             case 'indicator.win_loss.reverse_win':
                 return $this->rankByIndicatorWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder);
             case 'indicator.win_loss.reverse_indicator':
@@ -86,7 +86,7 @@ class MRankingP4_lasi extends CI_Model {
     /**
      *  得分(Indicator)相同按"出身"得分(Indicator)排序
      */
-    private function rankByIndicatorReverse($holeIndex, $hole, $context, $bootStrapOrder) {
+    private function rankByIndicatorReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
         // 按得分排序（得分越高越好）

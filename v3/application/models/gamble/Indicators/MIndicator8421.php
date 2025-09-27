@@ -105,7 +105,7 @@ class MIndicator8421 extends CI_Model {
      * 更差成绩规则：比Par+2多1杆及以上，分值 = 0
      * 
      * @param int $par 标准杆数
-     * @param int $score 实际成绩
+     * @param int $score 实际杆数
      * @param array $userConfig 用户配置分值表
      * @return int 8421指标值(不会为负数)
      */
