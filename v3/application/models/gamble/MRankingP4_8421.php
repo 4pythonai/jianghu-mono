@@ -119,26 +119,27 @@ class MRankingP4_8421 extends CI_Model {
     /**
      *  1得分相同按出身得分排序
      */
-    private function rankByIndicatorReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder) {
+    private function rankByIndicatorReverseIndicator($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
         // 记录排序前的状态
         $beforeSortInfo = [];
         foreach ($users as $userid) {
             $nickname = $this->getNicknameByUserid($userid, $context);
-            $indicator = $hole['indicators_8421'][$userid] ?? 0;
+            $indicator = $hole['indicators_8421'][$userid];
             $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 得分:{$indicator}";
         }
         $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
+
         // 按得分排序（得分越高越好）
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+        usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
 
             $indicatorA = $hole['indicators_8421'][$auser];
             $indicatorB = $hole['indicators_8421'][$bUser];
-
+            $this->addDebug($hole, "🔄 开始比较: {$nicknameA} vs {$nicknameB}");
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(得分:{$indicatorA}) vs {$nicknameB}(得分:{$indicatorB})");
 
             if ($indicatorA !== $indicatorB) {
@@ -148,7 +149,7 @@ class MRankingP4_8421 extends CI_Model {
                 return $result;
             }
 
-            $this->addDebug($hole, "⚖️ 得分相同({$indicatorA})，回溯历史得分比较");
+            $this->addDebug($hole, "⚖️ 得分相同({$indicatorA})， 回溯历史得分进行比较 ");
             // 得分相同，回溯历史得分
             return $this->compareByHistoryIndicator($auser, $bUser, $holeIndex, $context);
         });
@@ -162,8 +163,7 @@ class MRankingP4_8421 extends CI_Model {
             $rank = $i + 1;
             $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 得分:{$indicator}";
         }
-        $this->addDebug($hole, "🏆 最终排名: " . implode(', ', $afterSortInfo));
-
+        $this->addDebug($hole,   "<strong>" . $hole['holename'] . "打完后排名"  . implode(', ', $afterSortInfo) . "</strong>");
         return $this->arrayToRanking($users);
     }
 
@@ -172,7 +172,7 @@ class MRankingP4_8421 extends CI_Model {
      *  2得分相同按输赢排序，输赢相同按出身输赢排序
      */
 
-    private function rankByIndicatorWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder) {
+    private function rankByIndicatorWinLossReverseWin($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
         // 记录排序前的状态
@@ -187,7 +187,7 @@ class MRankingP4_8421 extends CI_Model {
         $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
         // 按得分排序
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+        usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
             $indicatorA = $hole['indicators_8421'][$auser] ?? 0;
@@ -241,7 +241,7 @@ class MRankingP4_8421 extends CI_Model {
     /**
      *  3得分相同按输赢排序，输赢相同按出身得分排序
      */
-    private function rankByIndicatorWinLossReverseIndicator($holeIndex, $hole, $context, $bootStrapOrder) {
+    private function rankByIndicatorWinLossReverseIndicator($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
         // 记录排序前的状态
@@ -256,7 +256,7 @@ class MRankingP4_8421 extends CI_Model {
         $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
         // 按得分排序
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+        usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
             $indicatorA = $hole['indicators_8421'][$auser] ?? 0;
@@ -310,7 +310,7 @@ class MRankingP4_8421 extends CI_Model {
      *
      * 4成绩相同按出身成绩排序
      */
-    private function rankByScoreReverseScore($holeIndex, $hole, $context, $bootStrapOrder) {
+    private function rankByScoreReverseScore($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
         // 记录排序前的状态
@@ -323,7 +323,7 @@ class MRankingP4_8421 extends CI_Model {
         $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
         // 按成绩排序（成绩越小越好）
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+        usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
             $scoreA = $hole['computedScores'][$auser];
@@ -363,7 +363,7 @@ class MRankingP4_8421 extends CI_Model {
     /**
      *  5成绩相同按输赢排序，输赢相同按出身输赢排序
      */
-    private function rankByScoreWinLossReverseWin($holeIndex, $hole, $context, $bootStrapOrder) {
+    private function rankByScoreWinLossReverseWin($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
         // 记录排序前的状态
@@ -378,7 +378,7 @@ class MRankingP4_8421 extends CI_Model {
         $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
         // 按成绩排序
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+        usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
             $scoreA = $hole['computedScores'][$auser];
@@ -431,7 +431,7 @@ class MRankingP4_8421 extends CI_Model {
     /**
      * 6成绩相同按输赢排序，输赢相同按出身成绩排序
      */
-    private function rankByScoreWinLossReverseScore($holeIndex, $hole, $context, $bootStrapOrder) {
+    private function rankByScoreWinLossReverseScore($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
         // 记录排序前的状态
@@ -446,7 +446,7 @@ class MRankingP4_8421 extends CI_Model {
         $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
         // 按成绩排序
-        usort($users, function ($auser, $bUser) use ($hole, $holeIndex, $context) {
+        usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
             $scoreA = $hole['computedScores'][$auser];
@@ -584,6 +584,8 @@ class MRankingP4_8421 extends CI_Model {
 
         for ($i = $holeIndex - 1; $i >= 0; $i--) {
             if (!isset($context->usefulHoles[$i])) {
+                debug(" 第" . $i . " 个洞,无历史得分 ");
+                $this->addDebug($context->usefulHoles[$holeIndex], "第{$i}个洞,无历史得分");
                 continue;
             }
 
@@ -594,7 +596,7 @@ class MRankingP4_8421 extends CI_Model {
             // 添加到当前洞的debug信息中
             if (isset($context->usefulHoles[$holeIndex])) {
                 $historyHoleName = $historyHole['holename'] ?? "洞{$i}";
-                $this->addDebug($context->usefulHoles[$holeIndex], "📜 历史洞{$historyHoleName}: {$nicknameA}(得分:{$indicatorA}) vs {$nicknameB}(得分:{$indicatorB})");
+                $this->addDebug($context->usefulHoles[$holeIndex], "📜 Compare_历史洞 {$historyHoleName}: {$nicknameA}(得分:{$indicatorA}) vs {$nicknameB}(得分:{$indicatorB})");
             }
 
             if ($indicatorA !== $indicatorB) {
@@ -718,40 +720,4 @@ class MRankingP4_8421 extends CI_Model {
         }
         return $userid;
     }
-
-    // $context[group_info] => Array
-    // (
-    //     [0] => Array
-    //         (
-    //             [userid] => 837590
-    //             [username] => 图图
-    //             [nickname] => 图图
-    //             [cover] => https://qiaoyincapital.com/avatar/2025/08/27/avatar_837590_1756261062.jpeg
-    //         )
-
-    //     [1] => Array
-    //         (
-    //             [userid] => 14
-    //             [username] => 不发力
-    //             [nickname] => 不发力
-    //             [cover] => https://qiaoyincapital.com/avatar/14.png
-    //         )
-
-    //     [2] => Array
-    //         (
-    //             [userid] => 59
-    //             [username] => B何斌
-    //             [nickname] => B何斌
-    //             [cover] => https://qiaoyincapital.com/avatar/59.png
-    //         )
-
-    //     [3] => Array
-    //         (
-    //             [userid] => 122
-    //             [username] =>  戈多
-    //             [nickname] =>  戈多
-    //             [cover] => https://qiaoyincapital.com/avatar/122.png
-    //         )
-
-    // )
 }

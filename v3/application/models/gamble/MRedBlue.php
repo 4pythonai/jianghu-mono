@@ -48,7 +48,7 @@ class MRedBlue extends CI_Model {
      * 
      * 4_固拉: 确定后不改变
      * 4_乱拉: (1,4 名 ) vs (2,3名),第一洞为 1,4 名,第二洞为 2,3名
-     * 4_高手不见面: (A组 第1名+B组第2名) vs (B组第1+A组第2),防止一方实力太强
+     * 4_高手不见面: (A组  高手1名+普手2名) vs ( 高手2名+ 普手第1),防止一方实力太强
      * 
      */
 
@@ -58,7 +58,7 @@ class MRedBlue extends CI_Model {
             if ($context->redBlueConfig == "4_乱拉") {
                 $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[3]];
                 $hole['red'] = [$context->bootStrapOrder[1], $context->bootStrapOrder[2]];
-                $hole['debug'][] = "分组:{$context->redBlueConfig},第一洞分组,采用出发设置";
+                $hole['debug'][] = $hole['holename'] . "分组:{$context->redBlueConfig},第一洞分组,采用出发设置";
                 $hole['ranking'] = $context->bootStrapOrder;
             }
 
@@ -89,42 +89,66 @@ class MRedBlue extends CI_Model {
                 // 使用实时的 usefulHoles 数据，如果没有则回退到 context 中的数据
                 $hole['blue'] = [$context->bootStrapOrder[0], $context->bootStrapOrder[1]];
                 $hole['red'] = [$context->bootStrapOrder[2], $context->bootStrapOrder[3]];
-                $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组 ";
             }
 
             if ($context->redBlueConfig == "4_乱拉") {
-                // 使用实时的 usefulHoles 数据，如果没有则回退到 context 中的数据
                 $hole['blue'] = [$preRanking[1], $preRanking[4]];
                 $hole['red'] = [$preRanking[2], $preRanking[3]];
-                $hole['debug'][] = "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组,排序后 ";
+
+                // 添加debug信息
+                $blueDebug = [];
+                foreach ($hole['blue'] as $userid) {
+                    $nickname = $this->getNicknameByUserid($userid, $context);
+                    $blueDebug[] = $userid . '/' . $nickname;
+                }
+                $redDebug = [];
+                foreach ($hole['red'] as $userid) {
+                    $nickname = $this->getNicknameByUserid($userid, $context);
+                    $redDebug[] = $userid . '/' . $nickname;
+                }
+                $hole['debug'][] = $hole['holename'] . "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组, 蓝组为 " . implode(', ', $blueDebug) . ", 红组为 " . implode(', ', $redDebug);
             }
+
+
+            // (A组  高手1名+普手2名) vs ( 高手2名+ 普手第1)
 
             if ($context->redBlueConfig == "4_高手不见面") {
                 $bootStrapOrder = $context->bootStrapOrder;
-                $id0 = $bootStrapOrder[0];
-                $id1 = $bootStrapOrder[1];
+                $gaoshou_1 = $bootStrapOrder[0]; // 高手第一名
+                $gaoshou_2 = $bootStrapOrder[1]; // 高手第二名
+
+                $pushou_1 = $bootStrapOrder[2]; // 普手第一名
+                $pushou_2 = $bootStrapOrder[3]; // 普手第二名
+
 
                 $preRanking = $context->usefulHoles[$index - 1]['ranking']; // 假设是 [1=>126, 2=>837590, 3=>245, 4=>246]
-                // 去掉出发顺序前两位
-                $filtered = [];
-                foreach ($preRanking as $rank => $pid) {
-                    if ($pid != $id0 && $pid != $id1) {
-                        $filtered[] = $pid;
-                    }
-                }
-                // 取最后一个
-                $pairId = end($filtered);
 
-                // 蓝组
-                $hole['blue'] = [$id0, $pairId];
-                // 红组
-                $hole['red'] = [];
-                foreach ($bootStrapOrder as $pid) {
-                    if (!in_array($pid, $hole['blue'])) {
-                        $hole['red'][] = $pid;
+                // 去掉所有高手,得到普手
+                $pushou_players = [];
+                foreach ($preRanking as $rank => $pid) {
+                    if ($pid != $gaoshou_1 && $pid != $gaoshou_2) {
+                        $pushou_players[] = $pid;
                     }
                 }
-                $hole['debug'][] = "分组:{$context->redBlueConfig},第" . ($index + 1) . "洞分组, 0号和上一洞剩余名次最后一名一组";
+
+                // 去掉所有普手,得到高手
+                $gaoshou_players = [];
+                foreach ($preRanking as $rank => $pid) {
+                    if ($pid != $pushou_1 && $pid != $pushou_2) {
+                        $gaoshou_players[] = $pid;
+                    }
+                }
+
+                $hole['blue'] = [$gaoshou_players[0], $pushou_players[1]];
+                $hole['red'] =  [$gaoshou_players[1], $pushou_players[0]];
+
+                $gaoshou_1_nickname = $this->getNicknameByUserid($gaoshou_players[0], $context);
+                $gaoshou_2_nickname = $this->getNicknameByUserid($gaoshou_players[1], $context);
+                $pushou_1_nickname = $this->getNicknameByUserid($pushou_players[0], $context);
+                $pushou_2_nickname = $this->getNicknameByUserid($pushou_players[1], $context);
+
+                $hole['debug'][] = $hole['holename'] . " 高手第一名为 {$gaoshou_1_nickname}, 普手第二名为 {$pushou_2_nickname}, 分配为蓝组";
+                $hole['debug'][] = $hole['holename'] . " 高手第二名为 {$gaoshou_2_nickname}, 普手第一名为 {$pushou_1_nickname}, 分配为红组";
             }
 
             // 上一洞打平,不换边
@@ -134,5 +158,25 @@ class MRedBlue extends CI_Model {
                 $hole['debug'][] = "分组:上一洞打平,不换边";
             }
         }
+    }
+
+
+    private function addDebug(&$hole, $message) {
+        if (!isset($hole['debug'])) {
+            $hole['debug'] = [];
+        }
+        $hole['debug'][] = $message;
+    }
+
+
+    private function getNicknameByUserid($userid, $context) {
+        if (isset($context->group_info) && is_array($context->group_info)) {
+            foreach ($context->group_info as $user) {
+                if (isset($user['userid']) && $user['userid'] == $userid) {
+                    return $user['nickname'] ?? $user['username'] ?? $userid;
+                }
+            }
+        }
+        return $userid;
     }
 }
