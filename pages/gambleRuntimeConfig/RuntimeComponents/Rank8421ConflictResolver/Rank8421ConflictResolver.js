@@ -6,7 +6,7 @@ Component({
         // 当前选中的配置
         selectedConfig: {
             type: String,
-            value: 'indicator.reverse'
+            value: 'indicator.reverse_indicator'
         }
     },
 
@@ -15,28 +15,28 @@ Component({
         // 排名配置选项
         rankingOptions: [
             {
-                value: 'indicator.reverse',
-                label: '得分相同按出身得分排序',
+                value: 'indicator.reverse_indicator',
+                label: '1得分相同按出身得分排序',
             },
             {
                 value: 'indicator.win_loss.reverse_win',
-                label: '得分相同按输赢排序，输赢相同按出身得分排序',
+                label: '2得分相同按输赢排序，输赢相同按出身输赢排序',
             },
             {
                 value: 'indicator.win_loss.reverse_indicator',
-                label: '得分相同按输赢排序，输赢相同按出身输赢排序',
+                label: '3得分相同按输赢排序，输赢相同按出身得分排序',
             },
             {
-                value: 'score.reverse',
-                label: '成绩相同按出身成绩排序',
+                value: 'score.reverse_score',
+                label: '4成绩相同按出身成绩排序',
             },
             {
                 value: 'score.win_loss.reverse_win',
-                label: '成绩相同按输赢排序，输赢相同按出身成绩排序',
+                label: '5成绩相同按输赢排序，输赢相同按出身输赢排序',
             },
             {
                 value: 'score.win_loss.reverse_score',
-                label: '成绩相同按输赢排序，输赢相同按出身输赢排序',
+                label: '6成绩相同按输赢排序，输赢相同按出身成绩排序',
             }
 
         ],

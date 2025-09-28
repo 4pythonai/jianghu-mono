@@ -27,16 +27,16 @@ Component({
                 label: '3受让成绩相同按输赢排序，输赢相同按前洞得分排序',
             },
             {
-                value: 'score.reverse',
+                value: 'score.reverse_score',
                 label: '4成绩相同按出身成绩排序',
             },
             {
                 value: 'score.win_loss.reverse_score',
-                label: '5成绩相同按输赢排序，输赢相同按前洞输赢排序',
+                label: '5成绩相同按输赢排序，输赢相同按前洞成绩排序',
             },
             {
                 value: 'score.win_loss.reverse_win',
-                label: '6成绩相同按输赢排序，输赢相同按前洞成绩排序',
+                label: '6成绩相同按输赢排序，输赢相同按前洞输赢排序',
             },
 
 

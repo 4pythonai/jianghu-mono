@@ -74,7 +74,7 @@ Page({
                 gambleUserName: existingRuntimeConfig.gambleUserName,
                 red_blue_config: existingRuntimeConfig.red_blue_config || '4_固拉',
                 bootstrap_order: existingRuntimeConfig.bootstrap_order_parsed || existingRuntimeConfig.bootstrap_order || [],
-                ranking_tie_resolve_config: existingRuntimeConfig.ranking_tie_resolve_config || 'score.reverse',
+                ranking_tie_resolve_config: existingRuntimeConfig.ranking_tie_resolve_config || 'score.reverse_score',
                 playerIndicatorConfig: existingRuntimeConfig.val8421_config_parsed || existingRuntimeConfig.playerIndicatorConfig || {},
                 stroking_config: existingRuntimeConfig.stroking_config || []
             }
