@@ -109,11 +109,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     // 处理让杆
     public function StrokingScores() {
         $this->context->scores = $this->MStroking->processStroking($this->context->scores, $this->stroking_config);
-
         // debug("让杆配置:");
         // debug($this->stroking_config);
         // debug($this->context->scores);
-
     }
 
 
@@ -139,8 +137,8 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
         foreach ($context->usefulHoles as $index => &$hole) {
             $hole['debug'] = [];
-
-
+            // debug("++++++++++ ❤️🧡💛💚💙💜 +++++++++++++");
+            // debug($hole);
             if ($context->gambleSysName == '4p-8421') {
                 // 因为 8421 需要每个用户的得分,进行排名
                 $hole['indicators_8421'] = [];

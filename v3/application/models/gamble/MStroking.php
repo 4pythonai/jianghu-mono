@@ -10,14 +10,49 @@ class MStroking extends CI_Model {
 
 
     public function processStroking($scores, $stroking_config) {
+        // 将配置格式转换为以 userid 为键的格式
+        $normalized_config = $this->normalizeStrokingConfig($stroking_config);
+
         $fixed = [];
 
         foreach ($scores as $one_hole) {
-            $processed_hole = $this->processHoleStroking($one_hole, $stroking_config);
+            $processed_hole = $this->processHoleStroking($one_hole, $normalized_config);
             $fixed[] = $processed_hole;
         }
 
         return $fixed;
+    }
+
+    /**
+     * 标准化让杆配置格式
+     * 将数组格式转换为以 userid 为键的格式
+     */
+    private function normalizeStrokingConfig($stroking_config) {
+        // 如果参数不是数组，直接返回空数组
+        if (!is_array($stroking_config)) {
+            return [];
+        }
+
+        $normalized = [];
+
+        foreach ($stroking_config as $config) {
+            if (isset($config['userid']) && isset($config['holeRanges'])) {
+                $userid = $config['userid'];
+                $normalized[$userid] = [];
+
+                // 为每个洞号创建配置
+                foreach ($config['holeRanges'] as $hole_number) {
+                    $hole_key = '#' . $hole_number;
+                    $normalized[$userid][$hole_key] = [
+                        'PAR3' => isset($config['PAR3']) ? $config['PAR3'] : 0,
+                        'PAR4' => isset($config['PAR4']) ? $config['PAR4'] : 0,
+                        'PAR5' => isset($config['PAR5']) ? $config['PAR5'] : 0,
+                    ];
+                }
+            }
+        }
+
+        return $normalized;
     }
 
     /**
@@ -31,12 +66,12 @@ class MStroking extends CI_Model {
         $par = $one_hole['par'];
 
         // 复制原始得分作为基础
-        $one_hole['computedScores'] = [];
+        $one_hole['strokedScores'] = [];
 
         // 处理每个玩家的得分
         foreach ($one_hole['raw_scores'] as $player_id => $raw_score) {
             $afterScore = $this->calculatePlayerStroking($player_id, $raw_score, $hole_id, $par, $stroking_config);
-            $one_hole['computedScores'][$player_id] = $afterScore;
+            $one_hole['strokedScores'][$player_id] = $afterScore;
         }
 
         return $one_hole;
@@ -80,9 +115,6 @@ class MStroking extends CI_Model {
 
         $stroking_value = $current_stroking_config[$par_key];
         $real_score = $raw_score - $stroking_value;
-
-        // 记录让杆日志
-        // debug("info: 让杆发生: userID {$player_id} 在洞 {$hole_id} 发生让分, PAR{$par}, 让杆数:{$stroking_value}, 原始得分:{$raw_score}, 实际得分:{$real_score}");
 
         // 确保得分不为负数
         return max(0, $real_score);

@@ -118,7 +118,7 @@ class MRankingP4_lasi extends CI_Model {
         $beforeSortInfo = [];
         foreach ($users as $userid) {
             $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['computedScores'][$userid] ?? 0;
+            $score = $hole['strokedScores'][$userid] ?? 0;
             $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score}";
         }
         $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
@@ -127,8 +127,8 @@ class MRankingP4_lasi extends CI_Model {
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
-            $scoreA = $hole['computedScores'][$auser];
-            $scoreB = $hole['computedScores'][$bUser];
+            $scoreA = $hole['strokedScores'][$auser];
+            $scoreB = $hole['strokedScores'][$bUser];
 
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
@@ -149,7 +149,7 @@ class MRankingP4_lasi extends CI_Model {
         for ($i = 0; $i < count($users); $i++) {
             $userid = $users[$i];
             $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['computedScores'][$userid] ?? 0;
+            $score = $hole['strokedScores'][$userid] ?? 0;
             $rank = $i + 1;
             $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 成绩:{$score}";
         }
@@ -171,7 +171,7 @@ class MRankingP4_lasi extends CI_Model {
         $beforeSortInfo = [];
         foreach ($users as $userid) {
             $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['computedScores'][$userid] ?? 0;
+            $score = $hole['strokedScores'][$userid] ?? 0;
             $isWinner = $this->isUserWinner($userid, $hole);
             $winStatus = $isWinner ? "🥇胜" : "🥈负";
             $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
@@ -182,8 +182,8 @@ class MRankingP4_lasi extends CI_Model {
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
-            $scoreA = $hole['computedScores'][$auser];
-            $scoreB = $hole['computedScores'][$bUser];
+            $scoreA = $hole['strokedScores'][$auser];
+            $scoreB = $hole['strokedScores'][$bUser];
 
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
@@ -217,7 +217,7 @@ class MRankingP4_lasi extends CI_Model {
         for ($i = 0; $i < count($users); $i++) {
             $userid = $users[$i];
             $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['computedScores'][$userid] ?? 0;
+            $score = $hole['strokedScores'][$userid] ?? 0;
             $isWinner = $this->isUserWinner($userid, $hole);
             $winStatus = $isWinner ? "🥇胜" : "🥈负";
             $rank = $i + 1;
@@ -239,7 +239,7 @@ class MRankingP4_lasi extends CI_Model {
         $beforeSortInfo = [];
         foreach ($users as $userid) {
             $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['computedScores'][$userid] ?? 0;
+            $score = $hole['strokedScores'][$userid] ?? 0;
             $isWinner = $this->isUserWinner($userid, $hole);
             $winStatus = $isWinner ? "🥇胜" : "🥈负";
             $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
@@ -250,8 +250,8 @@ class MRankingP4_lasi extends CI_Model {
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
             $nicknameB = $this->getNicknameByUserid($bUser, $context);
-            $scoreA = $hole['computedScores'][$auser];
-            $scoreB = $hole['computedScores'][$bUser];
+            $scoreA = $hole['strokedScores'][$auser];
+            $scoreB = $hole['strokedScores'][$bUser];
 
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
@@ -285,7 +285,7 @@ class MRankingP4_lasi extends CI_Model {
         for ($i = 0; $i < count($users); $i++) {
             $userid = $users[$i];
             $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['computedScores'][$userid] ?? 0;
+            $score = $hole['strokedScores'][$userid] ?? 0;
             $isWinner = $this->isUserWinner($userid, $hole);
             $winStatus = $isWinner ? "🥇胜" : "🥈负";
             $rank = $i + 1;
@@ -350,8 +350,8 @@ class MRankingP4_lasi extends CI_Model {
             }
 
             $historyHole = $context->usefulHoles[$i];
-            $scoreA = $historyHole['computedScores'][$userA];
-            $scoreB = $historyHole['computedScores'][$userB];
+            $scoreA = $historyHole['strokedScores'][$userA];
+            $scoreB = $historyHole['strokedScores'][$userB];
 
             // 添加到当前洞的debug信息中
             if (isset($context->usefulHoles[$holeIndex])) {

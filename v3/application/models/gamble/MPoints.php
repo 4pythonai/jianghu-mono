@@ -69,14 +69,14 @@ class MPoints extends CI_Model {
         if ($context->RewardConfig['rewardType'] == 'multiply') {
 
             if ($hole['winner'] == 'red') {
-                $score1 = $hole['computedScores'][$hole['red'][0]];
-                $score2 = $hole['computedScores'][$hole['red'][1]];
+                $score1 = $hole['strokedScores'][$hole['red'][0]];
+                $score2 = $hole['strokedScores'][$hole['red'][1]];
                 $lasiMultiplyor = $this->MReward->getMultiplyTypeRewardValue($hole['par'], $score1, $score2, $context->RewardConfig['rewardPair']);
                 $lasiMultiplyFactor = $lasiMultiplyor['finalRewardValue'];
             }
             if ($hole['winner'] == 'blue') {
-                $score1 = $hole['computedScores'][$hole['blue'][0]];
-                $score2 = $hole['computedScores'][$hole['blue'][1]];
+                $score1 = $hole['strokedScores'][$hole['blue'][0]];
+                $score2 = $hole['strokedScores'][$hole['blue'][1]];
                 $lasiMultiplyor = $this->MReward->getMultiplyTypeRewardValue($hole['par'], $score1, $score2, $context->RewardConfig['rewardPair']);
                 $lasiMultiplyFactor = $lasiMultiplyor['finalRewardValue'];
             }

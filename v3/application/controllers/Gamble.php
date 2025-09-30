@@ -100,11 +100,19 @@ class Gamble extends MY_Controller {
         $userid = $this->getUser();
         unset($json_paras['holeList']);
 
+        // stroking_config
+        if (isset($json_paras['stroking_config']) && is_array($json_paras['stroking_config'])) {
+            $stroking_config = json_encode($json_paras['stroking_config'], JSON_UNESCAPED_UNICODE);
+        } else {
+            $stroking_config = $json_paras['stroking_config'] ?? null;
+        }
+
         if (isset($json_paras['bootstrap_order']) && is_array($json_paras['bootstrap_order'])) {
             $bootstrap_order = '[' . implode(',', $json_paras['bootstrap_order']) . ']';
         } else {
             $bootstrap_order = $json_paras['bootstrap_order'] ?? null;
         }
+
         $json_paras['bootstrap_order'] = $bootstrap_order;
         if (isset($json_paras['playerIndicatorConfig']) && is_array($json_paras['playerIndicatorConfig'])) {
             $playerIndicatorConfig = json_encode($json_paras['playerIndicatorConfig'], JSON_UNESCAPED_UNICODE);
@@ -137,6 +145,7 @@ class Gamble extends MY_Controller {
             'playerIndicatorConfig' => $json_paras['playerIndicatorConfig'],
             'startHoleindex' => $startHoleindex,
             'roadLength' => $roadLength,
+            'stroking_config' => $stroking_config,
             'creator_id' => $json_paras['creator_id']
         ];
 

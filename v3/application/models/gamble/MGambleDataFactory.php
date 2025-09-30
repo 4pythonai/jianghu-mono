@@ -116,7 +116,7 @@ class MGambleDataFactory extends CI_Model {
 
       // 组装 hole 和 score 的组合
       $oneHoleMeta =  $hole;
-      $oneHoleMeta['computedScores'] = $correspondingScore['computedScores'];
+      $oneHoleMeta['strokedScores'] = $correspondingScore['strokedScores'];
       $oneHoleMeta['raw_scores'] = $correspondingScore['raw_scores'];
       $useful_holes[] = $oneHoleMeta;
     }
