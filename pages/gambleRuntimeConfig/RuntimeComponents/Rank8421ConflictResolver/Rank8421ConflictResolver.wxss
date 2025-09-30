@@ -33,6 +33,28 @@
 	border-color: #4caf50;
 }
 
+/* 禁用状态 */
+.ranking-option.disabled {
+	opacity: 0.5;
+	background-color: #f5f5f5;
+	border-color: #e0e0e0;
+	cursor: not-allowed;
+}
+
+.ranking-option.disabled .option-label {
+	color: #999;
+}
+
+.ranking-option.disabled .radio-indicator {
+	border-color: #ccc;
+}
+
+.disabled-hint {
+	font-size: 22rpx;
+	color: #ff9800;
+	margin-left: 10rpx;
+}
+
 /* 选择指示器 */
 .radio-indicator {
 	width: 40rpx;
@@ -109,7 +131,7 @@
 	padding: 10rpx;
 	margin-top: 10rpx;
 	font-size: 24rpx;
-	color: #999;
+	color: #ff9800;
 	line-height: 1.4;
 }
 

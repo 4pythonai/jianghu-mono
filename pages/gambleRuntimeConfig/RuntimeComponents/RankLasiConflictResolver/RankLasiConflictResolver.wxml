@@ -3,7 +3,7 @@
   <!-- 选项列表 -->
   <view class="ranking-options">
     <view
-      class="ranking-option {{selectedIndex === index ? 'selected' : ''}}"
+      class="ranking-option {{selectedIndex === index ? 'selected' : ''}} {{item.requiresStroking && !hasStroking ? 'disabled' : ''}}"
       wx:for="{{rankingOptions}}"
       wx:key="value"
       bindtap="onSelectRanking"
@@ -16,13 +16,16 @@
 
       <!-- 选项内容 -->
       <view class="option-content">
-        <view class="option-label">{{item.label}}</view>
+        <view class="option-label">
+          {{item.label}}
+          <text wx:if="{{item.requiresStroking && !hasStroking}}" class="disabled-hint">（需要配置让杆）</text>
+        </view>
       </view>
     </view>
   </view>
 
   <!-- 提示信息 -->
   <view class="hint-text">
-    <text></text>
+    <text wx:if="{{!hasStroking}}">提示：受让成绩相关选项需要先配置让杆</text>
   </view>
 </view>

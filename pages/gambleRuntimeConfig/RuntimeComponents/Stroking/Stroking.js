@@ -227,6 +227,7 @@ Component({
                 this.setData({ enableStroking: true });
                 this.openConfigModal();
             } else {
+                this.setData({ enableStroking: false });
                 this.updateFinalConfig([]);
             }
         },
@@ -389,6 +390,11 @@ Component({
          * 获取当前配置（用于外部收集配置）
          */
         getConfig() {
+            // 如果让杆功能未启用，直接返回空数组
+            if (!this.data.enableStroking) {
+                return [];
+            }
+
             // 保存当前用户的临时配置
             this.saveCurrentTempConfig();
 

@@ -85,7 +85,9 @@ Page({
                 is8421Game: this.data.is8421Game,
                 needsStroking: this.data.needsStroking,
                 gambleSysName: this.data.gambleSysName,
-                existingRuntimeConfig: this.data.existingRuntimeConfig  // 添加现有配置的调试信息
+                playerIndicatorConfig: this.data.runtimeConfig.playerIndicatorConfig,
+                playerIndicatorConfigValues: Object.values(this.data.runtimeConfig.playerIndicatorConfig || {}),
+                existingRuntimeConfig: this.data.existingRuntimeConfig
             });
         });
 
@@ -103,6 +105,28 @@ Page({
 
 
 
+
+    // 让杆配置变化处理
+    onStrokingConfigChange(e) {
+        const { config } = e.detail;
+        console.log('[EditRuntime] 让杆配置更新:', config);
+        this.setData({
+            'runtimeConfig.stroking_config': config
+        });
+    },
+
+    // 球员指标配置变化处理
+    onPlayerIndicatorConfigChange(e) {
+        const { config } = e.detail;
+        console.log('[EditRuntime] 🎯 球员指标配置更新:', {
+            config,
+            values: Object.values(config),
+            uniqueCount: new Set(Object.values(config)).size
+        });
+        this.setData({
+            'runtimeConfig.playerIndicatorConfig': config
+        });
+    },
 
     // 确认配置 - 使用共享方法
     onConfirmConfig() {

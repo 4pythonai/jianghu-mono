@@ -157,6 +157,9 @@ Component({
             // 更新球员配置显示
             this.updatePlayersWithConfig();
 
+            // 触发配置变化事件
+            this.triggerEvent('configChange', { config: newVal8421Config });
+
             this.onCancel();
         },
 

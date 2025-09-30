@@ -3,7 +3,7 @@
   <!-- 选项列表 -->
   <view class="ranking-options">
     <view
-      class="ranking-option {{selectedIndex === index ? 'selected' : ''}}"
+      class="ranking-option {{selectedIndex === index ? 'selected' : ''}} {{item.requiresDifferentIndicators && !hasDifferentIndicators ? 'disabled' : ''}}"
       wx:for="{{rankingOptions}}"
       wx:key="value"
       bindtap="onSelectRanking"
@@ -16,13 +16,16 @@
 
       <!-- 选项内容 -->
       <view class="option-content">
-        <view class="option-label">{{item.label}}</view>
+        <view class="option-label">
+          {{item.label}}
+          <text wx:if="{{item.requiresDifferentIndicators && !hasDifferentIndicators}}" class="disabled-hint">（需要差异化的球员指标）</text>
+        </view>
       </view>
     </view>
   </view>
 
   <!-- 提示信息 -->
   <view class="hint-text">
-    <text></text>
+    <text wx:if="{{!hasDifferentIndicators}}">提示：按指标排序相关选项需要球员配置不同的指标（如8421、6321等）</text>
   </view>
 </view>

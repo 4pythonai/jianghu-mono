@@ -149,7 +149,23 @@ Page({
         sharedCollectAllConfigs(this, this.data.needsStroking);
     },
 
+    // 让杆配置变化处理
+    onStrokingConfigChange(e) {
+        const { config } = e.detail;
+        console.log('[AddRuntime] 让杆配置更新:', config);
+        this.setData({
+            'runtimeConfig.stroking_config': config
+        });
+    },
 
+    // 球员指标配置变化处理
+    onPlayerIndicatorConfigChange(e) {
+        const { config } = e.detail;
+        console.log('[AddRuntime] 球员指标配置更新:', config);
+        this.setData({
+            'runtimeConfig.playerIndicatorConfig': config
+        });
+    },
 
     // 重新选择规则 - 使用共享方法
     onReSelectRule() {

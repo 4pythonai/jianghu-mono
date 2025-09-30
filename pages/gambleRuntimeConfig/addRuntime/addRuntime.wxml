@@ -36,6 +36,7 @@
         id="stroking"
         players="{{players}}"
         strokingConfig="{{runtimeConfig.stroking_config}}"
+        bind:saveStroking="onStrokingConfigChange"
       />
     </view>
 
@@ -46,6 +47,7 @@
         id="playerIndicator"
         players="{{players}}"
         val8421Config="{{runtimeConfig.playerIndicatorConfig}}"
+        bind:configChange="onPlayerIndicatorConfigChange"
       />
     </view>
 
@@ -78,6 +80,7 @@
       <Rank8421ConflictResolver
         id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        playerIndicatorConfig="{{runtimeConfig.playerIndicatorConfig}}"
       />
     </view>
     <view class="section" wx:if="{{gambleSysName && util.includes(gambleSysName, 'lasi')}}">
@@ -85,6 +88,7 @@
       <RankLasiConflictResolver
         id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        strokingConfig="{{runtimeConfig.stroking_config}}"
       />
     </view>
   </view>

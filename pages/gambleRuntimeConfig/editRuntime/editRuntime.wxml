@@ -34,7 +34,7 @@
     <!-- 让杆方式选择 -->
     <view class="section" wx:if="{{needsStroking}}">
       <view class="section-label">让杆方式</view>
-      <Stroking id="strokingSelector" strokingConfig="{{runtimeConfig.stroking_config}}" />
+      <Stroking id="stroking" strokingConfig="{{runtimeConfig.stroking_config}}" bind:saveStroking="onStrokingConfigChange" />
     </view>
 
     <!-- 8421球员配置 -->
@@ -44,6 +44,7 @@
         id="playerIndicator"
         players="{{players}}"
         val8421Config="{{runtimeConfig.playerIndicatorConfig}}"
+        bind:configChange="onPlayerIndicatorConfigChange"
       />
     </view>
 
@@ -64,6 +65,7 @@
       <Rank8421ConflictResolver
         id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        playerIndicatorConfig="{{runtimeConfig.playerIndicatorConfig}}"
       />
     </view>
 
@@ -72,6 +74,7 @@
       <RankLasiConflictResolver
         id="rankConfig"
         selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        strokingConfig="{{runtimeConfig.stroking_config}}"
       />
     </view>
   </view>
