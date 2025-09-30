@@ -133,14 +133,6 @@ class MRankingP4_lasi extends CI_Model {
     private function rankByScoreReverseScore($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
-        // 记录排序前的状态
-        $beforeSortInfo = [];
-        foreach ($users as $userid) {
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['raw_scores'][$userid] ?? 0;
-            $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score}";
-        }
-        $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
         // 按成绩排序（成绩越小越好）
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
@@ -152,7 +144,7 @@ class MRankingP4_lasi extends CI_Model {
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
             if ($scoreA !== $scoreB) {
-                $result = $scoreA - $scoreB;
+                $result = $scoreA <=> $scoreB;
                 $winner = $result < 0 ? $nicknameA : $nicknameB;
                 $this->addDebug($hole, "✅ 成绩不同，{$winner} 排名更高(成绩越小越好)");
                 return $result;
@@ -183,15 +175,6 @@ class MRankingP4_lasi extends CI_Model {
     private function rankBySTScoreReverseSTScore($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
-        // 记录排序前的状态
-        $beforeSortInfo = [];
-        foreach ($users as $userid) {
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['strokedScores'][$userid] ?? 0;
-            $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score}";
-        }
-        $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
-
         // 按成绩排序（成绩越小越好）
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
             $nicknameA = $this->getNicknameByUserid($auser, $context);
@@ -202,13 +185,20 @@ class MRankingP4_lasi extends CI_Model {
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
             if ($scoreA !== $scoreB) {
-                $result = $scoreA - $scoreB;
+                $result = $scoreA <=> $scoreB;
                 $winner = $result < 0 ? $nicknameA : $nicknameB;
+
+                // 添加详细调试信息
+                $typeA = gettype($scoreA);
+                $typeB = gettype($scoreB);
+                $this->addDebug($hole, "🔍 类型检查: {$nicknameA}成绩={$scoreA}(类型:{$typeA}), {$nicknameB}成绩={$scoreB}(类型:{$typeB})");
+                $this->addDebug($hole, "🔍 比较结果: {$result} (太空船操作符)");
                 $this->addDebug($hole, "✅ 成绩不同，{$winner} 排名更高(成绩越小越好)");
+
                 return $result;
             }
 
-            $this->addDebug($hole, "⚖️ 成绩相同({$scoreA})，回溯历史成绩比较");
+            $this->addDebug($hole, "🔴🔴🟢🔴🔴 成绩相同({$scoreA})，回溯历史成绩比较");
             // 成绩相同，回溯历史成绩
             return $this->compareByHistorySTScore($auser, $bUser, $holeIndex, $context);
         });
@@ -222,7 +212,7 @@ class MRankingP4_lasi extends CI_Model {
             $rank = $i + 1;
             $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 成绩:{$score}";
         }
-        $this->addDebug($hole, "🏆 最终排名: " . implode(', ', $afterSortInfo));
+        $this->addDebug($hole, $hole['holename'] . " 🟢🔴🟢🔴 最终排名: " . implode(', ', $afterSortInfo));
 
         return $this->arrayToRanking($users);
     }
@@ -236,16 +226,6 @@ class MRankingP4_lasi extends CI_Model {
     private function rankBySTScoreWinLossReverseWin($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
-        // 记录排序前的状态
-        $beforeSortInfo = [];
-        foreach ($users as $userid) {
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['strokedScores'][$userid] ?? 0;
-            $isWinner = $this->isUserWinner($userid, $hole);
-            $winStatus = $isWinner ? "🥇胜" : "🥈负";
-            $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
-        }
-        $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
         // 按成绩排序
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
@@ -257,7 +237,7 @@ class MRankingP4_lasi extends CI_Model {
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
             if ($scoreA !== $scoreB) {
-                $result = $scoreA - $scoreB;
+                $result = $scoreA <=> $scoreB;
                 $winner = $result < 0 ? $nicknameA : $nicknameB;
                 $this->addDebug($hole, "✅ 成绩不同，{$winner} 排名更高(成绩越小越好)");
                 return $result;
@@ -301,16 +281,7 @@ class MRankingP4_lasi extends CI_Model {
     private function rankByScoreWinLossReverseWin($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
-        // 记录排序前的状态
-        $beforeSortInfo = [];
-        foreach ($users as $userid) {
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['raw_scores'][$userid] ?? 0;
-            $isWinner = $this->isUserWinner($userid, $hole);
-            $winStatus = $isWinner ? "🥇胜" : "🥈负";
-            $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
-        }
-        $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
+
 
         // 按成绩排序
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
@@ -322,7 +293,7 @@ class MRankingP4_lasi extends CI_Model {
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
             if ($scoreA !== $scoreB) {
-                $result = $scoreA - $scoreB;
+                $result = $scoreA <=> $scoreB;
                 $winner = $result < 0 ? $nicknameA : $nicknameB;
                 $this->addDebug($hole, "✅ 成绩不同，{$winner} 排名更高(成绩越小越好)");
                 return $result;
@@ -369,16 +340,6 @@ class MRankingP4_lasi extends CI_Model {
     private function rankByScoreWinLossReverseScore($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
-        // 记录排序前的状态
-        $beforeSortInfo = [];
-        foreach ($users as $userid) {
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['raw_scores'][$userid] ?? 0;
-            $isWinner = $this->isUserWinner($userid, $hole);
-            $winStatus = $isWinner ? "🥇胜" : "🥈负";
-            $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
-        }
-        $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
 
         // 按成绩排序
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
@@ -390,7 +351,7 @@ class MRankingP4_lasi extends CI_Model {
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
             if ($scoreA !== $scoreB) {
-                $result = $scoreA - $scoreB;
+                $result = $scoreA <=> $scoreB;
                 $winner = $result < 0 ? $nicknameA : $nicknameB;
                 $this->addDebug($hole, "✅ 成绩不同，{$winner} 排名更高(成绩越小越好)");
                 return $result;
@@ -433,16 +394,7 @@ class MRankingP4_lasi extends CI_Model {
     private function rankBySTScoreWinLossReverseSTScore($holeIndex, &$hole, $context, $bootStrapOrder) {
         $users = $bootStrapOrder;
 
-        // 记录排序前的状态
-        $beforeSortInfo = [];
-        foreach ($users as $userid) {
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['strokedScores'][$userid] ?? 0;
-            $isWinner = $this->isUserWinner($userid, $hole);
-            $winStatus = $isWinner ? "🥇胜" : "🥈负";
-            $beforeSortInfo[] = "🏌️ {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
-        }
-        $this->addDebug($hole, "📊 排序前状态: " . implode(', ', $beforeSortInfo));
+
 
         // 按成绩排序
         usort($users, function ($auser, $bUser) use (&$hole, $holeIndex, $context) {
@@ -454,7 +406,7 @@ class MRankingP4_lasi extends CI_Model {
             $this->addDebug($hole, "🔄 比较: {$nicknameA}(成绩:{$scoreA}) vs {$nicknameB}(成绩:{$scoreB})");
 
             if ($scoreA !== $scoreB) {
-                $result = $scoreA - $scoreB;
+                $result = $scoreA <=> $scoreB;
                 $winner = $result < 0 ? $nicknameA : $nicknameB;
                 $this->addDebug($hole, "✅ 成绩不同，{$winner} 排名更高(成绩越小越好)");
                 return $result;
@@ -560,7 +512,7 @@ class MRankingP4_lasi extends CI_Model {
             }
 
             if ($scoreA !== $scoreB) {
-                $result = $scoreA - $scoreB;
+                $result = $scoreA <=> $scoreB;
                 $winner = $result < 0 ? $nicknameA : $nicknameB;
                 if (isset($context->usefulHoles[$holeIndex])) {
                     $this->addDebug($context->usefulHoles[$holeIndex], "🎯 历史成绩决定: {$winner} 排名更高");
@@ -601,7 +553,7 @@ class MRankingP4_lasi extends CI_Model {
             }
 
             if ($scoreA !== $scoreB) {
-                $result = $scoreA - $scoreB;
+                $result = $scoreA <=> $scoreB;
                 $winner = $result < 0 ? $nicknameA : $nicknameB;
                 if (isset($context->usefulHoles[$holeIndex])) {
                     $this->addDebug($context->usefulHoles[$holeIndex], "🎯 历史成绩决定: {$winner} 排名更高");
@@ -669,7 +621,7 @@ class MRankingP4_lasi extends CI_Model {
         $bootStrapOrder = $context->bootStrapOrder;
         $indexA = array_search($userA, $bootStrapOrder);
         $indexB = array_search($userB, $bootStrapOrder);
-        $result = $indexA - $indexB;
+        $result = $indexA <=> $indexB;
         $winner = $result < 0 ? $nicknameA : $nicknameB;
 
         // 尝试添加到最近的有效洞的debug信息中

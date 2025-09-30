@@ -349,7 +349,7 @@ class MReward extends CI_Model {
             return 'Albatross/HIO';
         }
 
-        $diff = intval($score) - intval($par);
+        $diff = floatval($score) - floatval($par);
 
         switch ($diff) {
             case -3:

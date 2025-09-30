@@ -53,6 +53,7 @@ class MRanking extends CI_Model {
 
             if ($context->gambleSysName == '4p-lasi') {
                 $tmp_rank = $this->MRankingP4_lasi->rankAttenders($holeIndex, $hole, $context);
+
                 $hole['ranking'] = $tmp_rank;
             }
         }
