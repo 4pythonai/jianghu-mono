@@ -12,19 +12,21 @@ Component({
 
 
     data: {
-        // 排名配置选项
+        // 排名配置选项 
+        // score:成绩,即杆数
+        // stroking 让完的杆数
         rankingOptions: [
             {
-                value: 'stroking.reverse',
+                value: 'STscore.reverse_STscore',
                 label: '1受让成绩相同按出身受让成绩排序',
             },
             {
-                value: 'stroking.win_loss.reverse_indicator',
-                label: '2受让成绩相同按输赢排序，输赢相同按前洞输赢排序',
+                value: 'STscore.win_loss.reverse_STscore',
+                label: '2受让成绩相同按输赢排序，输赢相同按出身受让成绩排序',
             },
             {
-                value: 'stroking.win_loss.reverse_win',
-                label: '3受让成绩相同按输赢排序，输赢相同按前洞得分排序',
+                value: 'STscore.win_loss.reverse_win',
+                label: '3受让成绩相同按输赢排序，输赢相同按出身受让成绩排序',
             },
             {
                 value: 'score.reverse_score',
@@ -32,11 +34,11 @@ Component({
             },
             {
                 value: 'score.win_loss.reverse_score',
-                label: '5成绩相同按输赢排序，输赢相同按前洞成绩排序',
+                label: '5成绩相同按输赢排序，输赢相同按出身成绩排序',
             },
             {
                 value: 'score.win_loss.reverse_win',
-                label: '6成绩相同按输赢排序，输赢相同按前洞输赢排序',
+                label: '6成绩相同按输赢排序，输赢相同按出身输赢排序',
             },
 
 
