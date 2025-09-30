@@ -427,6 +427,8 @@ class Gamble extends MY_Controller {
         $this->db->where('groupid', $groupid);
         $gambles = $this->db->get()->result_array();
         foreach ($gambles as &$gamble) {
+            $stroking_config = json_decode($gamble['stroking_config'], true);
+            $gamble['stroking_config'] = is_array($stroking_config) ? $stroking_config : [];
             $gamble['attenders'] = $this->setGambleAttenders($gamble);
             $gamble['holePlayListStr'] =  $gamble['holePlayList'];
             unset($gamble['holePlayList']);

@@ -109,6 +109,11 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     // 处理让杆
     public function StrokingScores() {
         $this->context->scores = $this->MStroking->processStroking($this->context->scores, $this->stroking_config);
+
+        // debug("让杆配置:");
+        // debug($this->stroking_config);
+        // debug($this->context->scores);
+
     }
 
 
@@ -194,6 +199,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'gambleid' => $this->context->gambleid,
             'kpis' => $this->context->kpis,
             'RewardConfig' => $this->context->RewardConfig,
+            'stroking_config' => $this->context->stroking_config,
             'badScoreBaseLine' => $this->context->badScoreBaseLine,
             'groupid' => $this->context->groupid,
             'userid' => $this->context->userid,
@@ -202,11 +208,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'redBlueConfig' => $this->context->redBlueConfig,
             'ranking4TieResolveConfig' => $this->context->ranking4TieResolveConfig,
             'drawConfig' => $this->context->drawConfig,
-            // 'holes' => $this->context->holes,
             'startHoleindex' => $this->context->startHoleindex,
             'meat_pool' => $this->context->meat_pool,
             'donation_pool' => $this->context->donation_pool,
-            // 'scores' => $this->context->scores,
             'meatValueConfig' => $this->context->meatValueConfig,
             'meatMaxValue' => $this->context->meatMaxValue,
             'attenders' => $this->context->attenders,
@@ -345,5 +349,9 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     public function getRewardConfig() {
         return $this->RewardConfig;
+    }
+
+    public function getStrokingConfig() {
+        return $this->stroking_config;
     }
 }

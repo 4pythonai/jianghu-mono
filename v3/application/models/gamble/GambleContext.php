@@ -81,7 +81,6 @@ class GambleContext extends CI_Model {
         'badScoreBaseLine' => 'getDeductionConfig',
         'badScoreMaxLost' => 'getDeductionMaxValue',
         'eatingRange' => 'getEatingRange',
-        'stroking_config' => 'getStrokingConfig',
         'meatValueConfig' => 'getMeatValueConfig',
         'meatMaxValue' => 'getMeatMaxValue',
         'holePlayList' => 'getHolePlayList',
@@ -91,6 +90,7 @@ class GambleContext extends CI_Model {
         'roadLength' => 'getRoadLength',
         'kpis' => 'getKpis',
         'RewardConfig' => 'getRewardConfig',
+        'stroking_config' => 'getStrokingConfig',
     ];
 
     /**
