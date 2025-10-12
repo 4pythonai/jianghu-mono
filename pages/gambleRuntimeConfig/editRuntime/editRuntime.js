@@ -87,7 +87,9 @@ Page({
                 gambleSysName: this.data.gambleSysName,
                 playerIndicatorConfig: this.data.runtimeConfig.playerIndicatorConfig,
                 playerIndicatorConfigValues: Object.values(this.data.runtimeConfig.playerIndicatorConfig || {}),
-                existingRuntimeConfig: this.data.existingRuntimeConfig
+                existingRuntimeConfig: this.data.existingRuntimeConfig,
+                'existingRuntimeConfig.spec': this.data.existingRuntimeConfig?.spec,
+                'spec.eatingRange': this.data.existingRuntimeConfig?.spec?.eatingRange
             });
         });
 

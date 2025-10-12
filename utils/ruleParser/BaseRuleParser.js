@@ -59,15 +59,29 @@ class BaseRuleParser {
         let detail = '';
 
         if (eatingRange) {
-            let eatRangeObj = eatingRange;
-            if (eatRangeObj) {
-                const eatDetails = GOLF_SCORE_TYPES.KEYS.map(key => {
-                    const value = eatRangeObj[key];
-                    const label = GOLF_SCORE_TYPES.LABELS[key];
-                    return `${label}${value}个`;
-                }).join('、');
+            try {
+                // 处理字符串和对象两种格式
+                let eatRangeObj = eatingRange;
+                if (typeof eatingRange === 'string') {
+                    eatRangeObj = JSON.parse(eatingRange);
+                }
 
-                detail = `${eatDetails}`;
+                if (eatRangeObj && typeof eatRangeObj === 'object') {
+                    const eatDetails = GOLF_SCORE_TYPES.KEYS.map(key => {
+                        const value = eatRangeObj[key];
+                        if (value === undefined) return null;
+                        const label = GOLF_SCORE_TYPES.LABELS[key];
+                        return `${label}${value}个`;
+                    }).filter(Boolean).join('、');
+
+                    if (eatDetails) {
+                        detail = `${eatDetails}`;
+                    }
+                }
+            } catch (error) {
+                console.error('[BaseRuleParser] 解析 eatingRange 失败:', error, eatingRange);
+                // 如果解析失败，尝试直接显示
+                detail = '吃肉配置解析失败';
             }
         }
 
@@ -143,7 +157,11 @@ class BaseRuleParser {
         if (!RewardConfig) return null;
 
         try {
-            const config = RewardConfig;
+            // 处理字符串和对象两种格式
+            let config = RewardConfig;
+            if (typeof RewardConfig === 'string') {
+                config = JSON.parse(RewardConfig);
+            }
             const { rewardType, rewardPreCondition, rewardPair } = config;
             let detail = '';
 
