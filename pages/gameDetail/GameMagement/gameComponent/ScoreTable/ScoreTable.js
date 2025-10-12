@@ -5,85 +5,68 @@ import { scoreStore } from '@/stores/scoreStore'
 
 Component({
     data: {
-        scrollSync: true, // 是否同步滚动
-        scrollTop: 0,     // 当前滚动位置
-        // 添加性能监控标记
-        _lastDataCheck: 0,
-        // 添加默认值，确保数据未准备好时不会出错
+        scrollSync: true,
+        scrollTop: 0,
         players: [],
         holeList: [],
         playerScores: [],
         playerTotals: [],
-        displayScores: [], // 新增：用于渲染的分数数据
-        red_blue: [], // 新增：红蓝分组数据
+        displayScores: [],
+        red_blue: [],
     },
 
     lifetimes: {
         attached() {
-            try {
-                // ** 核心:创建 Store 和 Component 的绑定 **
-                this.storeBindings = createStoreBindings(this, {
-                    store: gameStore,
-                    fields: {
-                        players: 'players',
-                        red_blue: 'red_blue',
-                    },
-                    actions: [],
-                });
+            this.storeBindings = createStoreBindings(this, {
+                store: gameStore,
+                fields: {
+                    players: 'players',
+                    red_blue: 'red_blue',
+                },
+                actions: [],
+            });
 
-                this.holeRangeStoreBindings = createStoreBindings(this, {
-                    store: holeRangeStore,
-                    fields: {
-                        holeList: 'holeList',
-                    },
-                    actions: [],
-                });
+            this.holeRangeStoreBindings = createStoreBindings(this, {
+                store: holeRangeStore,
+                fields: {
+                    holeList: 'holeList',
+                },
+                actions: [],
+            });
 
-                this.scoreStoreBindings = createStoreBindings(this, {
-                    store: scoreStore,
-                    fields: {
-                        playerScores: 'scores',
-                        playerTotals: 'playerTotalScores',
-                    },
-                    actions: [],
-                });
+            this.scoreStoreBindings = createStoreBindings(this, {
+                store: scoreStore,
+                fields: {
+                    playerScores: 'scores',
+                    playerTotals: 'playerTotalScores',
+                },
+                actions: [],
+            });
 
-                // 数据加载后滚动到最左侧
-                this.scrollToLeft();
-
-            } catch (error) {
-                console.error('❌ [ScoreTable] 组件挂载失败:', error);
-            }
+            this.scrollToLeft();
         },
         detached() {
-            try {
-                // ** 关键:在组件销毁时清理绑定 **
-                if (this.storeBindings) {
-                    this.storeBindings.destroyStoreBindings();
-                }
-                if (this.holeRangeStoreBindings) {
-                    this.holeRangeStoreBindings.destroyStoreBindings();
-                }
-                if (this.scoreStoreBindings) {
-                    this.scoreStoreBindings.destroyStoreBindings();
-                }
-            } catch (error) {
-                console.error('❌ [ScoreTable] 组件卸载时出错:', error);
+            if (this.storeBindings) {
+                this.storeBindings.destroyStoreBindings();
+            }
+            if (this.holeRangeStoreBindings) {
+                this.holeRangeStoreBindings.destroyStoreBindings();
+            }
+            if (this.scoreStoreBindings) {
+                this.scoreStoreBindings.destroyStoreBindings();
             }
         }
     },
 
     observers: {
-        // 修改：监听playerScores、players、holeList、red_blue，生成displayScores
         'playerScores,players,holeList,red_blue': function (scores, players, holeList, red_blue) {
             if (!scores || !players || !holeList) return;
 
-            // 构建red_blue映射
             const redBlueMap = {};
             for (const item of (red_blue || [])) {
                 redBlueMap[String(item?.hindex)] = item;
             }
-            // 只适配一维平铺成绩数组scores，按userid和hindex映射，并加colorTag
+
             const displayScores = players.map(player => {
                 const scoreMap = {};
                 for (const s of (scores || [])) {
@@ -91,7 +74,6 @@ Component({
                 }
                 return holeList.map(hole => {
                     const cell = scoreMap[String(hole?.hindex)] || {};
-                    // 角标逻辑
                     const rb = redBlueMap[String(hole?.hindex)];
                     let colorTag = '';
                     if (rb) {
@@ -101,110 +83,15 @@ Component({
                     return { ...cell, colorTag };
                 });
             });
-            // 计算总分栏，保证和表格主体一致
+
             const displayTotals = displayScores.map(playerArr =>
                 playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
             );
             this.setData({ displayScores, displayTotals });
-        },
-        'playerScores': function (newScores) {
-            // 使用 function 声明而不是箭头函数，确保 this 绑定正确
-            try {
-                // 确保 this 存在且有 data 属性
-                if (!this || !this.data) {
-                    console.warn('⚠️ [ScoreTable] observers 中 this 或 this.data 为 undefined');
-                    return;
-                }
-
-                const now = Date.now();
-                // 简单的防抖：50ms内只处理一次
-                if (now - this.data._lastDataCheck < 50) {
-                    return;
-                }
-                this.setData({ _lastDataCheck: now });
-
-                // 详细检查变化内容
-                if (newScores && newScores.length > 0) {
-                    const playerCount = newScores.length;
-                    const holeCount = newScores[0]?.length || 0;
-
-                    // 检查数据完整性
-                    let missingData = 0;
-                    let validData = 0;
-
-                    for (let p = 0; p < playerCount; p++) {
-                        for (let h = 0; h < holeCount; h++) {
-                            const scoreData = newScores[p]?.[h];
-                            if (scoreData && typeof scoreData.score === 'number') {
-                                validData++;
-                            } else {
-                                missingData++;
-                            }
-                        }
-                    }
-
-                    // 检查是否有非零分数, 表示真正的数据更新
-                    let hasRealData = false;
-                    const changedCells = [];
-
-                    for (let p = 0; p < newScores.length; p++) {
-                        for (let h = 0; h < (newScores[p]?.length || 0); h++) {
-                            const score = newScores[p][h]?.score;
-                            if (score > 0) {
-                                hasRealData = true;
-                                changedCells.push(`玩家${p}洞${h}:${score}`);
-                            }
-                        }
-                    }
-
-
-
-                    // 如果缺失数据过多，发出警告
-                    if (missingData > 0) {
-                        console.warn(`⚠️ [ScoreTable] 发现${missingData}个缺失的分数数据`);
-                    }
-                }
-            } catch (error) {
-                console.error('❌ [ScoreTable] playerScores observer 执行出错:', error);
-            }
-        },
-
-        // 添加对其他字段的监听, 测试MobX绑定是否正常
-        'players': function (newPlayers) {
-            try {
-                // 确保 this 存在
-                if (!this) {
-                    console.warn('⚠️ [ScoreTable] players observers 中 this 为 undefined');
-                    return;
-                }
-
-                if (newPlayers?.length > 0) {
-                    console.log('📊 [ScoreTable] 玩家数据示例:', newPlayers[0]);
-                }
-            } catch (error) {
-                console.error('❌ [ScoreTable] players observer 执行出错:', error);
-            }
-        },
-
-        'holeList': function (newHoles) {
-            try {
-                // 确保 this 存在
-                if (!this) {
-                    console.warn('⚠️ [ScoreTable] holeList observers 中 this 为 undefined');
-                    return;
-                }
-
-                if (newHoles?.length > 0) {
-                    console.log('📊 [ScoreTable] 球洞数据示例:', newHoles[0]);
-                }
-            } catch (error) {
-                console.error('❌ [ScoreTable] holeList observer 执行出错:', error);
-            }
         }
     },
 
     methods: {
-        // 滚动到最左侧
         scrollToLeft() {
             const query = wx.createSelectorQuery().in(this);
             query.select('#mainScroll').node().exec((res) => {
@@ -214,7 +101,6 @@ Component({
             });
         },
 
-        // 球员表格滚动事件
         onPlayerScroll(e) {
             if (!this.data.scrollSync) return;
             const scrollTop = e.detail.scrollTop;
@@ -223,7 +109,6 @@ Component({
             this.syncScrollPosition('totalTable', scrollTop);
         },
 
-        // 球洞表格滚动事件
         onHolesScroll(e) {
             if (!this.data.scrollSync) return;
             const scrollTop = e.detail.scrollTop;
@@ -232,7 +117,6 @@ Component({
             this.syncScrollPosition('totalTable', scrollTop);
         },
 
-        // 总分表格滚动事件
         onTotalScroll(e) {
             if (!this.data.scrollSync) return;
             const scrollTop = e.detail.scrollTop;
@@ -241,7 +125,6 @@ Component({
             this.syncScrollPosition('holesTable', scrollTop);
         },
 
-        // 同步滚动位置
         syncScrollPosition(tableId, scrollTop) {
             const query = wx.createSelectorQuery().in(this);
             query.select(`#${tableId}`).node().exec((res) => {
@@ -251,24 +134,8 @@ Component({
             });
         },
 
-        // 作为一个中继, 把事件继续往父组件传递
         onCellClick(e) {
-            console.log('📊 [ScoreTable] 转发cellclick事件:', e.detail);
             this.triggerEvent('cellclick', e.detail);
-        },
-
-        // 添加调试方法
-        getTableStatus() {
-            const status = {
-                players: this.data.players?.length || 0,
-                holeList: this.data.holeList?.length || 0,
-                playerScores: this.data.playerScores?.length || 0,
-                playerTotals: this.data.playerTotals?.length || 0,
-                scrollTop: this.data.scrollTop
-            };
-
-            console.log('📊 [ScoreTable] 当前状态:', status);
-            return status;
         }
     }
 })
