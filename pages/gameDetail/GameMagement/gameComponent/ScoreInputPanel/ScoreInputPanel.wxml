@@ -9,7 +9,7 @@
         </view>
         <view class="hole-details-wrapper">
           <view class="hole-detail">PAR {{currentHole.par}}</view>
-          <view class="hole-detail">码数 422</view>
+          <view class="hole-detail">码数 {{currentHole.white}}</view>
           <view class="hole-detail">
             发球台
             <view class="tee-indicator"></view>
@@ -136,7 +136,7 @@
     </view>
 
     <view class="modal-actions">
-      <button class="modal-btn cancel" bind:tap="handleClear" disabled="{{isSaving}}">关闭</button>
+      <button class="modal-btn cancel" bind:tap="handleClear" disabled="{{isSaving}}">清除</button>
       <button
         class="modal-btn confirm"
         bind:tap="handleConfirm"
