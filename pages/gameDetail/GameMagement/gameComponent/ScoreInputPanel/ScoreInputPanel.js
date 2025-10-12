@@ -17,6 +17,8 @@ Component({
         playerItemHeight: 120,
         isSaving: false,
         currentHole: null, // 新增: 用于存储当前显示的洞信息
+        currentPlayerTee: '', // 当前用户发球台
+        currentPlayerDistance: null, // 当前用户发球台码数
     },
 
     observers: {
@@ -77,6 +79,11 @@ Component({
                 };
             });
 
+            // 计算初始发球台信息
+            const initialPlayer = players[playerIndex];
+            const initialTee = initialPlayer?.tee?.toLowerCase() || '';
+            const initialDistance = hole?.[initialTee];
+
             this.setData({
                 isVisible: true,
                 currentHole: hole,
@@ -85,6 +92,8 @@ Component({
                 gameData: this.data.gameData,
                 localScores,
                 activePlayerIndex: playerIndex,
+                currentPlayerTee: initialTee,
+                currentPlayerDistance: (initialDistance && initialDistance > 0) ? initialDistance : null,
             });
         },
 
@@ -101,6 +110,11 @@ Component({
 
         switchPlayer(e) {
             const index = e.currentTarget.dataset.index;
+            console.log('🔴🟢🔵 [ScoreInputPanel] 切换用户:', {
+                from: this.data.activePlayerIndex,
+                to: index,
+                player: this.data.players?.[index]
+            });
             this._updateScopingAreaPosition(index);
         },
 
@@ -118,8 +132,23 @@ Component({
         },
 
         _updateScopingAreaPosition(index) {
+            console.log('🔴🟢🔵 [ScoreInputPanel] 更新活跃用户索引:', index);
+
+            // 获取发球台信息
+            const activePlayer = this.data.players?.[index];
+            const tee = activePlayer?.tee?.toLowerCase() || '';
+            const distance = this.data.currentHole?.[tee];
+            const teeInfo = {
+                tee,
+                distance: (distance && distance > 0) ? distance : null
+            };
+
+            console.log('🔴🟢🔵 [ScoreInputPanel] 手动更新发球台信息:', teeInfo);
+
             this.setData({
                 activePlayerIndex: index,
+                currentPlayerTee: tee,
+                currentPlayerDistance: teeInfo.distance
             });
         },
 
@@ -285,6 +314,47 @@ Component({
         // 阻止事件冒泡的空方法
         preventBubble() {
             // 空方法, 用于阻止事件冒泡
+        },
+
+        /**
+         * 获取当前活跃用户的发球台信息
+         * @returns {object} 发球台信息 {tee: string, distance: number}
+         */
+        getCurrentPlayerTeeInfo() {
+            const activePlayer = this.data.players?.[this.data.activePlayerIndex];
+            console.log('🔴🟢🔵 [ScoreInputPanel] 获取发球台信息:', {
+                activePlayerIndex: this.data.activePlayerIndex,
+                activePlayer,
+                currentHole: this.data.currentHole
+            });
+
+            if (!activePlayer?.tee) {
+                console.log('🔴🟢🔵 [ScoreInputPanel] 用户没有设置发球台');
+                return { tee: '', distance: null };
+            }
+
+            const tee = activePlayer.tee.toLowerCase();
+            const distance = this.data.currentHole?.[tee];
+
+            const result = {
+                tee,
+                distance: (distance && distance > 0) ? distance : null
+            };
+
+            console.log('🔴🟢🔵 [ScoreInputPanel] 发球台信息结果:', result);
+            return result;
+        },
+
+        /**
+         * 获取发球台颜色样式类名
+         * @param {string} tee 发球台类型
+         * @returns {string} CSS类名
+         */
+        getTeeColorClass(tee) {
+            const validTees = ['black', 'blue', 'white', 'gold', 'red'];
+            const className = validTees.includes(tee) ? `tee-${tee}` : 'tee-default';
+            console.log('🔴🟢🔵 [ScoreInputPanel] 获取发球台颜色类名:', { tee, className });
+            return className;
         },
     }
 }) 

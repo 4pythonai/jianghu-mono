@@ -60,6 +60,32 @@
 	margin-left: 10rpx;
 }
 
+/* 发球台颜色样式 */
+.tee-black {
+	background-color: #000;
+}
+
+.tee-blue {
+	background-color: #0066cc;
+}
+
+.tee-white {
+	background-color: #f0f0f0;
+	border: 2rpx solid #ccc;
+}
+
+.tee-gold {
+	background-color: #ffd700;
+}
+
+.tee-red {
+	background-color: #cc0000;
+}
+
+.tee-default {
+	background-color: #999;
+}
+
 .main-content {
 	display: flex;
 	height: 500rpx;
