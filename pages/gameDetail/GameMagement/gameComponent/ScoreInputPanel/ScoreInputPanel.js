@@ -110,11 +110,6 @@ Component({
 
         switchPlayer(e) {
             const index = e.currentTarget.dataset.index;
-            console.log('🔴🟢🔵 [ScoreInputPanel] 切换用户:', {
-                from: this.data.activePlayerIndex,
-                to: index,
-                player: this.data.players?.[index]
-            });
             this._updateScopingAreaPosition(index);
         },
 
@@ -132,23 +127,15 @@ Component({
         },
 
         _updateScopingAreaPosition(index) {
-            console.log('🔴🟢🔵 [ScoreInputPanel] 更新活跃用户索引:', index);
-
             // 获取发球台信息
             const activePlayer = this.data.players?.[index];
             const tee = activePlayer?.tee?.toLowerCase() || '';
             const distance = this.data.currentHole?.[tee];
-            const teeInfo = {
-                tee,
-                distance: (distance && distance > 0) ? distance : null
-            };
-
-            console.log('🔴🟢🔵 [ScoreInputPanel] 手动更新发球台信息:', teeInfo);
 
             this.setData({
                 activePlayerIndex: index,
                 currentPlayerTee: tee,
-                currentPlayerDistance: teeInfo.distance
+                currentPlayerDistance: (distance && distance > 0) ? distance : null
             });
         },
 
@@ -322,27 +309,18 @@ Component({
          */
         getCurrentPlayerTeeInfo() {
             const activePlayer = this.data.players?.[this.data.activePlayerIndex];
-            console.log('🔴🟢🔵 [ScoreInputPanel] 获取发球台信息:', {
-                activePlayerIndex: this.data.activePlayerIndex,
-                activePlayer,
-                currentHole: this.data.currentHole
-            });
 
             if (!activePlayer?.tee) {
-                console.log('🔴🟢🔵 [ScoreInputPanel] 用户没有设置发球台');
                 return { tee: '', distance: null };
             }
 
             const tee = activePlayer.tee.toLowerCase();
             const distance = this.data.currentHole?.[tee];
 
-            const result = {
+            return {
                 tee,
                 distance: (distance && distance > 0) ? distance : null
             };
-
-            console.log('🔴🟢🔵 [ScoreInputPanel] 发球台信息结果:', result);
-            return result;
         },
 
         /**
@@ -352,9 +330,7 @@ Component({
          */
         getTeeColorClass(tee) {
             const validTees = ['black', 'blue', 'white', 'gold', 'red'];
-            const className = validTees.includes(tee) ? `tee-${tee}` : 'tee-default';
-            console.log('🔴🟢🔵 [ScoreInputPanel] 获取发球台颜色类名:', { tee, className });
-            return className;
+            return validTees.includes(tee) ? `tee-${tee}` : 'tee-default';
         },
     }
 }) 

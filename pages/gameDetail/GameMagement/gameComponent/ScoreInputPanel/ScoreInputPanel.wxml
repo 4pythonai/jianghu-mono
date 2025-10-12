@@ -15,17 +15,6 @@
             <view class="tee-indicator tee-{{currentPlayerTee}}"></view>
           </view>
         </view>
-
-        <!-- 调试信息 -->
-        <view
-          style="font-size: 20rpx; color: #999; margin: 10rpx; padding: 10rpx; background: #f5f5f5;"
-        >
-          <text>调试: 活跃用户索引={{activePlayerIndex}}</text>
-          <br />
-          <text>调试: 发球台={{currentPlayerTee}}</text>
-          <br />
-          <text>调试: 码数={{currentPlayerDistance}}</text>
-        </view>
       </view>
 
       <view class="main-content">
