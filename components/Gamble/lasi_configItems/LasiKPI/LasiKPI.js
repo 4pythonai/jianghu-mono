@@ -3,7 +3,7 @@
  * 纯受控组件，所有数据通过props传入，UI变化通过事件通知父组件
  */
 
-import { generateLasiRuleName } from '../../../../utils/ruleNameGenerator.js'
+import { generateLasiRuleName } from '@/utils/ruleNameGenerator.js'
 
 Component({
   properties: {
@@ -119,7 +119,7 @@ Component({
     onSelectIndicator(e) {
       const config = this.properties.config;
       if (!config) return;
-      
+
       const { value } = e.currentTarget.dataset;
       const newIndicators = config.indicators.includes(value)
         ? config.indicators.filter(item => item !== value)
@@ -134,7 +134,7 @@ Component({
     onToggleTotalType() {
       const config = this.properties.config;
       if (!config) return;
-      
+
       const newType = this.data.totalCalculationType === 'add_total' ? 'multiply_total' : 'add_total';
       this.handleConfigChange({
         ...config,
@@ -145,7 +145,7 @@ Component({
     onKpiValueChange(e) {
       const config = this.properties.config;
       if (!config) return;
-      
+
       const { kpi } = e.currentTarget.dataset;
       const value = this.data.valueRange[e.detail.value];
       const newKpiValues = { ...config.kpiValues };

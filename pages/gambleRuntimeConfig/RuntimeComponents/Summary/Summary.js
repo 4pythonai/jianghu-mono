@@ -1,6 +1,6 @@
 // Summary组件 - 显示游戏规则摘要和参与人员
 const RuntimeComponentsUtils = require('../common-utils.js');
-const { GambleMetaConfig } = require('../../../../utils/GambleMetaConfig.js');
+const { GambleMetaConfig } = require('@/utils/GambleMetaConfig.js');
 
 Component({
     properties: {

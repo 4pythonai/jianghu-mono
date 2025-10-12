@@ -1,4 +1,4 @@
-import { gameStore } from '../../../../../stores/gameStore';
+import { gameStore } from '@/stores/gameStore';
 const app = getApp();
 
 Component({

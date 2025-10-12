@@ -118,8 +118,8 @@ Component({
         // 查看规则详情 - 跳转到运行时配置页面
         onCreateGamble(e) {
             const { item } = e.detail || e.currentTarget.dataset;
-            const { gameStore } = require('../../../../stores/gameStore');
-            const { holeRangeStore } = require('../../../../stores/holeRangeStore');
+            const { gameStore } = require('@/stores/gameStore');
+            const { holeRangeStore } = require('@/stores/holeRangeStore');
             const gambleSysName = item.gambleSysName;
 
             // 从 holeRangeStore 获取洞数据

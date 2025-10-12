@@ -2,7 +2,7 @@
  * Draw8421顶洞配置组件 - 简化版
  * 纯受控组件，所有数据通过props传入，UI变化通过事件通知父组件
  */
-const ruleFormatter = require('../../../../utils/formatters/ruleFormatter.js')
+const ruleFormatter = require('@/utils/formatters/ruleFormatter.js')
 
 Component({
   properties: {
@@ -124,7 +124,7 @@ Component({
     onSelect(e) {
       const index = Number.parseInt(e.currentTarget.dataset.index);
       const currentConfig = this.data.currentConfig;
-      
+
       let drawConfig = 'DrawEqual';
       if (index === 0) {
         drawConfig = 'DrawEqual';
@@ -145,12 +145,12 @@ Component({
     onDiffScoreChange(e) {
       const score = this.data.diffScores[e.detail.value];
       const currentConfig = this.data.currentConfig;
-      
+
       const config = {
         ...currentConfig,
         drawConfig: `Diff_${score}`
       };
-      
+
       this.handleConfigChange(config);
     },
 
@@ -216,15 +216,15 @@ Component({
     // ConfigWrapper接口：初始化配置数据
     initConfigData(configData) {
       console.log('🎯 [Draw8421] 初始化配置数据:', configData);
-      
+
       if (!configData) return;
-      
+
       // configData本身就是drawConfig字符串
       const drawConfig = configData || this.data.defaultConfig.drawConfig;
-      
+
       // 设置配置对象
       const config = { drawConfig };
-      
+
       // 更新UI状态
       this.updateConfigFromObject(config);
     },

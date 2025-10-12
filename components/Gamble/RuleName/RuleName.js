@@ -1,4 +1,4 @@
-const { generateLasiRuleName, generate8421RuleName } = require('../../../utils/ruleNameGenerator.js')
+const { generateLasiRuleName, generate8421RuleName } = require('@/utils/ruleNameGenerator.js')
 
 Component({
   properties: {

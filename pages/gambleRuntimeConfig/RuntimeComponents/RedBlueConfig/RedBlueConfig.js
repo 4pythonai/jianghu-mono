@@ -1,6 +1,6 @@
 // RedBlueConfig组件 - 分组配置
 const RuntimeComponentsUtils = require('../common-utils.js');
-const { convertToUserIds } = require('../../../../utils/gameUtils.js');
+const { convertToUserIds } = require('@/utils/gameUtils.js');
 
 Component({
     properties: {

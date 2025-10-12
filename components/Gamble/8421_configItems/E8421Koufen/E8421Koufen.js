@@ -2,7 +2,7 @@
  * E8421扣分配置组件 - 简化版
  * 纯受控组件，所有数据通过props传入，UI变化通过事件通知父组件
  */
-const ruleFormatter = require('../../../../utils/formatters/ruleFormatter.js')
+const ruleFormatter = require('@/utils/formatters/ruleFormatter.js')
 
 Component({
   properties: {
@@ -177,7 +177,7 @@ Component({
     onSelectStart(e) {
       const index = Number.parseInt(e.currentTarget.dataset.index);
       const currentConfig = this.data.currentConfig;
-      
+
       let badScoreBaseLine = 'NoSub';
       if (index === 0) {
         badScoreBaseLine = `Par+${this.data.currentPaScore}`;
@@ -198,10 +198,10 @@ Component({
       if (this.data.currentSelectedStart === 2) {
         return;
       }
-      
+
       const index = Number.parseInt(e.currentTarget.dataset.index);
       const currentConfig = this.data.currentConfig;
-      
+
       const config = {
         ...currentConfig,
         badScoreMaxLost: index === 0 ? 10000000 : this.data.currentMaxSubScore
@@ -215,10 +215,10 @@ Component({
       if (this.data.currentSelectedStart === 2) {
         return;
       }
-      
+
       const index = Number.parseInt(e.currentTarget.dataset.index);
       const currentConfig = this.data.currentConfig;
-      
+
       let dutyConfig = 'NODUTY';
       switch (index) {
         case 1:
@@ -242,36 +242,36 @@ Component({
     onPaScoreChange(e) {
       const score = this.data.paScoreRange[e.detail.value];
       const currentConfig = this.data.currentConfig;
-      
+
       const config = {
         ...currentConfig,
         badScoreBaseLine: `Par+${score}`
       };
-      
+
       this.handleConfigChange(config);
     },
 
     onDoubleParScoreChange(e) {
       const score = this.data.doubleParScoreRange[e.detail.value];
       const currentConfig = this.data.currentConfig;
-      
+
       const config = {
         ...currentConfig,
         badScoreBaseLine: `DoublePar+${score}`
       };
-      
+
       this.handleConfigChange(config);
     },
 
     onMaxSubScoreChange(e) {
       const score = this.data.maxSubScoreRange[e.detail.value];
       const currentConfig = this.data.currentConfig;
-      
+
       const config = {
         ...currentConfig,
         badScoreMaxLost: score
       };
-      
+
       this.handleConfigChange(config);
     },
 

@@ -1,5 +1,5 @@
-import { findUserInGroups, handleAppendPlayersToGroup } from '../../../utils/gameGroupUtils'
-import { uuid } from '../../../utils/tool'
+import { findUserInGroups, handleAppendPlayersToGroup } from '@/utils/gameGroupUtils'
+import { uuid } from '@/utils/tool'
 
 const app = getApp()
 

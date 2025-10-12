@@ -1,5 +1,4 @@
-import { createStoreBindings } from 'mobx-miniprogram-bindings';
-import { gameStore } from '../../../../../stores/gameStore';
+import { gameStore } from '@/stores/gameStore';
 
 const app = getApp();
 

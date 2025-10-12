@@ -1,5 +1,5 @@
 // Stroking 组件 - 让杆配置 (重构版)
-import { gameStore } from '../../../../stores/gameStore';
+import { gameStore } from '@/stores/gameStore';
 import { autorun } from 'mobx-miniprogram';
 
 Component({

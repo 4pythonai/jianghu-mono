@@ -93,8 +93,8 @@ Component({
 
         async handleAddGame() {
             // 引入导航助手
-            const navigationHelper = require('../../../utils/navigationHelper.js');
-            
+            const navigationHelper = require('s@/utils/navigationHelper.js');
+
             try {
                 // 跳转到游戏规则页面
                 await navigationHelper.navigateTo('/pages/rules/rules');
@@ -115,10 +115,10 @@ Component({
         async gotoRuntimeConfigList() {
             // 引入导航助手
             const navigationHelper = require('../../../utils/navigationHelper.js');
-            
+
             const gameid = this.properties.gameid;
             const groupid = this.properties.groupid;
-            
+
             try {
                 await navigationHelper.navigateTo(`/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`);
             } catch (error) {

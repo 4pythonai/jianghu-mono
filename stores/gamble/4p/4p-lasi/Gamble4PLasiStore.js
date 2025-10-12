@@ -5,7 +5,7 @@
 
 import { observable, action } from 'mobx-miniprogram'
 import { gameStore } from '../../../gameStore'
-import { REWARD_DEFAULTS } from '../../../../utils/rewardDefaults.js'
+import { REWARD_DEFAULTS } from '@/utils/rewardDefaults.js'
 
 export const Gamble4PLasiStore = observable({
 

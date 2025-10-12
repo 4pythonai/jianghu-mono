@@ -7,22 +7,22 @@
 const ConfigValidator = require('./configValidator');
 
 // 配置管理器
-const configManager = require('../../../utils/configManager');
+const configManager = require('@/utils/configManager');
 
 // 游戏元配置
-const { GambleMetaConfig } = require('../../../utils/GambleMetaConfig');
+const { GambleMetaConfig } = require('@/utils/GambleMetaConfig');
 
 // 游戏相关初始化器
-const GambleRelatedInitor = require('../../../utils/GambleRelatedInitor');
+const GambleRelatedInitor = require('@/utils/GambleRelatedInitor');
 
 // 游戏存储
-const { gameStore } = require('../../../stores/gameStore');
+const { gameStore } = require('@/stores/gameStore');
 
 // 运行时存储
-const { runtimeStore } = require('../../../stores/runtimeStore');
+const { runtimeStore } = require('@/stores/runtimeStore');
 
 // 洞范围存储
-const { holeRangeStore } = require('../../../stores/holeRangeStore');
+const { holeRangeStore } = require('@/stores/holeRangeStore');
 
 // MobX工具
 const { toJS } = require('mobx-miniprogram');
