@@ -106,6 +106,38 @@
 	height: 100%;
 }
 
+/* OUT汇总表头样式 */
+.tb-header-out {
+	background-color: #ff9800;
+}
+
+.tb-header-out .total-text {
+	color: white;
+	font-size: 16px;
+	font-weight: bold;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+/* IN汇总表头样式 */
+.tb-header-in {
+	background-color: #2196f3;
+}
+
+.tb-header-in .total-text {
+	color: white;
+	font-size: 16px;
+	font-weight: bold;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
 /* 内容区域 */
 .table-body {
 	display: flex;
@@ -149,3 +181,4 @@
 	font-weight: bold;
 	border-right: 1px solid #eee;
 }
+

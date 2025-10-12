@@ -12,6 +12,8 @@ Component({
         playerScores: [],
         playerTotals: [],
         displayScores: [],
+        displayOutTotals: [],
+        displayInTotals: [],
         red_blue: [],
     },
 
@@ -88,7 +90,24 @@ Component({
             const displayTotals = displayScores.map(playerArr =>
                 playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
             );
-            this.setData({ displayScores, displayTotals });
+
+            // 计算OUT和IN汇总 (仅18洞时)
+            let displayOutTotals = [];
+            let displayInTotals = [];
+
+            if (holeList.length === 18) {
+                displayOutTotals = displayScores.map(playerArr => {
+                    // OUT: 前9洞 (索引0-8)
+                    return playerArr.slice(0, 9).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
+                });
+
+                displayInTotals = displayScores.map(playerArr => {
+                    // IN: 后9洞 (索引9-17)
+                    return playerArr.slice(9, 18).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
+                });
+            }
+
+            this.setData({ displayScores, displayTotals, displayOutTotals, displayInTotals });
         }
     },
 

@@ -22,12 +22,39 @@
   <!-- 主滚动区域 -->
   <scroll-view scroll-x class="main-scroll" id="mainScroll">
     <!-- 中间内容区 -->
-    <view class="scroll-content" style="width: {{ (holeList.length + 1) * 80 }}px">
+    <view
+      class="scroll-content"
+      style="width: {{ (holeList.length + (holeList.length === 18 ? 3 : 1)) * 80 }}px"
+    >
       <!-- 表头 -->
       <view class="tb-header tb-header-holes">
-        <view wx:for="{{ holeList }}" wx:key="unique_key" class="tb-header-hole">
+        <!-- 前9洞表头 (1-9) -->
+        <view
+          wx:for="{{ holeList }}"
+          wx:key="unique_key"
+          wx:if="{{ holeList.length === 18 ? index < 9 : true }}"
+          class="tb-header-hole"
+        >
           <view class="hole-name">{{item.holename}}</view>
           <view class="hole-par">{{item.par}}</view>
+        </view>
+        <!-- OUT汇总表头 (仅18洞时，在前9洞后显示) -->
+        <view wx:if="{{ holeList.length === 18 }}" class="tb-header-hole tb-header-out">
+          <view class="total-text">OUT</view>
+        </view>
+        <!-- 后9洞表头 (10-18) -->
+        <view
+          wx:for="{{ holeList }}"
+          wx:key="unique_key"
+          wx:if="{{ holeList.length === 18 && index >= 9 }}"
+          class="tb-header-hole"
+        >
+          <view class="hole-name">{{item.holename}}</view>
+          <view class="hole-par">{{item.par}}</view>
+        </view>
+        <!-- IN汇总表头 (仅18洞时，在后9洞后显示) -->
+        <view wx:if="{{ holeList.length === 18 }}" class="tb-header-hole tb-header-in">
+          <view class="total-text">IN</view>
         </view>
         <!-- 总分表头 -->
         <view class="tb-header-hole tb-header-total">
@@ -43,10 +70,12 @@
         bindscroll="onHolesScroll"
       >
         <view class="table-row" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIndex">
+          <!-- 前9洞 (1-9) -->
           <view
             wx:for="{{holeList}}"
             wx:key="unique_key"
             wx:for-index="holeIndex"
+            wx:if="{{ holeList.length === 18 ? holeIndex < 9 : true }}"
             class="cell-score"
           >
             <HoleCell
@@ -63,6 +92,41 @@
               holeid="{{ holeList[holeIndex].holeid }}"
               bind:cellclick="onCellClick"
             />
+          </view>
+          <!-- OUT汇总单元格 (仅18洞时，在前9洞后显示) -->
+          <view wx:if="{{ holeList.length === 18 }}" class="cell-score cell-out">
+            <text
+              style="color:#333;font-size:16px;font-weight:bold;"
+            >{{displayOutTotals[playerIndex]}}</text>
+          </view>
+          <!-- 后9洞 (10-18) -->
+          <view
+            wx:for="{{holeList}}"
+            wx:key="unique_key"
+            wx:for-index="holeIndex"
+            wx:if="{{ holeList.length === 18 && holeIndex >= 9 }}"
+            class="cell-score"
+          >
+            <HoleCell
+              playerIndex="{{ playerIndex }}"
+              holeIndex="{{ holeIndex }}"
+              par="{{ holeList[holeIndex].par }}"
+              colorTag="{{ displayScores[playerIndex][holeIndex].colorTag }}"
+              unique_key="{{ holeList[holeIndex].unique_key }}"
+              score="{{ displayScores[playerIndex][holeIndex].score || '' }}"
+              putts="{{ displayScores[playerIndex][holeIndex].putts }}"
+              penalty_strokes="{{ displayScores[playerIndex][holeIndex].penalty_strokes }}"
+              sand_save="{{ displayScores[playerIndex][holeIndex].sand_save }}"
+              userid="{{ players[playerIndex].userid }}"
+              holeid="{{ holeList[holeIndex].holeid }}"
+              bind:cellclick="onCellClick"
+            />
+          </view>
+          <!-- IN汇总单元格 (仅18洞时，在后9洞后显示) -->
+          <view wx:if="{{ holeList.length === 18 }}" class="cell-score cell-in">
+            <text
+              style="color:#333;font-size:16px;font-weight:bold;"
+            >{{displayInTotals[playerIndex]}}</text>
           </view>
           <!-- 总分单元格 -->
           <view class="cell-score cell-total">
