@@ -344,25 +344,28 @@ class MReward extends CI_Model {
     }
 
     private function getScoreName($par, $score) {
-        // HIO (一杆进洞) 是最特殊的情况，优先判断
-        if (intval($score) === 1) {
+        // 计算差值: PAR - 实际杆数
+        $diff = floatval($par) - floatval($score);
+
+        // 按照"取更差"的原则,从最好的成绩开始判断
+        // 注意: HIO/Albatross 是最好的,对应 diff >= 3 或 score <= 1
+        // 特殊情况: 让杆后的成绩 <= 1,都算 Albatross/HIO
+        if (floatval($score) <= 1) {
             return 'Albatross/HIO';
         }
 
-        $diff = floatval($score) - floatval($par);
-
-        switch ($diff) {
-            case -3:
-                return 'Albatross/HIO'; // 例如 Par 5 打 2 杆
-            case -2:
-                return 'Eagle';
-            case -1:
-                return 'Birdie';
-            case 0:
-                return 'Par';
-            default:
-                // 比 PAR 差的杆数没有奖励
-                return null;
+        // 或者 diff >= 3 (例如 Par 5 打 2 杆)
+        if ($diff >= 3) {
+            return 'Albatross/HIO';
+        } elseif ($diff >= 2) {
+            return 'Eagle'; // 比 PAR 少 2 杆或更多(但不到 3 杆)
+        } elseif ($diff >= 1) {
+            return 'Birdie'; // 比 PAR 少 1 杆或更多(但不到 2 杆)
+        } elseif ($diff >= 0) {
+            return 'Par'; // 等于或略好于 PAR(但不到 1 杆)
+        } else {
+            // 比 PAR 差的杆数没有奖励
+            return null;
         }
     }
 
