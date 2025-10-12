@@ -45,6 +45,7 @@ Component({
 
             this.scrollToLeft();
         },
+
         detached() {
             if (this.storeBindings) {
                 this.storeBindings.destroyStoreBindings();
