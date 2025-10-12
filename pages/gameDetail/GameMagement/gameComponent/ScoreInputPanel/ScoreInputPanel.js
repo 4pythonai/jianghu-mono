@@ -225,6 +225,7 @@ Component({
             }
         },
 
+
         async handleConfirm() {
 
             // 🔧 防止重复点击:如果正在保存, 直接返回
@@ -245,10 +246,36 @@ Component({
             this.hide();
         },
 
-        handleClear() {
-            this.hide();
-            // 关闭弹窗
+        async handleClear() {
+            // 🔧 防止重复点击:如果正在保存, 直接返回
+            if (this.data.isSaving) {
+                return;
+            }
 
+            // 先清除所有分数为null
+            const clearedScores = this.data.localScores.map(score => ({
+                ...score,
+                score: null,
+                putts: null,
+                penalty_strokes: null,
+                sand_save: null
+            }));
+
+            this.setData({
+                localScores: clearedScores
+            });
+
+            try {
+                const saveResult = await this._saveChanges();
+                if (saveResult === false) {
+                    return; // 保存失败或被跳过, 不关闭面板
+                }
+            } catch (error) {
+                return; // 如果保存失败, 不执行后续操作
+            }
+
+            // 🔧 保存成功后直接关闭面板
+            this.hide();
         },
 
         async handleMaskClick() {
