@@ -243,23 +243,29 @@ Component({
 
 
         async handleConfirm() {
-
             // 🔧 防止重复点击:如果正在保存, 直接返回
             if (this.data.isSaving) {
                 return;
             }
 
-            try {
-                const saveResult = await this._saveChanges();
-                if (saveResult === false) {
-                    return; // 保存失败或被跳过, 不关闭面板
+            // 判断是否到达最后一个用户
+            if (this.isLastPlayer()) {
+                // 最后一个用户，保存并关闭面板
+                try {
+                    const saveResult = await this._saveChanges();
+                    if (saveResult === false) {
+                        return; // 保存失败或被跳过, 不关闭面板
+                    }
+                } catch (error) {
+                    return; // 如果保存失败, 不执行后续操作
                 }
-            } catch (error) {
-                return; // 如果保存失败, 不执行后续操作
-            }
 
-            // 🔧 保存成功后直接关闭面板
-            this.hide();
+                // 🔧 保存成功后直接关闭面板
+                this.hide();
+            } else {
+                // 不是最后一个用户，切换到下一个用户
+                this.switchToNextPlayer();
+            }
         },
 
         async handleClear() {
@@ -321,6 +327,24 @@ Component({
                 tee,
                 distance: (distance && distance > 0) ? distance : null
             };
+        },
+
+        /**
+         * 判断是否到达最后一个用户
+         * @returns {boolean} 是否到达最后一个用户
+         */
+        isLastPlayer() {
+            return this.data.activePlayerIndex >= this.data.players.length - 1;
+        },
+
+        /**
+         * 切换到下一个用户
+         */
+        switchToNextPlayer() {
+            const nextIndex = this.data.activePlayerIndex + 1;
+            if (nextIndex < this.data.players.length) {
+                this._updateScopingAreaPosition(nextIndex);
+            }
         },
 
         /**
