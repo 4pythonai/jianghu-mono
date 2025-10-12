@@ -107,7 +107,6 @@ Component({
             const scrollTop = e.detail.scrollTop;
             this.setData({ scrollTop });
             this.syncScrollPosition('holesTable', scrollTop);
-            this.syncScrollPosition('totalTable', scrollTop);
         },
 
         onHolesScroll(e) {
@@ -115,15 +114,6 @@ Component({
             const scrollTop = e.detail.scrollTop;
             this.setData({ scrollTop });
             this.syncScrollPosition('playerTable', scrollTop);
-            this.syncScrollPosition('totalTable', scrollTop);
-        },
-
-        onTotalScroll(e) {
-            if (!this.data.scrollSync) return;
-            const scrollTop = e.detail.scrollTop;
-            this.setData({ scrollTop });
-            this.syncScrollPosition('playerTable', scrollTop);
-            this.syncScrollPosition('holesTable', scrollTop);
         },
 
         syncScrollPosition(tableId, scrollTop) {

@@ -22,12 +22,16 @@
   <!-- 主滚动区域 -->
   <scroll-view scroll-x class="main-scroll" id="mainScroll">
     <!-- 中间内容区 -->
-    <view class="scroll-content" style="width: {{ holeList.length * 80 }}px">
+    <view class="scroll-content" style="width: {{ (holeList.length + 1) * 80 }}px">
       <!-- 表头 -->
       <view class="tb-header tb-header-holes">
         <view wx:for="{{ holeList }}" wx:key="unique_key" class="tb-header-hole">
           <view class="hole-name">{{item.holename}}</view>
           <view class="hole-par">{{item.par}}</view>
+        </view>
+        <!-- 总分表头 -->
+        <view class="tb-header-hole tb-header-total">
+          <view class="total-text">总分</view>
         </view>
       </view>
       <!-- 内容行 -->
@@ -49,7 +53,7 @@
               playerIndex="{{ playerIndex }}"
               holeIndex="{{ holeIndex }}"
               par="{{ holeList[holeIndex].par }}"
-              colorTag="{{ cell.colorTag }}"
+              colorTag="{{ displayScores[playerIndex][holeIndex].colorTag }}"
               unique_key="{{ holeList[holeIndex].unique_key }}"
               score="{{ displayScores[playerIndex][holeIndex].score || '' }}"
               putts="{{ displayScores[playerIndex][holeIndex].putts }}"
@@ -57,27 +61,15 @@
               sand_save="{{ displayScores[playerIndex][holeIndex].sand_save }}"
               userid="{{ players[playerIndex].userid }}"
               holeid="{{ holeList[holeIndex].holeid }}"
-              colorTag="{{ displayScores[playerIndex][holeIndex].colorTag }}"
               bind:cellclick="onCellClick"
             />
+          </view>
+          <!-- 总分单元格 -->
+          <view class="cell-score cell-total">
+            <text style="color:#333;font-size:16px;font-weight:bold;">{{displayTotals[playerIndex]}}</text>
           </view>
         </view>
       </scroll-view>
     </view>
   </scroll-view>
-  <!-- 右侧固定列 -->
-  <view class="fixed-column total-column">
-    <view class="tb-header tb-header-total">总分</view>
-    <scroll-view
-      scroll-y
-      class="table-body"
-      id="totalTable"
-      scroll-top="{{ scrollTop }}"
-      bindscroll="onTotalScroll"
-    >
-      <view class="cell-total" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIdx">
-        <text style="color:#333;font-size:16px;">{{displayTotals[playerIdx]}}</text>
-      </view>
-    </scroll-view>
-  </view>
 </view>
