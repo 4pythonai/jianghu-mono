@@ -1,4 +1,4 @@
-import { gameStore } from '../../../stores/gameStore';
+import { gameStore } from '@/stores/gameStore';
 
 Component({
     data: {

@@ -1,8 +1,8 @@
 // 游戏(Gamble)模块逻辑
-import { gameStore } from '../../../stores/gameStore'
-import { runtimeStore } from '../../../stores/runtimeStore'
+import { gameStore } from '@/stores/gameStore'
+import { runtimeStore } from '@/stores/runtimeStore'
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
-const navigationHelper = require('../../../utils/navigationHelper.js')
+const navigationHelper = require('@/utils/navigationHelper.js')
 
 const app = getApp();
 
@@ -348,12 +348,12 @@ Page({
     async onRuntimeItemClick(e) {
         const { config } = e.currentTarget.dataset;
         console.log(config);
-        
+
         try {
             await navigationHelper.navigateTo(`/pages/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}`);
         } catch (err) {
             console.error('跳转运行时配置页面失败:', err);
-            
+
             // 如果是页面栈问题，提供用户选择
             if (err.message.includes('页面栈')) {
                 wx.showModal({

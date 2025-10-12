@@ -1,4 +1,4 @@
-import api from '../../../api/index'
+import api from '@/api/index'
 
 Page({
     data: {
@@ -109,7 +109,7 @@ Page({
         }
 
         // 引入 navigationHelper
-        const navigationHelper = require('../../../utils/navigationHelper.js');
+        const navigationHelper = require('@/utils/navigationHelper.js');
 
         // 如果找到了最终目标页面, 直接调用它的方法
         if (targetPage && typeof targetPage.onCombinationSelected === 'function') {

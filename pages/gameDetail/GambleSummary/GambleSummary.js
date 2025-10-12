@@ -1,4 +1,4 @@
-import gamble from '../../../api/modules/gamble.js'
+import gamble from '@/api/modules/gamble.js'
 
 Component({
     properties: {
@@ -114,7 +114,7 @@ Component({
          */
         async gotoRuntimeConfigList() {
             // 引入导航助手
-            const navigationHelper = require('../../../utils/navigationHelper.js');
+            const navigationHelper = require('@/utils/navigationHelper.js');
 
             const gameid = this.properties.gameid;
             const groupid = this.properties.groupid;

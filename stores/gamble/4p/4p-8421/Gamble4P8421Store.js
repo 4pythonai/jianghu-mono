@@ -4,7 +4,7 @@
  */
 
 import { observable, action } from 'mobx-miniprogram'
-import { gameStore } from '../../../gameStore'
+import { gameStore } from '@/stores//gameStore'
 
 export const NewG48421Store = observable({
 

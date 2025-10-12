@@ -95,7 +95,7 @@ Component({
             console.log('📊 处理后的分组数据:', processedGroups);
 
             // 引入导航助手
-            const navigationHelper = require('../../utils/navigationHelper.js');
+            const navigationHelper = require('@/utils/navigationHelper.js');
 
             if (!processedGroups || processedGroups.length === 0) {
                 console.warn('⚠️ 游戏没有分组数据, 直接进入游戏详情');
