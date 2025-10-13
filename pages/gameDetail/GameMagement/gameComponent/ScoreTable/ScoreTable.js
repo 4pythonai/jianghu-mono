@@ -14,6 +14,7 @@ Component({
         displayScores: [],
         displayOutTotals: [],
         displayInTotals: [],
+        displayHandicaps: [],
         red_blue: [],
     },
 
@@ -107,11 +108,41 @@ Component({
                 });
             }
 
-            this.setData({ displayScores, displayTotals, displayOutTotals, displayInTotals });
+            // 计算汇总杆差
+            const displayHandicaps = this.calculateHandicaps(displayScores, holeList);
+
+            this.setData({ displayScores, displayTotals, displayOutTotals, displayInTotals, displayHandicaps });
         }
     },
 
     methods: {
+        /**
+         * 计算汇总杆差的独立方法
+         * @param {Array} displayScores - 显示分数数组
+         * @param {Array} holeList - 球洞列表
+         * @returns {Array} 每个球员的杆差数组
+         */
+        calculateHandicaps(displayScores, holeList) {
+            if (!displayScores || !holeList || displayScores.length === 0) return [];
+
+            return displayScores.map(playerScores => {
+                let totalScore = 0;
+                let totalPar = 0;
+
+                // 计算总分和总标准杆
+                playerScores.forEach((score, index) => {
+                    if (typeof score.score === 'number' && score.score > 0) {
+                        totalScore += score.score;
+                        totalPar += holeList[index]?.par || 0;
+                    }
+                });
+
+                // 杆差 = 总分 - 总标准杆
+                const handicap = totalScore - totalPar;
+                return handicap;
+            });
+        },
+
         scrollToLeft() {
             const query = wx.createSelectorQuery().in(this);
             query.select('#mainScroll').node().exec((res) => {

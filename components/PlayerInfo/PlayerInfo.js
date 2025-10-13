@@ -30,6 +30,11 @@ Component({
                 });
 
             }
+        },
+        // 杆差
+        handicap: {
+            type: Number,
+            value: 0
         }
     },
 

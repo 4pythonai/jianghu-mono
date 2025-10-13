@@ -15,6 +15,7 @@
           nickname="{{ item.nickname }}"
           tee="{{ item.tee }}"
           avatar="{{ item.avatar }}"
+          handicap="{{ displayHandicaps[index] }}"
         />
       </view>
     </scroll-view>

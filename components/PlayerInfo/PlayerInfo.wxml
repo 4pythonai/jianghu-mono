@@ -1,10 +1,15 @@
 <view class="cell-player-info">
   <view class="player-info-container">
     <view class="player-info-column">
-      <image class="player-avatar" src="{{avatar}}" mode="aspectFill"></image>
+      <view class="avatar-container">
+        <image class="player-avatar" src="{{avatar}}" mode="aspectFill"></image>
+        <!-- 杆差显示 -->
+        <view class="handicap-badge">
+          <text class="handicap-text">{{handicap > 0 ? '+' + handicap : handicap}}</text>
+        </view>
+      </view>
       <text class="player-name">{{nickname}}</text>
     </view>
-    <view class="tee-info-column {{isValidTee ? 'tee-' + currentTee : 'tee-default'}}">
-    </view>
+    <view class="tee-info-column {{isValidTee ? 'tee-' + currentTee : 'tee-default'}}"></view>
   </view>
 </view>
