@@ -9,10 +9,6 @@
 	border: 1px solid #e5e5e5;
 }
 
-.flag-red {
-	position: relative;
-}
-
 .color-tag-red {
 	position: absolute;
 	top: 0;
@@ -35,39 +31,6 @@
 	border-width: 0 12px 12px 0;
 	border-color: transparent #0000ff transparent transparent;
 	z-index: 9999;
-}
-
-.flag-blue {
-	position: relative;
-}
-
-.flag-blue::after {
-	content: "";
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 0;
-	height: 0;
-	border-style: solid;
-	border-width: 0 12px 12px 0;
-	border-color: transparent #0000ff transparent transparent;
-}
-
-.corner-flag {
-	position: absolute;
-	top: 0;
-	right: 0;
-	width: 0;
-	height: 0;
-	border-style: solid;
-	border-width: 0 24px 24px 0;
-	z-index: 2;
-}
-.corner-flag.red {
-	border-color: transparent #ff0000 transparent transparent;
-}
-.corner-flag.blue {
-	border-color: transparent #0000ff transparent transparent;
 }
 
 /* 分数文本样式 */

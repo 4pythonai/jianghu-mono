@@ -58,10 +58,16 @@ Component({
     observers: {
         'score, par': function (score, par) {
 
-            if (score !== undefined && score !== null) {
+            if (score !== undefined && score !== null && score !== 0 && score !== '') {
+                // 只有当 score 不为 null、undefined、0 或空字符串时，才显示
                 const formattedScore = score.toString();
                 this.setData({
                     formattedScore: formattedScore
+                });
+            } else {
+                // 当 score 为 null、undefined、0 或空字符串时，清空显示
+                this.setData({
+                    formattedScore: ''
                 });
             }
 
@@ -70,11 +76,19 @@ Component({
         },
 
         'putts': function (putts) {
+            // putts 的显示应该和 score 保持一致，都基于 score 是否存在
+            const { score } = this.properties;
 
-            if (putts !== undefined && putts !== null) {
-                const formattedputts = putts.toString();
+            if (score !== undefined && score !== null && score !== 0 && score !== '') {
+                // 只有当 score 不为 null、undefined、0 或空字符串时，才显示 putts
+                const formattedputts = (putts !== undefined && putts !== null) ? putts.toString() : '0';
                 this.setData({
                     formattedputts: formattedputts
+                });
+            } else {
+                // 当 score 为 null、undefined、0 或空字符串时，清空显示
+                this.setData({
+                    formattedputts: ''
                 });
             }
         },
@@ -96,8 +110,8 @@ Component({
             // 初始化显示数据
             const { putts, score } = this.properties;
             this.setData({
-                formattedputts: (typeof putts === 'number' && !Number.isNaN(putts)) ? putts.toString() : '0',
-                formattedScore: (typeof score === 'number' && !Number.isNaN(score)) ? score.toString() : '0'
+                formattedputts: (score !== null && score !== undefined && score !== 0 && score !== '' && putts !== null && putts !== undefined) ? putts.toString() : '',
+                formattedScore: (score !== null && score !== undefined && score !== 0 && score !== '') ? score.toString() : ''
             });
 
             // 计算初始 diff
@@ -112,7 +126,19 @@ Component({
     methods: {
         // 计算并更新 diff
         calculateAndUpdateDiff: function () {
-            const { score = 0, par = 0, colorTag = '' } = this.properties;
+            const { score, par = 0, colorTag = '' } = this.properties;
+
+            // 如果 score 为 null、undefined、0 或空字符串，不显示任何 diff 信息
+            if (score === null || score === undefined || score === 0 || score === '') {
+                this.setData({
+                    calculatedDiff: 0,
+                    formattedDiff: '',
+                    scoreClass: ''
+                });
+                return;
+            }
+
+            // 只有当 score 不为 null 且不为 0 时，才计算并显示 diff
             const calculatedDiff = (score > 0 && par > 0) ? score - par : 0;
             const prefix = calculatedDiff > 0 ? '+' : '';
             const formattedDiff = calculatedDiff !== 0 ? prefix + calculatedDiff.toString() : '0';
