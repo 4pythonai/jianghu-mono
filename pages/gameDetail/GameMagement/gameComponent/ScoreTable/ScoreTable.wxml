@@ -59,7 +59,7 @@
         </view>
         <!-- 总分表头 -->
         <view class="tb-header-hole tb-header-total">
-          <view class="total-text">总分</view>
+          <view class="total-text">TOTAL</view>
         </view>
       </view>
       <!-- 内容行 -->
