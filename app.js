@@ -7,6 +7,33 @@ import { httpClient } from './api/request-simple'
 // 导入存储管理器
 import storage from './utils/storage'
 
+// 全局分享配置 - 在所有页面上启用分享功能
+const originalPage = Page
+Page = (options) => {
+    // 如果页面没有定义 onShareAppMessage，则添加默认的分享配置
+    if (!options.onShareAppMessage) {
+        options.onShareAppMessage = function() {
+            const pages = getCurrentPages()
+            const currentPage = pages[pages.length - 1]
+            const route = currentPage.route
+            const pageOptions = currentPage.options
+
+            // 构建分享路径（包含当前页面参数）
+            const params = Object.keys(pageOptions)
+                .map(key => `${key}=${pageOptions[key]}`)
+                .join('&')
+            const path = params ? `/${route}?${params}` : `/${route}`
+
+            return {
+                title: '来Golfmimi一起打球！⛳',
+                path: path,
+                imageUrl: '' // 使用默认截图
+            }
+        }
+    }
+    originalPage(options)
+}
+
 App({
     api: api,
     auth: authManager, // 暴露认证管理器
