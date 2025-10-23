@@ -1,0 +1,256 @@
+/* GambleSummary 组件样式 */
+.gamble-summary {
+	width: 100vw;
+	min-height: 100vh;
+	background: #f5f5f5;
+	display: flex;
+	flex-direction: column;
+}
+
+/* 导航栏样式 */
+.nav-bar {
+	width: 100%;
+	height: 88rpx;
+	background: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 32rpx;
+	border-bottom: 1rpx solid #e5e5e5;
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.nav-title {
+	font-size: 36rpx;
+	font-weight: 600;
+	color: #333;
+}
+
+.nav-buttons {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+}
+
+.icon-btn {
+	width: 64rpx;
+	height: 64rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	background: #f0f0f0;
+	transition: all 0.3s ease;
+}
+
+.icon-btn:active {
+	background: #e0e0e0;
+	transform: scale(0.95);
+}
+
+.nav-icon {
+	width: 32rpx;
+	height: 32rpx;
+}
+
+/* 主要内容容器 */
+.gamble-container {
+	flex: 1;
+	width: 100%;
+	padding: 24rpx;
+	box-sizing: border-box;
+}
+
+/* 赌博汇总表格 */
+.gamble-total-table {
+	margin-bottom: 40rpx;
+}
+
+/* 赌博结果容器 */
+.gamble-results {
+	width: 100%;
+}
+
+/* 赌博结果项样式 */
+.gamble-result-item {
+	width: 100%;
+	margin-bottom: 24rpx;
+}
+
+.gamble-result-item:last-child {
+	margin-bottom: 0;
+}
+
+/* 赌博结果标题样式 */
+.gamble-result-title {
+	font-size: 28rpx;
+	font-weight: 600;
+	color: #333;
+	background: #f8f9fa;
+	padding: 16rpx 24rpx;
+	border-bottom: 1rpx solid #e5e5e5;
+	text-align: center;
+}
+
+/* 空状态样式 */
+.empty-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 80vh;
+	padding: 40rpx 0;
+	background: #fefefe;
+}
+
+/* 加载状态样式 */
+.loading-state {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 400rpx;
+	color: #666;
+	font-size: 28rpx;
+}
+
+/* 窄菜单条样式 */
+.floating-menu {
+	position: fixed;
+	top: 50%;
+	right: 0;
+	transform: translateY(-50%);
+	width: 120rpx;
+	background: rgba(255, 255, 255, 0.1);
+	backdrop-filter: blur(3px);
+	border-radius: 60rpx 0 0 60rpx;
+	box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-right: none;
+	z-index: 1000;
+	overflow: hidden;
+}
+
+.menu-item {
+	padding: 20rpx 16rpx;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: linear-gradient(
+		135deg,
+		rgba(76, 175, 122, 0.3),
+		rgba(69, 160, 73, 0.3)
+	);
+}
+
+.menu-item:active {
+	background: linear-gradient(
+		135deg,
+		rgba(69, 160, 73, 0.5),
+		rgba(61, 139, 64, 0.5)
+	);
+	transform: scale(0.98);
+}
+
+.menu-text {
+	font-size: 26rpx;
+	color: #1a5f3a;
+	font-weight: 600;
+	text-align: center;
+	line-height: 1.2;
+}
+
+/* 无游戏状态样式 */
+.no-gamble-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 70vh;
+	text-align: center;
+	background: #f9fbfa;
+}
+
+.summary-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333;
+	margin-bottom: 24rpx;
+	padding: 16rpx 24rpx;
+	background: #fff;
+	border-radius: 12rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.ps-image {
+	width: 300rpx;
+	height: 300rpx;
+	border-radius: 24rpx;
+	margin-bottom: 40rpx;
+	box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.empty-hint {
+	font-size: 32rpx;
+	color: #999;
+	margin-bottom: 60rpx;
+}
+
+/* 底部按钮区域 */
+.bottom-button-area {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	box-sizing: border-box;
+	margin-top: 20rpx;
+}
+
+.add-game-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 16rpx;
+	padding: 24rpx 48rpx;
+	background: linear-gradient(135deg, #4caf50, #45a049);
+	color: white;
+	border: none;
+	border-radius: 16rpx;
+	font-size: 32rpx;
+	font-weight: 500;
+	box-shadow: 0 8rpx 24rpx rgba(76, 175, 80, 0.3);
+	transition: all 0.3s ease;
+	min-width: 300rpx;
+}
+
+.add-game-button:active {
+	transform: translateY(2rpx);
+	box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.4);
+}
+
+.button-emoji {
+	font-size: 36rpx;
+}
+
+.button-text {
+	font-size: 32rpx;
+}
+
+/* 提示信息样式 */
+.gamble-hint {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 80rpx 40rpx;
+	background: #fff;
+	border-radius: 16rpx;
+	margin: 20rpx 0;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.hint-text {
+	font-size: 28rpx;
+	color: #666;
+	text-align: center;
+	line-height: 1.5;
+}

@@ -1,0 +1,265 @@
+/* components/ScoreInputPanel/ScoreInputPanel.wxss */
+@import "/styles/modal.wxss";
+
+.panel-container {
+	width: 100%;
+	max-height: 80vh;
+	background-color: white;
+	border-radius: 16rpx;
+	overflow-y: auto;
+	border-radius: 16rpx 16rpx 0 0;
+	margin-bottom: 0;
+	border-top-left-radius: 20rpx;
+	border-top-right-radius: 20rpx;
+	box-sizing: border-box;
+}
+
+.hole-info-bar {
+	margin-top: 40rpx;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 30rpx;
+	color: #333;
+}
+
+.hole-details-wrapper {
+	display: flex;
+	justify-content: space-around;
+	width: 100%;
+	margin-top: 20rpx;
+}
+
+.hole-name-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100rpx;
+	height: 100rpx;
+	background-color: #0ead11;
+	border-radius: 50%;
+}
+
+.hole-name-main {
+	color: white;
+	font-size: 40rpx;
+	font-weight: bold;
+}
+
+.hole-detail {
+	font-size: 28rpx;
+	display: flex;
+	align-items: center;
+}
+
+.tee-indicator {
+	width: 16rpx;
+	height: 16rpx;
+	background-color: #007aff;
+	border-radius: 50%;
+	margin-left: 10rpx;
+}
+
+/* 发球台颜色样式 */
+.tee-black {
+	background-color: #000;
+}
+
+.tee-blue {
+	background-color: #0066cc;
+}
+
+.tee-white {
+	background-color: #f0f0f0;
+	border: 2rpx solid #ccc;
+}
+
+.tee-gold {
+	background-color: #ffd700;
+}
+
+.tee-red {
+	background-color: #cc0000;
+}
+
+.tee-default {
+	background-color: #999;
+}
+
+.main-content {
+	display: flex;
+	height: 500rpx;
+}
+
+.player-list-container {
+	width: 160rpx;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.player-list-scroll {
+	width: 100%;
+	height: 100%;
+	padding-top: 40rpx;
+	overflow: hidden;
+}
+
+.player-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+
+.player-item.active {
+	background-color: #e0f0e0;
+	border-radius: 12rpx 0 0 12rpx;
+}
+
+.player-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 12rpx;
+}
+
+.player-score {
+	margin-top: 10rpx;
+	font-size: 32rpx;
+	font-weight: bold;
+}
+
+.scoring-area-container {
+	flex: 1;
+	height: 100%;
+}
+
+.scoring-area {
+	width: 100%;
+	height: 100%;
+	background-color: #e0f0e0;
+	border-radius: 16rpx;
+	padding: 20rpx;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+}
+
+.score-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+
+.score-label {
+	font-size: 32rpx;
+	font-weight: bold;
+}
+
+.score-control {
+	display: flex;
+	align-items: center;
+	background-color: white;
+	border-radius: 50rpx;
+	padding: 5rpx;
+}
+
+.control-btn {
+	width: 50rpx;
+	height: 50rpx;
+	line-height: 50rpx;
+	text-align: center;
+	background-color: #4caf50;
+	color: white;
+	border-radius: 50%;
+	margin: 0 15rpx;
+	padding: 0;
+	font-size: 36rpx;
+}
+
+.score-value {
+	font-size: 36rpx;
+	font-weight: bold;
+	min-width: 60rpx;
+	text-align: center;
+}
+
+.tee-shot-options {
+	display: flex;
+	justify-content: space-around;
+	margin-top: 30rpx;
+}
+
+.shot-option {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	opacity: 0.5;
+}
+
+.shot-option.active {
+	opacity: 1;
+}
+
+.shot-icon-wrapper {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	background-color: #cccccc;
+	position: relative;
+}
+
+.shot-option.active .shot-icon-wrapper {
+	background-color: #4caf50;
+}
+
+/* 开球方向指示器样式 */
+.shot-icon-wrapper.center {
+	background-color: #4caf50;
+}
+
+.shot-icon-wrapper.left {
+	background: linear-gradient(
+		90deg,
+		#4caf50 0%,
+		#4caf50 50%,
+		#cccccc 50%,
+		#cccccc 100%
+	);
+}
+
+.shot-icon-wrapper.right {
+	background: linear-gradient(
+		90deg,
+		#cccccc 0%,
+		#cccccc 50%,
+		#4caf50 50%,
+		#4caf50 100%
+	);
+}
+
+.shot-icon-wrapper.up {
+	background: linear-gradient(
+		0deg,
+		#cccccc 0%,
+		#cccccc 50%,
+		#4caf50 50%,
+		#4caf50 100%
+	);
+}
+
+.shot-icon-wrapper.down {
+	background: linear-gradient(
+		0deg,
+		#4caf50 0%,
+		#4caf50 50%,
+		#cccccc 50%,
+		#cccccc 100%
+	);
+}
+
+.shot-label {
+	font-size: 24rpx;
+	margin-top: 10rpx;
+}

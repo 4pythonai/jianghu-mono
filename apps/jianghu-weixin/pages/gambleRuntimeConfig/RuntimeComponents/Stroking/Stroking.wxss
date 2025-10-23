@@ -1,0 +1,373 @@
+/* Stroking 组件样式 */
+
+@import "/styles/modal.wxss";
+
+.stroking-container {
+	padding: 25rpx 15rpx;
+	background-color: #fff;
+	border-radius: 20rpx;
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+/* section 区域样式 */
+.section {
+	margin-bottom: 32rpx;
+	background: #fafbfc;
+	border-radius: 12rpx;
+	padding: 24rpx 16rpx 16rpx 16rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+}
+
+/* 通用标题样式 */
+.section-title {
+	font-size: 28rpx;
+	font-weight: 600;
+	color: #333;
+	margin-bottom: 15rpx;
+	padding-left: 10rpx;
+	border-left: 4rpx solid #4caf50;
+}
+
+.users-grid {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 8rpx;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.user-item {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	padding: 15rpx 10rpx;
+	background-color: #f8f9fa;
+	border-radius: 15rpx;
+	border: 2rpx solid transparent;
+	transition: all 0.3s ease;
+	position: relative;
+	flex: 1;
+	min-width: 0;
+}
+
+.user-item.selected {
+	background-color: #e8f5e8;
+	border-color: #4caf50;
+	box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.2);
+}
+
+.user-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+}
+
+.user-avatar {
+	width: 50rpx;
+	height: 50rpx;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-bottom: 8rpx;
+}
+
+.avatar-image {
+	width: 100%;
+	height: 100%;
+}
+
+.user-info {
+	flex: 1;
+}
+
+.user-nickname {
+	font-size: 20rpx;
+	color: #333;
+	font-weight: 500;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: center;
+	max-width: 70rpx;
+}
+
+.radio-indicator {
+	margin-right: 10rpx;
+}
+
+.radio-circle {
+	width: 24rpx;
+	height: 24rpx;
+	border-radius: 50%;
+	border: 2rpx solid #ddd;
+	background-color: #fff;
+	transition: all 0.3s ease;
+}
+
+.radio-circle.checked {
+	border-color: #4caf50;
+	background-color: #4caf50;
+	position: relative;
+}
+
+.radio-circle.checked::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 10rpx;
+	height: 10rpx;
+	background-color: #fff;
+	border-radius: 50%;
+}
+
+.par-inputs {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 5rpx;
+	width: 100%;
+}
+
+.par-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 26rpx;
+	color: #666;
+	text-align: center;
+	white-space: nowrap;
+	background-color: #f8f9fa;
+	border-radius: 8rpx;
+	padding: 12rpx 8rpx;
+	border: 2rpx solid #e9ecef;
+}
+
+.par-picker {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12rpx 8rpx;
+	background-color: #f8f9fa;
+	border-radius: 8rpx;
+	border: 2rpx solid #e9ecef;
+	transition: all 0.3s ease;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.par-picker:active {
+	background-color: #e9ecef;
+	transform: scale(0.98);
+}
+
+.par-value {
+	font-size: 28rpx;
+	color: #333;
+	font-weight: 600;
+}
+
+.picker-arrow {
+	font-size: 22rpx;
+	color: #999;
+}
+
+.hole-range-inputs {
+	display: flex;
+	gap: 15rpx;
+	flex-wrap: nowrap;
+}
+
+.hole-input-group {
+	flex: 1;
+	min-width: 150rpx;
+	max-width: 200rpx;
+}
+
+.hole-label {
+	display: block;
+	font-size: 24rpx;
+	color: #666;
+	margin-bottom: 8rpx;
+	text-align: center;
+}
+
+.hole-picker {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15rpx 10rpx;
+	background-color: #f8f9fa;
+	border-radius: 10rpx;
+	border: 2rpx solid #e9ecef;
+	transition: all 0.3s ease;
+}
+
+.hole-picker:active {
+	background-color: #e9ecef;
+	transform: scale(0.98);
+}
+
+.hole-value {
+	font-size: 26rpx;
+	color: #333;
+	font-weight: 500;
+}
+
+/* 让杆选择样式 */
+.stroking-selection {
+	margin-bottom: 30rpx;
+}
+
+.stroking-selection radio-group {
+	display: flex;
+	gap: 40rpx;
+	margin-left: 40rpx;
+	align-items: center;
+}
+
+.radio-option {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+.radio-text {
+	margin-left: 15rpx;
+	font-size: 28rpx;
+	color: #333;
+}
+
+/* 配置状态样式 */
+.config-status {
+	padding: 20rpx;
+	background-color: #e8f5e8;
+	border-radius: 10rpx;
+	border-left: 4rpx solid #4caf50;
+	margin-bottom: 20rpx;
+}
+
+.status-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+}
+
+.status-title {
+	font-size: 28rpx;
+	font-weight: 600;
+	color: #333;
+}
+
+.add-config-btn {
+	padding: 8rpx 16rpx;
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	border-radius: 6rpx;
+	font-size: 24rpx;
+	font-weight: 500;
+	box-shadow: 0 2rpx 8rpx rgba(76, 175, 80, 0.3);
+}
+
+.add-config-btn:active {
+	background-color: #43a047;
+	transform: scale(0.98);
+}
+
+/* 已配置用户列表 */
+.configured-users-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
+}
+
+.configured-user-item {
+	background-color: #ffffff;
+	border-radius: 12rpx;
+	padding: 16rpx;
+	border: 1rpx solid #e9ecef;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.user-basic-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 8rpx;
+}
+
+.user-name {
+	font-size: 28rpx;
+	font-weight: 600;
+	color: #333;
+}
+
+.hole-count {
+	font-size: 24rpx;
+	color: #666;
+	background-color: #f8f9fa;
+	padding: 4rpx 8rpx;
+	border-radius: 4rpx;
+}
+
+.user-par-info {
+	margin-bottom: 12rpx;
+}
+
+.par-summary {
+	font-size: 24rpx;
+	color: #555;
+	line-height: 1.4;
+}
+
+.user-actions {
+	display: flex;
+	gap: 8rpx;
+	justify-content: flex-end;
+}
+
+.action-btn {
+	padding: 6rpx 12rpx;
+	border: none;
+	border-radius: 6rpx;
+	font-size: 22rpx;
+	font-weight: 500;
+	min-width: 60rpx;
+}
+
+.edit-btn {
+	background-color: #2196f3;
+	color: white;
+	box-shadow: 0 2rpx 6rpx rgba(33, 150, 243, 0.3);
+}
+
+.edit-btn:active {
+	background-color: #1976d2;
+	transform: scale(0.98);
+}
+
+.delete-btn {
+	background-color: #ff4757;
+	color: white;
+	box-shadow: 0 2rpx 6rpx rgba(255, 71, 87, 0.3);
+}
+
+.delete-btn:active {
+	background-color: #ff3742;
+	transform: scale(0.98);
+}
+
+/* 空状态提示 */
+.empty-tip {
+	text-align: center;
+	padding: 30rpx 20rpx;
+}
+
+.tip-text {
+	font-size: 26rpx;
+	color: #999;
+	line-height: 1.5;
+}

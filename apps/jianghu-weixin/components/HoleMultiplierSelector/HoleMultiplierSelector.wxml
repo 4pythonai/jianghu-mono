@@ -1,0 +1,53 @@
+<view class="multiplier-popup" wx:if="{{visible}}" bindtap="close">
+  <view class="multiplier-content" catchtap="noop">
+    <view class="multiplier-title">选择倍数 - 从{{holename}}开始</view>
+
+    <view class="multiplier-options">
+      <!-- 第一行：恢复, X2, X4 -->
+      <view
+        class="multiplier-btn {{selectedMultiplier === 1 ? 'active' : ''}}"
+        bindtap="onResetMultiplier"
+        data-multiplier="1"
+      >恢复</view>
+      <view
+        class="multiplier-btn {{selectedMultiplier === 2 ? 'active' : ''}}"
+        bindtap="onSelectMultiplier"
+        data-multiplier="2"
+      >X2</view>
+      <view
+        class="multiplier-btn {{selectedMultiplier === 4 ? 'active' : ''}}"
+        bindtap="onSelectMultiplier"
+        data-multiplier="4"
+      >X4</view>
+
+      <!-- 第二行：X6, X8, X[input] -->
+      <view
+        class="multiplier-btn {{selectedMultiplier === 6 ? 'active' : ''}}"
+        bindtap="onSelectMultiplier"
+        data-multiplier="6"
+      >X6</view>
+      <view
+        class="multiplier-btn {{selectedMultiplier === 8 ? 'active' : ''}}"
+        bindtap="onSelectMultiplier"
+        data-multiplier="8"
+      >X8</view>
+      <view
+        class="multiplier-btn custom-input-container {{isCustomActive === true ? 'active' : ''}}"
+      >
+        <text class="custom-prefix">X</text>
+        <input
+          class="custom-input"
+          type="digit"
+          value="{{customValue}}"
+          bindinput="onCustomInputChange"
+          bindtap="onCustomInputTap"
+        />
+      </view>
+    </view>
+
+    <view class="multiplier-footer">
+      <button class="multiplier-btn-cancel" bindtap="onCancel">取消</button>
+      <button class="multiplier-btn-confirm" bindtap="onConfirm">确定</button>
+    </view>
+  </view>
+</view>

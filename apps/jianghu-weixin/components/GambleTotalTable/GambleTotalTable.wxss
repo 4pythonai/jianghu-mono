@@ -1,0 +1,190 @@
+/* GambleResultTable 组件样式 */
+
+.gamble-result-table {
+	width: 100%;
+	position: relative;
+}
+
+.table-wrapper {
+	width: 100%;
+	overflow-x: auto;
+}
+
+.table-container {
+	width: 100%;
+	min-width: 100%;
+	border-collapse: collapse;
+	padding-bottom: 160rpx; /* 为固定统计行留出空间 */
+}
+
+/* 表头样式 */
+.table-header {
+	display: flex;
+	background-color: #f8f9fa;
+	border-bottom: 0.25px solid #dee2e6;
+	flex-shrink: 0;
+}
+
+.header-cell {
+	flex: 1;
+	padding: 8rpx;
+	text-align: center;
+	border-right: 0.25px solid #dee2e6;
+}
+
+.hole-header {
+	flex: 1;
+	background-color: #ffffff;
+	font-weight: bold;
+	border-right: 0.25px solid #dee2e6;
+}
+
+.player-header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* 球员信息容器 - 垂直布局 */
+.player-info {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	padding: 4rpx;
+}
+
+/* 球员头像 */
+.player-avatar {
+	width: 50rpx;
+	height: 50rpx;
+	border-radius: 50%;
+	margin-bottom: 8rpx;
+	border: 2rpx solid #dee2e6;
+}
+
+/* 球员昵称 */
+.player-name {
+	font-size: 20rpx;
+	color: #333;
+	text-align: center;
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	line-height: 1.2;
+}
+
+/* 表格主体 */
+.table-body {
+	display: flex;
+	flex-direction: column;
+}
+
+.table-row {
+	display: flex;
+	border-bottom: 0.25px solid #dee2e6;
+}
+
+.cell {
+	flex: 1;
+	padding: 8rpx;
+	text-align: center;
+	border-right: 0.25px solid #dee2e6;
+	min-width: 140rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 洞号单元格 */
+.hole-header-inner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	font-weight: bold;
+	color: #495057;
+	padding: 0 8rpx;
+	text-align: center;
+}
+
+/* 固定在屏幕底部的统计行容器 */
+.fixed-summary {
+	position: fixed;
+	bottom: 0;
+	left: 24rpx;
+	right: 24rpx;
+	background-color: #f8f9fa;
+	border-top: 1px solid #dee2e6;
+	z-index: 1000;
+	box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 总计行样式 */
+.total-row {
+	background-color: #f8f9fa;
+	font-weight: bold;
+}
+
+.total-row .cell {
+	background-color: #f8f9fa;
+}
+
+/* 确保第一列在所有情况下都是白底 */
+.total-row .hole-header {
+	background-color: #ffffff;
+}
+
+/* 金额样式 */
+.money-positive {
+	color: #28a745;
+	font-weight: bold;
+}
+
+.money-negative {
+	color: #dc3545;
+	font-weight: bold;
+}
+
+.money-zero {
+	color: #6c757d;
+}
+
+/* 红蓝分组样式 */
+.cell.team-red {
+	background-color: rgba(220, 53, 69, 0.1);
+	border-left: 1px solid #dc3545;
+}
+
+.cell.team-blue {
+	background-color: rgba(0, 123, 255, 0.1);
+	border-left: 1px solid #007bff;
+}
+
+/* 响应式设计 */
+@media (max-width: 750rpx) {
+	.hole-header {
+		flex: 0 0 120rpx;
+		min-width: 120rpx;
+		max-width: 120rpx;
+	}
+
+	.player-avatar {
+		width: 40rpx;
+		height: 40rpx;
+	}
+
+	.player-name {
+		font-size: 18rpx;
+	}
+
+	.header-cell,
+	.cell {
+		min-width: 120rpx;
+		padding: 6rpx;
+	}
+}

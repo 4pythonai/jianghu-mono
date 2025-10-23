@@ -1,0 +1,12 @@
+<!--成绩卡页面-->
+<view class="container">
+    <view class="page-content">
+        <web-view 
+            wx:if="{{showWebView}}"
+            src="{{webviewUrl}}" 
+            bindmessage="onWebViewMessage"
+            binderror="onWebViewError"
+            bindload="onWebViewLoad">
+        </web-view>
+    </view>
+</view>

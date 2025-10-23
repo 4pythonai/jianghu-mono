@@ -1,0 +1,13 @@
+{
+  "component": true,
+  "usingComponents": {
+    "E8421Koufen": "/components/Gamble/8421_configItems/E8421Koufen/E8421Koufen",
+    "Draw8421": "/components/Gamble/8421_configItems/Draw8421/Draw8421",
+    "E8421Meat": "/components/Gamble/8421_configItems/E8421Meat/E8421Meat",
+    "LasiBaoDong": "/components/Gamble/lasi_configItems/LasiBaoDong/LasiBaoDong",
+    "LasiKPI": "/components/Gamble/lasi_configItems/LasiKPI/LasiKPI",
+    "LasiRewardConfig": "/components/Gamble/lasi_configItems/LasiRewardConfig/LasiRewardConfig",
+    "LasiEatmeat": "/components/Gamble/lasi_configItems/LasiEatmeat/LasiEatmeat",
+    "LasiDingDong": "/components/Gamble/lasi_configItems/LasiDingDong/LasiDingDong"
+  }
+}

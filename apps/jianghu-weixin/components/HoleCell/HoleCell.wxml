@@ -1,0 +1,7 @@
+<view class="hole-cell" style="background:#fff" bindtap="recordScore">
+  <view wx:if="{{colorTag === 'red'}}" class="color-tag-red"></view>
+  <view wx:if="{{colorTag === 'blue'}}" class="color-tag-blue"></view>
+  <text wx:if="{{formattedScore}}" class="score-text {{ scoreClass }}">{{formattedScore}}</text>
+  <text wx:if="{{formattedputts}}" class="putts-text">{{formattedputts}}</text>
+  <text wx:if="{{formattedDiff}}" class="diff-text">{{formattedDiff}}</text>
+</view>

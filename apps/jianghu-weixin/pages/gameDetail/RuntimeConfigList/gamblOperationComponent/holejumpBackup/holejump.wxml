@@ -1,0 +1,41 @@
+<view class="modal-mask" bindtap="close">
+  <view class="modal-content" catchtap="noop">
+    <view class="modal-title">跳洞设置</view>
+
+    <!-- 添加隔离容器防止拖拽影响弹窗高度 -->
+    <view class="drag-container">
+      <movable-area class="move-area" scale-area="{{false}}">
+        <block wx:for="{{holePlayList}}" wx:key="hindex">
+          <movable-view
+            class="one-hole {{item.isDragging ? 'dragging' : ''}}"
+            direction="all"
+            x="{{item.x}}"
+            y="{{item.y}}"
+            disabled="{{false}}"
+            inertia="{{false}}"
+            out-of-bounds="{{false}}"
+            damping="{{50}}"
+            friction="{{10}}"
+            bindchange="onMovableChange"
+            bindtouchend="onMovableTouchEnd"
+            data-index="{{index}}"
+            data-hindex="{{item.hindex}}"
+          >
+            <text class="hole-item-text">{{item.holename}}</text>
+          </movable-view>
+        </block>
+      </movable-area>
+    </view>
+
+    <!-- 拖拽提示区域 -->
+    <view class="drag-hint">
+      <text>拖拽到目标位置释放，其他球会自动调整位置</text>
+    </view>
+
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onReset">重置</button>
+      <button class="modal-btn cancel" bindtap="close">取消</button>
+      <button class="modal-btn confirm" bindtap="onJumpComplete">确定</button>
+    </view>
+  </view>
+</view>

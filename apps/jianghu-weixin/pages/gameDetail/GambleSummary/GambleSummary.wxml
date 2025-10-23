@@ -1,0 +1,140 @@
+<view class="gamble-summary">
+  <!-- 导航栏 -->
+  <view class="nav-bar">
+    <view class="nav-left">
+      <text class="nav-title">游戏详情</text>
+    </view>
+    <view class="nav-right">
+      <view class="nav-buttons">
+        <view class="icon-btn" bindtap="showDrawer">
+          <image class="nav-icon" src="/assets/icons/icons8-settings-50.png" mode="aspectFit"></image>
+        </view>
+        <view class="icon-btn" bindtap="gotoRuntimeConfigList">
+          <image class="nav-icon" src="/assets/icons/icons8-right-arrow-50-3.png" mode="aspectFit"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="gamble-container" style="display: flex; flex-direction: column; min-height: 100vh;">
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 有赌博数据时的内容 -->
+    <block wx:elif="{{gambleResults && gambleResults.length > 0}}">
+      <!-- 只有一个游戏时，直接显示明细，不显示汇总 -->
+      <block wx:if="{{gambleResults.length === 1}}">
+        <view class="gamble-results">
+          <view
+            class="gamble-result-item"
+            wx:for="{{gambleResults}}"
+            wx:key="index"
+            wx:for-item="gambleResult"
+          >
+            <!-- 赌博结果表格 -->
+            <view
+              class="gamble-result-title"
+            >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
+            <GambleResultTable
+              groupInfo="{{gambleResult.group_info}}"
+              usefulHoles="{{gambleResult.useful_holes}}"
+              qrcode_url="{{gambleResult.qrcode_url}}"
+              showQr="{{false}}"
+            ></GambleResultTable>
+          </view>
+        </view>
+      </block>
+
+      <!-- 多个游戏时，显示汇总和菜单 -->
+      <block wx:else>
+        <!-- 赌博汇总表格 -->
+        <view
+          class="gamble-total-table"
+          wx:if="{{currentDisplayType === 'summary'}}"
+          style="flex: 1;"
+        >
+          <view class="gamble-result-title">游戏汇总/出右边横菜单</view>
+          <GambleTotalTable
+            groupInfo="{{SummaryResult.group_info}}"
+            usefulHoles="{{SummaryResult.useful_holes}}"
+            qrcode_url="{{''}}"
+            showQr="{{false}}"
+          ></GambleTotalTable>
+        </view>
+
+        <!-- 赌博结果列表 -->
+        <view class="gamble-results">
+          <view
+            class="gamble-result-item"
+            wx:for="{{gambleResults}}"
+            wx:key="index"
+            wx:for-item="gambleResult"
+            wx:if="{{currentDisplayType === 'detail' && currentDetailIndex === index}}"
+          >
+            <!-- 赌博结果标题 - 只有当有多个赌博配置时才显示 -->
+            <view
+              class="gamble-result-title"
+              wx:if="{{gambleResults.length > 1}}"
+            >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
+
+            <!-- 赌博结果表格 -->
+            <GambleResultTable
+              groupInfo="{{gambleResult.group_info}}"
+              usefulHoles="{{gambleResult.useful_holes}}"
+              qrcode_url="{{gambleResult.qrcode_url}}"
+              showQr="{{false}}"
+            ></GambleResultTable>
+          </view>
+        </view>
+
+        <!-- 默认显示提示信息 -->
+        <view class="gamble-hint" wx:if="{{!currentDisplayType}}">
+          <text class="hint-text">点击右上角设置按钮查看详细数据</text>
+        </view>
+      </block>
+    </block>
+
+    <!-- 暂无赌博数据状态 -->
+    <view
+      class="empty-state"
+      wx:elif="{{!loading && (!gambleResults || gambleResults.length === 0)}}"
+    >
+      <view class="no-gamble-container">
+        <view class="summary-title">汇总待开发[gameID:{{gameid}}][groupID:{{groupid}}]</view>
+        <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
+        <text class="empty-hint">暂无</text>
+        <!-- 按钮区域 -->
+        <view class="bottom-button-area">
+          <button class="add-game-button" bindtap="handleAddGame">
+            <text class="button-emoji">🎮</text>
+            <text class="button-text">添加游戏</text>
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 窄菜单条 - 只有多个游戏时才显示 -->
+  <view class="floating-menu" wx:if="{{gambleResults && gambleResults.length > 1}}">
+    <view class="menu-item" bindtap="onMenuAction" data-action="viewDetail">
+      <text class="menu-text">明细</text>
+    </view>
+  </view>
+
+  <!-- Drawer 组件 -->
+  <Drawer
+    id="drawer"
+    gameid="{{gameid}}"
+    groupid="{{groupid}}"
+    createTime="{{createTime}}"
+    gameStatus="{{gameStatus}}"
+    summaryResult="{{SummaryResult}}"
+    gambleResults="{{gambleResults}}"
+    bind:open="onDrawerOpen"
+    bind:close="onDrawerClose"
+    bind:confirm="onDrawerConfirm"
+    bind:switchDisplay="switchDisplay"
+  ></Drawer>
+</view>

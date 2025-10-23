@@ -1,0 +1,205 @@
+/* 我的规则组件样式 */
+.myrules-container {
+	min-height: 100vh;
+	padding-bottom: 30rpx;
+	padding-top: 10rpx;
+	padding-left: 10rpx;
+}
+
+.loading-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 200px;
+}
+
+.loading-text {
+	color: #999;
+	font-size: 14px;
+}
+
+/* 规则内容容器 - 使用分组滚动区域样式 */
+.rules-content {
+	height: 100vh;
+	box-sizing: border-box;
+}
+
+/* 统计信息样式 */
+.rules-summary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 32rpx;
+	background-color: #fff;
+	border-radius: 24rpx;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+	margin-bottom: 48rpx;
+}
+
+.summary-title {
+	font-size: 36rpx;
+	font-weight: 600;
+	color: #333;
+}
+
+.summary-count {
+	font-size: 28rpx;
+	color: #666;
+	background-color: #f5f5f5;
+	padding: 8rpx 24rpx;
+	border-radius: 40rpx;
+}
+
+/* 空状态样式 */
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 400rpx;
+	gap: 20rpx;
+}
+
+.empty-text {
+	font-size: 32rpx;
+	color: #666;
+	font-weight: 500;
+}
+
+.empty-hint {
+	font-size: 28rpx;
+	color: #999;
+}
+
+/* 分组容器样式 - 使用分组块样式 */
+.rules-groups {
+	display: flex;
+	flex-direction: column;
+}
+
+.rules-group {
+	margin-bottom: 48rpx;
+}
+
+/* 分组标题样式 - 使用group-title样式 */
+.group-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 24rpx;
+}
+
+.group-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #222;
+}
+
+.group-count {
+	font-size: 24rpx;
+	color: #fff;
+	background-color: #025028;
+	padding: 4rpx 16rpx;
+	border-radius: 20rpx;
+}
+
+/* 分组列表样式 - 使用卡片行样式 */
+.group-list {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.group-list-item {
+	width: 90vw;
+	max-width: 700rpx;
+	min-width: 280rpx;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.rule-header {
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+}
+
+.rule-title {
+	color: #fff;
+	font-size: 28rpx;
+	font-weight: 600;
+	text-shadow: 2rpx 2rpx 8rpx rgba(0, 0, 0, 0.18);
+	line-height: 1.3;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.rule-type {
+	align-self: flex-start;
+	padding: 4rpx 12rpx;
+	border-radius: 8rpx;
+	font-size: 20rpx;
+	background-color: rgba(255, 255, 255, 0.2);
+	color: #fff;
+	backdrop-filter: blur(4px);
+}
+
+.rule-description {
+	margin: 8rpx 0;
+}
+
+.rule-description text {
+	color: rgba(255, 255, 255, 0.9);
+	font-size: 22rpx;
+	line-height: 1.4;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.rule-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: auto;
+}
+
+.rule-time {
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 20rpx;
+}
+
+.rule-actions {
+	display: flex;
+	gap: 16rpx;
+}
+
+.action-btn {
+	font-size: 22rpx;
+	padding: 6rpx 12rpx;
+	border-radius: 8rpx;
+	transition: all 0.2s ease;
+	background-color: rgba(255, 255, 255, 0.2);
+	color: #fff;
+	backdrop-filter: blur(4px);
+}
+
+.edit-btn:active {
+	background-color: rgba(255, 255, 255, 0.3);
+}
+
+.delete-btn:active {
+	background-color: rgba(244, 67, 54, 0.8);
+}
+
+/* 响应式适配 */
+@media screen and (max-width: 400px) {
+	.rule-title {
+		font-size: 26rpx;
+	}
+}

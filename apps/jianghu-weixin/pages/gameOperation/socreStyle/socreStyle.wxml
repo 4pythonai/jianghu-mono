@@ -1,0 +1,17 @@
+<!--风格页面-->
+<view class="container">
+  <view class="debug-info">
+    <text class="debug-title">调试信息:</text>
+    <text class="debug-content">GameID: {{gameid}}</text>
+  </view>
+
+  <view class="page-content">
+    <view class="page-header">
+      <text class="page-title">风格功能</text>
+    </view>
+
+    <view class="placeholder">
+      <text class="placeholder-text">功能开发中...</text>
+    </view>
+  </view>
+</view>

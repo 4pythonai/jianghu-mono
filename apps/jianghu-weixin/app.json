@@ -1,0 +1,90 @@
+{
+	"pages": [
+		"pages/live/live",
+		"pages/events/events",
+		"pages/createGame/createGame",
+		"pages/community/community",
+		"pages/mine/mine",
+		"pages/gameDetail/gameDetail",
+		"pages/groupsList/groupsList",
+		"pages/gameDetail/RuntimeConfigList/RuntimeConfigList",
+		"pages/createGame/moreCreate/moreCreate",
+		"pages/createGame/commonCreate/commonCreate",
+		"pages/createGame/quickCreate/quickCreate",
+		"pages/course-select/course-select",
+		"pages/court-select/court-select",
+		"pages/player-select/player-select",
+		"pages/player-select/combineSelect/combineSelect",
+		"pages/player-select/friendSelect/friendSelect",
+		"pages/player-select/qrcode/qrcode",
+		"pages/player-select/manualAdd/manualAdd",
+		"pages/player-select/wxshare/wxshare",
+		"pages/tland-select/tland-select",
+		"pages/gameOperation/feedback/feedback",
+		"pages/gameOperation/scorecard/scorecard",
+		"pages/gameOperation/poster/poster",
+		"pages/gameOperation/personalBilingBook/personalBilingBook",
+		"pages/gameOperation/socreStyle/socreStyle",
+		"pages/rules/RuleEditer/RuleEditer",
+		"pages/gambleRuntimeConfig/addRuntime/addRuntime",
+		"pages/gambleRuntimeConfig/editRuntime/editRuntime",
+		"pages/gambleResult/gambleResult",
+		"pages/rules/rules"
+	],
+	"window": {
+		"navigationBarTitleText": "golfmimi",
+		"navigationBarTextStyle": "black",
+		"navigationBarBackgroundColor": "#ffffff"
+	},
+	"tabBar": {
+		"color": "#999999",
+		"selectedColor": "#025028",
+		"backgroundColor": "#ffffff",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/live/live",
+				"text": "直播",
+				"iconPath": "images/tabbar/live.png",
+				"selectedIconPath": "images/tabbar/live_selected.png"
+			},
+			{
+				"pagePath": "pages/events/events",
+				"text": "赛事",
+				"iconPath": "images/tabbar/cup.png",
+				"selectedIconPath": "images/tabbar/cup_selected.png"
+			},
+			{
+				"pagePath": "pages/createGame/createGame",
+				"text": "",
+				"iconPath": "images/tabbar/add.png",
+				"selectedIconPath": "images/tabbar/add_selected.png"
+			},
+			{
+				"pagePath": "pages/community/community",
+				"text": "江湖",
+				"iconPath": "images/tabbar/community.png",
+				"selectedIconPath": "images/tabbar/community_selected.png"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"text": "我的",
+				"iconPath": "images/tabbar/mine.png",
+				"selectedIconPath": "images/tabbar/mine_selected.png"
+			}
+		]
+	},
+	"permission": {
+		"scope.userLocation": {
+			"desc": "您的位置信息将用于显示当前位置"
+		}
+	},
+	"requiredPrivateInfos": [
+		"getLocation"
+	],
+	"style": "v2",
+	"sitemapLocation": "sitemap.json",
+	"resolveAlias": {
+		"@/*": "/*"
+	}
+}

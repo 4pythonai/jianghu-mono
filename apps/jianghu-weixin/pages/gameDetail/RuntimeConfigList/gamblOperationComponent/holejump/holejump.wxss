@@ -1,0 +1,119 @@
+@import "/styles/modal.wxss";
+
+@keyframes slideUp {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
+.section {
+	margin-bottom: 32rpx;
+	background: #fafbfc;
+	border-radius: 12rpx;
+	padding: 24rpx 16rpx 16rpx 16rpx;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+}
+
+.section-title {
+	font-size: 28rpx;
+	font-weight: 600;
+	margin-bottom: 18rpx;
+	border-left: 6rpx solid #4caf50;
+	padding-left: 16rpx;
+}
+
+/* 拖拽区域样式 */
+.drag-section {
+	margin: 20rpx 0;
+}
+
+.drag-container {
+	height: 600rpx;
+	overflow: hidden;
+	border-radius: 8rpx;
+	background: #f8f9fa;
+	position: relative;
+}
+
+/* 弹框内拖拽特殊处理 */
+.drag-container .item-wrap {
+	position: relative;
+	z-index: 1;
+}
+
+.drag-container .item-wrap .item {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+}
+
+.drag-container .item-wrap .item.cur {
+	z-index: 1001 !important;
+	pointer-events: auto;
+}
+
+.drag-container .item-wrap .item.tran {
+	transition: transform 0.3s !important;
+}
+
+.drag-container .item-wrap .item.fixed {
+	z-index: 0 !important;
+}
+
+/* 确保拖拽时球洞可见且可交互 */
+.drag-container .hole-container {
+	pointer-events: auto;
+}
+
+.drag-container .item.cur .hole-container {
+	z-index: 1001 !important;
+	position: relative;
+}
+
+/* 防止弹框阻止拖拽事件 */
+.modal-content {
+	pointer-events: auto;
+}
+
+.drag-container {
+	pointer-events: auto;
+}
+
+/* 确保弹框层级足够高 */
+.modal-content {
+	z-index: 10000;
+}
+
+/* 拖拽时的层级处理 */
+.item-wrap .item.cur {
+	z-index: 1001 !important;
+}
+
+/* 确保拖拽组件在弹框内正常工作 */
+.item-wrap {
+	position: relative;
+	z-index: 1;
+}
+
+.item-wrap .item {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+}
+
+.item-wrap .item.tran {
+	transition: transform 0.3s !important;
+}
+
+.item-wrap .item.cur {
+	z-index: 1001 !important;
+}
+
+.item-wrap .item.fixed {
+	z-index: 0 !important;
+}

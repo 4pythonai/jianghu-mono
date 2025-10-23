@@ -1,0 +1,9 @@
+{
+	"component": true,
+	"properties": {
+		"colorTag": {
+			"type": "string",
+			"value": ""
+		}
+	}
+}

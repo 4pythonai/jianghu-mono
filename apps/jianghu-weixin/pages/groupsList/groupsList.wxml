@@ -1,0 +1,57 @@
+<!--pages/groupsList/groupsList.wxml-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="header">
+    <view class="title">选择分组</view>
+    <view class="subtitle" wx:if="{{gameName}}">{{gameName}}</view>
+    <view class="course-info" wx:if="{{course}}">{{course}}</view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-text">加载中...</view>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-container" wx:elif="{{error}}">
+    <view class="error-text">{{error}}</view>
+    <button class="btn btn-retry" bindtap="retryLoad">重试</button>
+  </view>
+
+  <!-- 分组列表 -->
+  <view class="groups-container" wx:else>
+    <view
+      class="group-item"
+      wx:for="{{groups}}"
+      wx:key="groupid"
+      bindtap="onGroupTap"
+      data-group-id="{{item.groupid}}"
+      data-group-name="{{item.groupName}}"
+    >
+      <!-- 分组标题 -->
+      <view class="group-header">
+        <view class="group-name">{{item.groupName || '第' + (index + 1) + '组'}}</view>
+        <view class="group-count">{{item.players ? item.players.length : 0}}人</view>
+        <view class="arrow-right">></view>
+      </view>
+
+      <!-- 玩家列表 -->
+      <view class="players-list" wx:if="{{item.players && item.players.length > 0}}">
+        <view class="player-item" wx:for="{{item.players}}" wx:key="userid" wx:for-item="player">
+          <image class="player-avatar" src="{{player.avatar || '/images/default-avatar.png'}}" />
+          <view class="player-name">{{player.nickname || player.wx_nickname || '未知玩家'}}</view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-players" wx:else>
+        <view class="empty-text">暂无玩家</view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-container" wx:if="{{groups.length === 0}}">
+      <view class="empty-text">暂无分组信息</view>
+    </view>
+  </view>
+</view>

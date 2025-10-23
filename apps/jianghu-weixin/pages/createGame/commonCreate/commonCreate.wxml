@@ -1,0 +1,191 @@
+<view class="page-container">
+  <view class="main-card">
+    <view class="top-circle"></view>
+    <view class="card-content">
+      <view class="search-box">
+        <!-- UUID 显示区域(调试用) -->
+        <view class="uuid-section">
+          <view class="form-label">游戏UUID(调试)</view>
+          <view class="uuid-display">
+            <text class="uuid-text">{{uuid}}</text>
+          </view>
+        </view>
+        <view class="uuid-section">
+          <view class="form-label">gameid(调试)</view>
+          <view class="uuid-display">
+            <text class="uuid-text">{{gameid}}</text>
+          </view>
+        </view>
+
+        <!-- 球场选择区域 -->
+        <view class="course-section">
+          <view class="form-label">选择球场</view>
+          <view class="search-input" bindtap="goToCourseSelect" wx:if="{{ !selectedCourse }}">
+            <view class="location-icon">
+              <image src="/assets/icons/location.svg" mode="aspectFit"></image>
+            </view>
+            <input type="text" placeholder="选择球场" placeholder-class="input-placeholder" disabled />
+            <view class="arrow-icon">
+              <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+            </view>
+          </view>
+          <!-- 已选择球场时显示球场信息 -->
+          <view class="selected-course" wx:if="{{ selectedCourse }}">
+            <view class="course-info" bindtap="goToCourseSelect">
+              <view class="location-icon">
+                <image src="/assets/icons/location.svg" mode="aspectFit"></image>
+              </view>
+              <view class="course-details">
+                <view class="course-name">{{selectedCourse.name}}</view>
+                <view class="course-address">{{selectedCourse.address}}</view>
+                <!-- 显示半场信息 -->
+                <view class="court-info" wx:if="{{ selectedCourt }}">
+                  <text class="court-name">{{selectedCourt.name}}</text>
+                </view>
+              </view>
+              <view class="change-icon">
+                <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+              </view>
+            </view>
+            <view class="clear-btn" bindtap="clearSelectedCourse">
+              <image src="/assets/icons/close.svg" mode="aspectFit"></image>
+            </view>
+          </view>
+        </view>
+        <!-- 关闭 course-section -->
+      </view>
+      <!-- 比赛属性输入区域 -->
+      <view class="game-form">
+        <!-- 比赛名称 -->
+        <view class="form-item">
+          <view class="form-label">比赛名称</view>
+          <view class="form-input-wrapper">
+            <input
+              class="form-input"
+              type="text"
+              placeholder="请输入比赛名称"
+              placeholder-class="input-placeholder"
+              value="{{ formData.gameName }}"
+              bindinput="onGameNameInput"
+              maxlength="50"
+            />
+          </view>
+        </view>
+        <!-- 开球时间 -->
+        <view class="form-item">
+          <view class="form-label">开球时间</view>
+          <view class="form-input-wrapper">
+            <TimePicker
+              value="{{ formData.openTime }}"
+              placeholder="请选择开球时间"
+              bind:change="onOpenTimeChange"
+            />
+          </view>
+        </view>
+        <!-- 参赛组别 -->
+        <view class="form-item">
+          <view class="form-label">
+            <text>参赛组别</text>
+            <text class="form-sub-label">(至少一组)</text>
+          </view>
+          <view class="groups-container">
+            <view wx:for="{{ formData.gameGroups }}" wx:key="index" class="group-item">
+              <PlayerSelector
+                groupIndex="{{ index }}"
+                players="{{ item.players }}"
+                maxPlayers="4"
+                bind:playersChange="onPlayersChange"
+              />
+              <!-- 删除组按钮(当组数大于1时显示) -->
+              <view
+                wx:if="{{ formData.gameGroups.length > 1 }}"
+                class="delete-group-btn"
+                bindtap="deleteGroup"
+                data-index="{{ index }}"
+              >
+                <image src="/assets/icons/close.svg" mode="aspectFit"></image>
+              </view>
+            </view>
+            <!-- 添加组按钮 -->
+            <view class="add-group-btn" bindtap="addGroup">
+              <image src="/assets/icons/add.svg" class="add-icon" mode="aspectFit"></image>
+              <text>添加新组</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 赛制选择 -->
+        <view class="form-item">
+          <view class="form-label">赛制</view>
+          <view class="radio-group">
+            <radio-group bindchange="onScoringTypeChange">
+              <label class="radio-item">
+                <radio
+                  value="hole"
+                  checked="{{ formData.ScoringType === 'hole' }}"
+                  color="#4CAF50"
+                />
+                <text class="radio-text">个人比杆</text>
+              </label>
+              <label class="radio-item">
+                <radio
+                  value="oneball"
+                  checked="{{ formData.ScoringType === 'oneball' }}"
+                  color="#4CAF50"
+                />
+                <text class="radio-text">旺波</text>
+              </label>
+            </radio-group>
+          </view>
+        </view>
+
+        <!-- T台选择  TlandSelector -->
+        <view class="form-item">
+          <view class="form-label">T台选择</view>
+          <view class="tee-selector-wrapper">
+            <view class="tee-selector-btn" bindtap="goToTeeSelect">
+              <view class="selector-content">
+                <view class="selector-icon">🏌️</view>
+                <view class="selector-text">
+                  <text class="primary-text">设置T台</text>
+                  <text class="sub-text">为所有球员分配T台颜色</text>
+                </view>
+              </view>
+              <view class="arrow-icon">
+                <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 隐私设置 -->
+        <view class="form-item">
+          <view class="form-label">隐私设置</view>
+          <view class="privacy-options">
+            <view class="switch-item">
+              <text class="switch-text">是否为秘密比赛</text>
+              <switch
+                checked="{{ formData.isPrivate }}"
+                bindchange="onPrivateChange"
+                color="#4CAF50"
+              />
+            </view>
+            <!-- 密码输入(仅在秘密比赛时显示) -->
+            <view wx:if="{{ formData.isPrivate }}" class="password-input">
+              <input
+                class="form-input"
+                type="text"
+                placeholder="请设置比赛密码"
+                placeholder-class="input-placeholder"
+                value="{{ formData.password }}"
+                bindinput="onPasswordInput"
+                maxlength="20"
+              />
+            </view>
+          </view>
+        </view>
+      </view>
+      <button class="create-btn" bindtap="onStartScoring">开始计分</button>
+    </view>
+  </view>
+</view>

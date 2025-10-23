@@ -1,0 +1,20 @@
+<view catchtap="itemClick">
+  <view class="player-order-item">
+    <view class="drag-handle">
+      <text class="drag-icon">⋮⋮</text>
+    </view>
+    <view>
+      <text
+        class="player-dot"
+      >{{(redBlueConfig === '4_固拉' && (abcd === '1' || abcd === '2')) || (redBlueConfig !== '4_固拉' && (abcd === '1' || abcd === '4')) ? '🔵' : '🔴'}}</text>
+      <text class="player-serial">#{{abcd}}</text>
+    </view>
+    <image
+      class="player-avatar"
+      src="{{itemData.avatar || '/images/default-avatar.png'}}"
+      lazy-load="true"
+      mode="aspectFill"
+    />
+    <text class="player-name">{{itemData.nickname || itemData.wx_nickname || '未知玩家'}}</text>
+  </view>
+</view>

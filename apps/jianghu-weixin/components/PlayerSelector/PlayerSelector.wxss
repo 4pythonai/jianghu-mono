@@ -1,0 +1,147 @@
+.player-selector {
+	margin-bottom: 30rpx;
+}
+
+.group-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20rpx;
+	padding: 0 10rpx;
+}
+
+.group-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #333;
+}
+
+.player-count {
+	font-size: 28rpx;
+	color: #666;
+	background: #f5f5f5;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+}
+
+.players-list {
+	background: #fff;
+	border-radius: 16rpx;
+	padding: 20rpx;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.player-slot {
+	margin-bottom: 20rpx;
+}
+
+.player-slot:last-child {
+	margin-bottom: 0;
+}
+
+/* 玩家卡片样式 */
+.player-card {
+	display: flex;
+	align-items: center;
+	background: #f8f9fa;
+	border: 2rpx solid #e9ecef;
+	border-radius: 12rpx;
+	padding: 16rpx;
+	position: relative;
+}
+
+.player-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-right: 20rpx;
+	background: #ddd;
+}
+
+.avatar-image {
+	width: 100%;
+	height: 100%;
+}
+
+.player-info {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.player-nickname {
+	font-size: 30rpx;
+	color: #333;
+	font-weight: 500;
+	margin-bottom: 6rpx;
+}
+
+.player-id {
+	font-size: 24rpx;
+	color: #999;
+	margin-bottom: 6rpx;
+}
+
+.player-join_type {
+	font-size: 22rpx;
+	color: #666;
+	background: #f0f0f0;
+	padding: 4rpx 12rpx;
+	border-radius: 10rpx;
+	display: inline-block;
+	max-width: fit-content;
+}
+
+.remove-btn {
+	width: 40rpx;
+	height: 40rpx;
+	background: #ff4757;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 16rpx;
+}
+
+.remove-btn image {
+	width: 20rpx;
+	height: 20rpx;
+	filter: brightness(0) invert(1);
+}
+
+/* 空位样式 */
+.empty-slot {
+	height: 112rpx;
+	border: 2rpx dashed #ccc;
+	border-radius: 12rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #fafafa;
+}
+
+.empty-slot:active {
+	background: #f0f0f0;
+	border-color: #4caf50;
+}
+
+.add-player-btn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	color: #999;
+}
+
+.add-icon {
+	width: 40rpx;
+	height: 40rpx;
+	margin-bottom: 8rpx;
+	opacity: 0.6;
+}
+
+.add-text {
+	font-size: 26rpx;
+	color: #999;
+}

@@ -1,0 +1,162 @@
+/* 抽屉遮罩层 */
+.mask {
+	width: 100vw !important;
+	height: 100vh !important;
+	position: fixed !important;
+	top: 0 !important;
+	left: 0 !important;
+	background: #000 !important;
+	z-index: 99999 !important;
+	opacity: 0 !important;
+	transition: opacity 0.4s ease-out !important;
+}
+
+.mask.show {
+	opacity: 0.7 !important;
+}
+
+/* 抽屉容器 */
+.drawer-box {
+	width: 600rpx !important;
+	height: 900rpx !important;
+	background: #fff !important;
+	position: fixed !important;
+	top: 50vh !important;
+	right: 0 !important;
+	transform: translateY(-50%) translateX(100%) !important;
+	z-index: 100000 !important;
+	box-shadow: -4rpx 0 16rpx rgba(0, 0, 0, 0.1) !important;
+	display: flex !important;
+	flex-direction: column !important;
+	border-radius: 16rpx 0 0 16rpx !important;
+	transition: transform 0.3s ease !important;
+}
+
+.drawer-box.show {
+	transform: translateY(-50%) translateX(0) !important;
+}
+
+/* 抽屉内容区域 */
+.drawer-content {
+	background: #fff !important;
+	border-radius: 16rpx !important;
+	flex: 1 !important;
+	display: flex !important;
+	flex-direction: column !important;
+	overflow: hidden !important;
+	min-height: 0 !important;
+}
+
+/* 标题栏 */
+.drawer-header {
+	display: flex !important;
+	justify-content: space-between !important;
+	align-items: center !important;
+	padding: 20rpx 30rpx 15rpx !important;
+	border-bottom: 1rpx solid #f0f0f0 !important;
+	background: #f8f9fa !important;
+	flex-shrink: 0 !important;
+}
+
+.drawer-title {
+	font-size: 32rpx !important;
+	font-weight: bold !important;
+	color: #333 !important;
+}
+
+/* 关闭按钮容器 - 底部居中 */
+.close-btn-container {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	padding: 20rpx 30rpx 20rpx !important;
+	border-top: 1rpx solid #f0f0f0 !important;
+	background: #f8f9fa !important;
+	flex-shrink: 0 !important;
+}
+
+.close-btn {
+	width: 80rpx !important;
+	height: 80rpx !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	border-radius: 50% !important;
+	background: #fff !important;
+	border: 2rpx solid #e0e0e0 !important;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1) !important;
+	transition: all 0.3s ease !important;
+}
+
+.close-btn:active {
+	background: #f5f5f5 !important;
+	transform: scale(0.95) !important;
+}
+
+.close-icon {
+	font-size: 48rpx !important;
+	color: #666 !important;
+	line-height: 1 !important;
+	font-weight: bold !important;
+}
+
+/* 标题列表 */
+.title-list {
+	flex: 1 !important;
+	overflow-y: auto !important;
+	border-bottom: 1rpx solid #f0f0f0 !important;
+}
+
+.title-item {
+	padding: 24rpx 30rpx !important;
+	border-bottom: 1rpx solid #f5f5f5 !important;
+	transition: all 0.3s ease !important;
+}
+
+.title-item:last-child {
+	border-bottom: none !important;
+}
+
+.title-item.active {
+	background: white !important;
+	border-left: 4rpx solid #2196f3 !important;
+}
+
+.title-item:not(.active):hover {
+	background: #f5f5f5 !important;
+}
+
+.title-text {
+	font-size: 28rpx !important;
+	color: #333 !important;
+	line-height: 1.4 !important;
+}
+
+.title-item.active .title-text {
+	color: #034c0e !important;
+	font-weight: 500 !important;
+}
+
+/* 内容区域 */
+.content-area {
+	flex: 1 !important;
+	overflow-y: auto !important;
+	padding: 40rpx 30rpx !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+}
+
+.hint-container {
+	text-align: center !important;
+	padding: 40rpx !important;
+	background: white !important;
+	border-radius: 16rpx !important;
+	border: 2rpx dashed white !important;
+}
+
+.hint-text {
+	font-size: 28rpx !important;
+	color: #666 !important;
+	line-height: 1.5 !important;
+}

@@ -1,0 +1,7 @@
+{
+    "usingComponents": {
+        "GambleResultTable": "/components/GambleResultTable/GambleResultTable",
+        "GambleTotalTable": "/components/GambleTotalTable/GambleTotalTable",
+        "Drawer": "/components/Drawer/Drawer"
+    }
+}

@@ -1,0 +1,10 @@
+<view class="page-container">
+	<view class="header">
+		<text class="title">二维码</text>
+		<text class="subtitle">为第{{groupIndex + 1}}组玩家{{slotIndex + 1}}选择</text>
+	</view>
+	<view class="content">
+		<!-- TODO: 实现二维码功能 -->
+		<text class="placeholder">二维码功能待开发...</text>
+	</view>
+</view>

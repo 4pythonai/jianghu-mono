@@ -1,0 +1,13 @@
+{
+	"navigationBarTitleText": "比赛详情",
+	"usingComponents": {
+		"RuntimeConfigList": "./RuntimeConfigList/RuntimeConfigList",
+		"BBS": "./BBS/BBS",
+		"GameMagement": "./GameMagement/GameMagement",
+		"GambleSummary": "./GambleSummary/GambleSummary"
+	},
+	"componentPlaceholder": {
+		"bbs": "view",
+		"ScoreTable": "view"
+	}
+}

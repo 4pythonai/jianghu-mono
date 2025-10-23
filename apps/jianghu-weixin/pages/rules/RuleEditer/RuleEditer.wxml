@@ -1,0 +1,166 @@
+<!-- 用户规则编辑/新建页面 - 重构版 -->
+<view class="user-rule-edit-container">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-text">初始化中...</view>
+  </view>
+
+  <!-- 主要内容 -->
+  <view wx:else class="main-content">
+    <!-- 页面标题 -->
+    <view class="page-header">
+      <view
+        class="header-title"
+      >{{pageMode === 'create' ? '新建规则' : pageMode === 'view' ? '查看规则' : '编辑规则'}}</view>
+      <view class="header-subtitle">{{gambleHumanName}} / {{gambleUserName || '未命名规则'}}</view>
+    </view>
+
+    <!-- 配置表单 -->
+    <view class="config-form">
+      <!-- 规则名称组件 -->
+      <RuleName
+        value="{{gambleUserName}}"
+        pageMode="{{pageMode}}"
+        gameType="{{gambleType}}"
+        kpiConfig="{{kpis}}"
+        drawConfig="{{drawConfig}}"
+        meatRules="{{meatRules}}"
+        showGenerateHint="{{true}}"
+        bind:change="onRuleNameChange"
+      />
+
+      <!-- 配置组件区域 - 动态渲染不同游戏类型的组件 -->
+      <view class="config-components">
+        <block wx:for="{{configComponents}}" wx:key="name">
+          <view class="component-wrapper">
+            <view class="component-content">
+              <!-- 4人拉丝配置组件 -->
+              <block wx:if="{{gambleType === '4p-lasi'}}">
+                <!-- KPI配置 -->
+                <LasiKPI
+                  wx:if="{{item.name === 'LasiKPI'}}"
+                  id="{{item.name}}"
+                  mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                  config="{{kpis}}"
+                  displayValue="{{kpiDisplayValue}}"
+                  bind:configChange="onConfigChange"
+                />
+
+                <!-- 奖励规则配置 -->
+                <LasiRewardConfig
+                  wx:if="{{item.name === 'LasiRewardConfig'}}"
+                  id="{{item.name}}"
+                  mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                  config="{{RewardConfig}}"
+                  showPreCondition="{{showPreCondition}}"
+                  bind:configChange="onConfigChange"
+                />
+
+                <!-- 顶洞规则配置 -->
+                <LasiDingDong
+                  wx:if="{{item.name === 'LasiDingDong'}}"
+                  id="{{item.name}}"
+                  mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                  drawConfig="{{drawConfig}}"
+                  bind:configChange="onConfigChange"
+                />
+
+                <!-- 吃肉规则配置 -->
+                <LasiEatmeat
+                  wx:if="{{item.name === 'LasiEatmeat'}}"
+                  id="{{item.name}}"
+                  mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                  eatingRange="{{eatingRange}}"
+                  meatValueConfig="{{meatValueConfig}}"
+                  meatMaxValue="{{meatMaxValue}}"
+                  disabled="{{isEatmeatDisabled}}"
+                  bind:configChange="onConfigChange"
+                />
+
+                <!-- 包洞规则配置 -->
+                <LasiBaoDong
+                  wx:if="{{item.name === 'LasiBaoDong'}}"
+                  id="{{item.name}}"
+                  mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                  dutyConfig="{{dutyConfig}}"
+                  PartnerDutyCondition="{{PartnerDutyCondition}}"
+                  badScoreBaseLine="{{badScoreBaseLine}}"
+                  badScoreMaxLost="{{badScoreMaxLost}}"
+                  bind:configChange="onConfigChange"
+                />
+              </block>
+
+              <!-- 4人8421配置组件 -->
+              <block wx:elif="{{gambleType === '4p-8421'}}">
+                <!-- 扣分配置 -->
+                <E8421Koufen
+                  wx:if="{{item.name === 'E8421Koufen'}}"
+                  id="{{item.name}}"
+                  mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                  badScoreBaseLine="{{badScoreBaseLine}}"
+                  badScoreMaxLost="{{badScoreMaxLost}}"
+                  dutyConfig="{{dutyConfig}}"
+                  bind:configChange="onConfigChange"
+                />
+
+                <!-- 吃肉规则配置 -->
+                <E8421Meat
+                  wx:if="{{item.name === 'E8421Meat'}}"
+                  id="{{item.name}}"
+                  eatingRange="{{eatingRange}}"
+                  meatValueConfig="{{meatValueConfig}}"
+                  meatMaxValue="{{meatMaxValue}}"
+                  disabled="{{false}}"
+                  bind:configChange="onConfigChange"
+                />
+
+                <!-- 平局规则配置 -->
+                <Draw8421
+                  wx:if="{{item.name === 'Draw8421'}}"
+                  id="{{item.name}}"
+                  mode="{{pageMode === 'view' ? 'SysConfig' : 'UserEdit'}}"
+                  configData="{{drawConfig}}"
+                  drawConfig="{{drawConfig}}"
+                  bind:configChange="onConfigChange"
+                />
+              </block>
+
+              <!-- 默认配置组件 -->
+              <block wx:else>
+                <view class="default-config" wx:if="{{item.name === 'DefaultConfig'}}">
+                  <text>暂未支持的配置组件: {{item.name}}</text>
+                </view>
+              </block>
+            </view>
+          </view>
+        </block>
+      </view>
+      <!-- 底部操作按钮 -->
+      <view class="bottom-actions">
+        <!-- 删除按钮 - 仅编辑模式显示 -->
+        <button
+          wx:if="{{pageMode === 'edit'}}"
+          class="delete-btn"
+          bindtap="onDeleteRule"
+          disabled="{{saving}}"
+        >删除</button>
+
+        <!-- 取消按钮 -->
+        <button
+          class="cancel-btn"
+          bindtap="onCancel"
+          disabled="{{saving}}"
+        >{{pageMode === 'view' ? '返回' : '取消'}}</button>
+
+        <!-- 保存按钮 - 查看模式不显示 -->
+        <button
+          wx:if="{{pageMode !== 'view'}}"
+          class="save-btn"
+          bindtap="onSaveRule"
+          loading="{{saving}}"
+          disabled="{{saving}}"
+        >{{saving ? '保存中...' : pageMode === 'create' ? '创建规则' : '保存修改'}}</button>
+      </view>
+    </view>
+  </view>
+</view>

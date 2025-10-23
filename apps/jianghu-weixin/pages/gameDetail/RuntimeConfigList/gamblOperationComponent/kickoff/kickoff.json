@@ -1,0 +1,7 @@
+{
+    "usingComponents": {
+        "AvatarGroup": "../../../../../components/AvatarGroup/AvatarGroup",
+        "RuntimeConfigSelector": "/components/RuntimeConfigSelector/RuntimeConfigSelector",
+        "HoleMultiplierSelector": "/components/HoleMultiplierSelector/HoleMultiplierSelector"
+    }
+}

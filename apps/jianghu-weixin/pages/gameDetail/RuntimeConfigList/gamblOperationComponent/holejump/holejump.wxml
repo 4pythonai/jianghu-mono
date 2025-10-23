@@ -1,0 +1,26 @@
+<view class="modal-mask" bindtap="close">
+  <view class="modal-content" catchtap="noop">
+    <view class="modal-title">跳洞设置</view>
+
+    <!-- 拖拽区域 -->
+    <view class="drag-section">
+      <view class="section-title">拖拽排序球洞</view>
+      <view class="drag-container">
+        <HolesDrag
+          id="holesDrag"
+          scroll-top="{{scrollTop}}"
+          bind:sortend="onSortEnd"
+          bind:scroll="onScroll"
+          holeList="{{holePlayList}}"
+          is-modal="{{true}}"
+        ></HolesDrag>
+      </view>
+    </view>
+
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onReset">重置</button>
+      <button class="modal-btn cancel" bindtap="close">取消</button>
+      <button class="modal-btn confirm" bindtap="onJumpComplete">确定</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,9 @@
+<view class="container">
+	<view class="uuid-container">
+		<text class="uuid-label">您的邀请码:</text>
+		<text class="uuid-value">{{uuid}}</text>
+	</view>
+	<view class="share-tip">
+		<text>点击右上角转发按钮邀请好友加入游戏</text>
+	</view>
+</view>

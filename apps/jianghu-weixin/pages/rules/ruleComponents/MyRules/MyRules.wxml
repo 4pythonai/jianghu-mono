@@ -1,0 +1,74 @@
+<!-- 我的规则组件 -->
+<view wx:if="{{ show }}" class="myrules-container" id="myRulesComponent">
+  <!-- 加载状态 -->
+  <view wx:if="{{ loading }}" class="loading-container">
+    <text class="loading-text">加载中...</text>
+  </view>
+  <!-- 规则内容 -->
+
+  <view wx:else class="rules-content">
+    <view wx:if="{{ total.overall === 0 }}" class="empty-state">
+      <text class="empty-text">暂无规则</text>
+      <text class="empty-hint">点击"添加规则"创建您的第一条规则</text>
+    </view>
+    <!-- 分组规则列表 -->
+    <view wx:else class="rules-groups">
+      <!-- 4人游戏规则 -->
+      <view wx:if="{{ total.fourPlayers > 0 }}" class="rules-group">
+        <view class="group-header">
+          <text class="group-title">4人游戏</text>
+        </view>
+        <view class="group-list">
+          <RuleCard
+            wx:for="{{ myRules.fourPlayers }}"
+            wx:key="id"
+            class="group-list-item"
+            item="{{ item }}"
+            bind:editRule="onEditRule"
+            bind:createNewGamble="onCreateGamble"
+            bind:longPressRule="onLongPressRule"
+            showEdit="{{true}}"
+          />
+        </view>
+      </view>
+
+      <!-- 3人游戏规则 -->
+      <view wx:if="{{ total.threePlayers > 0 }}" class="rules-group">
+        <view class="group-header">
+          <text class="group-title">3人游戏</text>
+        </view>
+        <view class="group-list">
+          <RuleCard
+            wx:for="{{ myRules.threePlayers }}"
+            wx:key="id"
+            class="group-list-item"
+            item="{{ item }}"
+            bind:editRule="onEditRule"
+            bind:createNewGamble="onCreateGamble"
+            bind:longPressRule="onLongPressRule"
+            showEdit="{{true}}"
+          />
+        </view>
+      </view>
+
+      <!-- 2人游戏规则 -->
+      <view wx:if="{{ total.twoPlayers > 0 }}" class="rules-group">
+        <view class="group-header">
+          <text class="group-title">2人游戏</text>
+        </view>
+        <view class="group-list">
+          <RuleCard
+            wx:for="{{ myRules.twoPlayers }}"
+            wx:key="id"
+            class="group-list-item"
+            item="{{ item }}"
+            bind:editRule="onEditRule"
+            bind:createNewGamble="onCreateGamble"
+            bind:longPressRule="onLongPressRule"
+            showEdit="{{true}}"
+          />
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

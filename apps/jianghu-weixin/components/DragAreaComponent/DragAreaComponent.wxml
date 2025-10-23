@@ -1,0 +1,31 @@
+<wxs module="handler" src="./DragAreaComponent.wxs"></wxs>
+
+<view
+  class="item-wrap item-wrap-class"
+  list="{{list}}"
+  style="{{wrapStyle}}"
+  baseData="{{baseData}}"
+  change:list="{{handler.listObserver}}"
+  change:baseData="{{handler.baseDataObserver}}"
+>
+  <view
+    class="item"
+    wx:for="{{list}}"
+    wx:key="id"
+    data-index="{{index}}"
+    style="width: {{100/columns}}%"
+    bind:longpress="{{handler.longPress}}"
+    catch:touchmove="{{dragging ? handler.touchMove : ''}}"
+    catch:touchend="{{dragging ? handler.touchEnd : ''}}"
+    catch:touchcancel="{{dragging ? handler.touchEnd : ''}}"
+  >
+    <item
+      data-index="{{index}}"
+      abcd="{{item.abcd}}"
+      columns="{{columns}}"
+      item-data="{{item.data}}"
+      red-blue-config="{{redBlueConfig}}"
+      bind:click="itemClick"
+    />
+  </view>
+</view>

@@ -1,0 +1,148 @@
+/* Summary组件样式 */
+.summary-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+/* 规则信息样式 */
+.rule-info {
+	display: flex;
+	flex-direction: column;
+	gap: 15rpx;
+}
+
+.rule-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15rpx 0;
+	border-bottom: 1rpx solid #f0f0f0;
+}
+
+.rule-row:last-child {
+	border-bottom: none;
+}
+
+.rule-label {
+	font-size: 30rpx;
+	color: #666;
+	font-weight: 500;
+}
+
+.rule-value-container {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10rpx;
+}
+
+.rule-value {
+	font-size: 30rpx;
+	color: #333;
+	font-weight: bold;
+}
+
+.rule-type-badge {
+	font-size: 20rpx;
+	color: #fff;
+	background-color: #4caf50;
+	padding: 4rpx 8rpx;
+	border-radius: 10rpx;
+	font-weight: bold;
+}
+
+.rule-type-badge.system {
+	background-color: #2196f3;
+}
+
+.reselect-btn {
+	font-size: 28rpx;
+	color: #4caf50;
+	background-color: #f0f8f0;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	border: 1rpx solid #4caf50;
+	transition: all 0.3s;
+}
+
+.reselect-btn:active {
+	background-color: #4caf50;
+	color: #fff;
+	transform: scale(0.95);
+}
+
+/* 参与人员样式 */
+.players-section {
+	margin-top: 10rpx;
+}
+
+.players-title {
+	font-size: 28rpx;
+	color: #666;
+	margin-bottom: 15rpx;
+	font-weight: 500;
+}
+
+.players-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20rpx;
+}
+
+.player-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 120rpx;
+	gap: 8rpx;
+}
+
+.player-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	background-color: #f0f0f0;
+	border: 2rpx solid #e0e0e0;
+}
+
+.player-name {
+	font-size: 24rpx;
+	color: #333;
+	text-align: center;
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* 响应式设计 */
+@media (max-width: 600rpx) {
+	.rule-row {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10rpx;
+	}
+
+	.rule-value-container {
+		justify-content: flex-start;
+	}
+
+	.reselect-btn {
+		align-self: flex-end;
+	}
+
+	.player-item {
+		width: 100rpx;
+	}
+
+	.player-avatar {
+		width: 60rpx;
+		height: 60rpx;
+	}
+
+	.player-name {
+		font-size: 22rpx;
+	}
+}

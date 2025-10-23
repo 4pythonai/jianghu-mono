@@ -1,0 +1,91 @@
+<wxs src="/utils/es.wxs" module="util" />
+<view class="runtime-config-container">
+  <RuleCard item="{{existingRuntimeConfig.spec}}" showEdit="{{false}}" />
+
+  <!-- 错误状态 -->
+  <view class="error-container" wx:if="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="main-content" wx:else>
+    <!-- 游戏规则摘要 -->
+    <view class="section">
+      <view class="section-title">游戏规则</view>
+      <Summary
+        gambleSysName="{{gambleSysName}}"
+        players="{{players}}"
+        userRule="{{userRule}}"
+        bind:reselect="onReSelectRule"
+      />
+    </view>
+
+    <!-- 洞范围选择 -->
+    <view class="section">
+      <view class="section-label">选择洞范围</view>
+      <!-- 调试信息 -->
+      <HoleRangeSelector
+        id="holeRangeSelector"
+        roadLength="{{existingRuntimeConfig.roadLength}}"
+        startHoleindex="{{existingRuntimeConfig.startHoleindex}}"
+      />
+    </view>
+
+    <!-- 让杆方式选择 -->
+    <view class="section" wx:if="{{needsStroking}}">
+      <view class="section-label">让杆方式</view>
+      <Stroking id="stroking" strokingConfig="{{runtimeConfig.stroking_config}}" bind:saveStroking="onStrokingConfigChange" />
+    </view>
+
+    <!-- 8421球员配置 -->
+    <view class="section" wx:if="{{is8421Game}}">
+      <view class="section-label">球员指标配置 ({{gambleSysName}})</view>
+      <PlayerIndicator
+        id="playerIndicator"
+        players="{{players}}"
+        val8421Config="{{runtimeConfig.playerIndicatorConfig}}"
+        bind:configChange="onPlayerIndicatorConfigChange"
+      />
+    </view>
+
+    <view class="section" wx:if="{{needRedBlueDiv}}">
+      <RedBlueConfig
+        id="redBlueConfig"
+        players="{{players}}"
+        red_blue_config="{{runtimeConfig.red_blue_config}}"
+        initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+      />
+    </view>
+
+    <!-- 排名配置 -->
+
+    <!-- 排名配置 -->
+    <view class="section" wx:if="{{is8421Game}}">
+      <view class="section-label">8421排名规则</view>
+      <Rank8421ConflictResolver
+        id="rankConfig"
+        selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        playerIndicatorConfig="{{runtimeConfig.playerIndicatorConfig}}"
+      />
+    </view>
+
+    <view class="section" wx:if="{{gambleSysName && util.includes(gambleSysName, 'lasi')}}">
+      <view class="section-label">拉丝排名规则</view>
+      <RankLasiConflictResolver
+        id="rankConfig"
+        selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        strokingConfig="{{runtimeConfig.stroking_config}}"
+      />
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-buttons">
+    <button class="cancel-btn" bindtap="onCancelConfig">取消</button>
+    <button
+      class="confirm-btn"
+      bindtap="onConfirmConfig"
+      loading="{{loading}}"
+    >{{loading ? '更新中...' : '更新配置'}}</button>
+  </view>
+</view>

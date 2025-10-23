@@ -1,0 +1,108 @@
+/* 弹窗遮罩层 */
+.modal-mask {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(0.5rpx);
+	z-index: 9999;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	overflow: hidden;
+}
+
+/* 弹窗内容 - 基础样式（底部弹出） */
+.modal-content {
+	position: fixed;
+	left: 24rpx;
+	right: 24rpx;
+	bottom: 0;
+	background: #fff;
+	box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.18);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	box-sizing: border-box;
+	border-radius: 20rpx 20rpx 0 0;
+	padding: 32rpx 24rpx 120rpx 24rpx;
+	z-index: 10000;
+	animation: slideUp .3s;
+	/* 移除固定的max-height，改为自适应 */
+	max-height: calc(100vh - 120rpx);
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+
+
+/* 居中弹出样式 */
+.modal-content.center {
+	width: 92vw;
+	border-radius: 36rpx 36rpx 0 0;
+	padding: 32rpx 24rpx 24rpx 24rpx;
+	margin-bottom: 0;
+	align-items: center;
+	max-height: 80vh;
+}
+
+ /* 弹窗标题 */
+.modal-title {
+	font-size: 36rpx;
+	color: #e30f0f;
+	margin-bottom: 32rpx;
+	text-align: center;
+}
+
+/* 弹窗底部按钮 */
+.modal-actions {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	margin-top: 12rpx;
+	gap: 32rpx;
+}
+
+/* 底部按钮 */
+.modal-btn {
+	flex: 1;
+	height: 64rpx;
+	border-radius: 16rpx;
+	font-size: 28rpx;
+	font-weight: 500;
+	border: none;
+}
+
+
+.modal-divider {
+	width: 100%;
+	height: 3rpx;
+	background: #ccc;
+	margin: 20rpx 0;
+	border-radius: 2rpx;
+}
+
+
+.modal-btn.cancel {
+	background: #fff;
+	color: #4caf7a;
+	border: 2rpx solid #4caf7a;
+}
+
+.modal-btn.confirm {
+	background: #4caf7a;
+	color: #fff;
+}
+
+
+@keyframes slideUp {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+

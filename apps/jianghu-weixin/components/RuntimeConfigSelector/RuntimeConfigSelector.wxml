@@ -1,0 +1,22 @@
+<view class="runtime-config-selector">
+  <view class="section-title">{{title}}</view>
+  <checkbox-group bindchange="onCheckboxChange" value="{{selectedIdList}}">
+    <view class="checkbox-list">
+      <block wx:for="{{runtimeConfigs}}" wx:key="id">
+        <view class="game-item">
+          <view class="game-item-row">
+            <checkbox
+              class="standard-checkbox"
+              value="{{item.id}}"
+              checked="{{isSelected[item.id]}}"
+            />
+            <view class="game-item-info">
+              <text class="game-title">{{item.abstract}}</text>
+              <AvatarGroup players="{{item.attenders}}" maxShow="4" showMode="line" />
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </checkbox-group>
+</view>

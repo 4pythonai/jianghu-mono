@@ -1,0 +1,5 @@
+{
+    "usingComponents": {
+        "GambleResultTable": "/components/GambleResultTable/GambleResultTable"
+    }
+}

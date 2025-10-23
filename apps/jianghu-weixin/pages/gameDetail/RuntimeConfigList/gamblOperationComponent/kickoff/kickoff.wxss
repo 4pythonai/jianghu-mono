@@ -1,0 +1,78 @@
+@import "/styles/modal.wxss";
+
+
+@keyframes slideUp {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
+
+.section-title {
+	font-size: 28rpx;
+	font-weight: 600;
+	margin-bottom: 18rpx;
+	border-left: 6rpx solid #4caf50;
+	padding-left: 16rpx;
+}
+
+.hole-list {
+	display: grid;
+	grid-template-columns: repeat(9, 1fr);
+	gap: 16rpx 8rpx;
+	margin-bottom: 32rpx;
+	width: 100%;
+}
+
+.hole-item {
+	position: relative;
+	width: 100%;
+	height: 120rpx; /* 固定高度 */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	box-sizing: border-box;
+	margin: 0;
+}
+
+.hole-circle {
+	width: 100%;
+	padding-top: 100%; /* 保证宽高比1:1 */
+	position: relative;
+	border-radius: 50%;
+	background: #27ae60; /* 绿色 */
+	border: 2rpx solid #eee;
+	box-sizing: border-box;
+}
+
+.hole-item-text {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24rpx;
+	color: #fff; /* 白字 */
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	text-align: center;
+}
+
+/* 倍数文本样式 - 绝对定位在圆圈下方 */
+.multiplier-text {
+	position: absolute;
+	bottom: 8rpx; /* 调整位置，更贴近洞号名称 */
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 20rpx;
+	color: #e74c3c; /* 红色字体 */
+	font-weight: bold;
+	text-align: center;
+}

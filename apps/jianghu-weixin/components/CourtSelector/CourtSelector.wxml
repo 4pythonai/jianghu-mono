@@ -1,0 +1,92 @@
+<view class="court-selector">
+  <!-- 选中的球场信息 -->
+  <view class="selected-course-info" wx:if="{{ showCourseInfo && courseDetail }}">
+    <view class="course-card">
+      <view class="course-details">
+        <view class="course-name">{{courseDetail.name}}</view>
+        <view class="course-id">球场编号: {{courseDetail.courseid}}</view>
+      </view>
+    </view>
+  </view>
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{ loading }}">
+    <view class="loading-icon"></view>
+    <view class="loading-text">加载球场信息中...</view>
+  </view>
+  <!-- 半场选择区域 -->
+  <view class="court-selection" wx:if="{{ !loading && courts.length > 0 }}">
+    <!-- 标题 -->
+    <view class="section-title">{{title || '选择半场'}}</view>
+    <!-- 两列布局 -->
+    <view class="court-columns">
+      <!-- 前九洞列 -->
+      <view class="court-column">
+        <view class="column-header">前九洞</view>
+        <view class="court-list">
+          <view
+            class="court-item {{ selectedFrontNine === item.courtid ? 'selected' : '' }}"
+            wx:for="{{ courts }}"
+            wx:key="courtid"
+            bindtap="onSelectFrontNine"
+            data-court="{{ item }}"
+          >
+            <view class="court-name">{{item.courtname}}</view>
+            <view class="court-holes-count">{{item.courtholes.length}}洞</view>
+          </view>
+        </view>
+      </view>
+      <!-- 后九洞列 -->
+      <view class="court-column">
+        <view class="column-header">后九洞</view>
+        <view class="court-list">
+          <view
+            class="court-item {{ selectedBackNine === item.courtid ? 'selected' : '' }}"
+            wx:for="{{ courts }}"
+            wx:key="courtid"
+            bindtap="onSelectBackNine"
+            data-court="{{ item }}"
+          >
+            <view class="court-name">{{item.courtname}}</view>
+            <view class="court-holes-count">{{item.courtholes.length}}洞</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- 选中半场的洞信息显示 -->
+    <view class="holes-info" wx:if="{{ selectedFrontNine || selectedBackNine }}">
+      <!-- 前九洞洞信息 -->
+      <view class="holes-section" wx:if="{{ frontNineHoles.length > 0 }}">
+        <view class="holes-title">前九洞</view>
+        <view class="holes-list">
+          <view class="hole-item" wx:for="{{ frontNineHoles }}" wx:key="holeid">
+            <view class="hole-name">{{item.holename}}</view>
+            <view class="hole-par">{{item.par}}</view>
+          </view>
+        </view>
+      </view>
+      <!-- 后九洞洞信息 -->
+      <view class="holes-section" wx:if="{{ backNineHoles.length > 0 }}">
+        <view class="holes-title">后九洞</view>
+        <view class="holes-list">
+          <view class="hole-item" wx:for="{{ backNineHoles }}" wx:key="holeid">
+            <view class="hole-name">{{item.holename}}</view>
+            <view class="hole-par">{{item.par}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{ !loading && courts.length === 0 }}">
+    <view class="empty-text">暂无半场信息</view>
+    <view class="empty-desc">请检查球场配置</view>
+  </view>
+  <!-- 确认按钮 -->
+  <view class="confirm-section" wx:if="{{ showConfirmButton && !loading }}">
+    <button
+      class="confirm-btn {{ selectedFrontNine || selectedBackNine ? 'active' : 'disabled' }}"
+      bindtap="onConfirm"
+      disabled="{{ !selectedFrontNine && !selectedBackNine }}"
+    >{{confirmText || '确认选择'}}</button>
+  </view>
+</view>

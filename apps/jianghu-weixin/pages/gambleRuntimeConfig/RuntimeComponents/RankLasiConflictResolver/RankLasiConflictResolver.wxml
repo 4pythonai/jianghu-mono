@@ -1,0 +1,31 @@
+<!-- RankingSelector组件 - 排名规则选择器 -->
+<view class="ranking-selector">
+  <!-- 选项列表 -->
+  <view class="ranking-options">
+    <view
+      class="ranking-option {{selectedIndex === index ? 'selected' : ''}} {{item.requiresStroking && !hasStroking ? 'disabled' : ''}}"
+      wx:for="{{rankingOptions}}"
+      wx:key="value"
+      bindtap="onSelectRanking"
+      data-index="{{index}}"
+    >
+      <!-- 选择指示器 -->
+      <view class="radio-indicator">
+        <view class="radio-dot" wx:if="{{selectedIndex === index}}"></view>
+      </view>
+
+      <!-- 选项内容 -->
+      <view class="option-content">
+        <view class="option-label">
+          {{item.label}}
+          <text wx:if="{{item.requiresStroking && !hasStroking}}" class="disabled-hint">（需要配置让杆）</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="hint-text">
+    <text wx:if="{{!hasStroking}}">提示：受让成绩相关选项需要先配置让杆</text>
+  </view>
+</view>

@@ -1,0 +1,98 @@
+<view class="gamble-result-table" style="display: flex; flex-direction: column; min-height: 100vh;">
+  <view class="table-wrapper" style="flex: 1;">
+    <!-- 表头 -->
+    <view class="table-header">
+      <view class="header-cell hole-header">
+        <text>洞</text>
+      </view>
+      <view
+        class="header-cell player-header"
+        wx:for="{{players}}"
+        wx:key="userid"
+        wx:for-item="player"
+        wx:for-index="index"
+      >
+        <view class="player-info">
+          <image
+            wx:if="{{player.cover}}"
+            class="player-avatar"
+            src="{{player.cover}}"
+            mode="aspectFill"
+          ></image>
+          <view class="player-name">{{player.nickname}}</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 表格主体 -->
+    <view class="table-container">
+      <!-- 洞数据行 -->
+      <view class="table-body">
+        <view class="table-row" wx:for="{{processedHoles}}" wx:key="index">
+          <view class="cell hole-header">
+            <view class="hole-header-inner">
+              <view class="hole-name-container">
+                <text>{{item.holename || item.id}}</text>
+              </view>
+              <view class="draw-indicator-container">
+                <text wx:if="{{item.draw === 'y'}}" title="平局">❓</text>
+              </view>
+            </view>
+          </view>
+          <view
+            class="cell"
+            wx:for="{{players}}"
+            wx:key="userid"
+            wx:for-item="player"
+            wx:for-index="index"
+          >
+            <text
+              class="{{item.holeMoney[player.userid] > 0 ? 'money-positive' : item.holeMoney[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
+            >{{item.holeMoney[player.userid] > 0 ? '+' : ''}}{{item.holeMoney[player.userid]}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 固定在屏幕底部的统计行 -->
+  <view class="fixed-summary">
+    <view class="table-wrapper" style="flex: 1;">
+      <!-- 总计行 -->
+      <view class="table-row total-row">
+        <view class="cell hole-header">
+          <text>总成绩</text>
+        </view>
+        <view
+          class="cell"
+          wx:for="{{players}}"
+          wx:key="userid"
+          wx:for-item="player"
+          wx:for-index="index"
+        >
+          <text
+            class="{{totalMoney[player.userid] > 0 ? 'money-positive' : totalMoney[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
+          >{{totalMoney[player.userid] > 0 ? '+' : ''}}{{totalMoney[player.userid]}}</text>
+        </view>
+      </view>
+
+      <!-- 锅汇总行 -->
+      <view class="table-row total-row">
+        <view class="cell hole-header">
+          <text>总锅</text>
+        </view>
+        <view
+          class="cell"
+          wx:for="{{players}}"
+          wx:key="userid"
+          wx:for-item="player"
+          wx:for-index="index"
+        >
+          <text
+            class="{{totalDonated[player.userid] > 0 ? 'money-positive' : totalDonated[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
+          >{{totalDonated[player.userid] > 0 ? '+' : ''}}{{totalDonated[player.userid]}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

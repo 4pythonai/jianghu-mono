@@ -1,0 +1,80 @@
+.progress-container {
+	width: 100% !important;
+	height: 16rpx;
+	display: flex;
+	flex-grow: 1;
+	flex-shrink: 0;
+	align-items: stretch;
+	position: relative;
+}
+
+.progress-bar {
+	width: 100% !important;
+	min-width: 100% !important;
+	height: 100%;
+	border-radius: 6rpx;
+	display: flex !important;
+	position: relative;
+	z-index: 1;
+	box-sizing: border-box;
+	overflow: visible;
+}
+
+.progress-completed {
+	height: 4rpx;
+	background-color: #025028 !important;
+	position: relative;
+}
+
+.progress-remaining {
+	flex-grow: 1;
+	height: 4rpx;
+	background-color: #9bdfc1 !important;
+	position: relative;
+}
+
+.progress-ball {
+	position: absolute;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 50%;
+	background-color: #ffffff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #333333;
+	font-size: 24rpx;
+	font-weight: bold;
+	z-index: 3;
+	box-shadow: 0 0 0 1rpx rgba(0, 0, 0, 0.1), 0 2rpx 4rpx rgba(0, 0, 0, 0.2);
+	/* 高尔夫球密集凸点效果 */
+	background-image: repeating-conic-gradient(
+			from 0deg,
+			transparent 0deg,
+			transparent 60deg,
+			rgba(0, 0, 0, 0.03) 60deg,
+			rgba(0, 0, 0, 0.03) 120deg
+		),
+		repeating-radial-gradient(
+			circle at 50% 50%,
+			transparent 0,
+			transparent 1rpx,
+			rgba(0, 0, 0, 0.05) 1rpx,
+			rgba(0, 0, 0, 0.05) 2rpx,
+			transparent 2rpx
+		),
+		repeating-radial-gradient(
+			circle at 50% 50%,
+			transparent 0,
+			transparent 1.5rpx,
+			rgba(0, 0, 0, 0.03) 1.5rpx,
+			rgba(0, 0, 0, 0.03) 2.5rpx,
+			transparent 2.5rpx
+		);
+	text-shadow: 0 1rpx 1rpx rgba(0, 0, 0, 0.1), 0 -1rpx 1rpx
+		rgba(255, 255, 255, 0.8);
+	line-height: 1;
+	margin-top: -6rpx;
+}

@@ -1,0 +1,115 @@
+<!-- 包洞规则配置组件 -->
+<!-- 显示部分 -->
+<view class="rule-section" wx:if="{{!visible}}">
+  <view class="form-label">包洞规则</view>
+  <view class="form-select" bindtap="onShowConfig">
+    <!-- 使用view模拟input，避免真机上的光标问题 -->
+    <view class="form-input-simulator">{{displayValue}}</view>
+    <view class="select-arrow">
+      <text class="arrow-circle">▼</text>
+    </view>
+  </view>
+</view>
+
+<!-- 弹窗部分 -->
+<view class="modal-mask" wx:if="{{visible}}" bindtap="onCancel">
+  <view class="modal-content" catchtap="noTap">
+    <view class="modal-title">包洞规则</view>
+    <view class="modal-list">
+      <!-- 包洞规则选项 -->
+      <view class="rule-section">
+        <view class="rule-options">
+          <view
+            class="rule-option {{currentDutyConfig === 'NODUTY' ? 'selected' : ''}}"
+            bindtap="onHoleRuleChange"
+            data-type="NODUTY"
+          >
+            <view class="radio-dot {{currentDutyConfig === 'NODUTY' ? 'selected' : ''}}"></view>
+            <text class="rule-text">不包洞</text>
+          </view>
+          <view
+            class="rule-option {{currentDutyConfig === 'double_par_plus_x' ? 'selected' : ''}}"
+            bindtap="onHoleRuleChange"
+            data-type="double_par_plus_x"
+          >
+            <view class="radio-dot {{currentDutyConfig === 'double_par_plus_x' ? 'selected' : ''}}"></view>
+            <text class="rule-text">双帕+</text>
+            <picker
+              class="number-picker {{currentDutyConfig !== 'double_par_plus_x' ? 'disabled' : ''}}"
+              range="{{doubleParPlusRange}}"
+              value="{{doubleParPlusValue}}"
+              bindchange="onDoubleParPlusChange"
+            >
+              <text class="picker-value">{{doubleParPlusValue}}</text>
+            </picker>
+            <text class="rule-text">包洞</text>
+          </view>
+          <view
+            class="rule-option {{currentDutyConfig === 'par_plus_x' ? 'selected' : ''}}"
+            bindtap="onHoleRuleChange"
+            data-type="par_plus_x"
+          >
+            <view class="radio-dot {{currentDutyConfig === 'par_plus_x' ? 'selected' : ''}}"></view>
+            <text class="rule-text">帕+</text>
+            <picker
+              class="number-picker {{currentDutyConfig !== 'par_plus_x' ? 'disabled' : ''}}"
+              range="{{parPlusRange}}"
+              value="{{parPlusValue}}"
+              bindchange="onParPlusChange"
+            >
+              <text class="picker-value">{{parPlusValue}}</text>
+            </picker>
+            <text class="rule-text">包洞</text>
+          </view>
+          <view
+            class="rule-option {{currentDutyConfig === 'stroke_diff_x' ? 'selected' : ''}}"
+            bindtap="onHoleRuleChange"
+            data-type="stroke_diff_x"
+          >
+            <view class="radio-dot {{currentDutyConfig === 'stroke_diff_x' ? 'selected' : ''}}"></view>
+            <text class="rule-text">杆差</text>
+            <picker
+              class="number-picker {{currentDutyConfig !== 'stroke_diff_x' ? 'disabled' : ''}}"
+              range="{{strokeDiffRange}}"
+              value="{{strokeDiffValue - 1}}"
+              bindchange="onStrokeDiffChange"
+            >
+              <text class="picker-value">{{strokeDiffValue}}</text>
+            </picker>
+            <text class="rule-text">包洞</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 分割线 -->
+      <view class="modal-divider"></view>
+
+      <!-- 包洞条件 -->
+      <view class="condition-section {{currentDutyConfig === 'NODUTY' ? 'disabled' : ''}}">
+        <view class="condition-title">包洞条件</view>
+        <view class="condition-options">
+          <view
+            class="condition-option {{PartnerDutyCondition === 'DUTY_DINGTOU' ? 'selected' : ''}}"
+            bindtap="{{currentDutyConfig === 'NODUTY' ? 'noTap' : 'onPartnerDutyConditionChange'}}"
+            data-condition="DUTY_DINGTOU"
+          >
+            <view class="radio-dot {{PartnerDutyCondition === 'DUTY_DINGTOU' ? 'selected' : ''}}"></view>
+            <text class="condition-text">同伴顶头包洞</text>
+          </view>
+          <view
+            class="condition-option {{PartnerDutyCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"
+            bindtap="{{currentDutyConfig === 'NODUTY' ? 'noTap' : 'onPartnerDutyConditionChange'}}"
+            data-condition="PARTNET_IGNORE"
+          >
+            <view class="radio-dot {{PartnerDutyCondition === 'PARTNET_IGNORE' ? 'selected' : ''}}"></view>
+            <text class="condition-text">与同伴成绩无关</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
+    </view>
+  </view>
+</view>

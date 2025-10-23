@@ -1,0 +1,71 @@
+<!-- 统一规则卡片组件 -->
+<view
+  class="rule-item1"
+  bindtap="onCreateGamble"
+  bindlongpress="onLongPressRule"
+  data-item="{{ item }}"
+>
+  <view class="rule-header">
+    <text class="rule-title">{{ item.gambleSysName }}/{{ item.gambleUserName }}</text>
+    <view class="rule-type">
+      <text>{{ ruleTypeLabel }}</text>
+    </view>
+  </view>
+
+  <!-- 配置详情展示 -->
+  <view class="rule-description">
+    <!-- 扣分配置 -->
+    <view wx:if="{{ configDetails.koufen }}" class="config-detail-item">
+      <text class="config-label">[扣分]：</text>
+      <text class="config-text">{{ configDetails.koufen }}</text>
+    </view>
+
+    <!-- 吃肉配置 -->
+    <view wx:if="{{ configDetails.eatmeat }}" class="config-detail-item">
+      <text class="config-label">[吃肉]：</text>
+      <text class="config-text">{{ configDetails.eatmeat }}</text>
+    </view>
+
+    <!-- 顶洞配置 -->
+    <view wx:if="{{ configDetails.draw }}" class="config-detail-item">
+      <text class="config-label">[顶洞]：</text>
+      <text class="config-text">{{ configDetails.draw }}</text>
+    </view>
+
+    <!-- 奖励配置 -->
+    <view wx:if="{{ configDetails.reward }}" class="config-detail-item">
+      <text class="config-label">[奖励]：</text>
+      <text class="config-text">{{ configDetails.reward }}</text>
+    </view>
+
+    <view wx:if="{{ configDetails.kpis }}" class="config-detail-item">
+      <text class="config-label">[拉丝]：</text>
+      <text class="config-text">{{ configDetails.kpis }}</text>
+    </view>
+
+    <!-- 其他配置项 -->
+    <view wx:for="{{ configDetails }}" wx:key="key" wx:for-item="value" wx:for-index="key">
+      <view
+        wx:if="{{ key !== 'koufen' && key !== 'eatmeat' && key !== 'kpis' && key !== 'draw' && key !== 'reward' && value }}"
+        class="config-detail-item"
+      >
+        <text class="config-label">[{{ key }}]：</text>
+        <text class="config-text">{{ value }}</text>
+      </view>
+    </view>
+
+    <!-- 如果没有配置详情，显示默认信息 -->
+    <view
+      wx:if="{{ !configDetails.koufen && !configDetails.eatmeat && !configDetails.draw && !configDetails.reward }}"
+      class="config-detail-item"
+    >
+      <text class="config-text">点击查看详细配置</text>
+    </view>
+  </view>
+
+  <view class="rule-footer">
+    <view wx:if="{{showEdit}}" class="rule-actions" catchtap="noTap">
+      <text class="action-btn edit-btn" bindtap="onEditRule" data-item="{{ item }}">编辑</text>
+    </view>
+  </view>
+</view>

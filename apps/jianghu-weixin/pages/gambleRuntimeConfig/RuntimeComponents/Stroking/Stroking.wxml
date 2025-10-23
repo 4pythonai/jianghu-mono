@@ -1,0 +1,178 @@
+<!-- Stroking 组件 - 让杆配置 -->
+<view class="stroking-container">
+  <!-- 让杆选择 -->
+  <view class="stroking-selection">
+    <radio-group bindchange="onStrokingChange">
+      <label class="radio-option">
+        <radio value="disable" checked="{{!enableStroking}}" />
+        <text class="radio-text">不让杆</text>
+      </label>
+      <label class="radio-option">
+        <radio value="enable" checked="{{enableStroking}}" />
+        <text class="radio-text">让杆</text>
+      </label>
+    </radio-group>
+  </view>
+
+  <!-- 配置状态显示 -->
+  <view class="config-status" wx:if="{{enableStroking}}">
+    <view class="status-header">
+      <text class="status-title">已配置用户 ({{configuredUsers.length}}人)</text>
+      <button class="add-config-btn" bindtap="openConfigModal">添加配置</button>
+    </view>
+
+    <view class="configured-users-list" wx:if="{{configuredUsers.length > 0}}">
+      <view wx:for="{{configuredUsers}}" wx:key="userid" class="configured-user-item">
+        <view class="user-basic-info">
+          <text class="user-name">{{item.nickname}}</text>
+          <text class="hole-count">{{item.holeCount}}洞</text>
+        </view>
+        <view class="user-par-info">
+          <text class="par-summary">{{item.parSummary}}</text>
+        </view>
+        <view class="user-actions">
+          <button
+            class="action-btn edit-btn"
+            bindtap="editUserConfig"
+            data-userid="{{item.userid}}"
+          >编辑</button>
+          <button
+            class="action-btn delete-btn"
+            bindtap="removeUserConfig"
+            data-userid="{{item.userid}}"
+          >删除</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-tip" wx:else>
+      <text class="tip-text">暂无配置，点击上方"添加配置"开始设置</text>
+    </view>
+  </view>
+</view>
+
+<!-- 配置弹窗 -->
+<view class="modal-mask" wx:if="{{showConfigModal}}" bindtap="closeConfigModal">
+  <view class="modal-content" catchtap="noTap">
+    <view class="modal-title">让杆配置</view>
+
+    <!-- 用户选择 -->
+    <view class="section">
+      <view class="section-title">选择让杆用户</view>
+      <view class="users-grid">
+        <view
+          wx:for="{{players}}"
+          wx:key="userid"
+          class="user-item {{selectedUser && selectedUser.userid === item.userid ? 'selected' : ''}}"
+          bindtap="onUserSelect"
+          data-userid="{{item.userid}}"
+        >
+          <view class="radio-indicator">
+            <view
+              class="radio-circle {{selectedUser && selectedUser.userid === item.userid ? 'checked' : ''}}"
+            ></view>
+          </view>
+          <view class="user-content">
+            <view class="user-avatar">
+              <image src="{{item.avatar}}" mode="aspectFill" class="avatar-image"></image>
+            </view>
+            <view class="user-info">
+              <text class="user-nickname">{{item.wx_nickname}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- PAR值配置 -->
+    <view class="section">
+      <view class="section-title">让杆数值配置</view>
+      <view class="par-inputs">
+        <text class="par-label">PAR3</text>
+        <picker
+          mode="selector"
+          range="{{parOptions}}"
+          value="{{par3Index}}"
+          bindchange="onParValueChange"
+          data-par-type="PAR3"
+        >
+          <view class="par-picker">
+            <text class="par-value">{{currentConfig.PAR3}}</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+        <text class="par-label">PAR4</text>
+        <picker
+          mode="selector"
+          range="{{parOptions}}"
+          value="{{par4Index}}"
+          bindchange="onParValueChange"
+          data-par-type="PAR4"
+        >
+          <view class="par-picker">
+            <text class="par-value">{{currentConfig.PAR4}}</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+        <text class="par-label">PAR5</text>
+        <picker
+          mode="selector"
+          range="{{parOptions}}"
+          value="{{par5Index}}"
+          bindchange="onParValueChange"
+          data-par-type="PAR5"
+        >
+          <view class="par-picker">
+            <text class="par-value">{{currentConfig.PAR5}}</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 洞范围选择 -->
+    <view class="section">
+      <view class="section-title">让杆洞范围</view>
+      <view class="hole-range-inputs">
+        <view class="hole-input-group">
+          <text class="hole-label">起始洞</text>
+          <picker
+            mode="selector"
+            range="{{holeList}}"
+            range-key="holename"
+            value="{{startHoleIndex}}"
+            bindchange="onStartHoleChange"
+          >
+            <view class="hole-picker">
+              <text
+                class="hole-value"
+              >{{holeRange.startHole ? '第' + holeRange.startHole + '洞' : '请选择'}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+        <view class="hole-input-group">
+          <text class="hole-label">结束洞</text>
+          <picker
+            mode="selector"
+            range="{{holeList}}"
+            range-key="holename"
+            value="{{endHoleIndex}}"
+            bindchange="onEndHoleChange"
+          >
+            <view class="hole-picker">
+              <text class="hole-value">{{holeRange.endHole ? '第' + holeRange.endHole + '洞' : '请选择'}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <!-- 弹窗操作按钮 -->
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onSaveStroking">确定</button>
+    </view>
+  </view>
+</view>

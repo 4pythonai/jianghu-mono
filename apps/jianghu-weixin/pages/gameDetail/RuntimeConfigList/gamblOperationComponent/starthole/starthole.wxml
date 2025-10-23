@@ -1,0 +1,11 @@
+<RealHolePlayListSetter
+  wx:if="{{isStartholeVisible}}"
+  holeList="{{holeList}}"
+  title="调整出发洞"
+  scene="starthole"
+  startHoleindex="{{startHoleindex}}"
+  roadLength="{{roadLength}}"
+  selectType="start"
+  bind:cancel="onModalCancel"
+  bind:confirm="onHoleOrderConfirm"
+/>

@@ -1,0 +1,14 @@
+{
+	"component": true,
+	"usingComponents": {
+		"AvatarGroup": "../AvatarGroup/AvatarGroup",
+		"ProgressBar": "../ProgressBar/ProgressBar"
+	},
+	"options": {
+		"addGlobalClass": true,
+		"styleIsolation": "shared"
+	},
+	"externalClasses": [
+		"hover-class"
+	]
+}

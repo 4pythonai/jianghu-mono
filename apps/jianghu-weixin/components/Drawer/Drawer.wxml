@@ -1,0 +1,47 @@
+<view data-status="open" bindtap="handleShowTecModelClick"></view>
+<view
+  class="mask {{model ? 'show' : ''}}"
+  data-status="close"
+  wx:if="{{model}}"
+  bindtap="handleCancelTecClick"
+></view>
+<view class="drawer-box {{model ? 'show' : ''}}" wx:if="{{model}}">
+  <view class="drawer-content">
+    <!-- 标题栏 -->
+    <view class="drawer-header">
+      <text class="drawer-title">选择查看内容</text>
+    </view>
+
+    <!-- 标题列表 -->
+    <view class="title-list">
+      <!-- 汇总标题 -->
+      <view
+        class="title-item {{currentDisplayType === 'summary' ? 'active' : ''}}"
+        bindtap="switchDisplay"
+        data-type="summary"
+        data-index="-1"
+      >
+        <text class="title-text">游戏汇总</text>
+      </view>
+
+      <!-- 明细标题列表 -->
+      <view
+        class="title-item {{currentDisplayType === 'detail' && currentDetailIndex === index ? 'active' : ''}}"
+        wx:for="{{gambleResults}}"
+        wx:key="index"
+        bindtap="switchDisplay"
+        data-type="detail"
+        data-index="{{index}}"
+      >
+        <text class="title-text">赌博配置 {{item.gambleSysName}}/{{item.gambleUserName}}</text>
+      </view>
+    </view>
+
+    <!-- 关闭按钮 - 移到底部居中 -->
+    <view class="close-btn-container">
+      <view class="close-btn" data-status="close" bindtap="handleCancelTecClick">
+        <text class="close-icon">×</text>
+      </view>
+    </view>
+  </view>
+</view>

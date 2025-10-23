@@ -1,0 +1,184 @@
+/* 计分组件样式 */
+.score-container {
+	display: flex;
+	width: 100%;
+	min-height: 300px;
+	background-color: #f5f5f5;
+	position: relative;
+	overflow: hidden;
+}
+
+/* 固定列样式 */
+.fixed-column {
+	width: 80px;
+	background-color: white;
+	z-index: 20;
+}
+
+.player-column {
+	border-right: 1px solid #ddd;
+}
+
+/* 主滚动区域 */
+.main-scroll {
+	flex: 1;
+	position: relative;
+	z-index: 10;
+	overflow-x: auto;
+}
+
+/* 滚动内容区 */
+.scroll-content {
+	display: flex;
+	flex-direction: column;
+}
+
+/* 表头基础样式 */
+.tb-header {
+	height: 80px;
+	background-color: var(--tb-header-bg);
+	color: var(--tb-header-text);
+	font-weight: bold;
+	display: flex;
+	position: sticky;
+	left: 0;
+	z-index: 15;
+}
+
+/* 球洞表头 */
+.tb-header-holes {
+	width: 100%;
+}
+
+/* 球员表头 */
+.tb-header-player {
+	padding: 20px;
+}
+
+/* 球洞表头单元格 */
+.tb-header-hole {
+	width: 80px;
+	min-width: 80px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 0;
+	border-right: 1px solid #eee;
+}
+
+/* 球洞号 */
+.hole-name {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background-color: white;
+	color: #4caf50;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 14px;
+	margin-bottom: 4px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 标准杆数 */
+.hole-par {
+	color: white;
+	font-size: 16px;
+}
+
+/* 总分表头特殊样式 */
+.tb-header-total {
+	background-color: #4caf50;
+}
+
+.tb-header-total .total-text {
+	color: white;
+	font-size: 16px;
+	font-weight: bold;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+/* OUT汇总表头样式 */
+.tb-header-out {
+	background-color: #ff9800;
+}
+
+.tb-header-out .total-text {
+	color: white;
+	font-size: 16px;
+	font-weight: bold;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+/* IN汇总表头样式 */
+.tb-header-in {
+	background-color: #2196f3;
+}
+
+.tb-header-in .total-text {
+	color: white;
+	font-size: 16px;
+	font-weight: bold;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+/* 内容区域 */
+.table-body {
+	display: flex;
+	flex-direction: column;
+}
+
+/* 行样式 */
+.table-row {
+	height: 80px;
+	border-bottom: 1px solid #eee;
+	background-color: white;
+	display: flex;
+}
+
+/* 计分单元格 */
+.cell-score {
+	width: 80px;
+	min-width: 80px;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-right: 1px solid #eee;
+}
+
+/* 球员单元格 */
+.cell-player {
+	width: 100%;
+	height: 80px;
+	border: 1px solid #eee;
+}
+
+/* 总分单元格 */
+.cell-total {
+	width: 80px;
+	min-width: 80px;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	border-right: 1px solid #eee;
+}
+

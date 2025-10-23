@@ -1,0 +1,102 @@
+<view class="page-container">
+	<view class="header">
+		<view class="title">为第{{groupIndex + 1}}组选择玩家{{slotIndex + 1}}</view>
+		<view class="subtitle">请选择添加玩家的方式</view>
+	</view>
+	<view class="methods-list">
+
+	<!-- 微信分享 -->
+		<view
+			class="method-item"
+			bindtap="onSelectMethod"
+			data-method="{{ {id: 'wxshare', title: '微信分享', desc: '分享邀请链接给好友', icon: '/assets/icons/5-01.png', url: '/pages/player-select/wxshare/wxshare'} }}"
+		>
+			<view class="method-icon">
+				<image src="/assets/icons/5-01.png" mode="aspectFit"></image>
+			</view>
+			<view class="method-content">
+				<view class="method-title">微信分享</view>
+				<view class="method-desc">分享邀请链接给好友</view>
+			</view>
+			<view class="method-arrow">
+				<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+			</view>
+		</view>
+
+
+			<!-- 二维码 -->
+		<view
+			class="method-item"
+			bindtap="onSelectMethod"
+			data-method="{{ {id: 'qrcode', title: '二维码', desc: '扫描或生成二维码邀请', icon: '/assets/icons/3-01.png', url: '/pages/player-select/qrcode/qrcode'} }}"
+		>
+			<view class="method-icon">
+				<image src="/assets/icons/3-01.png" mode="aspectFit"></image>
+			</view>
+			<view class="method-content">
+				<view class="method-title">二维码</view>
+				<view class="method-desc">扫描或生成二维码邀请</view>
+			</view>
+			<view class="method-arrow">
+				<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+			</view>
+		</view>
+
+
+
+		<!-- 老牌组合 -->
+		<view
+			class="method-item"
+			bindtap="onSelectMethod"
+			data-method="{{ {id: 'combineSelect', title: '老牌组合', desc: '选择经常打球的组合', icon: '/assets/icons/1-01.png', url: '/pages/player-select/combineSelect/combineSelect'} }}"
+		>
+			<view class="method-icon">
+				<image src="/assets/icons/1-01.png" mode="aspectFit"></image>
+			</view>
+			<view class="method-content">
+				<view class="method-title">老牌组合</view>
+				<view class="method-desc">选择经常打球的组合</view>
+			</view>
+			<view class="method-arrow">
+				<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+			</view>
+		</view>
+		<!-- 手工添加 -->
+		<view
+			class="method-item"
+			bindtap="onSelectMethod"
+			data-method="{{ {id: 'manualAdd', title: '手工添加', desc: '通过昵称或手机号添加', icon: '/assets/icons/4-01.png', url: '/pages/player-select/manualAdd/manualAdd'} }}"
+		>
+			<view class="method-icon">
+				<image src="/assets/icons/4-01.png" mode="aspectFit"></image>
+			</view>
+			<view class="method-content">
+				<view class="method-title">手工添加</view>
+				<view class="method-desc">通过昵称或手机号添加</view>
+			</view>
+			<view class="method-arrow">
+				<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+			</view>
+		</view>
+
+			<!-- 好友选择 -->
+		<view
+			class="method-item"
+			bindtap="onSelectMethod"
+			data-method="{{ {id: 'friendSelect', title: '好友选择', desc: '从好友关系中选择', icon: '/assets/icons/2-01.png', url: '/pages/player-select/friendSelect/friendSelect'} }}"
+		>
+			<view class="method-icon">
+				<image src="/assets/icons/2-01.png" mode="aspectFit"></image>
+			</view>
+			<view class="method-content">
+				<view class="method-title">好友选择</view>
+				<view class="method-desc">从好友关系中选择</view>
+			</view>
+			<view class="method-arrow">
+				<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+			</view>
+		</view>
+	
+		
+	</view>
+</view>

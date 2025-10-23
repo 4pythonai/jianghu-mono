@@ -1,0 +1,119 @@
+/* 基础容器样式 */
+.hole-cell {
+	width: 80px;
+	height: 80px; /* 添加固定高度以便绝对定位 */
+	flex-shrink: 0;
+	padding: 10px;
+	position: relative;
+	overflow: visible !important;
+	border: 1px solid #e5e5e5;
+}
+
+.color-tag-red {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 12px 12px 0;
+	border-color: transparent #ff0000 transparent transparent;
+	z-index: 9999;
+}
+
+.color-tag-blue {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 0 12px 12px 0;
+	border-color: transparent #0000ff transparent transparent;
+	z-index: 9999;
+}
+
+/* 分数文本样式 */
+.score-text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-30%, -50%);
+	font-size: 22px;
+	color: #090909;
+}
+
+/* 推杆数样式 */
+.putts-text {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+	font-size: 12px;
+	color: #666;
+}
+
+.diff-text {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	font-size: 12px;
+	color: #666;
+}
+
+.score-eagle {
+	color: #ffffff;
+	background-color: #ff0000;
+	border-radius: 50%;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.score-birdie {
+	color: #ff0000;
+	background-color: #ffffff;
+	border: 2px solid #ff0000;
+	border-radius: 50%;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.score-par {
+	color: blue;
+}
+
+.score-bogey {
+	color: #000000;
+	background-color: #ffffff;
+	border: 2px solid #000000;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.score-double-bogey {
+	color: #000000;
+	background-color: #e9e2e2;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.score-triple-bogey {
+	color: #000000;
+	background-color: #8a8484;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

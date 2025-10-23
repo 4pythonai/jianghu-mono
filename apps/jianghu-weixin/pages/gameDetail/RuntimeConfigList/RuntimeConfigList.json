@@ -1,0 +1,9 @@
+{
+	"navigationBarTitleText": "游戏配置",
+	"usingComponents": {
+		"kickoff": "./gamblOperationComponent/kickoff/kickoff",
+		"holejump": "./gamblOperationComponent/holejump/holejump",
+		"juanguo": "./gamblOperationComponent/juanguo/juanguo",
+		"starthole": "./gamblOperationComponent/starthole/starthole"
+	}
+}

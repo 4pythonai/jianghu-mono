@@ -1,0 +1,105 @@
+<wxs src="/utils/es.wxs" module="util" />
+
+<view class="runtime-config-container">
+  <view class="error-container" wx:if="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="main-content" wx:else>
+    <!-- 游戏规则摘要 -->
+    <view class="section">
+      <view class="section-title">游戏规则</view>
+      <Summary
+        gambleSysName="{{gambleSysName}}"
+        players="{{players}}"
+        userRule="{{userRule}}"
+        bind:reselect="onReSelectRule"
+      />
+    </view>
+
+    <!-- 洞范围选择 -->
+    <view class="section">
+      <view class="section-label">选择球洞范围</view>
+
+      <HoleRangeSelector
+        id="holeRangeSelector"
+        roadLength="{{holeRangeConfig.roadLength}}"
+        startHoleindex="{{holeRangeConfig.startHoleindex}}"
+      />
+    </view>
+
+    <!-- 让杆配置 -->
+    <view class="section" wx:if="{{needsStroking}}">
+      <view class="section-label">让杆配置</view>
+      <Stroking
+        id="stroking"
+        players="{{players}}"
+        strokingConfig="{{runtimeConfig.stroking_config}}"
+        bind:saveStroking="onStrokingConfigChange"
+      />
+    </view>
+
+    <!-- 8421球员配置 -->
+    <view class="section" wx:if="{{is8421Game}}">
+      <view class="section-label">球员指标配置</view>
+      <PlayerIndicator
+        id="playerIndicator"
+        players="{{players}}"
+        val8421Config="{{runtimeConfig.playerIndicatorConfig}}"
+        bind:configChange="onPlayerIndicatorConfigChange"
+      />
+    </view>
+
+    <!-- 调试信息 -->
+    <view class="section" style="background: #f0f0f0; padding: 10rpx; margin: 10rpx;">
+      <view class="section-label">调试信息</view>
+      <text>gambleSysName: {{gambleSysName}}</text>
+      <br />
+      <text>is8421Game: {{is8421Game}}</text>
+      <br />
+      <text>needRedBlueDiv: {{needRedBlueDiv}}</text>
+      <br />
+      <text>needsStroking: {{needsStroking}}</text>
+    </view>
+
+    <!-- 分组配置 -->
+    <view class="section" wx:if="{{needRedBlueDiv}}">
+      <view class="section-label">分组配置</view>
+      <RedBlueConfig
+        id="redBlueConfig"
+        players="{{players}}"
+        red_blue_config="{{runtimeConfig.red_blue_config}}"
+        initialBootstrapOrder="{{runtimeConfig.bootstrap_order}}"
+      />
+    </view>
+
+    <!-- 排名配置 -->
+    <view class="section" wx:if="{{is8421Game}}">
+      <view class="section-label">8421排名规则</view>
+      <Rank8421ConflictResolver
+        id="rankConfig"
+        selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        playerIndicatorConfig="{{runtimeConfig.playerIndicatorConfig}}"
+      />
+    </view>
+    <view class="section" wx:if="{{gambleSysName && util.includes(gambleSysName, 'lasi')}}">
+      <view class="section-label">拉丝排名规则</view>
+      <RankLasiConflictResolver
+        id="rankConfig"
+        selectedConfig="{{runtimeConfig.ranking_tie_resolve_config}}"
+        strokingConfig="{{runtimeConfig.stroking_config}}"
+      />
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-buttons">
+    <button class="cancel-btn" bindtap="onCancelConfig">取消</button>
+    <button
+      class="confirm-btn"
+      bindtap="onConfirmConfig"
+      loading="{{loading}}"
+    >{{loading ? '保存中...' : '确认配置'}}</button>
+  </view>
+</view>

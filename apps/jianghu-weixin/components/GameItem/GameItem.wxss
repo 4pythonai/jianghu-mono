@@ -1,0 +1,131 @@
+@import "/styles/iconfont.wxss";
+
+.match-container {
+	padding: 15rpx 16rpx;
+	margin: 15rpx 0 40rpx 0; /* 调整左右margin为0 */
+	background: var(--card-bg);
+	border-radius: 6rpx;
+	border: 0.5rpx solid var(--card-border); /* 更醒目的绿色边框 */
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
+	display: flex;
+	min-height: 170rpx;
+	width: 100%; /* 改为100%宽度 */
+	position: relative;
+	z-index: 1;
+	transition: all 0.3s ease;
+	box-sizing: border-box; /* 确保边框包含在宽度内 */
+}
+
+/* hover效果 */
+.hover-class {
+	transform: translateY(-8rpx) scale(1.02);
+	box-shadow: 0 12rpx 24rpx rgba(0, 0, 0, 0.2);
+	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+	z-index: 10;
+}
+
+/* active点击效果 */
+.hover-class:active {
+	transform: translateY(-4rpx) scale(1.01);
+	box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.2);
+	background-color: #f8f8f8;
+	transition: all 0.15s ease-out;
+}
+
+.avatar-column {
+	width: 100rpx; /* 固定头像列宽度 */
+	margin-right: 20rpx; /* 增加间距 */
+	display: flex;
+	flex-direction: column;
+	justify-content: center; /* 垂直居中 */
+}
+
+.content-column {
+	margin-left: 20rpx;
+	width: calc(100% - 140rpx); /* 调整宽度计算, 为边框留出空间 */
+	display: flex;
+	flex-direction: column;
+}
+
+/* 行样式 */
+.row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 12rpx;
+}
+
+/* 第1行:比赛名称 + star */
+.name-row {
+	justify-content: space-between;
+}
+
+.game-name {
+	font-size: 32rpx;
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--tilte-h1);
+}
+
+/* 统一图标样式 */
+.star-icon {
+	width: 36rpx;
+	height: 36rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.star-icon {
+	margin-left: 20rpx;
+	color: var(--theme-color);
+}
+
+/* 进度条容器 */
+.progress-row {
+	margin-bottom: 16rpx;
+	height: 24rpx;
+	display: block;
+	width: 100%;
+}
+
+/* 第3行:地点 */
+.course-row {
+	align-items: center;
+}
+
+.course-row .iconfont {
+	font-size: 28rpx;
+	color: #07c160;
+	margin-right: 8rpx;
+}
+
+.course {
+	color: #666;
+	font-size: 24rpx;
+}
+
+/* 第4行:时间人数 */
+.meta-row {
+	justify-content: flex-start;
+	align-items: center; /* 确保垂直居中 */
+}
+
+.meta-row .iconfont {
+	font-size: 28rpx;
+	color: #07c160;
+	margin-right: 8rpx;
+}
+
+.time-watchers {
+	display: flex;
+	align-items: center;
+}
+
+.start-time,
+.watchers {
+	font-size: 22rpx;
+	color: var(--title-h2);
+}

@@ -1,0 +1,58 @@
+/**app.wxss**/
+@import "./styles/iconfont.wxss";
+@import "/styles/buttons.wxss";
+/* @import "./styles/modal.wxss"; */
+
+page {
+	--theme-color: #109d58; /* 主题绿色 */
+	--common-bg: #f9fbfa; /* 深色文字 */
+	--tilte-h1: #020403;
+	--title-h2: #515352;
+	--content-text: 808080;
+	--small-bg: #efefef;
+	--small-red: #ff0000;
+	--testColorRedR: #ba275f;
+	--testColor: #ff0000;
+	--hearde-big: #1c1935; /* 浅灰背景 */
+	--card-bg: #fefefe;
+	--card-border: #86cd93;
+	--tb-header-bg: #4caf50;
+	--tb-header-text: #fff;
+
+	height: 100%;
+	background-color: #f9fbfa;
+	font-family: -apple-system, "DouyinSansBold", Helvetica, "PingFang SC",
+		"Microsoft YaHei", Arial, sans-serif;
+	color: #808080;
+}
+
+.wx-tabbar-item .wx-tabbar-icon {
+	font-size: 20px !important;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	padding: 30rpx;
+}
+
+.page-title {
+	font-size: 36rpx;
+	font-weight: bold;
+	color: #333;
+	text-align: center;
+	margin: 30rpx 0;
+}
+
+.page-desc {
+	font-size: 28rpx;
+	color: #666;
+	text-align: center;
+	margin: 20rpx 0;
+}
+
+page,
+view,
+scroll-view {
+	box-sizing: border-box;
+}

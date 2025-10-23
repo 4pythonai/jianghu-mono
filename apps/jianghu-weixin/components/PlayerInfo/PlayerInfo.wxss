@@ -1,0 +1,113 @@
+/* 球员信息容器 */
+.cell-player-info {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.player-info-container {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+}
+
+/* 左侧头像区域 */
+.avatar-column {
+	width: 60%;
+	height: 100%;
+	padding-left: 16rpx;
+	box-sizing: border-box;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+/* 球员头像 */
+.player-avatar {
+	width: 64rpx;
+	height: 64rpx;
+	border-radius: 50%;
+}
+
+/* 右侧杆差区域 */
+.handicap-column {
+	width: 40%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-right: 8rpx;
+	box-sizing: border-box;
+}
+
+/* 杆差徽章 */
+.handicap-badge {
+	background-color: #000;
+	color: #fff;
+	border-radius: 50%;
+	min-width: 40rpx;
+	height: 40rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.handicap-text {
+	color: #fff;
+	font-size: 40rpx;
+	font-weight: bold;
+	line-height: 1;
+}
+
+.player-name {
+	font-size: 20rpx;
+	width: 100%;
+	margin-top: 12rpx;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.tee-info-column {
+	width: 10rpx;
+	height: 70%;
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+/* T台颜色样式 - 直接应用到竖条 */
+.tee-black {
+	background-color: #000;
+}
+
+.tee-blue {
+	background-color: #0066cc;
+}
+
+.tee-white {
+	background-color: #f0f0f0;
+	border: 2rpx solid #ccc;
+}
+
+.tee-gold {
+	background-color: #ffd700;
+}
+
+.tee-red {
+	background-color: #cc0000;
+}
+
+/* 默认T台样式 */
+.tee-default {
+	background-color: #999;
+}

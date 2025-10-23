@@ -1,0 +1,38 @@
+<view class="modal-mask" bindtap="close">
+  <view class="modal-content" catchtap="noop">
+    <view class="modal-title">踢一脚</view>
+    <view class="section-title">请选择洞号及倍数</view>
+    <view class="hole-list">
+      <block wx:for="{{holePlayList}}" wx:key="index">
+        <view
+          class="hole-item {{index === 0 ? 'active' : ''}}"
+          bindtap="onSelectHole"
+          data-index="{{index}}"
+          data-hindex="{{item.hindex}}"
+        >
+          <view class="hole-circle">
+            <text class="hole-item-text">{{item.holename}}</text>
+          </view>
+          <!-- 显示当前倍数配置，在圆圈外下方 -->
+          <text
+            wx:if="{{holeMultipliers[item.hindex] && holeMultipliers[item.hindex] !== 1}}"
+            class="multiplier-text"
+          >X{{holeMultipliers[item.hindex]}}</text>
+        </view>
+      </block>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="close">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
+    </view>
+  </view>
+</view>
+
+<!-- 倍数选择弹窗 -->
+<HoleMultiplierSelector
+  visible="{{showMultiplierSelector}}"
+  hindex="{{selectedHole.hindex}}"
+  holename="{{selectedHole.holename}}"
+  bind:confirm="onMultiplierConfirm"
+  bind:cancel="onMultiplierCancel"
+/>

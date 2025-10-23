@@ -1,0 +1,37 @@
+<!-- HoleRangeSelector 组件 - 起点洞与终点洞选择器 -->
+<view class="hole-range-selector">
+  <!-- 选择器区域 - 单行布局 -->
+  <view class="selector-area">
+    <!-- 起始洞标签 -->
+    <view class="selector-label">起始洞</view>
+    <view class="hole-circle">
+      <view
+        class="hole-number"
+        bindtap="onSlectStartModal"
+        data-type="start"
+      >{{startHole ? startHole.holename : ''}}</view>
+    </view>
+    <view class="selector-label">终止洞</view>
+    <view class="hole-circle">
+      <view
+        class="hole-number"
+        bindtap="onSelectEndModal"
+        data-type="end"
+      >{{endHole ? endHole.holename : ''}}</view>
+    </view>
+    <!-- 洞数量显示 -->
+    <view class="selector-label">洞数量</view>
+    <view class="hole-count">{{roadLength}}个</view>
+  </view>
+</view>
+<RealHolePlayListSetter
+  wx:if="{{ifShowModal}}"
+  holeList="{{holeList}}"
+  title="调整洞序"
+  scene="startend"
+  startHoleindex="{{startHoleindex}}"
+  roadLength="{{roadLength}}"
+  selectType="{{selectType}}"
+  bind:cancel="onModalCancel"
+  bind:confirm="onHoleOrderConfirm"
+/>

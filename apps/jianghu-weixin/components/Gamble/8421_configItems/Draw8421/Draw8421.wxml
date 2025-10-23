@@ -1,0 +1,69 @@
+<!-- 顶洞规则配置组件 -->
+<!-- 显示部分 -->
+<view class="rule-section" wx:if="{{!visible}}">
+  <view class="form-label">顶洞规则</view>
+  <view class="form-select" bindtap="onShowConfig">
+    <!-- 使用view模拟input，避免真机上的光标问题 -->
+    <view class="form-input-simulator {{disabled ? 'conditionally-disabled' : ''}}">{{displayValue}}</view>
+    <view class="select-arrow">
+      <text class="arrow-circle">▼</text>
+    </view>
+  </view>
+</view>
+
+<!-- 弹窗部分 -->
+<view wx:if="{{visible}}" class="modal-mask" bindtap="onCancel">
+  <view class="modal-content" catchtap="noTap">
+    <view class="modal-title">顶洞规则</view>
+    <view class="modal-list">
+      <!-- 得分打平选项 -->
+      <view class="modal-item" bindtap="onSelect" data-index="0">
+        <view class="radio-outer {{currentSelected === 0 ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{currentSelected === 0}}"></view>
+        </view>
+        <view class="option-content">
+          <text>得分打平</text>
+        </view>
+      </view>
+
+      <!-- 得分X分以内选项 -->
+      <view class="modal-item" bindtap="onSelect" data-index="1">
+        <view class="radio-outer {{currentSelected === 1 ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{currentSelected === 1}}"></view>
+        </view>
+        <view class="option-content">
+          <text>得分</text>
+
+          <!-- 分数选择器 -->
+          <picker
+            wx:if="{{currentSelected === 1}}"
+            class="score-picker"
+            range="{{diffScores}}"
+            value="{{currentDiffScore - 1}}"
+            bindchange="onDiffScoreChange"
+          >
+            <view class="picker-value">{{currentDiffScore}}</view>
+          </picker>
+          <text wx:if="{{currentSelected === 1}}">分以内</text>
+
+          <!-- 显示当前选中但未激活的选项文本 -->
+          <text wx:if="{{currentSelected !== 1}}">{{currentDiffScore}}分以内</text>
+        </view>
+      </view>
+
+      <!-- 无顶洞选项 -->
+      <view class="modal-item" bindtap="onSelect" data-index="2">
+        <view class="radio-outer {{currentSelected === 2 ? 'checked' : ''}}">
+          <view class="radio-inner" wx:if="{{currentSelected === 2}}"></view>
+        </view>
+        <view class="option-content">
+          <text>无顶洞</text>
+        </view>
+      </view>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="onCancel">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirm">确定</button>
+    </view>
+  </view>
+</view>

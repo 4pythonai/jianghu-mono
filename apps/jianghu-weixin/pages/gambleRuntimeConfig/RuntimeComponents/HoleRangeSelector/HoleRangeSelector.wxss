@@ -1,0 +1,108 @@
+/* HoleRangeSelector组件样式 */
+.hole-range-selector {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+/* 选择器区域 - 单行布局 */
+.selector-area {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20rpx;
+	padding: 30rpx 40rpx;
+	background-color: #f8f8f8;
+	border-radius: 15rpx;
+}
+
+/* 标签样式 */
+.selector-label {
+	font-size: 28rpx;
+	color: #333;
+	font-weight: 500;
+	white-space: nowrap;
+	text-align: center;
+	min-width: 80rpx;
+}
+
+/* 圆形洞数字样式 */
+.hole-circle {
+	width: 80rpx;
+	height: 80rpx;
+	background-color: #4caf50;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s;
+	box-shadow: 0 4rpx 8rpx rgba(76, 175, 80, 0.3);
+}
+
+.hole-circle:active {
+	transform: scale(0.95);
+	box-shadow: 0 2rpx 4rpx rgba(76, 175, 80, 0.5);
+}
+
+.hole-number {
+	font-size: 36rpx;
+	color: #fff;
+	font-weight: bold;
+	margin-top: 0;
+}
+
+/* 洞数量显示样式 */
+.hole-count {
+	font-size: 32rpx;
+	color: #4caf50;
+	font-weight: bold;
+	background-color: #e8f5e8;
+	padding: 8rpx 16rpx;
+	border-radius: 20rpx;
+	border: 2rpx solid #4caf50;
+	text-align: center;
+	min-width: 80rpx;
+}
+
+/* 提示信息 */
+.hint-text {
+	text-align: center;
+	padding: 10rpx;
+}
+
+.hint-text-inner {
+	font-size: 24rpx;
+	color: #999;
+}
+
+/* 响应式设计 */
+@media (max-width: 600rpx) {
+	.selector-area {
+		gap: 15rpx;
+		padding: 25rpx 20rpx;
+	}
+
+	.selector-label {
+		font-size: 24rpx;
+		min-width: 70rpx;
+	}
+
+	.hole-circle {
+		width: 70rpx;
+		height: 70rpx;
+	}
+
+	.hole-number {
+		font-size: 32rpx;
+	}
+
+	.hole-count {
+		font-size: 28rpx;
+		padding: 6rpx 12rpx;
+		min-width: 70rpx;
+	}
+
+	.hint-text-inner {
+		font-size: 22rpx;
+	}
+}

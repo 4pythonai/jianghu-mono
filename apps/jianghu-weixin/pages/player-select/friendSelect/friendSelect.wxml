@@ -1,0 +1,70 @@
+<view class="page-container">
+	<view class="header">
+		<text class="title">好友选择</text>
+		<text class="subtitle">为第{{groupIndex + 1}}组玩家{{slotIndex + 1}}选择</text>
+	</view>
+	<view class="content">
+		<!-- 搜索框 -->
+		<view class="search-section">
+			<view class="search-box">
+				<text class="search-icon">🔍</text>
+				<input
+					class="search-input"
+					type="text"
+					placeholder="搜索好友昵称或ID"
+					placeholder-class="search-placeholder"
+					bindinput="onSearchInput"
+				/>
+				<view class="clear-btn" bindtap="clearSearch">
+					<text>清空</text>
+				</view>
+			</view>
+		</view>
+		<!-- 选择统计 -->
+		<view class="selection-stats" wx:if="{{ selectedFriends.length > 0 }}">
+			<text class="stats-text">已选择 {{selectedFriends.length}}/{{maxSelect}} 人</text>
+			<button class="confirm-btn" bindtap="confirmSelection">确认选择 ({{selectedFriends.length}})</button>
+		</view>
+		<!-- 好友列表 -->
+		<view wx:if="{{ friends.length > 0 }}" class="friends-list">
+			<view
+				wx:for="{{ friends }}"
+				wx:key="userid"
+				class="friend-item {{ item.selected ? 'selected' : '' }}"
+				data-index="{{ index }}"
+				bindtap="toggleFriendSelection"
+			>
+				<view class="friend-content">
+					<image
+						class="friend-avatar"
+						src="{{ item.avatar || item.avatar || '/images/default-avatar.png' }}"
+						mode="aspectFill"
+						lazy-load="true"
+					></image>
+					<view class="friend-info">
+						<text class="friend-name">{{item.nickname || item.wx_nickname || '未知好友'}}</text>
+						<text class="friend-id">ID: {{item.userid}}</text>
+						<text wx:if="{{ item.handicap !== undefined }}" class="friend-handicap">杆数: {{item.handicap}}</text>
+					</view>
+					<!-- 选择状态指示器 -->
+					<view class="selection-indicator">
+						<view wx:if="{{ item.selected }}" class="selected-check">
+							<text class="check-text">✓</text>
+						</view>
+						<view wx:else class="unselected-circle"></view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<!-- 空状态 -->
+		<view wx:else class="empty-state">
+			<view class="empty-icon">👥</view>
+			<text class="empty-text">暂无好友</text>
+			<text class="empty-desc">您还没有添加过好友</text>
+		</view>
+		<!-- 底部确认按钮 -->
+		<view class="bottom-action" wx:if="{{ selectedFriends.length > 0 }}">
+			<button class="confirm-btn-bottom" bindtap="confirmSelection">确认选择 {{selectedFriends.length}} 名好友</button>
+		</view>
+	</view>
+</view>

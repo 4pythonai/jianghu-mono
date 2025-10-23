@@ -1,0 +1,201 @@
+/* 配置区域容器 */
+.config-section {
+	background: #fff;
+	border-radius: 24rpx;
+	margin-bottom: 24rpx;
+	overflow: hidden;
+	box-shadow: 0 2rpx 8rpx 0 rgba(0, 0, 0, 0.04);
+}
+
+/* 标题栏 */
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 32rpx 24rpx;
+	background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+	border-bottom: 1rpx solid #e9ecef;
+}
+
+.header-left {
+	display: flex;
+	flex-direction: column;
+	gap: 4rpx;
+}
+
+.section-title {
+	font-size: 32rpx;
+	font-weight: 600;
+	color: #2c3e50;
+}
+
+.header-right {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+}
+
+.current-value {
+	font-size: 28rpx;
+	color: #4caf7a;
+	font-weight: 500;
+}
+
+.arrow {
+	font-size: 20rpx;
+	color: #6c757d;
+}
+
+/* 配置内容区域 */
+.config-content {
+	overflow: hidden;
+}
+
+/* 主要内容区域 */
+.main-content {
+	display: flex;
+	padding: 32rpx 24rpx;
+	gap: 48rpx;
+	align-items: stretch;
+}
+
+/* 左侧KPI选项列表 */
+.kpi-options {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+	justify-content: space-between;
+}
+
+.kpi-item {
+	display: flex;
+	align-items: center;
+	padding: 20rpx 24rpx;
+	background: #f8f9fa;
+	border-radius: 16rpx;
+	border: 2rpx solid transparent;
+	transition: all 0.2s ease;
+	position: relative;
+	gap: 16rpx;
+}
+
+.kpi-item.selected {
+	background: #e8f5e8;
+	border-color: #4caf7a;
+}
+
+.checkbox {
+	width: 32rpx;
+	height: 32rpx;
+	border-radius: 6rpx;
+	border: 2rpx solid #dee2e6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+	flex-shrink: 0;
+}
+
+.checkbox.checked {
+	border-color: #4caf7a;
+	background: #4caf7a;
+}
+
+.check-icon {
+	color: #fff;
+	font-size: 20rpx;
+	font-weight: bold;
+	line-height: 1;
+}
+
+.kpi-label {
+	flex: 1;
+	font-size: 28rpx;
+	color: #6c757d;
+	font-weight: 500;
+	line-height: 32rpx;
+}
+
+.kpi-value {
+	font-size: 26rpx;
+	color: #6c757d;
+	background: #e9ecef;
+	padding: 8rpx 16rpx;
+	border-radius: 8rpx;
+	margin-right: 12rpx;
+}
+
+.kpi-value-selector {
+	display: flex;
+	align-items: center;
+}
+
+.kpi-value-selector .picker-wrapper {
+	display: flex;
+	align-items: center;
+}
+
+.kpi-value-selector .kpi-value {
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+/* 切换按钮 */
+.toggle-btn {
+	width: 40rpx;
+	height: 40rpx;
+	border-radius: 50%;
+	background: #f8f9fa;
+	border: 2rpx solid #dee2e6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+	flex-shrink: 0;
+}
+
+.toggle-btn:active {
+	background: #e9ecef;
+	transform: scale(0.95);
+}
+
+.toggle-icon {
+	width: 40rpx;
+	height: 40rpx;
+}
+
+/* 占位元素，保持对齐 */
+.toggle-placeholder {
+	width: 40rpx;
+	height: 40rpx;
+	flex-shrink: 0;
+}
+
+/* 右侧总分显示 */
+.total-score {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-width: 120rpx;
+	padding: 32rpx 24rpx;
+	background: #f8f9fa;
+	border-radius: 16rpx;
+	border: 2rpx solid #e9ecef;
+	height: 100%;
+	min-height: 280rpx;
+}
+
+.total-number {
+	font-size: 48rpx;
+	font-weight: bold;
+	color: #4caf7a;
+	line-height: 1;
+	margin-bottom: 8rpx;
+}
+
+.total-unit {
+	font-size: 24rpx;
+	color: #6c757d;
+}
