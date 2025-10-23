@@ -96,7 +96,11 @@ class User extends MY_Controller {
             logtext("  文件保存成功: " . $targetPath);
 
             // 可以在这里更新用户的头像路径到数据库
-            $this->MUser->updateUserAvatar($user_id, '/avatar/' . $date_folder . $fileName);
+            $relativePath = '/avatar/' . $date_folder . $fileName;
+            $this->MUser->updateUserAvatar($user_id, $relativePath);
+
+            $webUrl = rtrim(config_item('web_url'), '/');
+            $publicUrl = $webUrl . $relativePath;
 
             echo json_encode([
                 'code' => 200,
@@ -106,7 +110,9 @@ class User extends MY_Controller {
                     'filename' => $fileName,
                     'path' => $targetPath,
                     'size' => $file['size'],
-                    'type' => $file['type']
+                    'type' => $file['type'],
+                    'avatar_path' => $relativePath,
+                    'avatar_url' => $publicUrl
                 ]
             ]);
         } catch (\Exception $e) {

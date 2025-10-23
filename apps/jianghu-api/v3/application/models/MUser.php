@@ -11,7 +11,7 @@ class MUser  extends CI_Model {
   public function getUserProfile($user_id) {
     $this->db->where('id', $user_id);
     $user = $this->db->get('t_user')->row_array();
-    $user['avatar'] = config_item('web_url') . $user['avatar'];
+    $user['avatar'] = $this->formatAvatarUrl(isset($user['avatar']) ? $user['avatar'] : '');
     return $user;
   }
 
@@ -50,7 +50,7 @@ class MUser  extends CI_Model {
     $this->db->where('mobile', $mobile);
     $user =  $this->db->get('t_user')->row_array();
     if ($user) {
-      $user['avatar'] = config_item('web_url') . $user['avatar'];
+      $user['avatar'] = $this->formatAvatarUrl(isset($user['avatar']) ? $user['avatar'] : '');
     }
     return $user;
   }
@@ -60,7 +60,7 @@ class MUser  extends CI_Model {
     $this->db->where('id', $user_id);
     $user = $this->db->get('t_user')->row_array();
     if ($user) {
-      $user['avatar'] = config_item('web_url')  . $user['avatar'];
+      $user['avatar'] = $this->formatAvatarUrl(isset($user['avatar']) ? $user['avatar'] : '');
     }
     return $user;
   }
@@ -193,5 +193,18 @@ class MUser  extends CI_Model {
     $this->db->where('id', $userid);
     $user = $this->db->get('t_user')->row_array();
     return $user['wx_nickname'];
+  }
+
+  private function formatAvatarUrl($avatar) {
+    if (empty($avatar)) {
+      return '';
+    }
+
+    if (strpos($avatar, 'http://') === 0 || strpos($avatar, 'https://') === 0) {
+      return $avatar;
+    }
+
+    $web_url = rtrim(config_item('web_url'), '/');
+    return $web_url . $avatar;
   }
 }

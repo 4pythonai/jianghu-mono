@@ -4,13 +4,16 @@
 
 echo "请关闭VPN"
 
-rm -fr /Users/alex/codebase/golf/mini-api/v3/application/config/database.php
-rm -fr /Users/alex/codebase/golf/mini-api/v3/application/config/config.php
-cp /Users/alex/codebase/golf/mini-api/v3/application/config/database-server.php /Users/alex/codebase/golf/mini-api/v3/application/config/database.php
-cp /Users/alex/codebase/golf/mini-api/v3/application/config/config-server.php /Users/alex/codebase/golf/mini-api/v3/application/config/config.php
+# 设置API路径变量
+api_path="/Users/alex/codebase/golf/golf-monorepo/new-golf-mini-api"
+
+rm -fr $api_path/v3/application/config/database.php
+rm -fr $api_path/v3/application/config/config.php
+cp $api_path/v3/application/config/database-server.php $api_path/v3/application/config/database.php
+cp $api_path/v3/application/config/config-server.php $api_path/v3/application/config/config.php
 
 # 设置本地和远程目录路径
-local_path="/Users/alex/codebase/golf/mini-api/v3/"
+local_path="$api_path/v3/"
 remote_path="/home/webapps/api-x/v3"
 
 
@@ -24,5 +27,5 @@ server_username="root"
 pem="/Users/alex/.ssh/qiaoyin.pem"
 
 rsync --progress -avz --delete -e  "ssh -i $pem -p $server_port" "$local_path" "$server_username@$server_address:$remote_path"
-cp /Users/alex/codebase/golf/mini-api/v3/application/config/database-local.php /Users/alex/codebase/golf/mini-api/v3/application/config/database.php
-cp /Users/alex/codebase/golf/mini-api/v3/application/config/config-local.php /Users/alex/codebase/golf/mini-api/v3/application/config/config.php
+cp $api_path/v3/application/config/database-local.php $api_path/v3/application/config/database.php
+cp $api_path/v3/application/config/config-local.php $api_path/v3/application/config/config.php

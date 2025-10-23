@@ -192,6 +192,97 @@ class Game extends MY_Controller {
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
+    public function getGameInviteQrcode() {
+        $params = json_decode(file_get_contents('php://input'), true);
+        if (!is_array($params)) {
+            echo json_encode(['code' => 400, 'message' => '请求格式错误'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $uuid = isset($params['uuid']) ? trim($params['uuid']) : '';
+        $path = isset($params['path']) ? trim($params['path']) : '';
+        $inputGameId = isset($params['gameid']) && $params['gameid'] !== '' ? (int) $params['gameid'] : null;
+
+        if ($uuid === '') {
+            echo json_encode(['code' => 400, 'message' => '缺少比赛标识'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $query = ['uuid' => $uuid];
+        if ($inputGameId) {
+            $query['id'] = $inputGameId;
+        }
+
+        $game = $this->db->get_where('t_game', $query)->row_array();
+
+        if (!$game && !$inputGameId) {
+            $game = $this->db->get_where('t_game', ['uuid' => $uuid])->row_array();
+        }
+
+        if (!$game && $inputGameId) {
+            $game = $this->db->get_where('t_game', ['id' => $inputGameId])->row_array();
+            if ($game && $game['uuid'] !== $uuid) {
+                echo json_encode(['code' => 409, 'message' => '比赛信息不匹配'], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+        }
+
+        if (!$game) {
+            echo json_encode(['code' => 404, 'message' => '比赛不存在'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        if (isset($game['status']) && $game['status'] === 'canceled') {
+            echo json_encode(['code' => 404, 'message' => '比赛不存在'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $gameId = (int) $game['id'];
+        if ($path === '') {
+            $path = $this->buildGameInvitePath($uuid, $gameId, isset($game['name']) ? $game['name'] : '');
+        }
+
+        if ($path === '') {
+            echo json_encode(['code' => 400, 'message' => '缺少二维码路径'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $filenameSeed = preg_replace('/[^A-Za-z0-9]/', '', $uuid);
+        if ($filenameSeed === '') {
+            $filenameSeed = 'game';
+        }
+        $filename = "game_invite_{$filenameSeed}_{$gameId}.png";
+
+        $qrcodeUrl = generate_qrcode($path, $filename);
+        $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
+        $qrcodeBase64 = null;
+        if (is_file($qrcodePath)) {
+            $imageContent = file_get_contents($qrcodePath);
+            if ($imageContent !== false) {
+                $qrcodeBase64 = base64_encode($imageContent);
+            }
+        }
+
+        $response = [
+            'code' => 200,
+            'message' => '二维码生成成功',
+            'qrcode_url' => $qrcodeUrl,
+            'data' => [
+                'qrcode_url' => $qrcodeUrl,
+                'qrcode_base64' => $qrcodeBase64,
+                'share_path' => $path,
+                'uuid' => $uuid,
+                'gameid' => $gameId
+            ]
+        ];
+
+        if ($qrcodeBase64) {
+            $response['qrcode_base64'] = $qrcodeBase64;
+        }
+
+        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    }
+
     public function gameDetail() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = $json_paras['gameid'];
@@ -299,5 +390,27 @@ class Game extends MY_Controller {
         $gameid = $json_paras['gameid'];
         $this->MGame->finishGame($gameid, null);
         echo json_encode(['code' => 200, 'message' => '结束比赛成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+    private function buildGameInvitePath($uuid, $gameId, $gameName = '') {
+        if ($uuid === '') {
+            return '';
+        }
+
+        $query = ["uuid={$uuid}"];
+        if ($gameId > 0) {
+            $query[] = 'gameid=' . $gameId;
+        }
+
+        if ($gameName !== '') {
+            if (function_exists('mb_substr')) {
+                $safeTitle = mb_substr($gameName, 0, 50);
+            } else {
+                $safeTitle = substr($gameName, 0, 50);
+            }
+            $query[] = 'title=' . rawurlencode($safeTitle);
+        }
+
+        return '/pages/player-select/wxshare/wxshare?' . implode('&', $query);
     }
 }

@@ -7,6 +7,9 @@ if (!defined('BASEPATH')) {
 
 
 class Weixin extends CI_Controller {
+    private $appid;
+    private $secret;
+
     public function __construct() {
         parent::__construct();
         header('Access-Control-Allow-Origin: * ');
@@ -15,6 +18,8 @@ class Weixin extends CI_Controller {
         if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
             exit();
         }
+        $this->appid = config_item('appid');
+        $this->secret = config_item('secret');
     }
 
     /**
@@ -29,54 +34,27 @@ class Weixin extends CI_Controller {
         logtext('<div><span class =functionname>' . date('Y-m-d H:i:s') . '  Weixin/wxlogin</span></div>');
         logtext(" 参数:" . json_encode(file_get_contents('php://input'), JSON_UNESCAPED_UNICODE));
 
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $code = $json_paras['code'];
+        $json_paras = $this->readRequestBody();
+        $code = isset($json_paras['code']) ? $json_paras['code'] : '';
 
         try {
-
             if (empty($code)) {
                 throw new \InvalidArgumentException('缺少微信登录凭证/code');
             }
 
-            // 微信配置参数 - 需要替换为实际的appid和secret
-            $appid = config_item('appid');
-            $secret = config_item('secret');
-            $grant_type = 'authorization_code';
-
-            // 构建请求URL
-            $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appid}&secret={$secret}&js_code={$code}&grant_type={$grant_type}";
-
-            // 调用微信API
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            $response = curl_exec($ch);
-            curl_close($ch);
-
-            // 解析响应
-            $result = json_decode($response, true);
-            logtext("  微信返回->" . json_encode($result));
-
-            if (isset($result['errcode'])) {
-                throw new \RuntimeException("微信登录失败: {$result['errmsg']}");
-            }
-
-            // 获取openid和session_key
-            $openid = $result['openid'] ?? '';
-            $session_key = $result['session_key'] ?? '';
-
-            if (empty($openid)) {
-                throw new \RuntimeException('获取openid失败');
-            }
+            $session = $this->requestSessionByCode($code);
+            $openid = $session['openid'];
+            $session_key = $session['session_key'];
 
             if ($this->MUser->openidExists($openid)) {
                 $user = $this->MUser->getUserbyOpenid($openid);
                 $mobile = $user['mobile'];
                 $user_id = $user['id'];
+                $profile = $this->MUser->getUserbyId($user_id);
             } else {
                 $user_id = $this->MUser->addWeixinUser($openid);
                 $mobile = null;
+                $profile = $this->MUser->getUserbyId($user_id);
             }
 
             $payload = [
@@ -87,10 +65,15 @@ class Weixin extends CI_Controller {
 
 
             $token = $this->MJwtUtil->generateToken($payload, 864000); // 10 天
+            $profileStatus = $this->buildProfileStatus($profile);
+
             echo json_encode([
                 'code' => 200,
                 'success' => true,
                 'token' => $token,
+                'user' => $profile,
+                'profile_status' => $profileStatus,
+                'need_bind_phone' => !$profileStatus['has_mobile'],
                 'openid' => $openid,
                 'session_key' => $session_key
             ], JSON_UNESCAPED_UNICODE);
@@ -109,18 +92,25 @@ class Weixin extends CI_Controller {
         logtext('<div><span class =functionname>' . date('Y-m-d H:i:s') . '  Weixin/getUserInfo</span></div>');
         logtext(" 参数:" . json_encode(file_get_contents('php://input'), JSON_UNESCAPED_UNICODE));
 
-        $headers = getallheaders();
-        $token = str_replace('Bearer ', '', $headers['Authorization'] ?? '');
-        $payload = $this->MJwtUtil->verifyToken($token);
-
-
-        $user_id = $payload['uid'];
-        $user = $this->MUser->getUserbyId($user_id);
-        echo json_encode([
-            'code' => 200,
-            'success' => true,
-            'user' => $user
-        ], JSON_UNESCAPED_UNICODE);
+        try {
+            $payload = $this->requireToken();
+            $user_id = $payload['uid'];
+            $user = $this->MUser->getUserbyId($user_id);
+            $profileStatus = $this->buildProfileStatus($user);
+            echo json_encode([
+                'code' => 200,
+                'success' => true,
+                'user' => $user,
+                'profile_status' => $profileStatus,
+                'need_bind_phone' => !$profileStatus['has_mobile']
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'success' => false,
+                'message' => $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
     }
 
 
@@ -129,7 +119,7 @@ class Weixin extends CI_Controller {
         logtext('<div><span class =functionname>' . date('Y-m-d H:i:s') . '  Weixin/bindPhoneNumber</span></div>');
         logtext(" 参数:" . json_encode(file_get_contents('php://input'), JSON_UNESCAPED_UNICODE));
 
-        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $json_paras = $this->readRequestBody();
         $code = $json_paras['code'] ?? '';
         $encryptedData = $json_paras['encryptedData'] ?? '';
         $iv = $json_paras['iv'] ?? '';
@@ -139,30 +129,8 @@ class Weixin extends CI_Controller {
                 throw new \InvalidArgumentException('缺少必要参数');
             }
 
-            // 获取session_key
-            $appid = config_item('appid');
-            $secret = config_item('secret');
-            $grant_type = 'authorization_code';
-
-            $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appid}&secret={$secret}&js_code={$code}&grant_type={$grant_type}";
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            $response = curl_exec($ch);
-            curl_close($ch);
-
-            $result = json_decode($response, true);
-
-            if (isset($result['errcode'])) {
-                throw new \RuntimeException("获取session_key失败: {$result['errmsg']}");
-            }
-
-            $session_key = $result['session_key'] ?? '';
-            if (empty($session_key)) {
-                throw new \RuntimeException('获取session_key失败');
-            }
+            $session = $this->requestSessionByCode($code);
+            $session_key = $session['session_key'];
 
             // 解密数据
             $decrypted = openssl_decrypt(
@@ -185,23 +153,22 @@ class Weixin extends CI_Controller {
             }
 
             // 获取用户信息
-            $headers = getallheaders();
-            $token = str_replace('Bearer ', '', $headers['Authorization'] ?? '');
-            $payload = $this->MJwtUtil->verifyToken($token);
-
-            if (!$payload) {
-                throw new \RuntimeException('无效的token');
-            }
-
+            $payload = $this->requireToken();
             $user_id = $payload['uid'];
 
             // 更新用户手机号
             $this->MUser->updateUserPhone($user_id, $phoneInfo['phoneNumber']);
 
+            $user = $this->MUser->getUserbyId($user_id);
+            $profileStatus = $this->buildProfileStatus($user);
+
             echo json_encode([
                 'code' => 200,
                 'success' => true,
-                'phoneNumber' => $phoneInfo['phoneNumber']
+                'phoneNumber' => $phoneInfo['phoneNumber'],
+                'user' => $user,
+                'profile_status' => $profileStatus,
+                'need_bind_phone' => !$profileStatus['has_mobile']
             ], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             echo json_encode([
@@ -210,5 +177,60 @@ class Weixin extends CI_Controller {
                 'message' => $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+
+    private function readRequestBody() {
+        $body = file_get_contents('php://input');
+        return $body ? json_decode($body, true) : array();
+    }
+
+    private function requestSessionByCode($code) {
+        $grant_type = 'authorization_code';
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$this->appid}&secret={$this->secret}&js_code={$code}&grant_type={$grant_type}";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $result = json_decode($response, true);
+        logtext("  微信返回->" . json_encode($result));
+
+        if (isset($result['errcode'])) {
+            throw new \RuntimeException("微信登录失败: {$result['errmsg']}");
+        }
+
+        if (empty($result['openid']) || empty($result['session_key'])) {
+            throw new \RuntimeException('获取openid或session_key失败');
+        }
+
+        return $result;
+    }
+
+    private function requireToken() {
+        $headers = getallheaders();
+        $token = str_replace('Bearer ', '', isset($headers['Authorization']) ? $headers['Authorization'] : '');
+        $payload = $this->MJwtUtil->verifyToken($token);
+        if (!$payload) {
+            throw new \RuntimeException('无效的token');
+        }
+        return $payload;
+    }
+
+    private function buildProfileStatus($profile) {
+        $nickname = isset($profile['wx_nickname']) ? $profile['wx_nickname'] : '';
+        $altNickname = isset($profile['nickname']) ? $profile['nickname'] : '';
+        $avatar = isset($profile['avatar']) ? $profile['avatar'] : '';
+        $hasNickname = !empty($nickname) || !empty($altNickname);
+        $hasAvatar = !empty($avatar) && strpos($avatar, 'user_default_avatar.png') === false;
+        $hasMobile = !empty($profile['mobile']);
+
+        return [
+            'has_nickname' => $hasNickname,
+            'has_avatar' => $hasAvatar,
+            'has_mobile' => $hasMobile
+        ];
     }
 }
