@@ -1,35 +1,24 @@
 .page-container {
 	min-height: 100vh;
-	background: linear-gradient(135deg, #51e95e 0%, #bde7af 100%);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 40rpx;
+	background-color: var(--common-bg);
+	padding: 32rpx 30rpx 48rpx;
 }
 
 .main-card {
 	width: 100%;
-	background: white;
-	border-radius: 32rpx;
+	background: #fff;
+	border-radius: 20rpx;
 	position: relative;
 	overflow: hidden;
-	box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.15);
+	box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.06);
 }
 
 .top-circle {
-	width: 120rpx;
-	height: 120rpx;
-	background: linear-gradient(135deg, #51e95e 0%, #bde7af 100%);
-	border-radius: 50%;
-	position: absolute;
-	top: -60rpx;
-	left: 50%;
-	transform: translateX(-50%);
-	z-index: 1;
+	display: none;
 }
 
 .card-content {
-	padding: 80rpx 40rpx 60rpx;
+	padding: 40rpx 32rpx 48rpx;
 	position: relative;
 	z-index: 2;
 }
@@ -301,8 +290,8 @@
 
 .add-group-btn {
 	height: 88rpx;
-	background: linear-gradient(135deg, #51e95e 0%, #bde7af 100%);
-	border-radius: 16rpx;
+	background: #1aad19;
+	border-radius: 12rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -412,17 +401,17 @@
 /* 创建按钮样式 */
 .create-btn {
 	width: 100%;
-	height: 88rpx;
-	border-radius: 44rpx;
+	height: 92rpx;
+	border-radius: 12rpx;
 	border: none;
-	background: linear-gradient(135deg, #51e95e 0%, #bde7af 100%);
+	background-color: var(--theme-color);
 	color: #fff;
 	font-size: 32rpx;
 	font-weight: 500;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	box-shadow: 0 8rpx 24rpx rgba(81, 233, 94, 0.3);
+	box-shadow: 0 10rpx 20rpx rgba(16, 157, 88, 0.18);
 	transition: all 0.3s ease;
 }
 
@@ -432,5 +421,57 @@
 
 .create-btn:active {
 	transform: translateY(2rpx);
-	box-shadow: 0 4rpx 12rpx rgba(81, 233, 94, 0.3);
+	box-shadow: 0 6rpx 12rpx rgba(16, 157, 88, 0.24);
+}
+
+.create-btn[disabled] {
+	opacity: 0.5;
+	box-shadow: none;
+}
+
+.action-footer {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+	margin-top: 32rpx;
+}
+
+.share-actions {
+	display: flex;
+	gap: 16rpx;
+}
+
+.share-btn {
+	width: 100%;
+	height: 92rpx;
+	border-radius: 12rpx;
+	border: 2rpx solid var(--theme-color);
+	background-color: #fff;
+	color: var(--theme-color);
+	font-size: 30rpx;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	transition: all 0.2s ease;
+}
+
+.share-btn:active {
+	background-color: rgba(16, 157, 88, 0.08);
+}
+
+.share-btn[disabled] {
+	border-color: #dcdcdc;
+	color: #aaaaaa;
+	background-color: #f5f5f5;
+}
+
+.share-btn.secondary {
+	border-color: #1aad19;
+	color: #1aad19;
+}
+
+.share-btn.secondary:active {
+	background-color: rgba(26, 173, 25, 0.08);
 }

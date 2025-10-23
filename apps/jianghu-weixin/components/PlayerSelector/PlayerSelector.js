@@ -103,11 +103,22 @@ Component({
 
             // 获取 UUID
             const uuid = commonCreatePage?.data?.uuid || '';
+            const gameid = commonCreatePage?.data?.gameid || '';
+            const gameName = commonCreatePage?.data?.formData?.gameName || '';
 
             // 跳转到玩家选择页面, 传递组索引、位置索引和 UUID
-            wx.navigateTo({
-                url: `/pages/player-select/player-select?groupIndex=${this.properties.groupIndex}&slotIndex=${slotIndex}&uuid=${uuid}`
-            });
+            let url = `/pages/player-select/player-select?groupIndex=${this.properties.groupIndex}&slotIndex=${slotIndex}`;
+            if (uuid) {
+                url += `&uuid=${uuid}`;
+            }
+            if (gameid) {
+                url += `&gameid=${gameid}`;
+            }
+            if (gameName) {
+                url += `&title=${encodeURIComponent(gameName)}`;
+            }
+
+            wx.navigateTo({ url });
         },
 
         /**

@@ -1,3 +1,5 @@
+const app = getApp()
+
 // createGame.js
 Page({
     data: {
@@ -6,16 +8,35 @@ Page({
             point1: null,
             point2: null,
             point3: null,
-        }
+        },
+        canCreate: true
     },
 
     onLoad: function () {
-        // 页面加载时自动显示菜单
-        this.toggleMenu();
+        this.profilePrompting = false
+        this.redirectingToProfile = false
+
+        this.ensureProfileCompleted({
+            onSuccess: () => {
+                if (!this.data.isMenuOpen) {
+                    this.toggleMenu()
+                }
+            }
+        })
+    },
+
+    onShow() {
+        this.redirectingToProfile = false
+        this.ensureProfileCompleted()
     },
 
     // 处理菜单项点击
     handleMenuClick(e) {
+        if (!this.data.canCreate) {
+            this.ensureProfileCompleted()
+            return
+        }
+
         const { type } = e.currentTarget.dataset;
         let url = '';
 
@@ -40,6 +61,11 @@ Page({
 
     // 切换菜单显示状态
     toggleMenu() {
+        if (!this.data.canCreate && !this.data.isMenuOpen) {
+            this.ensureProfileCompleted()
+            return
+        }
+
         const isOpen = !this.data.isMenuOpen;
 
         if (isOpen) {
@@ -76,6 +102,109 @@ Page({
         this.setData({
             isMenuOpen: isOpen
         });
+    },
+
+    ensureProfileCompleted({ onSuccess } = {}) {
+        const { profileStatus, userInfo } = this.getProfileSnapshot()
+        const hasNickname = this.resolveHasNickname(profileStatus, userInfo)
+        const hasAvatar = this.resolveHasAvatar(profileStatus, userInfo)
+        const canCreate = hasNickname && hasAvatar
+
+        if (canCreate) {
+            if (!this.data.canCreate) {
+                this.setData({ canCreate: true })
+            }
+            if (typeof onSuccess === 'function') {
+                onSuccess()
+            }
+            return true
+        }
+
+        if (this.data.canCreate) {
+            this.setData({ canCreate: false })
+        }
+
+        if (this.redirectingToProfile) {
+            return false
+        }
+
+        if (this.profilePrompting) {
+            return false
+        }
+
+        this.profilePrompting = true
+        wx.showModal({
+            title: '完善资料',
+            content: '创建比赛前请先设置昵称和头像，方便队友识别你。',
+            confirmText: '去完善',
+            cancelText: '稍后',
+            success: (res) => {
+                this.profilePrompting = false
+                if (res.confirm) {
+                    this.redirectingToProfile = true
+                    app.globalData.pendingMineEntrySource = 'create-game'
+                    wx.switchTab({
+                        url: '/pages/mine/mine',
+                        fail: () => {
+                            this.redirectingToProfile = false
+                            app.globalData.pendingMineEntrySource = null
+                            wx.showToast({
+                                title: '跳转失败，请稍后重试',
+                                icon: 'none'
+                            })
+                        }
+                    })
+                } else {
+                    wx.showToast({
+                        title: '已取消创建',
+                        icon: 'none'
+                    })
+                }
+            },
+            fail: () => {
+                this.profilePrompting = false
+            }
+        })
+
+        return false
+    },
+
+    getProfileSnapshot() {
+        const state = typeof app.getUserState === 'function' ? app.getUserState() : {}
+        const profileStatus = state.profileStatus
+            || (app.storage && typeof app.storage.getProfileStatus === 'function' ? app.storage.getProfileStatus() : null)
+            || {}
+        const userInfo = state.userInfo
+            || (app.storage && typeof app.storage.getUserInfo === 'function' ? app.storage.getUserInfo() : null)
+            || {}
+
+        return { profileStatus, userInfo }
+    },
+
+    resolveHasNickname(profileStatus, userInfo) {
+        if (profileStatus && typeof profileStatus.hasNickname === 'boolean') {
+            return profileStatus.hasNickname
+        }
+
+        return !!(userInfo
+            && (userInfo.nickName || userInfo.nickname || userInfo.wx_nickname))
+    },
+
+    resolveHasAvatar(profileStatus, userInfo) {
+        if (profileStatus && typeof profileStatus.hasAvatar === 'boolean') {
+            return profileStatus.hasAvatar
+        }
+
+        const avatarUrl = userInfo && (userInfo.avatarUrl || userInfo.avatar || '')
+        return !!(avatarUrl && !this.isDefaultAvatar(avatarUrl))
+    },
+
+    isDefaultAvatar(avatarUrl) {
+        if (!avatarUrl) {
+            return true
+        }
+
+        return avatarUrl.endsWith('/images/default-avatar.png') || avatarUrl === '/images/default-avatar.png'
     },
 
     handleBack() {

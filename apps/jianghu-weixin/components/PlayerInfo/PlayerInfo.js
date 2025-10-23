@@ -12,7 +12,7 @@ Component({
         },
         nickname: {
             type: String,
-            value: 'AAA'
+            value: null
         },
         // 球员T台颜色
         tee: {

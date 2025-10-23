@@ -64,6 +64,7 @@ Page({
         gameid: null, // 服务端返回的游戏ID
         groupid: null,
         gameCreated: false, // 标记游戏是否已创建
+        shareReady: false,  // 分享入口是否可用
         selectedCourse: null, // 选中的球场信息
         selectedCourt: null,   // 选中的半场信息
 
@@ -539,6 +540,61 @@ Page({
     },
 
     /**
+     * 构建分享路径
+     */
+    buildSharePath() {
+        const { uuid, gameid } = this.data;
+        if (!uuid) {
+            return '/pages/createGame/createGame';
+        }
+        const query = [`uuid=${uuid}`];
+        if (gameid) {
+            query.push(`gameid=${gameid}`);
+        }
+        const gameName = this.data.formData?.gameName;
+        if (gameName) {
+            query.push(`title=${encodeURIComponent(gameName)}`);
+        }
+        return `/pages/player-select/wxshare/wxshare?${query.join('&')}`;
+    },
+
+    /**
+     * 更新分享按钮可用态
+     */
+    updateShareState() {
+        const shareReady = Boolean(this.data.gameCreated && this.data.uuid && this.data.gameid);
+        if (shareReady !== this.data.shareReady) {
+            this.setData({ shareReady });
+        }
+    },
+
+    /**
+     * 打开二维码邀请页
+     */
+    onShowInviteQrcode() {
+        if (!this.data.shareReady) {
+            wx.showToast({
+                title: '比赛信息未就绪',
+                icon: 'none'
+            });
+            return;
+        }
+
+        const { uuid, gameid, formData } = this.data;
+        let url = `/pages/player-select/qrcode/qrcode?uuid=${uuid}`;
+        if (gameid) {
+            url += `&gameid=${gameid}`;
+        }
+        if (formData?.gameName) {
+            url += `&title=${encodeURIComponent(formData.gameName)}`;
+        }
+
+        wx.navigateTo({
+            url
+        });
+    },
+
+    /**
      * 点击“开始计分”按钮, 跳转到 gameDetail 记分界面
      */
     onStartScoring() {
@@ -552,6 +608,28 @@ Page({
     },
 
     /**
+     * 分享给好友
+     */
+    onShareAppMessage() {
+        if (!this.data.shareReady) {
+            return {
+                title: '高尔夫江湖 - 创建你的比赛',
+                path: '/pages/createGame/createGame'
+            };
+        }
+
+        const { formData } = this.data;
+        const title = formData.gameName
+            ? `${formData.gameName} 邀请你加入比赛`
+            : '高尔夫江湖邀请你加入比赛';
+
+        return {
+            title,
+            path: this.buildSharePath()
+        };
+    },
+
+    /**
      * 生命周期函数--监听页面加载
      */
     async onLoad(options) {
@@ -559,6 +637,16 @@ Page({
         this.setData({
             uuid: gameUuid
         });
+
+        try {
+            wx.showShareMenu({
+                withShareTicket: true,
+                menus: ['shareAppMessage']
+            });
+        } catch (error) {
+            // 静默处理, 某些基础库版本不支持 menus 参数
+            wx.showShareMenu();
+        }
 
         // 立即创建空白游戏
         try {
@@ -570,8 +658,10 @@ Page({
                 const gameid = result.gameid || null;
                 this.setData({
                     gameCreated: true,
-                    gameid
-                })
+                    gameid,
+                    shareReady: Boolean(gameid)
+                });
+                this.updateShareState();
             }
         } catch (error) {
             // 静默处理错误

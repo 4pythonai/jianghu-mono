@@ -33,7 +33,7 @@
         data-type="detail"
         data-index="{{index}}"
       >
-        <text class="title-text">赌博配置 {{item.gambleSysName}}/{{item.gambleUserName}}</text>
+        <text class="title-text">游戏配置 {{item.gambleSysName}}/{{item.gambleUserName}}</text>
       </view>
     </view>
 

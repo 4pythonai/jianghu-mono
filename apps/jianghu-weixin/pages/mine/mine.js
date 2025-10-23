@@ -1,71 +1,232 @@
-// mine.js
+import { config as apiConfig } from '../../api/config'
+
 const app = getApp()
+
+const DEFAULT_PROFILE_STATUS = {
+  hasNickname: false,
+  hasAvatar: false,
+  hasMobile: false
+}
+
+const ENTRY_SOURCES = {
+  SELF: 'self',
+  CREATE_GAME: 'create-game',
+  SIGN_UP: 'signup'
+}
 
 Page({
   data: {
     userInfo: null,
+    profileStatus: DEFAULT_PROFILE_STATUS,
     needBindPhone: false,
     showAuthButton: true,
-    tempNickname: '' // 临时存储用户输入的昵称
+    tempNickname: '',
+    entrySource: ENTRY_SOURCES.SELF
   },
 
-  onLoad() {
-    // 获取用户信息, 确保总是有一个默认对象
-    const initUserInfo = app.globalData.userInfo || {}
+  onLoad(options = {}) {
+    const entrySource = this.consumeEntrySource(options) || ENTRY_SOURCES.SELF
+    this.entrySource = entrySource
 
-    // 使用Storage层获取头像
-    let avatarUrl = initUserInfo.avatarUrl || '/images/default-avatar.png'
+    const state = app.getUserState()
+    this.syncFromAppState({
+      user: state.userInfo,
+      profileStatus: state.profileStatus,
+      needBindPhone: state.needBindPhone
+    })
+
+    this.setData({
+      entrySource
+    })
+
+    app.on('loginSuccess', this.handleLoginSuccess)
+    app.on('needBindPhone', this.handleNeedBindPhone)
+  },
+
+  onShow() {
+    const pendingSource = this.consumeEntrySource()
+    if (pendingSource && pendingSource !== this.entrySource) {
+      this.entrySource = pendingSource
+      this.setData({
+        entrySource: pendingSource
+      })
+    }
+  },
+
+  onUnload() {
+    app.off('loginSuccess', this.handleLoginSuccess)
+    app.off('needBindPhone', this.handleNeedBindPhone)
+  },
+
+  syncFromAppState(payload = {}) {
+    const user = payload.user || app.globalData.userInfo || {}
+    const normalizedUser = this.resolveAvatar(app.normalizeUserInfo ? app.normalizeUserInfo(user) : { ...user })
+    const status = this.normalizeProfileStatus(payload.profileStatus, normalizedUser)
+    const needBind = this.normalizeNeedBindFlag(
+      payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone,
+      status
+    )
+
+    this.setData({
+      userInfo: normalizedUser,
+      profileStatus: status,
+      needBindPhone: needBind,
+      showAuthButton: !(status.hasNickname && status.hasAvatar),
+      tempNickname: normalizedUser.nickName || ''
+    })
+  },
+
+  consumeEntrySource(options = {}) {
+    if (options && options.source !== undefined && options.source !== null) {
+      return this.normalizeEntrySource(options.source)
+    }
+
+    const pending = app.globalData.pendingMineEntrySource
+    if (pending !== undefined && pending !== null) {
+      app.globalData.pendingMineEntrySource = null
+      return this.normalizeEntrySource(pending)
+    }
+
+    return null
+  },
+
+  normalizeEntrySource(rawSource) {
+    const source = (rawSource || '').toString().toLowerCase()
+
+    if (source === ENTRY_SOURCES.CREATE_GAME || source === 'create_game' || source === 'creategame') {
+      return ENTRY_SOURCES.CREATE_GAME
+    }
+
+    if (source === ENTRY_SOURCES.SIGN_UP || source === 'sign_up' || source === 'signup' || source === 'join' || source === 'join-game') {
+      return ENTRY_SOURCES.SIGN_UP
+    }
+
+    return ENTRY_SOURCES.SELF
+  },
+
+  normalizeProfileStatus(rawStatus, user) {
+    if (app.auth && typeof app.auth.normalizeProfileStatus === 'function') {
+      return app.auth.normalizeProfileStatus(rawStatus, user)
+    }
+
+    const status = rawStatus || {}
+    const hasNickname = status.hasNickname ?? status.has_nickname ?? !!(user && (user.nickName || user.nickname || user.wx_nickname))
+    const hasAvatar = status.hasAvatar ?? status.has_avatar ?? !!(user && (user.avatarUrl || user.avatar))
+    const hasMobile = status.hasMobile ?? status.has_mobile ?? !!(user && user.mobile)
+
+    return {
+      hasNickname: !!hasNickname,
+      hasAvatar: !!hasAvatar,
+      hasMobile: !!hasMobile
+    }
+  },
+
+  normalizeNeedBindFlag(flag, profileStatus) {
+    if (typeof flag === 'boolean') {
+      return flag
+    }
+
+    if (app.auth && typeof app.auth.normalizeNeedBindFlag === 'function') {
+      return app.auth.normalizeNeedBindFlag(flag, profileStatus)
+    }
+
+    if (flag === 1 || flag === '1') {
+      return true
+    }
+    if (flag === 0 || flag === '0') {
+      return false
+    }
+    return profileStatus ? !profileStatus.hasMobile : false
+  },
+
+  resolveAvatar(user) {
+    const resolved = { ...user }
     const savedAvatarPath = app.storage.getUserAvatar()
 
     if (savedAvatarPath) {
-      // 检查文件是否存在
       const fs = wx.getFileSystemManager()
       try {
         fs.accessSync(savedAvatarPath)
-        avatarUrl = savedAvatarPath
-        console.log('📸 加载本地头像:', savedAvatarPath)
+        resolved.avatarUrl = savedAvatarPath
       } catch (error) {
-        console.log('🖼️ 本地头像文件不存在, 使用默认头像')
-        // 清除无效的存储
         app.storage.clearUserAvatar()
       }
     }
 
-    const safeUserInfo = {
-      nickName: '',
-      avatarUrl: avatarUrl,
-      ...initUserInfo
-    }
-
-    this.setData({
-      userInfo: safeUserInfo,
-      needBindPhone: app.globalData.needBindPhone,
-      showAuthButton: !safeUserInfo.nickName,
-      tempNickname: safeUserInfo.nickName || ''
-    })
-
-    // 监听登录成功事件
-    app.on('loginSuccess', this.handleLoginSuccess)
-
-    // 监听需要绑定手机号事件
-    app.on('needBindPhone', this.handleNeedBindPhone)
+    resolved.avatarUrl = resolved.avatarUrl || '/images/default-avatar.png'
+    return resolved
   },
 
-  // 选择头像(增强版)
+  applyUserProfileChange(userInfo, profileStatusUpdate = {}, options = {}) {
+    const baseStatus = options.replaceProfileStatus
+      ? {}
+      : (app.globalData.profileStatus || this.data.profileStatus || DEFAULT_PROFILE_STATUS)
+
+    const mergedStatus = {
+      ...DEFAULT_PROFILE_STATUS,
+      ...baseStatus,
+      ...profileStatusUpdate
+    }
+
+    const needBindFlag = options.needBindPhone !== undefined
+      ? this.normalizeNeedBindFlag(options.needBindPhone, mergedStatus)
+      : app.globalData.needBindPhone
+
+    app.setUserInfo(userInfo, mergedStatus, needBindFlag)
+
+    if (options.avatarIsLocal === true) {
+      app.storage.setUserAvatar(userInfo.avatarUrl)
+    } else if (options.avatarIsLocal === false) {
+      app.storage.clearUserAvatar()
+    }
+
+    const latestStatus = app.globalData.profileStatus || mergedStatus
+    const resolvedUser = this.resolveAvatar(app.globalData.userInfo)
+
+    this.setData({
+      userInfo: resolvedUser,
+      profileStatus: latestStatus,
+      needBindPhone: app.globalData.needBindPhone,
+      showAuthButton: !(latestStatus.hasNickname && latestStatus.hasAvatar),
+      tempNickname: resolvedUser.nickName || ''
+    })
+
+    const shouldEmit = options.emitLoginSuccess !== false
+    if (shouldEmit) {
+      app.emit('loginSuccess', {
+        user: app.globalData.userInfo,
+        profileStatus: latestStatus,
+        needBindPhone: app.globalData.needBindPhone
+      })
+    }
+  },
+
+  handleLoginSuccess(payload) {
+    this.syncFromAppState(payload)
+  },
+
+  handleNeedBindPhone() {
+    const status = {
+      ...(this.data.profileStatus || DEFAULT_PROFILE_STATUS),
+      hasMobile: false
+    }
+    this.setData({
+      profileStatus: status,
+      needBindPhone: true,
+      showAuthButton: !(status.hasNickname && status.hasAvatar)
+    })
+  },
+
   onChooseAvatar(e) {
     console.log('📸 选择头像:', e.detail)
 
-    // 检查是否有错误信息
     if (e.detail.errMsg && e.detail.errMsg !== 'chooseAvatar:ok') {
       console.error('❌ 选择头像失败:', e.detail.errMsg)
-
-      // 如果是开发工具的tmp目录问题, 尝试备用方案
       if (e.detail.errMsg.includes('ENOENT') || e.detail.errMsg.includes('tmp')) {
         console.log('🔧 检测到开发工具bug, 尝试备用方案')
         this.chooseAvatarFallback()
         return
       }
-
       wx.showToast({
         title: '头像选择失败, 请重试',
         icon: 'none'
@@ -74,8 +235,6 @@ Page({
     }
 
     const { avatarUrl } = e.detail
-
-    // 检查是否获取到头像地址
     if (!avatarUrl) {
       console.error('❌ 未获取到头像地址')
       wx.showToast({
@@ -85,11 +244,9 @@ Page({
       return
     }
 
-    // 上传头像到服务器
     this.uploadAvatarToServer(avatarUrl)
   },
 
-  // 备用头像选择方案
   chooseAvatarFallback() {
     wx.chooseMedia({
       count: 1,
@@ -113,18 +270,11 @@ Page({
     })
   },
 
-  // 上传头像到服务器(新版本)
   uploadAvatarToServer(tempFilePath) {
     console.log('🚀 开始上传头像到服务器:', tempFilePath)
 
-    // 移除手动loading, 使用HTTP客户端自动管理的loading
-    // wx.showLoading({
-    //   title: '上传头像中...'
-    // })
-
-    // 使用HTTP客户端的uploadFile方法, 自定义loading文案
     app.http.uploadFile('/User/uploadAvatar', tempFilePath, {
-      name: 'avatar', // 后台接收的字段名
+      name: 'avatar',
       formData: {
         platform: 'miniprogram',
         timestamp: Date.now()
@@ -132,34 +282,31 @@ Page({
       loadingTitle: '上传头像中...'
     }).then(response => {
       console.log('✅ 头像上传成功:', response)
+      const avatarUrl = response.data?.avatar_url || response.data?.avatarUrl || response.avatarUrl
+      const fallbackUrl = response.data?.avatar_path || response.data?.path
 
-      // 获取头像URL
-      const avatarUrl = response.data?.avatarUrl || response.avatarUrl
-
-      if (avatarUrl) {
-        // 更新用户头像
-        this.updateUserAvatar(avatarUrl, true) // true表示是服务器URL
-
-        // 移除手动hideLoading, HTTP客户端会自动处理
-        // wx.hideLoading()
-        wx.showToast({
-          title: '头像上传成功',
-          icon: 'success'
-        })
-      } else {
+      if (!avatarUrl && fallbackUrl) {
+        const baseURL = app?.http?.baseURL || apiConfig?.baseURL || ''
+        const normalizedBase = baseURL.replace(/\/index\.php$/, '')
+        const finalUrl = normalizedBase ? normalizedBase + fallbackUrl : fallbackUrl
+        this.updateUserAvatar(finalUrl, true)
+      } else if (!avatarUrl) {
         throw new Error('服务器返回的头像地址为空')
+      } else {
+        this.updateUserAvatar(avatarUrl, true)
       }
 
+      wx.showToast({
+        title: '头像上传成功',
+        icon: 'success'
+      })
     }).catch(error => {
       console.error('❌ 头像上传失败:', error)
-
-      // 降级处理:保存到本地
       console.log('🔄 上传失败, 降级到本地保存')
       this.saveAvatarLocally(tempFilePath)
     })
   },
 
-  // 降级方案:保存到本地(当服务器上传失败时)
   saveAvatarLocally(tempFilePath) {
     console.log('💾 降级到本地保存头像')
 
@@ -172,11 +319,7 @@ Page({
       filePath: avatarPath,
       success: (res) => {
         console.log('✅ 头像本地保存成功:', res.savedFilePath)
-
-        // 更新用户头像(本地路径)
-        this.updateUserAvatar(res.savedFilePath, false) // false表示是本地路径
-
-        wx.hideLoading()
+        this.updateUserAvatar(res.savedFilePath, false)
         wx.showToast({
           title: '头像已保存(本地)',
           icon: 'success'
@@ -184,11 +327,7 @@ Page({
       },
       fail: (err) => {
         console.error('❌ 本地保存也失败:', err)
-
-        // 最后的降级:直接使用临时路径
         this.updateUserAvatar(tempFilePath, false)
-
-        wx.hideLoading()
         wx.showToast({
           title: '头像设置成功',
           icon: 'success'
@@ -197,64 +336,37 @@ Page({
     })
   },
 
-  // 更新用户头像(增强版)
   updateUserAvatar(avatarUrl, isServerUrl = false) {
-    console.log('🖼️ 更新用户头像:', { avatarUrl, isServerUrl })
-
-    // 确保 userInfo 存在
-    const currentUserInfo = this.data.userInfo || {
-      nickName: '',
-      avatarUrl: '/images/default-avatar.png'
-    }
-
-    // 更新头像
+    const currentUserInfo = app.globalData.userInfo || {}
     const updatedUserInfo = {
       ...currentUserInfo,
-      avatarUrl: avatarUrl
+      avatarUrl,
+      avatar: avatarUrl
     }
 
-    // 更新页面数据
-    this.setData({
-      userInfo: updatedUserInfo
-    })
-
-    // 更新全局数据
-    app.globalData.userInfo = updatedUserInfo
-    app.storage.setUserInfo(updatedUserInfo)
-
-    // 如果是服务器URL, 清除本地头像缓存
-    if (isServerUrl) {
-      app.storage.clearUserAvatar()
-      console.log('🗑️ 清除本地头像缓存, 使用服务器头像')
-    } else {
-      // 如果是本地路径, 保存到Storage
-      app.storage.setUserAvatar(avatarUrl)
-      console.log('💾 保存本地头像路径')
-    }
+    this.applyUserProfileChange(
+      updatedUserInfo,
+      { hasAvatar: true },
+      {
+        avatarIsLocal: !isServerUrl
+      }
+    )
   },
 
-  // 昵称输入
   onNicknameInput(e) {
     this.setData({
       tempNickname: e.detail.value
     })
   },
 
-  // 昵称改变
   onNicknameChange(e) {
     this.setData({
       tempNickname: e.detail.value
     })
   },
 
-  // 确认用户信息(优化版)
   confirmUserInfo() {
     const { tempNickname } = this.data
-    // 安全获取当前用户信息, 提供默认值
-    const currentUserInfo = this.data.userInfo || {}
-    const { avatarUrl } = currentUserInfo
-
-    // 检查是否有昵称
     if (!tempNickname || tempNickname.trim() === '') {
       wx.showToast({
         title: '请输入昵称',
@@ -263,7 +375,6 @@ Page({
       return
     }
 
-    // 检查昵称长度
     const trimmedNickname = tempNickname.trim()
     if (trimmedNickname.length > 20) {
       wx.showToast({
@@ -273,63 +384,55 @@ Page({
       return
     }
 
-    // 调用API更新昵称, 使用自定义loading文案
+    const currentUser = app.globalData.userInfo || {}
+    const userId = currentUser.id
+
+    if (!userId) {
+      wx.showToast({
+        title: '用户信息缺失, 请重新登录',
+        icon: 'none'
+      })
+      return
+    }
+
     app.api.user.updateNickName({
-      nickName: trimmedNickname
+      user_id: userId,
+      nickname: trimmedNickname
     }, {
       loadingTitle: '保存中...'
-    }).then(response => {
-      console.log('✅ 昵称更新成功:', response)
-
-      // 更新用户信息
+    }).then(() => {
+      console.log('✅ 昵称更新成功')
       const updatedUserInfo = {
-        ...currentUserInfo,
+        ...currentUser,
         nickName: trimmedNickname,
-        avatarUrl: avatarUrl || '/images/default-avatar.png'
+        nickname: trimmedNickname,
+        wx_nickname: trimmedNickname
       }
 
-      // 保存到全局数据和Storage
-      app.globalData.userInfo = updatedUserInfo
-      app.storage.setUserInfo(updatedUserInfo)
-
-      // 更新页面数据
-      this.setData({
-        userInfo: updatedUserInfo,
-        showAuthButton: false
-      })
-
-      // 触发登录成功事件
-      app.emit('loginSuccess', updatedUserInfo)
+      this.applyUserProfileChange(
+        updatedUserInfo,
+        { hasNickname: true }
+      )
 
       wx.showToast({
         title: '信息保存成功',
         icon: 'success'
       })
-
     }).catch(error => {
       console.error('❌ 昵称更新失败:', error)
-
-      // 降级处理:只保存到本地
       console.log('🔄 API失败, 降级到本地保存')
 
       const updatedUserInfo = {
-        ...currentUserInfo,
+        ...currentUser,
         nickName: trimmedNickname,
-        avatarUrl: avatarUrl || '/images/default-avatar.png'
+        nickname: trimmedNickname,
+        wx_nickname: trimmedNickname
       }
 
-      // 保存到全局数据和Storage
-      app.globalData.userInfo = updatedUserInfo
-      app.storage.setUserInfo(updatedUserInfo)
-
-      // 更新页面数据
-      this.setData({
-        userInfo: updatedUserInfo,
-        showAuthButton: false
-      })
-
-      // 触发登录成功事件
-      app.emit('loginSuccess', updatedUserInfo)
+      this.applyUserProfileChange(
+        updatedUserInfo,
+        { hasNickname: true }
+      )
 
       wx.showToast({
         title: '信息已保存(本地)',
@@ -338,77 +441,54 @@ Page({
     })
   },
 
-  onUnload() {
-    // 取消事件监听
-    app.off('loginSuccess', this.handleLoginSuccess)
-    app.off('needBindPhone', this.handleNeedBindPhone)
-  },
-
-  // 处理登录成功事件
-  handleLoginSuccess(userInfo) {
-    // 确保传入的 userInfo 有默认值
-    const safeUserInfo = {
-      nickName: '',
-      avatarUrl: '/images/default-avatar.png',
-      ...(userInfo || {})
-    }
-
-    this.setData({
-      userInfo: safeUserInfo,
-      showAuthButton: !safeUserInfo.nickName,
-      tempNickname: safeUserInfo.nickName || ''
-    })
-  },
-
-  // 处理需要绑定手机号事件
-  handleNeedBindPhone() {
-    this.setData({
-      needBindPhone: true
-    })
-  },
-
-  // 获取手机号码
   getPhoneNumber(e) {
-    if (e.detail.errMsg === 'getPhoneNumber:ok') {
-      // 用户同意授权, 获取到加密数据
-      wx.login({
-        success: (res) => {
-          if (res.code) {
-            // 调用绑定手机号接口
-            app.api.user.bindPhoneNumber({
-              encryptedData: e.detail.encryptedData,
-              iv: e.detail.iv,
-              code: res.code
-            }).then(response => {
-              // 更新用户信息
-              app.globalData.userInfo = response.data
-              app.globalData.needBindPhone = false
-
-              this.setData({
-                userInfo: response.data,
-                needBindPhone: false
-              })
-
-              wx.showToast({
-                title: '手机号绑定成功',
-                icon: 'success'
-              })
-            }).catch(err => {
-              console.error('绑定手机号失败:', err)
-              wx.showToast({
-                title: '绑定失败, 请重试',
-                icon: 'none'
-              })
-            })
-          }
-        }
-      })
-    } else {
-      // 用户拒绝授权
+    if (e.detail.errMsg !== 'getPhoneNumber:ok') {
       wx.showToast({
         title: '需要授权才能继续使用',
         icon: 'none'
       })
+      return
     }
+
+    wx.login({
+      success: (res) => {
+        if (!res.code) {
+          wx.showToast({
+            title: '获取code失败, 请重试',
+            icon: 'none'
+          })
+          return
+        }
+
+        app.api.user.bindPhoneNumber({
+          encryptedData: e.detail.encryptedData,
+          iv: e.detail.iv,
+          code: res.code
+        }).then(response => {
+          const normalizedStatus = this.normalizeProfileStatus(response.profile_status, response.user)
+          const needBind = this.normalizeNeedBindFlag(response.need_bind_phone, normalizedStatus)
+
+          this.applyUserProfileChange(
+            response.user,
+            normalizedStatus,
+            {
+              replaceProfileStatus: true,
+              needBindPhone: needBind
+            }
+          )
+
+          wx.showToast({
+            title: '手机号绑定成功',
+            icon: 'success'
+          })
+        }).catch(err => {
+          console.error('绑定手机号失败:', err)
+          wx.showToast({
+            title: '绑定失败, 请重试',
+            icon: 'none'
+          })
+        })
+      }
+    })
   }
 })

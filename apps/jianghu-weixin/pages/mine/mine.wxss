@@ -36,10 +36,15 @@
 	display: block;
 }
 
-.phone {
+.profile-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+}
+
+.meta-item {
 	font-size: 28rpx;
 	color: #666;
-	display: block;
 }
 
 /* 新的认证区域样式 */
@@ -137,7 +142,7 @@
 	background-color: #07c160;
 	color: #fff;
 	font-size: 32rpx;
-	border-radius: 40rpx;
+	border-radius: 16rpx;
 }
 
 .confirm-btn::after {
@@ -154,7 +159,7 @@
 	background-color: #07c160;
 	color: #fff;
 	font-size: 32rpx;
-	border-radius: 40rpx;
+	border-radius: 16rpx;
 	margin: 30rpx auto;
 }
 
@@ -168,7 +173,7 @@
 	background-color: #07c160;
 	color: #fff;
 	font-size: 32rpx;
-	border-radius: 40rpx;
+	border-radius: 16rpx;
 	margin: 30rpx auto;
 }
 
@@ -207,6 +212,6 @@
 	background-color: #07c160;
 	color: #fff;
 	font-size: 32rpx;
-	border-radius: 40rpx;
+	border-radius: 16rpx;
 	margin: 30rpx auto;
 }

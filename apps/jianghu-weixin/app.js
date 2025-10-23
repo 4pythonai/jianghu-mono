@@ -12,7 +12,7 @@ const originalPage = Page
 Page = (options) => {
     // 如果页面没有定义 onShareAppMessage，则添加默认的分享配置
     if (!options.onShareAppMessage) {
-        options.onShareAppMessage = function() {
+        options.onShareAppMessage = function () {
             const pages = getCurrentPages()
             const currentPage = pages[pages.length - 1]
             const route = currentPage.route
@@ -25,7 +25,7 @@ Page = (options) => {
             const path = params ? `/${route}?${params}` : `/${route}`
 
             return {
-                title: '来Golfmimi一起打球！⛳',
+                title: '高尔夫江湖小程序',
                 path: path,
                 imageUrl: '' // 使用默认截图
             }
@@ -41,11 +41,13 @@ App({
     storage: storage,  // 暴露存储管理器
     globalData: {
         userInfo: null,
+        profileStatus: null,
         needBindPhone: false,
         systemInfo: null,
         isLoggedIn: false,    // 登录状态
         isInitialized: false, // 初始化状态
-        _events: {}           // 事件系统存储
+        _events: {},          // 事件系统存储
+        pendingMineEntrySource: null
     },
 
     /**
@@ -168,35 +170,59 @@ App({
     /**
      * 设置认证状态
      */
-    setAuthState(isLoggedIn, userInfo = null) {
+    setAuthState(isLoggedIn, userInfo = null, options = {}) {
         this.globalData.isLoggedIn = isLoggedIn
         this.globalData.isInitialized = true
 
+        const profileStatus = options.profileStatus || this.globalData.profileStatus || this.storage.getProfileStatus()
+        const needBindPhone = options.needBindPhone
+
         if (isLoggedIn && userInfo) {
-            this.setUserInfo(userInfo)
+            this.setUserInfo(userInfo, profileStatus, needBindPhone)
         } else if (!isLoggedIn) {
             this.clearUserInfo()
+            this.globalData.profileStatus = null
+            this.globalData.needBindPhone = false
+            this.storage.clearProfileStatus()
+            this.storage.clearNeedBindPhone()
         }
 
         // 发出状态变化事件
         this.emit('authStateChanged', {
             isLoggedIn,
-            userInfo: this.globalData.userInfo
+            userInfo: this.globalData.userInfo,
+            profileStatus: this.globalData.profileStatus,
+            needBindPhone: this.globalData.needBindPhone
         })
 
         console.log('🔄 认证状态更新:', {
             isLoggedIn,
-            hasUserInfo: !!userInfo
+            hasUserInfo: !!this.globalData.userInfo
         })
     },
 
     /**
      * 设置用户信息
      */
-    setUserInfo(userInfo) {
-        this.globalData.userInfo = userInfo
-        this.checkPhoneBinding(userInfo)
-        this.emit('userInfoChanged', userInfo)
+    setUserInfo(userInfo, profileStatus = null, needBindPhone = undefined) {
+        const normalized = this.normalizeUserInfo(userInfo)
+        this.globalData.userInfo = normalized
+
+        if (profileStatus) {
+            this.globalData.profileStatus = profileStatus
+            this.storage.setProfileStatus(profileStatus)
+        } else if (!this.globalData.profileStatus) {
+            this.globalData.profileStatus = this.storage.getProfileStatus()
+        }
+
+        this.storage.setUserInfo(normalized)
+
+        this.updatePhoneBinding(this.globalData.profileStatus, normalized, needBindPhone)
+        this.emit('userInfoChanged', {
+            user: normalized,
+            profileStatus: this.globalData.profileStatus,
+            needBindPhone: this.globalData.needBindPhone
+        })
     },
 
     /**
@@ -205,19 +231,35 @@ App({
     clearUserInfo() {
         this.globalData.userInfo = null
         this.globalData.needBindPhone = false
+        this.globalData.profileStatus = null
         this.emit('userInfoCleared')
     },
 
     /**
      * 检查手机号绑定状态
      */
-    checkPhoneBinding(userInfo) {
-        if (!userInfo?.mobile) {
-            this.globalData.needBindPhone = true
-            this.emit('needBindPhone')
+    updatePhoneBinding(profileStatus, userInfo, explicitFlag) {
+        const previous = this.globalData.needBindPhone
+        let needBind = typeof explicitFlag === 'boolean' ? explicitFlag : null
+
+        if (needBind === null) {
+            if (profileStatus) {
+                needBind = !profileStatus.hasMobile
+            } else {
+                needBind = !userInfo?.mobile
+            }
+        }
+
+        this.globalData.needBindPhone = !!needBind
+
+        if (this.globalData.needBindPhone) {
+            this.storage.setNeedBindPhone(true)
+            if (!previous) {
+                this.emit('needBindPhone')
+            }
             console.log('📱 需要绑定手机号')
         } else {
-            this.globalData.needBindPhone = false
+            this.storage.setNeedBindPhone(false)
             console.log('✅ 手机号已绑定')
         }
     },
@@ -226,10 +268,15 @@ App({
      * 处理登录成功
      * 由Auth层调用
      */
-    handleLoginSuccess(userInfo) {
-        console.log('✅ 登录成功处理:', userInfo)
-        this.setAuthState(true, userInfo)
-        this.emit('loginSuccess', userInfo)
+    handleLoginSuccess(payload) {
+        const { user, profileStatus, needBindPhone } = this.resolveAuthPayload(payload)
+        console.log('✅ 登录成功处理:', user)
+        this.setAuthState(true, user, { profileStatus, needBindPhone })
+        this.emit('loginSuccess', {
+            user: this.globalData.userInfo,
+            profileStatus: this.globalData.profileStatus,
+            needBindPhone: this.globalData.needBindPhone
+        })
     },
 
     /**
@@ -259,8 +306,53 @@ App({
             isLoggedIn: this.globalData.isLoggedIn,
             isInitialized: this.globalData.isInitialized,
             userInfo: this.globalData.userInfo,
+            profileStatus: this.globalData.profileStatus,
             needBindPhone: this.globalData.needBindPhone
         }
+    },
+
+    resolveAuthPayload(payload) {
+        if (!payload || typeof payload !== 'object') {
+            return {
+                user: payload || {},
+                profileStatus: null,
+                needBindPhone: undefined
+            }
+        }
+
+        const user = payload.user || payload || {}
+        const profileStatus = payload.profileStatus || payload.profile_status || null
+        const needBindPhone = payload.needBindPhone !== undefined
+            ? payload.needBindPhone
+            : payload.need_bind_phone
+
+        return {
+            user,
+            profileStatus,
+            needBindPhone
+        }
+    },
+
+    normalizeUserInfo(userInfo) {
+        const user = userInfo ? { ...userInfo } : {}
+        const displayName = user.nickName || user.nickname || user.wx_nickname || ''
+
+        if (!user.nickName && displayName) {
+            user.nickName = displayName
+        }
+
+        if (!user.wx_nickname && displayName) {
+            user.wx_nickname = displayName
+        }
+
+        const avatarUrl = user.avatarUrl || user.avatar || ''
+        user.avatarUrl = avatarUrl || '/images/default-avatar.png'
+
+        if (!user.avatar && avatarUrl) {
+            user.avatar = avatarUrl
+        }
+
+        return user
     },
 
     /**

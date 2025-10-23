@@ -185,7 +185,31 @@
           </view>
         </view>
       </view>
-      <button class="create-btn" bindtap="onStartScoring">开始计分</button>
+      <view class="action-footer">
+        <view class="share-actions">
+          <button
+            class="share-btn"
+            open-type="share"
+            disabled="{{!shareReady}}"
+          >
+            微信分享邀请
+          </button>
+          <button
+            class="share-btn secondary"
+            bindtap="onShowInviteQrcode"
+            disabled="{{!shareReady}}"
+          >
+            生成二维码
+          </button>
+        </view>
+        <button
+          class="create-btn"
+          bindtap="onStartScoring"
+          disabled="{{!gameid}}"
+        >
+          开始计分
+        </button>
+      </view>
     </view>
   </view>
 </view>

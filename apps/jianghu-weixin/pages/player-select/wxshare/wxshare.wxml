@@ -1,9 +1,61 @@
 <view class="container">
-	<view class="uuid-container">
-		<text class="uuid-label">您的邀请码:</text>
-		<text class="uuid-value">{{uuid}}</text>
-	</view>
-	<view class="share-tip">
-		<text>点击右上角转发按钮邀请好友加入游戏</text>
-	</view>
+  <view class="invite-card">
+    <view class="card-header">
+      <text class="card-title">邀请加入比赛</text>
+      <text class="card-subtitle">将邀请码分享给好友即可加入当前比赛</text>
+    </view>
+
+    <view class="code-section">
+      <view class="section-top">
+        <text class="section-label">[比赛邀请码]</text>
+        <button class="ghost-btn" bindtap="handleCopyInvite" wx:if="{{uuid}}">复制</button>
+      </view>
+      <text class="code-value">{{uuid || '暂未获取邀请码'}}</text>
+    </view>
+
+    <view class="meta-section" wx:if="{{hasGameId}}">
+      <text class="meta-label">比赛编号</text>
+      <text class="meta-value">{{gameid}}</text>
+    </view>
+
+    <view class="meta-section">
+      <text class="meta-label">分享页面</text>
+      <text class="meta-value">{{sharePath}}</text>
+    </view>
+
+    <button
+      class="primary-btn"
+      bindtap="handleJoin"
+      wx:if="{{uuid}}"
+      loading="{{joining}}"
+      disabled="{{joining || joinSuccess}}"
+    >
+      {{joinSuccess ? '已加入比赛' : '立即加入比赛'}}
+    </button>
+
+    <view class="result-section" wx:if="{{joinSuccess}}">
+      <text class="result-text">
+        已成功加入比赛{{joinedGroupIndex >= 0 ? ' · 第' + (joinedGroupIndex + 1) + '组' : ''}}
+      </text>
+    </view>
+
+    <view class="error-section" wx:if="{{joinError}}">
+      <text class="error-text">{{joinError}}</text>
+    </view>
+
+    <button class="secondary-btn" bindtap="handleOpenDetail" wx:if="{{hasGameId}}">查看比赛详情</button>
+  </view>
+
+  <view class="tips-card">
+    <text class="tips-title">使用说明</text>
+    <view class="tips-item">
+      <text>1. 点击右上角“...”可转发到好友或群聊。</text>
+    </view>
+    <view class="tips-item">
+      <text>2. 好友进入后可直接加入比赛或复制邀请码给组织者安排分组。</text>
+    </view>
+    <view class="tips-item">
+      <text>3. 若无法打开小程序，可保存二维码或复制邀请码稍后再次加入。</text>
+    </view>
+  </view>
 </view>

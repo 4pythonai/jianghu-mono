@@ -11,7 +11,10 @@ class StorageManager {
             USER_INFO: 'userInfo',
             USER_AVATAR: 'userAvatarPath',
             APP_CONFIG: 'appConfig',
-            LAST_LOGIN_TIME: 'lastLoginTime'
+            LAST_LOGIN_TIME: 'lastLoginTime',
+            WEIXIN_SESSION: 'weixinSession',
+            PROFILE_STATUS: 'profileStatus',
+            NEED_BIND_PHONE: 'needBindPhone'
         }
     }
 
@@ -232,6 +235,73 @@ class StorageManager {
         return this.remove(this.KEYS.USER_AVATAR)
     }
 
+    /**
+     * 存储微信会话信息
+     */
+    setWeixinSession(session) {
+        return this.set(this.KEYS.WEIXIN_SESSION, session)
+    }
+
+    /**
+     * 获取微信会话信息
+     */
+    getWeixinSession() {
+        return this.get(this.KEYS.WEIXIN_SESSION, {})
+    }
+
+    /**
+     * 清除微信会话信息
+     */
+    clearWeixinSession() {
+        return this.remove(this.KEYS.WEIXIN_SESSION)
+    }
+
+    /**
+     * 存储资料完整度状态
+     */
+    setProfileStatus(status) {
+        return this.set(this.KEYS.PROFILE_STATUS, status || {})
+    }
+
+    /**
+     * 获取资料完整度状态
+     */
+    getProfileStatus() {
+        return this.get(this.KEYS.PROFILE_STATUS, {
+            hasNickname: false,
+            hasAvatar: false,
+            hasMobile: false
+        })
+    }
+
+    /**
+     * 清除资料完整度状态
+     */
+    clearProfileStatus() {
+        return this.remove(this.KEYS.PROFILE_STATUS)
+    }
+
+    /**
+     * 存储绑定手机号提示
+     */
+    setNeedBindPhone(flag) {
+        return this.set(this.KEYS.NEED_BIND_PHONE, !!flag)
+    }
+
+    /**
+     * 获取绑定手机号提示
+     */
+    getNeedBindPhone() {
+        return !!this.get(this.KEYS.NEED_BIND_PHONE, false)
+    }
+
+    /**
+     * 清除绑定手机号提示
+     */
+    clearNeedBindPhone() {
+        return this.remove(this.KEYS.NEED_BIND_PHONE)
+    }
+
     // ==================== 应用配置相关 ====================
 
     /**
@@ -259,7 +329,10 @@ class StorageManager {
         const results = [
             this.clearTokens(),
             this.clearUserInfo(),
-            this.clearUserAvatar()
+            this.clearUserAvatar(),
+            this.clearWeixinSession(),
+            this.clearProfileStatus(),
+            this.clearNeedBindPhone()
         ]
 
         const success = results.every(result => result === true)
@@ -343,7 +416,10 @@ class StorageManager {
                 hasToken: this.hasToken(),
                 tokenLength: this.getToken()?.length || 0
             },
-            userInfo: !!this.getUserInfo()?.nickName
+            userInfo: !!this.getUserInfo()?.nickName,
+            session: this.getWeixinSession(),
+            profileStatus: this.getProfileStatus(),
+            needBindPhone: this.getNeedBindPhone()
         })
     }
 }

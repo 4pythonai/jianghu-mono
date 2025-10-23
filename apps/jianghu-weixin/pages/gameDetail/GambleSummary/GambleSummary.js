@@ -93,7 +93,7 @@ Component({
 
         async handleAddGame() {
             // 引入导航助手
-            const navigationHelper = require('s@/utils/navigationHelper.js');
+            const navigationHelper = require('@/utils/navigationHelper.js');
 
             try {
                 // 跳转到游戏规则页面

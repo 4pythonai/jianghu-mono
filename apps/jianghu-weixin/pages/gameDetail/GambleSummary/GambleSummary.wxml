@@ -36,7 +36,7 @@
             <!-- 赌博结果表格 -->
             <view
               class="gamble-result-title"
-            >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
+            >游戏配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
             <GambleResultTable
               groupInfo="{{gambleResult.group_info}}"
               usefulHoles="{{gambleResult.useful_holes}}"
@@ -77,7 +77,7 @@
             <view
               class="gamble-result-title"
               wx:if="{{gambleResults.length > 1}}"
-            >赌博配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
+            >游戏配置 {{gambleResult.gambleSysName}}/{{gambleResult.gambleUserName}}</view>
 
             <!-- 赌博结果表格 -->
             <GambleResultTable
@@ -102,7 +102,7 @@
       wx:elif="{{!loading && (!gambleResults || gambleResults.length === 0)}}"
     >
       <view class="no-gamble-container">
-        <view class="summary-title">汇总待开发[gameID:{{gameid}}][groupID:{{groupid}}]</view>
+        <!-- <view class="summary-title">汇总待开发[gameID:{{gameid}}][groupID:{{groupid}}]</view> -->
         <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
         <text class="empty-hint">暂无</text>
         <!-- 按钮区域 -->

@@ -1,44 +1,185 @@
 @import "../common.wxss";
 
-/* 页面特有样式可以在这里添加 */
+page {
+	background-color: var(--common-bg);
+	min-height: 100%;
+}
 
 .container {
-    height: ~"calc(100vh - 80rpx)";
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 40rpx;
-    background-color: #f8f8f8;
+	padding: 40rpx 30rpx 60rpx;
 }
 
-.uuid-container {
-    background-color: #ffffff;
-    padding: 40rpx;
-    border-radius: 16rpx;
-    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
-    margin-bottom: 60rpx;
-    text-align: center;
+.invite-card,
+.tips-card {
+	background-color: #ffffff;
+	border-radius: 20rpx;
+	padding: 36rpx 32rpx;
+	box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.06);
 }
 
-.uuid-label {
-    font-size: 32rpx;
-    color: #666666;
-    margin-bottom: 20rpx;
-    display: block;
+.invite-card {
+	margin-bottom: 32rpx;
 }
 
-.uuid-value {
-    font-size: 40rpx;
-    color: #333333;
-    font-weight: bold;
-    display: block;
-    word-break: break-all;
+.card-header {
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
 }
 
-.share-tip {
-    font-size: 28rpx;
-    color: #999999;
-    text-align: center;
-    padding: 20rpx;
+.card-title {
+	font-size: 36rpx;
+	color: #333333;
+	font-weight: 600;
+}
+
+.card-subtitle {
+	font-size: 26rpx;
+	color: #666666;
+	line-height: 1.4;
+}
+
+.code-section {
+	margin-top: 32rpx;
+	background-color: #f4fbf6;
+	border-radius: 16rpx;
+	padding: 24rpx;
+}
+
+.section-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16rpx;
+}
+
+.section-label {
+	font-size: 28rpx;
+	color: #333333;
+	font-weight: 500;
+}
+
+.code-value {
+	font-size: 36rpx;
+	color: var(--theme-color);
+	font-weight: 600;
+	word-break: break-all;
+	line-height: 1.4;
+}
+
+.meta-section {
+	margin-top: 24rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+}
+
+.meta-label {
+	font-size: 24rpx;
+	color: #888888;
+	text-transform: uppercase;
+}
+
+.meta-value {
+	font-size: 28rpx;
+	color: #333333;
+	word-break: break-all;
+}
+
+.primary-btn,
+.secondary-btn {
+	width: 100%;
+	height: 92rpx;
+	border-radius: 12rpx;
+	font-size: 30rpx;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 32rpx;
+}
+
+.primary-btn {
+	background-color: var(--theme-color);
+	color: #ffffff;
+	border: none;
+	box-shadow: 0 10rpx 20rpx rgba(16, 157, 88, 0.18);
+}
+
+.primary-btn:active {
+	transform: translateY(2rpx);
+	box-shadow: 0 6rpx 12rpx rgba(16, 157, 88, 0.24);
+}
+
+.primary-btn[disabled] {
+	background-color: #b7d9c6;
+	color: #ffffff;
+	box-shadow: none;
+}
+
+.secondary-btn {
+	background-color: #ffffff;
+	color: var(--theme-color);
+	border: 2rpx solid var(--theme-color);
+}
+
+.secondary-btn:active {
+	background-color: rgba(16, 157, 88, 0.06);
+}
+
+.ghost-btn {
+	height: 48rpx;
+	padding: 0 16rpx;
+	background: none;
+	border: none;
+	color: var(--theme-color);
+	font-size: 26rpx;
+	line-height: 48rpx;
+}
+
+.ghost-btn::after {
+	border: none;
+}
+
+.tips-card {
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.tips-title {
+	font-size: 28rpx;
+	color: #333333;
+	font-weight: 600;
+}
+
+.tips-item {
+	font-size: 26rpx;
+	color: #666666;
+	line-height: 1.5;
+}
+
+.result-section {
+	margin-top: 24rpx;
+	padding: 20rpx;
+	border-radius: 12rpx;
+	background-color: #f1f9f4;
+}
+
+.result-text {
+	font-size: 28rpx;
+	color: #0f823f;
+	font-weight: 500;
+}
+
+.error-section {
+	margin-top: 24rpx;
+	padding: 20rpx;
+	border-radius: 12rpx;
+	background-color: #fff6f6;
+}
+
+.error-text {
+	font-size: 26rpx;
+	color: #d64545;
 }

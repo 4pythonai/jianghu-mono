@@ -1,3 +1,222 @@
 @import "../common.wxss";
 
-/* 页面特有样式可以在这里添加 */
+page {
+	background-color: var(--common-bg);
+	min-height: 100%;
+}
+
+.container {
+	padding: 40rpx 30rpx 60rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 32rpx;
+}
+
+.qrcode-card,
+.info-card,
+.tips-card {
+	background-color: #ffffff;
+	border-radius: 20rpx;
+	padding: 36rpx 32rpx;
+	box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.06);
+}
+
+.qrcode-card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24rpx;
+}
+
+.status {
+	width: 100%;
+	min-height: 220rpx;
+	border-radius: 16rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 24rpx;
+	box-sizing: border-box;
+}
+
+.status.loading {
+	background-color: #f4fbf6;
+	color: var(--theme-color);
+	font-size: 28rpx;
+}
+
+.status.error {
+	background-color: #fff5f5;
+	color: #c93d3d;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.status.placeholder {
+	background-color: #f6f7f8;
+	color: #999999;
+	font-size: 28rpx;
+}
+
+.error-text {
+	font-size: 28rpx;
+}
+
+.qrcode-wrapper {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+	align-items: center;
+}
+
+.qrcode-image {
+	width: 360rpx;
+	height: 360rpx;
+	border-radius: 16rpx;
+	background-color: #f6f7f8;
+}
+
+.hint {
+	font-size: 26rpx;
+	color: #666666;
+	text-align: center;
+}
+
+.action-row {
+	width: 100%;
+	display: flex;
+	gap: 16rpx;
+}
+
+.primary-btn,
+.secondary-btn {
+	flex: 1;
+	height: 88rpx;
+	border-radius: 12rpx;
+	font-size: 30rpx;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.primary-btn {
+	background-color: var(--theme-color);
+	color: #ffffff;
+	border: none;
+	box-shadow: 0 10rpx 20rpx rgba(16, 157, 88, 0.18);
+}
+
+.primary-btn:active {
+	transform: translateY(2rpx);
+	box-shadow: 0 6rpx 12rpx rgba(16, 157, 88, 0.24);
+}
+
+.secondary-btn {
+	background-color: #ffffff;
+	color: var(--theme-color);
+	border: 2rpx solid var(--theme-color);
+}
+
+.secondary-btn:active {
+	background-color: rgba(16, 157, 88, 0.08);
+}
+
+.outline-btn {
+	height: 64rpx;
+	padding: 0 24rpx;
+	border-radius: 12rpx;
+	border: 2rpx solid var(--theme-color);
+	background: none;
+	color: var(--theme-color);
+	font-size: 26rpx;
+	line-height: 60rpx;
+}
+
+.outline-btn::after {
+	border: none;
+}
+
+.info-card {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+}
+
+.info-item {
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
+}
+
+.info-label {
+	font-size: 26rpx;
+	color: #888888;
+}
+
+.info-value-row {
+	display: flex;
+	gap: 16rpx;
+	align-items: center;
+}
+
+.info-value {
+	font-size: 30rpx;
+	color: #333333;
+	word-break: break-all;
+}
+
+.share-path {
+	flex: 1;
+}
+
+.ghost-btn {
+	height: 48rpx;
+	padding: 0 16rpx;
+	background: none;
+	border: none;
+	color: var(--theme-color);
+	font-size: 26rpx;
+	line-height: 48rpx;
+}
+
+.ghost-btn::after {
+	border: none;
+}
+
+.test-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 76rpx;
+	padding: 0 24rpx;
+	border-radius: 12rpx;
+	border: 2rpx dashed var(--theme-color);
+	background: rgba(16, 157, 88, 0.06);
+	color: var(--theme-color);
+	font-size: 28rpx;
+}
+
+.test-btn::after {
+	border: none;
+}
+
+.tips-card {
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.tips-title {
+	font-size: 28rpx;
+	color: #333333;
+	font-weight: 600;
+}
+
+.tips-item {
+	font-size: 26rpx;
+	color: #666666;
+	line-height: 1.5;
+}

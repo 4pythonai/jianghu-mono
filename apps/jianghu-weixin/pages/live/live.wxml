@@ -1,7 +1,7 @@
 <view class="container">
   <!-- Banner区域 -->
   <view class="banner">
-    <image src="/images/ad-header.jpeg" mode="aspectFill" class="banner-image"></image>
+    <image src="/images/traning.png" mode="aspectFill" class="banner-image"></image>
   </view>
   <!-- Tab切换区域 -->
   <view class="tab-container">
@@ -39,9 +39,7 @@
       </view>
       <view class="tab-pane" hidden="{{currentTab !== 1}}">
         <!-- 广场内容 -->
-        icon-location
-        <view class="iconfont icon-location" />bbb
-        <view class="content-placeholder">广场内容区域</view>
+        您还没有参加任何比球队
       </view>
     </view>
   </view>

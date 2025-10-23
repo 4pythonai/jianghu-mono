@@ -3,6 +3,8 @@ Page({
         groupIndex: 0,  // 组索引
         slotIndex: 0,   // 位置索引
         uuid: '', // 游戏 UUID
+        gameid: '',
+        title: ''
 
     },
 
@@ -13,9 +15,15 @@ Page({
         const method = e.currentTarget.dataset.method;
         let url = `${method.url}?groupIndex=${this.data.groupIndex}&slotIndex=${this.data.slotIndex}`;
 
-        // 如果是微信分享页面, 添加 uuid 参数
-        if (method.id === 'wxshare' && this.data.uuid) {
+        // 如果需要传递比赛上下文, 附加 uuid / gameid / 标题
+        if ((method.id === 'wxshare' || method.id === 'qrcode') && this.data.uuid) {
             url += `&uuid=${this.data.uuid}`;
+            if (this.data.gameid) {
+                url += `&gameid=${this.data.gameid}`;
+            }
+            if (this.data.title) {
+                url += `&title=${encodeURIComponent(this.data.title)}`;
+            }
         }
 
         wx.navigateTo({
@@ -43,6 +51,18 @@ Page({
         if (options.uuid) {
             this.setData({
                 uuid: options.uuid
+            });
+        }
+
+        if (options.gameid) {
+            this.setData({
+                gameid: options.gameid
+            });
+        }
+
+        if (options.title) {
+            this.setData({
+                title: decodeURIComponent(options.title)
             });
         }
     },
