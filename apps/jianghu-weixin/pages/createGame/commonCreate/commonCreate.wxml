@@ -94,6 +94,9 @@
                 groupIndex="{{ index }}"
                 players="{{ item.players }}"
                 maxPlayers="4"
+                selectedCourse="{{ selectedCourse }}"
+                openTime="{{ formData.openTime }}"
+                requirePrerequisites="{{true}}"
                 bind:playersChange="onPlayersChange"
               />
               <!-- 删除组按钮(当组数大于1时显示) -->

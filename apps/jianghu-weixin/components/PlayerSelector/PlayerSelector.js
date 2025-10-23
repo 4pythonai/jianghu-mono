@@ -14,6 +14,21 @@ Component({
         maxPlayers: {
             type: Number,
             value: 4
+        },
+        // 选中的球场 - 用于前置校验
+        selectedCourse: {
+            type: Object,
+            value: null
+        },
+        // 已设置的开球时间展示文本 - 用于前置校验
+        openTime: {
+            type: String,
+            value: ''
+        },
+        // 是否在选择前执行球场与时间的校验
+        requirePrerequisites: {
+            type: Boolean,
+            value: false
         }
     },
 
@@ -88,6 +103,27 @@ Component({
          */
         onSelectPlayer(e) {
             const slotIndex = e.currentTarget.dataset.index;
+
+            if (this.properties.requirePrerequisites) {
+                const hasCourse = !!this.properties.selectedCourse;
+                const openTimeValue = this.properties.openTime;
+                const hasOpenTime = typeof openTimeValue === 'string'
+                    ? openTimeValue.trim().length > 0
+                    : !!openTimeValue;
+
+                if (!hasCourse || !hasOpenTime) {
+                    let message = '';
+                    if (!hasCourse && !hasOpenTime) {
+                        message = '请先选择球场并设置开球时间';
+                    } else if (!hasCourse) {
+                        message = '请先选择球场';
+                    } else {
+                        message = '请先设置开球时间';
+                    }
+                    wx.showToast({ title: message, icon: 'none' });
+                    return;
+                }
+            }
 
             // 获取当前页面栈
             const pages = getCurrentPages();
