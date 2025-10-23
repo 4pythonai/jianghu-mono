@@ -5,7 +5,7 @@
 echo "请关闭VPN"
 
 # 设置API路径变量
-api_path="/Users/alex/codebase/golf/golf-monorepo/new-golf-mini-api"
+api_path="/Users/alex/codebase/golf/jianghu-mono/apps/jianghu-api"
 
 rm -fr $api_path/v3/application/config/database.php
 rm -fr $api_path/v3/application/config/config.php
