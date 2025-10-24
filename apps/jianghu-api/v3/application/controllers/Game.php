@@ -194,93 +194,73 @@ class Game extends MY_Controller {
 
     public function getGameInviteQrcode() {
         $params = json_decode(file_get_contents('php://input'), true);
-        if (!is_array($params)) {
-            echo json_encode(['code' => 400, 'message' => '请求格式错误'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        $uuid = isset($params['uuid']) ? trim($params['uuid']) : '';
-        $path = isset($params['path']) ? trim($params['path']) : '';
-        $inputGameId = isset($params['gameid']) && $params['gameid'] !== '' ? (int) $params['gameid'] : null;
-
-        if ($uuid === '') {
-            echo json_encode(['code' => 400, 'message' => '缺少比赛标识'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        $query = ['uuid' => $uuid];
-        if ($inputGameId) {
-            $query['id'] = $inputGameId;
-        }
-
-        $game = $this->db->get_where('t_game', $query)->row_array();
-
-        if (!$game && !$inputGameId) {
-            $game = $this->db->get_where('t_game', ['uuid' => $uuid])->row_array();
-        }
-
-        if (!$game && $inputGameId) {
-            $game = $this->db->get_where('t_game', ['id' => $inputGameId])->row_array();
-            if ($game && $game['uuid'] !== $uuid) {
-                echo json_encode(['code' => 409, 'message' => '比赛信息不匹配'], JSON_UNESCAPED_UNICODE);
-                return;
-            }
-        }
-
-        if (!$game) {
-            echo json_encode(['code' => 404, 'message' => '比赛不存在'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        if (isset($game['status']) && $game['status'] === 'canceled') {
-            echo json_encode(['code' => 404, 'message' => '比赛不存在'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        $gameId = (int) $game['id'];
-        if ($path === '') {
-            $path = $this->buildGameInvitePath($uuid, $gameId, isset($game['name']) ? $game['name'] : '');
-        }
-
-        if ($path === '') {
-            echo json_encode(['code' => 400, 'message' => '缺少二维码路径'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
+        $uuid = $params['uuid'];
+        $path = $params['path'];
+        $gameid = (int) $params['gameid'];
 
         $filenameSeed = preg_replace('/[^A-Za-z0-9]/', '', $uuid);
-        if ($filenameSeed === '') {
-            $filenameSeed = 'game';
-        }
-        $filename = "game_invite_{$filenameSeed}_{$gameId}.png";
-
-        $qrcodeUrl = generate_qrcode($path, $filename);
+        $filename = "game_invite_{$filenameSeed}_{$gameid}.png";
         $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
-        $qrcodeBase64 = null;
-        if (is_file($qrcodePath)) {
-            $imageContent = file_get_contents($qrcodePath);
-            if ($imageContent !== false) {
-                $qrcodeBase64 = base64_encode($imageContent);
-            }
-        }
 
-        $response = [
+        // 生成微信小程序二维码
+        $access_token = $this->getWechatAccessToken();
+        $wechat_api_url = "https://api.weixin.qq.com/wxa/getwxacode?access_token={$access_token}";
+
+        $post_data = json_encode([
+            'path' => "pages/player-select/wxshare/wxshare?uuid={$uuid}&gameid={$gameid}",
+            'width' => 430
+        ]);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $wechat_api_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        // 保存二维码
+        $upload_path = FCPATH . '../upload/qrcodes/';
+        if (!is_dir($upload_path)) {
+            mkdir($upload_path, 0755, true);
+        }
+        file_put_contents($qrcodePath, $result);
+
+        $web_url = config_item('web_url');
+        $qrcodeUrl = $web_url . '/upload/qrcodes/' . $filename;
+        $qrcodeBase64 = base64_encode($result);
+
+        echo json_encode([
             'code' => 200,
             'message' => '二维码生成成功',
             'qrcode_url' => $qrcodeUrl,
+            'qrcode_base64' => $qrcodeBase64,
             'data' => [
                 'qrcode_url' => $qrcodeUrl,
                 'qrcode_base64' => $qrcodeBase64,
                 'share_path' => $path,
                 'uuid' => $uuid,
-                'gameid' => $gameId
+                'gameid' => $gameid
             ]
-        ];
+        ], JSON_UNESCAPED_UNICODE);
+    }
 
-        if ($qrcodeBase64) {
-            $response['qrcode_base64'] = $qrcodeBase64;
-        }
+    private function getWechatAccessToken() {
+        $appid = config_item('appid');
+        $secret = config_item('secret');
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
 
-        echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $result = json_decode($response, true);
+        return $result['access_token'];
     }
 
     public function gameDetail() {
