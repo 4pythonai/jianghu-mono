@@ -3,6 +3,6 @@
 	"navigationBarBackgroundColor": "#ffffff",
 	"navigationBarTextStyle": "black",
 	"usingComponents": {
-		"course-selector": "/components/CourseSelector/CourseSelector"
+		"CourseSelector": "/components/CourseSelector/CourseSelector"
 	}
 }

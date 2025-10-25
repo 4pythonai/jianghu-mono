@@ -149,6 +149,7 @@ class MDetailGame  extends CI_Model {
 
         $course_result = $this->db->query($course_query);
         $course = $course_result->row_array();
+        $course['avatar'] = config_item('web_url') . $course['avatar'];
         return $course;
     }
 

@@ -104,6 +104,9 @@ class Course extends MY_Controller {
     public function getFavorites() {
         $query = "SELECT * FROM t_course  limit 3";
         $courses = $this->db->query($query)->result_array();
+        foreach ($courses as &$course) {
+            $course['avatar'] = config_item('web_url') . $course['avatar'];
+        }
         echo json_encode(['code' => 200, 'courses' => $courses], JSON_UNESCAPED_UNICODE);
     }
 
