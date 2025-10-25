@@ -71,8 +71,6 @@ const mergeSourceParams = (target, source) => {
 
 Page({
     data: {
-        groupIndex: null,
-        slotIndex: null,
         uuid: '',
         gameid: '',
         sharePath: '',
@@ -82,16 +80,11 @@ Page({
         joining: false,
         joinSuccess: false,
         joinError: '',
-        joinedGroupIndex: -1,
-        joinedSlotIndex: -1
+        groups: []
     },
 
     onLoad(options) {
         const params = this.normalizeOptions(options);
-
-        this.hasGroupIndexParam = false;
-        this.hasSlotIndexParam = false;
-
         const dataUpdate = {};
 
         // 接收并显示 UUID
@@ -100,22 +93,6 @@ Page({
             dataUpdate.uuid = params.uuid;
         } else {
             console.warn('未接收到 UUID');
-        }
-
-        if (params.groupIndex !== undefined) {
-            const groupIndex = Number.parseInt(params.groupIndex, 10);
-            if (!Number.isNaN(groupIndex)) {
-                dataUpdate.groupIndex = groupIndex;
-                this.hasGroupIndexParam = true;
-            }
-        }
-
-        if (params.slotIndex !== undefined) {
-            const slotIndex = Number.parseInt(params.slotIndex, 10);
-            if (!Number.isNaN(slotIndex)) {
-                dataUpdate.slotIndex = slotIndex;
-                this.hasSlotIndexParam = true;
-            }
         }
 
         if (params.gameid) {
@@ -144,6 +121,11 @@ Page({
             wx.setNavigationBarTitle({
                 title: pageTitle
             });
+
+            // 如果有gameid，获取比赛详情
+            if (dataUpdate.gameid) {
+                this.fetchGameDetail();
+            }
         });
     },
 
@@ -153,22 +135,6 @@ Page({
 
     onShow() {
         console.log('页面显示, 当前 UUID:', this.data.uuid);
-    },
-
-    onHide() {
-
-    },
-
-    onUnload() {
-
-    },
-
-    onPullDownRefresh() {
-
-    },
-
-    onReachBottom() {
-
     },
 
     onShareAppMessage() {
@@ -217,19 +183,6 @@ Page({
         this.joinGame();
     },
 
-    handleOpenDetail() {
-        if (!this.data.gameid) {
-            wx.showToast({
-                title: '暂无比赛详情',
-                icon: 'none'
-            });
-            return;
-        }
-
-        wx.navigateTo({
-            url: `/pages/gameDetail/gameDetail?gameid=${this.data.gameid}`
-        });
-    },
 
     normalizeOptions(options = {}) {
         const params = { ...options };
@@ -251,6 +204,26 @@ Page({
         }
 
         return params;
+    },
+
+    async fetchGameDetail() {
+        if (!this.data.gameid) {
+            return;
+        }
+
+        try {
+            const result = await app.api.game.getGameDetail({
+                gameid: this.data.gameid
+            });
+
+            if (result?.code === 200 && result?.game_detail?.groups) {
+                this.setData({
+                    groups: result.game_detail.groups
+                });
+            }
+        } catch (error) {
+            console.error('[WXShare] fetchGameDetail failed', error);
+        }
     },
 
     async ensureAuth() {
@@ -344,14 +317,6 @@ Page({
                 payload.gameid = this.data.gameid;
             }
 
-            if (this.hasGroupIndexParam && Number.isInteger(this.data.groupIndex)) {
-                payload.groupIndex = this.data.groupIndex;
-            }
-
-            if (this.hasSlotIndexParam && Number.isInteger(this.data.slotIndex)) {
-                payload.slotIndex = this.data.slotIndex;
-            }
-
             const result = await app.api.game.joinGame(payload, {
                 loadingTitle: '加入中...'
             });
@@ -360,33 +325,9 @@ Page({
                 throw new Error(result?.message || '加入失败');
             }
 
-            const joinedGroupIndex = result?.groupIndex
-                ?? result?.data?.groupIndex
-                ?? this.data.groupIndex;
-            const joinedSlotIndex = result?.slotIndex
-                ?? result?.data?.slotIndex
-                ?? this.data.slotIndex;
-
-            const hasJoinedGroupIndex = typeof joinedGroupIndex === 'number' && !Number.isNaN(joinedGroupIndex);
-            const hasJoinedSlotIndex = typeof joinedSlotIndex === 'number' && !Number.isNaN(joinedSlotIndex);
-
-            const successUpdate = {
-                joinSuccess: true,
-                joinedGroupIndex: hasJoinedGroupIndex ? joinedGroupIndex : -1,
-                joinedSlotIndex: hasJoinedSlotIndex ? joinedSlotIndex : -1
-            };
-
-            if (hasJoinedGroupIndex) {
-                this.hasGroupIndexParam = true;
-                successUpdate.groupIndex = joinedGroupIndex;
-            }
-
-            if (hasJoinedSlotIndex) {
-                this.hasSlotIndexParam = true;
-                successUpdate.slotIndex = joinedSlotIndex;
-            }
-
-            this.setData(successUpdate);
+            this.setData({
+                joinSuccess: true
+            });
 
             wx.showToast({
                 title: '加入成功',

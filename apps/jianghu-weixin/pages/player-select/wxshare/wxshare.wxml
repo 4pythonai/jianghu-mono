@@ -4,7 +4,6 @@
       <text class="card-title">邀请加入比赛</text>
       <text class="card-subtitle">将邀请码分享给好友即可加入当前比赛</text>
     </view>
-
     <view class="code-section">
       <view class="section-top">
         <text class="section-label">[比赛邀请码]</text>
@@ -12,40 +11,44 @@
       </view>
       <text class="code-value">{{uuid || '暂未获取邀请码'}}</text>
     </view>
-
     <view class="meta-section" wx:if="{{hasGameId}}">
       <text class="meta-label">比赛编号</text>
       <text class="meta-value">{{gameid}}</text>
     </view>
-
     <view class="meta-section">
       <text class="meta-label">分享页面</text>
       <text class="meta-value">{{sharePath}}</text>
     </view>
-
-    <button
-      class="primary-btn"
-      bindtap="handleJoin"
-      wx:if="{{uuid}}"
-      loading="{{joining}}"
-      disabled="{{joining || joinSuccess}}"
-    >
+    <button class="primary-btn" bindtap="handleJoin" wx:if="{{uuid}}" loading="{{joining}}" disabled="{{joining || joinSuccess}}">
       {{joinSuccess ? '已加入比赛' : '立即加入比赛'}}
     </button>
-
     <view class="result-section" wx:if="{{joinSuccess}}">
-      <text class="result-text">
-        已成功加入比赛{{joinedGroupIndex >= 0 ? ' · 第' + (joinedGroupIndex + 1) + '组' : ''}}
-      </text>
+      <text class="result-text">已成功加入比赛</text>
     </view>
-
     <view class="error-section" wx:if="{{joinError}}">
       <text class="error-text">{{joinError}}</text>
     </view>
-
-    <button class="secondary-btn" bindtap="handleOpenDetail" wx:if="{{hasGameId}}">查看比赛详情</button>
+    <!-- 已报名组信息 -->
+    <view class="groups-section" wx:if="{{groups && groups.length > 0}}">
+      <text class="groups-title">已报名组别</text>
+      <view class="group-list">
+        <view class="group-item" wx:for="{{groups}}" wx:key="groupid">
+          <view class="group-header">
+            <text class="group-name">{{item.group_name}}</text>
+            <text class="group-count">{{item.user_count}}人</text>
+          </view>
+          <view class="user-list">
+            <view class="user-item" wx:for="{{item.users}}" wx:key="userid" wx:for-item="user">
+              <image class="user-avatar" src="{{user.avatar}}" mode="aspectFill"></image>
+              <text class="user-name">{{user.nickname}}</text>
+              <text class="user-status" wx:if="{{user.confirmed === 1}}">已确认</text>
+              <text class="user-status pending" wx:else>待确认</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
   </view>
-
   <view class="tips-card">
     <text class="tips-title">使用说明</text>
     <view class="tips-item">

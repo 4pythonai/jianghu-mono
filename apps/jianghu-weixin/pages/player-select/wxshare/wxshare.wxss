@@ -183,3 +183,92 @@ page {
 	font-size: 26rpx;
 	color: #d64545;
 }
+
+/* 组信息样式 */
+.groups-section {
+	margin-top: 32rpx;
+}
+
+.groups-title {
+	font-size: 32rpx;
+	color: #333333;
+	font-weight: 600;
+	margin-bottom: 24rpx;
+	display: block;
+}
+
+.group-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+.group-item {
+	background-color: #f8f9fa;
+	border-radius: 16rpx;
+	padding: 24rpx;
+	border: 2rpx solid #e9ecef;
+}
+
+.group-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 16rpx;
+}
+
+.group-name {
+	font-size: 28rpx;
+	color: #333333;
+	font-weight: 600;
+}
+
+.group-count {
+	font-size: 24rpx;
+	color: #666666;
+	background-color: #e9ecef;
+	padding: 6rpx 12rpx;
+	border-radius: 12rpx;
+}
+
+.user-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
+}
+
+.user-item {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	padding: 12rpx;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+}
+
+.user-avatar {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	border: 2rpx solid #e9ecef;
+}
+
+.user-name {
+	font-size: 26rpx;
+	color: #333333;
+	font-weight: 500;
+	flex: 1;
+}
+
+.user-status {
+	font-size: 22rpx;
+	padding: 4rpx 8rpx;
+	border-radius: 8rpx;
+	background-color: #d4edda;
+	color: #155724;
+}
+
+.user-status.pending {
+	background-color: #fff3cd;
+	color: #856404;
+}
