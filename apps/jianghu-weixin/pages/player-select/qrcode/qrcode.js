@@ -134,9 +134,7 @@ Page({
                 throw new Error(result?.message || '二维码生成失败');
             }
 
-            const qrcodeUrl = result?.qrcode_url
-                || result?.data?.qrcode_url
-                || (result?.qrcode_base64 ? `data:image/png;base64,${result.qrcode_base64}` : '');
+            const qrcodeUrl = result?.qrcode_url;
 
             if (!qrcodeUrl) {
                 throw new Error('服务端未返回二维码地址');

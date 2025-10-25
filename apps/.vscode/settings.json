@@ -1,0 +1,50 @@
+{
+    "intelephense.rename.exclude": [
+        "jianghu-api/**/vendor/**",
+        "jianghu-api/v1/**",
+        "jianghu-api/nanx_dev/**"
+    ],
+    "workbench.colorCustomizations": {
+        "tab.activeBorder": "#ff0000",
+        "tab.unfocusedActiveBorder": "#000000",
+        "activityBar.activeBackground": "#33485e",
+        "activityBar.background": "#33485e",
+        "activityBar.foreground": "#e7e7e7",
+        "activityBar.inactiveForeground": "#e7e7e799",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#33485e",
+        "statusBar.background": "#212f3d",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#33485e",
+        "statusBarItem.remoteBackground": "#212f3d",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#212f3d",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#212f3d99",
+        "titleBar.inactiveForeground": "#e7e7e799",
+        "activityBarBadge.background": "#150b10",
+        "activityBarBadge.foreground": "#e7e7e7"
+    },
+    "peacock.color": "#404040",
+    "terminal.integrated.shellIntegration.enabled": true,
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.persistentSessionReviveProcess": "never",
+    "phpmd.rules": "/Users/alex/codebase/代码规范/phpmd.cfg.xml",
+    "phpmd.verbose": true,
+    "intelephense.environment.phpVersion": "8.3.6",
+    "php.debug.executablePath": "/usr/local/bin/php",
+    "[wxml]": {
+        "editor.defaultFormatter": "qiu8310.minapp-vscode",
+        "editor.formatOnSave": true
+    },
+    "minapp-vscode.wxmlFormatter": "prettyHtml",
+    "minapp-vscode.prettyHtml": {
+        "useTabs": false,
+        "tabWidth": 2,
+        "printWidth": 100,
+        "singleQuote": false,
+        "usePrettier": true,
+        "wrapAttributes": false,
+        "sortAttributes": false
+    }
+}

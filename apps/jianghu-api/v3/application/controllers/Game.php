@@ -236,14 +236,6 @@ class Game extends MY_Controller {
             'code' => 200,
             'message' => '二维码生成成功',
             'qrcode_url' => $qrcodeUrl,
-            'qrcode_base64' => $qrcodeBase64,
-            'data' => [
-                'qrcode_url' => $qrcodeUrl,
-                'qrcode_base64' => $qrcodeBase64,
-                'share_path' => $path,
-                'uuid' => $uuid,
-                'gameid' => $gameid
-            ]
         ], JSON_UNESCAPED_UNICODE);
     }
 

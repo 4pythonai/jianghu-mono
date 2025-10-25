@@ -1,54 +1,85 @@
 <view class="course-selector">
-				<!-- 搜索框 -->
-				<view class="search-box">
-								<view class="search-input-wrap">
-												<image class="search-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
-												<input class="search-input" type="text" placeholder="{{ '搜索球场' }}" placeholder-class="search-placeholder" value="{{ searchValue }}" auto-blur="{{ true }}" auto-focus="{{ false }}" bindinput="onInput" focus="{{ autoFocus }}" />
-								</view>
-				</view>
-				<!-- 调试信息 (仅在debug模式下显示) -->
-				<view class="debug-info" wx:if="{{ debug }}">
-								<text>调试: searchValue = "{{searchValue}}" (长度: {{searchValue.length}})</text>
-				</view>
-				<!-- 搜索结果列表 -->
-				<view class="search-list" wx:if="{{ searchList.length > 0 }}">
-								<view class="search-item" wx:for="{{ searchList }}" wx:key="id" bindtap="onSelectCourse" data-course="{{ item }}">
-												<image class="course-image" src="{{ item.cover_url }}" mode="aspectFill"></image>
-												<view class="course-info">
-																<view class="course-name">{{item.name}}</view>
-																<view class="course-address">{{item.address}}</view>
-												</view>
-												<view class="select-icon">
-																<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
-												</view>
-								</view>
-				</view>
-				<!-- 收藏球场列表 -->
-				<view class="favorite-list" wx:if="{{ !searchList.length && favoriteList.length > 0 && showFavorites }}">
-								<view class="section-title">{{favoritesTitle || '收藏球场'}}</view>
-								<view class="favorite-item" wx:for="{{ favoriteList }}" wx:key="id" bindtap="onSelectCourse" data-course="{{ item }}">
-												<image class="course-image" src="{{ item.avatar }}" mode="aspectFill"></image>
-												<view class="course-info">
-																<view class="course-name">{{item.name}}</view>
-																<view class="course-address">{{item.address}}</view>
-												</view>
-												<view class="select-icon">
-																<image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
-												</view>
-								</view>
-				</view>
-				<!-- 空状态 -->
-				<view class="empty-state" wx:if="{{ !searchList.length && !favoriteList.length && !loading && searchValue }}">
-								<view class="empty-text">{{emptyText || '未找到相关球场'}}</view>
-								<view class="empty-desc">{{emptyDesc || '请尝试其他关键词'}}</view>
-				</view>
-				<!-- 默认状态 -->
-				<view class="default-state" wx:if="{{ !searchList.length && !favoriteList.length && !loading && !searchValue }}">
-								<view class="default-text">{{defaultText || '请输入球场名称进行搜索'}}</view>
-				</view>
-				<!-- 加载状态 -->
-				<view class="loading-state" wx:if="{{ loading }}">
-								<view class="loading-icon"></view>
-								<view class="loading-text">{{loadingText || '搜索中...'}}</view>
-				</view>
+  <!-- 搜索框 -->
+  <view class="search-box">
+    <view class="search-input-wrap">
+      <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="{{ '搜索球场' }}"
+        placeholder-class="search-placeholder"
+        value="{{ searchValue }}"
+        auto-blur="{{ true }}"
+        auto-focus="{{ false }}"
+        bindinput="onInput"
+        focus="{{ autoFocus }}"
+      />
+    </view>
+  </view>
+  <!-- 调试信息 (仅在debug模式下显示) -->
+  <view class="debug-info" wx:if="{{ debug }}">
+    <text>调试: searchValue = "{{searchValue}}" (长度: {{searchValue.length}})</text>
+  </view>
+  <!-- 搜索结果列表 -->
+  <view class="search-list" wx:if="{{ searchList.length > 0 }}">
+    <view
+      class="search-item"
+      wx:for="{{ searchList }}"
+      wx:key="id"
+      bindtap="onSelectCourse"
+      data-course="{{ item }}"
+    >
+      <image class="course-image" src="{{ item.cover_url }}" mode="aspectFill"></image>
+      <view class="course-info">
+        <view class="course-name">{{item.name}}</view>
+        <view class="course-address">{{item.address}}</view>
+      </view>
+      <view class="select-icon">
+        <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+  <!-- 收藏球场列表 -->
+  <view
+    class="favorite-list"
+    wx:if="{{ !searchList.length && favoriteList.length > 0 && showFavorites }}"
+  >
+    <view class="section-title">{{favoritesTitle || '收藏球场'}}</view>
+    <view
+      class="favorite-item"
+      wx:for="{{ favoriteList }}"
+      wx:key="id"
+      bindtap="onSelectCourse"
+      data-course="{{ item }}"
+    >
+      <image class="course-image" src="{{ item.avatar }}" mode="aspectFill"></image>
+      <view class="course-info">
+        <view class="course-name">{{item.name}}</view>
+        <view class="course-address">{{item.address}}</view>
+      </view>
+      <view class="select-icon">
+        <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+      </view>
+    </view>
+  </view>
+  <!-- 空状态 -->
+  <view
+    class="empty-state"
+    wx:if="{{ !searchList.length && !favoriteList.length && !loading && searchValue }}"
+  >
+    <view class="empty-text">{{emptyText || '未找到相关球场'}}</view>
+    <view class="empty-desc">{{emptyDesc || '请尝试其他关键词'}}</view>
+  </view>
+  <!-- 默认状态 -->
+  <view
+    class="default-state"
+    wx:if="{{ !searchList.length && !favoriteList.length && !loading && !searchValue }}"
+  >
+    <view class="default-text">{{defaultText || '请输入球场名称进行搜索'}}</view>
+  </view>
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{ loading }}">
+    <view class="loading-icon"></view>
+    <view class="loading-text">{{loadingText || '搜索中...'}}</view>
+  </view>
 </view>
