@@ -109,3 +109,17 @@ view,
 scroll-view {
 	box-sizing: border-box;
 }
+
+/* 全局 radio 组件颜色覆盖 */
+radio .wx-radio-input {
+	border-color: #bdbdbd !important;
+}
+
+radio .wx-radio-input.wx-radio-input-checked {
+	border-color: var(--primary-green-dark) !important;
+	background-color: var(--primary-green-dark) !important;
+}
+
+radio .wx-radio-input.wx-radio-input-checked::before {
+	color: #fff !important;
+}

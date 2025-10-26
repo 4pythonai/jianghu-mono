@@ -120,7 +120,7 @@
                 <radio
                   value="hole"
                   checked="{{ formData.ScoringType === 'hole' }}"
-                  color="#4CAF50"
+                  color="{{'var(--primary-green-dark)'}}"
                 />
                 <text class="radio-text">个人比杆</text>
               </label>
@@ -128,7 +128,7 @@
                 <radio
                   value="oneball"
                   checked="{{ formData.ScoringType === 'oneball' }}"
-                  color="#4CAF50"
+                  color="{{'var(--primary-green-dark)'}}"
                 />
                 <text class="radio-text">旺波</text>
               </label>
@@ -164,7 +164,7 @@
               <switch
                 checked="{{ formData.isPrivate }}"
                 bindchange="onPrivateChange"
-                color="#4CAF50"
+                color="{{'var(--primary-green-dark)'}}"
               />
             </view>
             <!-- 密码输入(仅在秘密比赛时显示) -->

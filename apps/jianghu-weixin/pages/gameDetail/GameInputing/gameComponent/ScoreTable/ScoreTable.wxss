@@ -1,4 +1,10 @@
 /* 计分组件样式 */
+
+.score-table-margin{
+	margin-top: 10rpx;
+}
+
+
 .score-container {
 	display: flex;
 	width: 100%;

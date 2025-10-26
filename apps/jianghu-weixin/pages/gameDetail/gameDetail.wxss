@@ -12,9 +12,9 @@
 	flex: 1;
 	text-align: center;
 	font-size: 14px;
-	color: var(--text-secondary);
+	color: var(--primary-green-dark);
 	position: relative;
-	background: linear-gradient(to bottom, var(--bg-light), var(--bg-hover));
+	background: white;
 	border-radius: 8px 8px 0 0;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	margin: 0 2px;
@@ -33,9 +33,9 @@
 }
 
 .tab-item.active {
-	color: var(--primary-green);
+	color: var(--primary-green-dark);
 	font-weight: bold;
-	background: linear-gradient(to bottom, var(--bg-card), var(--bg-light));
+	background: white;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 -3px 0 var(--primary-green);
 }
 

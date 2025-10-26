@@ -220,7 +220,7 @@
 }
 
 .form-input:focus {
-	border-color: #4caf50;
+	border-color: var(--primary-green-dark);
 	background: #fff;
 }
 
@@ -292,7 +292,7 @@
 
 .add-group-btn {
 	height: 88rpx;
-	background: #1aad19;
+	background: var(--primary-green-dark);
 	border-radius: 12rpx;
 	display: flex;
 	align-items: center;
@@ -369,7 +369,7 @@
 
 .tee-selector-btn:active {
 	background: #f8f9fa;
-	border-color: #4caf50;
+	border-color: var(--primary-green-dark);
 }
 
 .selector-content {
@@ -411,14 +411,14 @@
 	height: 92rpx;
 	border-radius: 12rpx;
 	border: none;
-	background-color: var(--theme-color);
+	background-color: var(--primary-green-dark);
 	color: #fff;
 	font-size: 32rpx;
 	font-weight: 500;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	box-shadow: 0 10rpx 20rpx rgba(16, 157, 88, 0.18);
+	box-shadow: 0 10rpx 20rpx rgba(56, 142, 60, 0.18);
 	transition: all 0.3s ease;
 }
 
@@ -428,7 +428,7 @@
 
 .create-btn:active {
 	transform: translateY(2rpx);
-	box-shadow: 0 6rpx 12rpx rgba(16, 157, 88, 0.24);
+	box-shadow: 0 6rpx 12rpx rgba(56, 142, 60, 0.24);
 }
 
 .create-btn[disabled] {
@@ -452,9 +452,9 @@
 	width: 100%;
 	height: 92rpx;
 	border-radius: 12rpx;
-	border: 2rpx solid var(--theme-color);
+	border: 2rpx solid var(--primary-green-dark);
 	background-color: #fff;
-	color: var(--theme-color);
+	color: var(--primary-green-dark);
 	font-size: 30rpx;
 	font-weight: 500;
 	display: flex;
@@ -465,7 +465,7 @@
 }
 
 .share-btn:active {
-	background-color: rgba(16, 157, 88, 0.08);
+	background-color: rgba(56, 142, 60, 0.08);
 }
 
 .share-btn[disabled] {
@@ -475,10 +475,10 @@
 }
 
 .share-btn.secondary {
-	border-color: #1aad19;
-	color: #1aad19;
+	border-color: var(--primary-green-dark);
+	color: var(--primary-green-dark);
 }
 
 .share-btn.secondary:active {
-	background-color: rgba(26, 173, 25, 0.08);
+	background-color: rgba(56, 142, 60, 0.08);
 }

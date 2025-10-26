@@ -22,43 +22,57 @@
 
 .tab-header {
 	display: flex;
-	width: 100%;
-	height: 88rpx;
-	background-color: var(--bg-card);
-	border-bottom: 1rpx solid var(--border-light);
+	height: 44px;
+	line-height: 44px;
+	background: var(--bg-card);
+	border-bottom: 1px solid var(--border-light);
 }
 
 .tab-item {
 	flex: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: 28rpx;
-	color: var(--text-secondary);
+	text-align: center;
+	font-size: 14px;
+	color: var(--primary-green-dark);
 	position: relative;
+	background: white;
+	border-radius: 8px 8px 0 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	margin: 0 2px;
+	padding: 4px 0;
+	transition: all 0.3s ease;
+	border: 1px solid var(--border-light);
+	border-bottom: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.tab-item:active {
+	transform: translateY(1px);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .tab-item.active {
-	color: var(--primary-green);
-	font-weight: 500;
+	color: var(--primary-green-dark);
+	font-weight: bold;
+	background: white;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 -3px 0 var(--primary-green);
 }
 
 .tab-item.active::after {
 	content: "";
 	position: absolute;
 	bottom: 0;
-	left: 50%;
-	transform: translateX(-50%);
-	width: 40rpx;
-	height: 4rpx;
-	background-color: var(--primary-green);
-	border-radius: 2rpx;
+	left: 25%;
+	right: 25%;
+	height: 2px;
+	background: var(--primary-green);
 }
 
 /* Tab内容区域样式 */
 .tab-content {
 	width: 100%;
-	min-height: calc(100vh - 388rpx); /* 减去banner高度和tab-header高度 */
+	min-height: calc(100vh - 300rpx - 44px); /* 减去banner高度和tab-header高度 */
 	background-color: transparent;
 }
 

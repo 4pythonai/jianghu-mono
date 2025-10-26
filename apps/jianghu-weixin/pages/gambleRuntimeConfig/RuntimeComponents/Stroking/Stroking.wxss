@@ -106,7 +106,7 @@
 }
 
 .radio-circle.checked {
-	border-color: #4caf50;
+	border-color: var(--primary-green-dark);
 	background-color: var(--primary-green-dark);
 	position: relative;
 }

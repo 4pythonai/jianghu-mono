@@ -69,7 +69,7 @@
 }
 
 .ranking-option.selected .radio-indicator {
-	border-color: #4caf50;
+	border-color: var(--primary-green-dark);
 }
 
 .radio-dot {

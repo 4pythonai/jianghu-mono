@@ -141,8 +141,8 @@
 }
 
 .radio-outer.checked {
-	border-color: #4caf7a;
-	background: #4caf7a;
+	border-color: var(--primary-green-dark);
+	background: var(--primary-green-dark);
 }
 
 .radio-inner {
@@ -260,8 +260,8 @@
 }
 
 .radio-dot.selected {
-	border-color: #4caf7a;
-	background: #4caf7a;
+	border-color: var(--primary-green-dark);
+	background: var(--primary-green-dark);
 }
 
 /* 禁用状态的单选圆点 */

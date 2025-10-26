@@ -30,13 +30,13 @@
 	justify-content: center;
 }
 .radio-outer.checked {
-	border-color: #4caf7a;
+	border-color: var(--primary-green-dark);
 }
 .radio-inner {
 	width: 18rpx;
 	height: 18rpx;
 	border-radius: 50%;
-	background: #4caf7a;
+	background: var(--primary-green-dark);
 }
 
 .modal-actions {
