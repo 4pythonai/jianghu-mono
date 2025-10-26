@@ -79,7 +79,6 @@
 .method-arrow {
 	width: 32rpx;
 	height: 32rpx;
-	opacity: 0.6;
 }
 
 .method-arrow image {

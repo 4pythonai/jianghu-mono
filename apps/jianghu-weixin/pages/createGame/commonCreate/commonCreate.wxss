@@ -160,8 +160,8 @@
 }
 
 .clear-btn {
-	width: 48rpx;
-	height: 48rpx;
+	width: 40rpx;
+	height: 40rpx;
 	background: #ff4757;
 	border-radius: 50%;
 	display: flex;
@@ -171,8 +171,8 @@
 }
 
 .clear-btn image {
-	width: 24rpx;
-	height: 24rpx;
+	width: 20rpx;
+	height: 20rpx;
 	filter: brightness(0) invert(1);
 }
 
@@ -272,8 +272,8 @@
 	position: absolute;
 	top: 10rpx;
 	right: 10rpx;
-	width: 48rpx;
-	height: 48rpx;
+	width: 40rpx;
+	height: 40rpx;
 	background: #ff4757;
 	border-radius: 50%;
 	display: flex;
@@ -283,8 +283,8 @@
 }
 
 .delete-group-btn image {
-	width: 24rpx;
-	height: 24rpx;
+	width: 20rpx;
+	height: 20rpx;
 	filter: brightness(0) invert(1);
 }
 
