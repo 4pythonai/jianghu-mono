@@ -1,57 +1,11 @@
 const app = getApp();
-
-const safeDecode = (value) => {
-    if (typeof value !== 'string') {
-        return value;
-    }
-    try {
-        return decodeURIComponent(value);
-    } catch (error) {
-        return value;
-    }
-};
-
-const parseQueryString = (input) => {
-    if (!input || typeof input !== 'string') {
-        return {};
-    }
-
-    const decoded = safeDecode(input.trim());
-    if (!decoded) {
-        return {};
-    }
-
-    let query = decoded;
-    const questionIndex = decoded.indexOf('?');
-    if (questionIndex >= 0) {
-        query = decoded.slice(questionIndex + 1);
-    }
-
-    const result = {};
-    query.split('&').forEach(pair => {
-        if (!pair) {
-            return;
-        }
-        const [rawKey, ...rawRest] = pair.split('=');
-        if (!rawKey) {
-            return;
-        }
-        const key = safeDecode(rawKey.trim());
-        const rawValue = rawRest.join('=');
-        const value = safeDecode(rawValue.trim());
-        if (key) {
-            result[key] = value;
-        }
-    });
-
-    return result;
-};
+const RuntimeComponentsUtils = require('../../gambleRuntimeConfig/RuntimeComponents/common-utils.js');
 
 const mergeSourceParams = (target, source) => {
     if (!source) {
         return;
     }
-    const parsed = parseQueryString(source);
+    const parsed = RuntimeComponentsUtils.url.parseQueryString(source);
     Object.keys(parsed).forEach(key => {
         const value = parsed[key];
         if (value !== undefined && value !== null && value !== '') {
@@ -59,7 +13,7 @@ const mergeSourceParams = (target, source) => {
         }
     });
     if (parsed.path) {
-        const nested = parseQueryString(parsed.path);
+        const nested = RuntimeComponentsUtils.url.parseQueryString(parsed.path);
         Object.keys(nested).forEach(key => {
             const value = nested[key];
             if (value !== undefined && value !== null && value !== '') {
@@ -84,7 +38,13 @@ Page({
     },
 
     onLoad(options) {
+        console.log('=== joinGame 页面进入参数 ===');
+        console.log('原始 options:', options);
+
         const params = this.normalizeOptions(options);
+        console.log('标准化后的 params:', params);
+        console.log('===============================');
+
         const dataUpdate = {};
 
         // 接收并显示 UUID

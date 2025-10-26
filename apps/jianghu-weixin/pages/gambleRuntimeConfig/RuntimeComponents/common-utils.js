@@ -140,6 +140,66 @@ const RuntimeComponentsUtils = {
 
 
 
+    // URL和查询字符串工具
+    url: {
+        /**
+         * 安全的URL解码
+         * @param {string} value - 需要解码的字符串
+         * @returns {string} 解码后的字符串
+         */
+        safeDecode(value) {
+            if (typeof value !== 'string') {
+                return value;
+            }
+            try {
+                return decodeURIComponent(value);
+            } catch (error) {
+                return value;
+            }
+        },
+
+        /**
+         * 解析查询字符串
+         * @param {string} input - 查询字符串
+         * @returns {Object} 解析后的参数对象
+         */
+        parseQueryString(input) {
+            if (!input || typeof input !== 'string') {
+                return {};
+            }
+
+            const decoded = this.safeDecode(input.trim());
+            if (!decoded) {
+                return {};
+            }
+
+            let query = decoded;
+            const questionIndex = decoded.indexOf('?');
+            if (questionIndex >= 0) {
+                query = decoded.slice(questionIndex + 1);
+            }
+
+            const result = {};
+            query.split('&').forEach(pair => {
+                if (!pair) {
+                    return;
+                }
+                const [rawKey, ...rawRest] = pair.split('=');
+                if (!rawKey) {
+                    return;
+                }
+                const key = this.safeDecode(rawKey.trim());
+                const rawValue = rawRest.join('=');
+                const value = this.safeDecode(rawValue.trim());
+                if (key) {
+                    result[key] = value;
+                }
+            });
+
+            return result;
+        }
+    },
+
     // 数组工具
     array: {
         /**

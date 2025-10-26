@@ -29,9 +29,6 @@
           <!-- 已选择球场时显示球场信息 -->
           <view class="selected-course" wx:if="{{ selectedCourse }}">
             <view class="course-info" bindtap="goToCourseSelect">
-              <view class="location-icon">
-                <image src="/assets/icons/location.svg" mode="aspectFit"></image>
-              </view>
               <view class="course-details">
                 <view class="course-name">{{selectedCourse.name}}</view>
                 <view class="course-address">{{selectedCourse.address}}</view>
