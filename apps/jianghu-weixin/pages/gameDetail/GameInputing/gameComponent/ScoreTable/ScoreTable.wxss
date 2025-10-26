@@ -24,6 +24,7 @@
 	flex: 1;
 	position: relative;
 	z-index: 10;
+	background-color: white;
 	overflow-x: auto;
 }
 
