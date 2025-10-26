@@ -1,46 +1,40 @@
 Component({
     properties: {
-        // 球员头像URL
-        avatar: {
-            type: String,
-            value: ''
-        },
         // 球员序号
         index: {
             type: Number,
             value: 0
         },
-        nickname: {
-            type: String,
-            value: null
-        },
-        // 球员T台颜色
-        tee: {
-            type: String,
-            value: '',
+        // 球员对象
+        player: {
+            type: Object,
+            value: {},
             observer: function (newVal) {
+                if (!newVal) return;
+
+                // 处理 T台颜色
                 const validTees = ['black', 'blue', 'white', 'gold', 'red'];
-                const normalizedTee = newVal ? newVal.toLowerCase() : '';
+                const normalizedTee = newVal.tee ? newVal.tee.toLowerCase() : '';
                 const isValid = validTees.includes(normalizedTee);
 
                 this.setData({
                     currentTee: normalizedTee,
                     isValidTee: isValid,
-                    displayText: isValid ? 'T' : 'X'
+                    displayText: isValid ? 'T' : 'X',
+                    nickname: newVal.nickname || '',
+                    avatar: newVal.avatar || '',
+                    handicap: newVal.handicap || 0
                 });
-
             }
-        },
-        // 杆差
-        handicap: {
-            type: Number,
-            value: 0
         }
     },
 
     data: {
         currentTee: '',
         isValidTee: false,
-        displayText: 'X'
+        displayText: 'X',
+        nickname: '',
+        avatar: '',
+        handicap: 0
     }
 })

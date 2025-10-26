@@ -9,14 +9,8 @@
       scroll-top="{{ scrollTop }}"
       bindscroll="onPlayerScroll"
     >
-      <view class="cell-player" wx:for="{{ players }}" wx:key="user">
-        <PlayerInfo
-          index="{{ index }}"
-          nickname="{{ item.nickname }}"
-          tee="{{ item.tee }}"
-          avatar="{{ item.avatar }}"
-          handicap="{{ displayHandicaps[index] }}"
-        />
+      <view class="cell-player" wx:for="{{ players }}" wx:for-item="player" wx:key="user">
+        <PlayerInfo index="{{ index }}" player="{{ player }}" />
       </view>
     </scroll-view>
   </view>
