@@ -65,5 +65,124 @@ export const scoreStore = observable({
             ];
         }
     }),
+
+    /**
+     * 计算显示用的分数矩阵
+     * @param {Array} players - 玩家列表
+     * @param {Array} holeList - 球洞列表
+     * @param {Array} red_blue - 红蓝分组数据
+     * @returns {Array} 二维数组，每个玩家对应一个分数数组
+     */
+    calculateDisplayScores: action(function (players, holeList, red_blue = []) {
+        if (!players || !holeList || !this.scores || players.length === 0) return [];
+
+        // 创建红蓝分组映射
+        const redBlueMap = {};
+        for (const item of red_blue) {
+            redBlueMap[String(item?.hindex)] = item;
+        }
+
+        return players.map(player => {
+            // 创建该玩家的分数映射
+            const scoreMap = {};
+            for (const s of this.scores) {
+                if (s?.hindex && String(s?.userid) === String(player?.userid)) {
+                    scoreMap[String(s?.hindex)] = s;
+                }
+            }
+
+            // 为每个球洞创建显示数据
+            return holeList.map(hole => {
+                const cell = scoreMap[String(hole?.hindex)] || {};
+                const rb = redBlueMap[String(hole?.hindex)];
+                let colorTag = '';
+
+                if (rb) {
+                    if ((rb.red || []).map(String).includes(String(player?.userid))) colorTag = 'red';
+                    if ((rb.blue || []).map(String).includes(String(player?.userid))) colorTag = 'blue';
+                }
+
+                return { ...cell, colorTag };
+            });
+        });
+    }),
+
+    /**
+     * 计算总分数组
+     * @param {Array} displayScores - 显示分数矩阵
+     * @returns {Array} 每个玩家的总分数组
+     */
+    calculateDisplayTotals: action(function (displayScores) {
+        if (!displayScores || displayScores.length === 0) return [];
+
+        return displayScores.map(playerArr =>
+            playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
+        );
+    }),
+
+    /**
+     * 计算OUT和IN汇总 (仅18洞时)
+     * @param {Array} displayScores - 显示分数矩阵
+     * @param {Array} holeList - 球洞列表
+     * @returns {Object} {displayOutTotals, displayInTotals}
+     */
+    calculateOutInTotals: action(function (displayScores, holeList) {
+        if (!displayScores || displayScores.length === 0 || holeList.length !== 18) {
+            return { displayOutTotals: [], displayInTotals: [] };
+        }
+
+        const displayOutTotals = displayScores.map(playerArr => {
+            // OUT: 前9洞 (索引0-8)
+            return playerArr.slice(0, 9).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
+        });
+
+        const displayInTotals = displayScores.map(playerArr => {
+            // IN: 后9洞 (索引9-17)
+            return playerArr.slice(9, 18).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
+        });
+
+        return { displayOutTotals, displayInTotals };
+    }),
+
+    /**
+     * 计算每个玩家的 handicap
+     * @param {Array} players - 玩家列表
+     * @param {Array} holeList - 球洞列表
+     * @returns {Array} 添加了 handicap 属性的玩家列表
+     */
+    calculatePlayersHandicaps: action(function (players, holeList) {
+        if (!players || !holeList || !this.scores || players.length === 0) return players;
+
+        // 创建分数映射，便于快速查找
+        const scoreMap = new Map();
+        for (const score of this.scores) {
+            const key = `${score.userid}_${score.holeid}`;
+            scoreMap.set(key, score);
+        }
+
+        return players.map(player => {
+            let totalScore = 0;
+            let totalPar = 0;
+
+            // 计算该玩家的总分和总标准杆
+            holeList.forEach((hole, index) => {
+                const scoreKey = `${player.userid}_${hole.holeid}`;
+                const scoreData = scoreMap.get(scoreKey);
+
+                if (scoreData && typeof scoreData.score === 'number' && scoreData.score > 0) {
+                    totalScore += scoreData.score;
+                    totalPar += hole.par || 0;
+                }
+            });
+
+            // 杆差 = 总分 - 总标准杆
+            const handicap = totalScore - totalPar;
+
+            return {
+                ...player,
+                handicap: handicap
+            };
+        });
+    }),
 });
 

@@ -67,7 +67,7 @@ export const gameStore = observable({
         }
 
         // 计算每个玩家的 handicap
-        const playersWithHandicap = this._calculatePlayersHandicaps(players, holeList, gameInfo.scores || []);
+        const playersWithHandicap = scoreStore.calculatePlayersHandicaps(players, holeList);
 
         // 先更新基础数据
         this.gameData = gameInfo;
@@ -76,48 +76,6 @@ export const gameStore = observable({
 
         // 初始化 holeRangeStore 的洞数据
         holeRangeStore.initializeHoles(holeList);
-    }),
-
-    /**
-     * 计算每个玩家的 handicap
-     * @param {Array} players - 玩家列表
-     * @param {Array} holeList - 球洞列表
-     * @param {Array} scores - 分数数据
-     * @returns {Array} 添加了 handicap 属性的玩家列表
-     */
-    _calculatePlayersHandicaps: action(function (players, holeList, scores) {
-        if (!players || !holeList || !scores || players.length === 0) return players;
-
-        // 创建分数映射，便于快速查找
-        const scoreMap = new Map();
-        for (const score of scores) {
-            const key = `${score.userid}_${score.holeid}`;
-            scoreMap.set(key, score);
-        }
-
-        return players.map(player => {
-            let totalScore = 0;
-            let totalPar = 0;
-
-            // 计算该玩家的总分和总标准杆
-            holeList.forEach((hole, index) => {
-                const scoreKey = `${player.userid}_${hole.holeid}`;
-                const scoreData = scoreMap.get(scoreKey);
-
-                if (scoreData && typeof scoreData.score === 'number' && scoreData.score > 0) {
-                    totalScore += scoreData.score;
-                    totalPar += hole.par || 0;
-                }
-            });
-
-            // 杆差 = 总分 - 总标准杆
-            const handicap = totalScore - totalPar;
-
-            return {
-                ...player,
-                handicap: handicap
-            };
-        });
     }),
 
     setSaving: action(function (status) {

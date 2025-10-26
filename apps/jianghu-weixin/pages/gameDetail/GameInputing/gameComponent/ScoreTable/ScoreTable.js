@@ -65,49 +65,10 @@ Component({
         'playerScores,players,holeList,red_blue': function (scores, players, holeList, red_blue) {
             if (!scores || !players || !holeList) return;
 
-            const redBlueMap = {};
-            for (const item of (red_blue || [])) {
-                redBlueMap[String(item?.hindex)] = item;
-            }
-
-            const displayScores = players.map(player => {
-                const scoreMap = {};
-                for (const s of (scores || [])) {
-                    if (s?.hindex && String(s?.userid) === String(player?.userid)) scoreMap[String(s?.hindex)] = s;
-                }
-                return holeList.map(hole => {
-                    const cell = scoreMap[String(hole?.hindex)] || {};
-                    const rb = redBlueMap[String(hole?.hindex)];
-                    let colorTag = '';
-                    if (rb) {
-                        if ((rb.red || []).map(String).includes(String(player?.userid))) colorTag = 'red';
-                        if ((rb.blue || []).map(String).includes(String(player?.userid))) colorTag = 'blue';
-                    }
-                    return { ...cell, colorTag };
-                });
-            });
-
-            const displayTotals = displayScores.map(playerArr =>
-                playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
-            );
-
-            // 计算OUT和IN汇总 (仅18洞时)
-            let displayOutTotals = [];
-            let displayInTotals = [];
-
-            if (holeList.length === 18) {
-                displayOutTotals = displayScores.map(playerArr => {
-                    // OUT: 前9洞 (索引0-8)
-                    return playerArr.slice(0, 9).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
-                });
-
-                displayInTotals = displayScores.map(playerArr => {
-                    // IN: 后9洞 (索引9-17)
-                    return playerArr.slice(9, 18).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
-                });
-            }
-
-
+            // 使用 scoreStore 的计算方法
+            const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
+            const displayTotals = scoreStore.calculateDisplayTotals(displayScores);
+            const { displayOutTotals, displayInTotals } = scoreStore.calculateOutInTotals(displayScores, holeList);
             this.setData({ displayScores, displayTotals, displayOutTotals, displayInTotals });
         }
     },

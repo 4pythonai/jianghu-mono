@@ -27,11 +27,12 @@
         <view
           wx:for="{{ holeList }}"
           wx:key="unique_key"
+          wx:for-item="hole"
           wx:if="{{ holeList.length === 18 ? index < 9 : true }}"
           class="tb-header-hole"
         >
-          <view class="hole-name">{{item.holename}}</view>
-          <view class="hole-par">{{item.par}}</view>
+          <view class="hole-name">{{hole.holename}}</view>
+          <view class="hole-par">{{hole.par}}</view>
         </view>
         <!-- OUT汇总表头 (仅18洞时，在前9洞后显示) -->
         <view wx:if="{{ holeList.length === 18 }}" class="tb-header-hole tb-header-out">
@@ -40,13 +41,15 @@
         <!-- 后9洞表头 (10-18) -->
         <view
           wx:for="{{ holeList }}"
+          wx:for-item="hole"
           wx:key="unique_key"
           wx:if="{{ holeList.length === 18 && index >= 9 }}"
           class="tb-header-hole"
         >
-          <view class="hole-name">{{item.holename}}</view>
-          <view class="hole-par">{{item.par}}</view>
+          <view class="hole-name">{{hole.holename}}</view>
+          <view class="hole-par">{{hole.par}}</view>
         </view>
+
         <!-- IN汇总表头 (仅18洞时，在后9洞后显示) -->
         <view wx:if="{{ holeList.length === 18 }}" class="tb-header-hole tb-header-in">
           <view class="total-text">IN</view>
@@ -56,6 +59,7 @@
           <view class="total-text">TOTAL</view>
         </view>
       </view>
+
       <!-- 内容行 -->
       <scroll-view
         scroll-y
@@ -76,15 +80,9 @@
             <HoleCell
               playerIndex="{{ playerIndex }}"
               holeIndex="{{ holeIndex }}"
-              par="{{ holeList[holeIndex].par }}"
-              colorTag="{{ displayScores[playerIndex][holeIndex].colorTag }}"
-              unique_key="{{ holeList[holeIndex].unique_key }}"
-              score="{{ displayScores[playerIndex][holeIndex].score }}"
-              putts="{{ displayScores[playerIndex][holeIndex].putts }}"
-              penalty_strokes="{{ displayScores[playerIndex][holeIndex].penalty_strokes }}"
-              sand_save="{{ displayScores[playerIndex][holeIndex].sand_save }}"
-              userid="{{ players[playerIndex].userid }}"
-              holeid="{{ holeList[holeIndex].holeid }}"
+              holeList="{{ holeList }}"
+              players="{{ players }}"
+              displayScores="{{ displayScores }}"
               bind:cellclick="onCellClick"
             />
           </view>
@@ -105,15 +103,9 @@
             <HoleCell
               playerIndex="{{ playerIndex }}"
               holeIndex="{{ holeIndex }}"
-              par="{{ holeList[holeIndex].par }}"
-              colorTag="{{ displayScores[playerIndex][holeIndex].colorTag }}"
-              unique_key="{{ holeList[holeIndex].unique_key }}"
-              score="{{ displayScores[playerIndex][holeIndex].score }}"
-              putts="{{ displayScores[playerIndex][holeIndex].putts }}"
-              penalty_strokes="{{ displayScores[playerIndex][holeIndex].penalty_strokes }}"
-              sand_save="{{ displayScores[playerIndex][holeIndex].sand_save }}"
-              userid="{{ players[playerIndex].userid }}"
-              holeid="{{ holeList[holeIndex].holeid }}"
+              holeList="{{ holeList }}"
+              players="{{ players }}"
+              displayScores="{{ displayScores }}"
               bind:cellclick="onCellClick"
             />
           </view>
