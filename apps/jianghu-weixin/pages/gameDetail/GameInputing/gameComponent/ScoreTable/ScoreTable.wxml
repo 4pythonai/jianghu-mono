@@ -125,3 +125,18 @@
     </view>
   </scroll-view>
 </view>
+<view class="game-abstract" wx:if="{{gameAbstract}}">
+  <text class="abstract-text">{{gameAbstract}}</text>
+</view>
+
+<view class="optionBtn" bindtap="showOperationPanel">
+  <text class="option-icon">⋯</text>
+</view>
+
+<!-- 游戏操作面板 -->
+<GameOperationPanel
+  id="gameOperationPanel"
+  bind:optionclick="onOptionClick"
+  bind:cancelgame="onCancelGame"
+  bind:finishgame="onFinishGame"
+/>

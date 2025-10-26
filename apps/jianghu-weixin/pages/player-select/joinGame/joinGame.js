@@ -295,6 +295,9 @@ Page({
                 joinSuccess: true
             });
 
+            // 刷新组别列表
+            this.fetchGameDetail();
+
             wx.showToast({
                 title: '加入成功',
                 icon: 'success'

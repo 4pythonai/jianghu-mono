@@ -342,16 +342,8 @@ class Game extends MY_Controller {
 
     public function joinGame() {
         $params = json_decode(file_get_contents('php://input'), true);
-        if (!is_array($params)) {
-            $params = [];
-        }
 
         $uuid = isset($params['uuid']) ? trim($params['uuid']) : '';
-        if ($uuid === '') {
-            echo json_encode(['code' => 400, 'message' => '缺少比赛标识'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
         $userId = (int) $this->getUser();
         if ($userId <= 0) {
             echo json_encode(['code' => 401, 'message' => '未登录'], JSON_UNESCAPED_UNICODE);
@@ -359,21 +351,7 @@ class Game extends MY_Controller {
         }
 
         $gameid = isset($params['gameid']) ? (int) $params['gameid'] : 0;
-        if ($gameid <= 0) {
-            $gameid = (int) $this->MGame->getGameidByUUID($uuid);
-        }
-
-        if ($gameid <= 0) {
-            echo json_encode(['code' => 404, 'message' => '比赛不存在'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
         $joinType = isset($params['source']) && $params['source'] !== '' ? $params['source'] : 'wxshare';
-        if (function_exists('mb_substr')) {
-            $joinType = mb_substr($joinType, 0, 40);
-        } else {
-            $joinType = substr($joinType, 0, 40);
-        }
 
         // 检查用户是否已经加入比赛
         $existingRecord = $this->db->select('id, groupid')
@@ -405,10 +383,11 @@ class Game extends MY_Controller {
                 }
             }
 
-            // 如果所有组都满了，不允许加入
+            // 如果所有组都满了，创建新组
             if ($targetGroupId === null) {
-                echo json_encode(['code' => 409, 'message' => '所有组已满，无法加入'], JSON_UNESCAPED_UNICODE);
-                return;
+                $nextGroupNumber = count($groups) + 1;
+                $newGroup = $this->createGameGroupRow($gameid, $nextGroupNumber);
+                $targetGroupId = $newGroup['groupid'];
             }
         }
 
@@ -425,6 +404,10 @@ class Game extends MY_Controller {
             'join_type' => $joinType
         ];
         $this->db->insert('t_game_group_user', $joinData);
+
+        // 更新游戏状态为报名中
+        $this->db->where('id', $gameid);
+        $this->db->update('t_game', ['status' => 'enrolling']);
 
         echo json_encode([
             'code' => 200,

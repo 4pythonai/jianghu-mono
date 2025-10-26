@@ -15,6 +15,9 @@ Component({
         displayOutTotals: [],
         displayInTotals: [],
         red_blue: [],
+        gameAbstract: '',
+        gameid: null,
+        gameData: null,
     },
 
     lifetimes: {
@@ -24,6 +27,9 @@ Component({
                 fields: {
                     players: 'players',
                     red_blue: 'red_blue',
+                    gameAbstract: 'gameAbstract',
+                    gameid: 'gameid',
+                    gameData: 'gameData',
                 },
                 actions: [],
             });
@@ -108,6 +114,44 @@ Component({
 
         onCellClick(e) {
             this.triggerEvent('cellclick', e.detail);
+        },
+
+        // 显示操作面板
+        showOperationPanel() {
+            const operationPanel = this.selectComponent('#gameOperationPanel');
+            if (operationPanel) {
+                // 从 gameStore 获取 gameid
+                const gameid = this.data.gameid || this.data.gameData?.id;
+                if (gameid) {
+                    operationPanel.show({
+                        gameid: gameid
+                    });
+                } else {
+                    console.warn('ScoreTable: 无法获取有效的 gameid');
+                    wx.showToast({
+                        title: '无法获取比赛信息',
+                        icon: 'none'
+                    });
+                }
+            }
+        },
+
+        // 处理操作面板选项点击
+        onOptionClick(e) {
+            console.log('ScoreTable 收到操作面板选项点击:', e.detail);
+            this.triggerEvent('optionclick', e.detail);
+        },
+
+        // 处理取消比赛
+        onCancelGame(e) {
+            console.log('ScoreTable 收到取消比赛事件:', e.detail);
+            this.triggerEvent('cancelgame', e.detail);
+        },
+
+        // 处理结束比赛
+        onFinishGame(e) {
+            console.log('ScoreTable 收到结束比赛事件:', e.detail);
+            this.triggerEvent('finishgame', e.detail);
         }
     }
 })

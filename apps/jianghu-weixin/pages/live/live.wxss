@@ -39,7 +39,7 @@
 }
 
 .tab-item.active {
-	color: var(--testColorRedR);
+	color: #025028;
 	font-weight: 500;
 }
 

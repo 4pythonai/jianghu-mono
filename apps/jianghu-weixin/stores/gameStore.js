@@ -22,6 +22,7 @@ export const gameStore = observable({
     players: [],         // 玩家列表
     red_blue: [],        // 红蓝分组数据
     kickConfigs: [], // 新增：运行时倍数数据
+    gameAbstract: '',    // 游戏摘要
 
     loading: false,      // 加载状态
     error: null,         // 错误信息
@@ -73,6 +74,7 @@ export const gameStore = observable({
         this.gameData = gameInfo;
         this.players = playersWithHandicap;  // 注意:这里是过滤后并添加了handicap的玩家
         this.groupid = groupid;  // 存储当前分组ID
+        this.gameAbstract = gameInfo.gameAbstract || '';  // 存储游戏摘要
 
         // 初始化 holeRangeStore 的洞数据
         holeRangeStore.initializeHoles(holeList);
@@ -183,6 +185,7 @@ export const gameStore = observable({
             error: this.error,
             red_blue: this.red_blue,
             kickConfigs: this.kickConfigs,
+            gameAbstract: this.gameAbstract,
             // 从 holeRangeStore 获取洞相关数据
             ...holeRangeStore.getState()
         };

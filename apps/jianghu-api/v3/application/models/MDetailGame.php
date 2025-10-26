@@ -40,6 +40,16 @@ class MDetailGame  extends CI_Model {
         // 创建者信息
         $creator = $this->MUser->getUserProfile($game_info['creatorid']);
 
+
+        // 比赛的A/B等信息
+        // course
+        // gameAbstract: ["A场", "B场"]
+
+        $tmp = $this->getGameAbstract($gameid);
+
+        $gameAbstract = $course_info['coursename'] . '-' . implode('/', $tmp);
+
+
         // 组装返回数据
         $result = [
             'gameid' => (string)$game_info['gameid'],
@@ -66,6 +76,7 @@ class MDetailGame  extends CI_Model {
             'holeList' => $holeList,
             'scores' => $scores,
             'groups' => $groups,
+            'gameAbstract' => $gameAbstract,
         ];
 
         return $result;
@@ -391,5 +402,18 @@ class MDetailGame  extends CI_Model {
         }
 
         return $groups;
+    }
+
+    // 获取比赛的AB场名字，返回数组，A场名字，B场名字
+    private function getGameAbstract($gameid) {
+        // t_game_court  t_course_court
+        $sql = "SELECT cc.courtname FROM t_course_court cc LEFT JOIN t_game_court gc ON cc.courtid = gc.courtid WHERE gc.gameid = ?";
+        $result = $this->db->query($sql, [$gameid]);
+        $rows = $result->result_array();
+        $names = [];
+        foreach ($rows as $row) {
+            $names[] = $row['courtname'];
+        }
+        return $names;
     }
 }

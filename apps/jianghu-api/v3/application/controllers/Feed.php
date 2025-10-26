@@ -22,8 +22,8 @@ class Feed extends MY_Controller {
 
 
     public function myFeeds() {
-
-        $get_data_config = ['userid' => 837590];
+        $userid = $this->getUser();
+        $get_data_config = ['userid' => $userid];
         $result  =  $this->MGamePipeRunner->GameFeedHandler($get_data_config);
         $games = [];
         $allgames = $result['allgames'];
