@@ -1,7 +1,0 @@
-{
-	"component": true,
-	"usingComponents": {
-		"PlayerInfo": "/components/PlayerInfo/PlayerInfo",
-		"HoleCell": "/components/HoleCell/HoleCell"
-	}
-}

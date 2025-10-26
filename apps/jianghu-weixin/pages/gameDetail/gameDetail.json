@@ -3,7 +3,7 @@
 	"usingComponents": {
 		"RuntimeConfigList": "./RuntimeConfigList/RuntimeConfigList",
 		"BBS": "./BBS/BBS",
-		"GameMagement": "./GameMagement/GameMagement",
+		"GameInputing": "./GameInputing/GameInputing",
 		"GambleSummary": "./GambleSummary/GambleSummary"
 	},
 	"componentPlaceholder": {
