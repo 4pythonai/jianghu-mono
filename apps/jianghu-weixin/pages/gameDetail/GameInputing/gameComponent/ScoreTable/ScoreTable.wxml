@@ -133,6 +133,10 @@
   <text class="option-icon">⋯</text>
 </view>
 
+<view class="addPlayerBtn" bindtap="showAddPlayerPanel">
+  <text class="add-icon">+</text>
+</view>
+
 <!-- 游戏操作面板 -->
 <GameOperationPanel
   id="gameOperationPanel"
@@ -140,3 +144,6 @@
   bind:cancelgame="onCancelGame"
   bind:finishgame="onFinishGame"
 />
+
+<!-- 添加球员面板 -->
+<AddPlayerHubPanel id="addPlayerPanel" bind:confirm="onAddPlayerConfirm" />

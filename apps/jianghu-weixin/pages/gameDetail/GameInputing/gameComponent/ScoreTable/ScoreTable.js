@@ -152,6 +152,32 @@ Component({
         onFinishGame(e) {
             console.log('ScoreTable 收到结束比赛事件:', e.detail);
             this.triggerEvent('finishgame', e.detail);
+        },
+
+        // 显示添加球员面板
+        showAddPlayerPanel() {
+            const addPlayerPanel = this.selectComponent('#addPlayerPanel');
+            if (addPlayerPanel) {
+                // 从 gameStore 获取 gameid
+                const gameid = this.data.gameid || this.data.gameData?.id;
+                if (gameid) {
+                    addPlayerPanel.show({
+                        gameid: gameid
+                    });
+                } else {
+                    console.warn('ScoreTable: 无法获取有效的 gameid');
+                    wx.showToast({
+                        title: '无法获取比赛信息',
+                        icon: 'none'
+                    });
+                }
+            }
+        },
+
+        // 处理添加球员确认
+        onAddPlayerConfirm(e) {
+            console.log('ScoreTable 收到添加球员确认事件:', e.detail);
+            this.triggerEvent('addplayerconfirm', e.detail);
         }
     }
 })

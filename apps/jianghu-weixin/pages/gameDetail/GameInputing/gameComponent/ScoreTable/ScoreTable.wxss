@@ -270,3 +270,27 @@
 	line-height: 1;
 }
 
+/* 添加球员按钮样式 */
+.addPlayerBtn {
+	position: fixed;
+	top: 50%;
+	left: 20rpx;
+	transform: translateY(-50%);
+	width: 80rpx;
+	height: 80rpx;
+	background-color: rgba(4, 93, 38, 0.8);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 100;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.add-icon {
+	font-size: 40rpx;
+	color: white;
+	font-weight: bold;
+	line-height: 1;
+}
+
