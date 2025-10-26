@@ -14,6 +14,7 @@
       </view>
     </scroll-view>
   </view>
+
   <!-- 主滚动区域 -->
   <scroll-view scroll-x class="main-scroll" id="mainScroll">
     <!-- 中间内容区 -->

@@ -2,7 +2,8 @@
 .score-container {
 	display: flex;
 	width: 100%;
-	min-height: 300px;
+	height: auto;
+	max-height: 80vh; /* 限制最大高度，避免过高 */
 	background-color: #f5f5f5;
 	position: relative;
 	overflow: hidden;
@@ -13,6 +14,9 @@
 	width: 80px;
 	background-color: white;
 	z-index: 20;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 }
 
 .player-column {
@@ -26,6 +30,7 @@
 	z-index: 10;
 	background-color: white;
 	overflow-x: auto;
+	height: 100%; /* 确保与固定列高度一致 */
 }
 
 /* 滚动内容区 */
@@ -37,6 +42,7 @@
 /* 表头基础样式 */
 .tb-header {
 	height: 80px;
+	min-height: 80px; /* 确保最小高度 */
 	background-color: var(--tb-header-bg);
 	color: var(--tb-header-text);
 	font-weight: bold;
@@ -44,6 +50,7 @@
 	position: sticky;
 	left: 0;
 	z-index: 15;
+	flex-shrink: 0; /* 防止表头被压缩 */
 }
 
 /* 球洞表头 */
@@ -143,6 +150,8 @@
 .table-body {
 	display: flex;
 	flex-direction: column;
+	flex: 1; /* 占据剩余空间 */
+	min-height: 0; /* 允许flex子项缩小 */
 }
 
 /* 行样式 */
@@ -168,7 +177,9 @@
 .cell-player {
 	width: 100%;
 	height: 80px;
+	min-height: 80px; /* 确保最小高度 */
 	border: 1px solid #eee;
+	flex-shrink: 0; /* 防止被压缩 */
 }
 
 /* 总分单元格 */
