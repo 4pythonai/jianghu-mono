@@ -21,9 +21,6 @@
         <view class="course-section">
           <view class="form-label">选择球场</view>
           <view class="search-input" bindtap="goToCourseSelect" wx:if="{{ !selectedCourse }}">
-            <view class="location-icon">
-              <image src="/assets/icons/location.svg" mode="aspectFit"></image>
-            </view>
             <input type="text" placeholder="选择球场" placeholder-class="input-placeholder" disabled />
             <view class="arrow-icon">
               <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
@@ -190,28 +187,14 @@
       </view>
       <view class="action-footer">
         <view class="share-actions">
-          <button
-            class="share-btn"
-            open-type="share"
-            disabled="{{!shareReady}}"
-          >
-            微信分享邀请
-          </button>
+          <button class="share-btn" open-type="share" disabled="{{!shareReady}}">微信分享邀请</button>
           <button
             class="share-btn secondary"
             bindtap="onShowInviteQrcode"
             disabled="{{!shareReady}}"
-          >
-            生成二维码
-          </button>
+          >生成二维码</button>
         </view>
-        <button
-          class="create-btn"
-          bindtap="onStartScoring"
-          disabled="{{!gameid}}"
-        >
-          开始计分
-        </button>
+        <button class="create-btn" bindtap="onStartScoring" disabled="{{!gameid}}">开始计分</button>
       </view>
     </view>
   </view>

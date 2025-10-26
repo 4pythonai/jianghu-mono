@@ -182,15 +182,49 @@
 	flex-shrink: 0; /* 防止被压缩 */
 }
 
+/* OUT汇总单元格 */
+.cell-out {
+	background-color: #fff3e0; /* 浅橙色背景 */
+	border: 1px solid #e5e5e5; /* 与HoleCell的边框样式完全一致 */
+}
+
+/* IN汇总单元格 */
+.cell-in {
+	background-color: #e3f2fd; /* 浅蓝色背景 */
+	border: 1px solid #e5e5e5; /* 与HoleCell的边框样式完全一致 */
+}
+
+/* OUT和IN汇总列文本样式，与HoleCell的score-text对齐 */
+.cell-out text,
+.cell-in text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%); /* 完全居中，与HoleCell的transform保持一致 */
+	font-size: 22px; /* 与HoleCell的score-text字体大小一致 */
+	color: #333;
+	font-weight: bold;
+}
+
 /* 总分单元格 */
 .cell-total {
 	width: 80px;
 	min-width: 80px;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	height: 80px; /* 固定高度与HoleCell一致 */
+	position: relative; /* 使用相对定位，与HoleCell一致 */
 	font-weight: bold;
-	border-right: 1px solid #eee;
+	border: 1px solid #e5e5e5; /* 与HoleCell的边框样式完全一致 */
+	background-color: white;
+}
+
+/* TOTAL列文本样式，与HoleCell的score-text对齐 */
+.cell-total text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%); /* 完全居中，与HoleCell的transform保持一致 */
+	font-size: 22px; /* 与HoleCell的score-text字体大小一致 */
+	color: #333;
+	font-weight: bold;
 }
 

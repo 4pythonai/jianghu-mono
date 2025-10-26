@@ -156,7 +156,7 @@ Page({
         if (title) {
             query.push(`title=${encodeURIComponent(title)}`);
         }
-        return `/pages/player-select/wxshare/wxshare?${query.join('&')}`;
+        return `/pages/player-select/joinGame/joinGame?${query.join('&')}`;
     },
 
     handleCopyInvite() {
