@@ -3,8 +3,6 @@
     "usingComponents": {
         "ScoreTable": "./gameComponent/ScoreTable/ScoreTable",
         "OperationBar": "./gameComponent/OperationBar/OperationBar",
-        "ScoreInputPanel": "./gameComponent/ScoreInputPanel/ScoreInputPanel",
-        "AddPlayerHubPanel": "./gameComponent/AddPlayerHubPanel/AddPlayerHubPanel",
-        "GameOperationPanel": "./gameComponent/GameOperationPanel/GameOperationPanel"
+        "ScoreInputPanel": "./gameComponent/ScoreInputPanel/ScoreInputPanel"
     }
 }
