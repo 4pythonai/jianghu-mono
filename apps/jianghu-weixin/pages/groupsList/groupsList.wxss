@@ -59,7 +59,7 @@
 }
 
 .retry-btn {
-	background-color: #4caf50;
+	background-color: var(--primary-green-dark);
 	color: white;
 	border-radius: 50rpx;
 	padding: 20rpx 40rpx;

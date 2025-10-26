@@ -150,7 +150,7 @@
 }
 
 .save-btn {
-	background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+	background: var(--gradient-primary);
 	color: white;
 	flex: 1.2;
 }

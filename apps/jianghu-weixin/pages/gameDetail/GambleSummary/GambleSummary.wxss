@@ -212,7 +212,7 @@
 	justify-content: center;
 	gap: 16rpx;
 	padding: 24rpx 48rpx;
-	background: linear-gradient(135deg, #4caf50, #45a049);
+	background: var(--gradient-primary);
 	color: white;
 	border: none;
 	border-radius: 16rpx;

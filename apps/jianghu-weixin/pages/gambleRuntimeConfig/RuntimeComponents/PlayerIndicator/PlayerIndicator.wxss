@@ -243,14 +243,14 @@
 }
 
 .btn-confirm {
-	background: linear-gradient(135deg, #4caf50, #45a049);
+	background: var(--gradient-primary);
 	color: #fff;
 	border: none;
 	box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.3);
 }
 
 .btn-confirm:active {
-	background: linear-gradient(135deg, #45a049, #3d8b40);
+	background: var(--gradient-primary-hover);
 	transform: translateY(2rpx);
 	box-shadow: 0 2rpx 8rpx rgba(76, 175, 80, 0.4);
 }

@@ -222,7 +222,7 @@
 	justify-content: center;
 	gap: 8px;
 	padding: 10px 20px;
-	background: linear-gradient(135deg, #4caf50, #45a049);
+	background: var(--gradient-primary);
 	border: none;
 	border-radius: 10px;
 	transition: all 0.3s ease;
@@ -239,11 +239,11 @@
 
 /* 踢一脚按钮样式 - 与配置游戏按钮保持一致 */
 .kick-btn {
-	background: linear-gradient(135deg, #4caf50, #45a049) !important;
+	background: var(--gradient-primary) !important;
 }
 
 .kick-btn:active {
-	background: linear-gradient(135deg, #3d8b40, #388e3c) !important;
+	background: var(--gradient-primary-hover) !important;
 }
 
 /* 游戏额外选项列表样式 */

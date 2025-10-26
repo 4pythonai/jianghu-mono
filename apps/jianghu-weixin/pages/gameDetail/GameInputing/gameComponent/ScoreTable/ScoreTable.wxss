@@ -100,7 +100,7 @@
 
 /* 总分表头特殊样式 */
 .tb-header-total {
-	background-color: #4caf50;
+	background-color: var(--primary-green-dark);
 }
 
 .tb-header-total .total-text {

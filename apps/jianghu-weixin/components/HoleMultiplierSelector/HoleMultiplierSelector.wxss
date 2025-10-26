@@ -63,7 +63,7 @@
 }
 
 .multiplier-btn.active {
-	background: #4caf50;
+	background: var(--primary-green-dark);
 	color: #fff;
 	border-color: #4caf50;
 }
@@ -123,6 +123,6 @@
 }
 
 .multiplier-btn-confirm {
-	background: #4caf50;
+	background: var(--primary-green-dark);
 	color: #fff;
 }

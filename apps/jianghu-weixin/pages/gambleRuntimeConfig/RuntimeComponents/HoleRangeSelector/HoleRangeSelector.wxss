@@ -30,7 +30,7 @@
 .hole-circle {
 	width: 80rpx;
 	height: 80rpx;
-	background-color: #4caf50;
+	background-color: var(--primary-green-dark);
 	border-radius: 50%;
 	display: flex;
 	align-items: center;

@@ -107,7 +107,7 @@
 
 .radio-circle.checked {
 	border-color: #4caf50;
-	background-color: #4caf50;
+	background-color: var(--primary-green-dark);
 	position: relative;
 }
 
@@ -263,7 +263,7 @@
 
 .add-config-btn {
 	padding: 8rpx 16rpx;
-	background-color: #4caf50;
+	background-color: var(--primary-green-dark);
 	color: white;
 	border: none;
 	border-radius: 6rpx;

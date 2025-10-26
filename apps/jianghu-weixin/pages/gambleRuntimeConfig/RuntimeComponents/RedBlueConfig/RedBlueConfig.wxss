@@ -57,7 +57,7 @@
 .order-btn {
 	flex: 1;
 	height: 70rpx;
-	background-color: #4caf50;
+	background-color: var(--primary-green-dark);
 	color: #fff;
 	border: none;
 	border-radius: 12rpx;

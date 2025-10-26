@@ -75,7 +75,7 @@
 .radio-dot {
 	width: 20rpx;
 	height: 20rpx;
-	background-color: #4caf50;
+	background-color: var(--primary-green-dark);
 	border-radius: 50%;
 	animation: radioSelect 0.3s ease-in-out;
 }

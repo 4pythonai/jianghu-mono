@@ -20,7 +20,7 @@
 	left: 24rpx;
 	right: 24rpx;
 	bottom: 0;
-	background: #fff;
+	background: var(--bg-card);
 	box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.18);
 	display: flex;
 	flex-direction: column;
@@ -51,7 +51,7 @@
  /* 弹窗标题 */
 .modal-title {
 	font-size: 36rpx;
-	color: #e30f0f;
+	color: var(--error);
 	margin-bottom: 32rpx;
 	text-align: center;
 }
@@ -86,14 +86,14 @@
 
 
 .modal-btn.cancel {
-	background: #fff;
-	color: #4caf7a;
-	border: 2rpx solid #4caf7a;
+	background: var(--bg-card);
+	color: var(--primary-green-dark);
+	border: 2rpx solid var(--primary-green-dark);
 }
 
 .modal-btn.confirm {
-	background: #4caf7a;
-	color: #fff;
+	background: var(--primary-green-dark);
+	color: var(--text-on-primary);
 }
 
 

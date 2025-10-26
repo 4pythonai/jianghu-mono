@@ -118,7 +118,7 @@
 }
 
 .back-btn {
-	background: linear-gradient(135deg, #4caf50, #45a049);
+	background: var(--gradient-primary);
 	color: #fff;
 	box-shadow: 0 4rpx 12rpx rgba(76, 175, 80, 0.3);
 	height: 80rpx;

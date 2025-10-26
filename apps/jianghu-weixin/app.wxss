@@ -4,26 +4,79 @@
 /* @import "./styles/modal.wxss"; */
 
 page {
-	--theme-color: #109d58; /* 主题绿色 */
-	--common-bg: #f9fbfa; /* 深色文字 */
-	--tilte-h1: #020403;
-	--title-h2: #515352;
-	--content-text: 808080;
-	--small-bg: #efefef;
-	--small-red: #ff0000;
+	/* ===== 绿色主题色彩系统 ===== */
+	
+	/* 主色调 - 绿色系 */
+	--primary-green: #4caf50;        /* 主绿色 */
+	--primary-green-light: #66bb6a; /* 浅绿色 */
+	--primary-green-dark: #388e3c;   /* 深绿色 */
+	--primary-green-darker: #2e7d32; /* 更深绿色 */
+	
+	/* 辅助绿色 */
+	--secondary-green: #81c784;      /* 辅助绿色 */
+	--accent-green: #a5d6a7;        /* 强调绿色 */
+	--light-green: #c8e6c9;         /* 浅绿色 */
+	--pale-green: #e8f5e8;          /* 极浅绿色 */
+	
+	/* 渐变色 */
+	--gradient-primary: linear-gradient(135deg, var(--primary-green-dark), var(--primary-green-darker));
+	--gradient-primary-hover: linear-gradient(135deg, var(--primary-green-darker), #2e7d32);
+	--gradient-light: linear-gradient(135deg, var(--primary-green), var(--primary-green-dark));
+	
+	/* 阴影色 */
+	--shadow-primary: rgba(76, 175, 80, 0.3);
+	--shadow-primary-hover: rgba(76, 175, 80, 0.4);
+	--shadow-light: rgba(76, 175, 80, 0.12);
+	
+	/* 边框色 */
+	--border-primary: #4caf50;
+	--border-primary-light: #81c784;
+	--border-light: #e0e0e0;
+	--border-focus: #4caf50;
+	
+	/* 背景色系统 */
+	--bg-primary: #4caf50;           /* 主背景 */
+	--bg-secondary: #f9fbfa;        /* 页面背景 */
+	--bg-card: #ffffff;              /* 卡片背景 */
+	--bg-light: #f8f9fa;            /* 浅背景 */
+	--bg-hover: #e8f5e8;            /* 悬停背景 */
+	--bg-disabled: #f5f5f5;         /* 禁用背景 */
+	
+	/* 文字色系统 */
+	--text-primary: #333333;        /* 主要文字 */
+	--text-secondary: #666666;      /* 次要文字 */
+	--text-tertiary: #999999;        /* 三级文字 */
+	--text-disabled: #cccccc;        /* 禁用文字 */
+	--text-white: #ffffff;           /* 白色文字 */
+	--text-on-primary: #ffffff;      /* 主色上的文字 */
+	
+	/* 状态色 */
+	--success: #4caf50;              /* 成功色 */
+	--warning: #ff9800;              /* 警告色 */
+	--error: #f44336;                /* 错误色 */
+	--info: #2196f3;                 /* 信息色 */
+	
+	/* 兼容旧变量名 */
+	--theme-color: var(--primary-green);
+	--common-bg: var(--bg-secondary);
+	--tilte-h1: var(--text-primary);
+	--title-h2: var(--text-secondary);
+	--content-text: var(--text-tertiary);
+	--small-bg: var(--bg-light);
+	--small-red: var(--error);
 	--testColorRedR: #ba275f;
-	--testColor: #ff0000;
-	--hearde-big: #1c1935; /* 浅灰背景 */
-	--card-bg: #fefefe;
-	--card-border: #86cd93;
-	--tb-header-bg: #4caf50;
-	--tb-header-text: #fff;
+	--testColor: var(--error);
+	--hearde-big: #1c1935;
+	--card-bg: var(--bg-card);
+	--card-border: var(--border-primary-light);
+	--tb-header-bg: var(--primary-green);
+	--tb-header-text: var(--text-white);
 
 	height: 100%;
-	background-color: #f9fbfa;
+	background-color: var(--bg-secondary);
 	font-family: -apple-system, "DouyinSansBold", Helvetica, "PingFang SC",
 		"Microsoft YaHei", Arial, sans-serif;
-	color: #808080;
+	color: var(--text-tertiary);
 }
 
 .wx-tabbar-item .wx-tabbar-icon {
@@ -39,14 +92,14 @@ page {
 .page-title {
 	font-size: 36rpx;
 	font-weight: bold;
-	color: #333;
+	color: var(--text-primary);
 	text-align: center;
 	margin: 30rpx 0;
 }
 
 .page-desc {
 	font-size: 28rpx;
-	color: #666;
+	color: var(--text-secondary);
 	text-align: center;
 	margin: 20rpx 0;
 }

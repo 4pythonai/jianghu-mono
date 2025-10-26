@@ -4,23 +4,23 @@
 	display: flex;
 	height: 44px;
 	line-height: 44px;
-	background: #fff;
-	border-bottom: 1px solid #eee;
+	background: var(--bg-card);
+	border-bottom: 1px solid var(--border-light);
 }
 
 .tab-item {
 	flex: 1;
 	text-align: center;
 	font-size: 14px;
-	color: #666;
+	color: var(--text-secondary);
 	position: relative;
-	background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
+	background: linear-gradient(to bottom, var(--bg-light), var(--bg-hover));
 	border-radius: 8px 8px 0 0;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	margin: 0 2px;
 	padding: 4px 0;
 	transition: all 0.3s ease;
-	border: 1px solid #e0e0e0;
+	border: 1px solid var(--border-light);
 	border-bottom: none;
 	display: flex;
 	align-items: center;
@@ -33,10 +33,10 @@
 }
 
 .tab-item.active {
-	color: #07c160;
+	color: var(--primary-green);
 	font-weight: bold;
-	background: linear-gradient(to bottom, #ffffff, #f0f0f0);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 -3px 0 #07c160;
+	background: linear-gradient(to bottom, var(--bg-card), var(--bg-light));
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 -3px 0 var(--primary-green);
 }
 
 .tab-item.active::after {
@@ -46,7 +46,7 @@
 	left: 25%;
 	right: 25%;
 	height: 2px;
-	background: #07c160;
+	background: var(--primary-green);
 }
 
 /* Tab内容样式 */
@@ -61,7 +61,7 @@
 	justify-content: center;
 	align-items: center;
 	height: 200px;
-	color: #999;
+	color: var(--text-tertiary);
 	font-size: 14px;
 }
 
@@ -69,7 +69,7 @@
 	display: flex;
 	width: 100%;
 	min-height: 300px;
-	background-color: #f5f5f5;
+	background-color: var(--bg-secondary);
 	position: relative;
 	overflow: hidden;
 }
@@ -77,16 +77,16 @@
 /* 固定列样式 */
 .fixed-column {
 	width: 80px;
-	background-color: white;
+	background-color: var(--bg-card);
 	z-index: 20;
 }
 
 .player-column {
-	border-right: 1px solid #ddd;
+	border-right: 1px solid var(--border-light);
 }
 
 .total-column {
-	border-left: 1px solid #ddd;
+	border-left: 1px solid var(--border-light);
 }
 
 /* 主滚动区域 */
@@ -106,8 +106,8 @@
 /* 表头基础样式 */
 .tb-header {
 	height: 80px;
-	background-color: #4caf50;
-	color: white;
+	background-color: var(--primary-green);
+	color: var(--text-on-primary);
 	font-weight: bold;
 	display: flex;
 	position: sticky;
@@ -144,8 +144,8 @@
 	width: 26px;
 	height: 26px;
 	border-radius: 50%;
-	background-color: white;
-	color: #4caf50;
+	background-color: var(--bg-card);
+	color: var(--primary-green);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -157,7 +157,7 @@
 
 /* 标准杆数 */
 .hole-par {
-	color: white;
+	color: var(--text-on-primary);
 	font-size: 14px;
 	font-weight: normal;
 	line-height: 1.2;
@@ -173,8 +173,8 @@
 .table-row {
 	height: 80px;
 	min-height: 80px;
-	border-bottom: 1px solid #eee;
-	background-color: white;
+	border-bottom: 1px solid var(--border-light);
+	background-color: var(--bg-card);
 	display: flex;
 }
 
@@ -186,7 +186,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-right: 1px solid #eee;
+	border-right: 1px solid var(--border-light);
 }
 
 /* 球员单元格 */
@@ -196,7 +196,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	border: 1px solid #eee;
+	border: 1px solid var(--border-light);
 	overflow: hidden;
 }
 
@@ -208,5 +208,5 @@
 	align-items: center;
 	justify-content: center;
 	font-weight: bold;
-	border: 1px solid #eee;
+	border: 1px solid var(--border-light);
 }
