@@ -24,6 +24,8 @@ Page({
             if (this.data.title) {
                 url += `&title=${encodeURIComponent(this.data.title)}`;
             }
+            // 添加来源标识
+            url += `&source=${method.id}`;
         }
 
         wx.navigateTo({

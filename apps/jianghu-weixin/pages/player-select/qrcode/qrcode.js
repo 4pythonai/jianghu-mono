@@ -98,6 +98,8 @@ Page({
         if (title) {
             query.push(`title=${encodeURIComponent(title)}`);
         }
+        // 添加来源标识
+        query.push('source=qrcode');
         return `/pages/player-select/joinGame/joinGame?${query.join('&')}`;
     },
 

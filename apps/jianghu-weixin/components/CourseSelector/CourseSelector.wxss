@@ -100,7 +100,6 @@
 	width: 32rpx;
 	height: 32rpx;
 	margin-left: 16rpx;
-	opacity: 0.6;
 }
 
 .select-icon image {

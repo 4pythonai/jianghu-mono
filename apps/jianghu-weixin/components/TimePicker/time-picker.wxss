@@ -18,7 +18,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0 24rpx;
+	padding: 0 16rpx;
 	box-sizing: border-box;
 	line-height: 88rpx; /* 明确设置行高 */
 }
@@ -36,9 +36,9 @@
 }
 
 .picker-arrow {
-	width: 32rpx;
-	height: 32rpx;
-	margin-left: 16rpx;
+	width: 40rpx;
+	height: 40rpx;
+	margin-left: 6rpx;
 	transition: transform 0.2s ease;
 }
 

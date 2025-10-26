@@ -34,7 +34,8 @@ Page({
         joining: false,
         joinSuccess: false,
         joinError: '',
-        groups: []
+        groups: [],
+        source: 'wxshare' // 默认来源，会被参数覆盖
     },
 
     onLoad(options) {
@@ -43,6 +44,7 @@ Page({
 
         const params = this.normalizeOptions(options);
         console.log('标准化后的 params:', params);
+        console.log('来源标识 source:', params.source || '未指定');
         console.log('===============================');
 
         const dataUpdate = {};
@@ -62,6 +64,10 @@ Page({
 
         if (params.title) {
             dataUpdate.title = decodeURIComponent(params.title);
+        }
+
+        if (params.source) {
+            dataUpdate.source = params.source;
         }
 
         const uuid = dataUpdate.uuid || this.data.uuid;
@@ -270,7 +276,7 @@ Page({
 
             const payload = {
                 uuid: this.data.uuid,
-                source: 'wxshare'
+                source: this.data.source || 'wxshare'
             };
 
             if (this.data.gameid) {
