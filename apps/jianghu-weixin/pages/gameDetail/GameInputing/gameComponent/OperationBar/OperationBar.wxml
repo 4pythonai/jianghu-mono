@@ -1,0 +1,57 @@
+<view class="operation-bar">
+  <!-- 比赛情况显示区域 -->
+  <view class="game-info">
+    <text class="course-name">{{  gameData.course }} {{gameData.gameStatus || 'A&B'}}</text>
+    <!-- 下拉按钮 -->
+    <view class="btn-dropdown" bindtap="onDropdownClick">
+      <image class="dropdown-icon" src="{{isExpanded ? '/assets/icons/arrow-up.svg' : '/assets/icons/arrow-down.svg'}}" mode="aspectFit"></image>
+    </view>
+  </view>
+  
+  <!-- 操作按钮区域 -->
+  <view class="operation-buttons">
+    <!-- 添加球员按钮 -->
+    <button class="btn btn-operation btn-circle" bindtap="onAddPlayers">
+      <image class="icon" src="/assets/icons/add.svg"  mode="aspectFit"></image>
+    </button>
+    
+    <!-- 更多按钮 -->
+    <button class="btn btn-operation btn-circle" bindtap="onMoreClick"> 
+      <text>...</text>
+    </button>
+  </view>
+</view>
+
+<!-- 详细信息区域 -->
+<view class="game-details {{isExpanded ? 'expanded' : 'collapsed'}}">
+  <view class="detail-row">
+    <text class="detail-label">比赛名称:</text>
+    <text class="detail-value">{{gameData.gameName || gameData.game_name || gameData.title || '友谊赛'}}</text>
+  </view>
+  <view class="detail-row">
+    <text class="detail-label">创建人:</text>
+    <view class="creator-info">
+      <image 
+        class="creator-avatar" 
+        src="{{gameData.creator.avatar || '/images/default-avatar.png'}}" 
+        mode="aspectFill"
+        lazy-load="true"
+      ></image>
+      <text class="creator-name">{{gameData.creator.nickname || gameData.creator.wx_nickname || '未知用户'}}</text>
+    </view>
+  </view>
+  <view class="detail-row">
+    <text class="detail-label">创建时间:</text>
+    <text class="detail-value">{{gameData.createTime || gameData.create_time || gameData.created_at || '2024-01-15 14:30'}}</text>
+  </view>
+  <view class="detail-row">
+    <text class="detail-label">球场:</text>
+    <text class="detail-value">{{gameData.course }}</text>
+  </view>
+  <view class="detail-row">
+    <text class="detail-label">开球时间:</text>
+    <text class="detail-value">{{formatEuropeanDate(gameData.teeTime || gameData.tee_time || gameData.start_time || '2024-01-15 09:00')}}</text>
+  </view>
+</view>
+
+ 
