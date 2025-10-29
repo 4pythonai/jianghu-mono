@@ -30,7 +30,7 @@
         class="submit-btn {{ isFormValid ? 'active' : 'disabled' }}"
         bindtap="onManualUserAdded"
         disabled="{{ !isFormValid }}"
-      >创建并选择</button>
+      >{{ scene === 'gameDetail' ? '加入比赛' : '创建并选择' }}</button>
     </view>
   </view>
 </view>

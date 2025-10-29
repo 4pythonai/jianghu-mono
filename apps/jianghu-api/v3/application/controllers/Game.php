@@ -399,17 +399,15 @@ class Game extends MY_Controller {
      */
     public function joinGame() {
         $params = json_decode(file_get_contents('php://input'), true);
-
-        $uuid = isset($params['uuid']) ? trim($params['uuid']) : '';
-        $userId = (int) $this->getUser();
-        if ($userId <= 0) {
-            echo json_encode(['code' => 401, 'message' => '未登录'], JSON_UNESCAPED_UNICODE);
-            return;
+        $joinType = isset($params['source']) && $params['source'] !== '' ? $params['source'] : 'wxshare';
+        if ($joinType === 'manualAdd') {
+            $userId = (int) $params['userid'];
+        } else {
+            $userId = (int) $this->getUser();
         }
 
+        $uuid = isset($params['uuid']) ? trim($params['uuid']) : '';
         $gameid = isset($params['gameid']) ? (int) $params['gameid'] : 0;
-        $joinType = isset($params['source']) && $params['source'] !== '' ? $params['source'] : 'wxshare';
-
         $joinResult = $this->MGame->gameJoinHandler($userId, $gameid, $joinType);
 
         if ((int) $joinResult['code'] !== 200) {

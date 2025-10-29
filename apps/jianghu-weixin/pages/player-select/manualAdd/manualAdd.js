@@ -136,7 +136,7 @@ Page({
      * 处理用户创建成功后的回调
      * 将创建的用户添加到组中, 类似好友选择的处理方式
      */
-    handleUserCreated(user) {
+    async handleUserCreated(user) {
         console.log('🎯 handleUserCreated 被调用, 接收用户数据:', user);
         console.log('📍 当前页面参数:', { groupIndex: this.data.groupIndex, slotIndex: this.data.slotIndex });
 
@@ -175,7 +175,18 @@ Page({
             }, 1500);
         }
         // 从比赛详情进入的
-        if (entryPage.route === ' pages/live/live') {
+        if (entryPage.route === 'pages/live/live') {
+            const result = await app.api.game.joinGame({
+                gameid: this.data.gameid,
+                userid: user.id,
+                source: 'manualAdd'
+            }, {
+                loadingTitle: '加入中...'
+            });
+
+            if (result?.code !== 200) {
+                throw new Error(result?.message || '加入失败');
+            }
 
         }
     }
