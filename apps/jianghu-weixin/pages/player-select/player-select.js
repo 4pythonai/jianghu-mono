@@ -28,6 +28,26 @@ Page({
             url += `&source=${method.id}`;
         }
 
+        // 处理手工添加的特殊参数
+        if (method.id === 'manualAdd') {
+            // 添加场景参数
+            if (method.scene) {
+                url += `&scene=${method.scene}`;
+            }
+            // 添加游戏ID参数
+            if (this.data.gameid) {
+                url += `&gameid=${this.data.gameid}`;
+            }
+            // 添加UUID参数
+            if (this.data.uuid) {
+                url += `&uuid=${this.data.uuid}`;
+            }
+            // 添加标题参数
+            if (this.data.title) {
+                url += `&title=${encodeURIComponent(this.data.title)}`;
+            }
+        }
+
         wx.navigateTo({
             url: url
         });

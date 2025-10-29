@@ -27,6 +27,7 @@ const game = {
     setTee: (data, options) => request('/Game/setTee', data, options),
     // 获取比赛邀请二维码
     getGameInviteQrcode: (data, options) => request('/Game/getGameInviteQrcode', data, options),
+    // 加入比赛
     joinGame: (data, options) => request('/Game/joinGame', data, options),
 
 }

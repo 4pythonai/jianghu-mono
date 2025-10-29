@@ -136,6 +136,82 @@ class MGame  extends CI_Model {
   }
 
 
+  public function gameJoinHandler($userid, $gameid, $joinType = 'wxshare') {
+    $response = [
+      'code' => 200,
+      'message' => '加入成功',
+      'data' => [
+        'groupid' => null,
+        'join_type' => $joinType,
+        'record_id' => null
+      ]
+    ];
+
+    $existingRecord = $this->db->select('id, groupid, join_type')
+      ->from('t_game_group_user')
+      ->where('gameid', $gameid)
+      ->where('userid', $userid)
+      ->get()
+      ->row_array();
+
+    if ($existingRecord) {
+      $response['code'] = 409;
+      $response['message'] = '您已经加入此比赛';
+      $response['data']['groupid'] = (int) $existingRecord['groupid'];
+      $response['data']['record_id'] = (int) $existingRecord['id'];
+      $response['data']['join_type'] = $existingRecord['join_type'] ?? $joinType;
+      return $response;
+    }
+
+    $groups = $this->fetchGameGroupsWithCount($gameid);
+
+    if (empty($groups)) {
+      $newGroup = $this->createGameGroupRow($gameid, 1);
+      $targetGroupId = $newGroup['groupid'];
+    } else {
+      $targetGroupId = null;
+      foreach ($groups as $group) {
+        if ((int) $group['player_count'] < 4) {
+          $targetGroupId = (int) $group['groupid'];
+          break;
+        }
+      }
+
+      if ($targetGroupId === null) {
+        $nextGroupNumber = count($groups) + 1;
+        $newGroup = $this->createGameGroupRow($gameid, $nextGroupNumber);
+        $targetGroupId = $newGroup['groupid'];
+      }
+    }
+
+    if (!$targetGroupId) {
+      $response['code'] = 500;
+      $response['message'] = '未能创建比赛分组';
+      return $response;
+    }
+
+    $now = date('Y-m-d H:i:s');
+    $joinData = [
+      'gameid' => $gameid,
+      'groupid' => $targetGroupId,
+      'userid' => $userid,
+      'tee' => 'blue',
+      'confirmed' => 0,
+      'confirmed_time' => null,
+      'addtime' => $now,
+      'join_type' => $joinType
+    ];
+    $this->db->insert('t_game_group_user', $joinData);
+    $response['data']['record_id'] = (int) $this->db->insert_id();
+
+    $this->db->where('id', $gameid)
+      ->update('t_game', ['status' => 'enrolling']);
+
+    $response['data']['groupid'] = $targetGroupId;
+    return $response;
+  }
+
+
   public function m_get_group_info($groupid) {
 
     $web_url = config_item('web_url');
@@ -147,5 +223,46 @@ class MGame  extends CI_Model {
     $sql_group_user .= "   and t_user.id=t_game_group_user.userid";
     $group_user = $this->db->query($sql_group_user)->result_array();
     return $group_user;
+  }
+
+
+  private function fetchGameGroupsWithCount($gameid) {
+    $query = $this->db->select('gg.groupid, gg.group_name, COUNT(ggu.id) AS player_count', false)
+      ->from('t_game_group gg')
+      ->join('t_game_group_user ggu', 'gg.gameid = ggu.gameid AND gg.groupid = ggu.groupid', 'left')
+      ->where('gg.gameid', $gameid)
+      ->group_by('gg.groupid')
+      ->order_by('gg.groupid', 'ASC')
+      ->get();
+
+    $groups = [];
+    foreach ($query->result_array() as $row) {
+      $groups[] = [
+        'groupid' => (int) $row['groupid'],
+        'group_name' => $row['group_name'],
+        'player_count' => (int) $row['player_count']
+      ];
+    }
+
+    return $groups;
+  }
+
+
+  private function createGameGroupRow($gameid, $groupNumber) {
+    $now = date('Y-m-d H:i:s');
+    $groupData = [
+      'gameid' => $gameid,
+      'group_name' => '组' . $groupNumber,
+      'group_create_time' => $now,
+      'group_start_status' => '0',
+      'group_all_confirmed' => 0
+    ];
+    $this->db->insert('t_game_group', $groupData);
+
+    return [
+      'groupid' => (int) $this->db->insert_id(),
+      'group_name' => $groupData['group_name'],
+      'player_count' => 0
+    ];
   }
 }

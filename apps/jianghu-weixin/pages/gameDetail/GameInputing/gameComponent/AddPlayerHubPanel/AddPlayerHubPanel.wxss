@@ -24,7 +24,7 @@
 	right: 0;
 	background-color: #fff;
 	border-radius: 20rpx 20rpx 0 0;
-	height: 95vh; /* 使用95%的视口高度 */
+	height: 85vh; /* 使用85%的视口高度，减少面板高度 */
 	transform: translateY(100%);
 	transition: transform 0.3s ease;
 	display: flex;
@@ -81,16 +81,100 @@
 	flex-direction: column;
 }
 
-.content-placeholder {
+/* 二维码区域 */
+.qrcode-section {
+	flex: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	flex: 1; /* 占用内容区域的全部高度 */
+	padding: 20rpx 0;
 }
 
-.placeholder-text {
+/* 二维码状态 */
+.qrcode-status {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 24rpx;
+}
+
+.status-text {
 	font-size: 32rpx;
 	color: #999;
+}
+
+.error-text {
+	font-size: 32rpx;
+	color: var(--error);
+	text-align: center;
+}
+
+.retry-btn {
+	padding: 16rpx 48rpx;
+	background-color: var(--primary-green-dark);
+	color: #fff;
+	border-radius: 8rpx;
+	transition: opacity 0.2s ease;
+}
+
+.retry-btn:active {
+	opacity: 0.8;
+}
+
+.retry-text {
+	font-size: 28rpx;
+	color: #fff;
+}
+
+/* 二维码展示 */
+.qrcode-display {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24rpx;
+	width: 100%;
+}
+
+.qrcode-image {
+	width: 500rpx;
+	height: 500rpx;
+	background-color: #fff;
+	border-radius: 16rpx;
+	box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.qrcode-hint {
+	font-size: 32rpx;
+	color: var(--text-primary);
+	font-weight: 500;
+	text-align: center;
+}
+
+.qrcode-tip {
+	font-size: 24rpx;
+	color: var(--text-tertiary);
+	text-align: center;
+}
+
+/* 其他添加方式提示 */
+.other-methods-hint {
+	margin: 32rpx 0 24rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 16rpx;
+}
+
+.hint-text {
+	font-size: 28rpx;
+	color: var(--text-secondary);
+}
+
+.divider-line {
+	width: 80rpx;
+	height: 1rpx;
+	background-color: var(--border-light);
 }
 
 /* 面板底部 */
@@ -105,35 +189,30 @@
 
 .footer-btn {
 	flex: 1;
-	height: 88rpx;
-	border-radius: 12rpx;
+	height: 100rpx;
+	border-radius: 16rpx;
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	transition: opacity 0.2s ease;
+	gap: 8rpx;
+	background: var(--gradient-primary);
+	transition: all 0.2s ease;
+	box-shadow: 0 4rpx 12rpx var(--shadow-primary);
 }
 
 .footer-btn:active {
-	opacity: 0.8;
+	transform: translateY(2rpx);
+	box-shadow: 0 2rpx 8rpx var(--shadow-primary-hover);
 }
 
-.cancel-btn {
-	background-color: #f5f5f5;
-}
-
-.confirm-btn {
-	background-color: #ffd700;
+.btn-icon {
+	width: 48rpx;
+	height: 48rpx;
 }
 
 .btn-text {
-	font-size: 32rpx;
+	font-size: 28rpx;
 	font-weight: 500;
-}
-
-.cancel-btn .btn-text {
-	color: #666;
-}
-
-.confirm-btn .btn-text {
-	color: #333;
+	color: #fff;
 }

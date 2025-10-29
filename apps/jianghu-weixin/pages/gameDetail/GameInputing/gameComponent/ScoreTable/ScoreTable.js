@@ -158,11 +158,20 @@ Component({
         showAddPlayerPanel() {
             const addPlayerPanel = this.selectComponent('#addPlayerPanel');
             if (addPlayerPanel) {
-                // 从 gameStore 获取 gameid
+                // 从 gameStore 获取 gameid 和 uuid
                 const gameid = this.data.gameid || this.data.gameData?.id;
+                const uuid = this.data.gameData?.uuid || this.data.gameData?.game_uuid;
+                const title = this.data.gameData?.title || this.data.gameData?.game_name;
+
+                console.log('📋 [ScoreTable] 准备显示添加球员面板:', { gameid, uuid, title });
+
                 if (gameid) {
                     addPlayerPanel.show({
-                        gameid: gameid
+                        gameid: gameid,
+                        uuid: uuid,
+                        title: title,
+                        groupIndex: 0,  // TODO: 从实际上下文获取
+                        slotIndex: 0    // TODO: 从实际上下文获取
                     });
                 } else {
                     console.warn('ScoreTable: 无法获取有效的 gameid');

@@ -11,19 +11,55 @@
 
     <!-- 面板内容区域 -->
     <view class="panel-content">
-      <!-- 这里先留空, 后续添加具体内容 -->
-      <view class="content-placeholder">
-        <text class="placeholder-text">添加球员功能开发中...</text>
+      <!-- 二维码区域 -->
+      <view class="qrcode-section">
+        <!-- 加载中 -->
+        <view wx:if="{{loading}}" class="qrcode-status loading">
+          <text class="status-text">正在生成二维码...</text>
+        </view>
+
+        <!-- 错误状态 -->
+        <view wx:elif="{{error}}" class="qrcode-status error">
+          <text class="error-text">{{error}}</text>
+          <view class="retry-btn" bindtap="handleRetry">
+            <text class="retry-text">重新生成</text>
+          </view>
+        </view>
+
+        <!-- 二维码展示 -->
+        <view wx:elif="{{qrcodeUrl}}" class="qrcode-display">
+          <image
+            class="qrcode-image"
+            src="{{qrcodeUrl}}"
+            mode="aspectFit"
+            show-menu-by-longpress="true"
+          ></image>
+          <text class="qrcode-hint">现场球友扫描后即可加入比赛</text>
+          <text class="qrcode-tip">长按二维码可保存或转发</text>
+        </view>
+
+        <!-- 未生成状态 - 没有uuid -->
+        <view wx:else class="qrcode-status placeholder">
+          <text class="status-text">{{uuid ? '等待生成二维码...' : '二维码功能暂不可用'}}</text>
+          <text wx:if="{{!uuid}}" class="qrcode-tip">请使用下方其他方式添加球员</text>
+        </view>
+      </view>
+
+      <!-- 其他添加方式提示 -->
+      <view class="other-methods-hint">
+        <view class="divider-line"></view>
+        <text class="hint-text">或选择其他添加方式</text>
+        <view class="divider-line"></view>
       </view>
     </view>
 
     <!-- 面板底部操作按钮 -->
     <view class="panel-footer">
-      <view class="footer-btn cancel-btn" bindtap="hide">
-        <text class="btn-text">取消</text>
+      <view class="footer-btn manual-add-btn" bindtap="handleManualAdd">
+        <text class="btn-text">手工添加</text>
       </view>
-      <view class="footer-btn confirm-btn" bindtap="onConfirm">
-        <text class="btn-text">确定</text>
+      <view class="footer-btn friend-select-btn" bindtap="handleFriendSelect">
+        <text class="btn-text">好友选择</text>
       </view>
     </view>
   </view>

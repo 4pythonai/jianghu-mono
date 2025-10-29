@@ -185,6 +185,10 @@ class Game extends MY_Controller {
         $groups = $json_paras['groups'];
         $this->MGame->clearGameGroupAndPlayers($gameid);
         $groupid = $this->MGame->addGameGroupAndPlayers($gameid, $groups);
+        // gameid status to enrolling   
+        $this->db->where('id', $gameid);
+        $this->db->update('t_game', ['status' => 'enrolling']);
+
         $ret = [];
         $ret['code'] = 200;
         $ret['message'] = '分组成功';
@@ -195,7 +199,6 @@ class Game extends MY_Controller {
     public function getGameInviteQrcode() {
         $params = json_decode(file_get_contents('php://input'), true);
         $uuid = $params['uuid'];
-        $path = $params['path'];
         $gameid = (int) $params['gameid'];
 
         $filenameSeed = preg_replace('/[^A-Za-z0-9]/', '', $uuid);
@@ -340,6 +343,60 @@ class Game extends MY_Controller {
         echo json_encode(['code' => 200, 'message' => '保存成功'], JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * 加入比赛
+     * 
+     * 用户通过此接口加入指定的比赛。系统会自动将用户分配到合适的组别：
+     * - 如果存在未满4人的组，则加入该组
+     * - 如果所有组都已满员，则创建新组
+     * - 如果比赛没有任何组，则创建第一个组
+     * 
+     * @api POST /game/joinGame
+     * 
+     * @param string uuid 比赛唯一标识符（可选）
+     * @param int gameid 比赛ID（必填）
+     * @param string source 加入来源类型（可选，默认为'wxshare'）
+     *                     可选值：'wxshare', 'qrcode', 'manual' 等
+     * 
+     * @return array 返回结果
+     * @return int code 状态码
+     *                  200: 加入成功
+     *                  401: 未登录
+     *                  409: 已经加入此比赛
+     * @return string message 提示信息
+     * @return array data 成功时返回的数据
+     * @return string data.uuid 比赛唯一标识符
+     * @return int data.gameid 比赛ID
+     * @return int data.groupid 分配的组别ID
+     * @return string data.join_type 加入类型
+     * 
+     * @example 请求示例
+     * POST /game/joinGame
+     * Content-Type: application/json
+     * {
+     *     "uuid": "game-uuid-123",
+     *     "gameid": 1001,
+     *     "source": "wxshare"
+     * }
+     * 
+     * @example 成功响应示例
+     * {
+     *     "code": 200,
+     *     "message": "加入成功",
+     *     "data": {
+     *         "uuid": "game-uuid-123",
+     *         "gameid": 1001,
+     *         "groupid": 1,
+     *         "join_type": "wxshare"
+     *     }
+     * }
+     * 
+     * @example 错误响应示例
+     * {
+     *     "code": 409,
+     *     "message": "您已经加入此比赛"
+     * }
+     */
     public function joinGame() {
         $params = json_decode(file_get_contents('php://input'), true);
 
@@ -353,71 +410,26 @@ class Game extends MY_Controller {
         $gameid = isset($params['gameid']) ? (int) $params['gameid'] : 0;
         $joinType = isset($params['source']) && $params['source'] !== '' ? $params['source'] : 'wxshare';
 
-        // 检查用户是否已经加入比赛
-        $existingRecord = $this->db->select('id, groupid')
-            ->from('t_game_group_user')
-            ->where('gameid', $gameid)
-            ->where('userid', $userId)
-            ->get()
-            ->row_array();
+        $joinResult = $this->MGame->gameJoinHandler($userId, $gameid, $joinType);
 
-        if ($existingRecord) {
-            echo json_encode(['code' => 409, 'message' => '您已经加入此比赛'], JSON_UNESCAPED_UNICODE);
+        if ((int) $joinResult['code'] !== 200) {
+            echo json_encode([
+                'code' => $joinResult['code'],
+                'message' => $joinResult['message']
+            ], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        // 获取所有现有组及其人数
-        $groups = $this->fetchGameGroupsWithCount($gameid);
-
-        // 如果没有组，创建第一个组
-        if (empty($groups)) {
-            $newGroup = $this->createGameGroupRow($gameid, 1);
-            $targetGroupId = $newGroup['groupid'];
-        } else {
-            // 查找第一个未满4人的组
-            $targetGroupId = null;
-            foreach ($groups as $group) {
-                if ((int) $group['player_count'] < 4) {
-                    $targetGroupId = (int) $group['groupid'];
-                    break;
-                }
-            }
-
-            // 如果所有组都满了，创建新组
-            if ($targetGroupId === null) {
-                $nextGroupNumber = count($groups) + 1;
-                $newGroup = $this->createGameGroupRow($gameid, $nextGroupNumber);
-                $targetGroupId = $newGroup['groupid'];
-            }
-        }
-
-        // 加入比赛
-        $now = date('Y-m-d H:i:s');
-        $joinData = [
-            'gameid' => $gameid,
-            'groupid' => $targetGroupId,
-            'userid' => $userId,
-            'tee' => 'blue',
-            'confirmed' => 0,
-            'confirmed_time' => null,
-            'addtime' => $now,
-            'join_type' => $joinType
-        ];
-        $this->db->insert('t_game_group_user', $joinData);
-
-        // 更新游戏状态为报名中
-        $this->db->where('id', $gameid);
-        $this->db->update('t_game', ['status' => 'enrolling']);
+        $responseData = isset($joinResult['data']) && is_array($joinResult['data']) ? $joinResult['data'] : [];
+        $responseData['uuid'] = $uuid;
+        $responseData['gameid'] = $gameid;
+        $responseData['join_type'] = $joinResult['data']['join_type'] ?? $joinType;
+        unset($responseData['record_id']);
 
         echo json_encode([
             'code' => 200,
-            'message' => '加入成功',
-            'data' => [
-                'uuid' => $uuid,
-                'gameid' => $gameid,
-                'groupid' => $targetGroupId,
-                'join_type' => $joinType
-            ]
+            'message' => $joinResult['message'],
+            'data' => $responseData
         ], JSON_UNESCAPED_UNICODE);
     }
 
@@ -443,45 +455,6 @@ class Game extends MY_Controller {
         $gameid = $json_paras['gameid'];
         $this->MGame->finishGame($gameid, null);
         echo json_encode(['code' => 200, 'message' => '结束比赛成功'], JSON_UNESCAPED_UNICODE);
-    }
-
-    private function fetchGameGroupsWithCount($gameid) {
-        $query = $this->db->select('gg.groupid, gg.group_name, COUNT(ggu.id) AS player_count', false)
-            ->from('t_game_group gg')
-            ->join('t_game_group_user ggu', 'gg.gameid = ggu.gameid AND gg.groupid = ggu.groupid', 'left')
-            ->where('gg.gameid', $gameid)
-            ->group_by('gg.groupid')
-            ->order_by('gg.groupid', 'ASC')
-            ->get();
-
-        $groups = [];
-        foreach ($query->result_array() as $row) {
-            $groups[] = [
-                'groupid' => (int) $row['groupid'],
-                'group_name' => $row['group_name'],
-                'player_count' => (int) $row['player_count']
-            ];
-        }
-
-        return $groups;
-    }
-
-    private function createGameGroupRow($gameid, $groupNumber) {
-        $now = date('Y-m-d H:i:s');
-        $groupData = [
-            'gameid' => $gameid,
-            'group_name' => '组' . $groupNumber,
-            'group_create_time' => $now,
-            'group_start_status' => '0',
-            'group_all_confirmed' => 0
-        ];
-        $this->db->insert('t_game_group', $groupData);
-
-        return [
-            'groupid' => (int) $this->db->insert_id(),
-            'group_name' => $groupData['group_name'],
-            'player_count' => 0
-        ];
     }
 
     private function buildGameInvitePath($uuid, $gameId, $gameName = '') {

@@ -61,7 +61,7 @@
     <view
       class="method-item"
       bindtap="onSelectMethod"
-      data-method="{{ {id: 'manualAdd', title: '手工添加', desc: '通过昵称或手机号添加', icon: '/assets/icons/4-01.png', url: '/pages/player-select/manualAdd/manualAdd'} }}"
+      data-method="{{ {id: 'manualAdd', title: '手工添加', desc: '通过昵称或手机号添加', icon: '/assets/icons/4-01.png', url: '/pages/player-select/manualAdd/manualAdd', scene: 'createGame'} }}"
     >
       <view class="method-icon">
         <image src="/assets/icons/4-01.png" mode="aspectFit"></image>

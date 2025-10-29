@@ -69,7 +69,7 @@ class MUser  extends CI_Model {
 
   public function updateNickName($userid, $nickname) {
     $this->db->where('id', $userid);
-    $this->db->update('t_user', ['wx_nickname' => $nickname]);
+    $this->db->update('t_user', ['wx_nickname' => $nickname, 'nickname' => $nickname]);
   }
 
 
@@ -118,6 +118,7 @@ class MUser  extends CI_Model {
   public function addRemakGhostUser($helperid, $remarkName, $mobile) {
     $new_user = [
       'nickname' => $remarkName,
+      'wx_nickname' => $remarkName,
       'mobile' => $mobile,
       'addtime' => date('Y-m-d H:i:s'),
       'reg_type' => 'manualAdd',
