@@ -1,6 +1,70 @@
 import { observable, action } from 'mobx-miniprogram';
 
 /**
+ * 将 scores 根据 userid 和 hindex 索引，方便快速查找
+ * @param {Array} scores
+ * @returns {Map<string, Map<string, object>>}
+ */
+function buildScoreIndex(scores = []) {
+    const index = new Map();
+    for (const score of scores) {
+        if (!score) continue;
+
+        const userId = String(score.userid ?? '');
+        const holeIndex = String(score.hindex ?? '');
+
+        if (!userId || !holeIndex) continue;
+
+        let holes = index.get(userId);
+        if (!holes) {
+            holes = new Map();
+            index.set(userId, holes);
+        }
+        holes.set(holeIndex, score);
+    }
+    return index;
+}
+
+/**
+ * 为红蓝分组创建便于 lookup 的结构
+ * @param {Array} redBlue
+ * @returns {Map<string, { redSet: Set<string>, blueSet: Set<string> }>}
+ */
+function buildRedBlueIndex(redBlue = []) {
+    const index = new Map();
+    for (const item of redBlue) {
+        if (!item) continue;
+        const holeIndex = String(item.hindex ?? '');
+        if (!holeIndex) continue;
+
+        index.set(holeIndex, {
+            redSet: new Set((item.red || []).map(id => String(id))),
+            blueSet: new Set((item.blue || []).map(id => String(id))),
+        });
+    }
+    return index;
+}
+
+/**
+ * 根据 scoreIndex 统计每个玩家的总杆数
+ * @param {Map<string, Map<string, object>>} scoreIndex
+ * @returns {object}
+ */
+function buildTotalsByUser(scoreIndex) {
+    const totals = {};
+    scoreIndex.forEach((holes, userId) => {
+        let sum = 0;
+        holes.forEach(score => {
+            if (typeof score?.score === 'number') {
+                sum += score.score;
+            }
+        });
+        totals[userId] = sum;
+    });
+    return totals;
+}
+
+/**
  * 分数相关的 store
  * 负责管理一维分数数组和分数录入、统计等操作
  */
@@ -15,12 +79,8 @@ export const scoreStore = observable({
      * @returns {object} {userid: totalScore, ...}
      */
     get playerTotalScores() {
-        const totals = {};
-        for (const s of (this.scores || [])) {
-            if (!totals[s.userid]) totals[s.userid] = 0;
-            if (typeof s.score === 'number') totals[s.userid] += s.score;
-        }
-        return totals;
+        const scoreIndex = buildScoreIndex(this.scores);
+        return buildTotalsByUser(scoreIndex);
     },
 
     /**
@@ -73,52 +133,45 @@ export const scoreStore = observable({
      * @param {Array} red_blue - 红蓝分组数据
      * @returns {Array} 二维数组，每个玩家对应一个分数数组
      */
-    calculateDisplayScores: action(function (players, holeList, red_blue = []) {
-        if (!players || !holeList || !this.scores || players.length === 0) return [];
+    calculateDisplayScores(players, holeList, red_blue = []) {
+        if (!Array.isArray(players) || players.length === 0) return [];
+        if (!Array.isArray(holeList) || holeList.length === 0) return [];
 
-        // 创建红蓝分组映射
-        const redBlueMap = {};
-        for (const item of red_blue) {
-            redBlueMap[String(item?.hindex)] = item;
-        }
+        const scoreIndex = buildScoreIndex(this.scores);
+        const redBlueIndex = buildRedBlueIndex(red_blue);
 
         return players.map(player => {
-            // 创建该玩家的分数映射
-            const scoreMap = {};
-            for (const s of this.scores) {
-                if (s?.hindex && String(s?.userid) === String(player?.userid)) {
-                    scoreMap[String(s?.hindex)] = s;
-                }
-            }
+            const userId = String(player?.userid ?? '');
+            const playerScores = scoreIndex.get(userId);
 
-            // 为每个球洞创建显示数据
             return holeList.map(hole => {
-                const cell = scoreMap[String(hole?.hindex)] || {};
-                const rb = redBlueMap[String(hole?.hindex)];
+                const holeIndex = String(hole?.hindex ?? '');
+                const cell = playerScores?.get(holeIndex) || {};
+                const rb = redBlueIndex.get(holeIndex);
                 let colorTag = '';
 
                 if (rb) {
-                    if ((rb.red || []).map(String).includes(String(player?.userid))) colorTag = 'red';
-                    if ((rb.blue || []).map(String).includes(String(player?.userid))) colorTag = 'blue';
+                    if (rb.redSet.has(userId)) colorTag = 'red';
+                    if (rb.blueSet.has(userId)) colorTag = 'blue';
                 }
 
                 return { ...cell, colorTag };
             });
         });
-    }),
+    },
 
     /**
      * 计算总分数组
      * @param {Array} displayScores - 显示分数矩阵
      * @returns {Array} 每个玩家的总分数组
      */
-    calculateDisplayTotals: action(function (displayScores) {
+    calculateDisplayTotals(displayScores) {
         if (!displayScores || displayScores.length === 0) return [];
 
         return displayScores.map(playerArr =>
             playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
         );
-    }),
+    },
 
     /**
      * 计算OUT和IN汇总 (仅18洞时)
@@ -126,7 +179,7 @@ export const scoreStore = observable({
      * @param {Array} holeList - 球洞列表
      * @returns {Object} {displayOutTotals, displayInTotals}
      */
-    calculateOutInTotals: action(function (displayScores, holeList) {
+    calculateOutInTotals(displayScores, holeList) {
         if (!displayScores || displayScores.length === 0 || holeList.length !== 18) {
             return { displayOutTotals: [], displayInTotals: [] };
         }
@@ -142,7 +195,7 @@ export const scoreStore = observable({
         });
 
         return { displayOutTotals, displayInTotals };
-    }),
+    },
 
     /**
      * 计算每个玩家的 handicap
@@ -150,24 +203,21 @@ export const scoreStore = observable({
      * @param {Array} holeList - 球洞列表
      * @returns {Array} 添加了 handicap 属性的玩家列表
      */
-    calculatePlayersHandicaps: action(function (players, holeList) {
+    calculatePlayersHandicaps(players, holeList) {
         if (!players || !holeList || !this.scores || players.length === 0) return players;
 
-        // 创建分数映射，便于快速查找（使用 userid 和 hindex 作为键）
-        const scoreMap = new Map();
-        for (const score of this.scores) {
-            const key = `${score.userid}_${score.hindex}`;
-            scoreMap.set(key, score);
-        }
+        const scoreIndex = buildScoreIndex(this.scores);
 
         return players.map(player => {
             let totalScore = 0;
             let totalPar = 0;
+            const userId = String(player?.userid ?? '');
+            const playerScores = scoreIndex.get(userId);
 
             // 计算该玩家的总分和总标准杆（使用 hindex 匹配）
-            holeList.forEach((hole, index) => {
-                const scoreKey = `${player.userid}_${hole.hindex}`;
-                const scoreData = scoreMap.get(scoreKey);
+            holeList.forEach(hole => {
+                const holeIndex = String(hole?.hindex ?? '');
+                const scoreData = playerScores?.get(holeIndex);
 
                 if (scoreData && typeof scoreData.score === 'number' && scoreData.score > 0) {
                     totalScore += scoreData.score;
@@ -183,6 +233,5 @@ export const scoreStore = observable({
                 handicap: handicap
             };
         });
-    }),
+    },
 });
-
