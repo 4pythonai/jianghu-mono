@@ -107,9 +107,11 @@
 
 .player-item {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	align-items: center;
+	justify-content: center;
 	margin-bottom: 20rpx;
+	gap: 10rpx;
 }
 
 .player-item.active {
@@ -124,7 +126,6 @@
 }
 
 .player-score {
-	margin-top: 10rpx;
 	font-size: 32rpx;
 	font-weight: bold;
 }

@@ -28,7 +28,7 @@
               data-index="{{index}}"
             >
               <image class="player-avatar" src="{{item.avatar}}" />
-              <view class="player-score">{{item.score}}</view>
+              <view class="player-score">{{localScores[index] ? localScores[index].score : ''}}</view>
             </view>
           </scroll-view>
         </view>
