@@ -1,0 +1,13 @@
+.game-detail-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg-page, #f7f8fa);
+}
+
+.tab-content {
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    background: var(--bg-card, #ffffff);
+}

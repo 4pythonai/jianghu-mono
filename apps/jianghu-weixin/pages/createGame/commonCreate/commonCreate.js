@@ -603,7 +603,7 @@ Page({
             return;
         }
         wx.navigateTo({
-            url: `/pages/gameDetail/gameDetail?gameid=${this.data.gameid}`
+            url: `/pages/gameDetail/score/score?gameid=${this.data.gameid}`
         });
     },
 

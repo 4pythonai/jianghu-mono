@@ -1,0 +1,8 @@
+{
+    "navigationBarTitleText": "比赛详情",
+    "usingComponents": {
+        "GameDetailTabs": "/components/GameDetailTabs/GameDetailTabs",
+        "ScoreTable": "/pages/gameDetail/GameInputing/gameComponent/ScoreTable/ScoreTable",
+        "ScoreInputPanel": "/pages/gameDetail/GameInputing/gameComponent/ScoreInputPanel/ScoreInputPanel"
+    }
+}

@@ -1,0 +1,20 @@
+.game-detail-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg-page, #f7f8fa);
+}
+
+.tab-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary, #999);
+    font-size: 14px;
+    background: var(--bg-card, #ffffff);
+}
+
+.empty-tab {
+    text-align: center;
+}

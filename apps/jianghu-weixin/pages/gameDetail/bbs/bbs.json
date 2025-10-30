@@ -1,0 +1,6 @@
+{
+    "navigationBarTitleText": "比赛详情",
+    "usingComponents": {
+        "GameDetailTabs": "/components/GameDetailTabs/GameDetailTabs"
+    }
+}

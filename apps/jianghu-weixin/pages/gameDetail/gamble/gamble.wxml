@@ -1,0 +1,6 @@
+<view class="game-detail-page">
+  <GameDetailTabs active="gamble" queryParams="{{queryParams}}" />
+  <view class="tab-content">
+    <GambleSummary gameid="{{gameid}}" groupid="{{groupid}}" id="gambleSummary" />
+  </view>
+</view>

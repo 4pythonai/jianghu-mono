@@ -1,0 +1,8 @@
+<view class="game-detail-page">
+  <GameDetailTabs active="bbs" queryParams="{{queryParams}}" />
+  <view class="tab-content">
+    <view class="empty-tab">
+      <text>暂无互动内容，敬请期待</text>
+    </view>
+  </view>
+</view>

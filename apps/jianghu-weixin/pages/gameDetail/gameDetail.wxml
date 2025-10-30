@@ -1,17 +1,3 @@
-<view class="tabs">
-  <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">记分</view>
-  <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">互动</view>
-  <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-tab="2">游戏</view>
-</view>
-<!-- 记分 -->
-<view hidden="{{currentTab !== 0}}">
-  <GameInputing id="gameMagement" gameid="{{gameid}}" groupid="{{groupid}}" />
-</view>
-<!-- 互动 -->
-<view class="tab-content" hidden="{{currentTab !== 1}}">
-  <BBS id="bbsComponent" gameid="{{gameData.gameid || ''}}" />
-</view>
-<!-- 赌博相关 -->
-<view class="tab-content" hidden="{{currentTab !== 2}}" style="width: 100%; padding: 0;">
-  <GambleSummary gameid="{{gameid}}" groupid="{{groupid}}" id="GambleSummary" />
+<view class="redirect-placeholder">
+  <text>正在跳转...</text>
 </view>

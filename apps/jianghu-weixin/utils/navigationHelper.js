@@ -71,7 +71,10 @@ class NavigationHelper {
         // 定义重要页面路径，这些页面应该保留
         const importantPaths = [
             'pages/live/live',
-            'pages/gameDetail/gameDetail', 
+            'pages/gameDetail/score/score',
+            'pages/gameDetail/bbs/bbs',
+            'pages/gameDetail/gamble/gamble',
+            'pages/gameDetail/gameDetail',
             'pages/createGame/createGame',
             'pages/rules/rules',
             ...keepPaths

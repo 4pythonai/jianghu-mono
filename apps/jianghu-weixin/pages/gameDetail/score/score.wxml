@@ -1,0 +1,7 @@
+<view class="game-detail-page">
+  <GameDetailTabs active="score" queryParams="{{queryParams}}" />
+  <view class="tab-content">
+    <ScoreTable bind:cellclick="onCellClick" />
+    <ScoreInputPanel id="scoreInputPanel" />
+  </view>
+</view>
