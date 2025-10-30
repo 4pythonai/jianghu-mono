@@ -1,5 +1,7 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '@/stores/gameStore'
+import { scoreStore } from '@/stores/scoreStore'
+import { holeRangeStore } from '@/stores/holeRangeStore'
 
 Page({
     data: {
@@ -11,7 +13,7 @@ Page({
     onLoad(options) {
         this.storeBindings = createStoreBindings(this, {
             store: gameStore,
-            fields: ['gameData', 'loading', 'error', 'players', 'scores', 'holes', 'red_blue'],
+            fields: ['gameData', 'loading', 'error', 'players', 'red_blue'], // 移除不存在的 scores 和 holes 字段
             actions: ['fetchGameDetail'], // 添加fetchGameDetail action
         });
         const gameid = options?.gameid;
@@ -26,7 +28,14 @@ Page({
 
         // 主动加载游戏数据
         if (gameid) {
-            this.fetchGameDetail(gameid, groupid);
+            this.fetchGameDetail(gameid, groupid).then(() => {
+                // 数据加载完成后，延迟打印调试信息，确保所有store都已更新
+                setTimeout(() => {
+                    this.printDebugInfo();
+                }, 200);
+            }).catch(err => {
+                console.error('[gameDetail] 加载数据失败:', err);
+            });
         }
 
         // 延迟刷新当前tab数据，确保组件已经挂载
@@ -56,7 +65,56 @@ Page({
             gameid: this.data.gameid,
             groupid: this.data.groupid
         });
+        // 打印调试信息
+        this.printDebugInfo();
         this.refreshCurrentTab();
+    },
+
+    /**
+     * 打印调试信息：players, holeList, scores 和计算结果
+     */
+    printDebugInfo() {
+        const players = this.data.players || gameStore.players || [];
+        const holeList = holeRangeStore.holeList || [];
+        const scores = scoreStore.scores || [];
+        const red_blue = this.data.red_blue || gameStore.red_blue || [];
+
+        console.log('==================== 调试信息开始 ====================');
+        console.log('📊 [Debug] players:', JSON.parse(JSON.stringify(players)));
+        console.log('🕳️ [Debug] holeList:', JSON.parse(JSON.stringify(holeList)));
+        console.log('🎯 [Debug] holeList.length:', holeList.length);
+        console.log('📝 [Debug] scores:', JSON.parse(JSON.stringify(scores)));
+        console.log('🔴🔵 [Debug] red_blue:', JSON.parse(JSON.stringify(red_blue)));
+
+        // 计算显示分数矩阵
+        const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
+        console.log('📈 [Debug] displayScores:', JSON.parse(JSON.stringify(displayScores)));
+
+        // 计算总分数组
+        const displayTotals = scoreStore.calculateDisplayTotals(displayScores);
+        console.log('🔢 [Debug] displayTotals:', displayTotals);
+
+        // 计算OUT和IN汇总
+        const { displayOutTotals, displayInTotals } = scoreStore.calculateOutInTotals(displayScores, holeList);
+        console.log('📊 [Debug] displayOutTotals:', displayOutTotals);
+        console.log('📊 [Debug] displayInTotals:', displayInTotals);
+        console.log('📊 [Debug] holeList.length === 18?', holeList.length === 18);
+
+        // 检查每个玩家的OUT数据详情
+        if (displayScores.length > 0 && holeList.length === 18) {
+            console.log('🔍 [Debug] 检查OUT列计算详情:');
+            displayScores.forEach((playerArr, playerIndex) => {
+                const player = players[playerIndex];
+                const outScores = playerArr.slice(0, 9);
+                const inScores = playerArr.slice(9, 18);
+                const outTotal = outScores.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
+                const inTotal = inScores.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
+                console.log(`  玩家 ${playerIndex} (${player?.name || player?.userid}): OUT=${outTotal}, IN=${inTotal}`);
+            });
+        } else if (holeList.length !== 18) {
+            console.warn('⚠️ [Debug] holeList长度不是18，OUT和IN列不会被计算');
+        }
+        console.log('==================== 调试信息结束 ====================');
     },
 
     refreshCurrentTab() {

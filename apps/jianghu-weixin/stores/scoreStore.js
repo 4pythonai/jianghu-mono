@@ -153,10 +153,10 @@ export const scoreStore = observable({
     calculatePlayersHandicaps: action(function (players, holeList) {
         if (!players || !holeList || !this.scores || players.length === 0) return players;
 
-        // 创建分数映射，便于快速查找
+        // 创建分数映射，便于快速查找（使用 userid 和 hindex 作为键）
         const scoreMap = new Map();
         for (const score of this.scores) {
-            const key = `${score.userid}_${score.holeid}`;
+            const key = `${score.userid}_${score.hindex}`;
             scoreMap.set(key, score);
         }
 
@@ -164,9 +164,9 @@ export const scoreStore = observable({
             let totalScore = 0;
             let totalPar = 0;
 
-            // 计算该玩家的总分和总标准杆
+            // 计算该玩家的总分和总标准杆（使用 hindex 匹配）
             holeList.forEach((hole, index) => {
-                const scoreKey = `${player.userid}_${hole.holeid}`;
+                const scoreKey = `${player.userid}_${hole.hindex}`;
                 const scoreData = scoreMap.get(scoreKey);
 
                 if (scoreData && typeof scoreData.score === 'number' && scoreData.score > 0) {

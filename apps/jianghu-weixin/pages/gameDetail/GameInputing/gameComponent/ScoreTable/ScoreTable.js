@@ -52,6 +52,11 @@ Component({
             });
 
             this.scrollToLeft();
+
+            // 延迟手动触发一次计算，确保数据能正确初始化
+            setTimeout(() => {
+                this.calculateDisplayData();
+            }, 100);
         },
 
         detached() {
@@ -69,17 +74,164 @@ Component({
 
     observers: {
         'playerScores,players,holeList,red_blue': function (scores, players, holeList, red_blue) {
-            if (!scores || !players || !holeList) return;
+            if (!scores || !players || !holeList) {
+                console.warn('[ScoreTable] observers: 数据不完整', { scores, players, holeList });
+                return;
+            }
+
+            console.log('[ScoreTable] observers 触发:', {
+                scoresLength: scores?.length,
+                playersLength: players?.length,
+                holeListLength: holeList?.length,
+                red_blueLength: red_blue?.length
+            });
 
             // 使用 scoreStore 的计算方法
             const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
             const displayTotals = scoreStore.calculateDisplayTotals(displayScores);
             const { displayOutTotals, displayInTotals } = scoreStore.calculateOutInTotals(displayScores, holeList);
-            this.setData({ displayScores, displayTotals, displayOutTotals, displayInTotals });
+
+            console.log('[ScoreTable] 计算结果:', {
+                displayScoresLength: displayScores?.length,
+                displayTotals,
+                displayOutTotals,
+                displayOutTotalsValues: displayOutTotals ? [...displayOutTotals] : null, // 展开数组查看实际值
+                displayInTotals,
+                displayInTotalsValues: displayInTotals ? [...displayInTotals] : null,
+                displayOutTotalsType: Array.isArray(displayOutTotals) ? 'array' : typeof displayOutTotals,
+                displayOutTotalsLength: displayOutTotals?.length,
+                holeListLength: holeList.length,
+                is18Holes: holeList.length === 18
+            });
+
+            // 确保 displayOutTotals 和 displayInTotals 是数组
+            const safeDisplayOutTotals = Array.isArray(displayOutTotals) ? displayOutTotals : [];
+            const safeDisplayInTotals = Array.isArray(displayInTotals) ? displayInTotals : [];
+
+            // 确保数组有足够长度，并用0填充空缺
+            const paddedOutTotals = [...safeDisplayOutTotals];
+            const paddedInTotals = [...safeDisplayInTotals];
+            while (paddedOutTotals.length < players.length) {
+                paddedOutTotals.push(0);
+            }
+            while (paddedInTotals.length < players.length) {
+                paddedInTotals.push(0);
+            }
+
+            console.log('[ScoreTable] 准备 setData:', {
+                safeDisplayOutTotals,
+                paddedOutTotals,
+                paddedInTotals,
+                playersLength: players.length
+            });
+
+            this.setData({
+                displayScores,
+                displayTotals,
+                displayOutTotals: paddedOutTotals,
+                displayInTotals: paddedInTotals
+            });
+
+            // 验证设置后的数据（延迟一点以确保setData完成）
+            setTimeout(() => {
+                const outTotals = this.data.displayOutTotals || [];
+                const inTotals = this.data.displayInTotals || [];
+                console.log('[ScoreTable] setData 后的数据:', {
+                    displayOutTotals: outTotals,
+                    displayOutTotalsValues: [...outTotals], // 展开数组
+                    displayInTotals: inTotals,
+                    displayInTotalsValues: [...inTotals], // 展开数组
+                    displayOutTotalsType: Array.isArray(this.data.displayOutTotals) ? 'array' : typeof this.data.displayOutTotals,
+                    playersLength: this.data.players?.length,
+                    displayOutTotalsLength: outTotals.length
+                });
+
+                // 检查每个玩家的OUT值
+                if (outTotals.length > 0 && this.data.players) {
+                    console.log('[ScoreTable] 每个玩家的OUT值:',
+                        this.data.players.map((p, i) => ({
+                            playerIndex: i,
+                            playerId: p.userid,
+                            outValue: outTotals[i],
+                            outType: typeof outTotals[i]
+                        }))
+                    );
+                }
+            }, 50);
         }
     },
 
     methods: {
+        /**
+         * 手动计算显示数据（用于确保数据正确初始化）
+         */
+        calculateDisplayData() {
+            const players = this.data.players || [];
+            const holeList = this.data.holeList || [];
+            const red_blue = this.data.red_blue || [];
+            const scores = this.data.playerScores || [];
+
+            console.log('[ScoreTable] calculateDisplayData 手动触发:', {
+                playersLength: players.length,
+                holeListLength: holeList.length,
+                scoresLength: scores.length
+            });
+
+            if (!players.length || !holeList.length) {
+                console.warn('[ScoreTable] calculateDisplayData: 数据不完整，跳过计算');
+                return;
+            }
+
+            // 使用 scoreStore 的计算方法
+            const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
+            const displayTotals = scoreStore.calculateDisplayTotals(displayScores);
+            const { displayOutTotals, displayInTotals } = scoreStore.calculateOutInTotals(displayScores, holeList);
+
+            console.log('[ScoreTable] calculateDisplayData 计算结果:', {
+                displayOutTotals,
+                displayOutTotalsValues: displayOutTotals ? [...displayOutTotals] : null,
+                displayInTotals,
+                displayInTotalsValues: displayInTotals ? [...displayInTotals] : null,
+                displayTotals
+            });
+
+            // 确保是数组
+            const safeDisplayOutTotals = Array.isArray(displayOutTotals) ? displayOutTotals : [];
+            const safeDisplayInTotals = Array.isArray(displayInTotals) ? displayInTotals : [];
+
+            // 确保数组有足够长度，并用0填充空缺
+            const paddedOutTotals = [...safeDisplayOutTotals];
+            const paddedInTotals = [...safeDisplayInTotals];
+            while (paddedOutTotals.length < players.length) {
+                paddedOutTotals.push(0);
+            }
+            while (paddedInTotals.length < players.length) {
+                paddedInTotals.push(0);
+            }
+
+            console.log('[ScoreTable] calculateDisplayData 准备setData:', {
+                paddedOutTotals,
+                paddedInTotals,
+                playersLength: players.length
+            });
+
+            this.setData({
+                displayScores,
+                displayTotals,
+                displayOutTotals: paddedOutTotals,
+                displayInTotals: paddedInTotals
+            });
+
+            setTimeout(() => {
+                const outTotals = this.data.displayOutTotals || [];
+                console.log('[ScoreTable] calculateDisplayData setData 完成:', {
+                    displayOutTotals: outTotals,
+                    displayOutTotalsValues: [...outTotals],
+                    playersLength: this.data.players?.length
+                });
+            }, 50);
+        },
+
         scrollToLeft() {
             const query = wx.createSelectorQuery().in(this);
             query.select('#mainScroll').node().exec((res) => {

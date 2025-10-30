@@ -192,12 +192,14 @@
 .cell-out {
 	background-color: #fff3e0; /* 浅橙色背景 */
 	border: 1px solid #e5e5e5; /* 与HoleCell的边框样式完全一致 */
+	position: relative; /* 为绝对定位的文本提供定位上下文 */
 }
 
 /* IN汇总单元格 */
 .cell-in {
 	background-color: #e3f2fd; /* 浅蓝色背景 */
 	border: 1px solid #e5e5e5; /* 与HoleCell的边框样式完全一致 */
+	position: relative; /* 为绝对定位的文本提供定位上下文 */
 }
 
 /* OUT和IN汇总列文本样式，与HoleCell的score-text对齐 */
