@@ -24,7 +24,7 @@
 	right: 0;
 	background-color: #fff;
 	border-radius: 20rpx 20rpx 0 0;
-	height: 85vh; /* 使用85%的视口高度，减少面板高度 */
+	height: 72vh; /* 使用85%的视口高度，减少面板高度 */
 	transform: translateY(100%);
 	transition: transform 0.3s ease;
 	display: flex;
@@ -74,7 +74,6 @@
 
 /* 面板内容 */
 .panel-content {
-	padding: 0 32rpx;
 	flex: 1; /* 占用剩余所有空间 */
 	overflow-y: auto;
 	display: flex;
@@ -87,7 +86,6 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 20rpx 0;
 }
 
 /* 二维码状态 */
@@ -132,7 +130,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 24rpx;
+	gap: 4rpx;
 	width: 100%;
 }
 

@@ -234,42 +234,51 @@
 	font-weight: bold;
 }
 
-/* 游戏摘要样式 */
-.game-abstract {
+/* 底部操作栏容器 */
+.bottom-action-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	padding: 20rpx;
+	margin-top: 80rpx;
 	background-color: #045d26;
 	border-top: 1rpx solid #e9ecef;
-	clear: both;
-	width: 90%;
-	margin: 80rpx 0 0 20rpx;
-	
+}
+
+/* 游戏摘要样式 */
+.game-abstract {
+	flex: 1;
+	padding-right: 20rpx;
 }
 
 .abstract-text {
 	font-size: 28rpx;
 	color: white;
 	line-height: 1.5;
-	text-align: center;
+	text-align: left;
+}
+
+/* 按钮组容器 */
+.button-group {
+	display: flex;
+	align-items: center;
+	gap: 20rpx;
 }
 
 /* 操作按钮样式 */
-.optionBtn {
-	position: fixed;
-	top: 50%;
-	right: 20rpx;
-	transform: translateY(-50%);
+.operationBtn {
 	width: 80rpx;
 	height: 80rpx;
-	background-color: rgba(4, 93, 38, 0.8);
+	background-color: rgba(255, 255, 255, 0.2);
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 100;
 	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+	flex-shrink: 0;
 }
 
-.option-icon {
+.operation-icon {
 	font-size: 40rpx;
 	color: white;
 	font-weight: bold;
@@ -278,19 +287,15 @@
 
 /* 添加球员按钮样式 */
 .addPlayerBtn {
-	position: fixed;
-	top: 50%;
-	left: 20rpx;
-	transform: translateY(-50%);
 	width: 80rpx;
 	height: 80rpx;
-	background-color: rgba(4, 93, 38, 0.8);
+	background-color: rgba(255, 255, 255, 0.2);
 	border-radius: 50%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	z-index: 100;
 	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+	flex-shrink: 0;
 }
 
 .add-icon {

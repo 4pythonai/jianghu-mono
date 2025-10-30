@@ -188,6 +188,12 @@ Page({
                 throw new Error(result?.message || '加入失败');
             }
 
+            if (result?.code == 200) {
+                console.log('🔴🟢🔵 >>> 手工加入成功 , 返回 pages/gameDetail/gameDetail ');
+                wx.navigateBack({
+                    delta: 1
+                });
+            }
         }
     }
 }) 
