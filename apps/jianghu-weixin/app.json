@@ -32,7 +32,9 @@
 		"pages/gambleRuntimeConfig/addRuntime/addRuntime",
 		"pages/gambleRuntimeConfig/editRuntime/editRuntime",
 		"pages/gambleResult/gambleResult",
-		"pages/rules/rules"
+		"pages/rules/rules",
+		"pages/rules/myRules/myRules",
+		"pages/rules/addRule/addRule"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

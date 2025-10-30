@@ -1,0 +1,11 @@
+<view class="rules-page">
+  <RulesTabs active="myRules" queryParams="{{queryParams}}" />
+  <view class="tab-content">
+    <MyRules
+      id="myRulesComponent"
+      show="{{true}}"
+      bind:editRule="onEditRule"
+      bind:pullDownComplete="onPullDownComplete"
+    ></MyRules>
+  </view>
+</view>

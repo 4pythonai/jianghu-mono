@@ -1,34 +1,4 @@
-<!-- 游戏规则页面 -->
-<view class="rules-container">
-  <!-- Tab栏 -->
-  <view class="tab-bar">
-    <view
-      class="tab-item {{ activeTab === 0 ? 'active' : '' }}"
-      bindtap="onTabChange"
-      data-index="0"
-    >
-      <text>我的规则</text>
-    </view>
-    <view
-      class="tab-item {{ activeTab === 1 ? 'active' : '' }}"
-      bindtap="onTabChange"
-      data-index="1"
-    >
-      <text>添加规则</text>
-    </view>
-  </view>
-
-  <!-- Tab内容区域 -->
-  <view class="tab-content">
-    <!-- 我的规则组件 -->
-    <MyRules
-      id="myRulesComponent"
-      show="{{ activeTab == 0 }}"
-      bind:editRule="onEditRule"
-      bind:pullDownComplete="onPullDownComplete"
-    ></MyRules>
-
-    <!-- 添加规则组件 -->
-    <SysRule id="addRuleComponent" show="{{ activeTab == 1 }}" editRule="{{ editRule }}"></SysRule>
-  </view>
+<!-- 游戏规则页面 - 入口页面，仅用于重定向 -->
+<view class="redirect-placeholder">
+  <text>正在跳转...</text>
 </view>

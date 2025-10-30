@@ -1,9 +1,6 @@
 {
     "navigationBarTitleText": "游戏规则",
-    "enablePullDownRefresh": true,
+    "enablePullDownRefresh": false,
     "backgroundColor": "#f5f5f5",
-    "usingComponents": {
-        "MyRules": "./ruleComponents/MyRules/MyRules",
-        "SysRule": "./ruleComponents/SysRule/SysRule"
-    }
+    "usingComponents": {}
 }

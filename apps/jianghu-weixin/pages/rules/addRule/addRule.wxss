@@ -1,0 +1,8 @@
+/* 添加规则页面样式 */
+.rules-page {
+    min-height: 100vh;
+}
+
+.tab-content {
+    padding: 5px;
+}

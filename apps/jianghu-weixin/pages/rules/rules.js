@@ -1,85 +1,56 @@
-// 游戏规则页面
+// 游戏规则页面 - 入口页面，负责重定向到对应的 tab 页面
+const TAB_ROUTE_MAP = {
+    '0': 'myRules',
+    '1': 'addRule',
+    myRules: 'myRules',
+    addRule: 'addRule'
+};
+
 Page({
-    data: {
-        activeTab: 0, // 当前激活的tab, 0为"我的规则", 1为"添加规则"
-        editRule: null // 编辑的规则数据
+    onLoad(options = {}) {
+        console.log('📋 [Rules] 入口页面加载，参数:', options);
+
+        // 解析目标 tab
+        const targetTab = this._resolveTab(options.activeTab);
+
+        // 重定向到对应的 tab 页面
+        const query = this._buildQueryString(this._extractQueryParams(options));
+        const url = query
+            ? `/pages/rules/${targetTab}/${targetTab}?${query}`
+            : `/pages/rules/${targetTab}/${targetTab}`;
+
+        console.log('📋 [Rules] 重定向到:', url);
+        wx.redirectTo({ url });
     },
 
-    // 页面加载
-    onLoad(options) {
-        console.log('📋 [Rules] 页面加载');
-        console.log('📋 [Rules] 页面参数:', options);
-
-        // 如果传入了activeTab参数，则设置对应的tab
-        if (options.activeTab !== undefined) {
-            const activeTab = Number.parseInt(options.activeTab);
-            console.log('📋 [Rules] 设置activeTab:', activeTab);
-            this.setData({ activeTab });
+    _resolveTab(activeTab) {
+        if (activeTab === undefined || activeTab === null) {
+            return 'myRules'; // 默认跳转到"我的规则"
         }
-
-        console.log('📋 [Rules] 最终activeTab:', this.data.activeTab);
+        return TAB_ROUTE_MAP[String(activeTab)] || 'myRules';
     },
 
-    // 页面显示
-    onShow() {
-        console.log('📋 [Rules] 页面显示');
-
-        // 刷新我的规则列表, 确保显示最新数据
-        if (this.data.activeTab === 0) {
-            const myRulesComponent = this.selectComponent('#myRulesComponent');
-            if (myRulesComponent) {
-                myRulesComponent.refreshRules();
+    _extractQueryParams(options = {}) {
+        const result = {};
+        Object.keys(options).forEach(key => {
+            if (key === 'activeTab') {
+                return;
             }
-        }
-    },
-
-    // Tab切换方法
-    onTabChange(e) {
-        const { index } = e.currentTarget.dataset;
-        const tabIndex = Number.parseInt(index); // 确保转换为数字
-        console.log('📋 [Rules] 切换到tab:', tabIndex, '(原始值:', index, ')');
-
-        this.setData({
-            activeTab: tabIndex
-        });
-
-        // 切换到添加规则tab时, 清除编辑状态
-        if (tabIndex === 1) {
-            this.setData({ editRule: null });
-        }
-    },
-
-    // ---- 组件事件处理 ----
-
-    // 处理编辑规则事件
-    onEditRule(e) {
-        const { rule } = e.detail;
-        console.log('📋 [Rules] 编辑规则:', rule);
-
-        // 设置编辑数据并切换到添加规则tab
-        this.setData({
-            activeTab: 1,
-            editRule: rule
-        });
-    },
-
-
-
-    // 下拉刷新
-    onPullDownRefresh() {
-        if (this.data.activeTab === 0) {
-            // 通知MyRules组件处理下拉刷新
-            const myRulesComponent = this.selectComponent('#myRulesComponent');
-            if (myRulesComponent) {
-                myRulesComponent.onPullDownRefresh();
+            const value = options[key];
+            if (value !== undefined && value !== null && value !== '') {
+                result[key] = value;
             }
-        } else {
-            wx.stopPullDownRefresh();
-        }
+        });
+        return result;
     },
 
-    // 处理组件的下拉刷新完成事件
-    onPullDownComplete() {
-        wx.stopPullDownRefresh();
+    _buildQueryString(params = {}) {
+        const entries = Object.entries(params);
+        if (!entries.length) {
+            return '';
+        }
+        return entries
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+            .join('&');
     }
 }); 

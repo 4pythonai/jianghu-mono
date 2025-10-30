@@ -1,0 +1,6 @@
+<view class="rules-page">
+  <RulesTabs active="addRule" queryParams="{{queryParams}}" />
+  <view class="tab-content">
+    <SysRule id="addRuleComponent" show="{{true}}" editRule="{{editRule}}"></SysRule>
+  </view>
+</view>

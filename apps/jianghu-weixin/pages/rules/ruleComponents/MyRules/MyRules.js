@@ -29,7 +29,12 @@ Component({
         loading: false
     },
 
-    lifetimes: {},
+    lifetimes: {
+        attached() {
+            // 组件挂载时自动加载数据
+            this.loadMyRules();
+        }
+    },
 
     observers: {
         // 监听show属性变化
