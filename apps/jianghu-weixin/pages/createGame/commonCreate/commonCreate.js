@@ -575,7 +575,7 @@ Page({
         if (!this.data.shareReady) {
             wx.showToast({
                 title: '比赛信息未就绪',
-                icon: 'none'
+                icon: 'error'
             });
             return;
         }

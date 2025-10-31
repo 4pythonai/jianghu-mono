@@ -120,7 +120,7 @@ Component({
                     } else {
                         message = '请先设置开球时间';
                     }
-                    wx.showToast({ title: message, icon: 'none' });
+                    wx.showToast({ title: message, icon: 'error' });
                     return;
                 }
             }
