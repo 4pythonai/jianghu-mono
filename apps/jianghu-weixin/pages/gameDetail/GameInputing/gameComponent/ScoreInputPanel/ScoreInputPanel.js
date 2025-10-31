@@ -119,7 +119,18 @@ Component({
             const currentScore = this.data.localScores[index][type] || 0;
             const newValue = currentScore + Number(amount);
 
-            if (newValue < 0) return;
+            // 成绩最少为1，不能变成0或负数
+            if (newValue < 1) {
+                // 如果当前已经是1，继续减就不更新（保持为1）
+                if (currentScore <= 1) {
+                    return;
+                }
+                // 如果当前大于1但减去后会小于1，设置为1
+                this.setData({
+                    [`localScores[${index}].${type}`]: 1
+                });
+                return;
+            }
 
             this.setData({
                 [`localScores[${index}].${type}`]: newValue

@@ -84,6 +84,40 @@ export const gameStore = observable({
         this.isSaving = status;
     }),
 
+    // 更新玩家 handicap（原子操作的一部分）
+    // 用于在分数变动时实时更新 players 的 handicap
+    updatePlayersHandicaps: action(function (holeList) {
+        if (!this.players || !holeList || this.players.length === 0) {
+            console.log('[gameStore] updatePlayersHandicaps: 数据不完整，跳过更新');
+            return;
+        }
+
+        // 使用 scoreStore 计算 handicap（基于当前的 scores 和 players）
+        const playersWithHandicap = scoreStore.calculatePlayersHandicaps(this.players, holeList);
+
+        // 检查 handicap 是否真的变化了，避免不必要的更新导致循环触发
+        let hasChanged = false;
+        for (let i = 0; i < this.players.length; i++) {
+            const oldHandicap = this.players[i]?.handicap ?? 0;
+            const newHandicap = playersWithHandicap[i]?.handicap ?? 0;
+            if (oldHandicap !== newHandicap) {
+                hasChanged = true;
+                break;
+            }
+        }
+
+        // 只有当 handicap 真的变化时才更新 players，避免循环触发
+        if (hasChanged) {
+            this.players = playersWithHandicap;
+            console.log('[gameStore] 原子操作：更新 players handicap 完成', {
+                playersCount: this.players.length,
+                handicaps: this.players.map(p => ({ userid: p.userid, nickname: p.nickname, handicap: p.handicap }))
+            });
+        } else {
+            console.log('[gameStore] 原子操作：handicap 未变化，跳过更新（避免循环触发）');
+        }
+    }),
+
     // 更新运行时倍数配置
     updateRuntimeMultipliers: action(function (configId, kickConfig) {
         console.log('[gameStore] 更新运行时倍数配置:', { configId, kickConfig });
