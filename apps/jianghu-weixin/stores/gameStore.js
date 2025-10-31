@@ -13,6 +13,31 @@ import {
 import { scoreStore } from './scoreStore'
 import { holeRangeStore } from './holeRangeStore'
 
+/**
+ * 将 scores 根据 userid 和 hindex 索引，方便快速查找
+ * @param {Array} scores
+ * @returns {Map<string, Map<string, object>>}
+ */
+function buildScoreIndex(scores = []) {
+    const index = new Map();
+    for (const score of scores) {
+        if (!score) continue;
+
+        const userId = String(score.userid ?? '');
+        const holeIndex = String(score.hindex ?? '');
+
+        if (!userId || !holeIndex) continue;
+
+        let holes = index.get(userId);
+        if (!holes) {
+            holes = new Map();
+            index.set(userId, holes);
+        }
+        holes.set(holeIndex, score);
+    }
+    return index;
+}
+
 
 export const gameStore = observable({
 
@@ -68,7 +93,7 @@ export const gameStore = observable({
         }
 
         // 计算每个玩家的 handicap
-        const playersWithHandicap = scoreStore.calculatePlayersHandicaps(players, holeList);
+        const playersWithHandicap = this.calculatePlayersHandicaps(players, holeList, scoreStore.scores);
 
         // 先更新基础数据
         this.gameData = gameInfo;
@@ -92,8 +117,8 @@ export const gameStore = observable({
             return;
         }
 
-        // 使用 scoreStore 计算 handicap（基于当前的 scores 和 players）
-        const playersWithHandicap = scoreStore.calculatePlayersHandicaps(this.players, holeList);
+        // 使用本地的 calculatePlayersHandicaps 计算 handicap（基于当前的 scores 和 players）
+        const playersWithHandicap = this.calculatePlayersHandicaps(this.players, holeList, scoreStore.scores);
 
         // 检查 handicap 是否真的变化了，避免不必要的更新导致循环触发
         let hasChanged = false;
@@ -150,6 +175,22 @@ export const gameStore = observable({
     fetchGameDetail: action(async function (gameid, groupid = null) {
         if (this.loading) return; // 防止重复加载
 
+        // 如果是切换比赛（gameid 不同），先清理旧数据，避免数据污染
+        if (this.gameid && String(this.gameid) !== String(gameid)) {
+            console.log('[gameStore] 切换比赛，清理旧数据', {
+                oldGameid: this.gameid,
+                newGameid: gameid
+            });
+            // 清理所有相关数据
+            this.players = [];
+            this.gameData = null;
+            this.red_blue = [];
+            this.kickConfigs = [];
+            this.gameAbstract = '';
+            scoreStore.scores = [];  // 清理分数数据
+            holeRangeStore.holeList = [];  // 清理洞数据
+        }
+
         this.loading = true;
         this.error = null;
         this.gameid = gameid;
@@ -179,6 +220,9 @@ export const gameStore = observable({
         } catch (err) {
             console.error('❌ [Store] 获取比赛详情失败:', err);
             this.error = err.message || '获取数据失败';
+
+            // 如果加载失败，确保数据是干净的（如果是切换比赛，已在上面的清理逻辑处理）
+            // 这里只需要确保 error 状态正确
             throw err;
         } finally {
             this.loading = false;
@@ -207,6 +251,82 @@ export const gameStore = observable({
     getScoreClass: action((diff) => {
         return getScoreClass(diff);
     }),
+
+    /**
+     * 计算总分数组（原子操作的一部分）
+     * @param {Array} displayScores - 显示分数矩阵
+     * @returns {Array} 每个玩家的总分数组
+     */
+    calculateDisplayTotals(displayScores) {
+        if (!displayScores || displayScores.length === 0) return [];
+
+        return displayScores.map(playerArr =>
+            playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
+        );
+    },
+
+    /**
+     * 计算OUT和IN汇总（原子操作的一部分，仅18洞时）
+     * @param {Array} displayScores - 显示分数矩阵
+     * @param {Array} holeList - 球洞列表
+     * @returns {Object} {displayOutTotals, displayInTotals}
+     */
+    calculateOutInTotals(displayScores, holeList) {
+        if (!displayScores || displayScores.length === 0 || holeList.length !== 18) {
+            return { displayOutTotals: [], displayInTotals: [] };
+        }
+
+        const displayOutTotals = displayScores.map(playerArr => {
+            // OUT: 前9洞 (索引0-8)
+            return playerArr.slice(0, 9).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
+        });
+
+        const displayInTotals = displayScores.map(playerArr => {
+            // IN: 后9洞 (索引9-17)
+            return playerArr.slice(9, 18).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
+        });
+
+        return { displayOutTotals, displayInTotals };
+    },
+
+    /**
+     * 计算每个玩家的 handicap（原子操作的一部分）
+     * @param {Array} players - 玩家列表
+     * @param {Array} holeList - 球洞列表
+     * @param {Array} scores - 分数数组（从 scoreStore 传入）
+     * @returns {Array} 添加了 handicap 属性的玩家列表
+     */
+    calculatePlayersHandicaps(players, holeList, scores) {
+        if (!players || !holeList || !scores || players.length === 0) return players;
+
+        const scoreIndex = buildScoreIndex(scores);
+
+        return players.map(player => {
+            let totalScore = 0;
+            let totalPar = 0;
+            const userId = String(player?.userid ?? '');
+            const playerScores = scoreIndex.get(userId);
+
+            // 计算该玩家的总分和总标准杆（使用 hindex 匹配）
+            holeList.forEach(hole => {
+                const holeIndex = String(hole?.hindex ?? '');
+                const scoreData = playerScores?.get(holeIndex);
+
+                if (scoreData && typeof scoreData.score === 'number' && scoreData.score > 0) {
+                    totalScore += scoreData.score;
+                    totalPar += hole.par || 0;
+                }
+            });
+
+            // 杆差 = 总分 - 总标准杆
+            const handicap = totalScore - totalPar;
+
+            return {
+                ...player,
+                handicap: handicap
+            };
+        });
+    },
 
     getState() {
         return {

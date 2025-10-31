@@ -53,9 +53,17 @@ Component({
 
             this.scrollToLeft();
 
-            // 延迟手动触发一次计算，确保数据能正确初始化
+            // 如果数据已经存在，手动触发一次计算（用于初始化场景）
+            // observers 会在数据变化时自动触发，但如果数据已存在，observers 不会触发第一次
             setTimeout(() => {
-                this.calculateDisplayData();
+                const players = this.data.players || [];
+                const holeList = this.data.holeList || [];
+                const scores = this.data.playerScores || [];
+
+                // 如果数据完整，触发计算
+                if (players.length > 0 && holeList.length > 0) {
+                    this.calculateDisplayData();
+                }
             }, 100);
         },
 
@@ -74,14 +82,13 @@ Component({
 
     observers: {
         'playerScores,players,holeList,red_blue': function (scores, players, holeList, red_blue) {
-            if (!scores || !players || !holeList) {
-                console.warn('[ScoreTable] observers: 数据不完整', { scores, players, holeList });
+            // 数据不完整时，不执行计算
+            if (!scores || !players || !holeList || players.length === 0 || holeList.length === 0) {
                 return;
             }
 
             // 如果正在更新 handicap，跳过此次触发（避免循环）
             if (this._isUpdatingHandicap) {
-                console.log('[ScoreTable] observers: 正在更新 handicap，跳过此次触发（避免循环）');
                 return;
             }
 
@@ -92,13 +99,13 @@ Component({
                 red_blueLength: red_blue?.length
             });
 
-            // ========== 原子操作开始：三个计算同时执行 ==========
+            // ========== 原子操作开始：三个计算同时执行（都在 gameStore 中） ==========
             // 1. 计算显示分数矩阵（所有计算的基础）
             const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
 
-            // 2. 并行计算三个统计值（基于同一份 displayScores）
-            const displayTotals = scoreStore.calculateDisplayTotals(displayScores);
-            const { displayOutTotals, displayInTotals } = scoreStore.calculateOutInTotals(displayScores, holeList);
+            // 2. 并行计算三个统计值（基于同一份 displayScores，都在 gameStore 中）
+            const displayTotals = gameStore.calculateDisplayTotals(displayScores);
+            const { displayOutTotals, displayInTotals } = gameStore.calculateOutInTotals(displayScores, holeList);
 
             // 3. 同时更新 players 的 handicap（使用相同的 players 和 holeList）
             // 设置标志位，防止循环触发
@@ -201,13 +208,13 @@ Component({
                 return;
             }
 
-            // ========== 原子操作开始：三个计算同时执行 ==========
+            // ========== 原子操作开始：三个计算同时执行（都在 gameStore 中） ==========
             // 1. 计算显示分数矩阵（所有计算的基础）
             const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
 
-            // 2. 并行计算三个统计值（基于同一份 displayScores）
-            const displayTotals = scoreStore.calculateDisplayTotals(displayScores);
-            const { displayOutTotals, displayInTotals } = scoreStore.calculateOutInTotals(displayScores, holeList);
+            // 2. 并行计算三个统计值（基于同一份 displayScores，都在 gameStore 中）
+            const displayTotals = gameStore.calculateDisplayTotals(displayScores);
+            const { displayOutTotals, displayInTotals } = gameStore.calculateOutInTotals(displayScores, holeList);
 
             // 3. 同时更新 players 的 handicap（使用相同的 players 和 holeList）
             gameStore.updatePlayersHandicaps(holeList);
