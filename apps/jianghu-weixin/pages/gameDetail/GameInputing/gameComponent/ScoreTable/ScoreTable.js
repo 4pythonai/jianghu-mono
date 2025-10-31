@@ -14,9 +14,10 @@ Component({
         players: [],
         holeList: [],
         playerScores: [],
-        displayScores: [],
-        displayOutTotals: [],
-        displayInTotals: [],
+        displayScores: null, // 初始为 null，避免渲染空数组
+        displayTotals: null, // 初始为 null，避免渲染空数组
+        displayOutTotals: null, // 初始为 null，避免渲染空数组
+        displayInTotals: null, // 初始为 null，避免渲染空数组
         red_blue: [],
         gameAbstract: '',
         gameid: null,
@@ -73,8 +74,17 @@ Component({
 
     observers: {
         'playerScores,players,holeList,red_blue': function (scores, players, holeList, red_blue) {
-            // 数据不完整时，不执行计算
+            // 数据不完整时，不执行计算，重置显示数据
             if (!scores || !players || !holeList || players.length === 0 || holeList.length === 0) {
+                // 如果数据被清空，重置显示数据，避免显示不完整的表格
+                if (this.data.displayScores !== null) {
+                    this.setData({
+                        displayScores: null,
+                        displayTotals: null,
+                        displayOutTotals: null,
+                        displayInTotals: null
+                    });
+                }
                 return;
             }
 
@@ -113,6 +123,7 @@ Component({
             const paddedOutTotals = normalizeTotalsLength(displayOutTotals, players.length);
             const paddedInTotals = normalizeTotalsLength(displayInTotals, players.length);
 
+            // 使用 nextTick 确保在同一个渲染周期内完成所有数据更新，避免闪烁
             this.setData({
                 displayScores,
                 displayTotals,

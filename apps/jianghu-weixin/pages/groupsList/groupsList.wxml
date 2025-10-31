@@ -32,7 +32,9 @@
       <view class="group-header">
         <view class="group-name">{{item.groupid}} {{item.groupName || '第' + (index + 1) + '组'}}</view>
         <view class="group-count">{{item.players ? item.players.length : 0}}人</view>
-        <view class="arrow-right">></view>
+        <view class="arrow-right">
+          <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+        </view>
       </view>
 
       <!-- 玩家列表 -->

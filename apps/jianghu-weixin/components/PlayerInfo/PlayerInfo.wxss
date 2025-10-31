@@ -52,18 +52,22 @@
 	background-color: #000;
 	color: #fff;
 	border-radius: 50%;
-	min-width: 40rpx;
-	height: 40rpx;
+	width: 48rpx;
+	height: 48rpx;
+	min-width: 48rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding: 0;
+	box-sizing: border-box;
 }
 
 .handicap-text {
 	color: #fff;
-	font-size: 40rpx;
+	font-size: 28rpx;
 	font-weight: bold;
 	line-height: 1;
+	white-space: nowrap;
 }
 
 .player-name {

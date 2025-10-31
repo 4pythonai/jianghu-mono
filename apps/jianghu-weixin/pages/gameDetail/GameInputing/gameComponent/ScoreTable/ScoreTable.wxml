@@ -69,6 +69,7 @@
         id="holesTable"
         scroll-top="{{ scrollTop }}"
         bindscroll="onHolesScroll"
+        wx:if="{{ displayScores !== null && displayTotals !== null }}"
       >
         <view class="table-row" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIndex">
           <!-- 前9洞 (1-9) -->
@@ -92,7 +93,7 @@
           <view wx:if="{{ holeList.length === 18 }}" class="cell-score cell-out">
             <text
               style="color:#333;font-size:16px;font-weight:bold;"
-            >{{displayOutTotals && displayOutTotals[playerIndex] !== undefined ? displayOutTotals[playerIndex] : 0}}</text>
+            >{{displayOutTotals && displayOutTotals[playerIndex] !== undefined ? displayOutTotals[playerIndex] : ''}}</text>
           </view>
           <!-- 后9洞 (10-18) -->
           <view
@@ -115,12 +116,41 @@
           <view wx:if="{{ holeList.length === 18 }}" class="cell-score cell-in">
             <text
               style="color:#333;font-size:16px;font-weight:bold;"
-            >{{displayInTotals[playerIndex]}}</text>
+            >{{displayInTotals && displayInTotals[playerIndex] !== undefined ? displayInTotals[playerIndex] : ''}}</text>
           </view>
           <!-- 总分单元格 -->
           <view class="cell-score cell-total">
-            <text style="color:#333;font-size:16px;font-weight:bold;">{{displayTotals[playerIndex]}}</text>
+            <text
+              style="color:#333;font-size:16px;font-weight:bold;"
+            >{{displayTotals && displayTotals[playerIndex] !== undefined ? displayTotals[playerIndex] : ''}}</text>
           </view>
+        </view>
+      </scroll-view>
+      <!-- 数据加载中的占位符，避免表格突然出现 -->
+      <scroll-view wx:else scroll-y class="table-body">
+        <view class="table-row" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIndex">
+          <!-- 前9洞 (1-9) -->
+          <view
+            wx:for="{{holeList}}"
+            wx:key="unique_key"
+            wx:for-index="holeIndex"
+            wx:if="{{ holeList.length === 18 ? holeIndex < 9 : true }}"
+            class="cell-score loading-cell"
+          ></view>
+          <!-- OUT汇总单元格 (仅18洞时，在前9洞后显示) -->
+          <view wx:if="{{ holeList.length === 18 }}" class="cell-score cell-out loading-cell"></view>
+          <!-- 后9洞 (10-18) -->
+          <view
+            wx:for="{{holeList}}"
+            wx:key="unique_key"
+            wx:for-index="holeIndex"
+            wx:if="{{ holeList.length === 18 && holeIndex >= 9 }}"
+            class="cell-score loading-cell"
+          ></view>
+          <!-- IN汇总单元格 (仅18洞时，在后9洞后显示) -->
+          <view wx:if="{{ holeList.length === 18 }}" class="cell-score cell-in loading-cell"></view>
+          <!-- 总分单元格 -->
+          <view class="cell-score cell-total loading-cell"></view>
         </view>
       </scroll-view>
     </view>

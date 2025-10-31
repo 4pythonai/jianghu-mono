@@ -307,3 +307,9 @@
 	line-height: 1;
 }
 
+/* 数据加载中的占位符样式 */
+.loading-cell {
+	background-color: #fafafa;
+	opacity: 0.6;
+}
+

@@ -112,33 +112,45 @@
 }
 
 .arrow-right {
-	font-size: 28rpx;
-	color: #ccc;
-	font-weight: bold;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40rpx;
+	height: 40rpx;
+	flex-shrink: 0;
+}
+
+.arrow-right image {
+	width: 100%;
+	height: 100%;
 }
 
 /* 玩家列表 */
 .players-list {
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	gap: 20rpx;
+	justify-content: space-between;
 }
 
 .player-item {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	background-color: #f8f8f8;
 	border-radius: 30rpx;
-	padding: 10rpx 20rpx;
+	padding: 20rpx 10rpx;
 	min-width: 0;
-	flex: 0 0 auto;
+	flex: 1 1 0;
+	max-width: calc(25% - 15rpx);
 }
 
 .player-avatar {
-	width: 40rpx;
-	height: 40rpx;
+	width: 80rpx;
+	height: 80rpx;
 	border-radius: 50%;
-	margin-right: 12rpx;
+	margin-bottom: 12rpx;
 	flex-shrink: 0;
 }
 
@@ -148,7 +160,9 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	max-width: 120rpx;
+	width: 100%;
+	text-align: center;
+	max-width: 100%;
 }
 
 /* 空状态 */
