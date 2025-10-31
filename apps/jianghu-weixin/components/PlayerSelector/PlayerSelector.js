@@ -114,13 +114,20 @@ Component({
                 if (!hasCourse || !hasOpenTime) {
                     let message = '';
                     if (!hasCourse && !hasOpenTime) {
-                        message = '请先选择球场并设置开球时间';
+                        message = '请选择球场/开球时间';
                     } else if (!hasCourse) {
                         message = '请先选择球场';
                     } else {
-                        message = '请先设置开球时间';
+                        message = '请设置开球时间';
                     }
-                    wx.showToast({ title: message, icon: 'error' });
+
+                    wx.showModal({
+                        title: '提示',
+                        content: message,
+                        showCancel: false,
+                    })
+
+
                     return;
                 }
             }

@@ -64,7 +64,7 @@ Page({
         gameid: null, // 服务端返回的游戏ID
         groupid: null,
         gameCreated: false, // 标记游戏是否已创建
-        shareReady: false,  // 分享入口是否可用
+        shareReady: false,  // 分享入口是否可用(需创建比赛+球场+开球时间)
         selectedCourse: null, // 选中的球场信息
         selectedCourt: null,   // 选中的半场信息
 
@@ -130,6 +130,7 @@ Page({
     onOpenTimeChange(e) {
         const { value, display } = e.detail
         this.setData({ 'formData.openTime': display })
+        this.updateShareState();
 
         // 实时更新开球时间
         if (this.data.gameCreated) {
@@ -178,7 +179,7 @@ Page({
         if (!combination || !Array.isArray(combination) || combination.length === 0) {
             wx.showToast({
                 title: '组合数据无效',
-                icon: 'none'
+                icon: 'error'
             });
             return;
         }
@@ -206,7 +207,7 @@ Page({
         if (!selectedFriends || !Array.isArray(selectedFriends) || selectedFriends.length === 0) {
             wx.showToast({
                 title: '好友数据无效',
-                icon: 'none'
+                icon: 'error'
             });
             return;
         }
@@ -236,7 +237,7 @@ Page({
         if (!createdUser) {
             wx.showToast({
                 title: '用户数据无效',
-                icon: 'none'
+                icon: 'error'
             });
             return;
         }
@@ -279,7 +280,7 @@ Page({
         if (gameGroups.length <= 1) {
             wx.showToast({
                 title: '至少需要保留一组',
-                icon: 'none'
+                icon: 'error'
             });
             return;
         }
@@ -349,6 +350,7 @@ Page({
         this.setData({
             selectedCourse: course
         });
+        this.updateShareState();
 
         wx.showToast({
             title: `已选择 ${course.name}`,
@@ -380,6 +382,7 @@ Page({
             selectedCourse: selectionData.course,
             selectedCourt: displayCourt
         });
+        this.updateShareState();
 
         // 根据选择类型生成提示信息
         let toastTitle = '';
@@ -442,6 +445,7 @@ Page({
             selectedCourse: null,
             selectedCourt: null
         });
+        this.updateShareState();
     },
 
     /**
@@ -467,7 +471,7 @@ Page({
         if (allPlayers.length === 0) {
             wx.showToast({
                 title: '请先添加球员',
-                icon: 'none'
+                icon: 'error'
             });
             return;
         }
@@ -508,7 +512,7 @@ Page({
 
         wx.showToast({
             title: `T台分配完成 - ${statsText}`,
-            icon: 'none',
+            icon: 'success',
             duration: 3000
         });
     },
@@ -562,9 +566,36 @@ Page({
      * 更新分享按钮可用态
      */
     updateShareState() {
-        const shareReady = Boolean(this.data.gameCreated && this.data.uuid && this.data.gameid);
+        const hasGame = Boolean(this.data.gameCreated && this.data.uuid && this.data.gameid);
+        const hasCourse = Boolean(this.data.selectedCourse);
+        const openTime = this.data.formData && this.data.formData.openTime;
+        const hasOpenTime = typeof openTime === 'string'
+            ? openTime.trim().length > 0
+            : Boolean(openTime);
+        const shareReady = hasGame && hasCourse && hasOpenTime;
         if (shareReady !== this.data.shareReady) {
             this.setData({ shareReady });
+        }
+    },
+
+    /**
+     * 分享入口提示
+     */
+    showShareNotReadyToast() {
+        wx.showModal({
+            title: '提示',
+            content: '请选择球场/开球时间',
+            showCancel: false,
+            success(res) { }
+        })
+    },
+
+    /**
+     * 分享邀请按钮点击
+     */
+    onShareButtonTap() {
+        if (!this.data.shareReady) {
+            this.showShareNotReadyToast();
         }
     },
 
@@ -573,10 +604,7 @@ Page({
      */
     onShowInviteQrcode() {
         if (!this.data.shareReady) {
-            wx.showToast({
-                title: '比赛信息未就绪',
-                icon: 'error'
-            });
+            this.showShareNotReadyToast();
             return;
         }
 
@@ -599,7 +627,7 @@ Page({
      */
     onStartScoring() {
         if (!this.data.gameid) {
-            wx.showToast({ title: '请先创建比赛', icon: 'none' });
+            wx.showToast({ title: '请先创建比赛', icon: 'error' });
             return;
         }
         wx.navigateTo({
