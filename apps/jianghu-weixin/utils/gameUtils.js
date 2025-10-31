@@ -124,6 +124,31 @@ function convertToUserIds(playersArray) {
     });
 }
 
+/**
+ * 将一维分数数组构建为 userid -> hindex 的索引 Map
+ * @param {Array} scores
+ * @returns {Map<string, Map<string, object>>}
+ */
+function buildScoreIndex(scores = []) {
+    const index = new Map();
+    for (const score of scores) {
+        if (!score) continue;
+
+        const userId = String(score.userid ?? '');
+        const holeIndex = String(score.hindex ?? '');
+
+        if (!userId || !holeIndex) continue;
+
+        let holes = index.get(userId);
+        if (!holes) {
+            holes = new Map();
+            index.set(userId, holes);
+        }
+        holes.set(holeIndex, score);
+    }
+    return index;
+}
+
 module.exports = {
     normalizePlayer,
     normalizeHole,
@@ -133,5 +158,6 @@ module.exports = {
     formatPutts,
     formatDiff,
     getScoreClass,
-    convertToUserIds
+    convertToUserIds,
+    buildScoreIndex
 };

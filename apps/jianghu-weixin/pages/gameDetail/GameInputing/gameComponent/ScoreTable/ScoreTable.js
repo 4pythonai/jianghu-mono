@@ -52,9 +52,6 @@ Component({
 
             this.scrollToLeft();
 
-            // 注意：不再手动调用 calculateDisplayData
-            // observers 会在 store bindings 建立后，数据变化时自动触发计算
-            // 这样可以避免重复计算（原子操作只执行一次）
         },
 
         detached() {
@@ -77,141 +74,42 @@ Component({
                 return;
             }
 
-            // 如果正在更新 handicap，跳过此次触发（避免循环）
-            if (this._isUpdatingHandicap) {
-                return;
-            }
-
-            // 如果正在执行计算，跳过此次触发（避免重复）
-            if (this._isCalculating) {
-                return;
-            }
-            this._isCalculating = true;
-
-            console.log('[ScoreTable] 原子操作：observers 触发，开始同时计算3个统计值', {
-                scoresLength: scores?.length,
-                playersLength: players?.length,
-                holeListLength: holeList?.length,
-                red_blueLength: red_blue?.length
-            });
-
-            // ========== 原子操作开始：三个计算同时执行（都在 gameStore 中） ==========
-            // 1. 计算显示分数矩阵（所有计算的基础）
-            const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
-
-            // 2. 并行计算三个统计值（基于同一份 displayScores，都在 gameStore 中）
-            const displayTotals = gameStore.calculateDisplayTotals(displayScores);
-            const { displayOutTotals, displayInTotals } = gameStore.calculateOutInTotals(displayScores, holeList);
-
-            // 3. 同时更新 players 的 handicap（使用相同的 players 和 holeList）
-            // 设置标志位，防止循环触发
-            this._isUpdatingHandicap = true;
-            gameStore.updatePlayersHandicaps(holeList);
-            // 延迟重置标志位，确保响应式更新完成
-            setTimeout(() => {
-                this._isUpdatingHandicap = false;
-            }, 0);
-            // ========== 原子操作结束 ==========
-
-
-            // 确保 displayOutTotals 和 displayInTotals 是数组
-            const safeDisplayOutTotals = Array.isArray(displayOutTotals) ? displayOutTotals : [];
-            const safeDisplayInTotals = Array.isArray(displayInTotals) ? displayInTotals : [];
-
-            // 确保数组有足够长度，并用0填充空缺
-            const paddedOutTotals = [...safeDisplayOutTotals];
-            const paddedInTotals = [...safeDisplayInTotals];
-            while (paddedOutTotals.length < players.length) {
-                paddedOutTotals.push(0);
-            }
-            while (paddedInTotals.length < players.length) {
-                paddedInTotals.push(0);
-            }
-
-            this.setData({
-                displayScores,
-                displayTotals,
-                displayOutTotals: paddedOutTotals,
-                displayInTotals: paddedInTotals
-            });
-
-            // 重置计算标志位（延迟以确保 setData 完成）
-            setTimeout(() => {
-                this._isCalculating = false;
-
-                // 验证设置后的数据
-                const outTotals = this.data.displayOutTotals || [];
-                const inTotals = this.data.displayInTotals || [];
-
-                // 检查每个玩家的OUT值
-                if (outTotals.length > 0 && this.data.players) {
-                    console.log('[ScoreTable] 每个玩家的OUT值:',
-                        this.data.players.map((p, i) => ({
-                            playerIndex: i,
-                            playerId: p.userid,
-                            outValue: outTotals[i],
-                            outType: typeof outTotals[i]
-                        }))
-                    );
-                }
-            }, 50);
+            this.runAtomicScoreUpdate(players, holeList, red_blue);
         }
     },
 
     methods: {
         /**
-         * 手动计算显示数据（备用方法，通常不需要手动调用）
-         * 注意：现在主要通过 observers 自动触发，此方法保留用于特殊场景
+         * 汇总分数统计的原子操作
+         * 计算显示矩阵、前后九合计、总杆并同步 handicap
          */
-        calculateDisplayData() {
-            const players = this.data.players || [];
-            const holeList = this.data.holeList || [];
-            const red_blue = this.data.red_blue || [];
-            const scores = this.data.playerScores || [];
+        runAtomicScoreUpdate(players, holeList, red_blue = []) {
+            if (!Array.isArray(players) || players.length === 0) return;
+            if (!Array.isArray(holeList) || holeList.length === 0) return;
 
-            console.log('[ScoreTable] calculateDisplayData 手动触发（原子操作）:', {
-                playersLength: players.length,
-                holeListLength: holeList.length,
-                scoresLength: scores.length
-            });
-
-            if (!players.length || !holeList.length) {
-                console.warn('[ScoreTable] calculateDisplayData: 数据不完整，跳过计算');
+            if (this._isUpdatingHandicap || this._isCalculating) {
                 return;
             }
 
-            // 如果正在执行计算，跳过此次触发（避免重复）
-            if (this._isCalculating) {
-                console.log('[ScoreTable] calculateDisplayData: 正在计算中，跳过此次调用');
-                return;
-            }
             this._isCalculating = true;
 
-            // ========== 原子操作开始：三个计算同时执行（都在 gameStore 中） ==========
-            // 1. 计算显示分数矩阵（所有计算的基础）
+            // 1. 计算显示分数矩阵
             const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
 
-            // 2. 并行计算三个统计值（基于同一份 displayScores，都在 gameStore 中）
+            // 2. 计算统计值
             const displayTotals = gameStore.calculateDisplayTotals(displayScores);
             const { displayOutTotals, displayInTotals } = gameStore.calculateOutInTotals(displayScores, holeList);
 
-            // 3. 同时更新 players 的 handicap（使用相同的 players 和 holeList）
+            // 3. 更新 handicap，使用标志位避免循环
+            this._isUpdatingHandicap = true;
             gameStore.updatePlayersHandicaps(holeList);
-            // ========== 原子操作结束 ==========
+            setTimeout(() => {
+                this._isUpdatingHandicap = false;
+            }, 0);
 
-            console.log('[ScoreTable] calculateDisplayData 计算结果:', {
-                displayOutTotals,
-                displayOutTotalsValues: displayOutTotals ? [...displayOutTotals] : null,
-                displayInTotals,
-                displayInTotalsValues: displayInTotals ? [...displayInTotals] : null,
-                displayTotals
-            });
-
-            // 确保是数组
+            // 确保统计数组与玩家数量对齐
             const safeDisplayOutTotals = Array.isArray(displayOutTotals) ? displayOutTotals : [];
             const safeDisplayInTotals = Array.isArray(displayInTotals) ? displayInTotals : [];
-
-            // 确保数组有足够长度，并用0填充空缺
             const paddedOutTotals = [...safeDisplayOutTotals];
             const paddedInTotals = [...safeDisplayInTotals];
             while (paddedOutTotals.length < players.length) {
@@ -221,12 +119,6 @@ Component({
                 paddedInTotals.push(0);
             }
 
-            console.log('[ScoreTable] calculateDisplayData 准备setData:', {
-                paddedOutTotals,
-                paddedInTotals,
-                playersLength: players.length
-            });
-
             this.setData({
                 displayScores,
                 displayTotals,
@@ -234,17 +126,19 @@ Component({
                 displayInTotals: paddedInTotals
             });
 
-            // 重置计算标志位（延迟以确保 setData 完成）
             setTimeout(() => {
                 this._isCalculating = false;
-
-                const outTotals = this.data.displayOutTotals || [];
-                console.log('[ScoreTable] calculateDisplayData setData 完成:', {
-                    displayOutTotals: outTotals,
-                    displayOutTotalsValues: [...outTotals],
-                    playersLength: this.data.players?.length
-                });
             }, 50);
+        },
+
+        /**
+         * 手动触发一次统计计算（备用）
+         */
+        calculateDisplayData() {
+            const players = this.data.players || [];
+            const holeList = this.data.holeList || [];
+            const redBlue = this.data.red_blue || [];
+            this.runAtomicScoreUpdate(players, holeList, redBlue);
         },
 
         scrollToLeft() {

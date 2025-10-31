@@ -8,36 +8,11 @@ import {
     formatScore,
     formatPutts,
     formatDiff,
-    getScoreClass
+    getScoreClass,
+    buildScoreIndex
 } from '../utils/gameUtils'
 import { scoreStore } from './scoreStore'
 import { holeRangeStore } from './holeRangeStore'
-
-/**
- * 将 scores 根据 userid 和 hindex 索引，方便快速查找
- * @param {Array} scores
- * @returns {Map<string, Map<string, object>>}
- */
-function buildScoreIndex(scores = []) {
-    const index = new Map();
-    for (const score of scores) {
-        if (!score) continue;
-
-        const userId = String(score.userid ?? '');
-        const holeIndex = String(score.hindex ?? '');
-
-        if (!userId || !holeIndex) continue;
-
-        let holes = index.get(userId);
-        if (!holes) {
-            holes = new Map();
-            index.set(userId, holes);
-        }
-        holes.set(holeIndex, score);
-    }
-    return index;
-}
-
 
 export const gameStore = observable({
 

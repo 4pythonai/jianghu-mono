@@ -8,15 +8,15 @@
 - 单个洞的内容由子组件 `<HoleCell />` 渲染，汇总列直接读取组件 `data` 中的统计结果。
 
 ## 数据绑定来源
-- `gameStore` 提供 `players`、`red_blue`、`gameAbstract`、`gameid` 等基础信息（`ScoreTable.js:25-35`）。
-- `holeRangeStore` 提供标准化后的 `holeList`（`ScoreTable.js:37-43`）。
-- `scoreStore` 暴露一维分数列表 `scores`（`ScoreTable.js:45-52`）。
-- 组件挂载时会手动调用一次 `calculateDisplayData`，以防止响应式绑定尚未完成时缺失初始值（`ScoreTable.js:56-67`）。
+- `gameStore` 提供 `players`、`red_blue`、`gameAbstract`、`gameid` 等基础信息（`ScoreTable.js`）。
+- `holeRangeStore` 提供标准化后的 `holeList`（`ScoreTable.js`）。
+- `scoreStore` 暴露一维分数列表 `scores`（`ScoreTable.js`）。
+- 组件挂载后由 `observers` 自动触发计算，并统一委托给 `runAtomicScoreUpdate`（`ScoreTable.js`）。
 
 ## 计算流程
-1. 观察者 `playerScores, players, holeList, red_blue` 任一变化后触发（`ScoreTable.js:83-187`）。
+1. 观察者 `playerScores, players, holeList, red_blue` 任一变化后触发（`ScoreTable.js`），随后调用 `runAtomicScoreUpdate`。
 2. 通过 `scoreStore.calculateDisplayScores` 将一维原始分数转为二维矩阵 `displayScores`，保留推杆、罚杆及红蓝标记信息。
-3. **三个统计值在同一时间同步计算（原子操作）**（`ScoreTable.js:106-117`）：
+3. **三个统计值在同一时间同步计算（原子操作）**（`ScoreTable.js`）：
    - `displayTotals = gameStore.calculateDisplayTotals(displayScores)` - 计算所有洞的总分
    - `{ displayOutTotals, displayInTotals } = gameStore.calculateOutInTotals(displayScores, holeList)` - 计算前9洞和后9洞汇总
    - `gameStore.updatePlayersHandicaps(holeList)` - 更新玩家的 handicap（杆差）
@@ -24,7 +24,7 @@
    **架构说明**：这三个计算都在 `gameStore` 中，作为原子操作同时执行，确保数据一致性。所有统计计算方法已从 `scoreStore` 迁移到 `gameStore`，因为它们属于游戏层面的统计而非分数层面的数据操作。
    
 4. **关键差异**：`calculateDisplayTotals` 无条件计算所有洞的总分；而 `calculateOutInTotals` 在 `holeList.length !== 18` 或 `displayScores` 为空时返回空数组。
-5. 为防止绑定数组长度与球员数量不一致，组件会对 `displayOutTotals` / `displayInTotals` 进行零填充后写回 `data`。
+5. 为防止绑定数组长度与球员数量不一致，`runAtomicScoreUpdate` 会对 `displayOutTotals` / `displayInTotals` 进行零填充后写回 `data`。
 
 ## OUT / IN / TOTAL 列渲染
 - 表格列宽依据 `holeList.length` 计算。18 洞场景下额外加上 `OUT`、`IN` 两列（`ScoreTable.wxml:24-62`）。
@@ -34,7 +34,7 @@
 
 ## OUT 列当前为空的排查方向
 
-**重要发现**：`displayTotals`、`displayOutTotals`、`displayInTotals` 是**同时同步计算（原子操作）**的（`ScoreTable.js:106-117`），因此如果 TOTAL 列显示正常而 OUT 列显示空白，问题可能出在：
+**重要发现**：`displayTotals`、`displayOutTotals`、`displayInTotals` 是**同时同步计算（原子操作）**的（`ScoreTable.js`），因此如果 TOTAL 列显示正常而 OUT 列显示空白，问题可能出在：
 1. CSS 样式问题（已修复：`.cell-out` 和 `.cell-in` 缺少 `position: relative`）
 2. `calculateOutInTotals` 函数的条件判断或返回值处理
 3. 数据绑定或渲染逻辑
@@ -52,7 +52,7 @@
    - 如果 `displayScores` 结构异常（如不是二维数组），可能导致 OUT/IN 返回空数组，但 TOTAL 仍能计算
 
 3. **零填充逻辑的覆盖问题**：
-   - 虽然代码对空数组进行了零填充（`ScoreTable.js:114-119`），但如果 `safeDisplayOutTotals` 本身是空数组且 `players.length === 0`，填充可能不会执行
+   - 虽然代码对空数组进行了零填充（`ScoreTable.js:122-129`），但如果 `safeDisplayOutTotals` 本身是空数组且 `players.length === 0`，填充可能不会执行
    - 需要确认 `players.length` 在计算时是否大于 0
 
 ### 排查步骤：
