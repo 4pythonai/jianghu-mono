@@ -170,7 +170,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: #07c160;
+	background-color: var(--primary-green-dark);
 	color: #fff;
 	font-size: 32rpx;
 	border-radius: 16rpx;
