@@ -16,6 +16,9 @@ Page({
         this.profilePrompting = false
         this.redirectingToProfile = false
 
+        // 初始化动画状态，确保图片可见
+        this.initAnimationState();
+
         this.ensureProfileCompleted({
             onSuccess: () => {
                 if (!this.data.isMenuOpen) {
@@ -59,6 +62,21 @@ Page({
         }
     },
 
+    // 初始化动画状态
+    initAnimationState() {
+        const initAnim = wx.createAnimation({ duration: 0 });
+        initAnim.scale(1).opacity(1).step();
+        const animationExport = initAnim.export();
+
+        this.setData({
+            animations: {
+                point1: animationExport,
+                point2: animationExport,
+                point3: animationExport,
+            }
+        });
+    },
+
     // 切换菜单显示状态
     toggleMenu() {
         if (!this.data.canCreate && !this.data.isMenuOpen) {
@@ -69,23 +87,28 @@ Page({
         const isOpen = !this.data.isMenuOpen;
 
         if (isOpen) {
+            // 确保初始状态正确
+            this.initAnimationState();
+
             // 展开菜单时的卫星动画
             const points = ['point1', 'point2', 'point3'];
-            for (const [index, point] of points.entries()) {
-                const animation = wx.createAnimation({
-                    duration: 300,
-                    timingFunction: 'ease-out',
-                    delay: index * 80  // 每个菜单项延迟80ms
-                });
+            setTimeout(() => {
+                for (const [index, point] of points.entries()) {
+                    const animation = wx.createAnimation({
+                        duration: 300,
+                        timingFunction: 'ease-out',
+                        delay: index * 80  // 每个菜单项延迟80ms
+                    });
 
-                // 从中心弹出效果
-                animation.scale(0).opacity(0).step();
-                animation.scale(1).opacity(1).step();
+                    // 从中心弹出效果 - 先设置初始状态，再动画到最终状态
+                    animation.scale(0).opacity(0).step();
+                    animation.scale(1).opacity(1).step();
 
-                this.setData({
-                    [`animations.${point}`]: animation.export()
-                });
-            }
+                    this.setData({
+                        [`animations.${point}`]: animation.export()
+                    });
+                }
+            }, 50); // 延迟50ms确保初始状态先设置
         } else {
             // 关闭菜单时恢复初始状态
             const resetAnim = wx.createAnimation({ duration: 0 });
@@ -211,5 +234,14 @@ Page({
         wx.navigateBack({
             delta: 1
         });
+    },
+
+    // 处理图片加载错误
+    onImageError(e) {
+        const imgName = e.currentTarget.dataset.img;
+        console.error(`[createGame] 图片加载失败: ${imgName}`, e.detail);
+
+        // 可以在这里设置备用图片或显示提示
+        // 目前静默处理，避免影响用户体验
     }
 });
