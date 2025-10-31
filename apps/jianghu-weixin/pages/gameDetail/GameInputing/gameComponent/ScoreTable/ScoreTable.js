@@ -2,6 +2,10 @@ import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '@/stores/gameStore'
 import { holeRangeStore } from '@/stores/holeRangeStore'
 import { scoreStore } from '@/stores/scoreStore'
+import {
+    computeScoreTableStats,
+    normalizeTotalsLength
+} from './scoreTableCalculator'
 
 Component({
     data: {
@@ -79,9 +83,9 @@ Component({
     },
 
     methods: {
+        // ===================== 数据计算相关 =====================
         /**
-         * 汇总分数统计的原子操作
-         * 计算显示矩阵、前后九合计、总杆并同步 handicap
+         * 汇总分数统计的原子操作: 计算显示矩阵、前后九合计、总杆并同步 handicap
          */
         runAtomicScoreUpdate(players, holeList, red_blue = []) {
             if (!Array.isArray(players) || players.length === 0) return;
@@ -93,31 +97,21 @@ Component({
 
             this._isCalculating = true;
 
-            // 1. 计算显示分数矩阵
-            const displayScores = scoreStore.calculateDisplayScores(players, holeList, red_blue);
+            const {
+                displayScores,
+                displayTotals,
+                displayOutTotals,
+                displayInTotals
+            } = computeScoreTableStats(players, holeList, red_blue);
 
-            // 2. 计算统计值
-            const displayTotals = gameStore.calculateDisplayTotals(displayScores);
-            const { displayOutTotals, displayInTotals } = gameStore.calculateOutInTotals(displayScores, holeList);
-
-            // 3. 更新 handicap，使用标志位避免循环
             this._isUpdatingHandicap = true;
             gameStore.updatePlayersHandicaps(holeList);
             setTimeout(() => {
                 this._isUpdatingHandicap = false;
             }, 0);
 
-            // 确保统计数组与玩家数量对齐
-            const safeDisplayOutTotals = Array.isArray(displayOutTotals) ? displayOutTotals : [];
-            const safeDisplayInTotals = Array.isArray(displayInTotals) ? displayInTotals : [];
-            const paddedOutTotals = [...safeDisplayOutTotals];
-            const paddedInTotals = [...safeDisplayInTotals];
-            while (paddedOutTotals.length < players.length) {
-                paddedOutTotals.push(0);
-            }
-            while (paddedInTotals.length < players.length) {
-                paddedInTotals.push(0);
-            }
+            const paddedOutTotals = normalizeTotalsLength(displayOutTotals, players.length);
+            const paddedInTotals = normalizeTotalsLength(displayInTotals, players.length);
 
             this.setData({
                 displayScores,
@@ -141,6 +135,7 @@ Component({
             this.runAtomicScoreUpdate(players, holeList, redBlue);
         },
 
+        // ===================== UI 交互相关 =====================
         scrollToLeft() {
             const query = wx.createSelectorQuery().in(this);
             query.select('#mainScroll').node().exec((res) => {

@@ -14,7 +14,7 @@
 - 组件挂载后由 `observers` 自动触发计算，并统一委托给 `runAtomicScoreUpdate`（`ScoreTable.js`）。
 
 ## 计算流程
-1. 观察者 `playerScores, players, holeList, red_blue` 任一变化后触发（`ScoreTable.js`），随后调用 `runAtomicScoreUpdate`。
+1. 观察者 `playerScores, players, holeList, red_blue` 任一变化后触发（`ScoreTable.js`），随后调用 `runAtomicScoreUpdate`，内部复用 `utils/scoreTableCalculator.js` 提供的计算函数。
 2. 通过 `scoreStore.calculateDisplayScores` 将一维原始分数转为二维矩阵 `displayScores`，保留推杆、罚杆及红蓝标记信息。
 3. **三个统计值在同一时间同步计算（原子操作）**（`ScoreTable.js`）：
    - `displayTotals = gameStore.calculateDisplayTotals(displayScores)` - 计算所有洞的总分
