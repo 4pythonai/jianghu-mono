@@ -46,25 +46,6 @@ function buildRedBlueIndex(redBlue = []) {
 }
 
 /**
- * 根据 scoreIndex 统计每个玩家的总杆数
- * @param {Map<string, Map<string, object>>} scoreIndex
- * @returns {object}
- */
-function buildTotalsByUser(scoreIndex) {
-    const totals = {};
-    scoreIndex.forEach((holes, userId) => {
-        let sum = 0;
-        holes.forEach(score => {
-            if (typeof score?.score === 'number') {
-                sum += score.score;
-            }
-        });
-        totals[userId] = sum;
-    });
-    return totals;
-}
-
-/**
  * 分数相关的 store
  * 负责管理一维分数数组和分数录入、统计等操作
  */
@@ -73,15 +54,6 @@ export const scoreStore = observable({
      * 分数一维数组 [{userid, hindex, score, ...}]
      */
     scores: [],
-
-    /**
-     * 统计每个玩家的总分
-     * @returns {object} {userid: totalScore, ...}
-     */
-    get playerTotalScores() {
-        const scoreIndex = buildScoreIndex(this.scores);
-        return buildTotalsByUser(scoreIndex);
-    },
 
     /**
      * 查找某玩家某洞的成绩

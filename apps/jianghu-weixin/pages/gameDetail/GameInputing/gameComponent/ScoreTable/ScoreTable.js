@@ -10,7 +10,6 @@ Component({
         players: [],
         holeList: [],
         playerScores: [],
-        playerTotals: [],
         displayScores: [],
         displayOutTotals: [],
         displayInTotals: [],
@@ -46,25 +45,16 @@ Component({
                 store: scoreStore,
                 fields: {
                     playerScores: 'scores',
-                    playerTotals: 'playerTotalScores',
+                    // 注意：不再绑定 playerTotalScores，因为使用的是 displayTotals（通过 calculateDisplayTotals 计算）
                 },
                 actions: [],
             });
 
             this.scrollToLeft();
 
-            // 如果数据已经存在，手动触发一次计算（用于初始化场景）
-            // observers 会在数据变化时自动触发，但如果数据已存在，observers 不会触发第一次
-            setTimeout(() => {
-                const players = this.data.players || [];
-                const holeList = this.data.holeList || [];
-                const scores = this.data.playerScores || [];
-
-                // 如果数据完整，触发计算
-                if (players.length > 0 && holeList.length > 0) {
-                    this.calculateDisplayData();
-                }
-            }, 100);
+            // 注意：不再手动调用 calculateDisplayData
+            // observers 会在 store bindings 建立后，数据变化时自动触发计算
+            // 这样可以避免重复计算（原子操作只执行一次）
         },
 
         detached() {
@@ -92,6 +82,12 @@ Component({
                 return;
             }
 
+            // 如果正在执行计算，跳过此次触发（避免重复）
+            if (this._isCalculating) {
+                return;
+            }
+            this._isCalculating = true;
+
             console.log('[ScoreTable] 原子操作：observers 触发，开始同时计算3个统计值', {
                 scoresLength: scores?.length,
                 playersLength: players?.length,
@@ -117,18 +113,6 @@ Component({
             }, 0);
             // ========== 原子操作结束 ==========
 
-            console.log('[ScoreTable] 计算结果:', {
-                displayScoresLength: displayScores?.length,
-                displayTotals,
-                displayOutTotals,
-                displayOutTotalsValues: displayOutTotals ? [...displayOutTotals] : null, // 展开数组查看实际值
-                displayInTotals,
-                displayInTotalsValues: displayInTotals ? [...displayInTotals] : null,
-                displayOutTotalsType: Array.isArray(displayOutTotals) ? 'array' : typeof displayOutTotals,
-                displayOutTotalsLength: displayOutTotals?.length,
-                holeListLength: holeList.length,
-                is18Holes: holeList.length === 18
-            });
 
             // 确保 displayOutTotals 和 displayInTotals 是数组
             const safeDisplayOutTotals = Array.isArray(displayOutTotals) ? displayOutTotals : [];
@@ -144,13 +128,6 @@ Component({
                 paddedInTotals.push(0);
             }
 
-            console.log('[ScoreTable] 准备 setData:', {
-                safeDisplayOutTotals,
-                paddedOutTotals,
-                paddedInTotals,
-                playersLength: players.length
-            });
-
             this.setData({
                 displayScores,
                 displayTotals,
@@ -158,19 +135,13 @@ Component({
                 displayInTotals: paddedInTotals
             });
 
-            // 验证设置后的数据（延迟一点以确保setData完成）
+            // 重置计算标志位（延迟以确保 setData 完成）
             setTimeout(() => {
+                this._isCalculating = false;
+
+                // 验证设置后的数据
                 const outTotals = this.data.displayOutTotals || [];
                 const inTotals = this.data.displayInTotals || [];
-                console.log('[ScoreTable] setData 后的数据:', {
-                    displayOutTotals: outTotals,
-                    displayOutTotalsValues: [...outTotals], // 展开数组
-                    displayInTotals: inTotals,
-                    displayInTotalsValues: [...inTotals], // 展开数组
-                    displayOutTotalsType: Array.isArray(this.data.displayOutTotals) ? 'array' : typeof this.data.displayOutTotals,
-                    playersLength: this.data.players?.length,
-                    displayOutTotalsLength: outTotals.length
-                });
 
                 // 检查每个玩家的OUT值
                 if (outTotals.length > 0 && this.data.players) {
@@ -189,7 +160,8 @@ Component({
 
     methods: {
         /**
-         * 手动计算显示数据（用于确保数据正确初始化）
+         * 手动计算显示数据（备用方法，通常不需要手动调用）
+         * 注意：现在主要通过 observers 自动触发，此方法保留用于特殊场景
          */
         calculateDisplayData() {
             const players = this.data.players || [];
@@ -207,6 +179,13 @@ Component({
                 console.warn('[ScoreTable] calculateDisplayData: 数据不完整，跳过计算');
                 return;
             }
+
+            // 如果正在执行计算，跳过此次触发（避免重复）
+            if (this._isCalculating) {
+                console.log('[ScoreTable] calculateDisplayData: 正在计算中，跳过此次调用');
+                return;
+            }
+            this._isCalculating = true;
 
             // ========== 原子操作开始：三个计算同时执行（都在 gameStore 中） ==========
             // 1. 计算显示分数矩阵（所有计算的基础）
@@ -255,7 +234,10 @@ Component({
                 displayInTotals: paddedInTotals
             });
 
+            // 重置计算标志位（延迟以确保 setData 完成）
             setTimeout(() => {
+                this._isCalculating = false;
+
                 const outTotals = this.data.displayOutTotals || [];
                 console.log('[ScoreTable] calculateDisplayData setData 完成:', {
                     displayOutTotals: outTotals,
