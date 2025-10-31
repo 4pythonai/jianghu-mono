@@ -27,14 +27,6 @@
         <text class="config-label">创建时间:</text>
         <text class="config-value">{{ item.create_time }}</text>
       </view>
-      <view class="config-row">
-        <text class="config-label">gambleSysName:</text>
-        <text class="config-value">{{ item.gambleSysName }}</text>
-      </view>
-      <view class="config-row">
-        <text class="config-label">gambleUserName:</text>
-        <text class="config-value">{{ item.gambleUserName }}</text>
-      </view>
       <view class="config-row" wx:if="{{ item.red_blue_config }}">
         <text class="config-label">分组方式:</text>
         <text class="config-value">{{ item.red_blue_config }}</text>
@@ -48,11 +40,11 @@
         <text class="config-value">{{ item.player8421Count }}人</text>
       </view>
       <view class="config-row" wx:if="{{ item.endHoleindex }}">
-        <text class="config-label">出发顺序/bootstrap_order_parsed:</text>
+        <text class="config-label">出发顺序:</text>
         <text class="config-value">{{ item.bootstrap_order_parsed }}</text>
       </view>
       <view class="config-row" wx:if="{{ item.endHoleindex }}">
-        <text class="config-label">长度(roadLength):</text>
+        <text class="config-label">洞数:</text>
         <text class="config-value">{{ item.roadLength }}</text>
       </view>
     </view>

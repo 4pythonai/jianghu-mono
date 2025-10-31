@@ -406,22 +406,7 @@ class StorageManager {
     /**
      * 调试:打印所有存储内容
      */
-    debug() {
-        const info = this.getInfo()
-        console.log('📊 存储调试信息:', {
-            keys: info.keys,
-            size: this.getStorageSize(),
-            health: this.checkHealth(),
-            tokens: {
-                hasToken: this.hasToken(),
-                tokenLength: this.getToken()?.length || 0
-            },
-            userInfo: !!this.getUserInfo()?.nickName,
-            session: this.getWeixinSession(),
-            profileStatus: this.getProfileStatus(),
-            needBindPhone: this.getNeedBindPhone()
-        })
-    }
+    debug() { }
 }
 
 // 创建单例实例

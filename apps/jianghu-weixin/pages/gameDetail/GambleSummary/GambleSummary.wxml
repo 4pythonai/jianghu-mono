@@ -104,7 +104,7 @@
       <view class="no-gamble-container">
         <!-- <view class="summary-title">汇总待开发[gameID:{{gameid}}][groupID:{{groupid}}]</view> -->
         <image class="ps-image" src="/images/ps.jpg" mode="aspectFit"></image>
-        <text class="empty-hint">暂无</text>
+        <text class="empty-hint">暂无游戏</text>
         <!-- 按钮区域 -->
         <view class="bottom-button-area">
           <button class="add-game-button" bindtap="handleAddGame">

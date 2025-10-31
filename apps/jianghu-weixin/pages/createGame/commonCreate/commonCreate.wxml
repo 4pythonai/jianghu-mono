@@ -3,20 +3,6 @@
     <view class="top-circle"></view>
     <view class="card-content">
       <view class="search-box">
-        <!-- UUID 显示区域(调试用) -->
-        <view class="uuid-section">
-          <view class="form-label">游戏UUID(调试)</view>
-          <view class="uuid-display">
-            <text class="uuid-text">{{uuid}}</text>
-          </view>
-        </view>
-        <view class="uuid-section">
-          <view class="form-label">gameid(调试)</view>
-          <view class="uuid-display">
-            <text class="uuid-text">{{gameid}}</text>
-          </view>
-        </view>
-
         <!-- 球场选择区域 -->
         <view class="course-section">
           <view class="form-label">选择球场</view>
