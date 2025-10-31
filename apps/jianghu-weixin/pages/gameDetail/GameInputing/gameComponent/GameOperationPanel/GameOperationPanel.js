@@ -11,6 +11,18 @@ Component({
     },
 
     /**
+     * 组件的生命周期
+     */
+    lifetimes: {
+        // 组件被挂载时，确保面板是隐藏状态
+        attached() {
+            this.setData({
+                isOperatonPanelVisible: false
+            });
+        }
+    },
+
+    /**
      * 组件的方法列表
      */
     methods: {

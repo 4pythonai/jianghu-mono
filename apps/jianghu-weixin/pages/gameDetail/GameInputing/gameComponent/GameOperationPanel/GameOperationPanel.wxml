@@ -1,8 +1,8 @@
 <!-- 背景遮罩 -->
-<view class="panel-mask {{isOperatonPanelVisible ? 'show' : ''}}" bindtap="hide"></view>
+<view wx:if="{{isOperatonPanelVisible}}" class="panel-mask show" bindtap="hide"></view>
 
 <!-- 游戏操作面板 -->
-<view class="operation-panel {{isOperatonPanelVisible ? 'show' : ''}}" catchtap="stopPropagation">
+<view wx:if="{{isOperatonPanelVisible}}" class="operation-panel show" catchtap="stopPropagation">
   <!-- 面板标题 -->
   <view class="panel-header">
     <text class="modal-title">更多</text>
