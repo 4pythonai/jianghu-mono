@@ -1,5 +1,5 @@
 import { scoreStore } from '@/stores/scoreStore';
-import { gameStore } from '@/stores/gameStore';
+import { buildScoreIndex } from '@/utils/gameUtils';
 
 /**
  * 计算记分表展示所需的核心数据
@@ -9,19 +9,53 @@ import { gameStore } from '@/stores/gameStore';
  * @returns {{displayScores: Array, displayTotals: Array, displayOutTotals: Array, displayInTotals: Array}}
  */
 export function computeScoreTableStats(players, holeList, redBlue = []) {
-    const displayScores = scoreStore.calculateDisplayScores(players, holeList, redBlue);
-    const displayTotals = gameStore.calculateDisplayTotals(displayScores);
-    const {
-        displayOutTotals,
-        displayInTotals
-    } = gameStore.calculateOutInTotals(displayScores, holeList);
+    const scoreIndex = buildScoreIndex(scoreStore.scores);
+    const displayScores = scoreStore.calculateDisplayScores(players, holeList, redBlue, scoreIndex);
+    const displayTotals = calculateDisplayTotals(displayScores);
+    const { displayOutTotals, displayInTotals } = calculateOutInTotals(displayScores, holeList);
 
     return {
         displayScores,
         displayTotals,
         displayOutTotals,
-        displayInTotals
+        displayInTotals,
+        scoreIndex
     };
+}
+
+/**
+ * 计算总分数组
+ * @param {Array} displayScores - 显示分数矩阵
+ * @returns {Array} 每个玩家的总分
+ */
+export function calculateDisplayTotals(displayScores) {
+    if (!displayScores || displayScores.length === 0) return [];
+
+    return displayScores.map(playerArr =>
+        playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
+    );
+}
+
+/**
+ * 计算前后九洞汇总（仅在18洞时生效）
+ * @param {Array} displayScores - 显示分数矩阵
+ * @param {Array} holeList - 球洞列表
+ * @returns {{displayOutTotals: Array, displayInTotals: Array}}
+ */
+export function calculateOutInTotals(displayScores, holeList) {
+    if (!displayScores || displayScores.length === 0 || holeList.length !== 18) {
+        return { displayOutTotals: [], displayInTotals: [] };
+    }
+
+    const displayOutTotals = displayScores.map(playerArr =>
+        playerArr.slice(0, 9).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
+    );
+
+    const displayInTotals = displayScores.map(playerArr =>
+        playerArr.slice(9, 18).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
+    );
+
+    return { displayOutTotals, displayInTotals };
 }
 
 /**

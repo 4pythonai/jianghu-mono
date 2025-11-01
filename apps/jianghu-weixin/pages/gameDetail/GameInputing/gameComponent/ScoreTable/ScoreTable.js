@@ -111,11 +111,12 @@ Component({
                 displayScores,
                 displayTotals,
                 displayOutTotals,
-                displayInTotals
+                displayInTotals,
+                scoreIndex
             } = computeScoreTableStats(players, holeList, red_blue);
 
             this._isUpdatingHandicap = true;
-            gameStore.updatePlayersHandicaps(holeList);
+            gameStore.updatePlayersHandicaps(holeList, scoreIndex);
             setTimeout(() => {
                 this._isUpdatingHandicap = false;
             }, 0);
@@ -147,6 +148,15 @@ Component({
         },
 
         // ===================== UI 交互相关 =====================
+        resolveGameMeta() {
+            const { gameid, gameData } = this.data;
+            return {
+                gameid: gameid || gameData?.id,
+                uuid: gameData?.uuid || gameData?.game_uuid,
+                title: gameData?.title || gameData?.game_name,
+            };
+        },
+
         scrollToLeft() {
             const query = wx.createSelectorQuery().in(this);
             query.select('#mainScroll').node().exec((res) => {
@@ -188,7 +198,7 @@ Component({
             const operationPanel = this.selectComponent('#gameOperationPanel');
             if (operationPanel) {
                 // 从 gameStore 获取 gameid
-                const gameid = this.data.gameid || this.data.gameData?.id;
+                const { gameid } = this.resolveGameMeta();
                 if (gameid) {
                     operationPanel.show({
                         gameid: gameid
@@ -225,10 +235,8 @@ Component({
         showAddPlayerPanel() {
             const addPlayerPanel = this.selectComponent('#addPlayerPanel');
             if (addPlayerPanel) {
-                // 从 gameStore 获取 gameid 和 uuid
-                const gameid = this.data.gameid || this.data.gameData?.id;
-                const uuid = this.data.gameData?.uuid || this.data.gameData?.game_uuid;
-                const title = this.data.gameData?.title || this.data.gameData?.game_name;
+                // 从 gameStore 获取 game信息
+                const { gameid, uuid, title } = this.resolveGameMeta();
 
                 console.log('📋 [ScoreTable] 准备显示添加球员面板:', { gameid, uuid, title });
 

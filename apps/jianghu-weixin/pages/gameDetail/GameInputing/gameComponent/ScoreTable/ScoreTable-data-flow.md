@@ -17,11 +17,11 @@
 1. 观察者 `playerScores, players, holeList, red_blue` 任一变化后触发（`ScoreTable.js`），随后调用 `runAtomicScoreUpdate`，内部复用 `utils/scoreTableCalculator.js` 提供的计算函数。
 2. 通过 `scoreStore.calculateDisplayScores` 将一维原始分数转为二维矩阵 `displayScores`，保留推杆、罚杆及红蓝标记信息。
 3. **三个统计值在同一时间同步计算（原子操作）**（`ScoreTable.js`）：
-   - `displayTotals = gameStore.calculateDisplayTotals(displayScores)` - 计算所有洞的总分
-   - `{ displayOutTotals, displayInTotals } = gameStore.calculateOutInTotals(displayScores, holeList)` - 计算前9洞和后9洞汇总
-   - `gameStore.updatePlayersHandicaps(holeList)` - 更新玩家的 handicap（杆差）
+   - `displayTotals = calculateDisplayTotals(displayScores)` - 计算所有洞的总分
+   - `{ displayOutTotals, displayInTotals } = calculateOutInTotals(displayScores, holeList)` - 计算前9洞和后9洞汇总
+   - `gameStore.updatePlayersHandicaps(holeList, scoreIndex)` - 更新玩家的 handicap（杆差）
    
-   **架构说明**：这三个计算都在 `gameStore` 中，作为原子操作同时执行，确保数据一致性。所有统计计算方法已从 `scoreStore` 迁移到 `gameStore`，因为它们属于游戏层面的统计而非分数层面的数据操作。
+   **架构说明**：统计函数下沉到 `scoreTableCalculator`，与显示矩阵计算放在一起减少重复遍历；handicap 更新仍在 `gameStore` 中完成。
    
 4. **关键差异**：`calculateDisplayTotals` 无条件计算所有洞的总分；而 `calculateOutInTotals` 在 `holeList.length !== 18` 或 `displayScores` 为空时返回空数组。
 5. 为防止绑定数组长度与球员数量不一致，`runAtomicScoreUpdate` 会对 `displayOutTotals` / `displayInTotals` 进行零填充后写回 `data`。
@@ -41,7 +41,7 @@
 
 ### 可能原因：
 
-1. **`calculateOutInTotals` 的条件判断导致返回空数组**（`gameStore.js`）：
+1. **`calculateOutInTotals` 的条件判断导致返回空数组**（`scoreTableCalculator.js`）：
    - `displayScores` 为空或长度为 0
    - `holeList.length !== 18`（但此情况下 OUT 列不应该显示）
    - 需要确认在计算时 `holeList.length` 的实际值

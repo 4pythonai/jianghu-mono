@@ -81,11 +81,11 @@ export const scoreStore = observable({
      * @param {Array} red_blue - 红蓝分组数据
      * @returns {Array} 二维数组，每个玩家对应一个分数数组
      */
-    calculateDisplayScores(players, holeList, red_blue = []) {
+    calculateDisplayScores(players, holeList, red_blue = [], scoreIndexOverride) {
         if (!Array.isArray(players) || players.length === 0) return [];
         if (!Array.isArray(holeList) || holeList.length === 0) return [];
 
-        const scoreIndex = buildScoreIndex(this.scores);
+        const scoreIndex = scoreIndexOverride ?? buildScoreIndex(this.scores);
         const redBlueIndex = buildRedBlueIndex(red_blue);
 
         return players.map(player => {

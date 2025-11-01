@@ -3,7 +3,6 @@ import gameApi from '../api/modules/game' // 导入整个默认导出的对象
 import {
     normalizePlayer,
     normalizeHole,
-    normalizeScore,
     normalizeScoreCards,
     formatScore,
     formatPutts,
@@ -53,12 +52,6 @@ export const gameStore = observable({
         const allPlayers = (gameInfo.players || []).map(p => normalizePlayer(p));
         const players = this._filterPlayersByGroup(allPlayers, groupid);
         const holeList = (gameInfo.holeList || []).map((h, index) => normalizeHole(h, index + 1));
-        const scoreMap = new Map();
-        for (const s of gameInfo.scores || []) {
-            const key = `${s.userid}_${s.holeid}`;
-            scoreMap.set(key, normalizeScore(s));
-        }
-
         scoreStore.scores = gameInfo.scores || [];
 
 
@@ -86,14 +79,14 @@ export const gameStore = observable({
 
     // 更新玩家 handicap（原子操作的一部分）
     // 用于在分数变动时实时更新 players 的 handicap
-    updatePlayersHandicaps: action(function (holeList) {
+    updatePlayersHandicaps: action(function (holeList, scoreIndex) {
         if (!this.players || !holeList || this.players.length === 0) {
             console.log('[gameStore] updatePlayersHandicaps: 数据不完整，跳过更新');
             return;
         }
 
         // 使用本地的 calculatePlayersHandicaps 计算 handicap（基于当前的 scores 和 players）
-        const playersWithHandicap = this.calculatePlayersHandicaps(this.players, holeList, scoreStore.scores);
+        const playersWithHandicap = this.calculatePlayersHandicaps(this.players, holeList, scoreStore.scores, scoreIndex);
 
         // 检查 handicap 是否真的变化了，避免不必要的更新导致循环触发
         let hasChanged = false;
@@ -228,53 +221,16 @@ export const gameStore = observable({
     }),
 
     /**
-     * 计算总分数组（原子操作的一部分）
-     * @param {Array} displayScores - 显示分数矩阵
-     * @returns {Array} 每个玩家的总分数组
-     */
-    calculateDisplayTotals(displayScores) {
-        if (!displayScores || displayScores.length === 0) return [];
-
-        return displayScores.map(playerArr =>
-            playerArr.reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
-        );
-    },
-
-    /**
-     * 计算OUT和IN汇总（原子操作的一部分，仅18洞时）
-     * @param {Array} displayScores - 显示分数矩阵
-     * @param {Array} holeList - 球洞列表
-     * @returns {Object} {displayOutTotals, displayInTotals}
-     */
-    calculateOutInTotals(displayScores, holeList) {
-        if (!displayScores || displayScores.length === 0 || holeList.length !== 18) {
-            return { displayOutTotals: [], displayInTotals: [] };
-        }
-
-        const displayOutTotals = displayScores.map(playerArr => {
-            // OUT: 前9洞 (索引0-8)
-            return playerArr.slice(0, 9).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
-        });
-
-        const displayInTotals = displayScores.map(playerArr => {
-            // IN: 后9洞 (索引9-17)
-            return playerArr.slice(9, 18).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0);
-        });
-
-        return { displayOutTotals, displayInTotals };
-    },
-
-    /**
      * 计算每个玩家的 handicap（原子操作的一部分）
      * @param {Array} players - 玩家列表
      * @param {Array} holeList - 球洞列表
      * @param {Array} scores - 分数数组（从 scoreStore 传入）
      * @returns {Array} 添加了 handicap 属性的玩家列表
      */
-    calculatePlayersHandicaps(players, holeList, scores) {
+    calculatePlayersHandicaps(players, holeList, scores, scoreIndexOverride) {
         if (!players || !holeList || !scores || players.length === 0) return players;
 
-        const scoreIndex = buildScoreIndex(scores);
+        const scoreIndex = scoreIndexOverride ?? buildScoreIndex(scores);
 
         return players.map(player => {
             let totalScore = 0;
