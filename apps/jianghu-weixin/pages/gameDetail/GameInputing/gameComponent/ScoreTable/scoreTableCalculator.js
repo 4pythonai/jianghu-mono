@@ -47,12 +47,20 @@ export function calculateOutInTotals(displayScores, holeList) {
         return { displayOutTotals: [], displayInTotals: [] };
     }
 
+    const sumSegment = (segment) => {
+        const validScores = segment.filter(cell => typeof cell?.score === 'number');
+        if (validScores.length === 0) {
+            return null;
+        }
+        return validScores.reduce((sum, cell) => sum + cell.score, 0);
+    };
+
     const displayOutTotals = displayScores.map(playerArr =>
-        playerArr.slice(0, 9).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
+        sumSegment(playerArr.slice(0, 9))
     );
 
     const displayInTotals = displayScores.map(playerArr =>
-        playerArr.slice(9, 18).reduce((sum, s) => sum + (typeof s.score === 'number' ? s.score : 0), 0)
+        sumSegment(playerArr.slice(9, 18))
     );
 
     return { displayOutTotals, displayInTotals };
@@ -63,11 +71,11 @@ export function calculateOutInTotals(displayScores, holeList) {
  * @param {Array} totals
  * @param {number} targetLength
  */
-export function normalizeTotalsLength(totals, targetLength) {
+export function normalizeTotalsLength(totals, targetLength, fillValue = null) {
     const safeTotals = Array.isArray(totals) ? totals : [];
     const padded = [...safeTotals];
     while (padded.length < targetLength) {
-        padded.push(0);
+        padded.push(fillValue);
     }
     return padded;
 }

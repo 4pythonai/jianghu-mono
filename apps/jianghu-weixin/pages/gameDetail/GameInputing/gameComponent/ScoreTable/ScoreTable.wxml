@@ -93,7 +93,7 @@
           <view wx:if="{{ holeList.length === 18 }}" class="cell-score cell-out">
             <text
               style="color:#333;font-size:16px;font-weight:bold;"
-            >{{displayOutTotals && displayOutTotals[playerIndex] !== undefined ? displayOutTotals[playerIndex] : ''}}</text>
+            >{{displayOutTotals && displayOutTotals[playerIndex] != null ? displayOutTotals[playerIndex] : ''}}</text>
           </view>
           <!-- 后9洞 (10-18) -->
           <view
@@ -116,7 +116,7 @@
           <view wx:if="{{ holeList.length === 18 }}" class="cell-score cell-in">
             <text
               style="color:#333;font-size:16px;font-weight:bold;"
-            >{{displayInTotals && displayInTotals[playerIndex] !== undefined ? displayInTotals[playerIndex] : ''}}</text>
+            >{{displayInTotals && displayInTotals[playerIndex] != null ? displayInTotals[playerIndex] : ''}}</text>
           </view>
           <!-- 总分单元格 -->
           <view class="cell-score cell-total">
