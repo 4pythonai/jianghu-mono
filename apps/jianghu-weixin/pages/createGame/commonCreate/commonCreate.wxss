@@ -103,17 +103,15 @@
 	justify-content: space-between;
 	margin-top: 8rpx;
 	padding: 8rpx 12rpx;
-	background: #e8f5e8;
 	border-radius: 8rpx;
 }
 
 .court-name {
 	font-size: 24rpx;
-	color: #1aad19;
+	color: black;
 	font-weight: 500;
 }
 
-/* 价格相关样式已移除 */
 
 .clear-btn {
 	width: 40rpx;
