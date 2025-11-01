@@ -7,10 +7,10 @@
     <view class="nav-right">
       <view class="nav-buttons">
         <view class="icon-btn" bindtap="showDrawer">
-          <image class="nav-icon" src="/assets/icons/icons8-settings-50.png" mode="aspectFit"></image>
+          <image class="nav-icon" src="/assets/icons/icons8-list-32.png" mode="aspectFit"></image>
         </view>
         <view class="icon-btn" bindtap="gotoRuntimeConfigList">
-          <image class="nav-icon" src="/assets/icons/icons8-right-arrow-50-3.png" mode="aspectFit"></image>
+          <image class="nav-icon" src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
         </view>
       </view>
     </view>
