@@ -1,3 +1,5 @@
+const { createJoinNotification } = require('./joinNotification');
+
 const app = getApp();
 
 Page({
@@ -13,10 +15,12 @@ Page({
         loading: false,
         error: '',
         hasGameId: false,
-        showTestButton: false
+        showTestButton: false,
+        notifications: []
     },
 
     onLoad(options) {
+        this.joinNotification = createJoinNotification({ page: this });
         const params = this.normalizeOptions(options);
         const dataUpdate = {};
         const envVersion = wx.getAccountInfoSync
@@ -303,6 +307,40 @@ Page({
         wx.navigateTo({
             url: sharePath
         });
+    },
+
+    handleTestNotification() {
+        if (!this.joinNotification) {
+            return;
+        }
+        this.joinNotification.push({
+            avatar: 'https://qiaoyincapital.com/avatar/2025/10/31/avatar_837616_1761890982.jpeg',
+            nickname: 'Demo1'
+        });
+    },
+
+    onUnload() {
+        this.teardownJoinNotification(true);
+    },
+
+    onHide() {
+        this.teardownJoinNotification();
+    },
+
+    teardownJoinNotification(destroy = false) {
+        if (!this.joinNotification) {
+            return;
+        }
+        if (destroy) {
+            if (typeof this.joinNotification.destroy === 'function') {
+                this.joinNotification.destroy();
+            }
+            this.joinNotification = null;
+            return;
+        }
+        if (typeof this.joinNotification.clearAll === 'function') {
+            this.joinNotification.clearAll();
+        }
     },
 
     onShareAppMessage() {

@@ -1,10 +1,5 @@
 <?php
 
-
-
-
-
-
 ini_set('memory_limit', '-1');
 if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
@@ -24,85 +19,49 @@ class Test extends CI_Controller {
 
 
     public function index() {
-
-        $this->load->model('gamble/MReward');
-        $rewardPair = [
-            [
-                'scoreName' => 'Par',
-                'rewardValue' => 1
-            ],
-            [
-                'scoreName' => 'Birdie',
-                'rewardValue' => 2
-            ],
-            [
-                'scoreName' => 'Eagle',
-                'rewardValue' => 4
-            ],
-            [
-                'scoreName' => 'Albatross/HIO',
-                'rewardValue' => 10
-            ],
-            [
-                'scoreName' => 'Birdie+Birdie',
-                'rewardValue' => 4
-            ],
-            [
-                'scoreName' => 'Birdie+Eagle',
-                'rewardValue' => 8
-            ],
-            [
-                'scoreName' => 'Eagle+Birdie',
-                'rewardValue' => 8
-            ],
-            [
-                'scoreName' => 'Eagle+Eagle',
-                'rewardValue' => 16
-            ]
+        $payload = [
+            'gameId' => 'demo-' . date('YmdHis'),
+            'playerId' => 'test-player',
+            'nickname' => 'Demo1',
+            'avatar' => 'https://qiaoyincapital.com/avatar/2025/10/31/avatar_837616_1761890982.jpeg',
+            'message' => 'Test notification ping from CodeIgniter'
         ];
-        $par = 5;
-        $score1 = 3;
-        $score2 = 1;
-        $rewardType = 'multiply';
-        $reward = $this->MReward->getRewardFactor($par, $score1, $score2, $rewardPair, $rewardType);
-        debug([
-            'PAR' => $par,
-            "成绩1" => $score1,
-            "成绩2" => $score2,
-            "奖励类型" => $rewardType,
 
-        ]);
-        debug($rewardPair);
-        debug($reward);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    public function getCourseDetail() {
-        $courseid = 100021;
-        $query = "SELECT id,courseid,name,avatar,courtnum FROM t_course WHERE courseid = $courseid";
-        $course = $this->db->query($query)->row_array();
-
-        // courts
-        $query = "SELECT * FROM t_course_court WHERE courseid = $courseid";
-        $courts = $this->db->query($query)->result_array();
-
-        // holes
-        foreach ($courts as &$court) {
-            $courtid = $court['courtid'];
-            $query = "SELECT  holeid,holename, par FROM t_court_hole WHERE courtid = $courtid  limit 3";
-            $holes = $this->db->query($query)->result_array();
-            $court['courtholes'] = $holes;
+        $endpoint = getenv('WORKERMAN_PUSH_ENDPOINT');
+        if (!$endpoint) {
+            $endpoint = 'http://127.0.0.1:2347/push';
         }
-        echo json_encode(['code' => 200, 'course' => $course, 'courts' => $courts], JSON_UNESCAPED_UNICODE);
+
+        $ch = curl_init($endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json'
+            ],
+            CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
+            CURLOPT_TIMEOUT => 5,
+            CURLOPT_CONNECTTIMEOUT => 3
+        ]);
+
+        $responseBody = curl_exec($ch);
+        $curlError = curl_error($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        curl_close($ch);
+
+        $result = [
+            'endpoint' => $endpoint,
+            'payload' => $payload,
+            'statusCode' => $statusCode,
+            'response' => $responseBody
+        ];
+
+        if ($curlError) {
+            $result['error'] = $curlError;
+        }
+
+        $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($result, JSON_UNESCAPED_UNICODE));
     }
 }

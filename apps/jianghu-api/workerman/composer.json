@@ -1,0 +1,19 @@
+{
+    "name": "jianghu/workerman",
+    "description": "Workerman service for Jianghu API",
+    "type": "project",
+    "require": {
+        "php": ">=7.3.28",
+        "workerman/workerman": "^4.1"
+    },
+    "config": {
+        "platform": {
+            "php": "7.3.28"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "": "."
+        }
+    }
+}

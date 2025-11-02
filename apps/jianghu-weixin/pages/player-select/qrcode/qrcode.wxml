@@ -43,7 +43,10 @@
 
     <view class="info-item" wx:if="{{showTestButton}}">
       <text class="info-label">调试工具</text>
-      <button class="test-btn" bindtap="handleTestNavigate">跳转到邀请页</button>
+      <view class="info-value-row">
+        <button class="test-btn" bindtap="handleTestNavigate">跳转到邀请页</button>
+        <button class="test-btn test-btn-secondary" bindtap="handleTestNotification">模拟入场通知</button>
+      </view>
     </view>
   </view>
 
@@ -56,4 +59,16 @@
       <text>2. 好友扫码后将进入邀请页，可一键加入比赛。</text>
     </view>
   </view>
+</view>
+
+<view class="notification-layer" wx:if="{{notifications.length}}">
+  <block wx:for="{{notifications}}" wx:key="id">
+    <view class="notification-card {{item.state === 'leave' ? 'notification-leave' : 'notification-enter'}}">
+      <image class="notification-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+      <view class="notification-content">
+        <text class="notification-title">{{item.nickname}}</text>
+        <text class="notification-message">加入比赛</text>
+      </view>
+    </view>
+  </block>
 </view>
