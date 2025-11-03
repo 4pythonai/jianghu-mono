@@ -119,17 +119,11 @@ Component({
             const groupid = this.properties.groupid;
 
             try {
-                // 先检查是否有游戏配置
-                const res = await gamble.listRuntimeConfig({ groupid }, {
-                    loadingTitle: '检查配置中...',
-                    loadingMask: false
-                });
-
-                // 检查返回结果
-                const configs = (res?.code === 200) ? (res.gambles || []) : [];
+                // 直接使用已有的 gambleResults 数据判断，无需调用 API
+                const gambleResults = this.data.gambleResults || [];
 
                 // 如果没有配置，显示提示
-                if (configs.length === 0) {
+                if (gambleResults.length === 0) {
                     wx.showModal({
                         title: '提示',
                         content: '没有游戏配置，请先添加',
