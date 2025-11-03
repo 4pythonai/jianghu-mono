@@ -11,11 +11,10 @@ Page({
     data: {
         gameid: '',
         groupid: '',
-        queryParams: {}
+        queryParams: {},
+        backUrl: '', // 自定义导航栏返回URL
+        navBarHeight: 44 + 20 // 导航栏高度（状态栏 + 导航栏）
     },
-
-    // 记录页面栈长度，用于判断是跳转还是返回
-    _pageStackLength: 0,
 
     onLoad(options = {}) {
         const targetTab = this._resolveTab(options.activeTab);
@@ -27,56 +26,32 @@ Page({
         const queryParams = this._extractQueryParams(options);
         const { gameid = '', groupid = '' } = queryParams;
 
+        // 计算导航栏高度
+        const systemInfo = wx.getSystemInfoSync();
+        const statusBarHeight = systemInfo.statusBarHeight || 0;
+        const navBarHeight = statusBarHeight + 44;
+
+        // 构建返回URL：始终返回到 score 页面
+        const backQuery = this._buildQueryString({ gameid, groupid });
+        const backUrl = backQuery
+            ? `/pages/gameDetail/score/score?${backQuery}`
+            : `/pages/gameDetail/score/score`;
+
         this.setData({
             gameid,
             groupid,
-            queryParams
+            queryParams,
+            backUrl,
+            navBarHeight
         });
-
-        // 初始化页面栈长度
-        this._pageStackLength = getCurrentPages().length;
     },
 
     onShow() {
-        const currentStackLength = getCurrentPages().length;
-
-        // 如果页面栈长度减少，说明是返回操作
-        // 此时检查页面栈中是否有 score 页面，如果没有就跳转到 score
-        if (this._pageStackLength > 0 && currentStackLength < this._pageStackLength) {
-            const pages = getCurrentPages();
-            const hasScorePage = pages.some(page =>
-                page.route === 'pages/gameDetail/score/score'
-            );
-
-            if (!hasScorePage && this.data.gameid) {
-                const { gameid, groupid } = this.data;
-                const query = this._buildQueryString({ gameid, groupid });
-                const url = query
-                    ? `/pages/gameDetail/score/score?${query}`
-                    : `/pages/gameDetail/score/score`;
-
-                wx.redirectTo({ url });
-                return; // 跳转后不需要执行后续逻辑
-            }
-        }
-
         // 刷新 GambleSummary 组件的列表数据
         const gambleSummary = this.selectComponent('#gambleSummary');
         if (gambleSummary && typeof gambleSummary.refresh === 'function') {
             gambleSummary.refresh();
         }
-
-        // 记录页面栈长度
-        this._pageStackLength = currentStackLength;
-    },
-
-    onHide() {
-        // 记录页面栈长度，用于判断返回操作
-        this._pageStackLength = getCurrentPages().length;
-    },
-
-    onUnload() {
-        // 不再需要清理 storeBindings，因为已移除 gameStore 绑定
     },
 
     _resolveTab(activeTab) {

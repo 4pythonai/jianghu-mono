@@ -1,6 +1,9 @@
 <view class="game-detail-page">
-  <GameDetailTabs active="gamble" queryParams="{{queryParams}}" />
-  <view class="tab-content">
-    <GambleSummary gameid="{{gameid}}" groupid="{{groupid}}" id="gambleSummary" />
+  <CustomNavBar title="比赛详情" backUrl="{{backUrl}}" />
+  <view class="page-content" style="padding-top: {{navBarHeight}}px;">
+    <GameDetailTabs active="gamble" queryParams="{{queryParams}}" />
+    <view class="tab-content">
+      <GambleSummary gameid="{{gameid}}" groupid="{{groupid}}" id="gambleSummary" />
+    </view>
   </view>
 </view>

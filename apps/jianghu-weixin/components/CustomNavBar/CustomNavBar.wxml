@@ -1,0 +1,14 @@
+<view
+  class="custom-nav-bar"
+  style="padding-top: {{statusBarHeight}}px; height: {{statusBarHeight + navBarHeight}}px;"
+>
+  <view class="nav-content">
+    <view class="nav-left" bindtap="onBack">
+      <view class="back-icon">
+        <view class="back-arrow"></view>
+      </view>
+    </view>
+    <view class="nav-title">{{title}}</view>
+    <view class="nav-right"></view>
+  </view>
+</view>
