@@ -12,19 +12,20 @@ final class SubscriptionRegistry
     /**
      * @var array<string, array<string, TcpConnection>>
      */
-    private array $byGame = [];
+    private $byGame = [];
 
     /**
      * @var array<string, string>
      */
-    private array $byConnection = [];
+    private $byConnection = [];
 
     /**
      * @var array<string, int>
      */
-    private array $metrics = [];
+    private $metrics = [];
 
-    private ChannelManager $channelManager;
+    /** @var ChannelManager */
+    private $channelManager;
 
     public function __construct(ChannelManager $channelManager)
     {

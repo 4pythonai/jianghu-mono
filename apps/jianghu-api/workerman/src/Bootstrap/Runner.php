@@ -14,11 +14,20 @@ use Workerman\Worker;
 
 final class Runner
 {
-    private EnvironmentChecker $environmentChecker;
-    private ChannelManager $channelManager;
-    private SubscriptionRegistry $subscriptionRegistry;
-    private HttpPushWorkerFactory $httpWorkerFactory;
-    private WebsocketWorkerFactory $websocketWorkerFactory;
+    /** @var EnvironmentChecker */
+    private $environmentChecker;
+
+    /** @var ChannelManager */
+    private $channelManager;
+
+    /** @var SubscriptionRegistry */
+    private $subscriptionRegistry;
+
+    /** @var HttpPushWorkerFactory */
+    private $httpWorkerFactory;
+
+    /** @var WebsocketWorkerFactory */
+    private $websocketWorkerFactory;
 
     public function __construct(
         ?EnvironmentChecker $environmentChecker = null,

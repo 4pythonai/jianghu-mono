@@ -13,9 +13,14 @@ final class ChannelManager
     private const DEFAULT_CHANNEL_HOST = '127.0.0.1';
     private const DEFAULT_CHANNEL_PORT = 2206;
 
-    private string $host;
-    private int $port;
-    private bool $clientConnected = false;
+    /** @var string */
+    private $host;
+
+    /** @var int */
+    private $port;
+
+    /** @var bool */
+    private $clientConnected = false;
 
     public function __construct(?string $host = null, ?int $port = null)
     {
