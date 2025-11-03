@@ -7,6 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Workerman\\' => array($vendorDir . '/workerman/workerman'),
+    'Jianghu\\Workerman\\' => array($baseDir . '/src'),
     'Channel\\' => array($vendorDir . '/workerman/channel/src'),
-    '' => array($baseDir . '/'),
 );
