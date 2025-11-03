@@ -354,3 +354,139 @@ page {
 	color: #666666;
 	line-height: 1.5;
 }
+
+.groups-card {
+	background-color: #ffffff;
+	border-radius: 20rpx;
+	padding: 36rpx 32rpx;
+	box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.06);
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+}
+
+.groups-card-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.groups-title {
+	font-size: 32rpx;
+	color: #333333;
+	font-weight: 600;
+}
+
+.groups-status {
+	font-size: 24rpx;
+	color: #888888;
+}
+
+.groups-feedback {
+	background-color: #fff6f6;
+	border-radius: 16rpx;
+	padding: 24rpx;
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.groups-error-text {
+	font-size: 26rpx;
+	color: #d64545;
+}
+
+.groups-retry-btn {
+	align-self: flex-start;
+	height: 64rpx;
+	padding: 0 28rpx;
+}
+
+.groups-loading {
+	background-color: #f4fbf6;
+	border-radius: 16rpx;
+	padding: 24rpx;
+	font-size: 26rpx;
+	color: var(--theme-color);
+}
+
+.group-list {
+	display: flex;
+	flex-direction: column;
+	gap: 20rpx;
+}
+
+.group-item {
+	background-color: #f8f9fa;
+	border-radius: 16rpx;
+	padding: 24rpx;
+	border: 2rpx solid #e9ecef;
+	display: flex;
+	flex-direction: column;
+	gap: 16rpx;
+}
+
+.group-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.group-name {
+	font-size: 28rpx;
+	color: #333333;
+	font-weight: 600;
+}
+
+.group-count {
+	font-size: 24rpx;
+	color: #666666;
+	background-color: #e9ecef;
+	padding: 6rpx 14rpx;
+	border-radius: 12rpx;
+}
+
+.user-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
+}
+
+.user-item {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	padding: 12rpx;
+	background-color: #ffffff;
+	border-radius: 12rpx;
+}
+
+.user-avatar {
+	width: 60rpx;
+	height: 60rpx;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2rpx solid #e9ecef;
+}
+
+.user-name {
+	font-size: 26rpx;
+	color: #333333;
+	font-weight: 500;
+	flex: 1;
+}
+
+.group-empty,
+.groups-empty {
+	background-color: #f6f7f8;
+	border-radius: 16rpx;
+	padding: 24rpx;
+	text-align: center;
+	color: #888888;
+	font-size: 26rpx;
+}
+
+.group-empty-text {
+	color: #888888;
+	font-size: 26rpx;
+}

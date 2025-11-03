@@ -19,6 +19,10 @@ Page({
         hasGameId: false,
         showTestButton: false,
         notifications: [],
+        groups: [],
+        groupsLoading: false,
+        groupsError: '',
+        groupsRefreshing: false,
         socketStatus: 'idle',
         socketError: '',
         socketDebug: {
@@ -32,6 +36,8 @@ Page({
     onLoad(options) {
         this.joinNotification = createJoinNotification({ page: this });
         this.joinSocket = null;
+        this._fetchingGameDetail = false;
+        this._pendingGameDetailRefresh = false;
         const params = this.normalizeOptions(options);
         const dataUpdate = {};
         const envVersion = wx.getAccountInfoSync
@@ -81,6 +87,9 @@ Page({
 
             if (this.data.uuid) {
                 this.fetchInviteQrcode();
+            }
+            if (this.data.gameid) {
+                this.fetchGameDetail();
             }
             this.ensureJoinSocket();
         });
@@ -146,6 +155,76 @@ Page({
         return `/pages/player-select/joinGame/joinGame?${query.join('&')}`;
     },
 
+    async fetchGameDetail({ silent = false } = {}) {
+        const { gameid } = this.data;
+
+        if (!gameid) {
+            if (!silent) {
+                this.setData({
+                    groups: [],
+                    groupsError: '缺少比赛ID，无法加载组别'
+                });
+            }
+            return;
+        }
+
+        if (this._fetchingGameDetail) {
+            this._pendingGameDetailRefresh = true;
+            return;
+        }
+
+        this._fetchingGameDetail = true;
+
+        const loadingData = {
+            groupsError: ''
+        };
+
+        if (silent) {
+            loadingData.groupsRefreshing = true;
+        } else {
+            loadingData.groupsLoading = true;
+        }
+
+        this.setData(loadingData);
+
+        try {
+            const result = await app.api.game.getGameDetail({
+                gameid
+            });
+
+            if (result?.code !== 200) {
+                throw new Error(result?.message || '获取比赛详情失败');
+            }
+
+            const groups = Array.isArray(result?.game_detail?.groups)
+                ? result.game_detail.groups
+                : [];
+
+            this.setData({
+                groups,
+                groupsError: ''
+            });
+        } catch (error) {
+            console.error('[QRCode] fetchGameDetail failed', error);
+            this.setData({
+                groupsError: error?.message || '获取比赛详情失败'
+            });
+        } finally {
+            this._fetchingGameDetail = false;
+
+            const finishData = silent
+                ? { groupsRefreshing: false }
+                : { groupsLoading: false };
+
+            this.setData(finishData);
+
+            if (this._pendingGameDetailRefresh) {
+                this._pendingGameDetailRefresh = false;
+                this.fetchGameDetail({ silent: true });
+            }
+        }
+    },
+
     async fetchInviteQrcode() {
         const { uuid, gameid } = this.data;
         if (!uuid) {
@@ -202,6 +281,10 @@ Page({
 
     handleRetry() {
         this.fetchInviteQrcode();
+    },
+
+    handleGroupsRetry() {
+        this.fetchGameDetail();
     },
 
     handlePreview() {
@@ -407,7 +490,21 @@ Page({
             }
         );
 
-        if (event !== 'player_joined') {
+        const normalizedEvent = typeof event === 'string' ? event.toLowerCase() : '';
+        const shouldRefreshGroups = [
+            'notify',
+            'player_joined',
+            'player_updated',
+            'player_left',
+            'player_removed',
+            'group_updated'
+        ];
+
+        if (shouldRefreshGroups.includes(normalizedEvent)) {
+            this.fetchGameDetail({ silent: true });
+        }
+
+        if (normalizedEvent !== 'player_joined') {
             return;
         }
 

@@ -42,32 +42,63 @@
     </view>
 
     <view class="info-item" wx:if="{{showTestButton}}">
-      <text class="info-label">调试工具</text>
       <view class="info-value-row">
         <button class="test-btn" bindtap="handleTestNavigate">跳转到邀请页</button>
         <button class="test-btn test-btn-secondary" bindtap="handleTestNotification">模拟入场通知</button>
       </view>
-      <view class="socket-status">
-        <text class="info-hint">通知通道：{{socketStatus}}</text>
-        <text class="info-hint info-hint-error" wx:if="{{socketError}}">{{socketError}}</text>
-        <text class="info-hint" wx:if="{{socketDebug.lastEvent}}">最新事件：{{socketDebug.lastEvent}}</text>
-        <text class="info-hint" wx:if="{{socketDebug.lastReceivedAt}}">事件时间：{{socketDebug.lastReceivedAt}}</text>
-        <text class="info-hint info-hint-break" wx:if="{{socketDebug.lastPayloadText}}">事件数据：{{socketDebug.lastPayloadText}}</text>
-        <scroll-view
-          wx:if="{{socketDebugLogs.length}}"
-          class="socket-log"
-          scroll-y="true"
-          enhanced="true"
-          show-scrollbar="true"
+    </view>
+  </view>
+
+  <view class="groups-card" wx:if="{{hasGameId}}">
+    <view class="groups-card-header">
+      <text class="groups-title">分组报名详情</text>
+      <text class="groups-status" wx:if="{{groupsLoading}}">加载中...</text>
+      <text class="groups-status" wx:elif="{{groupsRefreshing}}">刷新中...</text>
+    </view>
+
+    <view class="groups-feedback" wx:if="{{groupsError}}">
+      <text class="groups-error-text">{{groupsError}}</text>
+      <button class="ghost-btn groups-retry-btn" bindtap="handleGroupsRetry">重新加载</button>
+    </view>
+
+    <view class="groups-loading" wx:if="{{groupsLoading}}">
+      <text>组别加载中，请稍候...</text>
+    </view>
+
+    <block wx:if="{{!groupsLoading && groups.length}}">
+      <view class="group-list">
+        <view
+          class="group-item"
+          wx:for="{{groups}}"
+          wx:key="groupid"
+          wx:for-index="groupIndex"
+          wx:for-item="group"
         >
-          <block wx:for="{{socketDebugLogs}}" wx:key="id">
-            <view class="socket-log-item">
-              <text class="socket-log-meta">{{item.timestamp}} · {{item.type}} · {{item.label}}</text>
-              <text class="socket-log-detail" wx:if="{{item.detail}}">{{item.detail}}</text>
+          <view class="group-header">
+            <text class="group-name">{{group.group_name || ('第' + (groupIndex + 1) + '组')}}</text>
+            <text
+              class="group-count"
+            >{{group.user_count || (group.users && group.users.length) || 0}}人已加入</text>
+          </view>
+          <view class="user-list" wx:if="{{group.users && group.users.length}}">
+            <view class="user-item" wx:for="{{group.users}}" wx:key="userid" wx:for-item="user">
+              <image
+                class="user-avatar"
+                src="{{user.avatar || '/images/default-avatar.png'}}"
+                mode="aspectFill"
+              ></image>
+              <text class="user-name">{{user.nickname || user.nickName || '匿名球友'}}</text>
             </view>
-          </block>
-        </scroll-view>
+          </view>
+          <view class="group-empty" wx:else>
+            <text class="group-empty-text">等待球友加入...</text>
+          </view>
+        </view>
       </view>
+    </block>
+
+    <view class="groups-empty" wx:if="{{!groupsLoading && !groups.length && !groupsError}}">
+      <text>当前暂无球友加入，快邀请好友扫码吧</text>
     </view>
   </view>
 
@@ -84,7 +115,9 @@
 
 <view class="notification-layer" wx:if="{{notifications.length}}">
   <block wx:for="{{notifications}}" wx:key="id">
-    <view class="notification-card {{item.state === 'leave' ? 'notification-leave' : 'notification-enter'}}">
+    <view
+      class="notification-card {{item.state === 'leave' ? 'notification-leave' : 'notification-enter'}}"
+    >
       <image class="notification-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
       <view class="notification-content">
         <text class="notification-title">{{item.nickname}}</text>
