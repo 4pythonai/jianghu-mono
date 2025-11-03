@@ -20,7 +20,7 @@ class Test extends CI_Controller {
 
     public function index() {
         $payload = [
-            'gameId' => 'demo-' . date('YmdHis'),
+            'gameId' => '1338429',
             'playerId' => 'test-player',
             'nickname' => 'Demo1',
             'avatar' => 'https://qiaoyincapital.com/avatar/2025/10/31/avatar_837616_1761890982.jpeg',

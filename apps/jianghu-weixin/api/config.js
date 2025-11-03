@@ -5,10 +5,13 @@
 // 环境配置
 const ENV = {
     development: {
-        baseURL: 'https://qiaoyincapital.com/v3/index.php'
+        baseURL: 'https://qiaoyincapital.com/v3/index.php',
+        wsURL: 'ws://qiaoyincapital.com:2348'
     },
     production: {
-        baseURL: 'https://qiaoyincapital.com/v3/index.php'
+        baseURL: 'https://qiaoyincapital.com/v3/index.php',
+        wsURL: 'ws://qiaoyincapital.com:2348'
+
     }
 }
 

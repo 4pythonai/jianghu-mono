@@ -1,4 +1,4 @@
-function createJoinNotification({ page, displayDuration = 3600, exitDuration = 260 } = {}) {
+export function createJoinNotification({ page, displayDuration = 3600, exitDuration = 260 } = {}) {
     if (!page || typeof page.setData !== 'function') {
         throw new Error('createJoinNotification: invalid page instance');
     }
@@ -116,7 +116,3 @@ function createJoinNotification({ page, displayDuration = 3600, exitDuration = 2
         destroy
     };
 }
-
-module.exports = {
-    createJoinNotification
-};

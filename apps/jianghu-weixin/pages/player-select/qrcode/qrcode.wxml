@@ -47,6 +47,27 @@
         <button class="test-btn" bindtap="handleTestNavigate">跳转到邀请页</button>
         <button class="test-btn test-btn-secondary" bindtap="handleTestNotification">模拟入场通知</button>
       </view>
+      <view class="socket-status">
+        <text class="info-hint">通知通道：{{socketStatus}}</text>
+        <text class="info-hint info-hint-error" wx:if="{{socketError}}">{{socketError}}</text>
+        <text class="info-hint" wx:if="{{socketDebug.lastEvent}}">最新事件：{{socketDebug.lastEvent}}</text>
+        <text class="info-hint" wx:if="{{socketDebug.lastReceivedAt}}">事件时间：{{socketDebug.lastReceivedAt}}</text>
+        <text class="info-hint info-hint-break" wx:if="{{socketDebug.lastPayloadText}}">事件数据：{{socketDebug.lastPayloadText}}</text>
+        <scroll-view
+          wx:if="{{socketDebugLogs.length}}"
+          class="socket-log"
+          scroll-y="true"
+          enhanced="true"
+          show-scrollbar="true"
+        >
+          <block wx:for="{{socketDebugLogs}}" wx:key="id">
+            <view class="socket-log-item">
+              <text class="socket-log-meta">{{item.timestamp}} · {{item.type}} · {{item.label}}</text>
+              <text class="socket-log-detail" wx:if="{{item.detail}}">{{item.detail}}</text>
+            </view>
+          </block>
+        </scroll-view>
+      </view>
     </view>
   </view>
 

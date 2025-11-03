@@ -1,4 +1,6 @@
-const { createJoinNotification } = require('./joinNotification');
+import { createJoinNotification } from './joinNotification';
+import { createJoinSocket } from './joinSocket';
+import { config as apiConfig } from '@/api/config';
 
 const app = getApp();
 
@@ -16,11 +18,20 @@ Page({
         error: '',
         hasGameId: false,
         showTestButton: false,
-        notifications: []
+        notifications: [],
+        socketStatus: 'idle',
+        socketError: '',
+        socketDebug: {
+            lastEvent: '',
+            lastPayloadText: '',
+            lastReceivedAt: ''
+        },
+        socketDebugLogs: []
     },
 
     onLoad(options) {
         this.joinNotification = createJoinNotification({ page: this });
+        this.joinSocket = null;
         const params = this.normalizeOptions(options);
         const dataUpdate = {};
         const envVersion = wx.getAccountInfoSync
@@ -71,7 +82,35 @@ Page({
             if (this.data.uuid) {
                 this.fetchInviteQrcode();
             }
+            this.ensureJoinSocket();
         });
+    },
+
+    onShow() {
+        this.ensureJoinSocket();
+    },
+
+    appendSocketLog(entry, extraData = {}) {
+        const dataUpdate =
+            extraData && typeof extraData === 'object'
+                ? { ...extraData }
+                : {};
+
+        if (this.data.showTestButton && entry && typeof entry === 'object') {
+            const logs = Array.isArray(this.data.socketDebugLogs)
+                ? this.data.socketDebugLogs
+                : [];
+            const nextLogs = logs.concat(entry);
+            const maxEntries = 30;
+            dataUpdate.socketDebugLogs =
+                nextLogs.length > maxEntries
+                    ? nextLogs.slice(nextLogs.length - maxEntries)
+                    : nextLogs;
+        }
+
+        if (Object.keys(dataUpdate).length) {
+            this.setData(dataUpdate);
+        }
     },
 
     normalizeOptions(options = {}) {
@@ -309,6 +348,130 @@ Page({
         });
     },
 
+    ensureJoinSocket() {
+        if (!apiConfig?.wsURL) {
+            return;
+        }
+
+        const { uuid, gameid } = this.data;
+        const gameKey = gameid || uuid;
+
+        if (!gameKey) {
+            return;
+        }
+
+        if (!this.joinSocket) {
+            this.joinSocket = createJoinSocket({
+                url: apiConfig.wsURL,
+                gameId: gameKey,
+                uuid,
+                onEvent: this.handleSocketEvent.bind(this),
+                onStatusChange: this.handleSocketStatusChange.bind(this)
+            });
+            this.joinSocket.connect();
+            return;
+        }
+
+        this.joinSocket.updateSubscription({
+            gameId: gameKey,
+            uuid
+        });
+
+        if (!this.joinSocket.isActive()) {
+            this.joinSocket.connect();
+        }
+    },
+
+    handleSocketEvent(message = {}) {
+        if (this.data.showTestButton) {
+            console.info('[QRCode] socket event', message);
+        }
+
+        const { event, payload } = message;
+        const timestamp = new Date().toISOString();
+        const rawText = message ? JSON.stringify(message) : '';
+        this.appendSocketLog(
+            {
+                id: `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                type: 'event',
+                label: event || 'unknown',
+                detail: rawText,
+                timestamp
+            },
+            {
+                socketDebug: {
+                    lastEvent: event || '',
+                    lastPayloadText: payload ? JSON.stringify(payload) : '',
+                    lastReceivedAt: timestamp
+                }
+            }
+        );
+
+        if (event !== 'player_joined') {
+            return;
+        }
+
+        const avatar =
+            (payload && (payload.avatar || payload.headimgurl)) ||
+            '/images/default-avatar.png';
+        const nickname =
+            (payload && (payload.nickname || payload.nickName || payload.name)) ||
+            '新球友加入';
+
+        if (this.joinNotification) {
+            this.joinNotification.push({
+                avatar,
+                nickname
+            });
+        }
+    },
+
+    handleSocketStatusChange(detail = {}) {
+        const { status = 'idle', error, attempt } = detail;
+        const nextData = {
+            socketStatus: status,
+            socketError: ''
+        };
+
+        if (error) {
+            nextData.socketError =
+                typeof error === 'string'
+                    ? error
+                    : error.message || '实时通知连接异常';
+
+            if (status === 'error' || status === 'failed') {
+                wx.showToast({
+                    title: nextData.socketError,
+                    icon: 'none'
+                });
+            } else if (status === 'reconnecting' && attempt) {
+                wx.showToast({
+                    title: `通知通道重试中（第${attempt}次）`,
+                    icon: 'none'
+                });
+            }
+        }
+
+        const detailParts = [];
+        if (typeof attempt === 'number') {
+            detailParts.push(`attempt=${attempt}`);
+        }
+        if (nextData.socketError) {
+            detailParts.push(`error=${nextData.socketError}`);
+        }
+
+        this.appendSocketLog(
+            {
+                id: `sts_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                type: 'status',
+                label: status || 'unknown',
+                detail: detailParts.join(' | '),
+                timestamp: new Date().toISOString()
+            },
+            nextData
+        );
+    },
+
     handleTestNotification() {
         if (!this.joinNotification) {
             return;
@@ -320,11 +483,41 @@ Page({
     },
 
     onUnload() {
+        this.teardownJoinSocket(true);
         this.teardownJoinNotification(true);
     },
 
     onHide() {
+        this.teardownJoinSocket();
         this.teardownJoinNotification();
+    },
+
+    teardownJoinSocket(destroy = false) {
+        if (!this.joinSocket) {
+            return;
+        }
+
+        if (destroy) {
+            if (typeof this.joinSocket.destroy === 'function') {
+                this.joinSocket.destroy();
+            }
+            this.joinSocket = null;
+            this.setData({
+                socketStatus: 'idle',
+                socketError: '',
+                socketDebug: {
+                    lastEvent: '',
+                    lastPayloadText: '',
+                    lastReceivedAt: ''
+                },
+                socketDebugLogs: []
+            });
+            return;
+        }
+
+        if (typeof this.joinSocket.close === 'function') {
+            this.joinSocket.close();
+        }
     },
 
     teardownJoinNotification(destroy = false) {
