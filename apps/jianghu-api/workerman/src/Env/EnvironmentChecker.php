@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Jianghu\Workerman\Env;
 
-final class EnvironmentChecker
-{
+/**
+ * 为 Workerman 部署执行环境诊断。
+ *
+ * 检查器在启动 worker 之前通过 `php start.php check` 调用。
+ */
+final class EnvironmentChecker {
     private const REQUIRED_EXTENSIONS = [
         'pcntl' => 'Process control (pcntl)',
         'posix' => 'POSIX (posix)',
@@ -25,10 +29,9 @@ final class EnvironmentChecker
     ];
 
     /**
-     * Execute environment readiness checks.
+     * 执行环境就绪检查。
      */
-    public function run(): int
-    {
+    public function run(): int {
         echo 'PHP version: ' . PHP_VERSION . PHP_EOL;
         echo 'Extensions check:' . PHP_EOL;
 
@@ -82,8 +85,10 @@ final class EnvironmentChecker
         return 0;
     }
 
-    private function formatStatus(string $status, string $message): string
-    {
+    /**
+     * 为终端输出构建一致的状态消息。
+     */
+    private function formatStatus(string $status, string $message): string {
         return sprintf('  [%s] %s%s', str_pad($status, 4, ' ', STR_PAD_LEFT), $message, PHP_EOL);
     }
 }

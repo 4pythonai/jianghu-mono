@@ -12,8 +12,13 @@ use Jianghu\Workerman\Worker\WebsocketWorkerFactory;
 use Throwable;
 use Workerman\Worker;
 
-final class Runner
-{
+/**
+ * 配置并启动 Workerman 运行时。
+ *
+ * 此类将 CLI 处理和 worker 连接集中管理，以便未来的扩展
+ * 只需在单一位置进行插件化。
+ */
+final class Runner {
     /** @var EnvironmentChecker */
     private $environmentChecker;
 
@@ -29,6 +34,15 @@ final class Runner
     /** @var WebsocketWorkerFactory */
     private $websocketWorkerFactory;
 
+    /**
+     * 允许为测试或额外功能替换依赖项。
+     *
+     * @param EnvironmentChecker|null     $environmentChecker
+     * @param ChannelManager|null         $channelManager
+     * @param SubscriptionRegistry|null   $subscriptionRegistry
+     * @param HttpPushWorkerFactory|null  $httpWorkerFactory
+     * @param WebsocketWorkerFactory|null $websocketWorkerFactory
+     */
     public function __construct(
         ?EnvironmentChecker $environmentChecker = null,
         ?ChannelManager $channelManager = null,
@@ -43,8 +57,12 @@ final class Runner
         $this->websocketWorkerFactory = $websocketWorkerFactory ?? new WebsocketWorkerFactory();
     }
 
-    public function run(array $argv): int
-    {
+    /**
+     * 执行 CLI 命令（`check`、`start` 等）。
+     *
+     * @param array<int, mixed> $argv
+     */
+    public function run(array $argv): int {
         $command = $argv[1] ?? 'start';
         if ($command === 'check') {
             return $this->environmentChecker->run();

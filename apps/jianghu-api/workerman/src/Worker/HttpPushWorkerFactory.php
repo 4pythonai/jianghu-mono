@@ -12,10 +12,14 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Response;
 use Workerman\Worker;
 
-final class HttpPushWorkerFactory
-{
-    public function create(ChannelManager $channelManager, SubscriptionRegistry $registry): Worker
-    {
+/**
+ * 构建接受来自后端的推送负载的 HTTP worker。
+ */
+final class HttpPushWorkerFactory {
+    /**
+     * 准备一个为加入通知配置的 Workerman HTTP worker。
+     */
+    public function create(ChannelManager $channelManager, SubscriptionRegistry $registry): Worker {
         $listenAddress = 'http://0.0.0.0:2347';
 
         $worker = new Worker($listenAddress);

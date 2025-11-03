@@ -11,10 +11,14 @@ use Jianghu\Workerman\Subscription\SubscriptionRegistry;
 use Workerman\Connection\TcpConnection;
 use Workerman\Worker;
 
-final class WebsocketWorkerFactory
-{
-    public function create(ChannelManager $channelManager, SubscriptionRegistry $registry): Worker
-    {
+/**
+ * 提供分发加入通知的 Workerman websocket worker。
+ */
+final class WebsocketWorkerFactory {
+    /**
+     * 准备一个用于实时游戏订阅的 websocket worker。
+     */
+    public function create(ChannelManager $channelManager, SubscriptionRegistry $registry): Worker {
         $listenAddress = 'websocket://0.0.0.0:2348';
 
         $worker = new Worker($listenAddress);

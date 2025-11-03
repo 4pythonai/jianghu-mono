@@ -7,8 +7,10 @@ namespace Jianghu\Workerman\Subscription;
 use Jianghu\Workerman\Channel\ChannelManager;
 use Workerman\Connection\TcpConnection;
 
-final class SubscriptionRegistry
-{
+/**
+ * 跟踪 websocket 订阅并保持 Channel 指标同步。
+ */
+final class SubscriptionRegistry {
     /**
      * @var array<string, array<string, TcpConnection>>
      */
@@ -27,13 +29,17 @@ final class SubscriptionRegistry
     /** @var ChannelManager */
     private $channelManager;
 
-    public function __construct(ChannelManager $channelManager)
-    {
+    /**
+     * @param ChannelManager $channelManager 用于发布跨 worker 指标。
+     */
+    public function __construct(ChannelManager $channelManager) {
         $this->channelManager = $channelManager;
     }
 
-    public function register(TcpConnection $connection, string $gameId): void
-    {
+    /**
+     * 将连接绑定到给定的 $gameId 并广播指标更新。
+     */
+    public function register(TcpConnection $connection, string $gameId): void {
         $connectionId = spl_object_hash($connection);
 
         if (isset($this->byConnection[$connectionId])) {
@@ -56,8 +62,10 @@ final class SubscriptionRegistry
         $this->channelManager->publishSubscriptionMetrics($gameId, $currentCount);
     }
 
-    public function unregister(TcpConnection $connection): void
-    {
+    /**
+     * 移除现有订阅并发送更新的计数。
+     */
+    public function unregister(TcpConnection $connection): void {
         $connectionId = spl_object_hash($connection);
         if (!isset($this->byConnection[$connectionId])) {
             return;
@@ -79,8 +87,12 @@ final class SubscriptionRegistry
         $this->channelManager->publishSubscriptionMetrics($gameId, $currentCount);
     }
 
-    public function broadcast(string $gameId, array $payload): void
-    {
+    /**
+     * 向 $gameId 的所有订阅者发送负载，清理已关闭的套接字。
+     *
+     * @param array<string, mixed> $payload
+     */
+    public function broadcast(string $gameId, array $payload): void {
         if (empty($this->byGame[$gameId])) {
             return;
         }
@@ -113,8 +125,10 @@ final class SubscriptionRegistry
         }
     }
 
-    public function getSubscriberCount(string $gameId): int
-    {
+    /**
+     * 解析给定游戏的最新订阅者计数。
+     */
+    public function getSubscriberCount(string $gameId): int {
         if (isset($this->byGame[$gameId])) {
             return count($this->byGame[$gameId]);
         }
@@ -122,8 +136,10 @@ final class SubscriptionRegistry
         return $this->metrics[$gameId] ?? 0;
     }
 
-    public function updateMetricsFromChannel(string $gameId, int $count): void
-    {
+    /**
+     * 从 Channel 广播接收计数并刷新本地缓存。
+     */
+    public function updateMetricsFromChannel(string $gameId, int $count): void {
         if ($count <= 0) {
             unset($this->metrics[$gameId]);
             return;
