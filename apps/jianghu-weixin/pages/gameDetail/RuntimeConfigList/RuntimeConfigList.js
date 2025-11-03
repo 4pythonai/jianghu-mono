@@ -155,7 +155,7 @@ Page({
     async handleAddGame() {
         try {
             // 跳转到游戏规则页面
-            await navigationHelper.navigateTo('/pages/rules/rules');
+            await navigationHelper.navigateTo('/pages/rules/myRules/myRules');
             console.log('🎮 成功跳转到游戏规则页面');
         } catch (err) {
             console.error('🎮 跳转游戏规则页面失败:', err);

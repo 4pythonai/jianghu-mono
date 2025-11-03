@@ -94,10 +94,9 @@ Component({
         async handleAddGame() {
             // 引入导航助手
             const navigationHelper = require('@/utils/navigationHelper.js');
-
             try {
                 // 跳转到游戏规则页面
-                await navigationHelper.navigateTo('/pages/rules/rules');
+                await navigationHelper.navigateTo('/pages/rules/myRules/myRules');
                 console.log('🎮 成功跳转到游戏规则页面');
             } catch (err) {
                 console.error('🎮 跳转游戏规则页面失败:', err);
@@ -120,6 +119,27 @@ Component({
             const groupid = this.properties.groupid;
 
             try {
+                // 先检查是否有游戏配置
+                const res = await gamble.listRuntimeConfig({ groupid }, {
+                    loadingTitle: '检查配置中...',
+                    loadingMask: false
+                });
+
+                // 检查返回结果
+                const configs = (res?.code === 200) ? (res.gambles || []) : [];
+
+                // 如果没有配置，显示提示
+                if (configs.length === 0) {
+                    wx.showModal({
+                        title: '提示',
+                        content: '没有游戏配置，请先添加',
+                        showCancel: false,
+                        confirmText: '知道了'
+                    });
+                    return;
+                }
+
+                // 有配置，正常跳转
                 await navigationHelper.navigateTo(`/pages/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`);
             } catch (error) {
                 console.error('[GambleSummary] 跳转失败:', error);
