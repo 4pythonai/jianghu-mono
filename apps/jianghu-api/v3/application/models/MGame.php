@@ -269,7 +269,7 @@ class MGame  extends CI_Model {
 
   public function writeWebSocketMsg($userid, $gameid) {
 
-    $user = $this->getUserProfile($userid);
+    $user = $this->MUser->getUserProfile($userid);
 
     $payload = [];
     $payload['gameid'] = $gameid;
