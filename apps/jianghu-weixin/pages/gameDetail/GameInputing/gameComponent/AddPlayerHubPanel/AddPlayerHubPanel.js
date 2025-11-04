@@ -88,7 +88,7 @@ Component({
                 query.push(`title=${encodeURIComponent(title)}`);
             }
             query.push('source=qrcode');
-            return `/pages/player-select/joinGame/joinGame?${query.join('&')}`;
+            return `/pages/player-select/wxShare/wxShare?${query.join('&')}`;
         },
 
         // 获取邀请二维码

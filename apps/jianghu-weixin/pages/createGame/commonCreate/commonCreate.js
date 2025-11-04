@@ -559,7 +559,7 @@ Page({
         if (gameName) {
             query.push(`title=${encodeURIComponent(gameName)}`);
         }
-        return `/pages/player-select/joinGame/joinGame?${query.join('&')}`;
+        return `/pages/player-select/wxShare/wxShare?${query.join('&')}`;
     },
 
     /**

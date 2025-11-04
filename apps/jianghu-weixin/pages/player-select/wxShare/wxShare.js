@@ -122,7 +122,7 @@ Page({
         if (title) {
             query.push(`title=${encodeURIComponent(title)}`);
         }
-        return `/pages/player-select/joinGame/joinGame?${query.join('&')}`;
+        return `/pages/player-select/wxShare/wxShare?${query.join('&')}`;
     },
 
     handleCopyInvite() {

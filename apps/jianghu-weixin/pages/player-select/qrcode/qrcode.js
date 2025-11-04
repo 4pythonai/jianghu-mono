@@ -152,7 +152,7 @@ Page({
         }
         // 添加来源标识
         query.push('source=qrcode');
-        return `/pages/player-select/joinGame/joinGame?${query.join('&')}`;
+        return `/pages/player-select/wxShare/wxShare?${query.join('&')}`;
     },
 
     async fetchGameDetail({ silent = false } = {}) {

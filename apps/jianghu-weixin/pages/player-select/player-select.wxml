@@ -8,7 +8,7 @@
     <view
       class="method-item"
       bindtap="onSelectMethod"
-      data-method="{{ {id: 'wxshare', title: '微信分享', desc: '分享邀请链接给好友', icon: '/assets/icons/5-01.png', url: '/pages/player-select/joinGame/joinGame'} }}"
+      data-method="{{ {id: 'wxshare', title: '微信分享', desc: '分享邀请链接给好友', icon: '/assets/icons/5-01.png', url: '/pages/player-select/wxShare/wxShare'} }}"
     >
       <view class="method-icon">
         <image src="/assets/icons/5-01.png" mode="aspectFit"></image>
