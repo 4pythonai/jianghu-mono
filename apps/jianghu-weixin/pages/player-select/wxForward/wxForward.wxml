@@ -16,32 +16,37 @@
   <!-- 中间分享内容区域（突出显示） -->
   <view class="content-section">
     <view class="content-card">
-      <view class="content-title">比赛信息</view>
-
-      <view class="info-item" wx:if="{{title}}">
-        <view class="info-label">
-          <text class="info-label-text">比赛名称</text>
+      <!-- 球员列表区域 -->
+      <view class="players-section" wx:if="{{players && players.length > 0}}">
+        <view class="players-grid">
+          <view class="player-item" wx:for="{{players}}" wx:key="userid">
+            <image class="player-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+            <text class="player-name">{{item.nickname}}</text>
+          </view>
         </view>
-        <text class="info-value">{{title}}</text>
       </view>
 
-      <view class="info-item" wx:if="{{courseName}}">
-        <view class="info-label">
-          <text class="info-label-text">球场地点</text>
-        </view>
-        <text class="info-value">{{courseName}}</text>
-        <text class="info-value-secondary" wx:if="{{courseAddress}}">{{courseAddress}}</text>
+      <!-- 球场信息 -->
+      <view class="course-section" wx:if="{{courseName}}">
+        <text class="course-name">{{courseName}}</text>
       </view>
 
-      <view class="info-item" wx:if="{{openTime}}">
-        <view class="info-label">
-          <text class="info-label-text">比赛时间</text>
-        </view>
-        <text class="info-value">{{openTime}}</text>
+      <!-- 开球时间 -->
+      <view class="time-section" wx:if="{{openTime}}">
+        <text class="open-time">{{openTime}}</text>
       </view>
 
-      <view class="info-empty" wx:if="{{!title && !courseName && !openTime}}">
-        <text class="empty-text">比赛信息加载中...</text>
+      <!-- 二维码区域 -->
+      <view class="qrcode-section">
+        <view class="qrcode-wrapper" wx:if="{{qrcodeUrl}}">
+          <image class="qrcode-image" src="{{qrcodeUrl}}" mode="aspectFit"></image>
+        </view>
+        <view class="qrcode-loading" wx:elif="{{qrcodeLoading}}">
+          <text class="loading-text">二维码生成中...</text>
+        </view>
+        <view class="qrcode-empty" wx:else>
+          <text class="empty-text">二维码加载中...</text>
+        </view>
       </view>
     </view>
   </view>

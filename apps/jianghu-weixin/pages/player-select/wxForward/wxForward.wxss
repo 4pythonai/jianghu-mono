@@ -64,90 +64,104 @@ page {
 
 .content-card {
 	width: 100%;
-	background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+	background: #ffffff;
 	border-radius: 24rpx;
 	padding: 40rpx 32rpx;
 	box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.12);
-	border: 1rpx solid rgba(2, 80, 40, 0.1);
+	border: 2rpx solid #025028;
 	position: relative;
 	overflow: hidden;
 }
 
-.content-card::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 6rpx;
-	background-color: #025028;
+/* 球员列表区域 */
+.players-section {
+	margin-bottom: 40rpx;
 }
 
-.content-title {
-	font-size: 36rpx;
+.players-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 24rpx 16rpx;
+}
+
+.player-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8rpx;
+}
+
+.player-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	border: 2rpx solid #f0f0f0;
+}
+
+.player-name {
+	font-size: 22rpx;
+	color: #666666;
+	text-align: center;
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* 球场信息 */
+.course-section {
+	margin-bottom: 20rpx;
+	text-align: center;
+}
+
+.course-name {
+	font-size: 44rpx;
 	color: #333333;
 	font-weight: 700;
-	margin-bottom: 32rpx;
-	text-align: center;
-	position: relative;
-	padding-bottom: 20rpx;
-}
-
-.content-title::after {
-	content: '';
-	position: absolute;
-	bottom: 0;
-	left: 50%;
-	transform: translateX(-50%);
-	width: 60rpx;
-	height: 4rpx;
-	background-color: #025028;
-	border-radius: 2rpx;
-}
-
-.info-item {
-	margin-bottom: 28rpx;
-	padding: 0;
-}
-
-.info-item:last-child {
-	margin-bottom: 0;
-}
-
-.info-label {
-	margin-bottom: 12rpx;
-}
-
-.info-label-text {
-	font-size: 24rpx;
-	color: #666666;
-	font-weight: 500;
-}
-
-.info-value {
-	display: block;
-	font-size: 32rpx;
-	color: #333333;
-	font-weight: 600;
-	line-height: 1.5;
-	word-break: break-all;
-	margin-top: 8rpx;
-}
-
-.info-value-secondary {
-	display: block;
-	font-size: 26rpx;
-	color: #888888;
-	margin-top: 8rpx;
 	line-height: 1.4;
-	word-break: break-all;
 }
 
-.info-empty {
+/* 开球时间 */
+.time-section {
+	margin-bottom: 40rpx;
+	text-align: center;
+}
+
+.open-time {
+	font-size: 26rpx;
+	color: #666666;
+	line-height: 1.4;
+}
+
+/* 二维码区域 */
+.qrcode-section {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 300rpx;
+}
+
+.qrcode-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20rpx;
+	background: #ffffff;
+	border-radius: 12rpx;
+}
+
+.qrcode-image {
+	width: 400rpx;
+	height: 400rpx;
+}
+
+.qrcode-loading,
+.qrcode-empty {
 	padding: 60rpx 20rpx;
 	text-align: center;
 }
 
+.loading-text,
 .empty-text {
 	font-size: 28rpx;
 	color: #999999;

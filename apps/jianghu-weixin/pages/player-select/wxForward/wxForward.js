@@ -11,7 +11,10 @@ Page({
         sharePath: '',
         shareTitle: '邀请加入比赛',
         userAvatar: '', // 用户头像
-        userName: '' // 用户昵称
+        userName: '', // 用户昵称
+        players: [], // 所有球员列表
+        qrcodeUrl: '', // 二维码地址
+        qrcodeLoading: false // 二维码加载状态
     },
 
     onLoad(options) {
@@ -71,9 +74,14 @@ Page({
                 title: pageTitle
             });
 
-            // 如果有 gameid 但没有球场信息或开球时间，从 API 获取比赛详情
-            if (dataUpdate.gameid && (!dataUpdate.courseName || !dataUpdate.openTime)) {
+            // 如果有 gameid，获取比赛详情（包括球员列表）
+            if (dataUpdate.gameid) {
                 this.fetchGameDetail();
+            }
+
+            // 生成二维码
+            if (dataUpdate.uuid) {
+                this.fetchQrcode();
             }
         });
 
@@ -89,7 +97,7 @@ Page({
     },
 
     /**
-     * 从 API 获取比赛详情（补充球场信息和开球时间）
+     * 从 API 获取比赛详情（补充球场信息和开球时间，以及球员列表）
      */
     async fetchGameDetail() {
         if (!this.data.gameid) {
@@ -117,8 +125,27 @@ Page({
 
                 // 如果缺少开球时间，从 API 获取
                 if (!this.data.openTime && gameDetail.game_start) {
-                    // 格式化开球时间（如果需要）
                     updateData.openTime = gameDetail.game_start;
+                }
+
+                // 获取所有球员列表
+                if (gameDetail.groups && Array.isArray(gameDetail.groups)) {
+                    const allPlayers = [];
+                    gameDetail.groups.forEach(group => {
+                        if (group.users && Array.isArray(group.users)) {
+                            group.users.forEach(user => {
+                                // 避免重复添加同一用户
+                                if (!allPlayers.find(p => p.userid === user.userid)) {
+                                    allPlayers.push({
+                                        userid: user.userid,
+                                        nickname: user.nickname || user.wx_nickname || '未知',
+                                        avatar: user.avatar || '/images/default-avatar.png'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                    updateData.players = allPlayers;
                 }
 
                 if (Object.keys(updateData).length > 0) {
@@ -145,6 +172,48 @@ Page({
             }
         } catch (error) {
             console.error('[wxForward] fetchGameDetail failed', error);
+        }
+    },
+
+    /**
+     * 获取邀请二维码
+     */
+    async fetchQrcode() {
+        const { uuid, gameid, sharePath } = this.data;
+        if (!uuid) {
+            return;
+        }
+
+        this.setData({
+            qrcodeLoading: true,
+            qrcodeUrl: ''
+        });
+
+        const payload = {
+            uuid,
+            path: sharePath || this.buildSharePath(uuid, gameid)
+        };
+
+        if (gameid) {
+            payload.gameid = gameid;
+        }
+
+        try {
+            const result = await app.api.game.getGameInviteQrcode(payload, {
+                showLoading: false
+            });
+
+            if (result?.code === 200 && result?.qrcode_url) {
+                this.setData({
+                    qrcodeUrl: result.qrcode_url
+                });
+            }
+        } catch (error) {
+            console.error('[wxForward] fetchQrcode failed', error);
+        } finally {
+            this.setData({
+                qrcodeLoading: false
+            });
         }
     },
 
