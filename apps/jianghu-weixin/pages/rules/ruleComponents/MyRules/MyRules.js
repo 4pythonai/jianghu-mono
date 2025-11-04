@@ -122,9 +122,22 @@ Component({
 
         // 查看规则详情 - 跳转到运行时配置页面
         onCreateGamble(e) {
-            const { item } = e.detail || e.currentTarget.dataset;
+            const { item, minPlayerCount } = e.detail || e.currentTarget.dataset;
             const { gameStore } = require('@/stores/gameStore');
             const { holeRangeStore } = require('@/stores/holeRangeStore');
+
+            // 验证玩家数量是否达到要求
+            const currentPlayerCount = gameStore.players.length;
+            if (minPlayerCount && currentPlayerCount < minPlayerCount) {
+                wx.showModal({
+                    title: '提示',
+                    content: `该规则需要至少 ${minPlayerCount} 名玩家，当前只有 ${currentPlayerCount} 名玩家，无法创建游戏。`,
+                    showCancel: false,
+                    confirmText: '知道了'
+                });
+                return;
+            }
+
             const gambleSysName = item.gambleSysName;
 
             // 从 holeRangeStore 获取洞数据
@@ -132,7 +145,7 @@ Component({
             const runtimeConfigData = {
                 gambleSysName,
                 gameid: gameStore.gameid,
-                playerCount: gameStore.players.length,
+                playerCount: currentPlayerCount,
                 holeCount: holeList.length,
                 userRuleId: item.userRuleId,
                 holeList,

@@ -13,6 +13,10 @@ Component({
         showEdit: {
             type: Boolean,
             value: false
+        },
+        minPlayerCount: {
+            type: Number,
+            value: 0 // 最少玩家数量要求
         }
     },
 
@@ -97,7 +101,8 @@ Component({
         onCreateGamble(e) {
             const { item } = e.currentTarget.dataset;
             const group = this.getRuleGroup();
-            this.triggerEvent('createNewGamble', { item, group, id: item.userRuleId });
+            const { minPlayerCount } = this.properties;
+            this.triggerEvent('createNewGamble', { item, group, id: item.userRuleId, minPlayerCount });
         },
 
         /**

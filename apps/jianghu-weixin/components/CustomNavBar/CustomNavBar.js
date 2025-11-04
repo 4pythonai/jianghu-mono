@@ -29,14 +29,41 @@ Component({
         onBack() {
             if (this.properties.backUrl) {
                 // 如果有自定义返回URL，跳转到指定页面
-                wx.redirectTo({
-                    url: this.properties.backUrl,
-                    fail: (err) => {
-                        console.error('[CustomNavBar] 跳转失败:', err);
-                        // 失败时使用默认返回
-                        wx.navigateBack();
-                    }
-                });
+                const backUrl = this.properties.backUrl;
+
+                // 检查是否是 Tab 页面
+                const tabPages = [
+                    'pages/live/live',
+                    'pages/events/events',
+                    'pages/createGame/createGame',
+                    'pages/community/community',
+                    'pages/mine/mine'
+                ];
+
+                const targetPath = backUrl.split('?')[0];
+                const isTabPage = tabPages.some(page => targetPath.includes(page));
+
+                if (isTabPage) {
+                    // Tab 页面使用 switchTab
+                    wx.switchTab({
+                        url: backUrl,
+                        fail: (err) => {
+                            console.error('[CustomNavBar] switchTab 失败:', err);
+                            // 失败时使用默认返回
+                            wx.navigateBack();
+                        }
+                    });
+                } else {
+                    // 非 Tab 页面使用 redirectTo
+                    wx.redirectTo({
+                        url: backUrl,
+                        fail: (err) => {
+                            console.error('[CustomNavBar] redirectTo 失败:', err);
+                            // 失败时使用默认返回
+                            wx.navigateBack();
+                        }
+                    });
+                }
             } else {
                 // 默认返回
                 wx.navigateBack();

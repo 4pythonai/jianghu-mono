@@ -21,8 +21,7 @@ class NavigationHelper {
             stackLength: getCurrentPages().length
         };
         this.jumpLog.push(log);
-        console.log(`[Navigation] ${type}:`, log);
-        
+
         // 保留最近100条记录
         if (this.jumpLog.length > 100) {
             this.jumpLog = this.jumpLog.slice(-100);
@@ -35,24 +34,14 @@ class NavigationHelper {
     _checkPageStack() {
         const pages = getCurrentPages();
         const currentDepth = pages.length;
-        
+
         if (currentDepth >= this.MAX_PAGE_STACK - 1) {
             console.warn(`[Navigation] 页面栈即将超出限制! 当前深度: ${currentDepth}`);
-            this._logPageStack(pages);
             return false;
         }
         return true;
     }
 
-    /**
-     * 记录当前页面栈状态（用于调试）
-     */
-    _logPageStack(pages) {
-        console.log(`[Navigation] 当前页面栈 (${pages.length}层):`);
-        pages.forEach((page, index) => {
-            console.log(`  ${index + 1}. ${page.route} ${page.options ? JSON.stringify(page.options) : ''}`);
-        });
-    }
 
     /**
      * 智能页面栈清理
@@ -61,13 +50,12 @@ class NavigationHelper {
     smartCleanPageStack(keepPaths = []) {
         const pages = getCurrentPages();
         const currentDepth = pages.length;
-        
+
         if (currentDepth < 6) {
             return Promise.resolve(false); // 不需要清理
         }
 
-        console.log(`[Navigation] 开始智能清理页面栈，当前深度: ${currentDepth}`);
-        
+
         // 定义重要页面路径，这些页面应该保留
         const importantPaths = [
             'pages/live/live',
@@ -92,7 +80,6 @@ class NavigationHelper {
         }
 
         if (deltaToImportant > 1) {
-            console.log(`[Navigation] 清理页面栈：返回 ${deltaToImportant} 层`);
             return this.navigateBack(deltaToImportant);
         }
 
@@ -118,7 +105,7 @@ class NavigationHelper {
      */
     navigateTo(url, options = {}) {
         const { autoFallback = true } = options;
-        
+
         return new Promise((resolve, reject) => {
             if (!this._checkPageStack()) {
                 if (autoFallback) {
@@ -133,8 +120,7 @@ class NavigationHelper {
                 }
             }
 
-            this._logNavigation('navigateTo', url, options);
-            
+
             wx.navigateTo({
                 url,
                 success: (res) => {
@@ -155,7 +141,7 @@ class NavigationHelper {
     redirectTo(url, reason = '', options = {}) {
         return new Promise((resolve, reject) => {
             this._logNavigation('redirectTo', url, { reason, ...options });
-            
+
             wx.redirectTo({
                 url,
                 success: (res) => {
@@ -176,7 +162,7 @@ class NavigationHelper {
     switchTab(url, options = {}) {
         return new Promise((resolve, reject) => {
             this._logNavigation('switchTab', url, options);
-            
+
             wx.switchTab({
                 url,
                 success: (res) => {
@@ -203,7 +189,7 @@ class NavigationHelper {
             }
 
             this._logNavigation('navigateBack', `delta:${delta}`, options);
-            
+
             wx.navigateBack({
                 delta,
                 success: (res) => {
@@ -224,7 +210,7 @@ class NavigationHelper {
     reLaunch(url, reason = '', options = {}) {
         return new Promise((resolve, reject) => {
             this._logNavigation('reLaunch', url, { reason, ...options });
-            
+
             wx.reLaunch({
                 url,
                 success: (res) => {
@@ -242,7 +228,7 @@ class NavigationHelper {
      * 智能导航 - 根据目标页面类型自动选择跳转方式
      */
     smartNavigate(url, options = {}) {
-        const { 
+        const {
             forceType = null,  // 强制指定跳转类型
             reason = '',       // 跳转原因
             replaceWhenDeep = true  // 深度超限时是否替换
@@ -262,12 +248,12 @@ class NavigationHelper {
         // Tab页面检测
         const tabPages = [
             'pages/live/live',
-            'pages/events/events', 
+            'pages/events/events',
             'pages/createGame/createGame',
             'pages/community/community',
             'pages/mine/mine'
         ];
-        
+
         const targetPath = url.split('?')[0];
         if (tabPages.some(page => targetPath.includes(page))) {
             return this.switchTab(url, options);
@@ -308,11 +294,11 @@ class NavigationHelper {
         console.log('[Navigation] 开始测试自动降级功能');
         const currentInfo = this.getCurrentPageInfo();
         console.log('[Navigation] 当前页面信息:', currentInfo);
-        
+
         // 模拟页面栈检查
         const isStackOk = this._checkPageStack();
         console.log('[Navigation] 页面栈检查结果:', isStackOk);
-        
+
         return {
             currentDepth: currentInfo.stackDepth,
             maxDepth: this.MAX_PAGE_STACK,

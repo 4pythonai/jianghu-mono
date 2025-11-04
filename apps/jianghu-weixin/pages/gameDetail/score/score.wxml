@@ -1,7 +1,10 @@
 <view class="game-detail-page">
-  <GameDetailTabs active="score" queryParams="{{queryParams}}" />
-  <view class="tab-content">
-    <ScoreTable bind:cellclick="onCellClick" />
-    <ScoreInputPanel id="scoreInputPanel" />
+  <CustomNavBar title="比赛详情" backUrl="{{backUrl}}" />
+  <view class="page-content" style="padding-top: {{navBarHeight}}px;">
+    <GameDetailTabs active="score" queryParams="{{queryParams}}" />
+    <view class="tab-content">
+      <ScoreTable bind:cellclick="onCellClick" />
+      <ScoreInputPanel id="scoreInputPanel" />
+    </view>
   </view>
 </view>
