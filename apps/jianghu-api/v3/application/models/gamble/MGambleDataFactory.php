@@ -45,7 +45,7 @@ class MGambleDataFactory extends CI_Model {
   public function getHoleScore($gameid) {
 
     $holes = $this->MDetailGame->getGameHoles($gameid);
-    $holedata       = array();
+    $holedata    = [];
     $index       = 0;
     foreach ($holes as $one_hole) {
       $holedata[$index]['id']     = '#' . ($index + 1);
@@ -59,7 +59,7 @@ class MGambleDataFactory extends CI_Model {
 
       $sql = "select court_key,userid,score from t_game_score  where gameid=$gameid  and court_key=$court_key and hole_id=$holeid  ";
       $scores         = $this->db->query($sql)->result_array();
-      $raw_holedatas = array();
+      $raw_holedatas = [];
       foreach ($scores as $one_value) {
         $userid              = $one_value['userid'];
         $raw_holedatas[$userid] = $one_value['score'];
@@ -68,13 +68,14 @@ class MGambleDataFactory extends CI_Model {
       $index++;
     }
 
+
     return $holedata;
   }
 
 
 
   // 获取已经完全记分的球洞
-  public function getUsefulHoles($holes, $scores) {
+  public function getUsefulHoles($holes, $scores, $playerCount) {
 
     // debug(' holes +++++++++++++++++++++', $holes);
     // debug('scores+++++++++++++++++++++', $scores);
@@ -121,8 +122,24 @@ class MGambleDataFactory extends CI_Model {
       $useful_holes[] = $oneHoleMeta;
     }
 
-    return $useful_holes;
+    $realUseful_holes = $this->checkAllPlayerHasScore($useful_holes, $playerCount);
+
+    // 如果记分的数量少于玩家数量,不能算有效洞
+
+    return $realUseful_holes;
   }
+
+
+  private function checkAllPlayerHasScore($scores, $playerCount) {
+    $realUseful_holes = [];
+    foreach ($scores as $score) {
+      if (count($score['raw_scores']) == $playerCount) {
+        $realUseful_holes[] = $score;
+      }
+    }
+    return $realUseful_holes;
+  }
+
 
   public function getRangedHoles($holes, $startHoleindex, $roadLength) {
     $ranged = [];

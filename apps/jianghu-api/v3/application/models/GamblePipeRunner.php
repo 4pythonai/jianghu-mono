@@ -123,7 +123,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $_rangedHoles = $this->MGambleDataFactory->getRangedHoles($this->context->holes, $this->context->startHoleindex, $this->context->roadLength);
 
         // 再从范围洞中筛选出有用的洞
-        $tmp = $this->MGambleDataFactory->getUsefulHoles($_rangedHoles, $this->context->scores);
+        $tmp = $this->MGambleDataFactory->getUsefulHoles($_rangedHoles, $this->context->scores, count($this->context->attenders));
         $this->context->usefulHoles = $tmp;
     }
 
@@ -133,7 +133,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     public function processHoles() {
         // 直接使用全局 context
         $context = $this->context;
-
+        // $context->usefulHoles = [];
 
         foreach ($context->usefulHoles as $index => &$hole) {
             $hole['debug'] = [];

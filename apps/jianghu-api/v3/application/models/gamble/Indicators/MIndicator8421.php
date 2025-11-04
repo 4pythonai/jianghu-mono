@@ -37,7 +37,6 @@ class MIndicator8421 extends CI_Model {
         foreach ($attenders as $attender) {
             $_8421_add_sub_max_config = $this->get8421AddSubMaxConfig($context, $attender);
             $indicator = $this->OnePlayer8421Indicator($hole['par'], $hole['strokedScores'][$attender], $_8421_add_sub_max_config);
-
             $hole['indicators_8421'][$attender] = $indicator;
 
             if (in_array($attender, $hole['blue'])) {
