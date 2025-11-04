@@ -666,6 +666,14 @@ Page({
             uuid: gameUuid
         });
 
+        // 设置比赛名称缺省值
+        const userInfo = app.globalData.userInfo;
+        const nickname = userInfo?.nickName || userInfo?.nickname || userInfo?.wx_nickname || '我';
+        const defaultGameName = `${nickname}的比赛`;
+        this.setData({
+            'formData.gameName': defaultGameName
+        });
+
         try {
             wx.showShareMenu({
                 withShareTicket: true,
@@ -690,6 +698,16 @@ Page({
                     shareReady: Boolean(gameid)
                 });
                 this.updateShareState();
+
+                // 如果游戏已创建，同步缺省的游戏名称
+                if (defaultGameName) {
+                    this.debounce('gameName', () => {
+                        this.callUpdateAPI('updateGameName', {
+                            uuid: this.data.uuid,
+                            gameName: defaultGameName
+                        }, '游戏名称')
+                    })
+                }
             }
         } catch (error) {
             // 静默处理错误
