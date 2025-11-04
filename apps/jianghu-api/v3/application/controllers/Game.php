@@ -209,8 +209,13 @@ class Game extends MY_Controller {
         $access_token = $this->getWechatAccessToken();
         $wechat_api_url = "https://api.weixin.qq.com/wxa/getwxacode?access_token={$access_token}";
 
+        // 优先使用前端传递的 path 参数，如果没有则使用默认路径
+        $path = isset($params['path']) ? $params['path'] : "pages/player-select/wxShare/wxShare?uuid={$uuid}&gameid={$gameid}";
+        // 移除路径开头的斜杠（微信小程序路径不需要前导斜杠）
+        $path = ltrim($path, '/');
+
         $post_data = json_encode([
-            'path' => "pages/player-select/wxshare/wxshare?uuid={$uuid}&gameid={$gameid}",
+            'path' => $path,
             'width' => 430
         ]);
 

@@ -272,7 +272,7 @@ class MGame  extends CI_Model {
     $user = $this->MUser->getUserProfile($userid);
 
     $payload = [];
-    $payload['gameid'] = $gameid;
+    $payload['gameId'] = $gameid;
     $payload['playerId'] = $userid;
     $payload['nickname'] = $user['nickname'];
     $payload['avatar'] = $user['avatar'];
