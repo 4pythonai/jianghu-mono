@@ -1,0 +1,55 @@
+<view class="container">
+  <!-- 顶部标题区域 -->
+  <view class="header-section">
+    <view class="header-content">
+      <image
+        class="user-avatar"
+        src="{{userAvatar || '/images/default-avatar.png'}}"
+        mode="aspectFill"
+      ></image>
+      <view class="header-text">
+        <text class="header-title">{{userName || '我'}}邀请你加入比赛</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 中间分享内容区域（突出显示） -->
+  <view class="content-section">
+    <view class="content-card">
+      <view class="content-title">比赛信息</view>
+
+      <view class="info-item" wx:if="{{title}}">
+        <view class="info-label">
+          <text class="info-label-text">比赛名称</text>
+        </view>
+        <text class="info-value">{{title}}</text>
+      </view>
+
+      <view class="info-item" wx:if="{{courseName}}">
+        <view class="info-label">
+          <text class="info-label-text">球场地点</text>
+        </view>
+        <text class="info-value">{{courseName}}</text>
+        <text class="info-value-secondary" wx:if="{{courseAddress}}">{{courseAddress}}</text>
+      </view>
+
+      <view class="info-item" wx:if="{{openTime}}">
+        <view class="info-label">
+          <text class="info-label-text">比赛时间</text>
+        </view>
+        <text class="info-value">{{openTime}}</text>
+      </view>
+
+      <view class="info-empty" wx:if="{{!title && !courseName && !openTime}}">
+        <text class="empty-text">比赛信息加载中...</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮区域 -->
+  <view class="footer-section">
+    <button class="share-btn" open-type="share">
+      <text class="share-btn-text">微信分享邀请</text>
+    </button>
+  </view>
+</view>

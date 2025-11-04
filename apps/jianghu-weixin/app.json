@@ -22,6 +22,7 @@
 		"pages/player-select/qrcode/qrcode",
 		"pages/player-select/manualAdd/manualAdd",
 		"pages/player-select/wxShare/wxShare",
+		"pages/player-select/wxForward/wxForward",
 		"pages/tland-select/tland-select",
 		"pages/gameOperation/feedback/feedback",
 		"pages/gameOperation/scorecard/scorecard",

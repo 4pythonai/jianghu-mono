@@ -13,6 +13,17 @@ Page({
      */
     onSelectMethod(e) {
         const method = e.currentTarget.dataset.method;
+        console.log('[player-select] 选择方式:', method.id, method);
+
+        if (!method || !method.url) {
+            console.error('[player-select] 方法数据无效:', method);
+            wx.showToast({
+                title: '参数错误',
+                icon: 'none'
+            });
+            return;
+        }
+
         let url = `${method.url}?groupIndex=${this.data.groupIndex}&slotIndex=${this.data.slotIndex}`;
 
         // 如果需要传递比赛上下文, 附加 uuid / gameid / 标题
@@ -48,8 +59,21 @@ Page({
             }
         }
 
+        console.log('[player-select] 准备跳转到:', url);
+
         wx.navigateTo({
-            url: url
+            url: url,
+            success: (res) => {
+                console.log('[player-select] 跳转成功:', res);
+            },
+            fail: (err) => {
+                console.error('[player-select] 跳转失败:', err);
+                wx.showToast({
+                    title: err.errMsg || '跳转失败，请重试',
+                    icon: 'none',
+                    duration: 2000
+                });
+            }
         });
     },
 

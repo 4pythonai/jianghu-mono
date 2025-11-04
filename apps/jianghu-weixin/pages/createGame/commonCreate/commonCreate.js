@@ -596,7 +596,32 @@ Page({
     onShareButtonTap() {
         if (!this.data.shareReady) {
             this.showShareNotReadyToast();
+            return;
         }
+
+        // 跳转到微信分享预览页面
+        const { uuid, gameid, formData, selectedCourse } = this.data;
+        let url = `/pages/player-select/wxForward/wxForward?uuid=${uuid}`;
+
+        if (gameid) {
+            url += `&gameid=${gameid}`;
+        }
+        if (formData?.gameName) {
+            url += `&title=${encodeURIComponent(formData.gameName)}`;
+        }
+        if (formData?.openTime) {
+            url += `&openTime=${encodeURIComponent(formData.openTime)}`;
+        }
+        if (selectedCourse) {
+            url += `&courseName=${encodeURIComponent(selectedCourse.name || '')}`;
+            if (selectedCourse.address) {
+                url += `&courseAddress=${encodeURIComponent(selectedCourse.address)}`;
+            }
+        }
+
+        wx.navigateTo({
+            url
+        });
     },
 
     /**
