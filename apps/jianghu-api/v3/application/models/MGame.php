@@ -208,6 +208,7 @@ class MGame  extends CI_Model {
       ->update('t_game', ['status' => 'enrolling']);
 
     $response['data']['groupid'] = $targetGroupId;
+    $this->writeWebSocketMsg($userid, $gameid);
     return $response;
   }
 
@@ -264,5 +265,49 @@ class MGame  extends CI_Model {
       'group_name' => $groupData['group_name'],
       'player_count' => 0
     ];
+  }
+
+  public function writeWebSocketMsg($userid, $gameid) {
+
+    $user = $this->getUserProfile($userid);
+
+    $payload = [];
+    $payload['gameid'] = $gameid;
+    $payload['playerId'] = $userid;
+    $payload['nickname'] = $user['nickname'];
+    $payload['avatar'] = $user['avatar'];
+    $payload['message'] = 'msgFromMgame';
+
+
+    $endpoint = getenv('WORKERMAN_PUSH_ENDPOINT');
+    if (!$endpoint) {
+      $endpoint = 'http://127.0.0.1:2347/push';
+    }
+
+    $ch = curl_init($endpoint);
+    curl_setopt_array($ch, [
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_POST => true,
+      CURLOPT_HTTPHEADER => [
+        'Content-Type: application/json'
+      ],
+      CURLOPT_POSTFIELDS => json_encode($payload, JSON_UNESCAPED_UNICODE),
+      CURLOPT_TIMEOUT => 5,
+      CURLOPT_CONNECTTIMEOUT => 3
+    ]);
+
+    $responseBody = curl_exec($ch);
+    $curlError = curl_error($ch);
+    $statusCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    curl_close($ch);
+    $ret = [];
+    $ret['endpoint'] = $endpoint;
+    $ret['payload'] = $payload;
+    $ret['statusCode'] = $statusCode;
+    $ret['response'] = $responseBody;
+    if ($curlError) {
+      $ret['error'] = $curlError;
+    }
+    return $ret;
   }
 }

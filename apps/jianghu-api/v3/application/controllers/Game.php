@@ -454,26 +454,4 @@ class Game extends MY_Controller {
         $this->MGame->finishGame($gameid, null);
         echo json_encode(['code' => 200, 'message' => '结束比赛成功'], JSON_UNESCAPED_UNICODE);
     }
-
-    private function buildGameInvitePath($uuid, $gameId, $gameName = '') {
-        if ($uuid === '') {
-            return '';
-        }
-
-        $query = ["uuid={$uuid}"];
-        if ($gameId > 0) {
-            $query[] = 'gameid=' . $gameId;
-        }
-
-        if ($gameName !== '') {
-            if (function_exists('mb_substr')) {
-                $safeTitle = mb_substr($gameName, 0, 50);
-            } else {
-                $safeTitle = substr($gameName, 0, 50);
-            }
-            $query[] = 'title=' . rawurlencode($safeTitle);
-        }
-
-        return '/pages/player-select/wxshare/wxshare?' . implode('&', $query);
-    }
 }
