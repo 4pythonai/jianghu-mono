@@ -1,4 +1,86 @@
-<view class="container">
-  <view class="page-title">江湖</view>
-  <view class="page-desc">这里是江湖功能, 高尔夫爱好者社区</view>
+<view class="community-container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <view class="page-title">江湖</view>
+    <view class="page-subtitle">高尔夫爱好者社区</view>
+  </view>
+
+  <!-- 主题内容 -->
+  <view class="content-section">
+    <view class="section-title">高尔夫礼仪入门</view>
+    <view class="section-desc">高尔夫是一项注重礼仪的传统运动，了解并遵守基本礼仪，是对这项运动的尊重，也是提升个人修养的重要途径。</view>
+
+    <!-- 礼仪要点列表 -->
+    <view class="etiquette-list">
+      <!-- 1. 着装礼仪 -->
+      <view class="etiquette-item">
+        <view class="item-header">
+          <text class="item-number">01</text>
+          <text class="item-title">着装礼仪</text>
+        </view>
+        <view class="item-content">
+          <text>• 穿着有领上衣和长裤或短裤</text>
+          <text>• 避免穿着牛仔裤、运动裤等休闲装</text>
+          <text>• 穿着专业高尔夫鞋，保护草坪</text>
+        </view>
+      </view>
+
+      <!-- 2. 时间观念 -->
+      <view class="etiquette-item">
+        <view class="item-header">
+          <text class="item-number">02</text>
+          <text class="item-title">时间观念</text>
+        </view>
+        <view class="item-content">
+          <text>• 提前到达球场，预留充足时间</text>
+          <text>• 遵守开球时间，避免迟到</text>
+          <text>• 保持合理的打球节奏，不拖延时间</text>
+        </view>
+      </view>
+
+      <!-- 3. 球场礼仪 -->
+      <view class="etiquette-item">
+        <view class="item-header">
+          <text class="item-number">03</text>
+          <text class="item-title">球场礼仪</text>
+        </view>
+        <view class="item-content">
+          <text>• 保持安静，在他人击球时避免移动或说话</text>
+          <text>• 修复球痕和打痕，维护球场环境</text>
+          <text>• 保持球场的整洁，带走自己的垃圾</text>
+        </view>
+      </view>
+
+      <!-- 4. 安全礼仪 -->
+      <view class="etiquette-item">
+        <view class="item-header">
+          <text class="item-number">04</text>
+          <text class="item-title">安全礼仪</text>
+        </view>
+        <view class="item-content">
+          <text>• 确认前方安全后再击球</text>
+          <text>• 听到"看球"时立即躲避</text>
+          <text>• 不要在他人挥杆时靠近或走动</text>
+        </view>
+      </view>
+
+      <!-- 5. 比赛礼仪 -->
+      <view class="etiquette-item">
+        <view class="item-header">
+          <text class="item-number">05</text>
+          <text class="item-title">比赛礼仪</text>
+        </view>
+        <view class="item-content">
+          <text>• 遵守规则，诚实记录成绩</text>
+          <text>• 尊重对手，保持良好的竞技精神</text>
+          <text>• 比赛结束后与对手握手致意</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部提示 -->
+    <view class="footer-tip">
+      <text class="tip-text">💡 尊重他人，尊重球场，是高尔夫运动的核心精神</text>
+    </view>
+  </view>
 </view>
