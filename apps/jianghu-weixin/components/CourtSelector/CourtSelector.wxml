@@ -55,22 +55,24 @@
     <!-- 选中半场的洞信息显示 -->
     <view class="holes-info" wx:if="{{ selectedFrontNine || selectedBackNine }}">
       <!-- 前九洞洞信息 -->
-      <view class="holes-section" wx:if="{{ frontNineHoles.length > 0 }}">
-        <view class="holes-title">前九洞</view>
-        <view class="holes-list">
-          <view class="hole-item" wx:for="{{ frontNineHoles }}" wx:key="holeid">
-            <view class="hole-name">{{item.holename}}</view>
-            <view class="hole-par">{{item.par}}</view>
+      <view class="holes-section" wx:if="{{ frontNineHoles.length > 0 && selectedFrontNineCourt }}">
+        <view class="holes-row">
+          <view class="court-name-badge">{{selectedFrontNineCourt.courtname}}</view>
+          <view class="holes-list">
+            <view class="hole-item" wx:for="{{ frontNineHoles }}" wx:key="holeid">
+              <view class="hole-par">{{item.par}}</view>
+            </view>
           </view>
         </view>
       </view>
       <!-- 后九洞洞信息 -->
-      <view class="holes-section" wx:if="{{ backNineHoles.length > 0 }}">
-        <view class="holes-title">后九洞</view>
-        <view class="holes-list">
-          <view class="hole-item" wx:for="{{ backNineHoles }}" wx:key="holeid">
-            <view class="hole-name">{{item.holename}}</view>
-            <view class="hole-par">{{item.par}}</view>
+      <view class="holes-section" wx:if="{{ backNineHoles.length > 0 && selectedBackNineCourt }}">
+        <view class="holes-row">
+          <view class="court-name-badge">{{selectedBackNineCourt.courtname}}</view>
+          <view class="holes-list">
+            <view class="hole-item" wx:for="{{ backNineHoles }}" wx:key="holeid">
+              <view class="hole-par">{{item.par}}</view>
+            </view>
           </view>
         </view>
       </view>

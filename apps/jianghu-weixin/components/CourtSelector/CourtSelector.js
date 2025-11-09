@@ -56,6 +56,8 @@ Component({
         courts: [], // 半场列表
         selectedFrontNine: '', // 选中的前九洞
         selectedBackNine: '', // 选中的后九洞
+        selectedFrontNineCourt: null, // 选中的前九洞半场对象
+        selectedBackNineCourt: null, // 选中的后九洞半场对象
         frontNineHoles: [], // 前九洞的洞信息
         backNineHoles: [] // 后九洞的洞信息
     },
@@ -166,6 +168,7 @@ Component({
 
             this.setData({
                 selectedFrontNine: court.courtid,
+                selectedFrontNineCourt: court,
                 frontNineHoles: court.courtholes || []
             })
 
@@ -187,6 +190,7 @@ Component({
 
             this.setData({
                 selectedBackNine: court.courtid,
+                selectedBackNineCourt: court,
                 backNineHoles: court.courtholes || []
             })
 
@@ -307,6 +311,8 @@ Component({
             this.setData({
                 selectedFrontNine: '',
                 selectedBackNine: '',
+                selectedFrontNineCourt: null,
+                selectedBackNineCourt: null,
                 frontNineHoles: [],
                 backNineHoles: []
             })
