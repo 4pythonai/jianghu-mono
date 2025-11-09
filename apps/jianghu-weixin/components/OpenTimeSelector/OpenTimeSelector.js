@@ -1,36 +1,21 @@
 /**
- * 自定义时间选择器弹窗组件
- * 替换原生 picker，提供更好的自定义能力
+ * 自定义时间选择器组件
+ * 5个独立的输入框，每个输入框点击后显示滚轮选择器
  */
 Component({
     properties: {
-        // 是否显示
-        visible: {
-            type: Boolean,
-            value: false
-        },
-        // 标题
-        title: {
+        // 当前选中的年份值
+        selectedYear: {
             type: String,
-            value: '选择开球时间'
+            value: ''
         },
-        // 日期范围数据
-        dateRange: {
-            type: Array,
-            value: []
-        },
-        // 小时范围数据
-        hourRange: {
-            type: Array,
-            value: []
-        },
-        // 分钟范围数据
-        minuteRange: {
-            type: Array,
-            value: []
+        // 当前选中的月份值
+        selectedMonth: {
+            type: String,
+            value: ''
         },
         // 当前选中的日期值
-        selectedDate: {
+        selectedDay: {
             type: String,
             value: ''
         },
@@ -43,303 +28,445 @@ Component({
         selectedMinute: {
             type: String,
             value: ''
+        },
+        // 年份范围（可选，默认当前年份前后10年）
+        yearRange: {
+            type: Array,
+            value: []
+        },
+        // 月份范围（可选，默认1-12月）
+        monthRange: {
+            type: Array,
+            value: []
+        },
+        // 小时范围数据（可选，默认0-23）
+        hourRange: {
+            type: Array,
+            value: []
+        },
+        // 分钟范围数据（可选，默认0-50，间隔10分钟）
+        minuteRange: {
+            type: Array,
+            value: []
         }
     },
 
     data: {
-        dateScrollTop: 0,
-        hourScrollTop: 0,
-        minuteScrollTop: 0,
-        // 防抖定时器
-        hourScrollTimer: null,
-        minuteScrollTimer: null
+        // 滚轮选择器相关
+        pickerVisible: false,
+        pickerType: '', // year, month, day, hour, minute
+        pickerTitle: '',
+        pickerRange: [],
+        pickerSelectedValue: '',
+        pickerScrollTop: 0,
+        pickerScrollTimer: null
+    },
+
+    lifetimes: {
+        attached() {
+            this.initRanges();
+            this.initDefaultValues();
+        }
     },
 
     observers: {
-        'visible, selectedDate, selectedHour, selectedMinute': function (visible, date, hour, minute) {
-            if (visible) {
-                // 弹窗打开时，延迟滚动到选中位置，确保 DOM 渲染完成
-                setTimeout(() => {
-                    this.scrollToSelected();
-                }, 100);
+        'selectedYear, selectedMonth': function (year, month) {
+            // 当年份或月份变化时，重新生成日期范围
+            if (year && month && this.data.pickerType === 'day') {
+                this.generateDayRange(year, month);
             }
         }
     },
 
     methods: {
-        // 滚动到选中位置
-        // 基于24/6=4的数学关系，确保小时和分钟列的4个元素永远对齐
-        scrollToSelected() {
-            const { dateRange, hourRange, minuteRange, selectedDate, selectedHour, selectedMinute } = this.data;
+        /**
+         * 初始化范围数据
+         */
+        initRanges() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
 
-            // scroll-view 高度是 320rpx，每个 item 高度是 80rpx
-            // 正好显示4个选项（4 × 80rpx = 320rpx）
-            // scroll-view 的 scroll-top 单位是 px，需要将 rpx 转换为 px
-            try {
-                const systemInfo = wx.getSystemInfoSync();
-                const rpxToPx = systemInfo.windowWidth / 750; // rpx 转 px 的比例
-
-                const itemHeightRpx = 80; // 每个选项高度（rpx）
-                const visibleHeightRpx = 320; // 可视区域高度（rpx），正好显示4个完整元素
-                const itemHeightPx = itemHeightRpx * rpxToPx; // 转换为 px
-
-                // 最简单的方式：让第一个显示的item索引 = max(0, selectedIndex - 1)
-                // 这样：如果选中项是索引0，显示0,1,2,3（4个）
-                //      如果选中项是索引1，显示0,1,2,3（4个）
-                //      如果选中项是索引2，显示1,2,3,4（4个）
-                //      选中项始终在第1或第2个位置，总共显示4个完整元素
-                const calculateScrollTop = (selectedIndex, totalItems) => {
-                    // 让第一个显示的item索引 = max(0, selectedIndex - 1)
-                    const firstVisibleIndex = Math.max(0, selectedIndex - 1);
-                    // 确保不会超出范围（最后一个显示的item索引不能超过totalItems - 1）
-                    const lastVisibleIndex = Math.min(totalItems - 1, firstVisibleIndex + 3);
-                    // 如果最后4个item，让最后一个item在底部
-                    if (lastVisibleIndex === totalItems - 1 && totalItems >= 4) {
-                        return (totalItems - 4) * itemHeightPx;
-                    }
-                    // 否则让选中项在第2个位置
-                    return firstVisibleIndex * itemHeightPx;
-                };
-
-                // 计算小时索引并滚动（24个元素）
-                const hourIndex = hourRange.findIndex(item => item.value === selectedHour);
-                const minuteIndex = minuteRange.findIndex(item => item.value === selectedMinute);
-
-                // 关键：确保两列的第一个显示的item索引相同，保证对齐
-                // 计算两列的第一个显示的item索引（选中项在第2个位置）
-                const hourFirstIndex = hourIndex !== -1 ? Math.max(0, hourIndex - 1) : 0;
-                const minuteFirstIndex = minuteIndex !== -1 ? Math.max(0, minuteIndex - 1) : 0;
-
-                // 统一使用较小的索引，确保两列对齐
-                // 但需要确保两列的选中项都在可视区域内
-                let unifiedFirstIndex = Math.min(hourFirstIndex, minuteFirstIndex);
-
-                // 检查小时列的选中项是否在可视区域内
-                if (hourIndex !== -1) {
-                    const hourLastVisible = unifiedFirstIndex + 3;
-                    if (hourIndex > hourLastVisible) {
-                        // 如果选中项超出可视区域，调整第一个显示的索引
-                        unifiedFirstIndex = Math.max(0, hourIndex - 1);
-                    }
+            // 初始化年份范围
+            if (!this.data.yearRange || this.data.yearRange.length === 0) {
+                const years = [];
+                for (let i = currentYear - 10; i <= currentYear + 10; i++) {
+                    years.push({
+                        label: String(i),
+                        value: String(i)
+                    });
                 }
+                this.setData({ yearRange: years });
+            }
 
-                // 检查分钟列的选中项是否在可视区域内
-                if (minuteIndex !== -1) {
-                    const minuteLastVisible = unifiedFirstIndex + 3;
-                    if (minuteIndex > minuteLastVisible) {
-                        // 如果选中项超出可视区域，调整第一个显示的索引
-                        unifiedFirstIndex = Math.max(0, minuteIndex - 1);
-                    }
+            // 初始化月份范围
+            if (!this.data.monthRange || this.data.monthRange.length === 0) {
+                const months = [];
+                for (let i = 1; i <= 12; i++) {
+                    months.push({
+                        label: String(i).padStart(2, '0'),
+                        value: String(i).padStart(2, '0')
+                    });
                 }
+                this.setData({ monthRange: months });
+            }
 
-                // 确保不超过范围
-                const hourMaxFirst = hourRange.length >= 4 ? hourRange.length - 4 : 0;
-                const minuteMaxFirst = minuteRange.length >= 4 ? minuteRange.length - 4 : 0;
-                unifiedFirstIndex = Math.min(unifiedFirstIndex, Math.min(hourMaxFirst, minuteMaxFirst));
-
-                // 重新计算滚动位置，确保两列对齐
-                const unifiedScrollTop = unifiedFirstIndex * itemHeightPx;
-
-                // 计算日期索引并滚动
-                const dateIndex = dateRange.findIndex(item => item.value === selectedDate);
-                if (dateIndex !== -1) {
-                    const scrollTop = calculateScrollTop(dateIndex, dateRange.length);
-                    this.setData({ dateScrollTop: scrollTop });
-                    console.log('📅 日期滚动:', { dateIndex, scrollTop, selectedDate });
+            // 初始化小时范围
+            if (!this.data.hourRange || this.data.hourRange.length === 0) {
+                const hours = [];
+                for (let i = 0; i < 24; i++) {
+                    hours.push({
+                        label: String(i).padStart(2, '0'),
+                        value: String(i).padStart(2, '0')
+                    });
                 }
+                this.setData({ hourRange: hours });
+            }
 
-                // 设置小时和分钟列的滚动位置，确保对齐
-                this.setData({
-                    hourScrollTop: unifiedScrollTop,
-                    minuteScrollTop: unifiedScrollTop
+            // 初始化分钟范围
+            if (!this.data.minuteRange || this.data.minuteRange.length === 0) {
+                const minutes = [];
+                for (let i = 0; i < 60; i += 10) {
+                    minutes.push({
+                        label: String(i).padStart(2, '0'),
+                        value: String(i).padStart(2, '0')
+                    });
+                }
+                this.setData({ minuteRange: minutes });
+            }
+        },
+
+        /**
+         * 初始化默认值
+         */
+        initDefaultValues() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth() + 1;
+            const currentDay = now.getDate();
+            const currentHour = now.getHours();
+            const rawMinute = now.getMinutes();
+
+            // 分钟取整到10分钟间隔
+            const onesDigit = rawMinute % 10;
+            const roundedMinute = onesDigit < 5
+                ? Math.floor(rawMinute / 10) * 10
+                : Math.ceil(rawMinute / 10) * 10 >= 60
+                    ? Math.floor(rawMinute / 10) * 10
+                    : Math.ceil(rawMinute / 10) * 10;
+
+            let needUpdate = false;
+            const updates = {};
+
+            if (!this.data.selectedYear || this.data.selectedYear === '') {
+                updates.selectedYear = String(currentYear);
+                needUpdate = true;
+            }
+            if (!this.data.selectedMonth || this.data.selectedMonth === '') {
+                updates.selectedMonth = String(currentMonth).padStart(2, '0');
+                needUpdate = true;
+            }
+            if (!this.data.selectedDay || this.data.selectedDay === '') {
+                updates.selectedDay = String(currentDay).padStart(2, '0');
+                needUpdate = true;
+            }
+            if (!this.data.selectedHour || this.data.selectedHour === '') {
+                updates.selectedHour = String(currentHour).padStart(2, '0');
+                needUpdate = true;
+            }
+            if (!this.data.selectedMinute || this.data.selectedMinute === '') {
+                updates.selectedMinute = String(roundedMinute).padStart(2, '0');
+                needUpdate = true;
+            }
+
+            if (needUpdate) {
+                this.setData(updates);
+                // 生成日期范围
+                this.generateDayRange(updates.selectedYear || this.data.selectedYear, updates.selectedMonth || this.data.selectedMonth);
+            }
+        },
+
+        /**
+         * 根据年月生成日期范围
+         */
+        generateDayRange(year, month) {
+            const yearNum = parseInt(year, 10);
+            const monthNum = parseInt(month, 10);
+            const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+
+            const days = [];
+            for (let i = 1; i <= daysInMonth; i++) {
+                days.push({
+                    label: String(i).padStart(2, '0'),
+                    value: String(i).padStart(2, '0')
                 });
-                console.log('⏰ 小时滚动:', { hourIndex, scrollTop: unifiedScrollTop, selectedHour, totalItems: hourRange.length, firstIndex: unifiedFirstIndex });
-                console.log('⏰ 分钟滚动:', { minuteIndex, scrollTop: unifiedScrollTop, selectedMinute, totalItems: minuteRange.length, firstIndex: unifiedFirstIndex });
-            } catch (error) {
-                console.error('滚动定位失败:', error);
-                // 降级方案：使用固定比例，保持相同的计算逻辑
-                const itemHeightPx = 40; // 假设 80rpx = 40px
+            }
 
-                const calculateScrollTop = (selectedIndex, totalItems) => {
-                    const firstVisibleIndex = Math.max(0, selectedIndex - 1);
-                    const lastVisibleIndex = Math.min(totalItems - 1, firstVisibleIndex + 3);
-                    if (lastVisibleIndex === totalItems - 1 && totalItems >= 4) {
-                        return (totalItems - 4) * itemHeightPx;
-                    }
-                    return firstVisibleIndex * itemHeightPx;
-                };
-
-                const dateIndex = dateRange.findIndex(item => item.value === selectedDate);
-                if (dateIndex !== -1) {
-                    this.setData({ dateScrollTop: calculateScrollTop(dateIndex, dateRange.length) });
-                }
-
-                const hourIndex = hourRange.findIndex(item => item.value === selectedHour);
-                if (hourIndex !== -1) {
-                    this.setData({ hourScrollTop: calculateScrollTop(hourIndex, hourRange.length) });
-                }
-
-                const minuteIndex = minuteRange.findIndex(item => item.value === selectedMinute);
-                if (minuteIndex !== -1) {
-                    this.setData({ minuteScrollTop: calculateScrollTop(minuteIndex, minuteRange.length) });
-                }
+            // 如果当前选中的日期超出范围，调整为该月最后一天
+            const currentDay = parseInt(this.data.selectedDay, 10);
+            if (currentDay > daysInMonth) {
+                this.setData({ selectedDay: String(daysInMonth).padStart(2, '0') });
             }
         },
 
-        // 日期列滚动
-        onDateScroll(e) {
-            // 可以在这里实现滚动时的联动效果
-        },
+        /**
+         * 输入框点击事件
+         */
+        onInputTap(e) {
+            const { type } = e.currentTarget.dataset;
+            let pickerRange = [];
+            let pickerTitle = '';
+            let pickerSelectedValue = '';
 
-        // 小时列滚动
-        onHourScroll(e) {
-            // 清除之前的定时器
-            if (this.data.hourScrollTimer) {
-                clearTimeout(this.data.hourScrollTimer);
+            switch (type) {
+                case 'year':
+                    pickerRange = this.data.yearRange;
+                    pickerTitle = '选择年份';
+                    pickerSelectedValue = this.data.selectedYear;
+                    break;
+                case 'month':
+                    pickerRange = this.data.monthRange;
+                    pickerTitle = '选择月份';
+                    pickerSelectedValue = this.data.selectedMonth;
+                    break;
+                case 'day':
+                    // 生成日期范围
+                    pickerRange = this.generateDayRangeData(this.data.selectedYear, this.data.selectedMonth);
+                    pickerTitle = '选择日期';
+                    pickerSelectedValue = this.data.selectedDay;
+                    break;
+                case 'hour':
+                    pickerRange = this.data.hourRange;
+                    pickerTitle = '选择小时';
+                    pickerSelectedValue = this.data.selectedHour;
+                    break;
+                case 'minute':
+                    pickerRange = this.data.minuteRange;
+                    pickerTitle = '选择分钟';
+                    pickerSelectedValue = this.data.selectedMinute;
+                    break;
             }
-            // 设置新的定时器，滚动停止后300ms对齐
-            const timer = setTimeout(() => {
-                this.alignScrollPosition('hour', e.detail.scrollTop);
-            }, 300);
-            this.setData({ hourScrollTimer: timer });
+
+            this.setData({
+                pickerVisible: true,
+                pickerType: type,
+                pickerTitle,
+                pickerRange,
+                pickerSelectedValue: pickerSelectedValue || pickerRange[0]?.value || ''
+            });
+
+            // 滚动到选中位置
+            setTimeout(() => {
+                this.scrollToSelected(pickerRange, pickerSelectedValue);
+            }, 100);
         },
 
-        // 小时列滚动结束（备用方案）
-        onHourScrollEnd(e) {
-            // 清除定时器，立即对齐
-            if (this.data.hourScrollTimer) {
-                clearTimeout(this.data.hourScrollTimer);
-                this.setData({ hourScrollTimer: null });
+        /**
+         * 生成日期范围数据
+         */
+        generateDayRangeData(year, month) {
+            const yearNum = parseInt(year, 10);
+            const monthNum = parseInt(month, 10);
+            const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+
+            const days = [];
+            for (let i = 1; i <= daysInMonth; i++) {
+                days.push({
+                    label: String(i).padStart(2, '0'),
+                    value: String(i).padStart(2, '0')
+                });
             }
-            this.alignScrollPosition('hour', e.detail.scrollTop);
+            return days;
         },
 
-        // 分钟列滚动
-        onMinuteScroll(e) {
-            // 清除之前的定时器
-            if (this.data.minuteScrollTimer) {
-                clearTimeout(this.data.minuteScrollTimer);
-            }
-            // 设置新的定时器，滚动停止后300ms对齐
-            const timer = setTimeout(() => {
-                this.alignScrollPosition('minute', e.detail.scrollTop);
-            }, 300);
-            this.setData({ minuteScrollTimer: timer });
-        },
+        /**
+         * 滚动到选中位置
+         */
+        scrollToSelected(range, selectedValue) {
+            if (!range || range.length === 0) return;
 
-        // 分钟列滚动结束（备用方案）
-        onMinuteScrollEnd(e) {
-            // 清除定时器，立即对齐
-            if (this.data.minuteScrollTimer) {
-                clearTimeout(this.data.minuteScrollTimer);
-                this.setData({ minuteScrollTimer: null });
-            }
-            this.alignScrollPosition('minute', e.detail.scrollTop);
-        },
+            const selectedIndex = range.findIndex(item => item.value === selectedValue);
+            if (selectedIndex === -1) return;
 
-        // 对齐滚动位置到item边界
-        alignScrollPosition(type, currentScrollTop) {
             try {
                 const systemInfo = wx.getSystemInfoSync();
                 const rpxToPx = systemInfo.windowWidth / 750;
                 const itemHeightPx = 80 * rpxToPx;
 
-                // 计算当前显示的第一个item索引（四舍五入到最近的item）
-                const currentIndex = Math.round(currentScrollTop / itemHeightPx);
-
-                // 确保显示4个完整item
-                const range = type === 'hour' ? this.data.hourRange : this.data.minuteRange;
-                const totalItems = range.length;
-
-                const calculateScrollTop = (firstIndex, totalItems) => {
-                    // 确保第一个显示的item索引在有效范围内
-                    const firstVisibleIndex = Math.max(0, Math.min(firstIndex, totalItems - 4));
-                    // 确保最后一个显示的item索引不超过总数
+                const calculateScrollTop = (selectedIndex, totalItems) => {
+                    const firstVisibleIndex = Math.max(0, selectedIndex - 1);
                     const lastVisibleIndex = Math.min(totalItems - 1, firstVisibleIndex + 3);
-                    // 如果最后4个item，让最后一个item固定在底部
                     if (lastVisibleIndex === totalItems - 1 && totalItems >= 4) {
                         return (totalItems - 4) * itemHeightPx;
                     }
-                    // 否则让第一个item在顶部
+                    return firstVisibleIndex * itemHeightPx;
+                };
+
+                const scrollTop = calculateScrollTop(selectedIndex, range.length);
+                this.setData({ pickerScrollTop: scrollTop });
+            } catch (error) {
+                console.error('滚动定位失败:', error);
+            }
+        },
+
+        /**
+         * 滚轮滚动事件
+         */
+        onPickerScroll(e) {
+            if (this.data.pickerScrollTimer) {
+                clearTimeout(this.data.pickerScrollTimer);
+            }
+            const timer = setTimeout(() => {
+                this.alignScrollPosition(e.detail.scrollTop);
+            }, 300);
+            this.setData({ pickerScrollTimer: timer });
+        },
+
+        /**
+         * 滚轮滚动结束事件
+         */
+        onPickerScrollEnd(e) {
+            if (this.data.pickerScrollTimer) {
+                clearTimeout(this.data.pickerScrollTimer);
+                this.setData({ pickerScrollTimer: null });
+            }
+            this.alignScrollPosition(e.detail.scrollTop);
+        },
+
+        /**
+         * 对齐滚动位置
+         */
+        alignScrollPosition(currentScrollTop) {
+            try {
+                const systemInfo = wx.getSystemInfoSync();
+                const rpxToPx = systemInfo.windowWidth / 750;
+                const itemHeightPx = 80 * rpxToPx;
+
+                const currentIndex = Math.round(currentScrollTop / itemHeightPx);
+                const totalItems = this.data.pickerRange.length;
+
+                const calculateScrollTop = (firstIndex, totalItems) => {
+                    const firstVisibleIndex = Math.max(0, Math.min(firstIndex, totalItems - 4));
+                    const lastVisibleIndex = Math.min(totalItems - 1, firstVisibleIndex + 3);
+                    if (lastVisibleIndex === totalItems - 1 && totalItems >= 4) {
+                        return (totalItems - 4) * itemHeightPx;
+                    }
                     return firstVisibleIndex * itemHeightPx;
                 };
 
                 const alignedScrollTop = calculateScrollTop(currentIndex, totalItems);
 
-                // 如果位置不对齐，自动对齐（使用动画）
                 if (Math.abs(currentScrollTop - alignedScrollTop) > 2) {
-                    const scrollTopKey = type === 'hour' ? 'hourScrollTop' : 'minuteScrollTop';
-                    this.setData({
-                        [scrollTopKey]: alignedScrollTop
-                    });
-                    console.log(`对齐${type}列:`, { currentScrollTop, alignedScrollTop, currentIndex });
+                    this.setData({ pickerScrollTop: alignedScrollTop });
                 }
             } catch (error) {
                 console.error('对齐滚动位置失败:', error);
             }
         },
 
-        // 点击选项
-        onItemTap(e) {
-            const { type, value } = e.currentTarget.dataset;
-
-            if (type === 'date') {
-                this.setData({ selectedDate: value });
-            } else if (type === 'hour') {
-                this.setData({ selectedHour: value });
-            } else if (type === 'minute') {
-                this.setData({ selectedMinute: value });
-            }
+        /**
+         * 滚轮选项点击事件
+         */
+        onPickerItemTap(e) {
+            const { value } = e.currentTarget.dataset;
+            this.setData({ pickerSelectedValue: value });
         },
 
-        // 确认选择
-        onConfirm() {
-            const { selectedDate, selectedHour, selectedMinute, dateRange, hourRange, minuteRange } = this.data;
+        /**
+         * 滚轮选择器确认
+         */
+        onPickerConfirm() {
+            const { pickerType, pickerSelectedValue } = this.data;
+            const updates = {};
 
-            const dateItem = dateRange.find(item => item.value === selectedDate);
-            const hourItem = hourRange.find(item => item.value === selectedHour);
-            const minuteItem = minuteRange.find(item => item.value === selectedMinute);
-
-            if (dateItem && hourItem && minuteItem) {
-                const timeLabel = `${hourItem.label}:${minuteItem.label}`;
-                const timeValue = `${hourItem.value}:${minuteItem.value}`;
-                const displayTime = `${dateItem.label} ${timeLabel}`;
-                const valueTime = `${dateItem.value} ${timeValue}`;
-
-                this.triggerEvent('confirm', {
-                    value: valueTime,
-                    display: displayTime,
-                    date: dateItem,
-                    hour: hourItem,
-                    minute: minuteItem,
-                    time: {
-                        label: timeLabel,
-                        value: timeValue
+            switch (pickerType) {
+                case 'year':
+                    updates.selectedYear = pickerSelectedValue;
+                    // 如果日期超出范围，需要重新生成日期范围并调整日期
+                    if (this.data.selectedMonth) {
+                        const yearNum = parseInt(pickerSelectedValue, 10);
+                        const monthNum = parseInt(this.data.selectedMonth, 10);
+                        const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+                        const currentDay = parseInt(this.data.selectedDay, 10);
+                        if (currentDay > daysInMonth) {
+                            updates.selectedDay = String(daysInMonth).padStart(2, '0');
+                        }
                     }
-                });
+                    break;
+                case 'month':
+                    updates.selectedMonth = pickerSelectedValue;
+                    // 如果日期超出范围，需要重新生成日期范围并调整日期
+                    if (this.data.selectedYear) {
+                        const yearNum = parseInt(this.data.selectedYear, 10);
+                        const monthNum = parseInt(pickerSelectedValue, 10);
+                        const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+                        const currentDay = parseInt(this.data.selectedDay, 10);
+                        if (currentDay > daysInMonth) {
+                            updates.selectedDay = String(daysInMonth).padStart(2, '0');
+                        }
+                    }
+                    break;
+                case 'day':
+                    updates.selectedDay = pickerSelectedValue;
+                    break;
+                case 'hour':
+                    updates.selectedHour = pickerSelectedValue;
+                    break;
+                case 'minute':
+                    updates.selectedMinute = pickerSelectedValue;
+                    break;
             }
 
-            this.close();
+            this.setData(updates);
+            this.closePicker();
+
+            // 触发change事件
+            const finalYear = updates.selectedYear || this.data.selectedYear;
+            const finalMonth = updates.selectedMonth || this.data.selectedMonth;
+            const finalDay = updates.selectedDay || this.data.selectedDay;
+            const finalHour = updates.selectedHour || this.data.selectedHour;
+            const finalMinute = updates.selectedMinute || this.data.selectedMinute;
+
+            this.triggerEvent('change', {
+                year: finalYear,
+                month: finalMonth,
+                day: finalDay,
+                hour: finalHour,
+                minute: finalMinute,
+                value: `${finalYear}-${finalMonth}-${finalDay} ${finalHour}:${finalMinute}`
+            });
         },
 
-        // 取消
-        onCancel() {
-            this.triggerEvent('cancel');
-            this.close();
+        /**
+         * 滚轮选择器取消
+         */
+        onPickerCancel() {
+            this.closePicker();
         },
 
-        // 点击遮罩层
+        /**
+         * 点击遮罩层
+         */
         onMaskTap() {
-            this.onCancel();
+            this.closePicker();
         },
 
-        // 关闭弹窗
-        close() {
-            this.setData({ visible: false });
+        /**
+         * 关闭滚轮选择器
+         */
+        closePicker() {
+            this.setData({
+                pickerVisible: false,
+                pickerType: '',
+                pickerTitle: '',
+                pickerRange: [],
+                pickerSelectedValue: '',
+                pickerScrollTop: 0
+            });
         },
 
-        // 阻止冒泡
+        /**
+         * 阻止冒泡
+         */
         noop() { }
     }
 });
-

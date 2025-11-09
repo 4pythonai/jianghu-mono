@@ -1,6 +1,66 @@
 @import "/styles/modal.wxss";
 
-.time-selector-mask {
+/* 组件容器 */
+.time-selector-wrapper {
+  width: 100%;
+}
+
+/* 输入框行 */
+.input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+  padding: 16rpx;
+}
+
+/* 输入框组 */
+.input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+/* 输入框标签 */
+.input-label {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 输入框 */
+.input-box {
+  width: 100%;
+  height: 72rpx;
+  background: #f8f9fa;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.input-box.has-value {
+  background: #fff;
+  border-color: var(--primary-green-dark, #4caf50);
+}
+
+.input-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.input-box:not(.has-value) .input-value {
+  color: #999;
+}
+
+/* 滚轮选择器遮罩 */
+.picker-mask {
   position: fixed;
   left: 0;
   top: 0;
@@ -13,17 +73,19 @@
   justify-content: center;
 }
 
-.time-selector-content {
+/* 滚轮选择器内容 */
+.picker-content {
   width: 100%;
   background: #fff;
   border-radius: 24rpx 24rpx 0 0;
-  max-height: 80vh;
+  max-height: 60vh;
   display: flex;
   flex-direction: column;
   animation: slideUp 0.3s;
 }
 
-.time-selector-header {
+/* 滚轮选择器标题栏 */
+.picker-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -31,13 +93,13 @@
   border-bottom: 1rpx solid #e9ecef;
 }
 
-.time-selector-title {
+.picker-title {
   font-size: 32rpx;
   font-weight: 600;
   color: #333;
 }
 
-.time-selector-close {
+.picker-close {
   width: 48rpx;
   height: 48rpx;
   display: flex;
@@ -51,73 +113,20 @@
   line-height: 1;
 }
 
-/* 日期选择区域 */
-.date-section {
-  padding: 24rpx;
-  border-bottom: 1rpx solid #e9ecef;
-}
-
-.section-title {
-  font-size: 28rpx;
-  color: #666;
-  margin-bottom: 16rpx;
-  font-weight: 500;
-}
-
-.date-column {
-  height: 300rpx;
-  overflow-y: auto;
-}
-
-/* 时间选择区域 */
-.time-section {
-  padding: 24rpx 24rpx 0 24rpx; /* 只保留顶部和左右padding，底部不设padding */
-}
-
-.time-selector-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 16rpx;
-  margin-bottom: 24rpx; /* 添加底部间距，替代time-section的底部padding */
-}
-
-.hour-column,
-.minute-column {
+/* 滚轮选择器 */
+.picker-scroll {
   flex: 1;
-  height: 320rpx; /* 严格等于4个item的高度：4 × 80rpx = 320rpx */
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box; /* 确保高度计算包含border和padding */
-  -webkit-overflow-scrolling: touch; /* 平滑滚动 */
-}
-
-.time-separator {
-  font-size: 36rpx;
-  color: #333;
-  font-weight: 600;
-  padding: 0 8rpx;
-  align-self: center;
-  line-height: 320rpx;
   height: 320rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.selector-column {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   padding: 0;
   margin: 0;
-  box-sizing: border-box; /* 确保高度计算正确 */
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
 }
- 
-.selector-item {
+
+.picker-item {
   height: 80rpx;
   min-height: 80rpx;
   max-height: 80rpx;
@@ -130,27 +139,28 @@
   box-sizing: border-box;
 }
 
-.item-text {
+.picker-item-text {
   font-size: 28rpx;
   color: #666;
   transition: all 0.2s;
 }
 
-.selector-item.active .item-text {
+.picker-item.active .picker-item-text {
   font-size: 32rpx;
   font-weight: 600;
   color: var(--primary-green-dark, #4caf50);
 }
 
-.time-selector-footer {
+/* 滚轮选择器底部按钮 */
+.picker-footer {
   display: flex;
   gap: 16rpx;
   padding: 24rpx;
   border-top: 1rpx solid #e9ecef;
 }
 
-.time-btn-cancel,
-.time-btn-confirm {
+.picker-btn-cancel,
+.picker-btn-confirm {
   flex: 1;
   height: 80rpx;
   border-radius: 12rpx;
@@ -161,12 +171,12 @@
   justify-content: center;
 }
 
-.time-btn-cancel {
+.picker-btn-cancel {
   background: #f5f5f5;
   color: #666;
 }
 
-.time-btn-confirm {
+.picker-btn-confirm {
   background: var(--primary-green-dark, #4caf50);
   color: #fff;
 }
@@ -179,4 +189,3 @@
     transform: translateY(0);
   }
 }
-
