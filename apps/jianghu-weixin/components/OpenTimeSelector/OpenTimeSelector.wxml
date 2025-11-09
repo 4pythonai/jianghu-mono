@@ -1,0 +1,93 @@
+<!-- 时间选择器弹窗组件 -->
+<view class="time-selector-mask" wx:if="{{visible}}" bindtap="onMaskTap">
+  <view class="time-selector-content" catchtap="noop">
+    <!-- 标题栏 -->
+    <view class="time-selector-header">
+      <text class="time-selector-title">{{title || '选择开球时间'}}</text>
+      <view class="time-selector-close" bindtap="onCancel">
+        <text class="close-icon">×</text>
+      </view>
+    </view>
+
+    <!-- 日期选择区域 -->
+    <view class="date-section">
+      <view class="section-title">选择日期</view>
+      <scroll-view
+        class="selector-column date-column"
+        scroll-y
+        scroll-top="{{dateScrollTop}}"
+        scroll-with-animation
+        bindscroll="onDateScroll"
+      >
+        <view
+          class="selector-item {{item.value === selectedDate ? 'active' : ''}}"
+          wx:for="{{dateRange}}"
+          wx:key="value"
+          data-type="date"
+          data-value="{{item.value}}"
+          data-index="{{index}}"
+          bindtap="onItemTap"
+        >
+          <text class="item-text">{{item.label}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 时间选择区域 -->
+    <view class="time-section">
+      <view class="section-title">选择时间</view>
+      <view class="time-selector-row">
+        <!-- 小时列 -->
+        <scroll-view
+          class="selector-column hour-column"
+          scroll-y
+          scroll-top="{{hourScrollTop}}"
+          scroll-with-animation
+          bindscroll="onHourScroll"
+        >
+          <view
+            class="selector-item {{item.value === selectedHour ? 'active' : ''}}"
+            wx:for="{{hourRange}}"
+            wx:key="value"
+            data-type="hour"
+            data-value="{{item.value}}"
+            data-index="{{index}}"
+            bindtap="onItemTap"
+          >
+            <text class="item-text">{{item.label}}</text>
+          </view>
+        </scroll-view>
+
+        <!-- 分隔符 -->
+        <view class="time-separator">:</view>
+
+        <!-- 分钟列 -->
+        <scroll-view
+          class="selector-column minute-column"
+          scroll-y
+          scroll-top="{{minuteScrollTop}}"
+          scroll-with-animation
+          bindscroll="onMinuteScroll"
+        >
+          <view
+            class="selector-item {{item.value === selectedMinute ? 'active' : ''}}"
+            wx:for="{{minuteRange}}"
+            wx:key="value"
+            data-type="minute"
+            data-value="{{item.value}}"
+            data-index="{{index}}"
+            bindtap="onItemTap"
+          >
+            <text class="item-text">{{item.label}}</text>
+          </view>
+        </scroll-view>
+      </view>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="time-selector-footer">
+      <button class="time-btn-cancel" bindtap="onCancel">取消</button>
+      <button class="time-btn-confirm" bindtap="onConfirm">确定</button>
+    </view>
+  </view>
+</view>

@@ -1,4 +1,6 @@
 {
 	"component": true,
-	"usingComponents": {}
+	"usingComponents": {
+		"open-time-selector": "/components/OpenTimeSelector/OpenTimeSelector"
+	}
 }

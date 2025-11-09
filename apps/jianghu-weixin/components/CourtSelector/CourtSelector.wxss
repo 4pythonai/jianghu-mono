@@ -234,6 +234,7 @@
 	flex-shrink: 0;
 	transition: none;
 	animation: none;
+	overflow: hidden;
 }
 
 .hole-name {
@@ -248,6 +249,11 @@
 	color: #1aad19;
 	font-weight: 600;
 	line-height: 1;
+	height: 26rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
 }
 
 /* 空状态样式 */

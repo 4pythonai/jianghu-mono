@@ -1,17 +1,25 @@
 <!-- 时间选择器组件 -->
 <view class="time-picker-wrapper">
-	<picker
-		mode="multiSelector"
-		range="{{ timePickerRange }}"
-		range-key="label"
-		value="{{ timePickerValue }}"
-		bindchange="onTimeChange"
-		class="time-picker"
-	>
-		<view class="picker-display">
-			<text wx:if="{{ selectedTime }}" class="selected-time">{{ selectedTime }}</text>
-			<text wx:else class="placeholder-text">{{ placeholder || '请选择开球时间' }}</text>
-			<image src="/assets/icons/arrow-right.svg" class="picker-arrow" mode="aspectFit"></image>
-		</view>
-	</picker>
+  <!-- 显示区域 -->
+  <view class="time-picker" bindtap="onOpenSelector">
+    <view class="picker-display">
+      <text wx:if="{{ selectedTime }}" class="selected-time">{{ selectedTime }}</text>
+      <text wx:else class="placeholder-text">{{ placeholder || '请选择开球时间' }}</text>
+      <image src="/assets/icons/arrow-right.svg" class="picker-arrow" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <!-- 自定义时间选择器弹窗 -->
+  <open-time-selector
+    visible="{{ selectorVisible }}"
+    title="选择开球时间"
+    date-range="{{ timePickerRange[0] }}"
+    hour-range="{{ hourRange }}"
+    minute-range="{{ minuteRange }}"
+    selected-date="{{ currentSelectedDate }}"
+    selected-hour="{{ currentSelectedHour }}"
+    selected-minute="{{ currentSelectedMinute }}"
+    bind:confirm="onTimeSelectorConfirm"
+    bind:cancel="onTimeSelectorCancel"
+  />
 </view>
