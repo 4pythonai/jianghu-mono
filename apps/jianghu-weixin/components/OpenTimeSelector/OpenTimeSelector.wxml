@@ -45,6 +45,7 @@
           scroll-with-animation
           enable-flex
           bindscroll="onHourScroll"
+          bindscrollend="onHourScrollEnd"
         >
           <view
             class="selector-item {{item.value === selectedHour ? 'active' : ''}}"
@@ -70,6 +71,7 @@
           scroll-with-animation
           enable-flex
           bindscroll="onMinuteScroll"
+          bindscrollend="onMinuteScrollEnd"
         >
           <view
             class="selector-item {{item.value === selectedMinute ? 'active' : ''}}"
