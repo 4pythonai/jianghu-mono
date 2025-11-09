@@ -119,17 +119,36 @@ Component({
         },
 
         /**
-         * 生成分钟范围数据（0-59，间隔1分钟）
+         * 生成分钟范围数据（0-50，间隔10分钟）
          */
         generateMinuteRange() {
             const minutes = [];
-            for (let minute = 0; minute < 60; minute++) {
+            for (let minute = 0; minute < 60; minute += 10) {
                 minutes.push({
                     label: String(minute).padStart(2, '0'),
                     value: String(minute).padStart(2, '0')
                 });
             }
             return minutes;
+        },
+
+        /**
+         * 将分钟值取整到最近的10分钟间隔
+         * 规则：个位数 < 5 向下取整，>= 5 向上取整
+         * 例如：21 -> 20, 25 -> 30, 26 -> 30
+         */
+        roundMinuteToInterval(minute) {
+            const onesDigit = minute % 10;
+
+            if (onesDigit < 5) {
+                // 向下取整到最近的10分钟
+                return Math.floor(minute / 10) * 10;
+            } else {
+                // 向上取整到最近的10分钟
+                const roundedUp = Math.ceil(minute / 10) * 10;
+                // 如果向上取整超过60，则使用向下取整
+                return roundedUp >= 60 ? Math.floor(minute / 10) * 10 : roundedUp;
+            }
         },
 
         /**
@@ -182,7 +201,9 @@ Component({
             // 获取当前时间
             const now = new Date();
             const currentHour = String(now.getHours()).padStart(2, '0');
-            const currentMinute = String(now.getMinutes()).padStart(2, '0');
+            const rawMinute = now.getMinutes();
+            const roundedMinute = this.roundMinuteToInterval(rawMinute);
+            const currentMinute = String(roundedMinute).padStart(2, '0');
 
             // 找到今天的索引作为默认选择
             const todayIndex = dateRange.findIndex(item => item.isToday);
@@ -264,7 +285,10 @@ Component({
                     const timeParts = timeStr.split(':');
                     if (timeParts.length === 2) {
                         updates.currentSelectedHour = timeParts[0];
-                        updates.currentSelectedMinute = timeParts[1];
+                        // 将分钟值取整到10分钟间隔
+                        const rawMinute = parseInt(timeParts[1], 10);
+                        const roundedMinute = this.roundMinuteToInterval(rawMinute);
+                        updates.currentSelectedMinute = String(roundedMinute).padStart(2, '0');
                     }
                     updates.selectedTime = value;
 
@@ -296,7 +320,9 @@ Component({
             if (!selectedDate || !selectedHour || !selectedMinute) {
                 const now = new Date();
                 const currentHour = String(now.getHours()).padStart(2, '0');
-                const currentMinute = String(now.getMinutes()).padStart(2, '0');
+                const rawMinute = now.getMinutes();
+                const roundedMinute = this.roundMinuteToInterval(rawMinute);
+                const currentMinute = String(roundedMinute).padStart(2, '0');
 
                 // 找到今天的日期
                 const todayIndex = this.data.timePickerRange[0].findIndex(item => item.isToday);
@@ -429,7 +455,9 @@ Component({
                 // 如果没有值，设置为当前时间
                 const now = new Date();
                 const currentHour = String(now.getHours()).padStart(2, '0');
-                const currentMinute = String(now.getMinutes()).padStart(2, '0');
+                const rawMinute = now.getMinutes();
+                const roundedMinute = this.roundMinuteToInterval(rawMinute);
+                const currentMinute = String(roundedMinute).padStart(2, '0');
                 const todayIndex = this.data.timePickerRange[0].findIndex(item => item.isToday);
                 const todayItem = todayIndex !== -1 ? this.data.timePickerRange[0][todayIndex] : null;
 

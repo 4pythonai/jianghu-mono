@@ -1,11 +1,14 @@
 <view class="rules-page">
-  <RulesTabs active="myRules" queryParams="{{queryParams}}" />
-  <view class="tab-content">
-    <MyRules
-      id="myRulesComponent"
-      show="{{true}}"
-      bind:editRule="onEditRule"
-      bind:pullDownComplete="onPullDownComplete"
-    ></MyRules>
+  <CustomNavBar title="游戏规则" backUrl="{{backUrl}}" />
+  <view class="page-content" style="padding-top: {{navBarHeight}}px;">
+    <RulesTabs active="myRules" queryParams="{{queryParams}}" />
+    <view class="tab-content">
+      <MyRules
+        id="myRulesComponent"
+        show="{{true}}"
+        bind:editRule="onEditRule"
+        bind:pullDownComplete="onPullDownComplete"
+      ></MyRules>
+    </view>
   </view>
 </view>

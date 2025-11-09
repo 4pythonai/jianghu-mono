@@ -77,16 +77,17 @@ Component({
 
                 const itemHeightRpx = 80; // 每个选项高度（rpx）
                 const visibleHeightRpx = 300; // 可视区域高度（rpx）
-                const visibleItemCount = visibleHeightRpx / itemHeightRpx; // 约 3.75
-                const centerOffset = Math.floor(visibleItemCount / 2); // 约 1-2 个位置
-
                 const itemHeightPx = itemHeightRpx * rpxToPx; // 转换为 px
+
+                // 计算可视区域中心位置
+                const centerPosition = visibleHeightRpx / 2; // 150rpx
+                const centerOffsetPx = centerPosition * rpxToPx; // 转换为 px
 
                 // 计算日期索引并滚动
                 const dateIndex = dateRange.findIndex(item => item.value === selectedDate);
                 if (dateIndex !== -1) {
-                    // 让选中项居中显示：滚动到 (index - centerOffset) * itemHeight
-                    const scrollTop = Math.max(0, (dateIndex - centerOffset) * itemHeightPx);
+                    // 让选中项在可视区域中心显示
+                    const scrollTop = Math.max(0, (dateIndex * itemHeightPx) - centerOffsetPx + (itemHeightPx / 2));
                     this.setData({ dateScrollTop: scrollTop });
                     console.log('📅 日期滚动:', { dateIndex, scrollTop, selectedDate, rpxToPx });
                 }
@@ -94,7 +95,8 @@ Component({
                 // 计算小时索引并滚动
                 const hourIndex = hourRange.findIndex(item => item.value === selectedHour);
                 if (hourIndex !== -1) {
-                    const scrollTop = Math.max(0, (hourIndex - centerOffset) * itemHeightPx);
+                    // 让选中项在可视区域中心显示
+                    const scrollTop = Math.max(0, (hourIndex * itemHeightPx) - centerOffsetPx + (itemHeightPx / 2));
                     this.setData({ hourScrollTop: scrollTop });
                     console.log('⏰ 小时滚动:', { hourIndex, scrollTop, selectedHour });
                 }
@@ -102,7 +104,8 @@ Component({
                 // 计算分钟索引并滚动
                 const minuteIndex = minuteRange.findIndex(item => item.value === selectedMinute);
                 if (minuteIndex !== -1) {
-                    const scrollTop = Math.max(0, (minuteIndex - centerOffset) * itemHeightPx);
+                    // 让选中项在可视区域中心显示
+                    const scrollTop = Math.max(0, (minuteIndex * itemHeightPx) - centerOffsetPx + (itemHeightPx / 2));
                     this.setData({ minuteScrollTop: scrollTop });
                     console.log('⏰ 分钟滚动:', { minuteIndex, scrollTop, selectedMinute });
                 }
@@ -110,21 +113,21 @@ Component({
                 console.error('滚动定位失败:', error);
                 // 降级方案：使用固定比例
                 const itemHeightPx = 40; // 假设 80rpx = 40px
-                const centerOffset = 1;
+                const centerOffsetPx = 150 * (375 / 750) / 2; // 150rpx 转换为 px
 
                 const dateIndex = dateRange.findIndex(item => item.value === selectedDate);
                 if (dateIndex !== -1) {
-                    this.setData({ dateScrollTop: Math.max(0, (dateIndex - centerOffset) * itemHeightPx) });
+                    this.setData({ dateScrollTop: Math.max(0, (dateIndex * itemHeightPx) - centerOffsetPx + (itemHeightPx / 2)) });
                 }
 
                 const hourIndex = hourRange.findIndex(item => item.value === selectedHour);
                 if (hourIndex !== -1) {
-                    this.setData({ hourScrollTop: Math.max(0, (hourIndex - centerOffset) * itemHeightPx) });
+                    this.setData({ hourScrollTop: Math.max(0, (hourIndex * itemHeightPx) - centerOffsetPx + (itemHeightPx / 2)) });
                 }
 
                 const minuteIndex = minuteRange.findIndex(item => item.value === selectedMinute);
                 if (minuteIndex !== -1) {
-                    this.setData({ minuteScrollTop: Math.max(0, (minuteIndex - centerOffset) * itemHeightPx) });
+                    this.setData({ minuteScrollTop: Math.max(0, (minuteIndex * itemHeightPx) - centerOffsetPx + (itemHeightPx / 2)) });
                 }
             }
         },

@@ -76,7 +76,7 @@
 
 .time-selector-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: 16rpx;
 }
@@ -86,6 +86,10 @@
   flex: 1;
   height: 300rpx;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
 }
 
 .time-separator {
@@ -93,19 +97,33 @@
   color: #333;
   font-weight: 600;
   padding: 0 8rpx;
+  align-self: center;
+  line-height: 300rpx;
+  height: 300rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .selector-column {
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
 }
 
 .selector-item {
   height: 80rpx;
+  min-height: 80rpx;
+  max-height: 80rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 24rpx;
   transition: all 0.2s;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .item-text {

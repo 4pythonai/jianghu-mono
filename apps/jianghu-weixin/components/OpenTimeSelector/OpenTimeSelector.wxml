@@ -43,6 +43,7 @@
           scroll-y
           scroll-top="{{hourScrollTop}}"
           scroll-with-animation
+          enable-flex
           bindscroll="onHourScroll"
         >
           <view
@@ -67,6 +68,7 @@
           scroll-y
           scroll-top="{{minuteScrollTop}}"
           scroll-with-animation
+          enable-flex
           bindscroll="onMinuteScroll"
         >
           <view
