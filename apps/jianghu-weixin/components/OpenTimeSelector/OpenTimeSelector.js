@@ -59,7 +59,9 @@ Component({
         pickerRange: [],
         pickerSelectedValue: '',
         pickerScrollTop: 0,
-        pickerScrollTimer: null
+        scrollIntoView: '', // 用于scroll-into-view定位
+        pickerScrollTimer: null,
+        scrollWithAnimation: false // 初始滚动不使用动画
     },
 
     lifetimes: {
@@ -251,13 +253,17 @@ Component({
                 pickerType: type,
                 pickerTitle,
                 pickerRange,
-                pickerSelectedValue: pickerSelectedValue || pickerRange[0]?.value || ''
+                pickerSelectedValue: pickerSelectedValue || pickerRange[0]?.value || '',
+                pickerScrollTop: 0, // 先重置滚动位置
+                scrollIntoView: '', // 重置scroll-into-view
+                scrollWithAnimation: false // 初始滚动不使用动画
             });
 
-            // 滚动到选中位置
+            // 滚动到选中位置 - 使用更长的延迟确保DOM完全渲染
+            // 真机上需要更长的延迟
             setTimeout(() => {
-                this.scrollToSelected(pickerRange, pickerSelectedValue);
-            }, 100);
+                this.scrollToSelected(pickerRange, pickerSelectedValue || pickerRange[0]?.value || '');
+            }, 500);
         },
 
         /**
@@ -285,26 +291,72 @@ Component({
             if (!range || range.length === 0) return;
 
             const selectedIndex = range.findIndex(item => item.value === selectedValue);
-            if (selectedIndex === -1) return;
+            if (selectedIndex === -1) {
+                // 如果找不到，使用第一个
+                const firstValue = range[0]?.value || '';
+                this.setData({ pickerSelectedValue: firstValue });
+                return;
+            }
 
+            // 计算目标索引：让选中项在第2个位置（索引1）
+            // 显示4个item，选中项应该在索引1的位置
+            let targetIndex = selectedIndex;
+            if (selectedIndex >= range.length - 3 && range.length >= 4) {
+                // 如果选中项在最后几个，定位到倒数第4个
+                targetIndex = Math.max(0, range.length - 4);
+            } else if (selectedIndex > 0) {
+                // 否则定位到选中项的前一个，让选中项在第2个位置
+                targetIndex = Math.max(0, selectedIndex - 1);
+            }
+
+            // 方法1：使用scroll-into-view（真机上更可靠）
+            const scrollIntoViewId = `picker-item-${this.data.pickerType}-${targetIndex}`;
+
+            // 方法2：使用scroll-top作为备用
             try {
                 const systemInfo = wx.getSystemInfoSync();
                 const rpxToPx = systemInfo.windowWidth / 750;
                 const itemHeightPx = 80 * rpxToPx;
+                const scrollTop = targetIndex * itemHeightPx;
 
-                const calculateScrollTop = (selectedIndex, totalItems) => {
-                    const firstVisibleIndex = Math.max(0, selectedIndex - 1);
-                    const lastVisibleIndex = Math.min(totalItems - 1, firstVisibleIndex + 3);
-                    if (lastVisibleIndex === totalItems - 1 && totalItems >= 4) {
-                        return (totalItems - 4) * itemHeightPx;
-                    }
-                    return firstVisibleIndex * itemHeightPx;
-                };
+                // 先使用scroll-into-view
+                this.setData({
+                    scrollIntoView: scrollIntoViewId,
+                    pickerScrollTop: scrollTop,
+                    pickerSelectedValue: selectedValue,
+                    scrollWithAnimation: false
+                }, () => {
+                    // 等待DOM渲染完成后，再次确保滚动位置
+                    setTimeout(() => {
+                        // 使用wx.createSelectorQuery查询scroll-view
+                        const query = wx.createSelectorQuery().in(this);
+                        query.select(`#picker-scroll-${this.data.pickerType}`).scrollOffset((res) => {
+                            if (res) {
+                                // 如果当前位置不对，再次设置
+                                const currentScrollTop = res.scrollTop || 0;
+                                const expectedScrollTop = targetIndex * itemHeightPx;
+                                if (Math.abs(currentScrollTop - expectedScrollTop) > 10) {
+                                    this.setData({
+                                        pickerScrollTop: expectedScrollTop,
+                                        scrollIntoView: '' // 清空scroll-into-view，改用scroll-top
+                                    });
+                                }
+                            }
+                        }).exec();
 
-                const scrollTop = calculateScrollTop(selectedIndex, range.length);
-                this.setData({ pickerScrollTop: scrollTop });
+                        // 延迟后启用动画
+                        setTimeout(() => {
+                            this.setData({ scrollWithAnimation: true });
+                        }, 200);
+                    }, 200);
+                });
             } catch (error) {
                 console.error('滚动定位失败:', error);
+                // 降级方案：直接使用scroll-into-view
+                this.setData({
+                    scrollIntoView: scrollIntoViewId,
+                    pickerSelectedValue: selectedValue
+                });
             }
         },
 
@@ -460,7 +512,9 @@ Component({
                 pickerTitle: '',
                 pickerRange: [],
                 pickerSelectedValue: '',
-                pickerScrollTop: 0
+                pickerScrollTop: 0,
+                scrollIntoView: '',
+                scrollWithAnimation: false
             });
         },
 

@@ -79,15 +79,18 @@
         class="picker-scroll"
         scroll-y
         scroll-top="{{pickerScrollTop}}"
-        scroll-with-animation
+        scroll-into-view="{{scrollIntoView}}"
+        scroll-with-animation="{{scrollWithAnimation}}"
         enable-flex
         bindscroll="onPickerScroll"
         bindscrollend="onPickerScrollEnd"
+        id="picker-scroll-{{pickerType}}"
       >
         <view
           class="picker-item {{item.value === pickerSelectedValue ? 'active' : ''}}"
           wx:for="{{pickerRange}}"
           wx:key="value"
+          id="picker-item-{{pickerType}}-{{index}}"
           data-value="{{item.value}}"
           data-index="{{index}}"
           bindtap="onPickerItemTap"
