@@ -215,6 +215,7 @@
 	gap: 8rpx;
 	flex: 1;
 	overflow-x: auto;
+	align-items: center;
 	transition: none;
 	animation: none;
 }
@@ -229,7 +230,7 @@
 	padding: 8rpx;
 	width: 60rpx;
 	min-width: 60rpx;
-	height: 60rpx;
+	height: 80rpx;
 	border: 2rpx solid #e9ecef;
 	flex-shrink: 0;
 	transition: none;
