@@ -59,7 +59,7 @@
   <!-- 功能列表 -->
   <view class="function-list">
     <view class="function-item">
-      <text>版本:2025.07.15</text>
+      <text>版本:2025.11.22</text>
       <text class="arrow">></text>
     </view>
   </view>

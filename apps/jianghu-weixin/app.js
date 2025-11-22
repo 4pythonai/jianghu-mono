@@ -6,6 +6,8 @@ import authManager from './utils/auth'
 import { httpClient } from './api/request-simple'
 // 导入存储管理器
 import storage from './utils/storage'
+// 导入资料检查工具
+import { createProfileChecker } from './utils/profile-checker'
 
 // 全局分享配置 - 在所有页面上启用分享功能
 const originalPage = Page
@@ -39,6 +41,7 @@ App({
     auth: authManager, // 暴露认证管理器
     http: httpClient,  // 暴露HTTP客户端
     storage: storage,  // 暴露存储管理器
+    profileChecker: null, // 暴露资料检查器，稍后初始化
     globalData: {
         userInfo: null,
         profileStatus: null,
@@ -93,6 +96,10 @@ App({
 
         // 初始化网络和认证
         this.initNetworkAndAuth()
+
+        // 初始化资料检查器
+        this.profileChecker = createProfileChecker(this)
+        console.log('✅ 资料检查器初始化完成')
     },
 
     /**

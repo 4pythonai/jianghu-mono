@@ -274,6 +274,18 @@ Page({
                 return;
             }
 
+            // 检查用户资料是否完整（昵称和头像）
+            if (!app.profileChecker.ensureProfileCompleted({
+                source: 'signup',
+                modalTitle: '完善资料',
+                modalContent: '加入比赛前请先设置昵称和头像，方便队友识别你。'
+            })) {
+                this.setData({
+                    joining: false
+                });
+                return;
+            }
+
             const payload = {
                 uuid: this.data.uuid,
                 source: this.data.source || 'wxshare'
