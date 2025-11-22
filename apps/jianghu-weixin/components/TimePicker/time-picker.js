@@ -248,6 +248,24 @@ Component({
             console.log('⏰ 分钟范围:', minuteRange.length, '分钟');
             console.log('🕐 默认时间:', currentHour + ':' + currentMinute);
             console.log('📝 默认显示:', defaultDisplayTime);
+
+            // 如果没有传入 value 属性，自动触发 change 事件，将默认值传递给父组件
+            // 这样即使用户不调整开球时间，formData.openTime 也会被设置为默认值
+            if (!this.properties.value && todayDateItem) {
+                const defaultValue = `${todayDateItem.value} ${currentHour}:${currentMinute}`;
+                // 使用 setTimeout 确保在 setData 完成后再触发事件
+                setTimeout(() => {
+                    this.triggerEvent('change', {
+                        value: defaultValue,
+                        display: defaultDisplayTime,
+                        date: todayDateItem,
+                        time: { label: defaultTimeLabel, value: `${currentHour}:${currentMinute}` },
+                        hour: { value: currentHour },
+                        minute: { value: currentMinute },
+                        indexes: [defaultDateIndex, defaultTimeIndex]
+                    });
+                }, 0);
+            }
         },
 
         /**
