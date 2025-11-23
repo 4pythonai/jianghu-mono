@@ -117,39 +117,61 @@ class Weixin extends CI_Controller {
     public function bindPhoneNumber() {
         logtext('<hr/>');
         logtext('<div><span class =functionname>' . date('Y-m-d H:i:s') . '  Weixin/bindPhoneNumber</span></div>');
-        logtext(" 参数:" . json_encode(file_get_contents('php://input'), JSON_UNESCAPED_UNICODE));
+        
+        // 读取一次请求体
+        $rawBody = file_get_contents('php://input');
+        logtext(" 参数:" . $rawBody);
 
-        $json_paras = $this->readRequestBody();
+        $json_paras = json_decode($rawBody, true);
+        if (!is_array($json_paras)) {
+            $json_paras = [];
+        }
+
         $code = $json_paras['code'] ?? '';
+        
+        // 兼容旧版参数
         $encryptedData = $json_paras['encryptedData'] ?? '';
         $iv = $json_paras['iv'] ?? '';
 
         try {
-            if (empty($code) || empty($encryptedData) || empty($iv)) {
+            $phoneNumber = '';
+
+            // 优先使用新版 API (code换取)
+            if (!empty($code)) {
+                $access_token = $this->getWechatAccessToken();
+                $url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token={$access_token}";
+                
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(['code' => $code]));
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                $response = curl_exec($ch);
+                curl_close($ch);
+
+                $result = json_decode($response, true);
+                logtext("  微信API返回->" . json_encode($result));
+
+                if (isset($result['errcode']) && $result['errcode'] !== 0) {
+                    throw new \RuntimeException("获取手机号失败: {$result['errmsg']}");
+                }
+
+                $phoneNumber = $result['phone_info']['phoneNumber'];
+            } 
+            // 降级使用旧版 API (解密)
+            else if (!empty($encryptedData) && !empty($iv)) {
+                 // 注意: 这里需要 session_key，但如果是通过 wx.login 获取的 code 换取的 session_key，
+                 // 会导致解密失败 (因为 encryptedData 是用旧 session_key 加密的)
+                 // 除非前端保证不刷新 session_key
+                 throw new \RuntimeException('请更新小程序版本以支持手机号绑定');
+            } else {
                 throw new \InvalidArgumentException('缺少必要参数');
             }
 
-            $session = $this->requestSessionByCode($code);
-            $session_key = $session['session_key'];
-
-            // 解密数据
-            $decrypted = openssl_decrypt(
-                base64_decode($encryptedData),
-                'aes-128-cbc',
-                base64_decode($session_key),
-                OPENSSL_RAW_DATA,
-                base64_decode($iv)
-            );
-
-            if ($decrypted === false) {
-                throw new \RuntimeException('解密失败');
-            }
-
-            $phoneInfo = json_decode($decrypted, true);
-            logtext("  解密后数据->" . json_encode($phoneInfo));
-
-            if (!isset($phoneInfo['phoneNumber'])) {
-                throw new \RuntimeException('获取手机号失败');
+            if (empty($phoneNumber)) {
+                throw new \RuntimeException('获取手机号为空');
             }
 
             // 获取用户信息
@@ -157,7 +179,7 @@ class Weixin extends CI_Controller {
             $user_id = $payload['uid'];
 
             // 更新用户手机号
-            $this->MUser->updateUserPhone($user_id, $phoneInfo['phoneNumber']);
+            $this->MUser->updateUserPhone($user_id, $phoneNumber);
 
             $user = $this->MUser->getUserbyId($user_id);
             $profileStatus = $this->buildProfileStatus($user);
@@ -165,7 +187,7 @@ class Weixin extends CI_Controller {
             echo json_encode([
                 'code' => 200,
                 'success' => true,
-                'phoneNumber' => $phoneInfo['phoneNumber'],
+                'phoneNumber' => $phoneNumber,
                 'user' => $user,
                 'profile_status' => $profileStatus,
                 'need_bind_phone' => !$profileStatus['has_mobile']
@@ -177,6 +199,27 @@ class Weixin extends CI_Controller {
                 'message' => $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
+    }
+
+    private function getWechatAccessToken() {
+        $appid = config_item('appid');
+        $secret = config_item('secret');
+        // 这里应该添加缓存逻辑，避免频繁调用
+        // 简单起见，先直接调用 (生产环境建议使用 Redis 或文件缓存)
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $result = json_decode($response, true);
+        if (isset($result['errcode']) && $result['errcode'] !== 0) {
+             throw new \RuntimeException("获取AccessToken失败: {$result['errmsg']}");
+        }
+        return $result['access_token'];
     }
 
 

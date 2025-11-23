@@ -116,9 +116,13 @@ class AuthManager {
 
         this.isRefreshing = true
         try {
-            storage.clearUserData()
-            await this.login()
+            // 尝试静默登录刷新token
+            console.log('🔄 Token过期，尝试静默刷新')
+            await this.silentLogin()
+            console.log('✅ 静默刷新成功')
         } catch (error) {
+            console.error('❌ 静默刷新失败，需要重新登录', error)
+            storage.clearUserData()
             this.app.handleLoginFailure(error)
         } finally {
             this.isRefreshing = false
@@ -130,6 +134,25 @@ class AuthManager {
         this.silentLoginPromise = null
         this.app.handleLogout()
     }
+
+    computeProfileStatus(user) {
+        // 使用 ProfileChecker 的 isDefaultAvatar 方法
+        const profileChecker = getProfileChecker() || this.app.profileChecker
+        const isDefaultAvatar = profileChecker?.isDefaultAvatar?.bind(profileChecker)
+
+        // 如果 profileChecker 未初始化，保守处理：认为默认头像就是没有头像
+        const hasAvatar = isDefaultAvatar
+            ? !!(user?.avatar && !isDefaultAvatar(user?.avatar))
+            : false
+
+        return {
+            hasNickname: !!(user?.nickName || user?.nickname),
+            hasAvatar: hasAvatar,
+            hasMobile: !!(user?.mobile)
+        }
+    }
+
+
 
     storeAuthData({ token, refreshToken, user, profileStatus, needBindPhone, session }) {
         if (token || refreshToken) {
@@ -144,20 +167,7 @@ class AuthManager {
             user = storage.getUserInfo()
         }
 
-        // 使用 ProfileChecker 的 isDefaultAvatar 方法
-        const profileChecker = getProfileChecker() || this.app.profileChecker
-        const isDefaultAvatar = profileChecker?.isDefaultAvatar?.bind(profileChecker)
-
-        // 如果 profileChecker 未初始化，保守处理：认为默认头像就是没有头像
-        const hasAvatar = isDefaultAvatar
-            ? !!(user?.avatar && !isDefaultAvatar(user?.avatar))
-            : false
-
-        const status = {
-            hasNickname: !!(user?.nickName || user?.nickname),
-            hasAvatar: hasAvatar,
-            hasMobile: !!(user?.mobile)
-        }
+        const status = this.computeProfileStatus(user)
 
         const needBind = typeof needBindPhone === 'boolean' ? needBindPhone : !status.hasMobile
 

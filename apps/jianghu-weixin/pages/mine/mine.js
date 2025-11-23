@@ -127,33 +127,43 @@ Page({
       return
     }
 
-    wx.login({
-      success: (res) => {
-        if (!res.code) {
-          wx.showToast({ title: '获取code失败', icon: 'none' })
-          return
-        }
+    // 检查session是否有效，虽然解密依赖的是服务端缓存的session_key
+    // 但如果session已过期，服务端可能也无法解密（取决于服务端缓存策略）
+    // 这里直接发送加密数据，假设服务端有有效的session_key（由app启动时的login建立）
 
-        app.api.user.bindPhoneNumber({
-          encryptedData: e.detail.encryptedData,
-          iv: e.detail.iv,
-          code: res.code
-        }).then(response => {
-          const updatedStatus = {
-            hasNickname: !!(response.user?.nickName || response.user?.nickname),
-            hasAvatar: !!(response.user?.avatar),
-            hasMobile: true
-          }
+    // 使用新的获取手机号方式 (code换取)
+    // 注意: e.detail.code 是获取手机号专用的code，与wx.login的code不同
+    const phoneCode = e.detail.code
 
-          app.setUserInfo(response.user, updatedStatus, false)
-          this.syncUserState()
+    if (!phoneCode) {
+      // 降级处理或提示用户
+      wx.showToast({ title: '获取手机号失败(无code)', icon: 'none' })
+      return
+    }
 
-          wx.showToast({ title: '手机号绑定成功', icon: 'success' })
-          app.emit('loginSuccess')
-        }).catch(() => {
-          wx.showToast({ title: '绑定失败，请重试', icon: 'none' })
-        })
+    app.api.user.bindPhoneNumber({
+      code: phoneCode
+    }).then(response => {
+      // 检查业务状态码
+      if (response.code !== 200) {
+        throw new Error(response.message || '绑定失败')
       }
+
+      const updatedStatus = {
+        hasNickname: !!(response.user?.nickName || response.user?.nickname),
+        hasAvatar: !!(response.user?.avatar),
+        hasMobile: true
+      }
+
+      app.setUserInfo(response.user, updatedStatus, false)
+      this.syncUserState()
+
+      wx.showToast({ title: '手机号绑定成功', icon: 'success' })
+      app.emit('loginSuccess')
+    }).catch((err) => {
+      console.error('绑定手机号失败', err)
+      const message = err.message || '绑定失败，请重试'
+      wx.showToast({ title: message, icon: 'none' })
     })
   }
 })
