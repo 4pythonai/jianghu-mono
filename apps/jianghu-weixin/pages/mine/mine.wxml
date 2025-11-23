@@ -6,15 +6,16 @@
       <image class="avatar" src="{{ userInfo.avatar || '/images/default-avatar.png' }}"></image>
     </view>
     <view class="user-details">
-      <text
-        class="nickname"
-      >{{ userInfo.nickName || userInfo.nickname || userInfo.wx_nickname || '微信用户' }}</text>
+      <text class="nickname">
+        {{ userInfo.nickName || userInfo.nickname || userInfo.wx_nickname || '微信用户' }}
+      </text>
       <view class="profile-meta">
-        <text class="meta-item" wx:if="{{ userInfo && userInfo.mobile }}">手机号：{{ userInfo.mobile }}</text>
-        <text
-          class="meta-item"
-          wx:if="{{ userInfo && userInfo.avatar && userInfo.avatar.indexOf('default-avatar.png') === -1 }}"
-        >头像：已上传</text>
+        <text class="meta-item" wx:if="{{ userInfo && userInfo.mobile }}">
+          手机号：{{ userInfo.mobile }}
+        </text>
+        <text class="meta-item" wx:if="{{ userInfo && userInfo.avatar && userInfo.avatar.indexOf('default-avatar.png') === -1 }}">
+          头像：已上传
+        </text>
       </view>
     </view>
   </view>
@@ -32,31 +33,19 @@
       <view class="nickname-input-wrapper">
         <text class="input-label">昵称:</text>
         <view class="nickname-input-container">
-          <input
-            class="nickname-input"
-            type="nickname"
-            value="{{ tempNickname || userInfo.nickName || '' }}"
-            placeholder="请输入昵称"
-            maxlength="20"
-            bindinput="onNicknameInput"
-            bindchange="onNicknameChange"
-            bindfocus="onNicknameFocus"
-          />
+          <input class="nickname-input" type="nickname" value="{{ tempNickname || userInfo.nickName || '' }}" placeholder="请输入昵称" maxlength="20" bindinput="onNicknameInput" bindchange="onNicknameChange" bindfocus="onNicknameFocus" />
           <view class="nickname-hint">
             <text class="hint-text">💡 点击输入框后，键盘上方会显示"用微信昵称"按钮</text>
           </view>
         </view>
       </view>
-      <button class="confirm-btn" bindtap="confirmUserInfo">确认信息</button>
+      <button class="confirm-btn" bindtap="confirmUserInfo">保存昵称</button>
     </view>
   </view>
   <!-- 绑定手机号按钮 -->
-  <button
-    class="phone-btn"
-    wx:if="{{ needBindPhone && userInfo }}"
-    open-type="getPhoneNumber"
-    bindgetphonenumber="getPhoneNumber"
-  >绑定手机号码</button>
+  <button class="phone-btn" wx:if="{{ needBindPhone && userInfo }}" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">
+    绑定手机号码
+  </button>
   <!-- 功能列表 -->
   <view class="function-list">
     <view class="function-item">
