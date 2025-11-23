@@ -1,21 +1,21 @@
 <view class="container">
   <view class="auth-title">Ver:20251031</view>
-
   <!-- 用户信息区域 -->
   <view class="user-info">
     <view class="avatar-container">
       <image class="avatar" src="{{ userInfo.avatarUrl || '/images/default-avatar.png' }}"></image>
     </view>
     <view class="user-details">
-      <text
-        class="nickname"
-      >{{ userInfo.nickName || userInfo.nickname || userInfo.wx_nickname || '微信用户' }}</text>
+      <text class="nickname">
+        {{ userInfo.nickName || userInfo.nickname || userInfo.wx_nickname || '微信用户' }}
+      </text>
       <view class="profile-meta">
-        <text class="meta-item" wx:if="{{ userInfo && userInfo.mobile }}">手机号：{{ userInfo.mobile }}</text>
-        <text
-          class="meta-item"
-          wx:if="{{ userInfo && userInfo.avatarUrl && userInfo.avatarUrl.indexOf('default-avatar.png') === -1 }}"
-        >头像：已上传</text>
+        <text class="meta-item" wx:if="{{ userInfo && userInfo.mobile }}">
+          手机号：{{ userInfo.mobile }}
+        </text>
+        <text class="meta-item" wx:if="{{ userInfo && userInfo.avatarUrl && userInfo.avatarUrl.indexOf('default-avatar.png') === -1 }}">
+          头像：已上传
+        </text>
       </view>
     </view>
   </view>
@@ -26,26 +26,14 @@
     <view class="auth-form">
       <!-- 获取头像按钮 -->
       <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <image
-          class="preview-avatar"
-          src="{{ userInfo.avatarUrl || '/images/default-avatar.png' }}"
-        ></image>
+        <image class="preview-avatar" src="{{ userInfo.avatarUrl || '/images/default-avatar.png' }}"></image>
         <text class="avatar-text">点击选择头像</text>
       </button>
       <!-- 获取昵称输入框 -->
       <view class="nickname-input-wrapper">
         <text class="input-label">昵称:</text>
         <view class="nickname-input-container">
-          <input
-            class="nickname-input"
-            type="nickname"
-            value="{{ tempNickname || userInfo.nickName || '' }}"
-            placeholder="请输入昵称"
-            maxlength="20"
-            bindinput="onNicknameInput"
-            bindchange="onNicknameChange"
-            bindfocus="onNicknameFocus"
-          />
+          <input class="nickname-input" type="nickname" value="{{ tempNickname || userInfo.nickName || '' }}" placeholder="请输入昵称" maxlength="20" bindinput="onNicknameInput" bindchange="onNicknameChange" bindfocus="onNicknameFocus" />
           <view class="nickname-hint">
             <text class="hint-text">💡 点击输入框后，键盘上方会显示"用微信昵称"按钮</text>
           </view>
@@ -55,16 +43,13 @@
     </view>
   </view>
   <!-- 绑定手机号按钮 -->
-  <button
-    class="phone-btn"
-    wx:if="{{ needBindPhone && userInfo }}"
-    open-type="getPhoneNumber"
-    bindgetphonenumber="getPhoneNumber"
-  >绑定手机号码</button>
+  <button class="phone-btn" wx:if="{{ needBindPhone && userInfo }}" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">
+    绑定手机号码
+  </button>
   <!-- 功能列表 -->
   <view class="function-list">
     <view class="function-item">
-      <text>版本:2025.11.22</text>
+      <text>版本:2025.11.23-auth</text>
       <text class="arrow">></text>
     </view>
   </view>

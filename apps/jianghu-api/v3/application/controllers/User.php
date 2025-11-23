@@ -47,32 +47,14 @@ class User extends MY_Controller {
         logtext(" POST:" . json_encode($_POST, JSON_UNESCAPED_UNICODE));
 
         try {
-            // 验证token
-            $headers = getallheaders();
-            logtext("  所有Headers: " . json_encode($headers, JSON_UNESCAPED_UNICODE));
+            // Token已经在MY_Controller中验证过了，直接获取用户ID
+            $user_id = $this->getUser();
             
-            $authHeader = $headers['Authorization'] ?? '';
-            logtext("  Authorization header: " . ($authHeader ?: 'NOT SET'));
-            
-            if (empty($authHeader)) {
-                throw new \RuntimeException('缺少Authorization header');
+            if (!$user_id) {
+                throw new \RuntimeException('用户未登录');
             }
             
-            $token = str_replace('Bearer ', '', $authHeader);
-            logtext("  提取后的token长度: " . strlen($token));
-            logtext("  Token前20字符: " . substr($token, 0, 20) . "...");
-            
-            if(strlen($token) < 10){
-                throw new \RuntimeException('token长度非法 (长度: ' . strlen($token) . ')');
-            }
-
-            $payload = $this->MJwtUtil->verifyToken($token);
-
-            if (!$payload) {
-                throw new \RuntimeException('无效的token');
-            }
-
-            $user_id = $payload['uid'];
+            logtext("  用户ID: " . $user_id);
 
             // 检查是否有文件上传
             if (!isset($_FILES['avatar']) || $_FILES['avatar']['error'] !== UPLOAD_ERR_OK) {
