@@ -27,86 +27,98 @@ Page({
   },
 
   onLoad(options = {}) {
-    const entrySource = this.consumeEntrySource(options) || ENTRY_SOURCES.SELF
-    this.entrySource = entrySource
-
+    const entrySource = this.getEntrySource(options)
     const state = app.getUserState()
+
     this.syncFromAppState({
       user: state.userInfo,
       profileStatus: state.profileStatus,
       needBindPhone: state.needBindPhone
     })
 
-    this.setData({
-      entrySource
-    })
+    this.setData({ entrySource })
 
-    app.on('loginSuccess', this.handleLoginSuccess)
-    app.on('needBindPhone', this.handleNeedBindPhone)
+    app.on('loginSuccess', (payload) => {
+      this.syncFromAppState(payload)
+    })
+    app.on('needBindPhone', () => {
+      const status = {
+        ...(this.data.profileStatus || DEFAULT_PROFILE_STATUS),
+        hasMobile: false
+      }
+      this.setData({
+        profileStatus: status,
+        needBindPhone: true,
+        showAuthButton: !(status.hasNickname && status.hasAvatar)
+      })
+    })
   },
 
   onShow() {
-    const pendingSource = this.consumeEntrySource()
-    if (pendingSource && pendingSource !== this.entrySource) {
-      this.entrySource = pendingSource
-      this.setData({
-        entrySource: pendingSource
-      })
+    const entrySource = this.getEntrySource()
+    if (entrySource !== this.data.entrySource) {
+      this.setData({ entrySource })
     }
   },
 
   onUnload() {
-    app.off('loginSuccess', this.handleLoginSuccess)
-    app.off('needBindPhone', this.handleNeedBindPhone)
+    // 事件监听器会在页面销毁时自动清理
   },
 
-  syncFromAppState(payload = {}) {
-    const user = payload.user || app.globalData.userInfo || {}
-    const normalizedUser = this.resolveAvatar(app.normalizeUserInfo ? app.normalizeUserInfo(user) : { ...user })
-    const status = app.auth && typeof app.auth.normalizeProfileStatus === 'function'
-      ? app.auth.normalizeProfileStatus(payload.profileStatus, normalizedUser)
-      : (payload.profileStatus || DEFAULT_PROFILE_STATUS)
-    const needBind = app.auth && typeof app.auth.normalizeNeedBindFlag === 'function'
-      ? app.auth.normalizeNeedBindFlag(
-        payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone,
-        status
-      )
-      : (payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone)
+  showErrorModal(error, defaultTitle = '操作失败') {
+    let errorMessage = '请重试'
+    if (isAuthError(error)) {
+      errorMessage = '登录已过期，请重新登录'
+    } else if (error.message?.includes('网络') || error.errMsg?.includes('network')) {
+      errorMessage = '网络连接失败，请检查网络'
+    } else if (error.message) {
+      errorMessage = error.message
+    } else if (error.errMsg) {
+      errorMessage = error.errMsg
+    }
 
-    this.setData({
-      userInfo: normalizedUser,
-      profileStatus: status,
-      needBindPhone: needBind,
-      showAuthButton: !(status.hasNickname && status.hasAvatar),
-      tempNickname: normalizedUser.nickName || ''
+    wx.showModal({
+      title: defaultTitle,
+      content: errorMessage + '\n\n请稍后重试或联系客服',
+      showCancel: false,
+      confirmText: '我知道了'
     })
   },
 
-  consumeEntrySource(options = {}) {
-    if (options && options.source !== undefined && options.source !== null) {
-      return this.normalizeEntrySource(options.source)
+  syncFromAppState(payload = {}) {
+    // 如果有新的用户信息，先更新到 app.globalData
+    if (payload.user) {
+      const status = app.auth?.normalizeProfileStatus?.(payload.profileStatus, payload.user)
+        || payload.profileStatus
+        || DEFAULT_PROFILE_STATUS
+
+      const needBind = app.auth?.normalizeNeedBindFlag?.(
+        payload.needBindPhone ?? app.globalData.needBindPhone,
+        status
+      ) ?? (payload.needBindPhone ?? app.globalData.needBindPhone)
+
+      app.setUserInfo(payload.user, status, needBind)
     }
 
-    const pending = app.globalData.pendingMineEntrySource
-    if (pending !== undefined && pending !== null) {
-      app.globalData.pendingMineEntrySource = null
-      return this.normalizeEntrySource(pending)
-    }
-
-    return null
+    // 统一更新页面状态
+    this.updatePageState()
   },
 
-  normalizeEntrySource(rawSource) {
-    const source = (rawSource || '').toString().toLowerCase()
+  getEntrySource(options = {}) {
+    const source = options?.source ?? app.globalData.pendingMineEntrySource
+    if (!source) return ENTRY_SOURCES.SELF
 
-    if (source === ENTRY_SOURCES.CREATE_GAME || source === 'create_game' || source === 'creategame') {
+    if (app.globalData.pendingMineEntrySource) {
+      app.globalData.pendingMineEntrySource = null
+    }
+
+    const normalized = source.toString().toLowerCase()
+    if (normalized.includes('create') || normalized.includes('game')) {
       return ENTRY_SOURCES.CREATE_GAME
     }
-
-    if (source === ENTRY_SOURCES.SIGN_UP || source === 'sign_up' || source === 'signup' || source === 'join' || source === 'join-game') {
+    if (normalized.includes('sign') || normalized.includes('join')) {
       return ENTRY_SOURCES.SIGN_UP
     }
-
     return ENTRY_SOURCES.SELF
   },
 
@@ -128,21 +140,27 @@ Page({
     return resolved
   },
 
+  updatePageState() {
+    const resolvedUser = this.resolveAvatar(app.globalData.userInfo)
+    const status = app.globalData.profileStatus || DEFAULT_PROFILE_STATUS
+
+    this.setData({
+      userInfo: resolvedUser,
+      profileStatus: status,
+      needBindPhone: app.globalData.needBindPhone,
+      showAuthButton: !(status.hasNickname && status.hasAvatar),
+      tempNickname: resolvedUser.nickName || ''
+    })
+  },
+
   applyUserProfileChange(userInfo, profileStatusUpdate = {}, options = {}) {
     const baseStatus = options.replaceProfileStatus
       ? {}
       : (app.globalData.profileStatus || this.data.profileStatus || DEFAULT_PROFILE_STATUS)
 
-    const mergedStatus = {
-      ...DEFAULT_PROFILE_STATUS,
-      ...baseStatus,
-      ...profileStatusUpdate
-    }
-
+    const mergedStatus = { ...DEFAULT_PROFILE_STATUS, ...baseStatus, ...profileStatusUpdate }
     const needBindFlag = options.needBindPhone !== undefined
-      ? (app.auth && typeof app.auth.normalizeNeedBindFlag === 'function'
-        ? app.auth.normalizeNeedBindFlag(options.needBindPhone, mergedStatus)
-        : options.needBindPhone)
+      ? (app.auth?.normalizeNeedBindFlag?.(options.needBindPhone, mergedStatus) ?? options.needBindPhone)
       : app.globalData.needBindPhone
 
     app.setUserInfo(userInfo, mergedStatus, needBindFlag)
@@ -153,42 +171,17 @@ Page({
       app.storage.clearUserAvatar()
     }
 
-    const latestStatus = app.globalData.profileStatus || mergedStatus
-    const resolvedUser = this.resolveAvatar(app.globalData.userInfo)
+    this.updatePageState()
 
-    this.setData({
-      userInfo: resolvedUser,
-      profileStatus: latestStatus,
-      needBindPhone: app.globalData.needBindPhone,
-      showAuthButton: !(latestStatus.hasNickname && latestStatus.hasAvatar),
-      tempNickname: resolvedUser.nickName || ''
-    })
-
-    const shouldEmit = options.emitLoginSuccess !== false
-    if (shouldEmit) {
+    if (options.emitLoginSuccess !== false) {
       app.emit('loginSuccess', {
         user: app.globalData.userInfo,
-        profileStatus: latestStatus,
+        profileStatus: app.globalData.profileStatus,
         needBindPhone: app.globalData.needBindPhone
       })
     }
   },
 
-  handleLoginSuccess(payload) {
-    this.syncFromAppState(payload)
-  },
-
-  handleNeedBindPhone() {
-    const status = {
-      ...(this.data.profileStatus || DEFAULT_PROFILE_STATUS),
-      hasMobile: false
-    }
-    this.setData({
-      profileStatus: status,
-      needBindPhone: true,
-      showAuthButton: !(status.hasNickname && status.hasAvatar)
-    })
-  },
 
   onChooseAvatar(e) {
     console.log('📸 选择头像:', e.detail)
@@ -272,11 +265,11 @@ Page({
         const baseURL = app?.http?.baseURL || apiConfig?.baseURL || ''
         const normalizedBase = baseURL.replace(/\/index\.php$/, '')
         const finalUrl = normalizedBase ? normalizedBase + fallbackUrl : fallbackUrl
-        this.updateUserAvatar(finalUrl, true)
+        this.applyUserAvatar(finalUrl, true)
       } else if (!avatarUrl) {
         throw new Error('服务器返回的头像地址为空')
       } else {
-        this.updateUserAvatar(avatarUrl, true)
+        this.applyUserAvatar(avatarUrl, true)
       }
 
       wx.showToast({
@@ -285,57 +278,18 @@ Page({
       })
     }).catch(error => {
       console.error('❌ 头像上传失败:', error)
-
-      // 区分不同类型的错误并给出相应提示
-      let errorMessage = '头像上传失败，请重试'
-
-      if (isAuthError(error)) {
-        errorMessage = '登录已过期，请重新登录'
-      } else if (error.message?.includes('网络') || error.errMsg?.includes('network')) {
-        errorMessage = '网络连接失败，请检查网络'
-      } else if (error.message) {
-        errorMessage = error.message
-      } else if (error.errMsg) {
-        errorMessage = error.errMsg
-      }
-
-      wx.showModal({
-        title: '上传失败',
-        content: errorMessage + '\n\n请稍后重试或联系客服',
-        showCancel: false,
-        confirmText: '我知道了'
-      })
+      this.showErrorModal(error, '上传失败')
     })
   },
 
 
-  updateUserAvatar(avatarUrl, isServerUrl = false) {
-    const currentUserInfo = app.globalData.userInfo || {}
-    const updatedUserInfo = {
-      ...currentUserInfo,
-      avatarUrl,
-      avatar: avatarUrl
-    }
-
-    this.applyUserProfileChange(
-      updatedUserInfo,
-      { hasAvatar: true },
-      {
-        avatarIsLocal: !isServerUrl
-      }
-    )
+  applyUserAvatar(avatarUrl, isServerUrl = false) {
+    const updatedUser = { ...app.globalData.userInfo, avatarUrl, avatar: avatarUrl }
+    this.applyUserProfileChange(updatedUser, { hasAvatar: true }, { avatarIsLocal: !isServerUrl })
   },
 
   onNicknameInput(e) {
-    this.setData({
-      tempNickname: e.detail.value
-    })
-  },
-
-  onNicknameChange(e) {
-    this.setData({
-      tempNickname: e.detail.value
-    })
+    this.setData({ tempNickname: e.detail.value })
   },
 
   onNicknameFocus() {
@@ -415,26 +369,7 @@ Page({
       })
     }).catch(error => {
       console.error('❌ 昵称更新失败:', error)
-
-      // 区分不同类型的错误并给出相应提示
-      let errorMessage = '保存失败，请重试'
-
-      if (isAuthError(error)) {
-        errorMessage = '登录已过期，请重新登录'
-      } else if (error.message?.includes('网络') || error.errMsg?.includes('network')) {
-        errorMessage = '网络连接失败，请检查网络'
-      } else if (error.message) {
-        errorMessage = error.message
-      } else if (error.errMsg) {
-        errorMessage = error.errMsg
-      }
-
-      wx.showModal({
-        title: '保存失败',
-        content: errorMessage + '\n\n请稍后重试或联系客服',
-        showCancel: false,
-        confirmText: '我知道了'
-      })
+      this.showErrorModal(error, '保存失败')
     })
   },
 
@@ -462,32 +397,20 @@ Page({
           iv: e.detail.iv,
           code: res.code
         }).then(response => {
-          const normalizedStatus = app.auth && typeof app.auth.normalizeProfileStatus === 'function'
-            ? app.auth.normalizeProfileStatus(response.profile_status, response.user)
-            : (response.profile_status || DEFAULT_PROFILE_STATUS)
-          const needBind = app.auth && typeof app.auth.normalizeNeedBindFlag === 'function'
-            ? app.auth.normalizeNeedBindFlag(response.need_bind_phone, normalizedStatus)
-            : (response.need_bind_phone !== undefined ? response.need_bind_phone : false)
+          const normalizedStatus = app.auth?.normalizeProfileStatus?.(response.profile_status, response.user)
+            || response.profile_status
+            || DEFAULT_PROFILE_STATUS
+          const needBind = app.auth?.normalizeNeedBindFlag?.(response.need_bind_phone, normalizedStatus) ?? false
 
-          this.applyUserProfileChange(
-            response.user,
-            normalizedStatus,
-            {
-              replaceProfileStatus: true,
-              needBindPhone: needBind
-            }
-          )
-
-          wx.showToast({
-            title: '手机号绑定成功',
-            icon: 'success'
+          this.applyUserProfileChange(response.user, normalizedStatus, {
+            replaceProfileStatus: true,
+            needBindPhone: needBind
           })
+
+          wx.showToast({ title: '手机号绑定成功', icon: 'success' })
         }).catch(err => {
           console.error('绑定手机号失败:', err)
-          wx.showToast({
-            title: '绑定失败, 请重试',
-            icon: 'none'
-          })
+          wx.showToast({ title: '绑定失败, 请重试', icon: 'none' })
         })
       }
     })
