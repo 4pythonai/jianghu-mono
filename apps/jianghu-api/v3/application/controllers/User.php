@@ -49,11 +49,11 @@ class User extends MY_Controller {
         try {
             // Token已经在MY_Controller中验证过了，直接获取用户ID
             $user_id = $this->getUser();
-            
+
             if (!$user_id) {
                 throw new \RuntimeException('用户未登录');
             }
-            
+
             logtext("  用户ID: " . $user_id);
 
             // 检查是否有文件上传
@@ -110,7 +110,7 @@ class User extends MY_Controller {
                     'size' => $file['size'],
                     'type' => $file['type'],
                     'avatar_path' => $relativePath,
-                    'avatar_url' => $publicUrl
+                    'avatar' => $publicUrl
                 ]
             ]);
         } catch (\Exception $e) {

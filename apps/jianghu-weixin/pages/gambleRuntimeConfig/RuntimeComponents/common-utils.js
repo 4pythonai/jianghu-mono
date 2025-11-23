@@ -39,7 +39,7 @@ const RuntimeComponentsUtils = {
 
             return players.map(player => ({
                 ...player,
-                avatarUrl: this.getPlayerAvatarUrl(player)
+                avatar: this.getPlayerAvatarUrl(player)
             }));
         }
     },

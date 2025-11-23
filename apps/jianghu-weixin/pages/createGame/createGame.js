@@ -19,7 +19,7 @@ Page({
         // 初始化动画状态，确保图片可见
         this.initAnimationState();
 
-        this.ensureProfileCompleted({
+        this.checkProfileAndUpdateUI({
             onSuccess: () => {
                 if (!this.data.isMenuOpen) {
                     this.toggleMenu()
@@ -30,13 +30,13 @@ Page({
 
     onShow() {
         this.redirectingToProfile = false
-        this.ensureProfileCompleted()
+        this.checkProfileAndUpdateUI()
     },
 
     // 处理菜单项点击
     handleMenuClick(e) {
         if (!this.data.canCreate) {
-            this.ensureProfileCompleted()
+            this.checkProfileAndUpdateUI()
             return
         }
 
@@ -80,7 +80,7 @@ Page({
     // 切换菜单显示状态
     toggleMenu() {
         if (!this.data.canCreate && !this.data.isMenuOpen) {
-            this.ensureProfileCompleted()
+            this.checkProfileAndUpdateUI()
             return
         }
 
@@ -127,32 +127,52 @@ Page({
         });
     },
 
-    ensureProfileCompleted({ onSuccess } = {}) {
-        const { profileStatus, userInfo } = this.getProfileSnapshot()
-        const hasNickname = this.resolveHasNickname(profileStatus, userInfo)
-        const hasAvatar = this.resolveHasAvatar(profileStatus, userInfo)
-        const canCreate = hasNickname && hasAvatar
-
-        if (canCreate) {
-            if (!this.data.canCreate) {
-                this.setData({ canCreate: true })
-            }
-            if (typeof onSuccess === 'function') {
-                onSuccess()
-            }
-            return true
-        }
-
-        if (this.data.canCreate) {
-            this.setData({ canCreate: false })
-        }
-
-        if (this.redirectingToProfile) {
+    /**
+     * 检查用户资料完整性并更新UI状态
+     * 使用统一的 profile-checker 工具
+     */
+    checkProfileAndUpdateUI({ onSuccess } = {}) {
+        if (this.redirectingToProfile || this.profilePrompting) {
             return false
         }
 
+        // 使用统一的 profile-checker 进行检查
+        const isComplete = app.profileChecker.ensureProfileCompleted({
+            source: 'create-game',
+            modalTitle: '完善资料',
+            modalContent: '创建比赛前请先设置昵称和头像，方便队友识别你。',
+            showModal: false, // 先不显示弹窗，由本页面控制
+            onSuccess: () => {
+                // 资料完整
+                if (!this.data.canCreate) {
+                    this.setData({ canCreate: true })
+                }
+                if (typeof onSuccess === 'function') {
+                    onSuccess()
+                }
+            },
+            onIncomplete: ({ hasNickname, hasAvatar }) => {
+                // 资料不完整
+                if (this.data.canCreate) {
+                    this.setData({ canCreate: false })
+                }
+            }
+        })
+
+        // 如果资料不完整且需要显示提示
+        if (!isComplete && !this.data.canCreate) {
+            this.showProfileIncompleteModal()
+        }
+
+        return isComplete
+    },
+
+    /**
+     * 显示资料不完整的提示弹窗
+     */
+    showProfileIncompleteModal() {
         if (this.profilePrompting) {
-            return false
+            return
         }
 
         this.profilePrompting = true
@@ -188,46 +208,6 @@ Page({
                 this.profilePrompting = false
             }
         })
-
-        return false
-    },
-
-    getProfileSnapshot() {
-        const state = typeof app.getUserState === 'function' ? app.getUserState() : {}
-        const profileStatus = state.profileStatus
-            || (app.storage && typeof app.storage.getProfileStatus === 'function' ? app.storage.getProfileStatus() : null)
-            || {}
-        const userInfo = state.userInfo
-            || (app.storage && typeof app.storage.getUserInfo === 'function' ? app.storage.getUserInfo() : null)
-            || {}
-
-        return { profileStatus, userInfo }
-    },
-
-    resolveHasNickname(profileStatus, userInfo) {
-        if (profileStatus && typeof profileStatus.hasNickname === 'boolean') {
-            return profileStatus.hasNickname
-        }
-
-        return !!(userInfo
-            && (userInfo.nickName || userInfo.nickname || userInfo.wx_nickname))
-    },
-
-    resolveHasAvatar(profileStatus, userInfo) {
-        if (profileStatus && typeof profileStatus.hasAvatar === 'boolean') {
-            return profileStatus.hasAvatar
-        }
-
-        const avatarUrl = userInfo && (userInfo.avatarUrl || userInfo.avatar || '')
-        return !!(avatarUrl && !this.isDefaultAvatar(avatarUrl))
-    },
-
-    isDefaultAvatar(avatarUrl) {
-        if (!avatarUrl) {
-            return true
-        }
-
-        return avatarUrl.endsWith('/images/default-avatar.png') || avatarUrl === '/images/default-avatar.png'
     },
 
     handleBack() {

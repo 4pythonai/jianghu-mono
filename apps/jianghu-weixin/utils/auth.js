@@ -1,5 +1,6 @@
 import api from '../api/index'
 import storage from './storage'
+import { getProfileChecker } from './profile-checker'
 
 /**
  * 判断是否是认证错误
@@ -143,9 +144,18 @@ class AuthManager {
             user = storage.getUserInfo()
         }
 
+        // 使用 ProfileChecker 的 isDefaultAvatar 方法
+        const profileChecker = getProfileChecker() || this.app.profileChecker
+        const isDefaultAvatar = profileChecker?.isDefaultAvatar?.bind(profileChecker)
+
+        // 如果 profileChecker 未初始化，保守处理：认为默认头像就是没有头像
+        const hasAvatar = isDefaultAvatar
+            ? !!(user?.avatar && !isDefaultAvatar(user?.avatar))
+            : false
+
         const status = {
             hasNickname: !!(user?.nickName || user?.nickname),
-            hasAvatar: !!(user?.avatarUrl || user?.avatar),
+            hasAvatar: hasAvatar,
             hasMobile: !!(user?.mobile)
         }
 

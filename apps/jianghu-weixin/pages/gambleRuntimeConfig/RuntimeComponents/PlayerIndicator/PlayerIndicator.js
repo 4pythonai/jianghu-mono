@@ -70,7 +70,7 @@ Component({
                     ...player,
                     userid: userid,
                     configString: configString,
-                    avatarUrl: RuntimeComponentsUtils.avatar.getPlayerAvatarUrl(player)
+                    avatar: RuntimeComponentsUtils.avatar.getPlayerAvatarUrl(player)
                 };
             });
 
@@ -196,7 +196,7 @@ Component({
 
             // 更新失败的头像为默认头像
             this.setData({
-                [`playersWithConfig[${index}].avatarUrl`]: RuntimeComponentsUtils.CONSTANTS.DEFAULT_AVATAR
+                [`playersWithConfig[${index}].avatar`]: RuntimeComponentsUtils.CONSTANTS.DEFAULT_AVATAR
             });
         }
     }

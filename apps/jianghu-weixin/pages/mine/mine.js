@@ -53,9 +53,9 @@ Page({
       name: 'avatar',
       loadingTitle: '上传头像中...'
     }).then(response => {
-      const avatarUrl = response.data?.avatar_url || response.data?.avatarUrl || response.avatarUrl
+      const avatarUrl = response.data?.avatar || response.data?.avatar_url || ''
 
-      const updatedUser = { ...app.globalData.userInfo, avatarUrl, avatar: avatarUrl }
+      const updatedUser = { ...app.globalData.userInfo, avatar: avatarUrl }
       const updatedStatus = { ...app.globalData.profileStatus, hasAvatar: true }
 
       app.setUserInfo(updatedUser, updatedStatus, app.globalData.needBindPhone)
@@ -141,7 +141,7 @@ Page({
         }).then(response => {
           const updatedStatus = {
             hasNickname: !!(response.user?.nickName || response.user?.nickname),
-            hasAvatar: !!(response.user?.avatarUrl || response.user?.avatar),
+            hasAvatar: !!(response.user?.avatar),
             hasMobile: true
           }
 

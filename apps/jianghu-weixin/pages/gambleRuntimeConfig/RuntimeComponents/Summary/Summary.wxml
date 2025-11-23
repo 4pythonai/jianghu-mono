@@ -12,15 +12,15 @@
       <text class="reselect-btn" bindtap="onReSelectRule">重新选择</text>
     </view>
   </view>
-  
+
   <!-- 参与人员列表 -->
   <view class="players-section">
     <view class="players-title">参与人员</view>
     <view class="players-list">
       <view class="player-item" wx:for="{{playersWithAvatar}}" wx:key="index">
-        <image 
-          class="player-avatar" 
-          src="{{item.avatarUrl}}"
+        <image
+          class="player-avatar"
+          src="{{item.avatar}}"
           lazy-load="true"
           mode="aspectFill"
           binderror="onAvatarError"
@@ -30,4 +30,4 @@
       </view>
     </view>
   </view>
-</view> 
+</view>

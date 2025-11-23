@@ -15,7 +15,7 @@
       <!-- 球员头像 -->
       <image
         class="player-avatar"
-        src="{{player.avatarUrl}}"
+        src="{{player.avatar}}"
         mode="aspectFill"
         lazy-load="true"
         binderror="onAvatarError"

@@ -133,7 +133,6 @@ class ProfileChecker {
         }
 
         const avatarUrl = userInfo && (
-            userInfo.avatarUrl ||
             userInfo.avatar ||
             ''
         )

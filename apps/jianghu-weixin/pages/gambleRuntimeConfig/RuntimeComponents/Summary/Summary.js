@@ -99,7 +99,7 @@ Component({
                 玩家头像信息: playersWithAvatar.map(p => ({
                     name: p.nickname || p.wx_nickname,
                     原始头像: p.avatar,
-                    处理后头像: p.avatarUrl
+                    处理后头像: p.avatar
                 }))
             });
 
@@ -121,7 +121,7 @@ Component({
 
             // 更新失败的头像为默认头像
             this.setData({
-                [`playersWithAvatar[${index}].avatarUrl`]: RuntimeComponentsUtils.CONSTANTS.DEFAULT_AVATAR
+                [`playersWithAvatar[${index}].avatar`]: RuntimeComponentsUtils.CONSTANTS.DEFAULT_AVATAR
             });
         }
     }

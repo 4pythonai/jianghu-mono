@@ -352,12 +352,7 @@ App({
             user.wx_nickname = displayName
         }
 
-        const avatarUrl = user.avatarUrl || user.avatar || ''
-        user.avatarUrl = avatarUrl || '/images/default-avatar.png'
 
-        if (!user.avatar && avatarUrl) {
-            user.avatar = avatarUrl
-        }
 
         return user
     },

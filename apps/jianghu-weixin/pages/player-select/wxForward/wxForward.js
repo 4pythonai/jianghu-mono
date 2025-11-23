@@ -252,7 +252,7 @@ Page({
                 : userInfo;
 
             this.setData({
-                userAvatar: normalizedUser.avatarUrl || normalizedUser.avatar || '/images/default-avatar.png',
+                userAvatar: normalizedUser.avatar || '/images/default-avatar.png',
                 userName: normalizedUser.nickName || normalizedUser.nickname || normalizedUser.wx_nickname || '我'
             });
         } else {
