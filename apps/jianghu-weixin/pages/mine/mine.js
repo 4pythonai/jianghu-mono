@@ -68,9 +68,9 @@ Page({
       : (payload.profileStatus || DEFAULT_PROFILE_STATUS)
     const needBind = app.auth && typeof app.auth.normalizeNeedBindFlag === 'function'
       ? app.auth.normalizeNeedBindFlag(
-          payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone,
-          status
-        )
+        payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone,
+        status
+      )
       : (payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone)
 
     this.setData({
@@ -141,8 +141,8 @@ Page({
 
     const needBindFlag = options.needBindPhone !== undefined
       ? (app.auth && typeof app.auth.normalizeNeedBindFlag === 'function'
-          ? app.auth.normalizeNeedBindFlag(options.needBindPhone, mergedStatus)
-          : options.needBindPhone)
+        ? app.auth.normalizeNeedBindFlag(options.needBindPhone, mergedStatus)
+        : options.needBindPhone)
       : app.globalData.needBindPhone
 
     app.setUserInfo(userInfo, mergedStatus, needBindFlag)
