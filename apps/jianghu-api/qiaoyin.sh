@@ -32,7 +32,7 @@ cp $api_path/v3/application/config/config-server.php $api_path/v3/application/co
 server_address="39.105.159.105"
 server_port="22"
 server_username="root"
-pem="/Users/alex/.ssh/qiaoyin.pub"
+pem="/Users/alex/.ssh/qiaoyin"
 
 # 检查 SSH 密钥文件是否存在
 if [ ! -f "$pem" ]; then

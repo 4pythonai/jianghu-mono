@@ -273,6 +273,16 @@ Page({
   uploadAvatarToServer(tempFilePath) {
     console.log('🚀 开始上传头像到服务器:', tempFilePath)
 
+    // 添加调试日志
+    const token = app.storage.getToken()
+    console.log('📤 准备上传头像:', {
+      hasToken: !!token,
+      tokenLength: token?.length,
+      tokenPreview: token ? token.substring(0, 20) + '...' : 'NO TOKEN',
+      userId: app.globalData.userInfo?.id,
+      userInfo: app.globalData.userInfo
+    })
+
     app.http.uploadFile('/User/uploadAvatar', tempFilePath, {
       name: 'avatar',
       formData: {
@@ -302,8 +312,24 @@ Page({
       })
     }).catch(error => {
       console.error('❌ 头像上传失败:', error)
-      console.log('🔄 上传失败, 降级到本地保存')
-      this.saveAvatarLocally(tempFilePath)
+
+      // 不再降级保存,直接提示用户
+      let errorMessage = '头像上传失败'
+
+      if (error.message?.includes('token') || error.message?.includes('认证')) {
+        errorMessage = '登录已过期,请重新登录'
+      } else if (error.message?.includes('网络')) {
+        errorMessage = '网络连接失败,请检查网络'
+      } else if (error.errMsg) {
+        errorMessage = error.errMsg
+      }
+
+      wx.showModal({
+        title: '上传失败',
+        content: errorMessage + '\n\n请稍后重试或联系客服',
+        showCancel: false,
+        confirmText: '我知道了'
+      })
     })
   },
 

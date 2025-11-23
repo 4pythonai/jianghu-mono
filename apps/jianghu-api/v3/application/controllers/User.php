@@ -49,7 +49,23 @@ class User extends MY_Controller {
         try {
             // 验证token
             $headers = getallheaders();
-            $token = str_replace('Bearer ', '', $headers['Authorization'] ?? '');
+            logtext("  所有Headers: " . json_encode($headers, JSON_UNESCAPED_UNICODE));
+            
+            $authHeader = $headers['Authorization'] ?? '';
+            logtext("  Authorization header: " . ($authHeader ?: 'NOT SET'));
+            
+            if (empty($authHeader)) {
+                throw new \RuntimeException('缺少Authorization header');
+            }
+            
+            $token = str_replace('Bearer ', '', $authHeader);
+            logtext("  提取后的token长度: " . strlen($token));
+            logtext("  Token前20字符: " . substr($token, 0, 20) . "...");
+            
+            if(strlen($token) < 10){
+                throw new \RuntimeException('token长度非法 (长度: ' . strlen($token) . ')');
+            }
+
             $payload = $this->MJwtUtil->verifyToken($token);
 
             if (!$payload) {

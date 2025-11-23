@@ -326,6 +326,9 @@ function postJson($url, $data) {
 
 
 function response500($msg) {
+  // 添加时间戳
+  $timestamp = date('Y-m-d H:i:s');
+  
   // 如果是数组或对象，格式化错误信息
   if (is_array($msg) || is_object($msg)) {
     $formattedMsg = [];
@@ -386,13 +389,15 @@ function response500($msg) {
     $ret = [
       'code' => 500,
       'message' => '服务器内部错误',
+      'timestamp' => $timestamp,
       'details' => $formattedMsg
     ];
   } else {
     // 如果是字符串，直接使用
     $ret = [
       'code' => 500,
-      'message' => $msg
+      'message' => $msg,
+      'timestamp' => $timestamp
     ];
   }
 
@@ -401,6 +406,7 @@ function response500($msg) {
     // 浏览器环境，使用HTML格式
     echo '<pre style="background:#f5f5f5; padding:10px; border:1px solid #ccc; font-family:monospace; white-space:pre-wrap;">';
     echo '<strong>错误信息：</strong><br>';
+    echo '<strong>时间戳：</strong>' . $ret['timestamp'] . '<br>';
     echo '<strong>错误代码：</strong>' . $ret['code'] . '<br>';
     echo '<strong>错误消息：</strong>' . $ret['message'] . '<br>';
 

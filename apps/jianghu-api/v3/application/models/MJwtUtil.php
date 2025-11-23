@@ -46,6 +46,9 @@ class MJwtUtil extends CI_Model {
     public static function verifyToken(string $token) {
         $tokens = explode('.', $token);
         if (count($tokens) != 3) {
+            logtext('❌ MJwtUtil Token格式错误: 不是3段式结构');
+            logtext('   Token段数: ' . count($tokens));
+            logtext('   Token内容: ' . substr($token, 0, 50) . '...');
             return false;
         }
 
@@ -56,7 +59,8 @@ class MJwtUtil extends CI_Model {
         $expectedSignature = hash_hmac('sha256', $base64Header . '.' . $base64Payload, self::$secretKey, true);
 
         if (!hash_equals($signature, $expectedSignature)) {
-            logtext('MJwtUtil  验证签名 verify failed');
+            logtext('❌ MJwtUtil 签名验证失败');
+            logtext('   可能原因: Token被篡改 或 密钥不匹配');
             return false;
         }
 
@@ -64,17 +68,20 @@ class MJwtUtil extends CI_Model {
 
         // 验证过期时间
         if (isset($payload['exp']) && $payload['exp'] < time()) {
-            logtext('MJwtUtil  验证过期时间 verify failed');
-            logtext('过期时间:' .  $payload['exp'] . ' <当前时间:' . time());
+            logtext('❌ MJwtUtil Token已过期');
+            logtext('   过期时间: ' . date('Y-m-d H:i:s', $payload['exp']));
+            logtext('   当前时间: ' . date('Y-m-d H:i:s', time()));
+            logtext('   已过期: ' . (time() - $payload['exp']) . '秒');
             return false;
         } else {
-            logtext('MJwtUtil  验证过期时间 verify success');
+            logtext('✅ MJwtUtil Token验证成功');
             $remainingSeconds = $payload['exp'] - time();
             $days = floor($remainingSeconds / 86400);
             $hours = floor(($remainingSeconds % 86400) / 3600);
             $minutes = floor(($remainingSeconds % 3600) / 60);
             $seconds = $remainingSeconds % 60;
-            logtext('Token还有' . $days . '天' . $hours . '小时' . $minutes . '分钟' . $seconds . '秒过期');
+            logtext('   Token还有 ' . $days . '天' . $hours . '小时' . $minutes . '分钟' . $seconds . '秒 过期');
+            logtext('   用户ID: ' . ($payload['uid'] ?? 'N/A'));
         }
 
         return $payload;
