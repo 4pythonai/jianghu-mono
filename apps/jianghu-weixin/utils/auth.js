@@ -2,15 +2,21 @@ import api from '../api/index'
 import storage from './storage'
 
 /**
+ * 判断是否是认证错误
+ */
+export function isAuthError(error) {
+    return error.statusCode === 401 ||
+        error.message?.includes('token') ||
+        error.message?.includes('登录')
+}
+
+/**
  * 认证管理器
- * 职责:微信登录、token验证、静默重登、状态同步
  */
 class AuthManager {
     constructor() {
         this.app = null
         this.isRefreshing = false
-        this.retryCount = 0
-        this.maxRetries = 3
         this.silentLoginPromise = null
     }
 
@@ -22,34 +28,23 @@ class AuthManager {
     }
 
     setupEventListeners() {
-        this.app.on('authCheck', () => {
-            this.checkAuthState()
-        })
-
-        this.app.on('tokenExpired', () => {
-            this.handleTokenExpired()
-        })
+        this.app.on('authCheck', () => this.checkAuthState())
+        this.app.on('tokenExpired', () => this.handleTokenExpired())
     }
 
     async checkAuthState() {
         if (!storage.hasToken()) {
-            return await this.startWxLogin()
+            return await this.login()
         }
         try {
             return await this.verifyToken()
         } catch (error) {
-            return await this.startWxLogin()
+            return await this.login()
         }
     }
 
     async verifyToken() {
-        const response = await api.user.getUserInfo({}, {
-            showLoading: false
-        })
-
-        if (!response || !response.user) {
-            throw new Error('获取用户信息失败')
-        }
+        const response = await api.user.getUserInfo({}, { showLoading: false })
 
         const stored = this.storeAuthData({
             user: response.user,
@@ -61,63 +56,9 @@ class AuthManager {
         return { success: true, ...stored }
     }
 
-    async startWxLogin() {
-        this.retryCount = 0
-
-        while (this.retryCount < this.maxRetries) {
-            try {
-                return await this.loginOnce({
-                    notifyApp: true,
-                    showLoading: true,
-                    loadingTitle: '登录中...'
-                })
-            } catch (error) {
-                this.retryCount++
-
-                if (this.retryCount >= this.maxRetries) {
-                    this.app.handleLoginFailure(error)
-                    throw error
-                }
-
-                await this.delay(2000 * this.retryCount)
-            }
-        }
-    }
-
-    async silentLogin() {
-        if (this.silentLoginPromise) {
-            return await this.silentLoginPromise
-        }
-
-        this.silentLoginPromise = this.loginOnce({
-            notifyApp: false,
-            showLoading: false,
-            clearTokens: true
-        })
-
-        try {
-            return await this.silentLoginPromise
-        } finally {
-            this.silentLoginPromise = null
-        }
-    }
-
-    async loginOnce({ notifyApp, showLoading, loadingTitle, clearTokens }) {
-        if (clearTokens) {
-            storage.clearTokens()
-        }
-
+    async login() {
         const code = await this.getWxLoginCode()
-        const requestOptions = showLoading === false ? { showLoading: false } : { loadingTitle: loadingTitle || '登录中...' }
-        const response = await api.user.wxLogin({ code }, requestOptions)
-
-        return this.applyLoginResult(response, notifyApp)
-    }
-
-    applyLoginResult(response, notifyApp) {
-        if (!response || !response.token || !response.user) {
-            throw new Error('登录响应无效')
-        }
+        const response = await api.user.wxLogin({ code }, { loadingTitle: '登录中...' })
 
         const stored = this.storeAuthData({
             token: response.token,
@@ -131,45 +72,51 @@ class AuthManager {
             }
         })
 
-        if (notifyApp) {
-            this.app.handleLoginSuccess(stored)
+        this.app.handleLoginSuccess(stored)
+        return { success: true, token: response.token, ...stored }
+    }
+
+    async silentLogin() {
+        if (this.silentLoginPromise) {
+            return await this.silentLoginPromise
         }
 
-        return {
-            success: true,
-            token: response.token,
-            refreshToken: response.refreshToken,
-            ...stored
+        this.silentLoginPromise = (async () => {
+            storage.clearTokens()
+            const code = await this.getWxLoginCode()
+            const response = await api.user.wxLogin({ code }, { showLoading: false })
+            return this.storeAuthData({
+                token: response.token,
+                refreshToken: response.refreshToken,
+                user: response.user,
+                profileStatus: response.profile_status,
+                needBindPhone: response.need_bind_phone
+            })
+        })()
+
+        try {
+            return await this.silentLoginPromise
+        } finally {
+            this.silentLoginPromise = null
         }
     }
 
     async getWxLoginCode() {
         return new Promise((resolve, reject) => {
             wx.login({
-                success: (res) => {
-                    if (res.code) {
-                        resolve(res.code)
-                    } else {
-                        reject(new Error(res.errMsg || '获取code失败'))
-                    }
-                },
-                fail: (err) => {
-                    reject(new Error(err.errMsg || 'wx.login失败'))
-                }
+                success: (res) => res.code ? resolve(res.code) : reject(new Error('获取code失败')),
+                fail: (err) => reject(new Error(err.errMsg || 'wx.login失败'))
             })
         })
     }
 
     async handleTokenExpired() {
-        if (this.isRefreshing) {
-            return
-        }
+        if (this.isRefreshing) return
 
         this.isRefreshing = true
-
         try {
-            this.clearAuthData()
-            await this.startWxLogin()
+            storage.clearUserData()
+            await this.login()
         } catch (error) {
             this.app.handleLoginFailure(error)
         } finally {
@@ -178,7 +125,7 @@ class AuthManager {
     }
 
     async logout() {
-        this.clearAuthData()
+        storage.clearUserData()
         this.silentLoginPromise = null
         this.app.handleLogout()
     }
@@ -188,73 +135,35 @@ class AuthManager {
             storage.setTokens({ token, refreshToken })
         }
 
-        const normalizedUser = user ? this.persistUser(user) : storage.getUserInfo()
-        const normalizedProfileStatus = this.normalizeProfileStatus(profileStatus, normalizedUser)
-        const bindPhoneFlag = this.normalizeNeedBindFlag(needBindPhone, normalizedProfileStatus)
+        if (user) {
+            const normalized = this.app.normalizeUserInfo?.(user) || user
+            storage.setUserInfo(normalized)
+            user = normalized
+        } else {
+            user = storage.getUserInfo()
+        }
 
-        storage.setProfileStatus(normalizedProfileStatus)
-        storage.setNeedBindPhone(bindPhoneFlag)
+        const status = {
+            hasNickname: !!(user?.nickName || user?.nickname),
+            hasAvatar: !!(user?.avatarUrl || user?.avatar),
+            hasMobile: !!(user?.mobile)
+        }
 
-        if (session && (session.openid || session.sessionKey)) {
+        const needBind = typeof needBindPhone === 'boolean' ? needBindPhone : !status.hasMobile
+
+        storage.setProfileStatus(status)
+        storage.setNeedBindPhone(needBind)
+
+        if (session?.openid || session?.sessionKey) {
             storage.setWeixinSession(session)
         }
 
         return {
-            user: normalizedUser,
-            profileStatus: normalizedProfileStatus,
-            needBindPhone: bindPhoneFlag,
+            user,
+            profileStatus: status,
+            needBindPhone: needBind,
             session: session || storage.getWeixinSession()
         }
-    }
-
-    persistUser(user) {
-        const normalizedUser = this.app.normalizeUserInfo ? this.app.normalizeUserInfo(user) : user
-        storage.setUserInfo(normalizedUser)
-
-        if (normalizedUser.avatarUrl) {
-            storage.setUserAvatar(normalizedUser.avatarUrl)
-        } else if (normalizedUser.avatar) {
-            storage.setUserAvatar(normalizedUser.avatar)
-        }
-
-        return normalizedUser
-    }
-
-    clearAuthData() {
-        storage.clearUserData()
-    }
-
-    normalizeProfileStatus(profileStatus, user) {
-        const status = profileStatus || {}
-        const hasNickname = status.hasNickname ?? status.has_nickname ?? !!(user && (user.nickName || user.nickname || user.wx_nickname))
-        const hasAvatar = status.hasAvatar ?? status.has_avatar ?? !!(user && (user.avatarUrl || user.avatar))
-        const hasMobile = status.hasMobile ?? status.has_mobile ?? !!(user && user.mobile)
-
-        return {
-            hasNickname: !!hasNickname,
-            hasAvatar: !!hasAvatar,
-            hasMobile: !!hasMobile
-        }
-    }
-
-    normalizeNeedBindFlag(rawFlag, profileStatus) {
-        if (typeof rawFlag === 'boolean') {
-            return rawFlag
-        }
-
-        if (rawFlag === 1 || rawFlag === '1') {
-            return true
-        }
-
-        if (rawFlag === 0 || rawFlag === '0') {
-            return false
-        }
-
-        return profileStatus ? !profileStatus.hasMobile : false
-    }
-
-    delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms))
     }
 }
 
