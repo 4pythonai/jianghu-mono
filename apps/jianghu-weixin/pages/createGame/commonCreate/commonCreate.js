@@ -1,5 +1,6 @@
 import { findUserInGroups, handleAppendPlayersToGroup } from '@/utils/gameGroupUtils'
 import { uuid } from '@/utils/tool'
+import { validateForm } from '@/utils/gameValidate'
 
 const app = getApp()
 
@@ -26,8 +27,8 @@ Page({
         }
 
         // 显示 Toast
-        if (result.uiActions?.showToast && wx.showToast) {
-            wx.showToast(result.uiActions.showToast);
+        if (result.uiActions?.showToast && wx.showModal) {
+            wx.showModal(result.uiActions.showToast);
         }
 
         return result;
@@ -177,7 +178,7 @@ Page({
      */
     onCombinationSelected(combination, groupIndex, slotIndex) {
         if (!combination || !Array.isArray(combination) || combination.length === 0) {
-            wx.showToast({
+            wx.showModal({
                 title: '组合数据无效',
                 icon: 'error'
             });
@@ -205,7 +206,7 @@ Page({
      */
     onFriendsSelected(selectedFriends, groupIndex, slotIndex) {
         if (!selectedFriends || !Array.isArray(selectedFriends) || selectedFriends.length === 0) {
-            wx.showToast({
+            wx.showModal({
                 title: '好友数据无效',
                 icon: 'error'
             });
@@ -235,7 +236,7 @@ Page({
 
     onUserCreated(createdUser, groupIndex, slotIndex) {
         if (!createdUser) {
-            wx.showToast({
+            wx.showModal({
                 title: '用户数据无效',
                 icon: 'error'
             });
@@ -267,7 +268,7 @@ Page({
         // 使用统一的更新方法
         this.updateGameGroups(gameGroups, '添加新组');
 
-        wx.showToast({
+        wx.showModal({
             title: `已添加第${gameGroups.length}组`,
             icon: 'success'
         });
@@ -278,7 +279,7 @@ Page({
         const gameGroups = [...this.data.formData.gameGroups];
 
         if (gameGroups.length <= 1) {
-            wx.showToast({
+            wx.showModal({
                 title: '至少需要保留一组',
                 icon: 'error'
             });
@@ -290,7 +291,7 @@ Page({
         // 使用统一的更新方法
         this.updateGameGroups(gameGroups, `删除第${index + 1}组`);
 
-        wx.showToast({
+        wx.showModal({
             title: '已删除该组',
             icon: 'success'
         });
@@ -352,7 +353,7 @@ Page({
         });
         this.updateShareState();
 
-        wx.showToast({
+        wx.showModal({
             title: `已选择 ${course.name}`,
             icon: 'success'
         });
@@ -396,7 +397,7 @@ Page({
             toastTitle = `已选择 ${selectionData.course?.name || '球场'}`
         }
 
-        wx.showToast({
+        wx.showModal({
             title: toastTitle,
             icon: 'success',
             duration: 2000
@@ -469,7 +470,7 @@ Page({
         });
 
         if (allPlayers.length === 0) {
-            wx.showToast({
+            wx.showModal({
                 title: '请先添加球员',
                 icon: 'error'
             });
@@ -510,7 +511,7 @@ Page({
             `${this.getTeeDisplayName(tee)}: ${count}人`
         ).join(', ');
 
-        wx.showToast({
+        wx.showModal({
             title: `T台分配完成 - ${statsText}`,
             icon: 'success',
             duration: 3000
@@ -647,14 +648,33 @@ Page({
         });
     },
 
+
     /**
-     * 点击“开始计分”按钮, 跳转到 gameDetail 记分界面
+     * 点击"开始记分"按钮, 跳转到 gameDetail 记分界面
      */
     onStartScoring() {
-        if (!this.data.gameid) {
-            wx.showToast({ title: '请先创建比赛', icon: 'error' });
+        // 验证表单完整性（球场、开球时间、参赛玩家等）
+        const validationData = {
+            formData: this.data.formData,
+            selectedCourse: this.data.selectedCourse,
+            selectedCourt: this.data.selectedCourt
+        };
+
+        if (!validateForm(validationData)) {
+            // 验证失败，validateForm 内部已显示具体的错误提示
             return;
         }
+
+        // 确保后端游戏已创建完成
+        if (!this.data.gameid) {
+            wx.showModal({
+                title: '比赛数据同步中，请稍后重试',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 所有验证通过，进入记分页面
         wx.navigateTo({
             url: `/pages/gameDetail/score/score?gameid=${this.data.gameid}`
         });

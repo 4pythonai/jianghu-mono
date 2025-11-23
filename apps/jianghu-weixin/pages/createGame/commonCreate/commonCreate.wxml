@@ -40,26 +40,14 @@
         <view class="form-item">
           <view class="form-label">比赛名称</view>
           <view class="form-input-wrapper">
-            <input
-              class="form-input"
-              type="text"
-              placeholder="请输入比赛名称"
-              placeholder-class="input-placeholder"
-              value="{{ formData.gameName }}"
-              bindinput="onGameNameInput"
-              maxlength="50"
-            />
+            <input class="form-input" type="text" placeholder="请输入比赛名称" placeholder-class="input-placeholder" value="{{ formData.gameName }}" bindinput="onGameNameInput" maxlength="50" />
           </view>
         </view>
         <!-- 开球时间 -->
         <view class="form-item">
           <view class="form-label">开球时间</view>
           <view class="form-input-wrapper">
-            <TimePicker
-              value="{{ formData.openTime }}"
-              placeholder="请选择开球时间"
-              bind:change="onOpenTimeChange"
-            />
+            <TimePicker value="{{ formData.openTime }}" placeholder="请选择开球时间" bind:change="onOpenTimeChange" />
           </view>
         </view>
         <!-- 参赛组别 -->
@@ -70,22 +58,9 @@
           </view>
           <view class="groups-container">
             <view wx:for="{{ formData.gameGroups }}" wx:key="index" class="group-item">
-              <PlayerSelector
-                groupIndex="{{ index }}"
-                players="{{ item.players }}"
-                maxPlayers="4"
-                selectedCourse="{{ selectedCourse }}"
-                openTime="{{ formData.openTime }}"
-                requirePrerequisites="{{true}}"
-                bind:playersChange="onPlayersChange"
-              />
+              <PlayerSelector groupIndex="{{ index }}" players="{{ item.players }}" maxPlayers="4" selectedCourse="{{ selectedCourse }}" openTime="{{ formData.openTime }}" requirePrerequisites="{{true}}" bind:playersChange="onPlayersChange" />
               <!-- 删除组按钮(当组数大于1时显示) -->
-              <view
-                wx:if="{{ formData.gameGroups.length > 1 }}"
-                class="delete-group-btn"
-                bindtap="deleteGroup"
-                data-index="{{ index }}"
-              >
+              <view wx:if="{{ formData.gameGroups.length > 1 }}" class="delete-group-btn" bindtap="deleteGroup" data-index="{{ index }}">
                 <image src="/assets/icons/close.svg" mode="aspectFit"></image>
               </view>
             </view>
@@ -96,32 +71,22 @@
             </view>
           </view>
         </view>
-
         <!-- 赛制选择 -->
         <view class="form-item">
           <view class="form-label">赛制</view>
           <view class="radio-group">
             <radio-group bindchange="onScoringTypeChange">
               <label class="radio-item">
-                <radio
-                  value="hole"
-                  checked="{{ formData.ScoringType === 'hole' }}"
-                  color="{{'var(--primary-green-dark)'}}"
-                />
+                <radio value="hole" checked="{{ formData.ScoringType === 'hole' }}" color="{{'var(--primary-green-dark)'}}" />
                 <text class="radio-text">个人比杆</text>
               </label>
               <label class="radio-item">
-                <radio
-                  value="oneball"
-                  checked="{{ formData.ScoringType === 'oneball' }}"
-                  color="{{'var(--primary-green-dark)'}}"
-                />
+                <radio value="oneball" checked="{{ formData.ScoringType === 'oneball' }}" color="{{'var(--primary-green-dark)'}}" />
                 <text class="radio-text">旺波</text>
               </label>
             </radio-group>
           </view>
         </view>
-
         <!-- T台选择  TlandSelector -->
         <view class="form-item">
           <view class="form-label">T台选择</view>
@@ -140,30 +105,17 @@
             </view>
           </view>
         </view>
-
         <!-- 隐私设置 -->
         <view class="form-item">
           <view class="form-label">隐私设置</view>
           <view class="privacy-options">
             <view class="switch-item">
               <text class="switch-text">是否为秘密比赛</text>
-              <switch
-                checked="{{ formData.isPrivate }}"
-                bindchange="onPrivateChange"
-                color="{{'var(--primary-green-dark)'}}"
-              />
+              <switch checked="{{ formData.isPrivate }}" bindchange="onPrivateChange" color="{{'var(--primary-green-dark)'}}" />
             </view>
             <!-- 密码输入(仅在秘密比赛时显示) -->
             <view wx:if="{{ formData.isPrivate }}" class="password-input">
-              <input
-                class="form-input"
-                type="text"
-                placeholder="请设置比赛密码"
-                placeholder-class="input-placeholder"
-                value="{{ formData.password }}"
-                bindinput="onPasswordInput"
-                maxlength="20"
-              />
+              <input class="form-input" type="text" placeholder="请设置比赛密码" placeholder-class="input-placeholder" value="{{ formData.password }}" bindinput="onPasswordInput" maxlength="20" />
             </view>
           </view>
         </view>
@@ -173,7 +125,7 @@
           <button class="share-btn" bindtap="onShareButtonTap">微信分享邀请</button>
           <button class="share-btn secondary" bindtap="onShowInviteQrcode">生成二维码</button>
         </view>
-        <button class="create-btn" bindtap="onStartScoring" disabled="{{!gameid}}">开始计分</button>
+        <button class="create-btn" bindtap="onStartScoring" disabled="{{!gameid}}">开始记分</button>
       </view>
     </view>
   </view>

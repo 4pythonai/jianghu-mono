@@ -8,35 +8,29 @@ export const validateForm = (data) => {
 
     // 验证球场选择
     if (!selectedCourse) {
-        wx.showToast({
-            title: '请先选择球场',
-            icon: 'none'
+        wx.showModal({
+            title: '提示',
+            content: '请先选择球场',
+            showCancel: false,
         });
         return false;
     }
 
     if (!selectedCourt) {
-        wx.showToast({
-            title: '请先选择半场',
-            icon: 'none'
+        wx.showModal({
+            title: '提示',
+            content: '请先选择半场',
+            showCancel: false,
         });
         return false;
     }
 
     // 验证比赛名称
     if (!formData.gameName.trim()) {
-        wx.showToast({
-            title: '请填写比赛名称',
-            icon: 'none'
-        });
-        return false;
-    }
-
-    // 验证开球时间
-    if (!formData.openTime) {
-        wx.showToast({
-            title: '请选择开球时间',
-            icon: 'none'
+        wx.showModal({
+            title: '提示',
+            content: '请填写比赛名称',
+            showCancel: false,
         });
         return false;
     }
@@ -47,18 +41,20 @@ export const validateForm = (data) => {
     );
 
     if (!hasValidGroup) {
-        wx.showToast({
-            title: '请至少添加一名参赛玩家',
-            icon: 'none'
+        wx.showModal({
+            title: '提示',
+            content: '请至少添加一名参赛玩家',
+            showCancel: false,
         });
         return false;
     }
 
     // 验证私密比赛密码
     if (formData.isPrivate && !formData.password.trim()) {
-        wx.showToast({
-            title: '私密比赛需要设置密码',
-            icon: 'none'
+        wx.showModal({
+            title: '提示',
+            content: '私密比赛需要设置密码',
+            showCancel: false,
         });
         return false;
     }
