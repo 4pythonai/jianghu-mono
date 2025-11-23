@@ -7,7 +7,6 @@ class StorageManager {
         // 存储键名常量
         this.KEYS = {
             TOKEN: 'token',
-            REFRESH_TOKEN: 'refreshToken',
             USER_INFO: 'userInfo',
             USER_AVATAR: 'userAvatarPath',
             APP_CONFIG: 'appConfig',
@@ -114,59 +113,10 @@ class StorageManager {
     }
 
     /**
-     * 存储刷新token
-     */
-    setRefreshToken(refreshToken) {
-        if (!refreshToken) {
-            console.warn('⚠️ 尝试存储空refreshToken')
-            return false
-        }
-        return this.set(this.KEYS.REFRESH_TOKEN, refreshToken)
-    }
-
-    /**
-     * 获取刷新token
-     */
-    getRefreshToken() {
-        return this.get(this.KEYS.REFRESH_TOKEN)
-    }
-
-    /**
-     * 存储tokens(批量)
-     */
-    setTokens({ token, refreshToken }) {
-        const results = []
-
-        if (token) {
-            results.push(this.setToken(token))
-        }
-
-        if (refreshToken) {
-            results.push(this.setRefreshToken(refreshToken))
-        }
-
-        return results.every(result => result === true)
-    }
-
-    /**
-     * 获取所有tokens
-     */
-    getTokens() {
-        return {
-            token: this.getToken(),
-            refreshToken: this.getRefreshToken()
-        }
-    }
-
-    /**
-     * 清除所有tokens
+     * 清除token
      */
     clearTokens() {
-        const results = [
-            this.remove(this.KEYS.TOKEN),
-            this.remove(this.KEYS.REFRESH_TOKEN)
-        ]
-        return results.every(result => result === true)
+        return this.remove(this.KEYS.TOKEN)
     }
 
     /**

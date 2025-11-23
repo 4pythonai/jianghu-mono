@@ -12,7 +12,6 @@ class ConfigManager {
         // 存储键名常量
         this.KEYS = {
             TOKEN: 'token',
-            REFRESH_TOKEN: 'refreshToken',
             USER_INFO: 'userInfo',
             USER_AVATAR: 'userAvatarPath',
             APP_CONFIG: 'appConfig',

@@ -63,7 +63,6 @@ class AuthManager {
 
         const stored = this.storeAuthData({
             token: response.token,
-            refreshToken: response.refreshToken,
             user: response.user,
             profileStatus: response.profile_status,
             needBindPhone: response.need_bind_phone,
@@ -88,7 +87,6 @@ class AuthManager {
             const response = await api.user.wxLogin({ code }, { showLoading: false })
             return this.storeAuthData({
                 token: response.token,
-                refreshToken: response.refreshToken,
                 user: response.user,
                 profileStatus: response.profile_status,
                 needBindPhone: response.need_bind_phone
@@ -154,9 +152,9 @@ class AuthManager {
 
 
 
-    storeAuthData({ token, refreshToken, user, profileStatus, needBindPhone, session }) {
-        if (token || refreshToken) {
-            storage.setTokens({ token, refreshToken })
+    storeAuthData({ token, user, profileStatus, needBindPhone, session }) {
+        if (token) {
+            storage.setToken(token)
         }
 
         if (user) {
