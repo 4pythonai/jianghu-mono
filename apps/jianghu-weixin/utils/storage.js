@@ -22,12 +22,10 @@ class StorageManager {
      * 通用存储方法
      * @param {string} key - 存储键
      * @param {any} value - 存储值
-     * @param {boolean} encrypt - 是否加密(预留)
      */
-    set(key, value, encrypt = false) {
+    set(key, value) {
         try {
-            const data = encrypt ? this.encrypt(value) : value
-            wx.setStorageSync(key, data)
+            wx.setStorageSync(key, value)
             // console.log(`💾 存储成功: ${key}`)
             return true
         } catch (error) {
@@ -40,15 +38,14 @@ class StorageManager {
      * 通用读取方法
      * @param {string} key - 存储键
      * @param {any} defaultValue - 默认值
-     * @param {boolean} decrypt - 是否解密(预留)
      */
-    get(key, defaultValue = null, decrypt = false) {
+    get(key, defaultValue = null) {
         try {
             const data = wx.getStorageSync(key)
             if (data === '') {
                 return defaultValue
             }
-            return decrypt ? this.decrypt(data) : data
+            return data
         } catch (error) {
             console.error(`❌ 读取失败: ${key}`, error)
             return defaultValue
@@ -360,22 +357,6 @@ class StorageManager {
     }
 
     // ==================== 工具方法 ====================
-
-    /**
-     * 加密数据(预留接口)
-     */
-    encrypt(data) {
-        // TODO: 实现加密逻辑
-        return data
-    }
-
-    /**
-     * 解密数据(预留接口)
-     */
-    decrypt(data) {
-        // TODO: 实现解密逻辑
-        return data
-    }
 
     /**
      * 获取存储大小(格式化)

@@ -208,7 +208,7 @@ class AuthManager {
     }
 
     persistUser(user) {
-        const normalizedUser = this.normalizeUser(user)
+        const normalizedUser = this.app.normalizeUserInfo ? this.app.normalizeUserInfo(user) : user
         storage.setUserInfo(normalizedUser)
 
         if (normalizedUser.avatarUrl) {
@@ -222,30 +222,6 @@ class AuthManager {
 
     clearAuthData() {
         storage.clearUserData()
-    }
-
-    normalizeUser(user) {
-        if (!user) {
-            return {}
-        }
-
-        const normalized = { ...user }
-        const displayName = normalized.nickName || normalized.nickname || normalized.wx_nickname || ''
-
-        if (!normalized.nickName && displayName) {
-            normalized.nickName = displayName
-        }
-
-        if (!normalized.wx_nickname && displayName) {
-            normalized.wx_nickname = displayName
-        }
-
-        const avatarUrl = normalized.avatarUrl || normalized.avatar || ''
-        if (avatarUrl) {
-            normalized.avatarUrl = avatarUrl
-        }
-
-        return normalized
     }
 
     normalizeProfileStatus(profileStatus, user) {
@@ -279,26 +255,6 @@ class AuthManager {
 
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
-    }
-
-    getAuthState() {
-        const tokens = storage.getTokens()
-        return {
-            hasToken: storage.hasToken(),
-            isRefreshing: this.isRefreshing,
-            userInfo: storage.getUserInfo(),
-            tokens: {
-                hasAccessToken: !!tokens.token,
-                hasRefreshToken: !!tokens.refreshToken
-            },
-            profileStatus: storage.getProfileStatus(),
-            needBindPhone: storage.getNeedBindPhone(),
-            session: storage.getWeixinSession()
-        }
-    }
-
-    debug() {
-        storage.debug()
     }
 }
 

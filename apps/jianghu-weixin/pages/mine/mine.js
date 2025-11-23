@@ -1,4 +1,5 @@
 import { config as apiConfig } from '../../api/config'
+import { isAuthError } from '../../utils/authUtils'
 
 const app = getApp()
 
@@ -21,7 +22,8 @@ Page({
     needBindPhone: false,
     showAuthButton: true,
     tempNickname: '',
-    entrySource: ENTRY_SOURCES.SELF
+    entrySource: ENTRY_SOURCES.SELF,
+    hasShownNicknameHint: false
   },
 
   onLoad(options = {}) {
@@ -61,11 +63,15 @@ Page({
   syncFromAppState(payload = {}) {
     const user = payload.user || app.globalData.userInfo || {}
     const normalizedUser = this.resolveAvatar(app.normalizeUserInfo ? app.normalizeUserInfo(user) : { ...user })
-    const status = this.normalizeProfileStatus(payload.profileStatus, normalizedUser)
-    const needBind = this.normalizeNeedBindFlag(
-      payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone,
-      status
-    )
+    const status = app.auth && typeof app.auth.normalizeProfileStatus === 'function'
+      ? app.auth.normalizeProfileStatus(payload.profileStatus, normalizedUser)
+      : (payload.profileStatus || DEFAULT_PROFILE_STATUS)
+    const needBind = app.auth && typeof app.auth.normalizeNeedBindFlag === 'function'
+      ? app.auth.normalizeNeedBindFlag(
+          payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone,
+          status
+        )
+      : (payload.needBindPhone !== undefined ? payload.needBindPhone : app.globalData.needBindPhone)
 
     this.setData({
       userInfo: normalizedUser,
@@ -104,41 +110,6 @@ Page({
     return ENTRY_SOURCES.SELF
   },
 
-  normalizeProfileStatus(rawStatus, user) {
-    if (app.auth && typeof app.auth.normalizeProfileStatus === 'function') {
-      return app.auth.normalizeProfileStatus(rawStatus, user)
-    }
-
-    const status = rawStatus || {}
-    const hasNickname = status.hasNickname ?? status.has_nickname ?? !!(user && (user.nickName || user.nickname || user.wx_nickname))
-    const hasAvatar = status.hasAvatar ?? status.has_avatar ?? !!(user && (user.avatarUrl || user.avatar))
-    const hasMobile = status.hasMobile ?? status.has_mobile ?? !!(user && user.mobile)
-
-    return {
-      hasNickname: !!hasNickname,
-      hasAvatar: !!hasAvatar,
-      hasMobile: !!hasMobile
-    }
-  },
-
-  normalizeNeedBindFlag(flag, profileStatus) {
-    if (typeof flag === 'boolean') {
-      return flag
-    }
-
-    if (app.auth && typeof app.auth.normalizeNeedBindFlag === 'function') {
-      return app.auth.normalizeNeedBindFlag(flag, profileStatus)
-    }
-
-    if (flag === 1 || flag === '1') {
-      return true
-    }
-    if (flag === 0 || flag === '0') {
-      return false
-    }
-    return profileStatus ? !profileStatus.hasMobile : false
-  },
-
   resolveAvatar(user) {
     const resolved = { ...user }
     const savedAvatarPath = app.storage.getUserAvatar()
@@ -169,7 +140,9 @@ Page({
     }
 
     const needBindFlag = options.needBindPhone !== undefined
-      ? this.normalizeNeedBindFlag(options.needBindPhone, mergedStatus)
+      ? (app.auth && typeof app.auth.normalizeNeedBindFlag === 'function'
+          ? app.auth.normalizeNeedBindFlag(options.needBindPhone, mergedStatus)
+          : options.needBindPhone)
       : app.globalData.needBindPhone
 
     app.setUserInfo(userInfo, mergedStatus, needBindFlag)
@@ -313,13 +286,15 @@ Page({
     }).catch(error => {
       console.error('❌ 头像上传失败:', error)
 
-      // 不再降级保存,直接提示用户
-      let errorMessage = '头像上传失败'
+      // 区分不同类型的错误并给出相应提示
+      let errorMessage = '头像上传失败，请重试'
 
-      if (error.message?.includes('token') || error.message?.includes('认证')) {
-        errorMessage = '登录已过期,请重新登录'
-      } else if (error.message?.includes('网络')) {
-        errorMessage = '网络连接失败,请检查网络'
+      if (isAuthError(error)) {
+        errorMessage = '登录已过期，请重新登录'
+      } else if (error.message?.includes('网络') || error.errMsg?.includes('network')) {
+        errorMessage = '网络连接失败，请检查网络'
+      } else if (error.message) {
+        errorMessage = error.message
       } else if (error.errMsg) {
         errorMessage = error.errMsg
       }
@@ -333,34 +308,6 @@ Page({
     })
   },
 
-  saveAvatarLocally(tempFilePath) {
-    console.log('💾 降级到本地保存头像')
-
-    const fs = wx.getFileSystemManager()
-    const avatarName = `avatar_${Date.now()}.jpg`
-    const avatarPath = `${wx.env.USER_DATA_PATH}/${avatarName}`
-
-    fs.saveFile({
-      tempFilePath: tempFilePath,
-      filePath: avatarPath,
-      success: (res) => {
-        console.log('✅ 头像本地保存成功:', res.savedFilePath)
-        this.updateUserAvatar(res.savedFilePath, false)
-        wx.showToast({
-          title: '头像已保存(本地)',
-          icon: 'success'
-        })
-      },
-      fail: (err) => {
-        console.error('❌ 本地保存也失败:', err)
-        this.updateUserAvatar(tempFilePath, false)
-        wx.showToast({
-          title: '头像设置成功',
-          icon: 'success'
-        })
-      }
-    })
-  },
 
   updateUserAvatar(avatarUrl, isServerUrl = false) {
     const currentUserInfo = app.globalData.userInfo || {}
@@ -391,17 +338,40 @@ Page({
     })
   },
 
+  onNicknameFocus() {
+    // 当输入框获得焦点时，提示用户使用键盘上方的快捷按钮
+    // 这个提示只显示一次，避免打扰用户
+    if (!this.data.hasShownNicknameHint) {
+      setTimeout(() => {
+        wx.showToast({
+          title: '键盘上方可选择微信昵称',
+          icon: 'none',
+          duration: 2000
+        })
+        this.setData({
+          hasShownNicknameHint: true
+        })
+      }, 500)
+    }
+  },
+
   confirmUserInfo() {
     const { tempNickname } = this.data
-    if (!tempNickname || tempNickname.trim() === '') {
-      wx.showToast({
-        title: '请输入昵称',
-        icon: 'none'
+    const currentUser = app.globalData.userInfo || {}
+    // 优先使用 tempNickname，如果没有则使用已有的 userInfo.nickName
+    const nicknameToUse = tempNickname || currentUser.nickName || currentUser.nickname || currentUser.wx_nickname || ''
+
+    if (!nicknameToUse || nicknameToUse.trim() === '') {
+      wx.showModal({
+        title: '需要设置昵称',
+        content: '请先点击"获取微信昵称"按钮授权获取您的昵称，否则无法完善个人资料。',
+        showCancel: false,
+        confirmText: '我知道了'
       })
       return
     }
 
-    const trimmedNickname = tempNickname.trim()
+    const trimmedNickname = nicknameToUse.trim()
     if (trimmedNickname.length > 20) {
       wx.showToast({
         title: '昵称不能超过20个字符',
@@ -410,7 +380,6 @@ Page({
       return
     }
 
-    const currentUser = app.globalData.userInfo || {}
     const userId = currentUser.id
 
     if (!userId) {
@@ -446,23 +415,25 @@ Page({
       })
     }).catch(error => {
       console.error('❌ 昵称更新失败:', error)
-      console.log('🔄 API失败, 降级到本地保存')
 
-      const updatedUserInfo = {
-        ...currentUser,
-        nickName: trimmedNickname,
-        nickname: trimmedNickname,
-        wx_nickname: trimmedNickname
+      // 区分不同类型的错误并给出相应提示
+      let errorMessage = '保存失败，请重试'
+
+      if (isAuthError(error)) {
+        errorMessage = '登录已过期，请重新登录'
+      } else if (error.message?.includes('网络') || error.errMsg?.includes('network')) {
+        errorMessage = '网络连接失败，请检查网络'
+      } else if (error.message) {
+        errorMessage = error.message
+      } else if (error.errMsg) {
+        errorMessage = error.errMsg
       }
 
-      this.applyUserProfileChange(
-        updatedUserInfo,
-        { hasNickname: true }
-      )
-
-      wx.showToast({
-        title: '信息已保存(本地)',
-        icon: 'success'
+      wx.showModal({
+        title: '保存失败',
+        content: errorMessage + '\n\n请稍后重试或联系客服',
+        showCancel: false,
+        confirmText: '我知道了'
       })
     })
   },
@@ -491,8 +462,12 @@ Page({
           iv: e.detail.iv,
           code: res.code
         }).then(response => {
-          const normalizedStatus = this.normalizeProfileStatus(response.profile_status, response.user)
-          const needBind = this.normalizeNeedBindFlag(response.need_bind_phone, normalizedStatus)
+          const normalizedStatus = app.auth && typeof app.auth.normalizeProfileStatus === 'function'
+            ? app.auth.normalizeProfileStatus(response.profile_status, response.user)
+            : (response.profile_status || DEFAULT_PROFILE_STATUS)
+          const needBind = app.auth && typeof app.auth.normalizeNeedBindFlag === 'function'
+            ? app.auth.normalizeNeedBindFlag(response.need_bind_phone, normalizedStatus)
+            : (response.need_bind_phone !== undefined ? response.need_bind_phone : false)
 
           this.applyUserProfileChange(
             response.user,

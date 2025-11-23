@@ -35,16 +35,21 @@
       <!-- 获取昵称输入框 -->
       <view class="nickname-input-wrapper">
         <text class="input-label">昵称:</text>
-        <input
-          class="nickname-input"
-          type="nickname"
-          value="{{ userInfo.nickName || '' }}"
-          placeholder="请输入昵称"
-          auto-blur="{{ true }}"
-          auto-focus="{{ false }}"
-          bindchange="onNicknameChange"
-          bindinput="onNicknameInput"
-        />
+        <view class="nickname-input-container">
+          <input
+            class="nickname-input"
+            type="nickname"
+            value="{{ tempNickname || userInfo.nickName || '' }}"
+            placeholder="请输入昵称"
+            maxlength="20"
+            bindinput="onNicknameInput"
+            bindchange="onNicknameChange"
+            bindfocus="onNicknameFocus"
+          />
+          <view class="nickname-hint">
+            <text class="hint-text">💡 点击输入框后，键盘上方会显示"用微信昵称"按钮</text>
+          </view>
+        </view>
       </view>
       <button class="confirm-btn" bindtap="confirmUserInfo">确认信息</button>
     </view>
