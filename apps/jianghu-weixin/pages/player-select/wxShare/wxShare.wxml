@@ -1,7 +1,7 @@
 <view class="container">
   <view class="invite-card">
     <view class="card-header">
-      <text class="card-title">您被邀请加入比赛</text>
+      <text class="card-title">YOU ARE INVITED TO JOIN THE GAME</text>
     </view>
     <view class="code-section">
       <view class="section-top">

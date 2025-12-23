@@ -1,5 +1,7 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '@/stores/gameStore';
+import { createJoinSocket } from '@/pages/player-select/qrcode/joinSocket';
+import { config as apiConfig } from '@/api/config';
 
 const TAB_ROUTE_MAP = {
     '0': 'score',
@@ -54,15 +56,27 @@ Page({
         if (gameid) {
             this._fetchDetail(gameid, groupid);
         }
+
+        // 初始化 WebSocket 连接
+        this.ensureJoinSocket();
     },
 
     onShow() {
         if (this.data.gameid) {
             this._fetchDetail(this.data.gameid, this.data.groupid);
         }
+
+        // 确保 WebSocket 连接
+        this.ensureJoinSocket();
     },
 
     onUnload() {
+        // 清理 WebSocket 连接
+        if (this.joinSocket) {
+            this.joinSocket.destroy();
+            this.joinSocket = null;
+        }
+
         this.storeBindings?.destroyStoreBindings();
     },
 
@@ -74,6 +88,64 @@ Page({
         } else {
             console.error('[score] 无法找到 #scoreInputPanel 组件');
         }
+    },
+
+    ensureJoinSocket() {
+        if (!apiConfig?.wsURL) {
+            return;
+        }
+
+        const { gameid } = this.data;
+        const gameKey = gameid;
+
+        if (!gameKey) {
+            return;
+        }
+
+        if (!this.joinSocket) {
+            this.joinSocket = createJoinSocket({
+                url: apiConfig.wsURL,
+                gameId: gameKey,
+                onEvent: this.handleSocketEvent.bind(this),
+                onStatusChange: this.handleSocketStatusChange.bind(this)
+            });
+            this.joinSocket.connect();
+            return;
+        }
+
+        this.joinSocket.updateSubscription({
+            gameId: gameKey
+        });
+
+        if (!this.joinSocket.isActive()) {
+            this.joinSocket.connect();
+        }
+    },
+
+    handleSocketEvent(message = {}) {
+        const { event } = message;
+        const normalizedEvent = typeof event === 'string' ? event.toLowerCase() : '';
+
+        // 这些事件都需要刷新比赛数据
+        const shouldRefresh = [
+            'notify',
+            'player_joined',
+            'player_updated',
+            'player_left',
+            'player_removed',
+            'group_updated',
+            'score_updated' // 计分更新
+        ];
+
+        if (shouldRefresh.includes(normalizedEvent)) {
+            console.log(`[score] 收到 ${event} 事件，刷新数据`);
+            this._fetchDetail(this.data.gameid, this.data.groupid);
+        }
+    },
+
+    handleSocketStatusChange(detail = {}) {
+        const { status, error } = detail;
+        console.log(`[score] Socket 状态变更: ${status}`, error || '');
     },
 
     _fetchDetail(gameid, groupid) {

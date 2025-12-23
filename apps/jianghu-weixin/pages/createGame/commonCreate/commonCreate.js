@@ -56,6 +56,12 @@ Page({
 
                 // 调用API并获取返回结果
                 const result = await this.callUpdateAPI('updateGameGroupAndPlayers', apiData, `组数据同步-${description}`);
+
+                // 确保同步成功后标记为已同步
+                if (result?.code === 200 && !this.data.groupsSynced) {
+                    this.setData({ groupsSynced: true });
+                    this.updateShareState();
+                }
             }, 300) // 较短的防抖时间
         }
     },
@@ -65,7 +71,8 @@ Page({
         gameid: null, // 服务端返回的游戏ID
         groupid: null,
         gameCreated: false, // 标记游戏是否已创建
-        shareReady: false,  // 分享入口是否可用(需创建比赛+球场+开球时间)
+        groupsSynced: false, // 标记创建者组数据是否已同步到后端
+        shareReady: false,  // 分享入口是否可用(需创建比赛+球场+开球时间+组数据同步)
         selectedCourse: null, // 选中的球场信息
         selectedCourt: null,   // 选中的半场信息
 
@@ -573,7 +580,8 @@ Page({
         const hasOpenTime = typeof openTime === 'string'
             ? openTime.trim().length > 0
             : Boolean(openTime);
-        const shareReady = hasGame && hasCourse && hasOpenTime;
+        const hasGroupsSynced = Boolean(this.data.groupsSynced); // 确保创建者数据已同步
+        const shareReady = hasGame && hasCourse && hasOpenTime && hasGroupsSynced;
         if (shareReady !== this.data.shareReady) {
             this.setData({ shareReady });
         }
@@ -707,12 +715,39 @@ Page({
      */
     async onLoad(options) {
         const gameUuid = uuid();
+        const userInfo = app.globalData.userInfo;
+
+        // 构建创建者 player 对象
+        const creator = {
+            userid: userInfo?.id,  // 使用 id 字段，不是 userid
+            wx_nickname: userInfo?.nickName || userInfo?.nickname || userInfo?.wx_nickname || '我',
+            nickname: userInfo?.nickname || userInfo?.nickName || userInfo?.wx_nickname || '我',
+            avatar: userInfo?.avatar || userInfo?.avatarUrl || '/images/default-avatar.png',
+            handicap: userInfo?.handicap || 0,
+            join_type: 'creator',
+            tee: 'blue'
+        };
+
+        // 验证创建者数据
+        if (!creator.userid) {
+            wx.showModal({
+                title: '用户信息不完整',
+                content: '无法获取用户ID，请重新登录',
+                showCancel: false,
+                success: () => {
+                    wx.reLaunch({ url: '/pages/mine/mine' });
+                }
+            });
+            return;
+        }
+
+        // 初始化第一组时包含创建者
         this.setData({
-            uuid: gameUuid
+            uuid: gameUuid,
+            'formData.gameGroups': [{ players: [creator] }]
         });
 
         // 设置比赛名称缺省值
-        const userInfo = app.globalData.userInfo;
         const nickname = userInfo?.nickName || userInfo?.nickname || userInfo?.wx_nickname || '我';
         const defaultGameName = `${nickname}的比赛`;
         this.setData({
@@ -743,6 +778,21 @@ Page({
                     shareReady: Boolean(gameid)
                 });
                 this.updateShareState();
+
+                // 立即同步创建者到后端第一组
+                const syncResult = await this.callUpdateAPI('updateGameGroupAndPlayers', {
+                    uuid: gameUuid,
+                    groups: [{
+                        groupIndex: 0,
+                        players: [creator]
+                    }]
+                }, '创建者加入第一组');
+
+                // 标记组数据已同步，允许分享
+                if (syncResult?.code === 200) {
+                    this.setData({ groupsSynced: true });
+                    this.updateShareState();
+                }
 
                 // 如果游戏已创建，同步缺省的游戏名称
                 if (defaultGameName) {

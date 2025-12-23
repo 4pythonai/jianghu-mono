@@ -39,6 +39,11 @@ Page({
     },
 
     onLoad(options) {
+
+        wx.setEnableDebug({
+            enableDebug: true
+        });
+
         console.log('=== joinGame 页面进入参数 ===');
         console.log('原始 options:', options);
 
@@ -311,9 +316,21 @@ Page({
             this.fetchGameDetail();
 
             wx.showToast({
-                title: '加入成功',
-                icon: 'success'
+                title: 'JoinSuccess',
+                icon: 'success',
+                duration: 1000
             });
+
+            console.log("🔴🟢🔵")
+
+            // 成功后跳转到计分页面
+            if (this.data.gameid) {
+                setTimeout(() => {
+                    wx.navigateTo({
+                        url: `/pages/gameDetail/score/score?gameid=${this.data.gameid}`
+                    });
+                }, 1500);
+            }
         } catch (error) {
             console.error('[WXShare] joinGame failed', error);
             const message = error?.message || '加入失败，请稍后再试';

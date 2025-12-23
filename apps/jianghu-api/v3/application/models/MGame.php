@@ -101,15 +101,20 @@ class MGame  extends CI_Model {
 
       // 插入每个玩家到 t_game_group_user 表
       foreach ($group['players'] as $player) {
+        // 验证玩家数据：必须有 userid
+        if (empty($player['userid'])) {
+          continue; // 跳过无效的玩家数据
+        }
+
         $playerData = [
           'gameid' => $gameid,
           'groupid' => $groupid,
           'userid' => $player['userid'],
-          'tee' => 'blue', // 缺省
+          'tee' => isset($player['tee']) && !empty($player['tee']) ? $player['tee'] : 'blue', // 使用玩家的tee或缺省值
           'confirmed' => 0,
           'confirmed_time' => null,
           'addtime' => date('Y-m-d H:i:s'),
-          'join_type' => $player['join_type'] // 根据需要设置
+          'join_type' => isset($player['join_type']) ? $player['join_type'] : 'manual' // 缺省值
         ];
         $this->db->insert('t_game_group_user', $playerData);
       }
@@ -139,7 +144,7 @@ class MGame  extends CI_Model {
   public function gameJoinHandler($userid, $gameid, $joinType = 'wxshare') {
     $response = [
       'code' => 200,
-      'message' => '加入成功',
+      'message' => '加入成功!!!',
       'data' => [
         'groupid' => null,
         'join_type' => $joinType,
