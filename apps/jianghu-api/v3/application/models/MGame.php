@@ -7,9 +7,9 @@ class MGame  extends CI_Model {
   }
 
   /**
-   * 根据 UUID 获取游戏 ID
-   * @param string $uuid 游戏 UUID
-   * @return int|null 游戏 ID，如果未找到则返回 null
+   * 根据 UUID 获取球局 ID
+   * @param string $uuid 球局 UUID
+   * @return int|null 球局 ID，如果未找到则返回 null
    */
 
   public function getGameidByUUID($uuid) {

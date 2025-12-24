@@ -197,7 +197,7 @@ class Gamble extends MY_Controller {
             if ($insert_id) {
                 $ret = [];
                 $ret['code'] = 200;
-                $ret['message'] = '赌球规则创建成功';
+                $ret['message'] = '游戏规则创建成功';
                 $ret['data'] = [
                     'rule_id' => $insert_id,
                     'userRuleId' => $insert_id,
@@ -255,7 +255,7 @@ class Gamble extends MY_Controller {
 
 
     /**
-     * 根据参与人数分组获取赌球规则
+     * 根据参与人数分组获取游戏规则
      * 返回两人游戏、三人游戏、四人游戏的分组数据
      */
     public function getUserGambleRules() {
@@ -375,7 +375,7 @@ class Gamble extends MY_Controller {
 
 
     /**
-     * 根据参与人数分组获取赌球规则
+     * 根据参与人数分组获取游戏规则
      * 返回两人游戏、三人游戏、四人游戏的分组数据
      */
     public function getUserGambleRule() {

@@ -93,7 +93,7 @@ class Game extends MY_Controller {
         $ret['code'] = 200;
         $ret['message'] = '球场/半场更新成功';
 
-        //  更新这个比赛的洞序
+        //  更新这个球局的洞序
 
         $holeList = $this->MDetailGame->getHoleListByGameId($gameid);
         $this->db->where('id', $gameid);
@@ -112,7 +112,7 @@ class Game extends MY_Controller {
 
         $ret = [];
         $ret['code'] = 200;
-        $ret['message'] = '比赛名称更新成功';
+        $ret['message'] = '球局名称更新成功';
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
@@ -336,7 +336,7 @@ class Game extends MY_Controller {
 
         $game_info = $this->MDetailGame->getGameInfo($game_id);
         if ($game_info['status'] == 'finished' || $game_info['status'] == 'canceled') {
-            echo json_encode(['code' => 500, 'message' => '比赛已结束或取消'], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code' => 500, 'message' => '球局已结束或取消'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
@@ -349,32 +349,32 @@ class Game extends MY_Controller {
     }
 
     /**
-     * 加入比赛
-     * 
-     * 用户通过此接口加入指定的比赛。系统会自动将用户分配到合适的组别：
+     * 加入球局
+     *
+     * 用户通过此接口加入指定的球局。系统会自动将用户分配到合适的组别：
      * - 如果存在未满4人的组，则加入该组
      * - 如果所有组都已满员，则创建新组
-     * - 如果比赛没有任何组，则创建第一个组
-     * 
+     * - 如果球局没有任何组，则创建第一个组
+     *
      * @api POST /game/joinGame
-     * 
-     * @param string uuid 比赛唯一标识符（可选）
-     * @param int gameid 比赛ID（必填）
+     *
+     * @param string uuid 球局唯一标识符（可选）
+     * @param int gameid 球局ID（必填）
      * @param string source 加入来源类型（可选，默认为'wxshare'）
      *                     可选值：'wxshare', 'qrcode', 'manual' 等
-     * 
+     *
      * @return array 返回结果
      * @return int code 状态码
      *                  200: 加入成功
      *                  401: 未登录
-     *                  409: 已经加入此比赛
+     *                  409: 已经加入此球局
      * @return string message 提示信息
      * @return array data 成功时返回的数据
-     * @return string data.uuid 比赛唯一标识符
-     * @return int data.gameid 比赛ID
+     * @return string data.uuid 球局唯一标识符
+     * @return int data.gameid 球局ID
      * @return int data.groupid 分配的组别ID
      * @return string data.join_type 加入类型
-     * 
+     *
      * @example 请求示例
      * POST /game/joinGame
      * Content-Type: application/json
@@ -383,7 +383,7 @@ class Game extends MY_Controller {
      *     "gameid": 1001,
      *     "source": "wxshare"
      * }
-     * 
+     *
      * @example 成功响应示例
      * {
      *     "code": 200,
@@ -395,11 +395,11 @@ class Game extends MY_Controller {
      *         "join_type": "wxshare"
      *     }
      * }
-     * 
+     *
      * @example 错误响应示例
      * {
      *     "code": 409,
-     *     "message": "您已经加入此比赛"
+     *     "message": "您已经加入此球局"
      * }
      */
     public function joinGame() {
@@ -457,6 +457,6 @@ class Game extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = $json_paras['gameid'];
         $this->MGame->finishGame($gameid, null);
-        echo json_encode(['code' => 200, 'message' => '结束比赛成功'], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['code' => 200, 'message' => '结束球局成功'], JSON_UNESCAPED_UNICODE);
     }
 }

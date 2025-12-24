@@ -25,12 +25,12 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
 
     private $holes;
 
-    private $bootStrapOrder; //出发顺序,即参与赌球的人员的初始排名,因为没有比赛成绩,所以要硬性规定下
-    private $startHoleindex;   // 第一个参与计算的洞的index,因为要支持从某个洞开始赌球
+    private $bootStrapOrder; //出发顺序,即参与游戏的人员的初始排名,因为没有球局成绩,所以要硬性规定下
+    private $startHoleindex;   // 第一个参与计算的洞的index,因为要支持从某个洞开始游戏
     private $roadLength; // 路长
 
     private $scores;           // 记分
-    private $attenders;  // 参与赌球的人员
+    private $attenders;  // 参与游戏的人员
     private $redBlueConfig;  // 分组配置
     private $dutyConfig;  // 包洞配置
     private $ranking4TieResolveConfig;  // 排名解决平局配置

@@ -9,7 +9,7 @@ class MDetailGame  extends CI_Model {
 
 
     public function getGameDetail($gameid) {
-        // 获取游戏基本信息
+        // 获取球局基本信息
         $game_info = $this->getGameInfo($gameid);
         if (!$game_info) {
             return null;
@@ -19,7 +19,7 @@ class MDetailGame  extends CI_Model {
         // 获取球场信息（根据 courseid）
         $course_info = $this->getCourseInfo($game_info['courseid']);
 
-        // 获取游戏统计信息
+        // 获取球局统计信息
         $game_stats = $this->getGameStats($gameid);
 
 
@@ -31,15 +31,15 @@ class MDetailGame  extends CI_Model {
         $holeList = json_decode($game_info['holeList'], true);
 
 
-        // 获取游戏分组信息
+        // 获取球局分组信息
         $groups = $this->getGroupsInfo($gameid);
 
-        // 成绩 
+        // 成绩
         $scores = $this->getScoreInfo($gameid);
 
         // 创建者信息
         $creator = $this->MUser->getUserProfile($game_info['creatorid']);
-        // 比赛的A/B等信息
+        // 球局的A/B等信息
         // course
         // gameAbstract: ["A场", "B场"]
         $tmp = $this->getGameAbstract($gameid);
@@ -102,8 +102,8 @@ class MDetailGame  extends CI_Model {
     }
 
     /**
-     * 获取游戏基本信息
-     * @param int $game_id 游戏ID
+     * 获取球局基本信息
+     * @param int $game_id 球局ID
      */
 
     public function getGameInfo($game_id) {
@@ -158,9 +158,9 @@ class MDetailGame  extends CI_Model {
     }
 
     /**
-     * 获取游戏统计信息
-     * @param int $game_id 游戏ID
-     * @return array 游戏统计信息
+     * 获取球局统计信息
+     * @param int $game_id 球局ID
+     * @return array 球局统计信息
      */
     public function getGameStats($game_id) {
         // 计算已完成洞数 - 只有当某个洞所有玩家都记分时才算完成
@@ -172,8 +172,8 @@ class MDetailGame  extends CI_Model {
                 WHERE gs.gameid = ? AND gs.score IS NOT NULL
                 GROUP BY hole_id
                 HAVING COUNT(*) = (
-                    SELECT COUNT(*) 
-                    FROM t_game_group_user ggu 
+                    SELECT COUNT(*)
+                    FROM t_game_group_user ggu
                     WHERE ggu.gameid = ? AND ggu.confirmed = 1
                 )
             ) completed_holes_subquery
@@ -187,7 +187,7 @@ class MDetailGame  extends CI_Model {
             $completed_holes = (int)$completed_row['max_completed_hole'] ?: 0;
         }
 
-        // 计算总洞数：根据游戏使用的半场数量
+        // 计算总洞数：根据球局使用的半场数量
         $courts_query = "
             SELECT COUNT(*) as court_count
             FROM t_game_court 
@@ -216,7 +216,7 @@ class MDetailGame  extends CI_Model {
 
     /**
      * 获取玩家列表
-     * @param int $game_id 游戏ID
+     * @param int $game_id 球局ID
      * @return array 玩家列表
      */
     public function getPlayers($game_id) {
@@ -259,14 +259,14 @@ class MDetailGame  extends CI_Model {
 
 
     /**
-     * 根据游戏ID获取球洞列表
-     * @param int $gameid 游戏ID
+     * 根据球局ID获取球洞列表
+     * @param int $gameid 球局ID
      * @return array 球洞列表
      */
     public function getHoleListByGameId($gameid) {
         $holeList = [];
 
-        // 获取游戏使用的半场，按 court_key 排序
+        // 获取球局使用的半场，按 court_key 排序
         $courts_query = "
             SELECT courtid, court_key
             FROM t_game_court 
@@ -337,14 +337,14 @@ class MDetailGame  extends CI_Model {
     }
 
     /**
-     * 获取游戏分组信息
-     * @param int $gameid 游戏ID
+     * 获取球局分组信息
+     * @param int $gameid 球局ID
      * @return array 分组信息列表
      */
     public function getGroupsInfo($gameid) {
         $groups = [];
 
-        // 获取游戏的所有分组
+        // 获取球局的所有分组
         $groups_query = "
             SELECT 
                 gg.groupid ,
@@ -397,7 +397,7 @@ class MDetailGame  extends CI_Model {
         return $groups;
     }
 
-    // 获取比赛的AB场名字，返回数组，A场名字，B场名字
+    // 获取球局的AB场名字，返回数组，A场名字，B场名字
     private function getGameAbstract($gameid) {
         // t_game_court  t_course_court
         $sql = "SELECT cc.courtname FROM t_course_court cc LEFT JOIN t_game_court gc ON cc.courtid = gc.courtid WHERE gc.gameid = ?";

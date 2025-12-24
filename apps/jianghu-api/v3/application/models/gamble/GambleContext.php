@@ -5,8 +5,8 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * 赌球上下文对象
- * 用于封装赌球计算过程中需要的共享数据，避免参数过多的问题
+ * 游戏上下文对象
+ * 用于封装游戏计算过程中需要的共享数据，避免参数过多的问题
  */
 class GambleContext extends CI_Model {
     public $gambleSysName;
