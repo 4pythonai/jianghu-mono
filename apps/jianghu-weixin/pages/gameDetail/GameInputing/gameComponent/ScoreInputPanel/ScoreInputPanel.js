@@ -76,6 +76,7 @@ Component({
                     putts: scoreData.putts ?? 2,
                     penalty_strokes: scoreData.penalty_strokes ?? 0,
                     sand_save: scoreData.sand_save ?? 0,
+                    tee_shot_direction: scoreData.tee_shot_direction ?? null,
                 };
             });
 
@@ -176,7 +177,8 @@ Component({
                     score: playerScore.score,
                     putts: playerScore.putts,
                     penalty_strokes: playerScore.penalty_strokes,
-                    sand_save: playerScore.sand_save
+                    sand_save: playerScore.sand_save,
+                    tee_shot_direction: playerScore.tee_shot_direction
                 });
             }
 
@@ -289,7 +291,8 @@ Component({
                 score: null,
                 putts: null,
                 penalty_strokes: null,
-                sand_save: null
+                sand_save: null,
+                tee_shot_direction: null
             }));
 
             this.setData({
@@ -364,6 +367,23 @@ Component({
         getTeeColorClass(tee) {
             const validTees = ['black', 'blue', 'white', 'gold', 'red'];
             return validTees.includes(tee) ? `tee-${tee}` : 'tee-default';
+        },
+
+        /**
+         * 处理开球方向选择
+         * @param {Event} e 点击事件
+         */
+        handleTeeShotDirection(e) {
+            const direction = e.currentTarget.dataset.direction;
+            const index = this.data.activePlayerIndex;
+
+            // 如果点击的是已选中的方向，则取消选择（设为null）
+            const currentDirection = this.data.localScores[index].tee_shot_direction;
+            const newDirection = currentDirection === direction ? null : direction;
+
+            this.setData({
+                [`localScores[${index}].tee_shot_direction`]: newDirection
+            });
         },
     }
 }) 

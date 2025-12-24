@@ -109,23 +109,43 @@
             </view>
 
             <view class="tee-shot-options">
-              <view class="shot-option active">
+              <view
+                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'center' ? 'active' : ''}}"
+                data-direction="center"
+                bindtap="handleTeeShotDirection"
+              >
                 <view class="shot-icon-wrapper center"></view>
                 <text class="shot-label">上球道</text>
               </view>
-              <view class="shot-option">
+              <view
+                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'left' ? 'active' : ''}}"
+                data-direction="left"
+                bindtap="handleTeeShotDirection"
+              >
                 <view class="shot-icon-wrapper left"></view>
                 <text class="shot-label">拉左</text>
               </view>
-              <view class="shot-option">
+              <view
+                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'right' ? 'active' : ''}}"
+                data-direction="right"
+                bindtap="handleTeeShotDirection"
+              >
                 <view class="shot-icon-wrapper right"></view>
                 <text class="shot-label">拉右</text>
               </view>
-              <view class="shot-option">
+              <view
+                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'up' ? 'active' : ''}}"
+                data-direction="up"
+                bindtap="handleTeeShotDirection"
+              >
                 <view class="shot-icon-wrapper up"></view>
                 <text class="shot-label">打穿</text>
               </view>
-              <view class="shot-option">
+              <view
+                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'down' ? 'active' : ''}}"
+                data-direction="down"
+                bindtap="handleTeeShotDirection"
+              >
                 <view class="shot-icon-wrapper down"></view>
                 <text class="shot-label">打短</text>
               </view>

@@ -35,6 +35,7 @@ class MScore  extends CI_Model {
         'sand_save' => isset($score_data['sand_save']) ? $score_data['sand_save'] : null,
         'gir' => isset($score_data['gir']) ? $score_data['gir'] : null,
         'fairway_hit' => isset($score_data['fairway_hit']) ? $score_data['fairway_hit'] : null,
+        'tee_shot_direction' => isset($score_data['tee_shot_direction']) ? $score_data['tee_shot_direction'] : null,
         'recorder_type' => 'app'
       ];
 

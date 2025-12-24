@@ -34,6 +34,9 @@
             groups="{{item.groups}}"
             groupid="{{item.groupid || ''}}"
             group_name="{{item.group_name || ''}}"
+            ifTeamGame="{{item.ifTeamGame}}"
+            private="{{item.private}}"
+            privacy_password="{{item.privacy_password||''}}"
           />
         </block>
       </view>

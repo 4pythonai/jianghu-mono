@@ -32,7 +32,7 @@
         <view class="iconfont icon-clock" style="color: var(--theme-color);"></view>
         <text class="start-time" style="margin-right: 20rpx;">{{gameStart}}</text>
         <view class="iconfont icon-location" style="color: var(--theme-color);"></view>
-        <text class="watchers">{{watchersNumber}}人围观</text>
+        <text class="watchers">{{watchersNumber}}</text>
       </view>
     </view>
   </view>

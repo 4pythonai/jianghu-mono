@@ -39,14 +39,10 @@ class MDetailGame  extends CI_Model {
 
         // 创建者信息
         $creator = $this->MUser->getUserProfile($game_info['creatorid']);
-
-
         // 比赛的A/B等信息
         // course
         // gameAbstract: ["A场", "B场"]
-
         $tmp = $this->getGameAbstract($gameid);
-
         $gameAbstract = $course_info['coursename'] . '-' . implode('/', $tmp);
 
 
@@ -55,6 +51,7 @@ class MDetailGame  extends CI_Model {
             'gameid' => (string)$game_info['gameid'],
             'uuid' => $game_info['uuid'],
             'private' => $game_info['private'],
+            'ifTeamGame' => $game_info['ifTeamGame'],
             'scoring_type' => $game_info['scoring_type'],
             'privacy_password' => $game_info['privacy_password'],
             'creatorid' => $game_info['creatorid'],
@@ -107,8 +104,8 @@ class MDetailGame  extends CI_Model {
     /**
      * 获取游戏基本信息
      * @param int $game_id 游戏ID
-     * @return array|null 游戏信息，不存在返回null
      */
+
     public function getGameInfo($game_id) {
         $game_query = "
             SELECT 
@@ -117,6 +114,7 @@ class MDetailGame  extends CI_Model {
                 courseid,
                 status,
                 private,
+                ifTeamGame,
                 scoring_type,
                 scoring_type,
                 privacy_password,
@@ -130,11 +128,6 @@ class MDetailGame  extends CI_Model {
         ";
 
         $game_result = $this->db->query($game_query, [$game_id]);
-
-        if ($game_result->num_rows() == 0) {
-            return null;
-        }
-
         return $game_result->row_array();
     }
 
