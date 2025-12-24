@@ -25,6 +25,22 @@ Component({
         group_name: {
             type: String,
             value: ''
+        },
+        ifTeamGame: {
+            type: String,
+            value: 'n'
+        },
+        private: {
+            type: String,
+            value: 'n'
+        },
+        has_gamble: {
+            type: String,
+            value: 'n'
+        },
+        privacy_password: {
+            type: String,
+            value: ''
         }
     },
 

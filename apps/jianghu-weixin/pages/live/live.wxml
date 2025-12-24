@@ -37,6 +37,7 @@
             ifTeamGame="{{item.ifTeamGame}}"
             private="{{item.private}}"
             privacy_password="{{item.privacy_password||''}}"
+            has_gamble="{{item.has_gamble}}"
           />
         </block>
       </view>

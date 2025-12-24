@@ -1,38 +1,48 @@
 <view
-  class="match-container"
+  class="match-container {{private === 'y' ? 'private-match' : ''}}"
   hover-class="hover-class"
   hover-stay-time="100"
   bindtap="onMatchItemTap"
 >
-  <!-- 左侧头像组 -->
-  <view class="avatar-column">
-    <AvatarGroup players="{{players}}" maxShow="4" showMode="group" />
+  <!-- 左上角三角形标识 (仅隐私比赛显示) -->
+  <view wx:if="{{private === 'y'}}" class="privacy-badge">
+    <text class="privacy-text">密</text>
   </view>
+
+  <!-- 左侧头像组 (保留占位) -->
+  <view class="avatar-column">
+    <view wx:if="{{private !== 'y'}}">
+      <AvatarGroup players="{{players}}" maxShow="4" showMode="group" />
+    </view>
+  </view>
+
   <!-- 右侧内容区 -->
   <view class="content-column">
-    <!-- 第1行:比赛名称 + star -->
+    <!-- 第1行:比赛名称 + star (隐私比赛不显示,但保留占位) -->
     <view class="row name-row">
-      <text class="game-name">{{gameName}}</text>
-      <view class="star-icon">
+      <text class="game-name" wx:if="{{private !== 'y'}}">{{gameName}}</text>
+      <view class="star-icon" wx:if="{{private !== 'y'}}">
         <view class="iconfont icon-score2" />
       </view>
     </view>
-    <!-- 第2行:进度条 -->
+    <!-- 第2行:进度条 (隐私比赛不显示,但保留占位) -->
     <view class="row progress-row">
-      <ProgressBar completedHoles="{{completedHoles}}" holes="{{holes}}" />
+      <view wx:if="{{private !== 'y'}}">
+        <ProgressBar completedHoles="{{completedHoles}}" holes="{{holes}}" />
+      </view>
     </view>
     <!-- 第3行:地点 -->
     <view class="row course-row">
-      <view class="iconfont icon-location" style="color: var(--theme-color);"></view>
-      <text class="course">{{course}}</text>
+      <view class="iconfont icon-location" style="color: {{private === 'y' ? '#ffffff' : 'var(--theme-color)'}};"></view>
+      <text class="course {{private === 'y' ? 'private-text-light' : ''}}">{{course}}</text>
     </view>
     <!-- 第4行:时间人数 -->
     <view class="row meta-row">
       <view class="time-watchers">
-        <view class="iconfont icon-clock" style="color: var(--theme-color);"></view>
-        <text class="start-time" style="margin-right: 20rpx;">{{gameStart}}</text>
-        <view class="iconfont icon-location" style="color: var(--theme-color);"></view>
-        <text class="watchers">{{watchersNumber}}</text>
+        <view class="iconfont icon-clock" style="color: {{private === 'y' ? '#ffffff' : 'var(--theme-color)'}};"></view>
+        <text class="start-time {{private === 'y' ? 'private-text-light' : ''}}" style="margin-right: 20rpx;">{{gameStart}}</text>
+        <view class="iconfont icon-location" style="color: {{private === 'y' ? '#ffffff' : 'var(--theme-color)'}};"></view>
+        <text class="watchers {{private === 'y' ? 'private-text-light' : ''}}">{{watchersNumber}}</text>
       </view>
     </view>
   </view>

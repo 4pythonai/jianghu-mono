@@ -34,15 +34,14 @@
 
 .avatar-column {
 	width: 100rpx; /* 固定头像列宽度 */
-	margin-right: 20rpx; /* 增加间距 */
+	margin-right: 40rpx; /* 增加间距 */
 	display: flex;
 	flex-direction: column;
 	justify-content: center; /* 垂直居中 */
 }
 
 .content-column {
-	margin-left: 20rpx;
-	width: calc(100% - 140rpx); /* 调整宽度计算, 为边框留出空间 */
+	flex: 1;
 	display: flex;
 	flex-direction: column;
 }
@@ -57,6 +56,7 @@
 /* 第1行:比赛名称 + star */
 .name-row {
 	justify-content: space-between;
+	min-height: 40rpx;
 }
 
 .game-name {
@@ -86,7 +86,7 @@
 /* 进度条容器 */
 .progress-row {
 	margin-bottom: 16rpx;
-	height: 24rpx;
+	min-height: 24rpx;
 	display: block;
 	width: 100%;
 }
@@ -128,4 +128,62 @@
 .watchers {
 	font-size: 22rpx;
 	color: var(--title-h2);
+}
+
+/* ========== 隐私比赛样式 ========== */
+.private-match {
+	background: linear-gradient(135deg, #34a853 0%, #27873f 100%);
+	position: relative;
+	overflow: hidden;
+	padding: 20rpx 24rpx;
+}
+
+.privacy-badge {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	border-left: 80rpx solid #FFD700;
+	border-bottom: 80rpx solid transparent;
+	z-index: 2;
+}
+
+.privacy-text {
+	position: absolute;
+	top: 16rpx;
+	left: -62rpx;
+	color: #000000;
+	font-size: 22rpx;
+	font-weight: bold;
+	transform: rotate(-45deg);
+	transform-origin: center center;
+	z-index: 3;
+	display: block;
+	line-height: 1;
+}
+
+.private-content {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.private-match .game-name {
+	color: #ffffff;
+	font-weight: bold;
+}
+
+.private-match .star-icon {
+	color: #ffffff;
+}
+
+.private-text-light {
+	color: #ffffff !important;
+	opacity: 0.95;
+}
+
+.private-match .course-row .iconfont,
+.private-match .meta-row .iconfont {
+	color: #ffffff !important;
 }
