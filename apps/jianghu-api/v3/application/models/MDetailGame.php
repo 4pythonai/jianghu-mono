@@ -53,7 +53,7 @@ class MDetailGame  extends CI_Model {
         $result = [
             'gameid' => (string)$game_info['gameid'],
             'uuid' => $game_info['uuid'],
-            'ifTeamGame' => $game_info['ifTeamGame'],
+            'is_team_game' => $game_info['is_team_game'],
             'scoring_type' => $game_info['scoring_type'],
             'private' => $game_info['private'],
             'privacy_password' => $game_info['privacy_password'],
@@ -118,7 +118,7 @@ class MDetailGame  extends CI_Model {
                 courseid,
                 status,
                 private,
-                ifTeamGame,
+                is_team_game,
                 scoring_type,
                 scoring_type,
                 privacy_password,

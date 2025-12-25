@@ -33,7 +33,7 @@ Component({
             type: String,
             value: ''
         },
-        ifTeamGame: {
+        is_team_game: {
             type: String,
             value: 'n'
         },

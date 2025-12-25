@@ -28,14 +28,30 @@ class Feed extends MY_Controller {
         $games = [];
         $whitelist_gameids = $this->MPrivateWhiteList->getUserWhiteListGameIds($userid);
         $allgames = $result['allgames'];
+
         foreach ($allgames as $game) {
             $gameid = $game['id'];
             $game_detail = $this->MDetailGame->getGameDetail($gameid);
+            //处理隐私情况,球队比赛情况
             if (in_array((int)$gameid, $whitelist_gameids, true)) {
                 $game_detail['private'] = 'n';
             }
+            // 处理球队比赛情况
+
+            if ($game_detail['is_team_game'] == 'y') {
+                $sql = "select team_game_title ,team_avatar from t_game ,t_team where t_game.team_id = t_team.id and t_game.id = $gameid ";
+                // debug($sql);
+                $row = $this->db->query($sql)->row_array();
+                $game_detail['extra_team_game_info'] = [
+                    'team_game_title' => $row['team_game_title'],
+                    'team_avatar' => $row['team_avatar']
+                ];
+            }
             $games[] = $game_detail;
         }
+
+
+
         $ret = [];
         $ret['debug'] = 42;
         $ret['code'] = 200;
