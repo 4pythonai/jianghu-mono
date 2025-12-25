@@ -48,14 +48,53 @@ Component({
         privacy_password: {
             type: String,
             value: ''
+        },
+        extra_team_game_info: {
+            type: Object,
+            value: null
         }
     },
 
     data: {
+        fullTeamAvatarUrl: ''
     },
 
+    observers: {
+        'extra_team_game_info': function(teamInfo) {
+            if (teamInfo && teamInfo.team_avatar) {
+                // 如果是相对路径（以 / 开头），拼接完整域名
+                if (teamInfo.team_avatar.startsWith('/')) {
+                    this.setData({
+                        fullTeamAvatarUrl: 'https://qiaoyincapital.com' + teamInfo.team_avatar
+                    });
+                    console.log('🔗 团队头像完整URL:', 'https://qiaoyincapital.com' + teamInfo.team_avatar);
+                } else {
+                    // 如果已经是完整URL，直接使用
+                    this.setData({
+                        fullTeamAvatarUrl: teamInfo.team_avatar
+                    });
+                }
+            }
+        }
+    },
+
+    attached() {
+        // 组件实例被放入页面节点树后执行
+        console.log('🎮 GameItem 组件加载:', {
+            is_team_game: this.properties.is_team_game,
+            extra_team_game_info: this.properties.extra_team_game_info,
+            gameName: this.properties.gameName
+        });
+    },
 
     methods: {
+        onTeamAvatarLoad(e) {
+            console.log('✅ 团队头像加载成功:', this.properties.extra_team_game_info?.team_avatar);
+        },
+
+        onTeamAvatarError(e) {
+            console.error('❌ 团队头像加载失败:', this.properties.extra_team_game_info?.team_avatar, e.detail);
+        },
         _groupPlayersByGroupId(players, gameData) {
 
             if (!players || !Array.isArray(players)) {

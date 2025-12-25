@@ -40,6 +40,21 @@
 	justify-content: center; /* 垂直居中 */
 }
 
+/* 团队头像容器 */
+.team-avatar-wrapper {
+	width: 100%;
+	height: 100rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.team-avatar {
+	width: 100rpx;
+	height: 100rpx;
+	border-radius: 12rpx;
+}
+
 .content-column {
 	flex: 1;
 	display: flex;

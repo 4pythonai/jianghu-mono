@@ -11,7 +11,12 @@
 
   <!-- 左侧头像组 (保留占位) -->
   <view class="avatar-column">
-    <view wx:if="{{private !== 'y'}}">
+    <!-- 团队赛显示团队头像 -->
+    <view wx:if="{{is_team_game === 'y' && fullTeamAvatarUrl}}" class="team-avatar-wrapper">
+      <image class="team-avatar" src="{{fullTeamAvatarUrl}}" mode="aspectFill" bindload="onTeamAvatarLoad" binderror="onTeamAvatarError"></image>
+    </view>
+    <!-- 普通比赛显示玩家头像组 -->
+    <view wx:elif="{{private !== 'y' && is_team_game !== 'y'}}">
       <AvatarGroup players="{{players}}" maxShow="4" showMode="group" />
     </view>
   </view>
@@ -20,14 +25,17 @@
   <view class="content-column">
     <!-- 第1行:比赛名称 + 星标 (隐私比赛不显示,但保留占位) -->
     <view class="row name-row">
-      <text class="game-name" wx:if="{{private !== 'y'}}">{{gameName}}</text>
+      <!-- 团队赛显示团队标题 -->
+      <text class="game-name" wx:if="{{is_team_game === 'y' && extra_team_game_info}}">{{extra_team_game_info.team_game_title}}</text>
+      <!-- 普通比赛显示普通标题 -->
+      <text class="game-name" wx:elif="{{private !== 'y'}}">{{gameName}}</text>
       <view class="star-icon" wx:if="{{private !== 'y'}}">
         <view class="iconfont icon-score2" />
       </view>
     </view>
-    <!-- 第2行:进度条 (隐私比赛不显示,但保留占位) -->
+    <!-- 第2行:进度条 (隐私比赛和团队赛不显示,但保留占位) -->
     <view class="row progress-row">
-      <view wx:if="{{private !== 'y'}}">
+      <view wx:if="{{private !== 'y' && is_team_game !== 'y'}}">
         <ProgressBar completedHoles="{{completedHoles}}" holes="{{holes}}" />
       </view>
     </view>

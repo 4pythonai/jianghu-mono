@@ -39,6 +39,7 @@
             private="{{item.private}}"
             privacy_password="{{item.privacy_password||''}}"
             has_gamble="{{item.has_gamble}}"
+            extra_team_game_info="{{item.extra_team_game_info}}"
           />
         </block>
       </view>
