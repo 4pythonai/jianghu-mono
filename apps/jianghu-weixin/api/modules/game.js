@@ -13,6 +13,7 @@ const game = {
     updateGameScoringType: (data, options) => request('/Game/updateGameScoringType', data, options),
     updateGameGroupAndPlayers: (data, options) => request('/Game/updateGameGroupAndPlayers', data, options),
     saveGameScore: (data, options) => request('/Game/saveGameScore', data, options),
+    savePrivateWhiteList: (data, options) => request('/Game/savePrivateWhiteList', data, options),
     // set gameScoreStype,设置计分风格
     gameScoreStype: (data, options) => request('/Game/gameScoreStype', data, options),
     // 用户反馈

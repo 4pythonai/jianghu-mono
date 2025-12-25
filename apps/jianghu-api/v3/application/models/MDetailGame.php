@@ -45,14 +45,17 @@ class MDetailGame  extends CI_Model {
         $tmp = $this->getGameAbstract($gameid);
         $gameAbstract = $course_info['coursename'] . '-' . implode('/', $tmp);
 
+        // 是否有游戏
+        $has_gamble = $this->getHasGamble($gameid);
+
 
         // 组装返回数据
         $result = [
             'gameid' => (string)$game_info['gameid'],
             'uuid' => $game_info['uuid'],
-            'private' => $game_info['private'],
             'ifTeamGame' => $game_info['ifTeamGame'],
             'scoring_type' => $game_info['scoring_type'],
+            'private' => $game_info['private'],
             'privacy_password' => $game_info['privacy_password'],
             'creatorid' => $game_info['creatorid'],
             'creator' => $creator,
@@ -74,6 +77,7 @@ class MDetailGame  extends CI_Model {
             'scores' => $scores,
             'groups' => $groups,
             'gameAbstract' => $gameAbstract,
+            'has_gamble' => $has_gamble,
         ];
 
         return $result;
@@ -163,29 +167,8 @@ class MDetailGame  extends CI_Model {
      * @return array 球局统计信息
      */
     public function getGameStats($game_id) {
-        // 计算已完成洞数 - 只有当某个洞所有玩家都记分时才算完成
-        $completed_holes_query = "
-            SELECT MAX(hole_id) as max_completed_hole
-            FROM (
-                SELECT hole_id
-                FROM t_game_score gs
-                WHERE gs.gameid = ? AND gs.score IS NOT NULL
-                GROUP BY hole_id
-                HAVING COUNT(*) = (
-                    SELECT COUNT(*)
-                    FROM t_game_group_user ggu
-                    WHERE ggu.gameid = ? AND ggu.confirmed = 1
-                )
-            ) completed_holes_subquery
-        ";
-
-        $completed_result = $this->db->query($completed_holes_query, [$game_id, $game_id]);
-        $completed_holes = 0;
-
-        if ($completed_result->num_rows() > 0) {
-            $completed_row = $completed_result->row_array();
-            $completed_holes = (int)$completed_row['max_completed_hole'] ?: 0;
-        }
+        // 计算已完成洞数
+        $completed_holes = $this->calculateCompletedHoles($game_id);
 
         // 计算总洞数：根据球局使用的半场数量
         $courts_query = "
@@ -408,5 +391,54 @@ class MDetailGame  extends CI_Model {
             $names[] = $row['courtname'];
         }
         return $names;
+    }
+
+    /**
+     * 检查球局是否有游戏
+     * @param int $gameid 球局ID
+     * @return string 'y' 表示有游戏，'n' 表示没有游戏
+     */
+    private function getHasGamble($gameid) {
+        $sql = "SELECT COUNT(*) as count FROM t_gamble_x_runtime WHERE gameid = ?";
+        $result = $this->db->query($sql, [$gameid]);
+        $row = $result->row_array();
+        return $row['count'] > 0 ? 'y' : 'n';
+    }
+
+    /**
+     * 计算已完成洞数
+     * 只有当某个洞所有玩家都记分时才算完成
+     * 允许跳洞,统计所有玩家都有分数的洞的数量
+     * @param int $game_id 球局ID
+     * @return int 已完成的洞数
+     */
+    private function calculateCompletedHoles($game_id) {
+        $completed_holes_query = "
+            SELECT COUNT(*) as completed_holes_count
+            FROM (
+                SELECT hindex
+                FROM t_game_score gs
+                WHERE gs.gameid = ? AND gs.score IS NOT NULL
+                GROUP BY hindex
+                HAVING COUNT(*) = (
+                    SELECT COUNT(*)
+                    FROM t_game_group_user ggu
+                    WHERE ggu.gameid = ?
+                )
+            ) completed_holes_subquery
+        ";
+
+
+        $completed_result = $this->db->query($completed_holes_query, [$game_id, $game_id]);
+        // 打印出来实际的sql:
+        // debug($this->db->last_query());
+        $completed_holes = 0;
+
+        if ($completed_result->num_rows() > 0) {
+            $completed_row = $completed_result->row_array();
+            $completed_holes = (int)$completed_row['completed_holes_count'] ?: 0;
+        }
+
+        return $completed_holes;
     }
 }

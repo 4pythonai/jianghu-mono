@@ -27,3 +27,7 @@
 ## Configuration & Secrets
 - Place environment credentials in the server-side `config-local.php` templates or your deployment platform’s secret store; never commit credentials.  
 - Document new environment variables in `Docs/` and alert maintainers if API endpoints require whitelisting or extra scopes in WeChat.
+
+
+# Dont
+## write test code

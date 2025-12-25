@@ -26,10 +26,14 @@ class Feed extends MY_Controller {
         $get_data_config = ['userid' => $userid];
         $result  =  $this->MGamePipeRunner->GameFeedHandler($get_data_config);
         $games = [];
+        $whitelist_gameids = $this->MPrivateWhiteList->getUserWhiteListGameIds($userid);
         $allgames = $result['allgames'];
         foreach ($allgames as $game) {
             $gameid = $game['id'];
             $game_detail = $this->MDetailGame->getGameDetail($gameid);
+            if (in_array((int)$gameid, $whitelist_gameids, true)) {
+                $game_detail['private'] = 'n';
+            }
             $games[] = $game_detail;
         }
         $ret = [];

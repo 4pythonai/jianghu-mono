@@ -10,6 +10,7 @@
 		"pages/gameDetail/bbs/bbs",
 		"pages/gameDetail/gamble/gamble",
 		"pages/groupsList/groupsList",
+		"pages/private-access/private-access",
 		"pages/gameDetail/RuntimeConfigList/RuntimeConfigList",
 		"pages/createGame/moreCreate/moreCreate",
 		"pages/createGame/commonCreate/commonCreate",

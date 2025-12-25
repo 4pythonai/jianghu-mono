@@ -1,0 +1,220 @@
+.page {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #52C263 0%, #3FA050 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 60rpx;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* 解锁按钮 */
+.unlock-button {
+    width: 100%;
+    max-width: 600rpx;
+    height: 140rpx;
+    background: #ffffff;
+    border-radius: 70rpx;
+    box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 60rpx;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.lock-icon {
+    font-size: 48rpx;
+    margin-right: 24rpx;
+    opacity: 0.7;
+    line-height: 1;
+}
+
+.unlock-text {
+    font-size: 36rpx;
+    color: #333333;
+    font-weight: 500;
+    letter-spacing: 2rpx;
+}
+
+/* 底部提示 */
+.bottom-tip {
+    position: absolute;
+    bottom: 200rpx;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.key-icon {
+    font-size: 56rpx;
+    margin-bottom: 24rpx;
+    opacity: 0.9;
+    line-height: 1;
+}
+
+.tip-text {
+    font-size: 28rpx;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* 密码输入弹窗 */
+.password-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.modal-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-radius: 32rpx 32rpx 0 0;
+    padding: 40rpx 48rpx 60rpx;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* 弹窗头部 */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40rpx;
+}
+
+.modal-title {
+    font-size: 36rpx;
+    font-weight: 600;
+    color: #222222;
+}
+
+.close-icon {
+    width: 48rpx;
+    height: 48rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40rpx;
+    color: #999999;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+/* 弹窗内容 */
+.modal-body {
+    margin-bottom: 40rpx;
+}
+
+.game-info {
+    background: #f7f8fa;
+    border-radius: 16rpx;
+    padding: 24rpx;
+    margin-bottom: 32rpx;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16rpx;
+}
+
+.info-row:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    font-size: 28rpx;
+    color: #666666;
+    margin-right: 16rpx;
+    min-width: 80rpx;
+}
+
+.info-value {
+    font-size: 28rpx;
+    color: #222222;
+    font-weight: 500;
+    flex: 1;
+}
+
+.password-input {
+    width: 100%;
+    height: 96rpx;
+    background: #f7f8fa;
+    border-radius: 16rpx;
+    padding: 0 32rpx;
+    font-size: 32rpx;
+    color: #222222;
+    box-sizing: border-box;
+}
+
+.input-placeholder {
+    color: #aaaaaa;
+}
+
+.error-message {
+    display: block;
+    margin-top: 16rpx;
+    font-size: 24rpx;
+    color: #ff3b30;
+    text-align: center;
+}
+
+/* 弹窗底部 */
+.modal-footer {
+    display: flex;
+    gap: 24rpx;
+}
+
+.cancel-btn,
+.confirm-btn {
+    flex: 1;
+    height: 96rpx;
+    line-height: 96rpx;
+    border-radius: 16rpx;
+    font-size: 32rpx;
+    border: none;
+}
+
+.cancel-btn {
+    background: #f7f8fa;
+    color: #666666;
+}
+
+.confirm-btn {
+    background: linear-gradient(135deg, #52C263 0%, #3FA050 100%);
+    color: #ffffff;
+    font-weight: 500;
+}

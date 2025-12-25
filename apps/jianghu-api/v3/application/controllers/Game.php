@@ -153,6 +153,37 @@ class Game extends MY_Controller {
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
+    public function savePrivateWhiteList() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? intval($json_paras['gameid']) : 0;
+        $request_userid = isset($json_paras['userid']) ? intval($json_paras['userid']) : 0;
+        $userid = intval($this->getUser());
+
+        if ($gameid <= 0) {
+            echo json_encode(['code' => 400, 'message' => '缺少有效的 gameid'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        if ($request_userid > 0 && $request_userid !== $userid) {
+            echo json_encode(['code' => 403, 'message' => 'userid 与登录用户不匹配'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MPrivateWhiteList->addWhiteList($userid, $gameid);
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = $result['created'] ? '白名单已添加' : '白名单已存在';
+        $ret['data'] = [
+            'gameid' => $gameid,
+            'userid' => $userid,
+            'created' => $result['created'],
+            'record_id' => $result['record_id']
+        ];
+
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
 
     public function updateGameOpenTime() {
         $json_paras = json_decode(file_get_contents('php://input'), true);

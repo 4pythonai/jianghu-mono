@@ -69,18 +69,42 @@
 	color: var(--tilte-h1);
 }
 
-/* 统一图标样式 */
+/* 星标图标 */
 .star-icon {
 	width: 36rpx;
 	height: 36rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	color: var(--theme-color);
+	margin-left: 20rpx;
 }
 
-.star-icon {
+/* 地点和时间区域包装器 */
+.location-time-wrapper {
+	display: flex;
+	align-items: center;
+}
+
+.location-time-content {
+	flex: 1;
+}
+
+/* 骰子图标包装器 */
+.game-icon-wrapper {
+	display: flex;
+	align-items: center;
 	margin-left: 20rpx;
+}
+
+.game-icon {
+	width: 36rpx;
+	height: 36rpx;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	color: var(--theme-color);
+	font-size: 32rpx;
 }
 
 /* 进度条容器 */

@@ -22,29 +22,29 @@
 
 .progress-completed {
 	height: 4rpx;
-	background-color: #025028 !important;
+	background-color: #1a5c2e !important;
 	position: relative;
 }
 
 .progress-remaining {
 	flex-grow: 1;
 	height: 4rpx;
-	background-color: #9bdfc1 !important;
+	background-color: #1a5c2e !important;
 	position: relative;
 }
 
 .progress-ball {
 	position: absolute;
-	top: 50%;
+	top: 55%;
 	transform: translate(-50%, -50%);
 	width: 32rpx;
 	height: 32rpx;
 	border-radius: 50%;
-	background-color: #ffffff;
+	background-color: #1a5c2e;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: #333333;
+	color: #ffffff;
 	font-size: 24rpx;
 	font-weight: bold;
 	z-index: 3;
@@ -72,9 +72,7 @@
 			rgba(0, 0, 0, 0.03) 1.5rpx,
 			rgba(0, 0, 0, 0.03) 2.5rpx,
 			transparent 2.5rpx
-		);
-	text-shadow: 0 1rpx 1rpx rgba(0, 0, 0, 0.1), 0 -1rpx 1rpx
-		rgba(255, 255, 255, 0.8);
+	);
+	text-shadow: 0 1rpx 2rpx rgba(0, 0, 0, 0.3);
 	line-height: 1;
-	margin-top: -6rpx;
 }

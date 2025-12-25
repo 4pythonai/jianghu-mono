@@ -1,0 +1,60 @@
+<view class="page">
+    <!-- 主要解锁按钮 -->
+    <view class="unlock-button" bindtap="onUnlockTap">
+        <view class="lock-icon">🔒</view>
+        <text class="unlock-text">解锁密码</text>
+    </view>
+
+    <!-- 底部提示信息 -->
+    <view class="bottom-tip">
+        <view class="key-icon">🔑</view>
+        <text class="tip-text">此赛事为加密赛事，请输入密码</text>
+    </view>
+
+    <!-- 密码输入弹窗 -->
+    <view class="password-modal" wx:if="{{showPasswordModal}}">
+        <view class="modal-mask" bindtap="onCloseModal"></view>
+        <view class="modal-content">
+            <view class="modal-header">
+                <text class="modal-title">输入密码</text>
+                <view class="close-icon" bindtap="onCloseModal">✕</view>
+            </view>
+
+            <view class="modal-body">
+                <view class="game-info" wx:if="{{gameDetail}}">
+                    <view class="info-row">
+                        <text class="info-label">比赛:</text>
+                        <text class="info-value">{{gameDetail.game_name || '未命名比赛'}}</text>
+                    </view>
+                    <view class="info-row">
+                        <text class="info-label">球场:</text>
+                        <text class="info-value">{{gameDetail.course}}</text>
+                    </view>
+                </view>
+
+                <input
+                    class="password-input"
+                    type="text"
+                    password="true"
+                    placeholder="请输入密码"
+                    placeholder-class="input-placeholder"
+                    value="{{passwordInput}}"
+                    bindinput="onPasswordInput"
+                    focus="{{showPasswordModal}}"
+                />
+
+                <text class="error-message" wx:if="{{errorMessage}}">{{errorMessage}}</text>
+            </view>
+
+            <view class="modal-footer">
+                <button class="cancel-btn" bindtap="onCloseModal">取消</button>
+                <button
+                    class="confirm-btn"
+                    bindtap="onSubmit"
+                    loading="{{submitting}}"
+                    disabled="{{loading || submitting}}"
+                >确认</button>
+            </view>
+        </view>
+    </view>
+</view>
