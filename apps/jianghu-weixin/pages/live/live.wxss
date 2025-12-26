@@ -25,6 +25,18 @@
 	z-index: 1;
 }
 
+/* 导航栏内层 - 改为相对定位，随内容滚动 */
+.navbar-transparent .lxy-nav-bar__inner {
+	position: relative !important;
+	top: auto !important;
+	left: auto !important;
+}
+
+/* 占位符隐藏（因为不再需要占位） */
+.navbar-transparent .lxy-nav-bar__placeholder {
+	display: none !important;
+}
+
 /* 紧凑搜索框样式 */
 .navbar-compact-search .lxy-nav-bar__center {
 	flex: 1 !important;
