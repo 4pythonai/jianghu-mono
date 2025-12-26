@@ -1,4 +1,7 @@
 {
 	"navigationBarTitleText": "比赛详情",
-	"usingComponents": {}
+	"navigationStyle": "custom",
+	"usingComponents": {
+		"navBar": "/components/navBar/navBar"
+	}
 }

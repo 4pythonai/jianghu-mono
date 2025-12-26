@@ -1,5 +1,7 @@
 {
 	"usingComponents": {
-		"GameItem": "/components/GameItem/GameItem"
-	}
+		"GameItem": "/components/GameItem/GameItem",
+		"navBar": "/components/navBar/navBar"
+	},
+	"navigationStyle": "custom"
 }

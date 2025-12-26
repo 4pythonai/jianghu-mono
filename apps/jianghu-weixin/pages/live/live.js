@@ -6,7 +6,19 @@ Page({
         currentTab: 0,  // 当前选中的Tab索引
         games: [],      // 游戏数据
         loading: false, // 加载状态
-        isEmpty: false  // 是否为空
+        isEmpty: false, // 是否为空
+        navbarWrapperHeight: 0 // 导航栏容器高度（屏幕1/4）
+    },
+
+    // 搜索处理函数
+    handleSearch() {
+        console.log('🔍 点击搜索框')
+        // TODO: 跳转到搜索页面或显示搜索界面
+        wx.showToast({
+            title: '搜索功能开发中',
+            icon: 'none',
+            duration: 2000
+        })
     },
 
     // Tab切换处理函数
@@ -66,6 +78,16 @@ Page({
     onLoad() {
         // 页面加载时执行
         console.log('🎮 Live页面加载')
+
+        // 计算导航栏容器高度为屏幕的1/4
+        const app = getApp()
+        const screenHeight = app.globalSystemInfo?.screenHeight || app.globalData.systemInfo?.screenHeight || 667
+        const navbarWrapperHeight = screenHeight / 4
+        this.setData({
+            navbarWrapperHeight: navbarWrapperHeight
+        })
+        console.log('📏 导航栏容器高度设置为屏幕1/4:', navbarWrapperHeight + 'px')
+
         this.loadGames()
     },
 

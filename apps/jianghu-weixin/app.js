@@ -130,10 +130,107 @@ App({
             }
 
             console.log('📱 系统信息获取成功:', this.globalData.systemInfo)
+
+            // 初始化 globalSystemInfo 用于自定义导航栏组件
+            this.initNavBarSystemInfo()
         } catch (error) {
             console.error('❌ 获取系统信息失败:', error)
             // 降级处理:如果新 API 不可用, 尝试使用旧 API
             this.fallbackGetSystemInfo()
+        }
+    },
+
+    /**
+     * 初始化导航栏所需的系统信息
+     * 用于自定义导航栏组件（navBar）
+     */
+    initNavBarSystemInfo() {
+        console.log('🔧 开始初始化导航栏系统信息...')
+        try {
+            let systemInfo = wx.getSystemInfoSync()
+            console.log('🔧 步骤1: 获取系统信息成功')
+            let ios = !!(systemInfo.system.toLowerCase().search('ios') + 1)
+            console.log('🔧 步骤2: 判断系统类型 ios =', ios)
+            let rect
+
+            try {
+                rect = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null
+                console.log('🔧 步骤3: 获取胶囊按钮信息', rect)
+                if (rect === null) {
+                    throw 'getMenuButtonBoundingClientRect error'
+                }
+                // 取值为0的情况
+                if (!rect.width || !rect.top || !rect.left || !rect.height) {
+                    throw 'getMenuButtonBoundingClientRect error'
+                }
+            } catch (error) {
+                // 胶囊按钮获取失败，使用默认值
+                let gap = '' // 胶囊按钮上下间距
+                let width = 96 // 胶囊的宽度
+                if (systemInfo.platform === 'android') {
+                    gap = 8
+                    width = 96
+                } else if (systemInfo.platform === 'devtools') {
+                    if (ios) {
+                        gap = 5.5
+                    } else {
+                        gap = 7.5
+                    }
+                } else {
+                    gap = 4
+                    width = 88
+                }
+                if (!systemInfo.statusBarHeight) {
+                    systemInfo.statusBarHeight = systemInfo.screenHeight - systemInfo.windowHeight - 20
+                }
+                rect = {
+                    bottom: systemInfo.statusBarHeight + gap + 32,
+                    height: 32,
+                    left: systemInfo.windowWidth - width - 10,
+                    right: systemInfo.windowWidth - 10,
+                    top: systemInfo.statusBarHeight + gap,
+                    width: width
+                }
+            }
+
+            let navBarHeight = ''
+            if (!systemInfo.statusBarHeight) {
+                systemInfo.statusBarHeight = systemInfo.screenHeight - systemInfo.windowHeight - 20
+                navBarHeight = (function() {
+                    let gap = rect.top - systemInfo.statusBarHeight
+                    return 2 * gap + rect.height
+                })()
+                systemInfo.statusBarHeight = 0
+                systemInfo.navBarExtendHeight = 0
+            } else {
+                navBarHeight = (function() {
+                    let gap = rect.top - systemInfo.statusBarHeight
+                    return systemInfo.statusBarHeight + 2 * gap + rect.height
+                })()
+                if (ios) {
+                    systemInfo.navBarExtendHeight = 4
+                } else {
+                    systemInfo.navBarExtendHeight = 0
+                }
+            }
+
+            systemInfo.navBarHeight = navBarHeight
+            systemInfo.capsulePosition = rect
+            systemInfo.ios = ios
+
+            console.log('🔧 步骤4: 计算完成，准备保存到 globalSystemInfo')
+            this.globalSystemInfo = systemInfo
+            console.log('🔧 步骤5: 已保存到 this.globalSystemInfo')
+
+            console.log('📱 导航栏系统信息初始化成功:', {
+                statusBarHeight: systemInfo.statusBarHeight,
+                navBarHeight: systemInfo.navBarHeight,
+                capsulePosition: systemInfo.capsulePosition,
+                ios: systemInfo.ios
+            })
+        } catch (error) {
+            console.error('❌ 导航栏系统信息初始化失败:', error)
+            console.error('❌ 错误堆栈:', error.stack)
         }
     },
 
@@ -145,6 +242,8 @@ App({
             success: (res) => {
                 this.globalData.systemInfo = res
                 console.log('📱 系统信息获取成功(降级模式)')
+                // 初始化导航栏系统信息
+                this.initNavBarSystemInfo()
             },
             fail: (err) => {
                 console.error('❌ 获取系统信息失败(降级模式):', err)

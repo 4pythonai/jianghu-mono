@@ -1,7 +1,24 @@
 <view class="container">
-  <!-- Banner区域 -->
-  <view class="banner">
-    <image src="/images/traning.png" mode="aspectFill" class="banner-image"></image>
+  <!-- 导航栏容器（带背景图，高度为屏幕1/4） -->
+  <view class="navbar-wrapper" style="height: {{navbarWrapperHeight}}px;">
+    <!-- 背景图片 -->
+    <image src="/images/traning.png" mode="aspectFill" class="navbar-bg-image"></image>
+    <!-- 导航栏 -->
+    <navBar
+      extClass="navbar-transparent navbar-compact-search"
+      background="transparent"
+      backgroundColorTop="transparent"
+      back="{{false}}"
+      home="{{false}}"
+      searchBar="{{true}}"
+      searchText="搜索"
+      bindsearch="handleSearch"
+    >
+      <!-- 左侧 logo 插槽 -->
+      <view slot="left" class="navbar-logo-wrapper">
+        <image src="/assets/logos/logo1.png" mode="aspectFit" class="navbar-logo"></image>
+      </view>
+    </navBar>
   </view>
   <!-- Tab切换区域 -->
   <view class="tab-container">

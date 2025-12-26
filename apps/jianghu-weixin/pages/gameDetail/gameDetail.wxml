@@ -1,3 +1,9 @@
+<navBar
+  title="比赛详情"
+  background="#fff"
+  back="{{true}}"
+  home="{{false}}"
+/>
 <view class="redirect-placeholder">
   <text>正在跳转...</text>
 </view>
