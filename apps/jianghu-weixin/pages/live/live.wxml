@@ -5,20 +5,17 @@
     <image src="/images/traning.png" mode="aspectFill" class="navbar-bg-image"></image>
     <!-- 导航栏 -->
     <navBar
-      extClass="navbar-transparent navbar-compact-search"
+      extClass="navbar-transparent"
       background="transparent"
       backgroundColorTop="transparent"
-      back="{{false}}"
-      home="{{false}}"
+      logoSrc="/assets/logos/logo1.png"
+      logoWidth="200rpx"
+      logoHeight="132px"
       searchBar="{{true}}"
       searchText="搜索"
+      searchWidth="187rpx"
       bindsearch="handleSearch"
-    >
-      <!-- 左侧 logo 插槽 -->
-      <view slot="left" class="navbar-logo-wrapper">
-        <image src="/assets/logos/logo1.png" mode="aspectFit" class="navbar-logo"></image>
-      </view>
-    </navBar>
+    />
   </view>
   <!-- Tab切换区域 -->
   <view class="tab-container">

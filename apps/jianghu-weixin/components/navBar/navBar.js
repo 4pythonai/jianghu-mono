@@ -58,6 +58,24 @@ Component({
     delta: {
       type: Number,
       value: 1
+    },
+    // Logo 相关配置
+    logoSrc: {
+      type: String,
+      value: ''
+    },
+    logoWidth: {
+      type: String,
+      value: '200rpx'
+    },
+    logoHeight: {
+      type: String,
+      value: '32px'
+    },
+    // 搜索框宽度
+    searchWidth: {
+      type: String,
+      value: '187rpx'
     }
   },
   created: function() {
