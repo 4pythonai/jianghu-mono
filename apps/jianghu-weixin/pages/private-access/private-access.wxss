@@ -10,6 +10,21 @@
     position: relative;
 }
 
+/* 自定义导航栏样式 - 透明背景，白色文字 */
+.custom-nav-bar {
+    background-color: transparent !important;
+    border-bottom: none !important;
+}
+
+.nav-title {
+    color: #ffffff !important;
+}
+
+.back-arrow {
+    border-left-color: #ffffff !important;
+    border-bottom-color: #ffffff !important;
+}
+
 /* 解锁按钮 */
 .unlock-button {
     width: 100%;
