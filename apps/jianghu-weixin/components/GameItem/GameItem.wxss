@@ -86,13 +86,14 @@
 
 /* 星标图标 */
 .star-icon {
-	width: 36rpx;
-	height: 36rpx;
+	width: 54rpx;        /* 放大1.5倍: 36 × 1.5 */
+	height: 54rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	color: var(--theme-color);
 	margin-left: 20rpx;
+	font-size: 48rpx;    /* 添加字体大小 */
 }
 
 /* 地点和时间区域包装器 */
@@ -113,13 +114,13 @@
 }
 
 .game-icon {
-	width: 36rpx;
-	height: 36rpx;
+	width: 54rpx;        /* 放大1.5倍: 36 × 1.5 */
+	height: 54rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	color: var(--theme-color);
-	font-size: 32rpx;
+	font-size: 48rpx;    /* 放大1.5倍: 32 × 1.5 */
 }
 
 /* 进度条容器 */
