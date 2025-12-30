@@ -20,7 +20,6 @@ const user = {
     // friends 
     getFriendList: (data, options) => request('/User/getFriendList', data, options),
 
-    // createAndSelect
     createAndSelect: (data, options) => request('/User/createAndSelect', data, options),
 
     // search by nickname 

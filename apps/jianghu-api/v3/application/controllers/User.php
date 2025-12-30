@@ -168,7 +168,7 @@ class User extends MY_Controller {
         // 有手机号,先搜索
 
         $searchResult = $this->MUser->doubleSearchMobile($mobile);
-
+        // debug($searchResult);
 
         // 找到手机号相关的用户
         if ($searchResult['user']) {

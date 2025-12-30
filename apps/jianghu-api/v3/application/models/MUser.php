@@ -148,7 +148,7 @@ class MUser  extends CI_Model {
 
   public function transferJHUser($jhuser) {
     // downloadJHAvatar
-    $jh_avatar_url = "http://s1.golf-brother.com/data/attach/" . $jhuser['avatar'] . "/" . $jhuser['covername'];
+    $jh_avatar_url = "http://s1.golf-brother.com/data/attach/" . $jhuser['coverpath'] . "/" . $jhuser['covername'];
     $avatar_result = downloadJHAvatar($jh_avatar_url);
 
     if ($avatar_result['success']) {
