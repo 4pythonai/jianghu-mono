@@ -140,6 +140,79 @@ class MGame  extends CI_Model {
       ->update('t_game', ['status' => 'finished']);
   }
 
+  /**
+   * 从球局中移除玩家
+   * @param int $gameid 球局ID
+   * @param int $userid 要移除的用户ID
+   * @return array 操作结果
+   */
+  public function removePlayer($gameid, $userid) {
+    // 检查是否是创建者
+    $game = $this->db->select('creatorid')
+      ->from('t_game')
+      ->where('id', $gameid)
+      ->get()
+      ->row_array();
+
+    if ($game && (int)$game['creatorid'] === (int)$userid) {
+      return [
+        'code' => 403,
+        'message' => '不能移除比赛创建者'
+      ];
+    }
+
+    // 获取用户所在的 groupid
+    $playerRecord = $this->db->select('groupid')
+      ->from('t_game_group_user')
+      ->where('gameid', $gameid)
+      ->where('userid', $userid)
+      ->get()
+      ->row_array();
+
+    if (!$playerRecord) {
+      return [
+        'code' => 404,
+        'message' => '未找到该玩家'
+      ];
+    }
+
+    $groupid = $playerRecord['groupid'];
+
+    // 1. 删除该用户的比分记录
+    $this->db->where('gameid', $gameid)
+      ->where('userid', $userid)
+      ->delete('t_game_score');
+
+    // 2. 删除该 group 的 gamble 配置
+    $this->db->where('gameid', $gameid)
+      ->where('groupid', $groupid)
+      ->delete('t_gamble_x_runtime');
+
+    // 3. 删除玩家
+    $this->db->where('gameid', $gameid)
+      ->where('userid', $userid)
+      ->delete('t_game_group_user');
+
+    // 4. 检查该 group 是否还有用户，如果没有则删除该组
+    $remainingPlayers = $this->db->select('COUNT(*) as count')
+      ->from('t_game_group_user')
+      ->where('gameid', $gameid)
+      ->where('groupid', $groupid)
+      ->get()
+      ->row_array();
+
+    if ((int)$remainingPlayers['count'] === 0) {
+      $this->db->where('gameid', $gameid)
+        ->where('groupid', $groupid)
+        ->delete('t_game_group');
+    }
+
+    return [
+      'code' => 200,
+      'message' => '移除成功'
+    ];
+  }
+
 
   public function gameJoinHandler($userid, $gameid, $joinType = 'wxshare') {
     $response = [

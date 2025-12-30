@@ -490,4 +490,18 @@ class Game extends MY_Controller {
         $this->MGame->finishGame($gameid, null);
         echo json_encode(['code' => 200, 'message' => '结束球局成功'], JSON_UNESCAPED_UNICODE);
     }
+
+    public function removePlayer() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+        $userid = isset($json_paras['userid']) ? (int)$json_paras['userid'] : 0;
+
+        if ($gameid <= 0 || $userid <= 0) {
+            echo json_encode(['code' => 400, 'message' => '参数错误'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MGame->removePlayer($gameid, $userid);
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
+    }
 }

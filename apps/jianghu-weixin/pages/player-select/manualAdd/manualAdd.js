@@ -32,12 +32,14 @@ Page({
 
     syncAttenedPlayers() {
         const players = gameStore.players
-        console.log('🔵 [manualAdd] syncAttenedPlayers:', players)
+        const creatorid = gameStore.gameData?.creatorid
+        const currentUserid = getApp().globalData.userInfo?.userid
+        console.log('🔵 [manualAdd] syncAttenedPlayers:', players, 'creatorid:', creatorid, 'currentUserid:', currentUserid)
         if (players && players.length > 0) {
             const attenedPlayers = players.map(p => ({
                 nickname: p.nickname || p.wx_nickname || '未知',
                 avatar: p.avatar || '/images/default-avatar.png',
-                showDelete: 'y',
+                showDelete: String(p.userid) === String(creatorid) ? 'n' : 'y',
                 userid: p.userid
             }))
             this.setData({ attenedPlayers })
