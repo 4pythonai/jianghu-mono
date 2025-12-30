@@ -30,6 +30,8 @@ const game = {
     getGameInviteQrcode: (data, options) => request('/Game/getGameInviteQrcode', data, options),
     // 加入比赛
     joinGame: (data, options) => request('/Game/joinGame', data, options),
+    // 移除球员
+    removePlayer: (data, options) => request('/Game/removePlayer', data, options),
 
 }
 

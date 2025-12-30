@@ -1,4 +1,5 @@
 .attened-players-container {
+	margin-top: 40rpx;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 24rpx;
@@ -29,13 +30,11 @@
 
 .delete-icon {
 	position: absolute;
-	top: -8rpx;
-	right: -8rpx;
-	width: 32rpx;
-	height: 32rpx;
-	background-color: #fff;
+	top: -16rpx;
+	right: -16rpx;
+	width: 48rpx;
+	height: 48rpx;
 	border-radius: 50%;
-	box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.15);
 }
 
 .player-nickname {

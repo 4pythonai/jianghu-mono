@@ -90,6 +90,53 @@ onConfigChange() {
 - UI状态直接计算自properties，不维护内部状态
 - 使用observers将复杂计算转换为简单的data绑定
 
+**3. Page 与 Component 的关键区别**
+- **Page 不支持 `observers`**，这是 Component 独有的特性
+- 在 Page 中使用 `storeBindings` 绑定 store 数据时，数据变化不会自动触发 observers
+- **解决方案**：在 Page 的 `onShow` 或 `onLoad` 中手动同步 store 数据
+
+```javascript
+// ❌ 错误：在 Page 中使用 observers（不会生效）
+Page({
+  storeBindings: {
+    store: gameStore,
+    fields: { storePlayers: 'players' }
+  },
+  observers: {
+    'storePlayers': function(players) {
+      // 这段代码永远不会执行！
+      this.setData({ processedPlayers: players })
+    }
+  }
+})
+
+// ✅ 正确：在 onShow 中手动同步数据
+Page({
+  storeBindings: {
+    store: gameStore,
+    fields: { storePlayers: 'players' }
+  },
+  onShow() {
+    this.syncData()
+  },
+  syncData() {
+    const players = gameStore.players
+    if (players && players.length > 0) {
+      this.setData({ processedPlayers: players })
+    }
+  }
+})
+```
+
+**Page vs Component 特性对比**：
+| 特性 | Page | Component |
+|------|------|-----------|
+| `observers` | ❌ 不支持 | ✅ 支持 |
+| `storeBindings` | ✅ 支持 | ✅ 支持 |
+| `lifetimes` | ❌ 不支持 | ✅ 支持 |
+| `pageLifetimes` | ❌ 不支持 | ✅ 支持 |
+| `onLoad/onShow` | ✅ 支持 | ❌ 不支持 |
+
 ### 微信小程序WXML开发注意事项：
 
 **⚠️ WXML中的字符串操作限制**

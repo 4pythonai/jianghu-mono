@@ -1,7 +1,18 @@
 // 引入API
+import { storeBindingsBehavior } from 'mobx-miniprogram-bindings'
+import { gameStore } from '@/stores/gameStore'
+
 const app = getApp()
 
 Page({
+    behaviors: [storeBindingsBehavior],
+    storeBindings: {
+        store: gameStore,
+        fields: {
+            storePlayers: 'players'
+        }
+    },
+
     data: {
         groupIndex: 0,
         slotIndex: 0,
@@ -10,11 +21,32 @@ Page({
         gender: 'male',
         isSubmitting: false,
         scene: '', // 场景参数
-        gameid: '' // 游戏ID参数
+        gameid: '', // 游戏ID参数
+        attenedPlayers: [] // 已添加的球员列表
+    },
+
+    onShow() {
+        // Page 不支持 observers，在 onShow 中手动同步数据
+        this.syncAttenedPlayers()
+    },
+
+    syncAttenedPlayers() {
+        const players = gameStore.players
+        console.log('🔵 [manualAdd] syncAttenedPlayers:', players)
+        if (players && players.length > 0) {
+            const attenedPlayers = players.map(p => ({
+                nickname: p.nickname || p.wx_nickname || '未知',
+                avatar: p.avatar || '/images/default-avatar.png',
+                showDelete: 'y',
+                userid: p.userid
+            }))
+            this.setData({ attenedPlayers })
+        }
     },
 
     onLoad(options) {
         console.log('🎯 [manualAdd] 页面初始化，接收参数:', options);
+        console.log('🔵 [manualAdd] gameStore.players:', gameStore.players);
 
         if (options.groupIndex !== undefined) {
             this.setData({
@@ -209,5 +241,35 @@ Page({
         wx.navigateBack({
             delta: 1
         });
+    },
+
+    /**
+     * 删除球员
+     */
+    async onPlayerDelete(e) {
+        const { player } = e.detail
+        wx.showModal({
+            title: '确认删除',
+            content: `确定要移除球员 ${player.nickname} 吗？`,
+            success: async (res) => {
+                if (res.confirm) {
+                    try {
+                        const result = await app.api.game.removePlayer({
+                            gameid: this.data.gameid || gameStore.gameid,
+                            userid: player.userid
+                        }, {
+                            loadingTitle: '移除中...'
+                        })
+                        if (result?.code === 200) {
+                            wx.showToast({ title: '移除成功', icon: 'success' })
+                            // 刷新 gameStore 数据
+                            gameStore.fetchGameDetail(this.data.gameid || gameStore.gameid, gameStore.groupid)
+                        }
+                    } catch (error) {
+                        wx.showToast({ title: error.message || '移除失败', icon: 'none' })
+                    }
+                }
+            }
+        })
     }
 })
