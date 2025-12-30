@@ -1,0 +1,50 @@
+.attened-players-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 24rpx;
+	padding: 16rpx 0;
+}
+
+.player-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 120rpx;
+}
+
+.avatar-wrapper {
+	position: relative;
+	width: 80rpx;
+	height: 80rpx;
+}
+
+.player-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	background-color: #f5f5f5;
+	border: 2rpx solid #fff;
+	box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+}
+
+.delete-icon {
+	position: absolute;
+	top: -8rpx;
+	right: -8rpx;
+	width: 32rpx;
+	height: 32rpx;
+	background-color: #fff;
+	border-radius: 50%;
+	box-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.15);
+}
+
+.player-nickname {
+	margin-top: 8rpx;
+	font-size: 24rpx;
+	color: #333;
+	max-width: 120rpx;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: center;
+}

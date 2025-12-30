@@ -4,13 +4,37 @@
 
 /* 页面特有样式 */
 .content {
+	margin-top: 120rpx;
 	display: block !important;
 	align-items: flex-start !important;
 	justify-content: flex-start !important;
+	position: relative;
+	overflow: visible;
+}
+
+/* 顶部装饰圆形 */
+.top-circle {
+	width: 120rpx;
+	height: 120rpx;
+	background: #e8f5e9;
+	border-radius: 50%;
+	position: absolute;
+	top: -60rpx;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.top-circle-icon {
+	width: 60rpx;
+	height: 60rpx;
 }
 
 .form-container {
 	width: 100%;
+	padding-top: 80rpx;
 }
 
 .input-group {

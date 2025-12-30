@@ -1,9 +1,15 @@
 <view class="page-container">
-  <view class="header">
-    <text class="title">手工添加</text>
-    <text class="subtitle">为第{{groupIndex + 1}}组玩家{{slotIndex + 1}}选择</text>
-  </view>
   <view class="content">
+    <!-- 顶部装饰圆形 -->
+    <view class="top-circle">
+      <image class="top-circle-icon" src="/assets/icons/icons8-hand-with-pen-48.png" mode="aspectFit"></image>
+    </view>
+    <!-- 已添加球员列表 -->
+    <attened-players
+      wx:if="{{attenedPlayers.length > 0}}"
+      players="{{attenedPlayers}}"
+      bind:delete="onPlayerDelete"
+    />
     <view class="form-container">
       <view class="input-group">
         <text class="input-label">选手姓名</text>

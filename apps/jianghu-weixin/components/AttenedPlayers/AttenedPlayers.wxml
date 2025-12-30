@@ -1,0 +1,24 @@
+<view class="attened-players-container">
+  <view
+    wx:for="{{players}}"
+    wx:key="index"
+    class="player-item"
+  >
+    <view class="avatar-wrapper">
+      <image
+        class="player-avatar"
+        src="{{item.avatar || '/images/default-avatar.png'}}"
+        mode="aspectFill"
+      />
+      <image
+        wx:if="{{item.showDelete === 'y'}}"
+        class="delete-icon"
+        src="/assets/icons/icons8-close-48.png"
+        mode="aspectFit"
+        data-index="{{index}}"
+        catchtap="onDeletePlayer"
+      />
+    </view>
+    <text class="player-nickname">{{item.nickname || '未知'}}</text>
+  </view>
+</view>

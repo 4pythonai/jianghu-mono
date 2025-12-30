@@ -1,5 +1,7 @@
 {
 	"navigationBarTitleText": "搜索添加",
-	"usingComponents": {},
+	"usingComponents": {
+		"attened-players": "/components/AttenedPlayers/AttenedPlayers"
+	},
 	"navigationStyle": "default"
 }
