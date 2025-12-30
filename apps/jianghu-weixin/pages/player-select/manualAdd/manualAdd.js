@@ -7,7 +7,7 @@ Page({
         slotIndex: 0,
         remarkName: '',
         mobile: '',
-        isFormValid: false,
+        gender: 'male',
         isSubmitting: false,
         scene: '', // 场景参数
         gameid: '' // 游戏ID参数
@@ -45,9 +45,6 @@ Page({
         // 打印场景和游戏ID参数
         console.log('📋 [manualAdd] 场景(scene):', this.data.scene);
         console.log('🎮 [manualAdd] 游戏ID(gameid):', this.data.gameid);
-
-        // 执行一次初始验证
-        this.validateForm();
     },
 
     /**
@@ -58,9 +55,6 @@ Page({
         console.log('🖊️ 用户输入昵称:', remarkName)
         this.setData({
             remarkName
-        }, () => {
-            console.log('💾 昵称已保存到data:', this.data.remarkName)
-            this.validateForm()
         })
     },
 
@@ -71,8 +65,16 @@ Page({
         const mobile = e.detail.value.trim()
         this.setData({
             mobile
-        }, () => {
-            this.validateForm()
+        })
+    },
+
+    /**
+     * 性别选择
+     */
+    onGenderSelect(e) {
+        const gender = e.currentTarget.dataset.gender
+        this.setData({
+            gender
         })
     },
 
@@ -80,23 +82,27 @@ Page({
      * 表单验证
      */
     validateForm() {
-        const { remarkName, mobile } = this.data
-        // 昵称长度至少2位, 手机号11位数字
+        const { remarkName, gender } = this.data
+        // 昵称长度至少2位, 性别必选
         const isNicknameValid = remarkName.length >= 2
-        this.setData({ isFormValid: isNicknameValid })
+        const isGenderSelected = Boolean(gender)
+        return isNicknameValid && isGenderSelected
     },
 
     /**
      * 提交表单
      */
     async onManualUserAdded() {
-        if (!this.data.isFormValid) {
-            console.log("验证失败,无法创建用户")
+        // 防止重复提交
+        if (this.data.isSubmitting) {
             return;
         }
 
-        // 防止重复提交
-        if (this.data.isSubmitting) {
+        if (!this.validateForm()) {
+            wx.showToast({
+                title: '请完善选手资料',
+                icon: 'none'
+            });
             return;
         }
 
@@ -107,6 +113,7 @@ Page({
             const userData = {
                 remarkName: this.data.remarkName,
                 mobile: this.data.mobile || '',
+                gender: this.data.gender,
                 join_type: 'manualAdd'
             };
 
@@ -148,6 +155,7 @@ Page({
             avatar: user.avatar || '/images/default-avatar.png',
             handicap: user.handicap || 0,
             mobile: user.mobile || this.data.mobile || '',
+            gender: user.gender || this.data.gender,
             tee: user.tee || 'blue'  // 添加T台字段, 默认蓝T
         };
 
@@ -195,5 +203,11 @@ Page({
                 });
             }
         }
+    },
+
+    onCancel() {
+        wx.navigateBack({
+            delta: 1
+        });
     }
-}) 
+})

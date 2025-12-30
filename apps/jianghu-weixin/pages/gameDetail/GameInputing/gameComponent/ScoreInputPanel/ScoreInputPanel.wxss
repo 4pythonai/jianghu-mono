@@ -264,3 +264,17 @@
 	font-size: 24rpx;
 	margin-top: 10rpx;
 }
+
+.modal-actions  {
+    padding-top: 30rpx;
+}
+
+
+/* 按钮宽度调整 */
+.modal-actions .modal-btn.cancel {
+	flex: 0.67;
+}
+
+.modal-actions .modal-btn.confirm {
+	flex: 1.3;
+}

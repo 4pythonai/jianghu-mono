@@ -56,9 +56,11 @@
     <!-- 面板底部操作按钮 -->
     <view class="panel-footer">
       <view class="footer-btn manual-add-btn" bindtap="handleManualAdd">
+        <image class="btn-icon" src="/assets/icons/icons8-hand-with-pen-48.png" mode="aspectFit"></image>
         <text class="btn-text">手工添加</text>
       </view>
       <view class="footer-btn friend-select-btn" bindtap="handleFriendSelect">
+        <image class="btn-icon" src="/assets/icons/icons8-friends-48.png" mode="aspectFit"></image>
         <text class="btn-text">好友选择</text>
       </view>
     </view>

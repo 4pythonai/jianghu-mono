@@ -204,13 +204,27 @@
 	box-shadow: 0 2rpx 8rpx var(--shadow-primary-hover);
 }
 
+/* 按钮图标样式 - 使用 filter 将图标颜色反转为白色 */
 .btn-icon {
 	width: 48rpx;
 	height: 48rpx;
+	filter: brightness(0) invert(1); /* brightness(0) 先变黑，invert(1) 再反转为白色 */
 }
 
 .btn-text {
 	font-size: 28rpx;
 	font-weight: 500;
 	color: #fff;
+}
+
+/* 手工添加按钮 - 水平布局 */
+.manual-add-btn {
+	flex-direction: row;
+	gap: 20rpx;
+}
+
+/* 好友选择按钮 - 水平布局 */
+.friend-select-btn {
+	flex-direction: row;
+	gap: 20rpx;
 }

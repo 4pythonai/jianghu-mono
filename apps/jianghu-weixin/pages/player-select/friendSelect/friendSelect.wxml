@@ -62,9 +62,16 @@
 			<text class="empty-text">暂无好友</text>
 			<text class="empty-desc">您还没有添加过好友</text>
 		</view>
-		<!-- 底部确认按钮 -->
-		<view class="bottom-action" wx:if="{{ selectedFriends.length > 0 }}">
-			<button class="confirm-btn-bottom" bindtap="confirmSelection">确认选择 {{selectedFriends.length}} 名好友</button>
+		<!-- 底部操作按钮 -->
+		<view class="bottom-action">
+			<button class="action-btn action-cancel" bindtap="onCancel">取消</button>
+			<button
+				class="action-btn action-confirm"
+				bindtap="confirmSelection"
+				disabled="{{ selectedFriends.length === 0 }}"
+			>
+				确认选择{{ selectedFriends.length > 0 ? ' (' + selectedFriends.length + ')' : '' }}
+			</button>
 		</view>
 	</view>
 </view>

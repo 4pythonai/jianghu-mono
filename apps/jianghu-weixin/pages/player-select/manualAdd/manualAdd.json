@@ -1,4 +1,5 @@
 {
 	"navigationBarTitleText": "搜索添加",
-	"usingComponents": {}
+	"usingComponents": {},
+	"navigationStyle": "default"
 }

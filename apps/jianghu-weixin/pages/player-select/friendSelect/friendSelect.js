@@ -153,6 +153,15 @@ Page({
     },
 
     /**
+     * 取消选择，返回上一页
+     */
+    onCancel() {
+        wx.navigateBack({
+            delta: 1
+        });
+    },
+
+    /**
      * 搜索好友
      */
     onSearchInput(e) {

@@ -1,5 +1,6 @@
 {
 	"navigationBarTitleText": "好友选择",
+	"navigationStyle": "default",
 	"enablePullDownRefresh": true,
 	"backgroundColor": "#f5f5f5",
 	"usingComponents": {}
