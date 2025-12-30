@@ -5,11 +5,7 @@
       <image class="top-circle-icon" src="/assets/icons/icons8-hand-with-pen-48.png" mode="aspectFit"></image>
     </view>
     <!-- 已添加球员列表 -->
-    <attened-players
-      wx:if="{{attenedPlayers.length > 0}}"
-      players="{{attenedPlayers}}"
-      bind:delete="onPlayerDelete"
-    />
+    <attened-players />
     <view class="form-container">
       <view class="input-group">
         <text class="input-label">选手姓名</text>

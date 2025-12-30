@@ -27,6 +27,36 @@ export const gameStore = observable({
     error: null,         // 错误信息
     isSaving: false,     // 保存状态
 
+    /**
+     * 移除球员
+     * @param {number} userid 要移除的用户ID
+     * @returns {Promise<{success: boolean, message: string}>}
+     */
+    removePlayer: action(async function(userid) {
+        if (!this.gameid) {
+            return { success: false, message: '缺少 gameid' }
+        }
+
+        try {
+            const result = await gameApi.removePlayer({
+                gameid: this.gameid,
+                userid: userid
+            }, {
+                loadingTitle: '移除中...'
+            })
+
+            if (result?.code === 200) {
+                // 直接从 players 数组中移除该用户，立即更新 UI
+                this.players = this.players.filter(p => String(p.userid) !== String(userid))
+                return { success: true, message: '移除成功' }
+            } else {
+                return { success: false, message: result?.message || '移除失败' }
+            }
+        } catch (error) {
+            return { success: false, message: error.message || '移除失败' }
+        }
+    }),
+
 
 
 

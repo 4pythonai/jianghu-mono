@@ -16,24 +16,7 @@ Page({
         slotIndex: 0,
         friends: [], // 好友数据
         selectedFriends: [], // 选中的好友
-        maxSelect: 4, // 最大选择数量
-        attenedPlayers: [] // 已添加的球员列表
-    },
-
-    syncAttenedPlayers() {
-        const players = gameStore.players
-        const creatorid = gameStore.gameData?.creatorid
-        const currentUserid = getApp().globalData.userInfo?.userid
-        console.log('🔵 [friendSelect] syncAttenedPlayers:', players, 'creatorid:', creatorid, 'currentUserid:', currentUserid)
-        if (players && players.length > 0) {
-            const attenedPlayers = players.map(p => ({
-                nickname: p.nickname || p.wx_nickname || '未知',
-                avatar: p.avatar || '/images/default-avatar.png',
-                showDelete: String(p.userid) === String(creatorid) ? 'n' : 'y',
-                userid: p.userid
-            }))
-            this.setData({ attenedPlayers })
-        }
+        maxSelect: 4 // 最大选择数量
     },
 
     onLoad(options) {
@@ -235,9 +218,6 @@ Page({
     },
 
     onShow() {
-        // 同步已添加球员数据
-        this.syncAttenedPlayers()
-
         // 页面显示时重置选择状态
         this.setData({
             selectedFriends: []
@@ -268,35 +248,5 @@ Page({
             title: '好友选择',
             path: '/pages/player-select/friendSelect/friendSelect'
         };
-    },
-
-    /**
-     * 删除球员
-     */
-    async onPlayerDelete(e) {
-        const { player } = e.detail
-        wx.showModal({
-            title: '确认删除',
-            content: `确定要移除球员 ${player.nickname} 吗？`,
-            success: async (res) => {
-                if (res.confirm) {
-                    try {
-                        const result = await api.game.removePlayer({
-                            gameid: gameStore.gameid,
-                            userid: player.userid
-                        }, {
-                            loadingTitle: '移除中...'
-                        })
-                        if (result?.code === 200) {
-                            wx.showToast({ title: '移除成功', icon: 'success' })
-                            // 刷新 gameStore 数据
-                            gameStore.fetchGameDetail(gameStore.gameid, gameStore.groupid)
-                        }
-                    } catch (error) {
-                        wx.showToast({ title: error.message || '移除失败', icon: 'none' })
-                    }
-                }
-            }
-        })
     }
 }); 

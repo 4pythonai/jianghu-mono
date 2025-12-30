@@ -5,11 +5,7 @@
       <image class="top-circle-icon" src="/assets/icons/icons8-friends-48.png" mode="aspectFit"></image>
     </view>
     <!-- 已添加球员列表 -->
-    <attened-players
-      wx:if="{{attenedPlayers.length > 0}}"
-      players="{{attenedPlayers}}"
-      bind:delete="onPlayerDelete"
-    />
+    <attened-players />
     <!-- 搜索框 -->
     <view class="search-section">
       <view class="search-box">

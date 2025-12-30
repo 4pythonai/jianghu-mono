@@ -1,7 +1,7 @@
-<view class="attened-players-container">
+<view class="attened-players-container" wx:if="{{displayPlayers.length > 0}}">
   <view
-    wx:for="{{players}}"
-    wx:key="index"
+    wx:for="{{displayPlayers}}"
+    wx:key="userid"
     class="player-item"
   >
     <view class="avatar-wrapper">
