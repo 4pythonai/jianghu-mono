@@ -1,4 +1,5 @@
 <!-- 赌球结果页面 -->
+<CustomNavBar title="游戏结果" />
 <view class="gamble-result-container">
   <!-- 页面标题 -->
   <view class="page-header">

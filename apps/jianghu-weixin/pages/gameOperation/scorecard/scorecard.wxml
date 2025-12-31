@@ -1,4 +1,5 @@
 <!--成绩卡页面-->
+<CustomNavBar title="成绩卡" />
 <view class="container">
     <view class="page-content">
         <web-view 

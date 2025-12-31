@@ -1,8 +1,11 @@
 <view class="game-detail-page">
-  <GameDetailTabs active="bbs" queryParams="{{queryParams}}" />
-  <view class="tab-content">
-    <view class="empty-tab">
-      <text>暂无互动内容，敬请期待</text>
+  <CustomNavBar title="比赛详情" backUrl="{{backUrl}}" />
+  <view class="page-content" style="padding-top: {{navBarHeight}}px;">
+    <GameDetailTabs active="bbs" queryParams="{{queryParams}}" />
+    <view class="tab-content">
+      <view class="empty-tab">
+        <text>暂无互动内容，敬请期待</text>
+      </view>
     </view>
   </view>
 </view>

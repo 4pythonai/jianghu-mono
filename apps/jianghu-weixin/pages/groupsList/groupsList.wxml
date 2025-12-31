@@ -1,4 +1,5 @@
 <!--pages/groupsList/groupsList.wxml-->
+<CustomNavBar title="选择分组" />
 <view class="container">
   <!-- 页面标题 -->
   <view class="header">

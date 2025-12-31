@@ -1,4 +1,5 @@
 <!--海报页面-->
+<CustomNavBar title="海报" />
 <view class="container">
   <view class="debug-info">
     <text class="debug-title">调试信息:</text>

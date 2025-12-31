@@ -1,3 +1,4 @@
+<CustomNavBar title="分享邀请" />
 <view class="container">
   <!-- 顶部标题区域 -->
   <view class="header-section">

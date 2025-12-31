@@ -1,3 +1,4 @@
+<CustomNavBar title="二维码邀请" />
 <view class="container">
   <view class="qrcode-card">
     <view wx:if="{{loading}}" class="status loading">

@@ -14,7 +14,9 @@ Page({
     data: {
         gameid: '',
         groupid: '',
-        queryParams: {}
+        queryParams: {},
+        backUrl: '', // 自定义导航栏返回URL
+        navBarHeight: 44 + 20 // 导航栏高度（状态栏 + 导航栏）
     },
 
     onLoad(options = {}) {
@@ -33,10 +35,23 @@ Page({
         const queryParams = this._extractQueryParams(options);
         const { gameid = '', groupid = '' } = queryParams;
 
+        // 计算导航栏高度
+        const systemInfo = wx.getSystemInfoSync();
+        const statusBarHeight = systemInfo.statusBarHeight || 0;
+        const navBarHeight = statusBarHeight + 44;
+
+        // 构建返回URL：返回到 score 页面
+        const backQuery = this._buildQueryString(queryParams);
+        const backUrl = backQuery
+            ? `/pages/gameDetail/score/score?${backQuery}`
+            : '/pages/gameDetail/score/score';
+
         this.setData({
             gameid,
             groupid,
-            queryParams
+            queryParams,
+            backUrl,
+            navBarHeight
         });
 
         if (gameid) {

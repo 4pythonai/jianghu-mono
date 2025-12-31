@@ -16,6 +16,7 @@
 	width: 120rpx;
 	height: 120rpx;
 	background: #e8f5e9;
+	border: 2rpx solid var(--border-primary);
 	border-radius: 50%;
 	position: absolute;
 	top: -60rpx;

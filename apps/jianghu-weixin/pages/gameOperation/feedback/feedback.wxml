@@ -1,4 +1,5 @@
 <!--反馈页面-->
+<CustomNavBar title="反馈" />
 <view class="container">
   <view class="debug-info">
     <text class="debug-title">调试信息:</text>

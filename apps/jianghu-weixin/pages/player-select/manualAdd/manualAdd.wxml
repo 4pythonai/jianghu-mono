@@ -1,3 +1,4 @@
+<CustomNavBar title="手工添加" />
 <view class="page-container">
   <view class="content">
     <!-- 顶部装饰圆形 -->

@@ -1,3 +1,4 @@
+<CustomNavBar title="普通创建" />
 <view class="page-container">
   <view class="main-card">
     <view class="top-circle"></view>

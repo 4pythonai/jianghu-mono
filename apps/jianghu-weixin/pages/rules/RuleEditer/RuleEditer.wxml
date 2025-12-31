@@ -1,4 +1,5 @@
 <!-- 用户规则编辑/新建页面 - 重构版 -->
+<CustomNavBar title="规则编辑" />
 <view class="user-rule-edit-container">
   <!-- 加载状态 -->
   <view wx:if="{{loading}}" class="loading-container">

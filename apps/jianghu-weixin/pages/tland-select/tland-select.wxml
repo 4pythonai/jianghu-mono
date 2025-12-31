@@ -1,3 +1,4 @@
+<CustomNavBar title="T台分配" />
 <view class="page-container">
   <!-- 页面头部 -->
   <view class="header">

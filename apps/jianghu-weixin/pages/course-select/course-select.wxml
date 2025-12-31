@@ -1,3 +1,4 @@
+<CustomNavBar title="选择球场" />
 <view class="page-container">
 				<CourseSelector placeholder="搜索球场" auto-focus="{{ true }}" show-favorites="{{ true }}" debug="{{ false }}" bind:select="onCourseSelect" bind:error="onError" bind:searchStart="onSearchStart" bind:searchComplete="onSearchComplete" />
 </view>

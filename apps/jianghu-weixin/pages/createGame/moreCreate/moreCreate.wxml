@@ -1,3 +1,4 @@
+<CustomNavBar title="更多创建" />
 <view class="content">
 	<text class="build-text">more Build</text>
 </view>

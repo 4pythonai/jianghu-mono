@@ -1,4 +1,7 @@
 {
+	"usingComponents": {
+		"CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+	},
 	"pages": [
 		"pages/live/live",
 		"pages/events/events",

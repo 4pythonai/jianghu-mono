@@ -1,5 +1,6 @@
 <wxs src="/utils/es.wxs" module="util" />
 
+<CustomNavBar title="添加游戏规则" />
 <view class="runtime-config-container">
   <view class="error-container" wx:if="{{error}}">
     <text class="error-text">{{error}}</text>

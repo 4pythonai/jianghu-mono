@@ -1,3 +1,4 @@
+<CustomNavBar title="选择半场" />
 <view class="page-container">
   <court-selector
     courseid="{{ selectedCourse.courseid }}"

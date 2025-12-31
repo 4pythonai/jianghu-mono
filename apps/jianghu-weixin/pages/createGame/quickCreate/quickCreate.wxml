@@ -1,3 +1,4 @@
+<CustomNavBar title="快速创建" />
 <view class="container">
 	<text class="build-text">quick  Build</text>
 </view>

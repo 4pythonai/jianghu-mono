@@ -1,4 +1,5 @@
 <wxs src="/utils/es.wxs" module="util" />
+<CustomNavBar title="编辑游戏规则" />
 <view class="runtime-config-container">
   <RuleCard item="{{existingRuntimeConfig.spec}}" showEdit="{{false}}" />
 
