@@ -1,9 +1,10 @@
 {
 	"navigationBarTitleText": "好友选择",
 	"navigationStyle": "default",
-	"enablePullDownRefresh": true,
 	"backgroundColor": "#f5f5f5",
+	"enablePullDownRefresh": true,
 	"usingComponents": {
-		"attened-players": "/components/AttenedPlayers/AttenedPlayers"
+		"attened-players": "/components/AttenedPlayers/AttenedPlayers",
+		"friend-picker": "/components/FriendPicker/FriendPicker"
 	}
 }

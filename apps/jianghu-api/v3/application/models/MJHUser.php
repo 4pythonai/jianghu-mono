@@ -16,7 +16,10 @@ class MJHUser  extends CI_Model {
 
   public function getJianghuUserByMobile($mobile) {
     $this->jhdb->where('mobile', $mobile);
-    $user = $this->jhdb->get('t_user')->row_array();
-    return $user;
+    $old_jh_user = $this->jhdb->get('t_user')->row_array();
+    if ($old_jh_user) {
+      $old_jh_user['wx_nickname'] = $old_jh_user['nickname'];
+    }
+    return $old_jh_user;
   }
 }

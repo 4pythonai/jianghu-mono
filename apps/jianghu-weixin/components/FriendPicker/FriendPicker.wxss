@@ -1,0 +1,318 @@
+/* 嵌入式好友选择器容器 */
+.friend-picker {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* 搜索区域 */
+.search-section {
+  margin-bottom: 20rpx;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  gap: 16rpx;
+}
+
+.search-icon {
+  font-size: 28rpx;
+  opacity: 0.6;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.search-placeholder {
+  color: #999;
+}
+
+.clear-btn {
+  padding: 8rpx 16rpx;
+  background: #e0e0e0;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 选择统计 */
+.selection-stats {
+  padding: 16rpx 0;
+  margin-bottom: 10rpx;
+}
+
+.stats-text {
+  font-size: 26rpx;
+  color: #025028;
+  font-weight: 500;
+}
+
+/* 好友列表区域 */
+.friends-list {
+  margin-bottom: 10rpx;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #025028;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 字母分组 */
+.letter-group {
+  margin-bottom: 10rpx;
+}
+
+.letter-header {
+  background: #f0f0f0;
+  padding: 12rpx 16rpx;
+  border-radius: 8rpx;
+  margin-bottom: 10rpx;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.letter-text {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #025028;
+}
+
+/* 好友项 */
+.friend-item {
+  background: #fafafa;
+  border-radius: 12rpx;
+  margin-bottom: 10rpx;
+  transition: all 0.2s ease;
+  border: 2rpx solid transparent;
+}
+
+.friend-item.selected {
+  border-color: #025028;
+  background: #f0f8f0;
+}
+
+.friend-item:active {
+  transform: scale(0.98);
+}
+
+.friend-content {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  gap: 20rpx;
+}
+
+/* 选择状态指示器 */
+.selection-indicator {
+  flex-shrink: 0;
+}
+
+.selected-check {
+  width: 40rpx;
+  height: 40rpx;
+  background: #025028;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.check-text {
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.unselected-circle {
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid #ddd;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* 好友头像 */
+.friend-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  border: 2rpx solid #eee;
+  flex-shrink: 0;
+}
+
+/* 好友信息 */
+.friend-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  overflow: hidden;
+}
+
+.friend-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.friend-id {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 底部操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 24rpx;
+  margin-top: 30rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  background: var(--gradient-primary);
+  color: #fff;
+}
+
+.action-btn[disabled] {
+  opacity: 0.6;
+  background: #d9d9d9;
+  color: #999;
+}
+
+.action-cancel {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.action-confirm {
+  flex: 2;
+}
+
+/* 字母索引栏 */
+.index-bar {
+  position: fixed;
+  right: 10rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10rpx 6rpx;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20rpx;
+  z-index: 100;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.index-item {
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  color: #666;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.index-item.active {
+  background: #025028;
+  color: #fff;
+  transform: scale(1.2);
+}
+
+.index-item:active {
+  background: #e8f5e9;
+}
+
+/* 字母提示气泡 */
+.letter-toast {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 140rpx;
+  height: 140rpx;
+  background: rgba(2, 80, 40, 0.85);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.letter-toast text {
+  font-size: 70rpx;
+  font-weight: bold;
+  color: #fff;
+}

@@ -26,7 +26,7 @@
 
 .content {
 	background: #fff;
-	border-radius: 16rpx;
+	border-radius: 40rpx 40rpx 16rpx 16rpx;
 	padding: 40rpx;
 	min-height: 400rpx;
 	display: flex;

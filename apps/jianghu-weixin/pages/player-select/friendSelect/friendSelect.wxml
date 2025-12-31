@@ -4,117 +4,17 @@
     <view class="top-circle">
       <image class="top-circle-icon" src="/assets/icons/icons8-friends-48.png" mode="aspectFit"></image>
     </view>
+
     <!-- 已添加球员列表 -->
     <attened-players />
-    <!-- 搜索框 -->
-    <view class="search-section">
-      <view class="search-box">
-        <text class="search-icon">🔍</text>
-        <input
-          class="search-input"
-          type="text"
-          placeholder="搜索好友昵称或ID"
-          placeholder-class="search-placeholder"
-          bindinput="onSearchInput"
-        />
-        <view class="clear-btn" bindtap="clearSearch">
-          <text>清空</text>
-        </view>
-      </view>
-    </view>
-    <!-- 选择统计 -->
-    <view class="selection-stats" wx:if="{{ selectedFriends.length > 0 }}">
-      <text class="stats-text">已选择 {{selectedFriends.length}}/{{maxSelect}} 人</text>
-      <button class="confirm-btn" bindtap="confirmSelection">确认选择 ({{selectedFriends.length}})</button>
-    </view>
-    <!-- 好友列表（按字母分组） -->
-    <view wx:if="{{ groupedFriends.length > 0 }}" class="friends-list">
-      <!-- 字母分组 -->
-      <view
-        wx:for="{{ groupedFriends }}"
-        wx:for-item="group"
-        wx:for-index="groupIndex"
-        wx:key="letter"
-        class="letter-group"
-        id="group-{{ group.letter }}"
-      >
-        <!-- 字母标题 -->
-        <view class="letter-header">
-          <text class="letter-text">{{ group.letter }}</text>
-        </view>
-        <!-- 该字母下的好友 -->
-        <view
-          wx:for="{{ group.friends }}"
-          wx:for-item="item"
-          wx:for-index="friendIndex"
-          wx:key="userid"
-          class="friend-item {{ item.selected ? 'selected' : '' }}"
-          data-group-index="{{ groupIndex }}"
-          data-friend-index="{{ friendIndex }}"
-          bindtap="toggleGroupedFriendSelection"
-        >
-          <view class="friend-content">
-            <!-- 选择状态指示器（左侧） -->
-            <view class="selection-indicator">
-              <view wx:if="{{ item.selected }}" class="selected-check">
-                <text class="check-text">✓</text>
-              </view>
-              <view wx:else class="unselected-circle"></view>
-            </view>
-            <image
-              class="friend-avatar"
-              src="{{ item.avatar || '/images/default-avatar.png' }}"
-              mode="aspectFill"
-              lazy-load="true"
-            ></image>
-            <view class="friend-info">
-              <text class="friend-name">{{item.nickname || item.wx_nickname || '未知好友'}}</text>
-              <text class="friend-id">ID: {{item.userid}}</text>
-              <text
-                wx:if="{{ item.handicap !== undefined }}"
-                class="friend-handicap"
-              >杆数: {{item.handicap}}</text>
-            </view>
-          </view>
-        </view>
-      </view>
-    </view>
-    <!-- 空状态 -->
-    <view wx:else class="empty-state">
-      <view class="empty-icon">👥</view>
-      <text class="empty-text">暂无好友</text>
-      <text class="empty-desc">您还没有添加过好友</text>
-    </view>
-    <!-- 底部操作按钮 -->
-    <view class="bottom-action">
-      <button class="action-btn action-cancel" bindtap="onCancel">取消</button>
-      <button
-        class="action-btn action-confirm"
-        bindtap="confirmSelection"
-        disabled="{{ selectedFriends.length === 0 }}"
-      >确认选择{{ selectedFriends.length > 0 ? ' (' + selectedFriends.length + ')' : '' }}</button>
-    </view>
-  </view>
 
-  <!-- 字母索引栏 -->
-  <view
-    wx:if="{{ indexList.length > 0 }}"
-    class="index-bar"
-    catchtouchmove="onIndexTouchMove"
-  >
-    <view
-      wx:for="{{ indexList }}"
-      wx:key="*this"
-      class="index-item {{ currentLetter === item ? 'active' : '' }}"
-      data-letter="{{ item }}"
-      bindtap="onIndexTap"
-    >
-      <text>{{ item }}</text>
-    </view>
-  </view>
-
-  <!-- 字母提示气泡 -->
-  <view wx:if="{{ showLetterToast }}" class="letter-toast">
-    <text>{{ currentLetter }}</text>
+    <!-- 好友选择器组件 -->
+    <friend-picker
+      id="friendPicker"
+      scene="addToGame"
+      max-select="{{maxSelect}}"
+      bind:confirm="onFriendPickerConfirm"
+      bind:cancel="onFriendPickerCancel"
+    />
   </view>
 </view>

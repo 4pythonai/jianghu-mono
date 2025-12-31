@@ -160,6 +160,7 @@ class MUser  extends CI_Model {
 
     $row = [];
     $row['nickname'] = $jhuser['nickname'];
+    $row['wx_nickname'] = $jhuser['nickname'];
     $row['mobile'] = $jhuser['mobile'];
     $row['handicap'] = $jhuser['handicap'];
     $row['reg_type'] = 'jhtransfer';
