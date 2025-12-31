@@ -1,6 +1,7 @@
 import { findUserInGroups, handleAppendPlayersToGroup } from '@/utils/gameGroupUtils'
 import { uuid } from '@/utils/tool'
 import { validateForm } from '@/utils/gameValidate'
+import { gameStore } from '@/stores/gameStore'
 
 const app = getApp()
 
@@ -34,6 +35,23 @@ Page({
         return result;
     },
 
+    /**
+     * 同步玩家数据到 gameStore
+     * 从 gameGroups 提取所有玩家，扁平化后同步到 store
+     */
+    syncPlayersToStore(gameGroups) {
+        if (!gameGroups || !Array.isArray(gameGroups)) return;
+
+        const allPlayers = [];
+        gameGroups.forEach(group => {
+            if (group.players && Array.isArray(group.players)) {
+                allPlayers.push(...group.players);
+            }
+        });
+
+        gameStore.setPlayers(allPlayers);
+    },
+
     // 统一的 setData 方法, 自动触发 API 同步
     updateGameGroups(newGameGroups, description = '组数据更新') {
 
@@ -41,6 +59,9 @@ Page({
         this.setData({
             'formData.gameGroups': newGameGroups
         });
+
+        // 同步玩家数据到 gameStore，保持数据一致性
+        this.syncPlayersToStore(newGameGroups);
 
         // 确保游戏已创建且数据有效
         if (this.data.gameCreated && newGameGroups && Array.isArray(newGameGroups)) {
@@ -714,6 +735,9 @@ Page({
      * 生命周期函数--监听页面加载
      */
     async onLoad(options) {
+        // 创建新比赛时，清理旧的 gameStore 数据，避免数据污染
+        gameStore.reset();
+
         const gameUuid = uuid();
         const userInfo = app.globalData.userInfo;
 
@@ -778,6 +802,11 @@ Page({
                     shareReady: Boolean(gameid)
                 });
                 this.updateShareState();
+
+                // 同步 gameid 和初始玩家到 gameStore
+                gameStore.setGameid(gameid);
+                gameStore.setCreatorid(creator.userid);
+                this.syncPlayersToStore(this.data.formData.gameGroups);
 
                 // 立即同步创建者到后端第一组
                 const syncResult = await this.callUpdateAPI('updateGameGroupAndPlayers', {

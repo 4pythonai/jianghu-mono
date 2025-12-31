@@ -35,7 +35,7 @@ Component({
     methods: {
         syncDisplayPlayers() {
             const players = gameStore.players || []
-            const creatorid = gameStore.gameData?.creatorid
+            const creatorid = gameStore.creatorid || gameStore.gameData?.creatorid
 
             const displayPlayers = players.map(p => ({
                 nickname: p.nickname || p.wx_nickname || '未知',

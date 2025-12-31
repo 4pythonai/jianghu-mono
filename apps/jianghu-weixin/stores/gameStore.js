@@ -17,6 +17,7 @@ export const gameStore = observable({
 
     gameid: null,
     groupid: null,
+    creatorid: null,     // 创建者ID
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
     red_blue: [],        // 红蓝分组数据
@@ -26,6 +27,56 @@ export const gameStore = observable({
     loading: false,      // 加载状态
     error: null,         // 错误信息
     isSaving: false,     // 保存状态
+
+    /**
+     * 重置 store 数据
+     * 用于进入新流程（如创建新比赛）时清理旧数据
+     */
+    reset: action(function() {
+        this.gameid = null;
+        this.groupid = null;
+        this.creatorid = null;
+        this.gameData = null;
+        this.players = [];
+        this.red_blue = [];
+        this.kickConfigs = [];
+        this.gameAbstract = '';
+        this.loading = false;
+        this.error = null;
+        this.isSaving = false;
+        // 同时清理关联的 store
+        scoreStore.scores = [];
+        holeRangeStore.holeList = [];
+        console.log('[gameStore] reset 完成');
+    }),
+
+    /**
+     * 设置玩家列表
+     * 用于创建比赛流程中同步本地数据到 store
+     * @param {Array} players - 玩家列表
+     */
+    setPlayers: action(function(players) {
+        this.players = players || [];
+        console.log('[gameStore] setPlayers:', this.players.length, '人');
+    }),
+
+    /**
+     * 设置 gameid
+     * @param {number} gameid
+     */
+    setGameid: action(function(gameid) {
+        this.gameid = gameid;
+        console.log('[gameStore] setGameid:', gameid);
+    }),
+
+    /**
+     * 设置创建者ID
+     * @param {number} creatorid
+     */
+    setCreatorid: action(function(creatorid) {
+        this.creatorid = creatorid;
+        console.log('[gameStore] setCreatorid:', creatorid);
+    }),
 
     /**
      * 移除球员
@@ -95,6 +146,7 @@ export const gameStore = observable({
 
         // 先更新基础数据
         this.gameData = gameInfo;
+        this.creatorid = gameInfo.creatorid || null;  // 同步创建者ID
         this.players = playersWithHandicap;  // 注意:这里是过滤后并添加了handicap的玩家
         this.groupid = groupid;  // 存储当前分组ID
         this.gameAbstract = gameInfo.gameAbstract || '';  // 存储游戏摘要
