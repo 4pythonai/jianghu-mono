@@ -114,7 +114,10 @@
                 data-direction="center"
                 bindtap="handleTeeShotDirection"
               >
-                <view class="shot-icon-wrapper center"></view>
+                <view class="shot-icon-wrapper center">
+                  <view class="target-ring"></view>
+                  <view class="target-dot"></view>
+                </view>
                 <text class="shot-label">上球道</text>
               </view>
               <view
@@ -122,7 +125,9 @@
                 data-direction="left"
                 bindtap="handleTeeShotDirection"
               >
-                <view class="shot-icon-wrapper left"></view>
+                <view class="shot-icon-wrapper arrow">
+                  <image class="arrow-icon" src="/assets/icons/icons8-left-arrow-48.png" />
+                </view>
                 <text class="shot-label">拉左</text>
               </view>
               <view
@@ -130,23 +135,29 @@
                 data-direction="right"
                 bindtap="handleTeeShotDirection"
               >
-                <view class="shot-icon-wrapper right"></view>
+                <view class="shot-icon-wrapper arrow">
+                  <image class="arrow-icon" src="/assets/icons/icons8-right-arrow-48.png" />
+                </view>
                 <text class="shot-label">拉右</text>
               </view>
               <view
-                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'up' ? 'active' : ''}}"
-                data-direction="up"
+                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'long' ? 'active' : ''}}"
+                data-direction="long"
                 bindtap="handleTeeShotDirection"
               >
-                <view class="shot-icon-wrapper up"></view>
+                <view class="shot-icon-wrapper arrow">
+                  <image class="arrow-icon" src="/assets/icons/icons8-up-arrow-48.png" />
+                </view>
                 <text class="shot-label">打穿</text>
               </view>
               <view
-                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'down' ? 'active' : ''}}"
-                data-direction="down"
+                class="shot-option {{localScores[activePlayerIndex].tee_shot_direction === 'short' ? 'active' : ''}}"
+                data-direction="short"
                 bindtap="handleTeeShotDirection"
               >
-                <view class="shot-icon-wrapper down"></view>
+                <view class="shot-icon-wrapper arrow">
+                  <image class="arrow-icon" src="/assets/icons/icons8-down-arrow-48.png" />
+                </view>
                 <text class="shot-label">打短</text>
               </view>
             </view>

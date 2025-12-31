@@ -99,7 +99,8 @@ class MDetailGame  extends CI_Model {
                 'score' => intval($score['score']),
                 'putts' => intval($score['putts']),
                 'penalty_strokes' => intval($score['penalty_strokes']),
-                'sand_save' => intval($score['sand_save'])
+                'sand_save' => intval($score['sand_save']),
+                'tee_shot_direction' => $score['tee_shot_direction']
             ];
         }
         return $fixedd;

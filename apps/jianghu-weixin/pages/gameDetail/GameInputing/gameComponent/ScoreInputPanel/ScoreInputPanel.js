@@ -76,7 +76,7 @@ Component({
                     putts: scoreData.putts ?? 2,
                     penalty_strokes: scoreData.penalty_strokes ?? 0,
                     sand_save: scoreData.sand_save ?? 0,
-                    tee_shot_direction: scoreData.tee_shot_direction ?? null,
+                    tee_shot_direction: scoreData.tee_shot_direction || 'center',
                 };
             });
 

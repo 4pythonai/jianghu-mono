@@ -196,68 +196,69 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+.shot-option .shot-label {
 	opacity: 0.5;
 }
 
-.shot-option.active {
+.shot-option.active .shot-label {
 	opacity: 1;
 }
 
 .shot-icon-wrapper {
-	width: 60rpx;
-	height: 60rpx;
+	width: 70rpx;
+	height: 70rpx;
 	border-radius: 50%;
-	background-color: #cccccc;
+	background-color: #d0d0d0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	position: relative;
 }
 
-.shot-option.active .shot-icon-wrapper {
-	background-color: var(--primary-green-dark);
-}
-
-/* 开球方向指示器样式 */
+/* 上球道 - 靶心样式 */
 .shot-icon-wrapper.center {
+	background-color: #d0d0d0;
+}
+
+.shot-option.active .shot-icon-wrapper.center {
 	background-color: var(--primary-green-dark);
 }
 
-.shot-icon-wrapper.left {
-	background: linear-gradient(
-		90deg,
-		var(--primary-green-dark) 0%,
-		var(--primary-green-dark) 50%,
-		#cccccc 50%,
-		#cccccc 100%
-	);
+.target-ring {
+	width: 36rpx;
+	height: 36rpx;
+	border-radius: 50%;
+	border: 4rpx solid #fff;
+	position: absolute;
 }
 
-.shot-icon-wrapper.right {
-	background: linear-gradient(
-		90deg,
-		#cccccc 0%,
-		#cccccc 50%,
-		var(--primary-green-dark) 50%,
-		var(--primary-green-dark) 100%
-	);
+.target-dot {
+	width: 12rpx;
+	height: 12rpx;
+	border-radius: 50%;
+	background-color: #fff;
+	position: absolute;
 }
 
-.shot-icon-wrapper.up {
-	background: linear-gradient(
-		0deg,
-		#cccccc 0%,
-		#cccccc 50%,
-		var(--primary-green-dark) 50%,
-		var(--primary-green-dark) 100%
-	);
+/* 箭头样式 */
+.shot-icon-wrapper.arrow {
+	background-color: #d0d0d0;
 }
 
-.shot-icon-wrapper.down {
-	background: linear-gradient(
-		0deg,
-		var(--primary-green-dark) 0%,
-		var(--primary-green-dark) 50%,
-		#cccccc 50%,
-		#cccccc 100%
-	);
+.shot-option.active .shot-icon-wrapper.arrow {
+	background-color: var(--primary-green-dark);
+}
+
+.arrow-icon {
+	width: 36rpx;
+	height: 36rpx;
+}
+
+/* 选中状态箭头变白色 */
+.shot-option.active .arrow-icon {
+	filter: brightness(0) invert(1);
 }
 
 .shot-label {
