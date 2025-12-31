@@ -32,6 +32,8 @@ const game = {
     joinGame: (data, options) => request('/Game/joinGame', data, options),
     // 移除球员
     removePlayer: (data, options) => request('/Game/removePlayer', data, options),
+    // 批量添加好友到球局
+    addFriendsToGame: (data, options) => request('/Game/addFriendsToGame', data, options),
 
 }
 

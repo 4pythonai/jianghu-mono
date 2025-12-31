@@ -504,4 +504,73 @@ class Game extends MY_Controller {
         $result = $this->MGame->removePlayer($gameid, $userid);
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
     }
+
+    /**
+     * 批量添加好友到球局
+     *
+     * @api POST /game/addFriendsToGame
+     *
+     * @param int gameid 球局ID（必填）
+     * @param array userids 要添加的用户ID数组（必填）
+     *
+     * @return array 返回结果
+     * @return int code 状态码 200:成功
+     * @return string message 提示信息
+     * @return array data.success 成功添加的用户ID列表
+     * @return array data.failed 添加失败的用户信息
+     */
+    public function addFriendsToGame() {
+        $params = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($params['gameid']) ? (int)$params['gameid'] : 0;
+        $userids = isset($params['userids']) ? $params['userids'] : [];
+
+        if ($gameid <= 0) {
+            echo json_encode(['code' => 400, 'message' => '缺少有效的 gameid'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        if (empty($userids) || !is_array($userids)) {
+            echo json_encode(['code' => 400, 'message' => '缺少有效的用户列表'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $successList = [];
+        $failedList = [];
+
+        foreach ($userids as $userid) {
+            $userid = (int)$userid;
+            if ($userid <= 0) {
+                $failedList[] = ['userid' => $userid, 'reason' => '无效的用户ID'];
+                continue;
+            }
+
+            $joinResult = $this->MGame->gameJoinHandler($userid, $gameid, 'friendAdd');
+
+            if ((int)$joinResult['code'] === 200) {
+                $successList[] = $userid;
+            } else {
+                $failedList[] = [
+                    'userid' => $userid,
+                    'reason' => $joinResult['message'] ?? '添加失败'
+                ];
+            }
+        }
+
+        $message = count($successList) > 0
+            ? '成功添加 ' . count($successList) . ' 名好友'
+            : '添加失败';
+
+        if (count($failedList) > 0 && count($successList) > 0) {
+            $message .= '，' . count($failedList) . ' 名好友添加失败';
+        }
+
+        echo json_encode([
+            'code' => count($successList) > 0 ? 200 : 400,
+            'message' => $message,
+            'data' => [
+                'success' => $successList,
+                'failed' => $failedList
+            ]
+        ], JSON_UNESCAPED_UNICODE);
+    }
 }
