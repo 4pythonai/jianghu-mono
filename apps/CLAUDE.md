@@ -18,14 +18,15 @@ Codeigniter PHP 框架
 ```
 
 ## jianghu-weixin
-微信小程序
+微信小程序,主要功能:
+- 比赛相关:创建,报名,记分
+- 赌球相关:规则,结果展示
 
 ### api 端点定义与调用
 
 ```
 //获取全局的app对象,在app.js中定义
 
-```
 App({
     api: api,
     ...
@@ -52,6 +53,13 @@ Page({
         // 消费 result
     }
 }); 
-```
+
+``` 
+
+
+
+### 小程序图标目录
+
+ jianghu-weixin/assets/icons
 
 

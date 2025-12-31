@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '@/stores/gameStore';
+import { runtimeStore } from '@/stores/runtimeStore';
 
 Component({
     properties: {
@@ -23,9 +24,6 @@ Component({
                 store: gameStore,
                 fields: {
                     gameData: 'gameData'
-                },
-                actions: {
-                    updateRuntimeMultipliers: 'updateRuntimeMultipliers'
                 }
             });
 
@@ -178,7 +176,7 @@ Component({
 
 
             // 更新 store
-            this.updateRuntimeMultipliers(config.id, multiplierArray);
+            runtimeStore.updateKickConfig(config.id, multiplierArray);
             const triggerData = {
                 configId: config.id,
                 configName: config.gambleUserName || config.gambleSysName || '未知配置',

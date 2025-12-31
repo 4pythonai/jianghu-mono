@@ -75,6 +75,13 @@ export const scoreStore = observable({
     }),
 
     /**
+     * 清空分数数据
+     */
+    clear: action(function() {
+        this.scores = []
+    }),
+
+    /**
      * 计算显示用的分数矩阵
      * @param {Array} players - 玩家列表
      * @param {Array} holeList - 球洞列表

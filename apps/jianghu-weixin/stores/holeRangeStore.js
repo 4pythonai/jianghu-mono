@@ -65,6 +65,15 @@ export const holeRangeStore = observable({
     }),
 
     /**
+     * 清空洞数据
+     */
+    clear: action(function () {
+        this.holeList = []
+        this.scoreStartIndex = null
+        this.roadLength = 0
+    }),
+
+    /**
      * 获取当前状态
      */
     getState() {

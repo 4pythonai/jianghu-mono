@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '@/stores/gameStore'
+import { getScoreClass } from '@/utils/gameUtils'
 
 Component({
     properties: {
@@ -120,7 +121,7 @@ Component({
             const calculatedDiff = (score > 0 && par > 0) ? score - par : 0;
             const prefix = calculatedDiff > 0 ? '+' : '';
             const formattedDiff = calculatedDiff !== 0 ? prefix + calculatedDiff.toString() : '0';
-            const newScoreClass = gameStore.getScoreClass(calculatedDiff);
+            const newScoreClass = getScoreClass(calculatedDiff);
             this.setData({
                 calculatedDiff: calculatedDiff,
                 formattedDiff: formattedDiff,

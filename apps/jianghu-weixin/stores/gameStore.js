@@ -1,17 +1,15 @@
 import { observable, action } from 'mobx-miniprogram'
-import gameApi from '../api/modules/game' // 导入整个默认导出的对象
+import gameApi from '../api/modules/game'
 import {
     normalizePlayer,
     normalizeHole,
     normalizeScoreCards,
-    formatScore,
-    formatPutts,
-    formatDiff,
-    getScoreClass,
     buildScoreIndex
 } from '../utils/gameUtils'
+import { filterPlayersByGroup, calculatePlayersHandicaps } from '../utils/playerUtils'
 import { scoreStore } from './scoreStore'
 import { holeRangeStore } from './holeRangeStore'
+import { runtimeStore } from './runtimeStore'
 
 export const gameStore = observable({
 
@@ -21,7 +19,6 @@ export const gameStore = observable({
     gameData: null,      // 原始游戏数据
     players: [],         // 玩家列表
     red_blue: [],        // 红蓝分组数据
-    kickConfigs: [], // 新增：运行时倍数数据
     gameAbstract: '',    // 游戏摘要
 
     loading: false,      // 加载状态
@@ -39,14 +36,14 @@ export const gameStore = observable({
         this.gameData = null;
         this.players = [];
         this.red_blue = [];
-        this.kickConfigs = [];
         this.gameAbstract = '';
         this.loading = false;
         this.error = null;
         this.isSaving = false;
-        // 同时清理关联的 store
-        scoreStore.scores = [];
-        holeRangeStore.holeList = [];
+        // 调用关联 store 的清理方法
+        scoreStore.clear();
+        holeRangeStore.clear();
+        runtimeStore.clearKickConfigs();
         console.log('[gameStore] reset 完成');
     }),
 
@@ -111,27 +108,10 @@ export const gameStore = observable({
 
 
 
-    // 根据 groupid 过滤玩家
-    _filterPlayersByGroup: action((players, groupid) => {
-        if (!groupid) {
-            console.log(' [Store] 无 groupid, 返回所有玩家');
-            return players;
-        }
-
-        const filteredPlayers = players.filter(player => {
-            const playerGroupId = String(player.groupid);
-            const targetGroupId = String(groupid);
-            return playerGroupId === targetGroupId;
-        });
-
-        return filteredPlayers;
-    }),
-
-
     _processGameData: action(function (gameInfo, groupid = null) {
 
         const allPlayers = (gameInfo.players || []).map(p => normalizePlayer(p));
-        const players = this._filterPlayersByGroup(allPlayers, groupid);
+        const players = filterPlayersByGroup(allPlayers, groupid);
         const holeList = (gameInfo.holeList || []).map((h, index) => normalizeHole(h, index + 1));
         scoreStore.scores = gameInfo.scores || [];
 
@@ -142,7 +122,7 @@ export const gameStore = observable({
         }
 
         // 计算每个玩家的 handicap
-        const playersWithHandicap = this.calculatePlayersHandicaps(players, holeList, scoreStore.scores);
+        const playersWithHandicap = calculatePlayersHandicaps(players, holeList, scoreStore.scores);
 
         // 先更新基础数据
         this.gameData = gameInfo;
@@ -167,8 +147,8 @@ export const gameStore = observable({
             return;
         }
 
-        // 使用本地的 calculatePlayersHandicaps 计算 handicap（基于当前的 scores 和 players）
-        const playersWithHandicap = this.calculatePlayersHandicaps(this.players, holeList, scoreStore.scores, scoreIndex);
+        // 使用 playerUtils 的 calculatePlayersHandicaps 计算 handicap
+        const playersWithHandicap = calculatePlayersHandicaps(this.players, holeList, scoreStore.scores, scoreIndex);
 
         // 检查 handicap 是否真的变化了，避免不必要的更新导致循环触发
         let hasChanged = false;
@@ -193,34 +173,6 @@ export const gameStore = observable({
         }
     }),
 
-    // 更新运行时倍数配置
-    updateRuntimeMultipliers: action(function (configId, kickConfig) {
-        console.log('[gameStore] 更新运行时倍数配置:', { configId, kickConfig });
-        console.log('[gameStore] 更新前的 kickConfigs:', this.kickConfigs);
-
-        // 查找匹配的配置项
-        const existingIndex = this.kickConfigs.findIndex(runtime =>
-            String(runtime.runtime_id) === String(configId)
-        );
-
-        console.log('[gameStore] 查找结果 - existingIndex:', existingIndex);
-
-        if (existingIndex !== -1) {
-            // 更新现有配置
-            this.kickConfigs[existingIndex].kickConfig = kickConfig;
-            console.log('[gameStore] 更新现有配置:', this.kickConfigs[existingIndex]);
-        } else {
-            // 新增配置
-            this.kickConfigs.push({
-                runtime_id: configId,
-                kickConfig: kickConfig
-            });
-            console.log('[gameStore] 新增配置:', this.kickConfigs[this.kickConfigs.length - 1]);
-        }
-
-        console.log('[gameStore] 更新后的 kickConfigs:', this.kickConfigs);
-    }),
-
     // 从API获取并初始化游戏数据
     fetchGameDetail: action(async function (gameid, groupid = null) {
         if (this.loading) return; // 防止重复加载
@@ -235,10 +187,10 @@ export const gameStore = observable({
             this.players = [];
             this.gameData = null;
             this.red_blue = [];
-            this.kickConfigs = [];
             this.gameAbstract = '';
-            scoreStore.scores = [];  // 清理分数数据
-            holeRangeStore.holeList = [];  // 清理洞数据
+            scoreStore.clear();
+            holeRangeStore.clear();
+            runtimeStore.clearKickConfigs();
         }
 
         this.loading = true;
@@ -260,8 +212,7 @@ export const gameStore = observable({
                 // ** 调用私有方法处理数据 **
                 this._processGameData(res.game_detail, groupid);
                 this.red_blue = res.red_blue || [];
-                this.kickConfigs = res.kickConfigs || []; // 存储运行时倍数
-
+                runtimeStore.setKickConfigs(res.kickConfigs || []);
 
                 return res; // 关键：返回原始接口数据，包含red_blue
             }
@@ -270,9 +221,6 @@ export const gameStore = observable({
         } catch (err) {
             console.error('❌ [Store] 获取比赛详情失败:', err);
             this.error = err.message || '获取数据失败';
-
-            // 如果加载失败，确保数据是干净的（如果是切换比赛，已在上面的清理逻辑处理）
-            // 这里只需要确保 error 状态正确
             throw err;
         } finally {
             this.loading = false;
@@ -280,78 +228,17 @@ export const gameStore = observable({
         }
     }),
 
-
-
-    // 格式化分数显示
-    formatScore: action((score, par) => {
-        return formatScore(score, par);
-    }),
-
-    // 格式化推杆显示
-    formatputts: action((putts) => {
-        return formatPutts(putts);
-    }),
-
-    // 格式化差值显示
-    formatDiff: action((score, par) => {
-        return formatDiff(score, par);
-    }),
-
-    // 计算分数样式类
-    getScoreClass: action((diff) => {
-        return getScoreClass(diff);
-    }),
-
-    /**
-     * 计算每个玩家的 handicap（原子操作的一部分）
-     * @param {Array} players - 玩家列表
-     * @param {Array} holeList - 球洞列表
-     * @param {Array} scores - 分数数组（从 scoreStore 传入）
-     * @returns {Array} 添加了 handicap 属性的玩家列表
-     */
-    calculatePlayersHandicaps(players, holeList, scores, scoreIndexOverride) {
-        if (!players || !holeList || !scores || players.length === 0) return players;
-
-        const scoreIndex = scoreIndexOverride ?? buildScoreIndex(scores);
-
-        return players.map(player => {
-            let totalScore = 0;
-            let totalPar = 0;
-            const userId = String(player?.userid ?? '');
-            const playerScores = scoreIndex.get(userId);
-
-            // 计算该玩家的总分和总标准杆（使用 hindex 匹配）
-            holeList.forEach(hole => {
-                const holeIndex = String(hole?.hindex ?? '');
-                const scoreData = playerScores?.get(holeIndex);
-
-                if (scoreData && typeof scoreData.score === 'number' && scoreData.score > 0) {
-                    totalScore += scoreData.score;
-                    totalPar += hole.par || 0;
-                }
-            });
-
-            // 杆差 = 总分 - 总标准杆
-            const handicap = totalScore - totalPar;
-
-            return {
-                ...player,
-                handicap: handicap
-            };
-        });
-    },
-
     getState() {
         return {
             players: this.players,
-            scores: this.scores,
+            scores: scoreStore.scores,
             gameData: this.gameData,
             groupid: this.groupid,
             gameid: this.gameid,
             loading: this.loading,
             error: this.error,
             red_blue: this.red_blue,
-            kickConfigs: this.kickConfigs,
+            kickConfigs: runtimeStore.kickConfigs,
             gameAbstract: this.gameAbstract,
             // 从 holeRangeStore 获取洞相关数据
             ...holeRangeStore.getState()

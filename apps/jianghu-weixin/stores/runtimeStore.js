@@ -13,6 +13,47 @@ export const runtimeStore = observable({
     loadingRuntimeConfig: false,  // 加载运行时配置状态
     runtimeConfigError: null,     // 运行时配置错误信息
 
+    // ---- 运行时倍数配置 ----
+    kickConfigs: [],  // 从 gameStore 移入
+
+    /**
+     * 设置运行时倍数配置（批量）
+     * @param {Array} configs - 配置数组
+     */
+    setKickConfigs: action(function(configs) {
+        this.kickConfigs = configs || []
+        console.log('[runtimeStore] setKickConfigs:', this.kickConfigs.length)
+    }),
+
+    /**
+     * 更新单个运行时倍数配置
+     * @param {string|number} configId - 配置ID
+     * @param {Object} kickConfig - 倍数配置
+     */
+    updateKickConfig: action(function(configId, kickConfig) {
+        console.log('[runtimeStore] 更新运行时倍数配置:', { configId, kickConfig })
+
+        const existingIndex = this.kickConfigs.findIndex(runtime =>
+            String(runtime.runtime_id) === String(configId)
+        )
+
+        if (existingIndex !== -1) {
+            this.kickConfigs[existingIndex].kickConfig = kickConfig
+        } else {
+            this.kickConfigs.push({
+                runtime_id: configId,
+                kickConfig: kickConfig
+            })
+        }
+    }),
+
+    /**
+     * 清空运行时倍数配置
+     */
+    clearKickConfigs: action(function() {
+        this.kickConfigs = []
+    }),
+
 
 
     reorderPlayersByBootStrapOrder: action((players, bootStrapOrder) => {
@@ -141,6 +182,7 @@ export const runtimeStore = observable({
         this.runtimeConfigs = [];
         this.loadingRuntimeConfig = false;
         this.runtimeConfigError = null;
+        this.kickConfigs = [];
     }),
 
 });
