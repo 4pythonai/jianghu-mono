@@ -4,7 +4,6 @@ import {
     normalizePlayer,
     normalizeHole,
     normalizeScoreCards,
-    buildScoreIndex
 } from '../../utils/gameUtils'
 import { filterPlayersByGroup, calculatePlayersHandicaps } from '../../utils/playerUtils'
 import { scoreStore } from './scoreStore'
@@ -29,7 +28,7 @@ export const gameStore = observable({
      * 重置 store 数据
      * 用于进入新流程（如创建新比赛）时清理旧数据
      */
-    reset: action(function() {
+    reset: action(function () {
         this.gameid = null;
         this.groupid = null;
         this.creatorid = null;
@@ -52,7 +51,7 @@ export const gameStore = observable({
      * 用于创建比赛流程中同步本地数据到 store
      * @param {Array} players - 玩家列表
      */
-    setPlayers: action(function(players) {
+    setPlayers: action(function (players) {
         this.players = players || [];
         console.log('[gameStore] setPlayers:', this.players.length, '人');
     }),
@@ -61,7 +60,7 @@ export const gameStore = observable({
      * 设置 gameid
      * @param {number} gameid
      */
-    setGameid: action(function(gameid) {
+    setGameid: action(function (gameid) {
         this.gameid = gameid;
         console.log('[gameStore] setGameid:', gameid);
     }),
@@ -70,7 +69,7 @@ export const gameStore = observable({
      * 设置创建者ID
      * @param {number} creatorid
      */
-    setCreatorid: action(function(creatorid) {
+    setCreatorid: action(function (creatorid) {
         this.creatorid = creatorid;
         console.log('[gameStore] setCreatorid:', creatorid);
     }),
@@ -80,7 +79,7 @@ export const gameStore = observable({
      * @param {number} userid 要移除的用户ID
      * @returns {Promise<{success: boolean, message: string}>}
      */
-    removePlayer: action(async function(userid) {
+    removePlayer: action(async function (userid) {
         if (!this.gameid) {
             return { success: false, message: '缺少 gameid' }
         }

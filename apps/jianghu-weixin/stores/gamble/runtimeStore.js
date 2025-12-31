@@ -2,6 +2,7 @@
 
 const app = getApp()
 import { observable, action } from 'mobx-miniprogram'
+import { processOneGamble } from '../../utils/gambleUtils'
 
 /**
  * 运行时配置Store
@@ -54,85 +55,6 @@ export const runtimeStore = observable({
         this.kickConfigs = []
     }),
 
-
-
-    reorderPlayersByBootStrapOrder: action((players, bootStrapOrder) => {
-
-
-        if (!Array.isArray(players) || players.length === 0) return [];
-
-        const orderIds = Array.isArray(bootStrapOrder) ? bootStrapOrder.map(id => `${id}`) : [];
-        if (orderIds.length === 0) return [...players];
-
-        const idToFirstIndex = new Map();
-        for (let i = 0; i < players.length; i++) {
-            const idStr = `${players[i]?.userid}`;
-            if (!idToFirstIndex.has(idStr)) idToFirstIndex.set(idStr, i);
-        }
-
-        const usedIndices = new Set();
-        const ordered = [];
-
-        for (const idStr of orderIds) {
-            const matchedIndex = idToFirstIndex.get(idStr);
-            if (matchedIndex !== undefined) {
-                ordered.push(players[matchedIndex]);
-                usedIndices.add(matchedIndex);
-            }
-        }
-
-        for (let i = 0; i < players.length; i++) {
-            if (!usedIndices.has(i)) ordered.push(players[i]);
-        }
-
-        return ordered;
-    }),
-
-
-    processOneGamble: action(function (config) {
-
-
-        try {
-            const processedConfig = { ...config };
-
-            // 解析 playerIndicatorConfig JSON 字符串
-            if (config.playerIndicatorConfig && typeof config.playerIndicatorConfig === 'string') {
-                try {
-                    processedConfig.val8421_config_parsed = JSON.parse(config.playerIndicatorConfig);
-                    processedConfig.player8421Count = Object.keys(processedConfig.val8421_config_parsed).length;
-                    // 添加格式化显示字段
-                    processedConfig.val8421_config_display = JSON.stringify(processedConfig.val8421_config_parsed, null, 2);
-                } catch (e) {
-                    processedConfig.val8421_config_parsed = {};
-                    processedConfig.player8421Count = 0;
-                    processedConfig.val8421_config_display = config.playerIndicatorConfig; // 显示原始字符串
-                }
-            }
-
-
-
-            // 解析 bootstrap_order JSON 字符串
-            if (config.bootstrap_order && typeof config.bootstrap_order === 'string') {
-                try {
-                    processedConfig.bootstrap_order_parsed = JSON.parse(config.bootstrap_order);
-                    processedConfig.players = this.reorderPlayersByBootStrapOrder(processedConfig.attenders, processedConfig.bootstrap_order_parsed);
-
-                } catch (e) {
-                    processedConfig.bootstrap_order_parsed = [];
-                }
-            } else {
-
-            }
-
-
-
-            return processedConfig;
-        } catch (e) {
-            console.log("Step6  📴📳🈶🈚️🈸🈺🈷️✴️🈲  ", e);
-            return config;
-        }
-    }),
-
     fetchRuntimeConfigs: action(async function (groupid) {
         if (this.loadingRuntimeConfig) return; // 防止重复加载
 
@@ -150,10 +72,10 @@ export const runtimeStore = observable({
                 const rawConfigs = res.gambles || [];
                 console.log('🎮 [runtimeStore] API 返回原始数据:', rawConfigs);
 
-                // 处理配置数据 - 使用朴素的写法
+                // 处理配置数据
                 const processedConfigs = [];
                 for (const config of rawConfigs) {
-                    const tmp = this.processOneGamble(config);
+                    const tmp = processOneGamble(config);
                     processedConfigs.push(tmp);
                 }
 
