@@ -1,6 +1,6 @@
 // holeRangeStore - 洞范围管理 Store
 import { observable, action } from 'mobx-miniprogram'
-import { normalizeHole } from '../utils/gameUtils'
+import { normalizeHole } from '../../utils/gameUtils'
 
 /**
  * 洞范围管理 Store

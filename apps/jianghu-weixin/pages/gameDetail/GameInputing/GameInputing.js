@@ -1,4 +1,4 @@
-import { gameStore } from '@/stores/gameStore';
+import { gameStore } from '@/stores/game/gameStore';
 
 Component({
     data: {

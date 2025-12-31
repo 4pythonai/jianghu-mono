@@ -1,5 +1,5 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
-import { gameStore } from '@/stores/gameStore';
+import { gameStore } from '@/stores/game/gameStore';
 
 const TAB_ROUTE_MAP = {
     '0': 'score',

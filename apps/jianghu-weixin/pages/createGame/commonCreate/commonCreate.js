@@ -1,7 +1,7 @@
 import { findUserInGroups, handleAppendPlayersToGroup } from '@/utils/gameGroupUtils'
 import { uuid } from '@/utils/tool'
 import { validateForm } from '@/utils/gameValidate'
-import { gameStore } from '@/stores/gameStore'
+import { gameStore } from '@/stores/game/gameStore'
 
 const app = getApp()
 

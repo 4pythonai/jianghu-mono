@@ -123,8 +123,8 @@ Component({
         // 查看规则详情 - 跳转到运行时配置页面
         onCreateGamble(e) {
             const { item, minPlayerCount } = e.detail || e.currentTarget.dataset;
-            const { gameStore } = require('@/stores/gameStore');
-            const { holeRangeStore } = require('@/stores/holeRangeStore');
+            const { gameStore } = require('@/stores/game/gameStore');
+            const { holeRangeStore } = require('@/stores/game/holeRangeStore');
 
             // 验证玩家数量是否达到要求
             const currentPlayerCount = gameStore.players.length;

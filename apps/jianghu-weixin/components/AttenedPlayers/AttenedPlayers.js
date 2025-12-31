@@ -1,5 +1,5 @@
 import { storeBindingsBehavior } from 'mobx-miniprogram-bindings'
-import { gameStore } from '@/stores/gameStore'
+import { gameStore } from '@/stores/game/gameStore'
 
 Component({
     behaviors: [storeBindingsBehavior],

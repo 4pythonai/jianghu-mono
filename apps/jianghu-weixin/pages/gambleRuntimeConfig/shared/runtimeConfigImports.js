@@ -16,13 +16,13 @@ const { GambleMetaConfig } = require('@/utils/GambleMetaConfig');
 const GambleRelatedInitor = require('@/utils/GambleRelatedInitor');
 
 // 游戏存储
-const { gameStore } = require('@/stores/gameStore');
+const { gameStore } = require('@/stores/game/gameStore');
 
 // 运行时存储
-const { runtimeStore } = require('@/stores/runtimeStore');
+const { runtimeStore } = require('@/stores/gamble/runtimeStore');
 
 // 洞范围存储
-const { holeRangeStore } = require('@/stores/holeRangeStore');
+const { holeRangeStore } = require('@/stores/game/holeRangeStore');
 
 // MobX工具
 const { toJS } = require('mobx-miniprogram');

@@ -1,7 +1,7 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
-import { gameStore } from '@/stores/gameStore'
-import { holeRangeStore } from '@/stores/holeRangeStore'
-import { scoreStore } from '@/stores/scoreStore'
+import { gameStore } from '@/stores/game/gameStore'
+import { holeRangeStore } from '@/stores/game/holeRangeStore'
+import { scoreStore } from '@/stores/game/scoreStore'
 import {
     computeScoreTableStats,
     normalizeTotalsLength

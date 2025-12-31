@@ -3,8 +3,8 @@
  * 合并 configConverter、configParser、configDataProcessor 的功能
  * 提供统一的配置解析、转换、处理接口
  */
-const { gameStore } = require('../stores/gameStore');
-const { holeRangeStore } = require('../stores/holeRangeStore');
+const { gameStore } = require('../stores/game/gameStore');
+const { holeRangeStore } = require('../stores/game/holeRangeStore');
 const navigationHelper = require('./navigationHelper.js');
 
 class ConfigManager {

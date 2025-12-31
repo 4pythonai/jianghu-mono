@@ -1,4 +1,4 @@
-import { scoreStore } from '@/stores/scoreStore';
+import { scoreStore } from '@/stores/game/scoreStore';
 import { buildScoreIndex } from '@/utils/gameUtils';
 
 /**

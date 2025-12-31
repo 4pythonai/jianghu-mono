@@ -1,15 +1,15 @@
 import { observable, action } from 'mobx-miniprogram'
-import gameApi from '../api/modules/game'
+import gameApi from '../../api/modules/game'
 import {
     normalizePlayer,
     normalizeHole,
     normalizeScoreCards,
     buildScoreIndex
-} from '../utils/gameUtils'
-import { filterPlayersByGroup, calculatePlayersHandicaps } from '../utils/playerUtils'
+} from '../../utils/gameUtils'
+import { filterPlayersByGroup, calculatePlayersHandicaps } from '../../utils/playerUtils'
 import { scoreStore } from './scoreStore'
 import { holeRangeStore } from './holeRangeStore'
-import { runtimeStore } from './runtimeStore'
+import { runtimeStore } from '../gamble/runtimeStore'
 
 export const gameStore = observable({
 

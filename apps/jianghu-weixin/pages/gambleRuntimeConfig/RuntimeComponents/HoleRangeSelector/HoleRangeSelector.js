@@ -1,7 +1,7 @@
 // HoleRangeSelector 组件 - 起点洞与终点洞选择器
 
-import { holeRangeStore } from '@/stores/holeRangeStore';
-import { gameStore } from '@/stores/gameStore';
+import { holeRangeStore } from '@/stores/game/holeRangeStore';
+import { gameStore } from '@/stores/game/gameStore';
 import { autorun } from 'mobx-miniprogram';
 
 Component({

@@ -1,5 +1,5 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
-import { gameStore } from '@/stores/gameStore';
+import { gameStore } from '@/stores/game/gameStore';
 import { createJoinSocket } from '@/pages/player-select/qrcode/joinSocket';
 import { config as apiConfig } from '@/api/config';
 

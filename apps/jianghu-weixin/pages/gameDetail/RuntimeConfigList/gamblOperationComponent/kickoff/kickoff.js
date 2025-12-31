@@ -1,6 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
-import { gameStore } from '@/stores/gameStore';
-import { runtimeStore } from '@/stores/runtimeStore';
+import { gameStore } from '@/stores/game/gameStore';
+import { runtimeStore } from '@/stores/gamble/runtimeStore';
 
 Component({
     properties: {
