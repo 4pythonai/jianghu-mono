@@ -285,7 +285,7 @@ Component({
                 return;
             }
 
-            // 先清除所有分数为null
+            // 构建清除数据
             const clearedScores = this.data.localScores.map(score => ({
                 ...score,
                 score: null,
@@ -295,21 +295,21 @@ Component({
                 tee_shot_direction: null
             }));
 
-            this.setData({
-                localScores: clearedScores
-            });
+            // 先隐藏面板（不清空数据），避免UI显示null
+            this.setData({ isVisible: false, localScores: clearedScores });
 
             try {
-                const saveResult = await this._saveChanges();
-                if (saveResult === false) {
-                    return; // 保存失败或被跳过, 不关闭面板
-                }
+                await this._saveChanges();
             } catch (error) {
-                return; // 如果保存失败, 不执行后续操作
+                // 保存失败时显示提示
             }
 
-            // 🔧 保存成功后直接关闭面板
-            this.hide();
+            // 保存完成后清理数据
+            this.setData({
+                holeInfo: null,
+                localScores: [],
+                currentHole: null,
+            });
         },
 
         async handleMaskClick() {

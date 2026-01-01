@@ -2,6 +2,7 @@
 	min-height: 100vh;
 	background-color: var(--common-bg);
 	padding: 32rpx 30rpx 48rpx;
+	padding-top: 200rpx; /* 预留导航栏空间 */
 }
 
 .main-card {

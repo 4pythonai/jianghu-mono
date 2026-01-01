@@ -2,6 +2,7 @@
 .page-container {
 	min-height: 100vh;
 	background: linear-gradient(to bottom, var(--primary-green-dark) 0%, var(--secondary-green) 25%, var(--bg-secondary) 25%);
+	padding-top: 200rpx; /* 预留导航栏空间 */
 	padding-bottom: 200rpx;
 }
 

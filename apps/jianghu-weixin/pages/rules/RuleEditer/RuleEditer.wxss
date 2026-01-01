@@ -3,6 +3,7 @@
 	min-height: 100vh;
 	background: #f5f5f5;
 	padding: 20rpx;
+	padding-top: 200rpx; /* 预留导航栏空间 */
 	box-sizing: border-box;
 }
 

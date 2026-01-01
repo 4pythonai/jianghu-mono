@@ -1,5 +1,6 @@
 .container {
 	padding: 24rpx;
+	padding-top: 200rpx; /* 预留导航栏空间 */
 	background-color: #f5f5f5;
 	min-height: 100vh;
 	/* 横屏适配 */

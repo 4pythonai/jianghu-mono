@@ -10,6 +10,7 @@ page {
 	flex-direction: column;
 	min-height: 100vh;
 	padding: 0;
+	padding-top: 200rpx; /* 预留导航栏空间 */
 }
 
 /* 顶部标题区域 */

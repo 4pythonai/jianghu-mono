@@ -7,6 +7,7 @@ page {
 
 .container {
 	padding: 40rpx 30rpx 60rpx;
+	padding-top: 200rpx; /* 预留导航栏空间 */
 	display: flex;
 	flex-direction: column;
 	gap: 32rpx;

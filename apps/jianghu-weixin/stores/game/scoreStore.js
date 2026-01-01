@@ -50,8 +50,9 @@ export const scoreStore = observable({
      * @param {number} [param0.putts]
      * @param {number} [param0.penalty_strokes]
      * @param {number} [param0.sand_save]
+     * @param {string} [param0.tee_shot_direction]
      */
-    updateScore: action(function ({ userid, hindex, score, putts, penalty_strokes, sand_save }) {
+    updateScore: action(function ({ userid, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }) {
         const idx = (this.scores || []).findIndex(s => String(s.userid) === String(userid) && String(s.hindex) === String(hindex));
         if (idx >= 0) {
             // 更新已有
@@ -60,6 +61,7 @@ export const scoreStore = observable({
             if (putts !== undefined) newScore.putts = putts;
             if (penalty_strokes !== undefined) newScore.penalty_strokes = penalty_strokes;
             if (sand_save !== undefined) newScore.sand_save = sand_save;
+            if (tee_shot_direction !== undefined) newScore.tee_shot_direction = tee_shot_direction;
             this.scores = [
                 ...this.scores.slice(0, idx),
                 newScore,
@@ -69,7 +71,7 @@ export const scoreStore = observable({
             // 新增
             this.scores = [
                 ...this.scores,
-                { userid, hindex, score, putts, penalty_strokes, sand_save }
+                { userid, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }
             ];
         }
     }),

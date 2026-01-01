@@ -1,6 +1,7 @@
 /* 添加规则页面样式 */
 .rules-page {
     min-height: 100vh;
+    padding-top: 200rpx; /* 预留导航栏空间 */
 }
 
 .tab-content {
