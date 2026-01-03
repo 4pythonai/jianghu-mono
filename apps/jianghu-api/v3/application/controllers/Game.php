@@ -572,4 +572,69 @@ class Game extends MY_Controller {
             ]
         ], JSON_UNESCAPED_UNICODE);
     }
+
+    /**
+     * 添加观看者到球局,同时执行 $this->MGame->removePlayer($gameid, $userid)
+     *
+     * @api POST /game/addWatcher
+     *
+     * @param int gameid 球局ID（必填）
+     * @param int userid 用户ID（必填）
+     *
+     * @return array 返回结果
+     */
+    public function addWatcher() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+        $userid = isset($json_paras['userid']) ? (int)$json_paras['userid'] : 0;
+
+        if ($gameid <= 0 || $userid <= 0) {
+            echo json_encode(['code' => 400, 'message' => '参数错误'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 移除
+        $this->MGame->removePlayer($gameid, $userid);
+
+        $existing = $this->db->get_where('t_game_watchlist', ['gameid' => $gameid, 'userid' => $userid])->row_array();
+
+        if ($existing) {
+            $this->db->where('id', $existing['id']);
+            $this->db->update('t_game_watchlist', ['addtime' => date('Y-m-d H:i:s')]);
+            echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
+        } else {
+            $this->db->insert('t_game_watchlist', [
+                'gameid' => $gameid,
+                'userid' => $userid,
+                'addtime' => date('Y-m-d H:i:s')
+            ]);
+            echo json_encode(['code' => 200, 'message' => '添加成功'], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    /**
+     * 从球局移除观看者
+     *
+     * @api POST /game/deleteWatcher
+     *
+     * @param int gameid 球局ID（必填）
+     * @param int userid 用户ID（必填）
+     *
+     * @return array 返回结果
+     */
+    public function deleteWatcher() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+        $userid = isset($json_paras['userid']) ? (int)$json_paras['userid'] : 0;
+
+        if ($gameid <= 0 || $userid <= 0) {
+            echo json_encode(['code' => 400, 'message' => '参数错误'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $this->db->where(['gameid' => $gameid, 'userid' => $userid]);
+        $this->db->delete('t_game_watchlist');
+
+        echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
+    }
 }

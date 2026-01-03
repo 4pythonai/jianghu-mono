@@ -35,6 +35,11 @@ const game = {
     // 批量添加好友到球局
     addFriendsToGame: (data, options) => request('/Game/addFriendsToGame', data, options),
 
+    // 添加观看者到球局
+    addWatcher: (data, options) => request('/Game/addWatcher', data, options),
+    // 删除观看者
+    deleteWatcher: (data, options) => request('/Game/deleteWatcher', data, options),
+
 }
 
 export default game

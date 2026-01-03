@@ -154,6 +154,64 @@ Page({
         this.joinGame();
     },
 
+    handleWatch() {
+        this.watchGame();
+    },
+
+    async watchGame() {
+        if (!this.data.gameid) {
+            wx.showToast({
+                title: '比赛信息缺失',
+                icon: 'none'
+            });
+            return;
+        }
+
+        try {
+            const authResult = await this.ensureAuth();
+
+            if (!authResult?.success) {
+                const message = authResult?.message || '请先登录';
+                wx.showToast({
+                    title: message,
+                    icon: 'none'
+                });
+                return;
+            }
+
+            // 调用 addWatcher API
+            const result = await app.api.game.addWatcher({
+                gameid: this.data.gameid
+            }, {
+                loadingTitle: '加入围观...'
+            });
+
+            if (result?.code !== 200) {
+                throw new Error(result?.message || '加入围观失败');
+            }
+
+            wx.showToast({
+                title: '已加入围观',
+                icon: 'success',
+                duration: 1000
+            });
+
+            // 跳转到比赛详情页
+            setTimeout(() => {
+                wx.navigateTo({
+                    url: `/pages/gameDetail/score/score?gameid=${this.data.gameid}`
+                });
+            }, 1000);
+
+        } catch (error) {
+            console.error('[WXShare] watchGame failed', error);
+            wx.showToast({
+                title: error?.message || '加入围观失败',
+                icon: 'none'
+            });
+        }
+    },
+
 
     normalizeOptions(options = {}) {
         const params = { ...options };

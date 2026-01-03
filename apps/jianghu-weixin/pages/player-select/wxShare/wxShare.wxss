@@ -273,3 +273,114 @@ page {
 	background-color: #fff3cd;
 	color: #856404;
 }
+
+/* 全屏浮动遮罩层 */
+.floating-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 100;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 全屏模糊背景 */
+.blur-backdrop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(255, 255, 255, 0.08);
+	backdrop-filter: blur(1px);
+	-webkit-backdrop-filter: blur(1px);
+}
+
+/* 浮动按钮容器 */
+.floating-actions {
+	position: relative;
+	z-index: 101;
+	display: flex;
+	gap: 32rpx;
+	padding: 0 40rpx;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.action-card {
+	flex: 1;
+	height: 240rpx;
+	border-radius: 28rpx;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 28rpx;
+	transition: all 0.2s ease;
+}
+
+.action-card:active {
+	transform: scale(0.96) translateY(4rpx);
+}
+
+/* 围观比赛 - 灰色卡片 */
+.watch-card {
+	background: linear-gradient(145deg, #a8adb5 0%, #8b9199 100%);
+	border: 3rpx solid rgba(255, 255, 255, 0.4);
+	box-shadow:
+		0 16rpx 48rpx rgba(0, 0, 0, 0.3),
+		0 8rpx 16rpx rgba(0, 0, 0, 0.2),
+		inset 0 2rpx 6rpx rgba(255, 255, 255, 0.3);
+}
+
+.watch-card .action-card-title {
+	color: #ffffff;
+	font-size: 34rpx;
+	font-weight: 600;
+	text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.3);
+}
+
+.watch-card .action-card-icon {
+	width: 64rpx;
+	height: 64rpx;
+	filter: brightness(0) invert(1);
+	opacity: 0.95;
+}
+
+/* 加入比赛 - 绿色卡片 */
+.join-card {
+	background: linear-gradient(145deg, #2ecc71 0%, #109d58 100%);
+	border: 3rpx solid rgba(255, 255, 255, 0.4);
+	box-shadow:
+		0 16rpx 48rpx rgba(16, 157, 88, 0.45),
+		0 8rpx 16rpx rgba(16, 157, 88, 0.3),
+		inset 0 2rpx 6rpx rgba(255, 255, 255, 0.35);
+}
+
+.join-card .action-card-title {
+	color: #ffffff;
+	font-size: 34rpx;
+	font-weight: 600;
+	text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.2);
+}
+
+.join-card .action-card-icon {
+	width: 72rpx;
+	height: 72rpx;
+	filter: brightness(0) invert(1);
+}
+
+.join-card.disabled {
+	background: linear-gradient(145deg, #c8ddd0 0%, #b0c9ba 100%);
+	border-color: rgba(255, 255, 255, 0.3);
+	box-shadow:
+		0 8rpx 24rpx rgba(0, 0, 0, 0.15),
+		inset 0 2rpx 4rpx rgba(255, 255, 255, 0.2);
+}
+
+.join-card.disabled:active {
+	transform: none;
+}

@@ -44,16 +44,19 @@ Component({
                 store: scoreStore,
                 fields: {
                     playerScores: 'scores',
-                    // 注意：不再绑定 playerTotalScores，因为使用的是 displayTotals（通过 calculateDisplayTotals 计算）
                 },
                 actions: [],
             });
 
             this.scrollToLeft();
-
         },
 
         detached() {
+            // 清除防抖定时器
+            if (this._debounceTimer) {
+                clearTimeout(this._debounceTimer);
+                this._debounceTimer = null;
+            }
             if (this.storeBindings) {
                 this.storeBindings.destroyStoreBindings();
             }
@@ -68,9 +71,8 @@ Component({
 
     observers: {
         'playerScores,players,holeList,red_blue': function (scores, players, holeList, red_blue) {
-            // 数据不完整时，不执行计算，重置显示数据
+            // 数据不完整时，不执行计算
             if (!scores || !players || !holeList || players.length === 0 || holeList.length === 0) {
-                // 如果数据被清空，重置显示数据，避免显示不完整的表格
                 if (this.data.displayScores !== null) {
                     this.setData({
                         displayScores: null,
@@ -82,23 +84,26 @@ Component({
                 return;
             }
 
-            this.runAtomicScoreUpdate(players, holeList, red_blue);
+            // 使用防抖，避免多个 store 数据陆续到达时重复计算
+            if (this._debounceTimer) {
+                clearTimeout(this._debounceTimer);
+            }
+            this._debounceTimer = setTimeout(() => {
+                this._debounceTimer = null;
+                this.runAtomicScoreUpdate(players, holeList, red_blue);
+            }, 16); // 约一帧的时间
         }
     },
 
     methods: {
-        // ===================== 数据计算相关 =====================
         /**
-         * 汇总分数统计的原子操作: 计算显示矩阵、前后九合计、总杆并同步 handicap
+         * 汇总分数统计的原子操作
          */
         runAtomicScoreUpdate(players, holeList, red_blue = []) {
             if (!Array.isArray(players) || players.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
-            if (this._isUpdatingHandicap || this._isCalculating) {
-                return;
-            }
-
+            if (this._isCalculating) return;
             this._isCalculating = true;
 
             const {
@@ -109,26 +114,22 @@ Component({
                 scoreIndex
             } = computeScoreTableStats(players, holeList, red_blue);
 
-            this._isUpdatingHandicap = true;
-            gameStore.updatePlayersHandicaps(holeList, scoreIndex);
-            setTimeout(() => {
-                this._isUpdatingHandicap = false;
-            }, 0);
+            // 更新 handicap（使用 nextTick 避免阻塞渲染）
+            wx.nextTick(() => {
+                gameStore.updatePlayersHandicaps(holeList, scoreIndex);
+            });
 
             const paddedOutTotals = normalizeTotalsLength(displayOutTotals, players.length);
             const paddedInTotals = normalizeTotalsLength(displayInTotals, players.length);
 
-            // 使用 nextTick 确保在同一个渲染周期内完成所有数据更新，避免闪烁
             this.setData({
                 displayScores,
                 displayTotals,
                 displayOutTotals: paddedOutTotals,
                 displayInTotals: paddedInTotals
-            });
-
-            setTimeout(() => {
+            }, () => {
                 this._isCalculating = false;
-            }, 50);
+            });
         },
 
         /**

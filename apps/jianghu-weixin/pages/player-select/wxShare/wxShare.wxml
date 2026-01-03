@@ -36,25 +36,37 @@
         </view>
       </view>
     </view>
-
-    <button
-      class="primary-btn"
-      bindtap="handleJoin"
-      wx:if="{{uuid}}"
-      loading="{{joining}}"
-      disabled="{{joining || joinSuccess}}"
-    >{{joinSuccess ? '已加入比赛' : '立即加入比赛'}}</button>
   </view>
   <view class="tips-card">
     <text class="tips-title">使用说明</text>
     <view class="tips-item">
-      <text>1. 点击右上角“...”可转发到好友或群聊。</text>
+      <text>1. 点击右上角"..."可转发到好友或群聊。</text>
     </view>
     <view class="tips-item">
       <text>2. 好友进入后可直接加入比赛或复制邀请码给组织者安排分组。</text>
     </view>
     <view class="tips-item">
       <text>3. 若无法打开小程序，可保存二维码或复制邀请码稍后再次加入。</text>
+    </view>
+  </view>
+</view>
+
+<!-- 全屏模糊遮罩 + 浮动按钮 -->
+<view class="floating-overlay" wx:if="{{uuid}}">
+  <view class="blur-backdrop"></view>
+  <view class="floating-actions">
+    <!-- 围观比赛 -->
+    <view class="action-card watch-card" bindtap="handleWatch">
+      <text class="action-card-title">围观比赛</text>
+      <image class="action-card-icon" src="/assets/icons/icons8-eye-48.png" mode="aspectFit"></image>
+    </view>
+    <!-- 加入比赛 -->
+    <view
+      class="action-card join-card {{joinSuccess ? 'disabled' : ''}}"
+      bindtap="handleJoin"
+    >
+      <text class="action-card-title">{{joinSuccess ? '已加入' : '加入比赛'}}</text>
+      <image class="action-card-icon" src="/assets/icons/icons8-add-48.png" mode="aspectFit"></image>
     </view>
   </view>
 </view>
