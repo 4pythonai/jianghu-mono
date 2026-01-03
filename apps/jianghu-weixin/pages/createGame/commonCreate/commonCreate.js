@@ -334,13 +334,15 @@ Page({
             'formData.password': isPrivate ? this.data.formData.password : ''
         });
 
-        // 实时更新私有设置
-        if (this.data.gameCreated) {
-            this.callUpdateAPI('updateGamePrivate', {
+        // 如果取消秘密比赛，立即同步到后端
+        if (this.data.gameCreated && !isPrivate) {
+            this.callUpdateAPI('updateGamePrivateWithPassword', {
                 uuid: this.data.uuid,
-                isPrivate
-            }, '私有设置')
+                isPrivate: false,
+                password: ''
+            }, '取消秘密比赛')
         }
+        // 如果开启秘密比赛，等待用户输入密码后再同步（在 onPasswordInput 中处理）
     },
 
     onPasswordInput(e) {
@@ -349,13 +351,15 @@ Page({
             'formData.password': password
         });
 
-        // 实时更新密码(防抖500ms)
+        // 实时更新秘密比赛设置(防抖500ms)
+        // 只有同时有 isPrivate=true 和 password 才会设置为秘密比赛
         if (this.data.gameCreated && this.data.formData.isPrivate) {
-            this.debounce('password', () => {
-                this.callUpdateAPI('updateGamepPivacyPassword', {
+            this.debounce('privateSettings', () => {
+                this.callUpdateAPI('updateGamePrivateWithPassword', {
                     uuid: this.data.uuid,
-                    password
-                }, '密码')
+                    isPrivate: true,
+                    password: password
+                }, '秘密比赛设置')
             })
         }
     },

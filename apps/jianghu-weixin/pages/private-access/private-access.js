@@ -8,7 +8,8 @@ Page({
         gameDetail: null,
         loading: false,
         submitting: false,
-        showPasswordModal: false
+        showPasswordModal: false,
+        inputFocus: false
     },
 
     onLoad(options) {
@@ -51,16 +52,34 @@ Page({
         this.setData({
             showPasswordModal: true,
             errorMessage: '',
-            passwordInput: ''
+            passwordInput: '',
+            inputFocus: false
         })
+        // 延迟设置焦点，确保弹窗渲染完成
+        setTimeout(() => {
+            this.setData({ inputFocus: true })
+        }, 300)
     },
 
     onCloseModal() {
         this.setData({
             showPasswordModal: false,
             errorMessage: '',
-            passwordInput: ''
+            passwordInput: '',
+            inputFocus: false
         })
+    },
+
+    // 点击输入框时手动获取焦点
+    onInputTap() {
+        if (!this.data.inputFocus) {
+            this.setData({ inputFocus: true })
+        }
+    },
+
+    // 阻止事件冒泡
+    noop() {
+        // 空函数，阻止点击事件冒泡到外层关闭弹窗
     },
 
     onPasswordInput(e) {

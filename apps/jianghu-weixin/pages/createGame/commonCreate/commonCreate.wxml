@@ -116,7 +116,9 @@
             </view>
             <!-- 密码输入(仅在秘密比赛时显示) -->
             <view wx:if="{{ formData.isPrivate }}" class="password-input">
-              <input class="form-input" type="text" placeholder="请设置比赛密码" placeholder-class="input-placeholder" value="{{ formData.password }}" bindinput="onPasswordInput" maxlength="20" />
+              <view class="form-input-wrapper">
+                <input class="form-input" type="text" placeholder="请设置比赛密码" placeholder-class="input-placeholder" value="{{ formData.password }}" bindinput="onPasswordInput" maxlength="20" />
+              </view>
             </view>
           </view>
         </view>

@@ -1,6 +1,8 @@
 {
+	"navigationStyle": "custom",
 	"navigationBarTitleText": "普通创建",
 	"usingComponents": {
+		"CustomNavBar": "/components/CustomNavBar/CustomNavBar",
 		"PlayerSelector": "/components/PlayerSelector/PlayerSelector",
 		"TimePicker": "/components/TimePicker/time-picker"
 	}

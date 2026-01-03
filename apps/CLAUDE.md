@@ -62,4 +62,33 @@ Page({
 
  jianghu-weixin/assets/icons
 
+### 自定义导航栏配置注意事项
+
+使用 `CustomNavBar` 组件时，页面的 `.json` 文件必须同时配置以下两项，否则会导致输入框无法点击等布局问题：
+
+```json
+{
+    "navigationStyle": "custom",
+    "usingComponents": {
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+    }
+}
+```
+
+**常见错误：** 只在 `.wxml` 中使用 `<CustomNavBar />`，但 `.json` 中缺少声明，会导致：
+1. 原生导航栏仍然显示
+2. CustomNavBar 组件标签被忽略或作为空元素渲染
+3. 页面布局混乱，输入框等元素可能被不可见元素覆盖，无法获取焦点
+
+**正确示例（参考 addPlayerHub.json）：**
+```json
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "页面标题",
+    "usingComponents": {
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+    }
+}
+```
+
 

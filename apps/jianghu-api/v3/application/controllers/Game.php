@@ -153,6 +153,38 @@ class Game extends MY_Controller {
         echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * 原子更新秘密比赛设置（isPrivate + password 一起更新）
+     * 只有同时有 isPrivate=true 和 password 才会设置为秘密比赛
+     */
+    public function updateGamePrivateWithPassword() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $uuid = $json_paras['uuid'];
+        $isPrivate = $json_paras['isPrivate'];
+        $password = isset($json_paras['password']) ? $json_paras['password'] : '';
+
+        // 只有同时有 isPrivate=true 和非空 password 才设置为秘密比赛
+        if ($isPrivate && !empty($password)) {
+            $this->db->where('uuid', $uuid);
+            $this->db->update('t_game', [
+                'private' => 'y',
+                'privacy_password' => $password
+            ]);
+        } else {
+            // 取消秘密比赛或密码为空，都重置为非秘密
+            $this->db->where('uuid', $uuid);
+            $this->db->update('t_game', [
+                'private' => 'n',
+                'privacy_password' => null
+            ]);
+        }
+
+        $ret = [];
+        $ret['code'] = 200;
+        $ret['message'] = '秘密比赛设置更新成功';
+        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+    }
+
     public function savePrivateWhiteList() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = isset($json_paras['gameid']) ? intval($json_paras['gameid']) : 0;
@@ -528,20 +560,12 @@ class Game extends MY_Controller {
             return;
         }
 
-        if (empty($userids) || !is_array($userids)) {
-            echo json_encode(['code' => 400, 'message' => '缺少有效的用户列表'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
 
         $successList = [];
         $failedList = [];
 
         foreach ($userids as $userid) {
             $userid = (int)$userid;
-            if ($userid <= 0) {
-                $failedList[] = ['userid' => $userid, 'reason' => '无效的用户ID'];
-                continue;
-            }
 
             $joinResult = $this->MGame->gameJoinHandler($userid, $gameid, 'friendAdd');
 
@@ -634,7 +658,6 @@ class Game extends MY_Controller {
 
         $this->db->where(['gameid' => $gameid, 'userid' => $userid]);
         $this->db->delete('t_game_watchlist');
-
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
 }

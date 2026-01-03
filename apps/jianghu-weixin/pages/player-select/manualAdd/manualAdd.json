@@ -1,6 +1,8 @@
 {
+	"navigationStyle": "custom",
 	"navigationBarTitleText": "手工添加",
 	"usingComponents": {
+		"CustomNavBar": "/components/CustomNavBar/CustomNavBar",
 		"attened-players": "/components/AttenedPlayers/AttenedPlayers"
 	}
 }

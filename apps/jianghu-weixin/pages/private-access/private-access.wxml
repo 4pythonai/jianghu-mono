@@ -36,12 +36,12 @@
         <input
           class="password-input"
           type="text"
-          password="true"
+          password
           placeholder="请输入密码"
           placeholder-class="input-placeholder"
           value="{{passwordInput}}"
           bindinput="onPasswordInput"
-          focus="{{showPasswordModal}}"
+          focus="{{inputFocus}}"
         />
 
         <text class="error-message" wx:if="{{errorMessage}}">{{errorMessage}}</text>

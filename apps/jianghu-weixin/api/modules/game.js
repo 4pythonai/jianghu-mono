@@ -9,6 +9,7 @@ const game = {
     updateGameName: (data, options) => request('/Game/updateGameName', data, options),
     updateGamePrivate: (data, options) => request('/Game/updateGamePrivate', data, options),
     updateGamepPivacyPassword: (data, options) => request('/Game/updateGamepPivacyPassword', data, options),
+    updateGamePrivateWithPassword: (data, options) => request('/Game/updateGamePrivateWithPassword', data, options),
     updateGameOpenTime: (data, options) => request('/Game/updateGameOpenTime', data, options),
     updateGameScoringType: (data, options) => request('/Game/updateGameScoringType', data, options),
     updateGameGroupAndPlayers: (data, options) => request('/Game/updateGameGroupAndPlayers', data, options),

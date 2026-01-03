@@ -111,6 +111,7 @@
     border-radius: 32rpx 32rpx 0 0;
     padding: 40rpx 48rpx 60rpx;
     animation: slideUp 0.3s ease-out;
+    z-index: 10;
 }
 
 @keyframes slideUp {
