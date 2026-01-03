@@ -162,11 +162,9 @@ export const appendPlayersToGroup = (players, groupIndex, sourceType, gameGroups
     const updatedPlayers = [...currentPlayers, ...playersToAdd];
     updatedGameGroups[groupIndex].players = updatedPlayers;
 
-    console.log(`✅ 成功追加 ${playersToAdd.length} 名${sourceType}到第${groupIndex + 1}组`);
-    console.log(`📊 更新后的第${groupIndex + 1}组玩家:`, updatedPlayers);
 
     // 生成详细的成功提示信息
-    let message = `已添加${playersToAdd.length}名${sourceType}到第${groupIndex + 1}组`;
+    let message = `已添加${playersToAdd.length}名玩家到第${groupIndex + 1}组`;
 
     const totalSkipped = duplicateCount + capacitySkippedCount;
     if (totalSkipped > 0) {

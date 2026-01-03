@@ -56,14 +56,40 @@ Page({
         const { friends, scene } = e.detail;
         console.log('🔵 [friendSelect] onFriendPickerConfirm:', { friends, scene });
 
-        const gameid = this.data.gameid || gameStore.gameid;
+        // 获取当前页面栈
+        const pages = getCurrentPages();
+        const entryPage = pages[0];
+        console.log('🔵 [friendSelect] entryPage:', entryPage.route);
 
+        // 从创建比赛页面进入的 - 和 manualAdd 保持一致
+        if (entryPage.route === 'pages/createGame/createGame') {
+            const commonCreatePage = pages[pages.length - 3];
+
+            if (commonCreatePage && typeof commonCreatePage.onFriendsSelected === 'function') {
+                commonCreatePage.onFriendsSelected(friends, this.data.groupIndex, this.data.slotIndex);
+                wx.showToast({
+                    title: '添加成功',
+                    icon: 'success',
+                    duration: 1500
+                });
+
+                setTimeout(() => {
+                    wx.navigateBack({ delta: 2 });
+                }, 1500);
+            } else {
+                console.error('🔵 [friendSelect] commonCreatePage.onFriendsSelected not found');
+                wx.showToast({ title: '回调失败', icon: 'none' });
+            }
+            return;
+        }
+
+        // 从比赛详情进入的 - 直接调用 API 添加
+        const gameid = this.data.gameid || gameStore.gameid;
         if (!gameid) {
             wx.showToast({ title: '缺少球局信息', icon: 'none' });
             return;
         }
 
-        // 提取用户ID列表
         const userids = friends.map(f => f.userid);
 
         try {
@@ -85,9 +111,8 @@ Page({
                     await gameStore.fetchGameDetail(gameid, gameStore.groupid);
                 }
 
-                // 延迟返回，让用户看到成功提示
                 setTimeout(() => {
-                    this.navigateBackToGame();
+                    wx.navigateBack({ delta: 1 });
                 }, 500);
             } else {
                 wx.showToast({

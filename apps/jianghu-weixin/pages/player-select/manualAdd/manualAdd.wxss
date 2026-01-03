@@ -40,6 +40,7 @@
 	border-radius: 50%;
 	border: 2rpx solid var(--border-primary);
 	clip-path: inset(0 0 50% 0);
+	pointer-events: none;
 }
 
 .top-circle-icon {
