@@ -408,7 +408,7 @@ class MDetailGame  extends CI_Model {
 
     /**
      * 计算已完成洞数
-     * 只有当某个洞所有玩家都记分时才算完成
+     * 只有当某个洞所有玩家都记分且至少有一个非0分数时才算完成
      * 允许跳洞,统计所有玩家都有分数的洞的数量
      * @param int $game_id 球局ID
      * @return int 已完成的洞数
@@ -426,6 +426,7 @@ class MDetailGame  extends CI_Model {
                     FROM t_game_group_user ggu
                     WHERE ggu.gameid = ?
                 )
+                AND MAX(gs.score) > 0
             ) completed_holes_subquery
         ";
 

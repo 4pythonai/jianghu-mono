@@ -2,45 +2,28 @@
 
 .match-container {
 	padding: 15rpx 16rpx;
-	margin: 15rpx 0 40rpx 0; /* 调整左右margin为0 */
+	margin: 15rpx 0 40rpx 0;
 	background: var(--card-bg);
 	border-radius: 6rpx;
-	border: 0.5rpx solid var(--card-border); /* 更醒目的绿色边框 */
+	border: 0.5rpx solid var(--card-border);
 	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
 	display: flex;
 	min-height: 170rpx;
-	width: 100%; /* 改为100%宽度 */
+	width: 100%;
 	position: relative;
 	z-index: 1;
 	transition: all 0.3s ease;
-	box-sizing: border-box; /* 确保边框包含在宽度内 */
-}
-
-/* hover效果 */
-.hover-class {
-	transform: translateY(-8rpx) scale(1.02);
-	box-shadow: 0 12rpx 24rpx rgba(0, 0, 0, 0.2);
-	transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-	z-index: 10;
-}
-
-/* active点击效果 */
-.hover-class:active {
-	transform: translateY(-4rpx) scale(1.01);
-	box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.2);
-	background-color: #f8f8f8;
-	transition: all 0.15s ease-out;
+	box-sizing: border-box;
 }
 
 .avatar-column {
-	width: 100rpx; /* 固定头像列宽度 */
-	margin-right: 40rpx; /* 增加间距 */
+	width: 100rpx;
+	margin-right: 40rpx;
 	display: flex;
 	flex-direction: column;
-	justify-content: center; /* 垂直居中 */
+	justify-content: center;
 }
 
-/* 团队头像容器 */
 .team-avatar-wrapper {
 	width: 100%;
 	height: 100rpx;
@@ -61,14 +44,12 @@
 	flex-direction: column;
 }
 
-/* 行样式 */
 .row {
 	display: flex;
 	align-items: center;
 	margin-bottom: 12rpx;
 }
 
-/* 第1行:比赛名称 + star */
 .name-row {
 	justify-content: space-between;
 	min-height: 40rpx;
@@ -84,19 +65,25 @@
 	color: var(--tilte-h1);
 }
 
-/* 星标图标 */
 .star-icon {
-	width: 54rpx;        /* 放大1.5倍: 36 × 1.5 */
-	height: 54rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: var(--theme-color);
 	margin-left: 20rpx;
-	font-size: 48rpx;    /* 添加字体大小 */
 }
 
-/* 地点和时间区域包装器 */
+.star-icon .icon-img {
+	width: 32rpx;
+	height: 32rpx;
+	filter: invert(47%) sepia(77%) saturate(429%) hue-rotate(101deg) brightness(97%) contrast(88%);
+}
+
+.game-icon .icon-img {
+	width: 32rpx;
+	height: 32rpx;
+	filter: invert(47%) sepia(77%) saturate(429%) hue-rotate(101deg) brightness(97%) contrast(88%);
+}
+
 .location-time-wrapper {
 	display: flex;
 	align-items: center;
@@ -106,7 +93,6 @@
 	flex: 1;
 }
 
-/* 骰子图标包装器 */
 .game-icon-wrapper {
 	display: flex;
 	align-items: center;
@@ -114,16 +100,11 @@
 }
 
 .game-icon {
-	width: 54rpx;        /* 放大1.5倍: 36 × 1.5 */
-	height: 54rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: var(--theme-color);
-	font-size: 48rpx;    /* 放大1.5倍: 32 × 1.5 */
 }
 
-/* 进度条容器 */
 .progress-row {
 	margin-bottom: 16rpx;
 	min-height: 24rpx;
@@ -131,7 +112,6 @@
 	width: 100%;
 }
 
-/* 第3行:地点 */
 .course-row {
 	align-items: center;
 }
@@ -147,10 +127,9 @@
 	font-size: 24rpx;
 }
 
-/* 第4行:时间人数 */
 .meta-row {
 	justify-content: flex-start;
-	align-items: center; /* 确保垂直居中 */
+	align-items: center;
 }
 
 .meta-row .iconfont {
@@ -203,19 +182,9 @@
 	line-height: 1;
 }
 
-.private-content {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-}
-
 .private-match .game-name {
 	color: #ffffff;
 	font-weight: bold;
-}
-
-.private-match .star-icon {
-	color: #ffffff;
 }
 
 .private-text-light {

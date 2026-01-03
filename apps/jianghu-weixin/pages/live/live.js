@@ -10,6 +10,9 @@ Page({
         navbarWrapperHeight: 0 // 导航栏容器高度（屏幕1/4）
     },
 
+    // 是否已完成首次加载
+    _hasLoaded: false,
+
     // 搜索处理函数
     handleSearch() {
         console.log('🔍 点击搜索框')
@@ -88,14 +91,19 @@ Page({
         })
         console.log('📏 导航栏容器高度设置为屏幕1/4:', navbarWrapperHeight + 'px')
 
-        this.loadGames()
+        this._hasLoaded = false
+        this.loadGames().then(() => {
+            this._hasLoaded = true
+        })
     },
 
     onShow() {
         // 页面显示时执行
         console.log('👁️ Live页面显示')
-        // 每次页面显示都自动刷新
-        this.loadGames()
+        // 仅在非首次显示时刷新（从其他页面返回时）
+        if (this._hasLoaded) {
+            this.loadGames()
+        }
     },
 
     async onPullDownRefresh() {

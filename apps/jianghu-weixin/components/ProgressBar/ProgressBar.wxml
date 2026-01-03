@@ -8,7 +8,7 @@
   <!-- 进度球 -->
   <view
     class="progress-ball"
-    style="left: {{(completedHoles/holes)*100}}%"
+    style="left: calc({{(completedHoles/holes)*100}}% - {{(completedHoles/holes)*32}}rpx)"
   >
     <text class="ball-text">{{completedHoles}}</text>
   </view>

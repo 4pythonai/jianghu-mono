@@ -28,7 +28,7 @@
       <!-- 普通比赛显示普通标题 -->
       <text class="game-name" wx:elif="{{private !== 'y'}}">{{gameName}}</text>
       <view class="star-icon" wx:if="{{private !== 'y'}}">
-        <view class="iconfont icon-score2" />
+        <image class="icon-img" src="/assets/icons/icons8-star-48.png" mode="aspectFit" />
       </view>
     </view>
     <!-- 第2行:进度条 (隐私比赛和团队赛不显示,但保留占位) -->
@@ -72,7 +72,7 @@
       <!-- 骰子图标,垂直居中于地点和时间之间 -->
       <view class="game-icon-wrapper" wx:if="{{has_gamble === 'y' && private !== 'y'}}">
         <view class="game-icon">
-          <view class="iconfont icon-youxishaizi" />
+          <image class="icon-img" src="/assets/icons/icons8-chip-48.png" mode="aspectFit" />
         </view>
       </view>
     </view>

@@ -141,96 +141,102 @@ App({
     },
 
     /**
+     * 判断是否是 iOS 系统
+     */
+    _isIOS(systemInfo) {
+        return !!(systemInfo.system.toLowerCase().search('ios') + 1)
+    },
+
+    /**
+     * 获取胶囊按钮位置，失败时返回默认值
+     */
+    _getCapsuleRect(systemInfo, isIOS) {
+        try {
+            const rect = wx.getMenuButtonBoundingClientRect?.() || null
+            if (rect && rect.width && rect.top && rect.left && rect.height) {
+                return rect
+            }
+            throw new Error('invalid rect')
+        } catch {
+            return this._getDefaultCapsuleRect(systemInfo, isIOS)
+        }
+    },
+
+    /**
+     * 获取默认胶囊按钮位置（各平台兜底值）
+     */
+    _getDefaultCapsuleRect(systemInfo, isIOS) {
+        let gap, width = 96
+
+        if (systemInfo.platform === 'android') {
+            gap = 8
+        } else if (systemInfo.platform === 'devtools') {
+            gap = isIOS ? 5.5 : 7.5
+        } else {
+            gap = 4
+            width = 88
+        }
+
+        const statusBarHeight = systemInfo.statusBarHeight ||
+            (systemInfo.screenHeight - systemInfo.windowHeight - 20)
+
+        return {
+            bottom: statusBarHeight + gap + 32,
+            height: 32,
+            left: systemInfo.windowWidth - width - 10,
+            right: systemInfo.windowWidth - 10,
+            top: statusBarHeight + gap,
+            width: width
+        }
+    },
+
+    /**
+     * 计算导航栏高度和扩展高度
+     */
+    _calcNavBarLayout(systemInfo, rect, isIOS) {
+        const gap = rect.top - (systemInfo.statusBarHeight || 0)
+
+        if (!systemInfo.statusBarHeight) {
+            return {
+                navBarHeight: 2 * gap + rect.height,
+                statusBarHeight: 0,
+                navBarExtendHeight: 0
+            }
+        }
+
+        return {
+            navBarHeight: systemInfo.statusBarHeight + 2 * gap + rect.height,
+            statusBarHeight: systemInfo.statusBarHeight,
+            navBarExtendHeight: isIOS ? 4 : 0
+        }
+    },
+
+    /**
      * 初始化导航栏所需的系统信息
      * 用于自定义导航栏组件（navBar）
      */
     initNavBarSystemInfo() {
-        console.log('🔧 开始初始化导航栏系统信息...')
         try {
-            let systemInfo = wx.getSystemInfoSync()
-            console.log('🔧 步骤1: 获取系统信息成功')
-            let ios = !!(systemInfo.system.toLowerCase().search('ios') + 1)
-            console.log('🔧 步骤2: 判断系统类型 ios =', ios)
-            let rect
+            const systemInfo = wx.getSystemInfoSync()
+            const isIOS = this._isIOS(systemInfo)
+            const rect = this._getCapsuleRect(systemInfo, isIOS)
+            const layout = this._calcNavBarLayout(systemInfo, rect, isIOS)
 
-            try {
-                rect = wx.getMenuButtonBoundingClientRect ? wx.getMenuButtonBoundingClientRect() : null
-                console.log('🔧 步骤3: 获取胶囊按钮信息', rect)
-                if (rect === null) {
-                    throw 'getMenuButtonBoundingClientRect error'
-                }
-                // 取值为0的情况
-                if (!rect.width || !rect.top || !rect.left || !rect.height) {
-                    throw 'getMenuButtonBoundingClientRect error'
-                }
-            } catch (error) {
-                // 胶囊按钮获取失败，使用默认值
-                let gap = '' // 胶囊按钮上下间距
-                let width = 96 // 胶囊的宽度
-                if (systemInfo.platform === 'android') {
-                    gap = 8
-                    width = 96
-                } else if (systemInfo.platform === 'devtools') {
-                    if (ios) {
-                        gap = 5.5
-                    } else {
-                        gap = 7.5
-                    }
-                } else {
-                    gap = 4
-                    width = 88
-                }
-                if (!systemInfo.statusBarHeight) {
-                    systemInfo.statusBarHeight = systemInfo.screenHeight - systemInfo.windowHeight - 20
-                }
-                rect = {
-                    bottom: systemInfo.statusBarHeight + gap + 32,
-                    height: 32,
-                    left: systemInfo.windowWidth - width - 10,
-                    right: systemInfo.windowWidth - 10,
-                    top: systemInfo.statusBarHeight + gap,
-                    width: width
-                }
+            this.globalSystemInfo = {
+                ...systemInfo,
+                ...layout,
+                capsulePosition: rect,
+                ios: isIOS
             }
-
-            let navBarHeight = ''
-            if (!systemInfo.statusBarHeight) {
-                systemInfo.statusBarHeight = systemInfo.screenHeight - systemInfo.windowHeight - 20
-                navBarHeight = (function() {
-                    let gap = rect.top - systemInfo.statusBarHeight
-                    return 2 * gap + rect.height
-                })()
-                systemInfo.statusBarHeight = 0
-                systemInfo.navBarExtendHeight = 0
-            } else {
-                navBarHeight = (function() {
-                    let gap = rect.top - systemInfo.statusBarHeight
-                    return systemInfo.statusBarHeight + 2 * gap + rect.height
-                })()
-                if (ios) {
-                    systemInfo.navBarExtendHeight = 4
-                } else {
-                    systemInfo.navBarExtendHeight = 0
-                }
-            }
-
-            systemInfo.navBarHeight = navBarHeight
-            systemInfo.capsulePosition = rect
-            systemInfo.ios = ios
-
-            console.log('🔧 步骤4: 计算完成，准备保存到 globalSystemInfo')
-            this.globalSystemInfo = systemInfo
-            console.log('🔧 步骤5: 已保存到 this.globalSystemInfo')
 
             console.log('📱 导航栏系统信息初始化成功:', {
-                statusBarHeight: systemInfo.statusBarHeight,
-                navBarHeight: systemInfo.navBarHeight,
-                capsulePosition: systemInfo.capsulePosition,
-                ios: systemInfo.ios
+                statusBarHeight: layout.statusBarHeight,
+                navBarHeight: layout.navBarHeight,
+                capsulePosition: rect,
+                ios: isIOS
             })
         } catch (error) {
             console.error('❌ 导航栏系统信息初始化失败:', error)
-            console.error('❌ 错误堆栈:', error.stack)
         }
     },
 

@@ -37,7 +37,7 @@
 	position: absolute;
 	top: 50%; /* 容器的垂直中心 */
 	left: 0; /* 通过 style 动态设置 */
-	transform: translate(-50%, -50%); /* 水平和垂直都居中 */
+	transform: translateY(-50%); /* 只垂直居中，水平由 left 控制 */
 	width: 32rpx;
 	height: 32rpx;
 	border-radius: 50%;
