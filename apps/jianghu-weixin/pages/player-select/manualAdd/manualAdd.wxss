@@ -12,12 +12,12 @@
 	overflow: visible;
 }
 
-/* 顶部装饰圆形 */
+/* 顶部装饰圆形 - 只保留上半圆border */
 .top-circle {
 	width: 120rpx;
 	height: 120rpx;
 	background: #e8f5e9;
-	border: 2rpx solid var(--border-primary);
+	border: none;
 	border-radius: 50%;
 	position: absolute;
 	top: -60rpx;
@@ -26,6 +26,20 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	overflow: hidden;
+}
+
+/* 用伪元素实现上半圆border */
+.top-circle::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: 50%;
+	border: 2rpx solid var(--border-primary);
+	clip-path: inset(0 0 50% 0);
 }
 
 .top-circle-icon {
