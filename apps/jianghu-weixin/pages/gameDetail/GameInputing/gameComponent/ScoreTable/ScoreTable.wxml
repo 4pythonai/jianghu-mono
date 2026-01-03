@@ -156,30 +156,3 @@
     </view>
   </scroll-view>
 </view>
-
-<view class="bottom-action-bar">
-  <view class="game-abstract" wx:if="{{gameAbstract}}">
-    <text class="abstract-text">{{gameAbstract}}</text>
-  </view>
-
-  <view class="button-group">
-    <view class="addPlayerBtn" bindtap="showAddPlayerPanel">
-      <text class="add-icon">+</text>
-    </view>
-
-    <view class="operationBtn" bindtap="showOperationPanel">
-      <text class="operation-icon">⋯</text>
-    </view>
-  </view>
-</view>
-
-<!-- 游戏操作面板 -->
-<GameOperationPanel
-  id="gameOperationPanel"
-  bind:optionclick="onOptionClick"
-  bind:cancelgame="onCancelGame"
-  bind:finishgame="onFinishGame"
-/>
-
-<!-- 添加球员面板 -->
-<AddPlayerHubPanel id="addPlayerPanel" bind:confirm="onAddPlayerConfirm" />

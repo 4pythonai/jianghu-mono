@@ -4,6 +4,7 @@
     <GameDetailTabs active="score" queryParams="{{queryParams}}" />
     <view class="tab-content">
       <ScoreTable bind:cellclick="onCellClick" />
+      <GameActionBar />
       <ScoreInputPanel id="scoreInputPanel" />
     </view>
   </view>

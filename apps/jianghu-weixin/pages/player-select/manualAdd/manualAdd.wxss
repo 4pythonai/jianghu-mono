@@ -16,7 +16,7 @@
 .top-circle {
 	width: 120rpx;
 	height: 120rpx;
-	background: #e8f5e9;
+	background: #fff;
 	border: none;
 	border-radius: 50%;
 	position: absolute;

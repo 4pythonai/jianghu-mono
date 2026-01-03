@@ -1,0 +1,6 @@
+{
+	"component": true,
+	"usingComponents": {
+		"GameOperationPanel": "/pages/gameDetail/GameInputing/gameComponent/GameOperationPanel/GameOperationPanel"
+	}
+}

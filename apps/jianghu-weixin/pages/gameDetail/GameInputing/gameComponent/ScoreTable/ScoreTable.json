@@ -2,8 +2,6 @@
 	"component": true,
 	"usingComponents": {
 		"PlayerInfo": "/components/PlayerInfo/PlayerInfo",
-		"HoleCell": "/components/HoleCell/HoleCell",
-		"GameOperationPanel": "/pages/gameDetail/GameInputing/gameComponent/GameOperationPanel/GameOperationPanel",
-		"AddPlayerHubPanel": "/pages/gameDetail/GameInputing/gameComponent/AddPlayerHubPanel/AddPlayerHubPanel"
+		"HoleCell": "/components/HoleCell/HoleCell"
 	}
 }

@@ -5,6 +5,7 @@
         "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
         "GameDetailTabs": "/components/GameDetailTabs/GameDetailTabs",
         "ScoreTable": "/pages/gameDetail/GameInputing/gameComponent/ScoreTable/ScoreTable",
+        "GameActionBar": "/pages/gameDetail/GameInputing/gameComponent/GameActionBar/GameActionBar",
         "ScoreInputPanel": "/pages/gameDetail/GameInputing/gameComponent/ScoreInputPanel/ScoreInputPanel"
     }
 }

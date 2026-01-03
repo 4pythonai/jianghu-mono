@@ -27,6 +27,7 @@
 		"pages/player-select/manualAdd/manualAdd",
 		"pages/player-select/wxShare/wxShare",
 		"pages/player-select/wxForward/wxForward",
+		"pages/player-select/addPlayerHub/addPlayerHub",
 		"pages/tland-select/tland-select",
 		"pages/gameOperation/feedback/feedback",
 		"pages/gameOperation/scorecard/scorecard",
