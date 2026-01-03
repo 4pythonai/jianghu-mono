@@ -2,6 +2,7 @@
     "navigationStyle": "custom",
     "navigationBarTitleText": "添加球员",
     "usingComponents": {
-        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+        "attened-players": "/components/AttenedPlayers/AttenedPlayers"
     }
 }

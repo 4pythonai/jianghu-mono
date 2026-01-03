@@ -1,14 +1,51 @@
-/* 页面容器 */
-.page-container {
-  min-height: 100vh;
-  background-color: #f5f5f5;
-}
+@import "../common.wxss";
 
-.page-content {
-  padding: 32rpx;
+/* 页面特有样式 */
+.content {
+  margin-top: 120rpx;
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 88px);
+  align-items: stretch;
+  position: relative;
+  overflow: visible;
+  padding: 60rpx 40rpx 40rpx;
+}
+
+/* 顶部装饰圆形 - 只保留上半圆border */
+.top-circle {
+  width: 120rpx;
+  height: 120rpx;
+  background: #fff;
+  border: none;
+  border-radius: 50%;
+  position: absolute;
+  top: -60rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  overflow: hidden;
+}
+
+/* 用伪元素实现上半圆border */
+.top-circle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  border: 2rpx solid var(--border-primary);
+  clip-path: inset(0 0 50% 0);
+  pointer-events: none;
+}
+
+.top-circle-icon {
+  width: 60rpx;
+  height: 60rpx;
 }
 
 /* 二维码区域 */
@@ -17,9 +54,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
-  border-radius: 20rpx;
-  margin-bottom: 32rpx;
+  margin-top: 24rpx;
   padding: 48rpx;
 }
 

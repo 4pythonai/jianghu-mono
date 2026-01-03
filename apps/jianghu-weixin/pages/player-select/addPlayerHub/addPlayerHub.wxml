@@ -1,7 +1,14 @@
+<CustomNavBar title="添加球员" />
 <view class="page-container">
-  <CustomNavBar title="添加球员" />
+  <view class="content">
+    <!-- 顶部装饰圆形 -->
+    <view class="top-circle">
+      <image class="top-circle-icon" src="/assets/icons/icons8-add-48.png" mode="aspectFit"></image>
+    </view>
 
-  <view class="page-content">
+    <!-- 已添加球员列表 -->
+    <attened-players />
+
     <!-- 二维码区域 -->
     <view class="qrcode-section">
       <!-- 加载中 -->
