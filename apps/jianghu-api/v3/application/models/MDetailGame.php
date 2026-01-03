@@ -215,7 +215,7 @@ class MDetailGame  extends CI_Model {
             FROM t_game_group_user ggu
             LEFT JOIN t_user u ON ggu.userid = u.id
             WHERE ggu.gameid = ? 
-            ORDER BY ggu.addtime ASC ";
+            ORDER BY ggu.id ASC ";
 
         $players_result = $this->db->query($players_query, [$game_id])->result_array();
         return $players_result;

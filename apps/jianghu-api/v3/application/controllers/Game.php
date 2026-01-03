@@ -269,7 +269,6 @@ class Game extends MY_Controller {
 
         $web_url = config_item('web_url');
         $qrcodeUrl = $web_url . '/upload/qrcodes/' . $filename;
-        $qrcodeBase64 = base64_encode($result);
 
         echo json_encode([
             'code' => 200,
