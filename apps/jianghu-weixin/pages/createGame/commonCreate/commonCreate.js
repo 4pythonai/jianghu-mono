@@ -773,7 +773,7 @@ Page({
 
         // 设置比赛名称缺省值
         const nickname = userInfo?.nickName || userInfo?.nickname || userInfo?.wx_nickname || '我';
-        const defaultGameName = `${nickname}的比赛`;
+        const defaultGameName = `${nickname}的球局`;
         this.setData({
             'formData.gameName': defaultGameName
         });
