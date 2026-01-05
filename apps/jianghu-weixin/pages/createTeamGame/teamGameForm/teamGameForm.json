@@ -1,0 +1,10 @@
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "创建队内赛",
+    "usingComponents": {
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+        "TimePicker": "/components/TimePicker/time-picker",
+        "SubteamEditor": "/components/SubteamEditor/SubteamEditor"
+    }
+}
+

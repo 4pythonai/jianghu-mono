@@ -19,22 +19,6 @@ class Game extends MY_Controller {
     }
 
 
-    public function createGame() {
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $course_id = $json_paras['course_id'];
-        $start_time = $json_paras['start_time'];
-        $end_time = $json_paras['end_time'];
-
-        $game_id = $this->db->insert_id();
-        $this->db->insert('t_game_group', [
-            'game_id' => $game_id,
-            'course_id' => $course_id,
-            'start_time' => $start_time,
-            'end_time' => $end_time
-        ]);
-
-        echo json_encode(['code' => 200, 'game_id' => $game_id], JSON_UNESCAPED_UNICODE);
-    }
 
 
     public function getPlayerCombination() {
@@ -119,27 +103,23 @@ class Game extends MY_Controller {
     public function updateGamePrivate() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
-        $private = $json_paras['isPrivate'];
+        $isPrivate = $json_paras['isPrivate'];
 
-        if ($private) {
-            $private = 'y';
-        } else {
-            $private = 'n';
-            $this->db->where('uuid', $uuid);
-            $this->db->update('t_game', ['privacy_password' => null]);
+        $updateData = ['private' => $isPrivate ? 'y' : 'n'];
+        if (!$isPrivate) {
+            $updateData['privacy_password'] = null;
         }
 
-
         $this->db->where('uuid', $uuid);
-        $this->db->update('t_game', ['private' => $private]);
+        $this->db->update('t_game', $updateData);
 
-        $ret = [];
-        $ret['code'] = 200;
-        $ret['message'] = '隐私设置更新成功';
-        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
+        echo json_encode([
+            'code' => 200,
+            'message' => '隐私设置更新成功'
+        ], JSON_UNESCAPED_UNICODE);
     }
 
-    public function updateGamepPivacyPassword() {
+    public function updateGamePrivacyPassword() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $uuid = $json_paras['uuid'];
         $privacy_password = $json_paras['password'];
@@ -351,8 +331,6 @@ class Game extends MY_Controller {
         $this->load->model('gamble/MMoney');
         $this->load->model('gamble/MRanking');
         $this->load->model('gamble/GambleContext');
-        $this->load->model('gamble/MRanking');
-        $this->load->model('gamble/GambleContext');
         $this->load->model('gamble/MMeat');
         $this->load->model('gamble/MDonation');
 
@@ -511,14 +489,14 @@ class Game extends MY_Controller {
     public function cancelGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = $json_paras['gameid'];
-        $this->MGame->cancelGame($gameid, null);
+        $this->MGame->cancelGame($gameid);
         echo json_encode(['code' => 200, 'message' => '取消成功'], JSON_UNESCAPED_UNICODE);
     }
 
     public function finishGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = $json_paras['gameid'];
-        $this->MGame->finishGame($gameid, null);
+        $this->MGame->finishGame($gameid);
         echo json_encode(['code' => 200, 'message' => '结束球局成功'], JSON_UNESCAPED_UNICODE);
     }
 

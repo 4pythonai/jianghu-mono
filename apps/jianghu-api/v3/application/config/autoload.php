@@ -144,8 +144,8 @@ $autoload['model'] = [
     'MDetailGame',
     'MPrivateWhiteList',
     'MScore',
+    'MTeamGame',
+    'MTeam',
     'gamble/MReward',
     'gamble/MPoints'
-
-
 ];

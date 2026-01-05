@@ -1,0 +1,337 @@
+/**
+ * 队内赛表单页面
+ * 创建队内赛的主表单
+ */
+const app = getApp()
+
+// 赛制选项配置
+const MATCH_FORMATS = [
+    { value: 'individual_stroke', label: '个人比杆赛', requireSubteam: false, isMatch: false },
+    { value: 'fourball_best_stroke', label: '四人四球最好成绩比杆赛', requireSubteam: true, isMatch: false },
+    { value: 'fourball_oneball_stroke', label: '四人四球最佳球位比杆赛(旺波)', requireSubteam: true, isMatch: false },
+    { value: 'foursome_stroke', label: '四人两球比杆赛', requireSubteam: true, isMatch: false },
+    { value: 'individual_match', label: '个人比洞赛', requireSubteam: false, isMatch: true },
+    { value: 'fourball_best_match', label: '四人四球最好成绩比洞赛', requireSubteam: true, isMatch: true },
+    { value: 'fourball_oneball_match', label: '四人四球最佳球位比洞赛(旺波)', requireSubteam: true, isMatch: true },
+    { value: 'foursome_match', label: '四人两球比洞赛', requireSubteam: true, isMatch: true }
+]
+
+Page({
+    data: {
+        // 球队信息
+        teamId: null,
+        teamName: '',
+
+        // 球场信息
+        selectedCourse: null,
+        selectedCourt: null,
+
+        // 表单数据
+        formData: {
+            name: '',                    // 比赛名称
+            openTime: '',                // 开球时间
+            entryFee: '',                // 参赛费用
+            matchFormat: 'individual_stroke', // 赛制
+            awards: '',                  // 奖项设置
+            groupingPermission: 'admin', // 分组权限
+            isPublic: 'y',               // 是否公开
+            topNRanking: ''              // 取前N名成绩
+        },
+
+        // 分队列表
+        subteams: [],
+
+        // 赛制选项
+        matchFormats: MATCH_FORMATS,
+
+        // 当前赛制配置
+        currentFormat: MATCH_FORMATS[0],
+
+        // 提交状态
+        submitting: false
+    },
+
+    onLoad(options) {
+        const teamId = options.team_id ? parseInt(options.team_id) : null
+        const teamName = options.team_name ? decodeURIComponent(options.team_name) : ''
+
+        if (!teamId) {
+            wx.showToast({ title: '参数错误', icon: 'error' })
+            setTimeout(() => wx.navigateBack(), 1500)
+            return
+        }
+
+        // 设置默认比赛名称
+        const defaultName = teamName ? `${teamName}队内赛` : '队内赛'
+
+        this.setData({
+            teamId,
+            teamName,
+            'formData.name': defaultName
+        })
+    },
+
+    onShow() {
+        // 检查是否有选择的球场数据
+        try {
+            const cachedCourtData = wx.getStorageSync('selectedCourtData')
+            if (cachedCourtData) {
+                this.setCourtSelection(cachedCourtData)
+                wx.removeStorageSync('selectedCourtData')
+            }
+        } catch (error) {
+            console.error('读取球场缓存失败:', error)
+        }
+    },
+
+    // ==================== 表单输入处理 ====================
+
+    onNameInput(e) {
+        this.setData({ 'formData.name': e.detail.value })
+    },
+
+    onOpenTimeChange(e) {
+        const { value, display } = e.detail
+        this.setData({ 'formData.openTime': display })
+    },
+
+    onEntryFeeInput(e) {
+        this.setData({ 'formData.entryFee': e.detail.value })
+    },
+
+    onMatchFormatChange(e) {
+        const value = e.detail.value
+        const format = MATCH_FORMATS.find(f => f.value === value)
+
+        this.setData({
+            'formData.matchFormat': value,
+            currentFormat: format
+        })
+
+        // 如果是比洞赛且分队数超过2个，只保留前2个
+        if (format.isMatch && this.data.subteams.length > 2) {
+            this.setData({
+                subteams: this.data.subteams.slice(0, 2)
+            })
+            wx.showToast({ title: '比洞赛最多2个分队', icon: 'none' })
+        }
+
+        // 如果需要分队但当前没有，添加默认分队
+        if (format.requireSubteam && this.data.subteams.length === 0) {
+            this.setData({
+                subteams: [
+                    { name: 'A队', color: '#1976D2' },
+                    { name: 'B队', color: '#D32F2F' }
+                ]
+            })
+        }
+    },
+
+    onAwardsInput(e) {
+        this.setData({ 'formData.awards': e.detail.value })
+    },
+
+    onGroupingPermissionChange(e) {
+        this.setData({ 'formData.groupingPermission': e.detail.value })
+    },
+
+    onIsPublicChange(e) {
+        this.setData({ 'formData.isPublic': e.detail.value })
+    },
+
+    onTopNRankingInput(e) {
+        this.setData({ 'formData.topNRanking': e.detail.value })
+    },
+
+    // ==================== 球场选择 ====================
+
+    goToCourseSelect() {
+        wx.navigateTo({
+            url: '/pages/course-select/course-select'
+        })
+    },
+
+    setCourtSelection(selectionData) {
+        const displayCourt = {
+            name: this.generateCourtDisplayName(selectionData),
+            gameType: selectionData.gameType,
+            totalHoles: selectionData.totalHoles
+        }
+
+        this.setData({
+            selectedCourse: selectionData.course,
+            selectedCourt: displayCourt
+        })
+
+        wx.showToast({
+            title: `已选择 ${selectionData.course?.name || '球场'}`,
+            icon: 'success'
+        })
+    },
+
+    generateCourtDisplayName(selectionData) {
+        if (selectionData.gameType === 'full') {
+            return `${selectionData.frontNine?.courtname || '前九洞'} + ${selectionData.backNine?.courtname || '后九洞'}`
+        }
+        if (selectionData.gameType === 'front_nine') {
+            return selectionData.frontNine?.courtname || '前九洞'
+        }
+        if (selectionData.gameType === 'back_nine') {
+            return selectionData.backNine?.courtname || '后九洞'
+        }
+        return '未知半场'
+    },
+
+    clearSelectedCourse() {
+        this.setData({
+            selectedCourse: null,
+            selectedCourt: null
+        })
+    },
+
+    // ==================== 分队管理 ====================
+
+    onSubteamsChange(e) {
+        this.setData({ subteams: e.detail.subteams })
+    },
+
+    addSubteam() {
+        const { subteams, currentFormat } = this.data
+
+        // 比洞赛限制2个分队
+        if (currentFormat.isMatch && subteams.length >= 2) {
+            wx.showToast({ title: '比洞赛最多2个分队', icon: 'none' })
+            return
+        }
+
+        // 默认颜色池
+        const colors = ['#1976D2', '#D32F2F', '#388E3C', '#F57C00', '#7B1FA2', '#0097A7']
+        const usedColors = subteams.map(s => s.color)
+        const availableColor = colors.find(c => !usedColors.includes(c)) || colors[0]
+
+        const newSubteam = {
+            name: `${String.fromCharCode(65 + subteams.length)}队`, // A队, B队, C队...
+            color: availableColor
+        }
+
+        this.setData({
+            subteams: [...subteams, newSubteam]
+        })
+    },
+
+    onSubteamNameInput(e) {
+        const index = e.currentTarget.dataset.index
+        const value = e.detail.value
+        const subteams = [...this.data.subteams]
+        subteams[index].name = value
+        this.setData({ subteams })
+    },
+
+    deleteSubteam(e) {
+        const index = e.currentTarget.dataset.index
+        const subteams = [...this.data.subteams]
+
+        if (subteams.length <= 2 && this.data.currentFormat.requireSubteam) {
+            wx.showToast({ title: '至少需要2个分队', icon: 'none' })
+            return
+        }
+
+        subteams.splice(index, 1)
+        this.setData({ subteams })
+    },
+
+    // ==================== 表单验证与提交 ====================
+
+    validateForm() {
+        const { formData, selectedCourse, subteams, currentFormat } = this.data
+
+        if (!formData.name.trim()) {
+            wx.showToast({ title: '请输入比赛名称', icon: 'none' })
+            return false
+        }
+
+        if (!selectedCourse) {
+            wx.showToast({ title: '请选择比赛场地', icon: 'none' })
+            return false
+        }
+
+        if (!formData.openTime) {
+            wx.showToast({ title: '请选择比赛时间', icon: 'none' })
+            return false
+        }
+
+        // 团队赛制需要至少2个分队
+        if (currentFormat.requireSubteam && subteams.length < 2) {
+            wx.showToast({ title: '团队赛制需要至少2个分队', icon: 'none' })
+            return false
+        }
+
+        return true
+    },
+
+    async onSubmit() {
+        if (!this.validateForm()) return
+
+        if (this.data.submitting) return
+        this.setData({ submitting: true })
+
+        try {
+            const { teamId, formData, selectedCourse, subteams } = this.data
+
+            // 调用创建队内赛 API
+            const result = await app.api.teamgame.createTeamGame({
+                team_id: teamId,
+                name: formData.name.trim(),
+                courseid: selectedCourse.courseid,
+                match_format: formData.matchFormat,
+                open_time: formData.openTime,
+                entry_fee: formData.entryFee ? parseFloat(formData.entryFee) : 0,
+                awards: formData.awards || null,
+                grouping_permission: formData.groupingPermission,
+                is_public: formData.isPublic,
+                top_n_ranking: formData.topNRanking ? parseInt(formData.topNRanking) : null
+            })
+
+            if (result?.code !== 200) {
+                throw new Error(result?.message || '创建失败')
+            }
+
+            const gameId = result.data.game_id
+
+            // 如果有分队，创建分队
+            if (subteams.length > 0) {
+                for (const subteam of subteams) {
+                    await app.api.teamgame.addSubteam({
+                        game_id: gameId,
+                        subteam_name: subteam.name,
+                        color: subteam.color
+                    })
+                }
+            }
+
+            // 开启报名
+            await app.api.teamgame.startRegistration({ game_id: gameId })
+
+            wx.showToast({ title: '创建成功', icon: 'success' })
+
+            // 跳转到赛事详情页（暂时返回上一页）
+            setTimeout(() => {
+                wx.navigateBack({ delta: 2 })
+            }, 1500)
+
+        } catch (error) {
+            console.error('创建队内赛失败:', error)
+            wx.showToast({
+                title: error.message || '创建失败，请重试',
+                icon: 'none'
+            })
+        } finally {
+            this.setData({ submitting: false })
+        }
+    },
+
+    handleBack() {
+        wx.navigateBack({ delta: 1 })
+    }
+})
+

@@ -28,7 +28,7 @@
 - `/Game/updateGameScoringType`：`{ uuid, scoringType }`
 - `/Game/updateGameCourseCourt`：`{ uuid, courseid, frontNineCourtId, backNineCourtId, gameType, totalHoles }`
 - `/Game/updateGameGroupAndPlayers`：`{ uuid, groups: [{ groupIndex, players: [...] }] }`
-- `/Game/updateGamePrivate` / `/Game/updateGamepPivacyPassword`：用于私密比赛控制
+- `/Game/updateGamePrivate` / `/Game/updateGamePrivacyPassword`：用于私密比赛控制
 - 要求：所有接口支持幂等更新；返回体保持 `{ code, message, data }`，便于前端统一处理。
 
 ### 3. 获取比赛邀请二维码 `/Game/getGameInviteQrcode`

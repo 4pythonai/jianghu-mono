@@ -38,6 +38,9 @@ Page({
             case 'quickCreate':
                 url = '/pages/createGame/quickCreate/quickCreate';
                 break;
+            case 'teamCreate':
+                url = '/pages/createTeamGame/createTeamGame';
+                break;
         }
 
         if (url) {

@@ -1,0 +1,76 @@
+<view class="subteam-editor">
+    <!-- 分队列表 -->
+    <view class="subteams-list">
+        <view 
+            wx:for="{{ subteams }}" 
+            wx:key="index" 
+            class="subteam-item"
+            style="border-left-color: {{ item.color }};"
+        >
+            <!-- 颜色选择按钮 -->
+            <view 
+                class="color-btn" 
+                style="background-color: {{ item.color }};"
+                bindtap="openColorPicker"
+                data-index="{{ index }}"
+            ></view>
+            
+            <!-- 分队名称输入 -->
+            <input 
+                class="subteam-name-input" 
+                type="text" 
+                value="{{ item.name }}" 
+                bindinput="onNameInput"
+                data-index="{{ index }}"
+                placeholder="分队名称"
+                maxlength="20"
+            />
+            
+            <!-- 删除按钮 -->
+            <view 
+                class="delete-btn" 
+                bindtap="deleteSubteam" 
+                data-index="{{ index }}"
+                wx:if="{{ !required || subteams.length > minCount }}"
+            >
+                <image src="/assets/icons/close.svg" mode="aspectFit"></image>
+            </view>
+        </view>
+    </view>
+
+    <!-- 添加分队按钮 -->
+    <view 
+        class="add-btn" 
+        bindtap="addSubteam"
+        wx:if="{{ !isMatchPlay || subteams.length < 2 }}"
+    >
+        <image src="/assets/icons/add.svg" class="add-icon" mode="aspectFit"></image>
+        <text>添加分队</text>
+    </view>
+
+    <!-- 颜色选择器弹窗 -->
+    <view class="color-picker-mask" wx:if="{{ showColorPicker }}" bindtap="closeColorPicker">
+        <view class="color-picker" catchtap="">
+            <view class="picker-title">选择颜色</view>
+            <view class="color-options">
+                <view 
+                    wx:for="{{ colors }}" 
+                    wx:key="value" 
+                    class="color-option {{ subteams[currentEditIndex].color === item.value ? 'active' : '' }}"
+                    style="background-color: {{ item.value }};"
+                    bindtap="selectColor"
+                    data-color="{{ item.value }}"
+                >
+                    <image 
+                        wx:if="{{ subteams[currentEditIndex].color === item.value }}" 
+                        src="/assets/icons/check.svg" 
+                        class="check-icon"
+                        mode="aspectFit"
+                    ></image>
+                </view>
+            </view>
+            <view class="picker-cancel" bindtap="closeColorPicker">取消</view>
+        </view>
+    </view>
+</view>
+

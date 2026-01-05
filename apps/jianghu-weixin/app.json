@@ -18,6 +18,8 @@
 		"pages/createGame/moreCreate/moreCreate",
 		"pages/createGame/commonCreate/commonCreate",
 		"pages/createGame/quickCreate/quickCreate",
+		"pages/createTeamGame/createTeamGame",
+		"pages/createTeamGame/teamGameForm/teamGameForm",
 		"pages/course-select/course-select",
 		"pages/court-select/court-select",
 		"pages/player-select/player-select",

@@ -82,10 +82,12 @@ class MGame  extends CI_Model {
 
 
   public function addGameGroupAndPlayers($gameid, $groups) {
+    $firstGroupId = null;
+
     foreach ($groups as $gpidx => $group) {
       // 检查组中是否有玩家
       if (empty($group['players'])) {
-        continue; // 如果没有玩家，跳过该组
+        continue;
       }
 
       // 插入组信息到 t_game_group 表
@@ -97,29 +99,34 @@ class MGame  extends CI_Model {
         'group_all_confirmed' => 0
       ];
       $this->db->insert('t_game_group', $groupData);
-      $groupid = $this->db->insert_id(); // 获取插入的组ID
+      $groupid = $this->db->insert_id();
+
+      // 记录第一个组的ID
+      if ($firstGroupId === null) {
+        $firstGroupId = $groupid;
+      }
 
       // 插入每个玩家到 t_game_group_user 表
       foreach ($group['players'] as $player) {
-        // 验证玩家数据：必须有 userid
         if (empty($player['userid'])) {
-          continue; // 跳过无效的玩家数据
+          continue;
         }
 
         $playerData = [
           'gameid' => $gameid,
           'groupid' => $groupid,
           'userid' => $player['userid'],
-          'tee' => isset($player['tee']) && !empty($player['tee']) ? $player['tee'] : 'blue', // 使用玩家的tee或缺省值
+          'tee' => isset($player['tee']) && !empty($player['tee']) ? $player['tee'] : 'blue',
           'confirmed' => 0,
           'confirmed_time' => null,
           'addtime' => date('Y-m-d H:i:s'),
-          'join_type' => isset($player['join_type']) ? $player['join_type'] : 'manual' // 缺省值
+          'join_type' => isset($player['join_type']) ? $player['join_type'] : 'manual'
         ];
         $this->db->insert('t_game_group_user', $playerData);
       }
-      return $groupid;
     }
+
+    return $firstGroupId;
   }
 
 
@@ -292,16 +299,14 @@ class MGame  extends CI_Model {
 
 
   public function m_get_group_info($groupid) {
-
     $web_url = config_item('web_url');
-    $sql_group_user = "";
-    $sql_group_user = "select  userid,wx_nickname as username,wx_nickname as nickname, ";
-    $sql_group_user .= "concat('$web_url',t_user.avatar) as cover  ";
-    $sql_group_user .= " from t_game_group_user,t_user";
-    $sql_group_user .= " where  t_game_group_user.groupid=$groupid";
-    $sql_group_user .= "   and t_user.id=t_game_group_user.userid";
-    $group_user = $this->db->query($sql_group_user)->result_array();
-    return $group_user;
+
+    return $this->db->select("userid, wx_nickname as username, wx_nickname as nickname, CONCAT('$web_url', t_user.avatar) as cover", false)
+      ->from('t_game_group_user')
+      ->join('t_user', 't_user.id = t_game_group_user.userid')
+      ->where('t_game_group_user.groupid', $groupid)
+      ->get()
+      ->result_array();
   }
 
 
