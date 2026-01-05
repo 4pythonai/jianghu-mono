@@ -120,6 +120,73 @@ function helper_getlogname() {
   return $logdir . '/' . $fname;
 }
 
+/**
+ * 记录数据库错误到日志
+ * 用于在 Model 或 Controller 中捕获数据库错误
+ * 
+ * @param CI_DB $db CodeIgniter 数据库对象
+ * @param string $operation 操作描述（如 "insert user", "update game"）
+ * @param string|null $sql 可选的 SQL 语句
+ */
+function logDbError($db, $operation = '', $sql = null) {
+  $error = $db->error();
+  if ($error['code'] == 0) {
+    return false; // 没有错误
+  }
+
+  $timestamp = date('Y-m-d H:i:s');
+  logtext('<div class="db-error" style="background:#fff3e0; border-left:4px solid #ff9800; padding:10px; margin:10px 0;">');
+  logtext('<strong style="color:#e65100;">[DB ERROR] ' . $timestamp . '</strong>');
+  logtext('Operation: ' . $operation);
+  logtext('Error Code: ' . $error['code']);
+  logtext('Error Message: ' . $error['message']);
+
+  if ($sql) {
+    logtext('SQL: ' . $sql);
+  }
+
+  // 记录调用栈
+  $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 5);
+  logtext('Called from:');
+  foreach ($trace as $i => $t) {
+    if ($i == 0) continue; // 跳过 logDbError 自身
+    $line = "  #{$i} ";
+    if (isset($t['file'])) $line .= basename($t['file']);
+    if (isset($t['line'])) $line .= ":{$t['line']}";
+    if (isset($t['class'])) $line .= " {$t['class']}";
+    if (isset($t['function'])) $line .= "->{$t['function']}()";
+    logtext($line);
+  }
+  logtext('</div>');
+
+  return true; // 有错误
+}
+
+/**
+ * 记录错误日志（通用）
+ * 
+ * @param string $level 日志级别: ERROR, WARNING, INFO
+ * @param string $message 错误消息
+ * @param array $context 上下文信息
+ */
+function logError($level, $message, $context = []) {
+  $timestamp = date('Y-m-d H:i:s');
+  $colors = [
+    'ERROR' => '#f44336',
+    'WARNING' => '#ff9800',
+    'INFO' => '#2196f3'
+  ];
+  $color = $colors[$level] ?? '#666';
+
+  logtext('<div class="log-' . strtolower($level) . '" style="border-left:4px solid ' . $color . '; padding:5px 10px; margin:5px 0;">');
+  logtext("<strong style='color:{$color};'>[{$level}] {$timestamp}</strong> {$message}");
+
+  if (!empty($context)) {
+    logtext('Context: ' . json_encode($context, JSON_UNESCAPED_UNICODE));
+  }
+  logtext('</div>');
+}
+
 function debug($title, $var = null) {
   echo "<pre>";
 
@@ -328,7 +395,33 @@ function postJson($url, $data) {
 function response500($msg) {
   // 添加时间戳
   $timestamp = date('Y-m-d H:i:s');
-  
+
+  // ========== 写入日志文件 ==========
+  logtext('<div class="error-block" style="background:#ffebee; border-left:4px solid #f44336; padding:10px; margin:10px 0;">');
+  logtext('<strong style="color:#c62828;">[ERROR 500] ' . $timestamp . '</strong>');
+
+  if (is_array($msg) || is_object($msg)) {
+    $msgArr = (array)$msg;
+    if (isset($msgArr['message'])) {
+      logtext('Message: ' . $msgArr['message']);
+    }
+    if (isset($msgArr['trace']) && is_array($msgArr['trace'])) {
+      logtext('Call Stack:');
+      foreach (array_slice($msgArr['trace'], 0, 10) as $i => $t) {
+        $line = "  #{$i} ";
+        if (isset($t['file'])) $line .= basename($t['file']);
+        if (isset($t['line'])) $line .= ":{$t['line']}";
+        if (isset($t['class'])) $line .= " {$t['class']}";
+        if (isset($t['function'])) $line .= "->{$t['function']}()";
+        logtext($line);
+      }
+    }
+  } else {
+    logtext('Message: ' . $msg);
+  }
+  logtext('</div>');
+  // ========== 日志记录结束 ==========
+
   // 如果是数组或对象，格式化错误信息
   if (is_array($msg) || is_object($msg)) {
     $formattedMsg = [];

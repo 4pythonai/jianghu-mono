@@ -25,12 +25,17 @@ function my_errorHandler($errno, $errstr, $errfile, $errline) {
   return true;
 }
 
-function  my_exceptionHandler(Throwable $exception) {
+function my_exceptionHandler(Throwable $exception) {
+  // 记录异常到日志（不输出到响应）
+  logtext('<div class="error-block">');
+  logtext('[EXCEPTION] ' . get_class($exception) . ': ' . $exception->getMessage());
+  logtext('File: ' . $exception->getFile() . ':' . $exception->getLine());
+  logtext('Stack trace:');
+  logtext($exception->getTraceAsString());
+  logtext('</div>');
 
-  // debug($exception->getMessage());
-  print_r($exception->getTraceAsString());
-  my_errorHandler('Exception', $exception->getMessage(),  $exception->getFile(), $exception->getLine());
-};
+  my_errorHandler('Exception', $exception->getMessage(), $exception->getFile(), $exception->getLine());
+}
 
 
 function  my_shutdownHandler() {
