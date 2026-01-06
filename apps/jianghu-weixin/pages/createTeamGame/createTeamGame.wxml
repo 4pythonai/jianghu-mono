@@ -1,49 +1,44 @@
-<CustomNavBar title="选择球队" />
+<CustomNavBar title="{{ isReselect ? '更换球队' : '选择球队' }}" />
 <view class="page-container">
-    <view class="main-card">
-        <view class="card-content">
-            <!-- 加载中 -->
-            <view wx:if="{{ loading }}" class="loading-container">
-                <view class="loading-spinner"></view>
-                <text class="loading-text">加载中...</text>
-            </view>
+  <view class="main-card">
+    <view class="card-content">
+      <!-- 加载中 -->
+      <view wx:if="{{ loading }}" class="loading-container">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
 
-            <!-- 无球队提示 -->
-            <view wx:elif="{{ myTeams.length === 0 }}" class="empty-container">
-                <image src="/assets/icons/team-empty.svg" class="empty-icon" mode="aspectFit"></image>
-                <text class="empty-title">您还没有加入任何球队</text>
-                <text class="empty-desc">加入球队后才能创建队内赛</text>
-            </view>
+      <!-- 无球队提示 -->
+      <view wx:elif="{{ myTeams.length === 0 }}" class="empty-container">
+        <image src="/assets/icons/icons8-empty-set-48.png" class="empty-icon" mode="aspectFit"></image>
+        <text class="empty-title">您还没有加入任何球队</text>
+        <text class="empty-desc">加入球队后才能创建队内赛</text>
+      </view>
 
-            <!-- 球队列表 -->
-            <view wx:else class="team-list">
-                <view class="section-title">请选择要创建赛事的球队</view>
-                <view 
-                    wx:for="{{ myTeams }}" 
-                    wx:key="id" 
-                    class="team-item"
-                    bindtap="onTeamSelect"
-                    data-team-id="{{ item.id }}"
-                >
-                    <image 
-                        src="{{ item.team_avatar || '/images/default-team.png' }}" 
-                        class="team-avatar" 
-                        mode="aspectFill"
-                    ></image>
-                    <view class="team-info">
-                        <view class="team-name">{{ item.team_name }}</view>
-                        <view class="team-role">
-                            <text wx:if="{{ item.role === 'owner' }}" class="role-tag owner">队长</text>
-                            <text wx:elif="{{ item.role === 'admin' }}" class="role-tag admin">管理员</text>
-                            <text wx:else class="role-tag member">成员</text>
-                        </view>
-                    </view>
-                    <view class="arrow-icon">
-                        <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
-                    </view>
-                </view>
+      <!-- 球队列表 -->
+      <view wx:else class="team-list">
+        <view class="section-title">{{ isReselect ? '请选择要更换的球队' : '请选择要创建赛事的球队' }}</view>
+        <view
+          wx:for="{{ myTeams }}"
+          wx:key="id"
+          class="team-item"
+          bindtap="onTeamSelect"
+          data-team-id="{{ item.id }}"
+        >
+          <image src="{{ item.team_avatar  }}" class="team-avatar" mode="aspectFill"></image>
+          <view class="team-info">
+            <view class="team-name">{{ item.team_name }}</view>
+            <view class="team-role">
+              <text wx:if="{{ item.role === 'owner' }}" class="role-tag owner">队长</text>
+              <text wx:elif="{{ item.role === 'admin' }}" class="role-tag admin">管理员</text>
+              <text wx:else class="role-tag member">成员</text>
             </view>
+          </view>
+          <view class="arrow-icon">
+            <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+          </view>
         </view>
+      </view>
     </view>
+  </view>
 </view>
-

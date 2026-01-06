@@ -36,11 +36,10 @@ class Feed extends MY_Controller {
             if (in_array((int)$gameid, $whitelist_gameids, true)) {
                 $game_detail['private'] = 'n';
             }
-            // 处理球队比赛情况
+            // 处理球队比赛情况 (队内赛或队际赛)
 
-            if ($game_detail['is_team_game'] == 'y') {
-                $sql = "select team_game_title ,team_avatar from t_game ,t_team where t_game.team_id = t_team.id and t_game.id = $gameid ";
-                // debug($sql);
+            if ($game_detail['game_type'] == 'single_team' || $game_detail['game_type'] == 'cross_teams') {
+                $sql = "select t_game.name as team_game_title, t_team.team_avatar from t_game, t_team where t_game.team_id = t_team.id and t_game.id = $gameid";
                 $row = $this->db->query($sql)->row_array();
                 $game_detail['extra_team_game_info'] = [
                     'team_game_title' => $row['team_game_title'],

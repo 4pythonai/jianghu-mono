@@ -21,6 +21,7 @@ Page({
         // 球队信息
         teamId: null,
         teamName: '',
+        selectedTeam: null, // 完整的球队对象(含logo、角色等)
 
         // 球场信息
         selectedCourse: null,
@@ -61,17 +62,51 @@ Page({
             return
         }
 
+        // 尝试从缓存获取完整的球队信息
+        let selectedTeam = null
+        try {
+            const cachedTeam = wx.getStorageSync('selectedTeamForCreate')
+            if (cachedTeam && cachedTeam.id === teamId) {
+                selectedTeam = cachedTeam
+            }
+        } catch (e) {
+            console.error('读取球队缓存失败:', e)
+        }
+
         // 设置默认比赛名称
         const defaultName = teamName ? `${teamName}队内赛` : '队内赛'
 
         this.setData({
             teamId,
             teamName,
+            selectedTeam: selectedTeam || { id: teamId, team_name: teamName },
             'formData.name': defaultName
         })
     },
 
     onShow() {
+        // 检查是否有重新选择的球队
+        try {
+            const cachedTeam = wx.getStorageSync('selectedTeamForCreate')
+            if (cachedTeam && cachedTeam.id !== this.data.teamId) {
+                // 球队发生变化,更新数据
+                this.setData({
+                    teamId: cachedTeam.id,
+                    teamName: cachedTeam.team_name,
+                    selectedTeam: cachedTeam
+                })
+                // 更新默认比赛名称(如果用户没有修改过)
+                const currentName = this.data.formData.name
+                const oldDefaultName = `${this.data.teamName}队内赛`
+                if (!currentName || currentName === oldDefaultName || currentName.endsWith('队内赛')) {
+                    this.setData({ 'formData.name': `${cachedTeam.team_name}队内赛` })
+                }
+                wx.showToast({ title: '已更换球队', icon: 'success' })
+            }
+        } catch (error) {
+            console.error('读取球队缓存失败:', error)
+        }
+
         // 检查是否有选择的球场数据
         try {
             const cachedCourtData = wx.getStorageSync('selectedCourtData')
@@ -120,8 +155,8 @@ Page({
         if (format.requireSubteam && this.data.subteams.length === 0) {
             this.setData({
                 subteams: [
-                    { name: 'A队', color: '#1976D2' },
-                    { name: 'B队', color: '#D32F2F' }
+                    { name: '红队', color: '#D32F2F' },
+                    { name: '蓝队', color: '#1976D2' }
                 ]
             })
         }
@@ -141,6 +176,14 @@ Page({
 
     onTopNRankingInput(e) {
         this.setData({ 'formData.topNRanking': e.detail.value })
+    },
+
+    // ==================== 球队选择 ====================
+
+    goToTeamSelect() {
+        wx.navigateTo({
+            url: '/pages/createTeamGame/createTeamGame?reselect=true'
+        })
     },
 
     // ==================== 球场选择 ====================
@@ -204,18 +247,40 @@ Page({
             return
         }
 
-        // 默认颜色池
-        const colors = ['#1976D2', '#D32F2F', '#388E3C', '#F57C00', '#7B1FA2', '#0097A7']
-        const usedColors = subteams.map(s => s.color)
-        const availableColor = colors.find(c => !usedColors.includes(c)) || colors[0]
+        // 弹窗让用户输入分队名称
+        wx.showModal({
+            title: '添加分队',
+            editable: true,
+            placeholderText: '请输入分队名称',
+            success: (res) => {
+                if (res.confirm && res.content) {
+                    const name = res.content.trim()
+                    if (!name) {
+                        wx.showToast({ title: '请输入分队名称', icon: 'none' })
+                        return
+                    }
 
-        const newSubteam = {
-            name: `${String.fromCharCode(65 + subteams.length)}队`, // A队, B队, C队...
-            color: availableColor
-        }
+                    // 检查名称是否重复
+                    if (subteams.some(s => s.name === name)) {
+                        wx.showToast({ title: '分队名称已存在', icon: 'none' })
+                        return
+                    }
 
-        this.setData({
-            subteams: [...subteams, newSubteam]
+                    // 默认颜色池
+                    const colors = ['#D32F2F', '#1976D2', '#388E3C', '#F57C00', '#7B1FA2', '#0097A7']
+                    const usedColors = subteams.map(s => s.color)
+                    const availableColor = colors.find(c => !usedColors.includes(c)) || colors[0]
+
+                    const newSubteam = {
+                        name: name,
+                        color: availableColor
+                    }
+
+                    this.setData({
+                        subteams: [...subteams, newSubteam]
+                    })
+                }
+            }
         })
     },
 
@@ -288,7 +353,7 @@ Page({
                 entry_fee: formData.entryFee ? parseFloat(formData.entryFee) : 0,
                 awards: formData.awards || null,
                 grouping_permission: formData.groupingPermission,
-                is_public: formData.isPublic,
+                'is_public_registration': formData.isPublic,
                 top_n_ranking: formData.topNRanking ? parseInt(formData.topNRanking) : null
             })
 

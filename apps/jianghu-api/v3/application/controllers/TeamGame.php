@@ -34,7 +34,7 @@ class TeamGame extends MY_Controller {
      * @param float entry_fee 参赛费用（可选）
      * @param string awards 奖项设置（可选）
      * @param string grouping_permission 分组权限 admin/player（可选，默认admin）
-     * @param string is_public 是否公开 y/n（可选，默认y）
+     * @param string is_public_registration 是否公开 y/n（可选，默认y）
      * @param int top_n_ranking 取前N名成绩（可选）
      */
     public function createTeamGame() {
@@ -76,7 +76,7 @@ class TeamGame extends MY_Controller {
             'entry_fee' => $json_paras['entry_fee'] ?? 0,
             'awards' => $json_paras['awards'] ?? null,
             'grouping_permission' => $json_paras['grouping_permission'] ?? 'admin',
-            'is_public' => $json_paras['is_public'] ?? 'y',
+            'is_public_registration' => $json_paras['is_public_registration'] ?? 'y',
             'top_n_ranking' => $json_paras['top_n_ranking'] ?? null
         ];
 
@@ -99,7 +99,7 @@ class TeamGame extends MY_Controller {
      * @param float entry_fee 参赛费用（可选）
      * @param string awards 奖项设置（可选）
      * @param string grouping_permission 分组权限（可选）
-     * @param string is_public 是否公开（可选）
+     * @param string is_public_registration 是否公开（可选）
      * @param int top_n_ranking 取前N名成绩（可选）
      */
     public function updateTeamGame() {

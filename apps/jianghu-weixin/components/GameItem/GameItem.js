@@ -33,9 +33,9 @@ Component({
             type: String,
             value: ''
         },
-        is_team_game: {
+        game_type: {
             type: String,
-            value: 'n'
+            value: 'common'
         },
         private: {
             type: String,
@@ -81,7 +81,7 @@ Component({
     attached() {
         // 组件实例被放入页面节点树后执行
         console.log('🎮 GameItem 组件加载:', {
-            is_team_game: this.properties.is_team_game,
+            game_type: this.properties.game_type,
             extra_team_game_info: this.properties.extra_team_game_info,
             gameName: this.properties.gameName
         });

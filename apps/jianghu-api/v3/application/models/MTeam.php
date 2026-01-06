@@ -91,6 +91,11 @@ class MTeam extends CI_Model {
             return null;
         }
 
+        // 处理 team_avatar 返回完整 URL
+        if (!empty($team['team_avatar'])) {
+            $team['team_avatar'] = config_item('web_url') . $team['team_avatar'];
+        }
+
         // 获取成员统计
         $team['member_count'] = $this->db->where([
             'team_id' => $team_id,
@@ -123,12 +128,16 @@ class MTeam extends CI_Model {
 
         $teams = $this->db->get()->result_array();
 
-        // 为每个球队添加成员数
+        // 为每个球队添加成员数 & 处理 team_avatar 完整 URL
         foreach ($teams as &$team) {
             $team['member_count'] = $this->db->where([
                 'team_id' => $team['id'],
                 'status' => 'active'
             ])->count_all_results('t_team_member');
+
+            if (!empty($team['team_avatar'])) {
+                $team['team_avatar'] = config_item('web_url') . $team['team_avatar'];
+            }
         }
 
         return $teams;
@@ -483,11 +492,11 @@ class MTeam extends CI_Model {
             'role' => 'admin',
             'status' => 'active'
         ])
-        ->where('user_id !=', $exclude_user_id)
-        ->order_by('join_time', 'ASC')
-        ->limit(1)
-        ->get('t_team_member')
-        ->row_array();
+            ->where('user_id !=', $exclude_user_id)
+            ->order_by('join_time', 'ASC')
+            ->limit(1)
+            ->get('t_team_member')
+            ->row_array();
 
         // 如果没有 admin，找 member
         if (!$newOwner) {
@@ -496,11 +505,11 @@ class MTeam extends CI_Model {
                 'role' => 'member',
                 'status' => 'active'
             ])
-            ->where('user_id !=', $exclude_user_id)
-            ->order_by('join_time', 'ASC')
-            ->limit(1)
-            ->get('t_team_member')
-            ->row_array();
+                ->where('user_id !=', $exclude_user_id)
+                ->order_by('join_time', 'ASC')
+                ->limit(1)
+                ->get('t_team_member')
+                ->row_array();
         }
 
         // 如果没有其他成员，球队将无owner（或可考虑解散球队）
@@ -530,7 +539,15 @@ class MTeam extends CI_Model {
         $this->db->where('t.status', 'active');
         $this->db->limit($limit);
 
-        return $this->db->get()->result_array();
+        $teams = $this->db->get()->result_array();
+
+        // 处理 team_avatar 完整 URL
+        foreach ($teams as &$team) {
+            if (!empty($team['team_avatar'])) {
+                $team['team_avatar'] = config_item('web_url') . $team['team_avatar'];
+            }
+        }
+
+        return $teams;
     }
 }
-

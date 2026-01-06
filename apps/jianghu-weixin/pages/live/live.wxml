@@ -49,7 +49,7 @@
             groups="{{item.groups}}"
             groupid="{{item.groupid || ''}}"
             group_name="{{item.group_name || ''}}"
-            is_team_game="{{item.is_team_game}}"
+            game_type="{{item.game_type}}"
             private="{{item.private}}"
             privacy_password="{{item.privacy_password||''}}"
             has_gamble="{{item.has_gamble}}"

@@ -23,7 +23,7 @@ ALTER TABLE `t_game`
     ADD COLUMN `entry_fee` DECIMAL(10,2) DEFAULT 0 COMMENT '参赛费用（仅展示，不涉及支付）' AFTER `match_format`,
     ADD COLUMN `awards` TEXT DEFAULT NULL COMMENT '奖项设置（纯文本描述）' AFTER `entry_fee`,
     ADD COLUMN `grouping_permission` CHAR(10) DEFAULT 'admin' COMMENT '分组权限: admin(管理员分组), player(球员自由选择)' AFTER `awards`,
-    ADD COLUMN `is_public` CHAR(1) DEFAULT 'y' COMMENT '是否公开: y(Public任意人可报名), n(Private仅队内人员)' AFTER `grouping_permission`,
+    ADD COLUMN `is_public_registration` CHAR(1) DEFAULT 'y' COMMENT '是否公开: y(Public任意人可报名), n(Private仅队内人员)' AFTER `grouping_permission`,
     ADD COLUMN `game_status` VARCHAR(20) DEFAULT 'init' COMMENT '赛事状态: init(初始), registering(报名中), registration_closed(报名截止), playing(进行中), finished(已结束), cancelled(已取消)' AFTER `status`,
     ADD COLUMN `top_n_ranking` INT DEFAULT NULL COMMENT '取前N名成绩排行（团队赛制用）' AFTER `game_status`;
 ```
@@ -34,7 +34,7 @@ ALTER TABLE `t_game`
 ALTER TABLE `t_game`
     ADD INDEX `idx_match_format` (`match_format`),
     ADD INDEX `idx_game_status` (`game_status`),
-    ADD INDEX `idx_is_public` (`is_public`);
+    ADD INDEX `idx_is_public` (`is_public_registration`);
 ```
 
 ### 1.3 修改 t_team 表，增加必要字段

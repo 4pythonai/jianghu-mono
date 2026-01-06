@@ -21,26 +21,77 @@
     z-index: 2;
 }
 
-/* 球队头部 */
-.team-header {
+/* 球队选择 */
+.selected-team {
     display: flex;
     align-items: center;
-    padding: 24rpx;
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     border-radius: 16rpx;
-    margin-bottom: 32rpx;
+    padding: 24rpx 16rpx;
+    min-height: 88rpx;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
 }
 
-.team-label {
-    font-size: 26rpx;
-    color: #666;
-    margin-right: 16rpx;
+.selected-team:active {
+    background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+    transform: scale(0.98);
+}
+
+.team-avatar {
+    width: 96rpx;
+    height: 96rpx;
+    border-radius: 16rpx;
+    background: #e9ecef;
+    border: 2rpx solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.team-details {
+    flex: 1;
+    margin-left: 20rpx;
 }
 
 .team-name {
     font-size: 32rpx;
-    color: var(--primary-green-dark);
+    color: #333;
     font-weight: 600;
+    margin-bottom: 8rpx;
+}
+
+.team-role {
+    display: flex;
+    align-items: center;
+}
+
+.role-tag {
+    font-size: 22rpx;
+    padding: 4rpx 12rpx;
+    border-radius: 6rpx;
+}
+
+.role-tag.owner {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.role-tag.admin {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.role-tag.member {
+    background: rgba(255, 255, 255, 0.8);
+    color: #666;
+}
+
+.reselect-hint {
+    margin-right: 8rpx;
+}
+
+.reselect-hint text {
+    font-size: 24rpx;
+    color: var(--primary-green-dark);
 }
 
 /* 表单样式 */

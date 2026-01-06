@@ -58,10 +58,9 @@
 }
 
 .empty-icon {
-    width: 160rpx;
-    height: 160rpx;
+    width: 80rpx;
+    height: 80rpx;
     margin-bottom: 32rpx;
-    opacity: 0.5;
 }
 
 .empty-title {

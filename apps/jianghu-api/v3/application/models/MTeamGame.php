@@ -82,9 +82,9 @@ class MTeamGame extends CI_Model {
             'entry_fee' => $data['entry_fee'] ?? 0,
             'awards' => $data['awards'] ?? null,
             'grouping_permission' => $data['grouping_permission'] ?? 'admin',
-            'is_public' => $data['is_public'] ?? 'y',
+            'is_public_registration' => $data['is_public_registration'] ?? 'y',
             'top_n_ranking' => $data['top_n_ranking'] ?? null,
-            'is_team_game' => 'y',
+            'game_type' => 'single_team',
             'status' => 'init',
             'game_status' => 'init',
             'create_time' => date('Y-m-d H:i:s'),
@@ -99,7 +99,7 @@ class MTeamGame extends CI_Model {
      * 更新队内赛信息
      */
     public function updateTeamGame($game_id, $data) {
-        $allowedFields = ['name', 'courseid', 'match_format', 'open_time', 'entry_fee', 'awards', 'grouping_permission', 'is_public', 'top_n_ranking'];
+        $allowedFields = ['name', 'courseid', 'match_format', 'open_time', 'entry_fee', 'awards', 'grouping_permission', 'is_public_registration', 'top_n_ranking'];
         $updateData = [];
         foreach ($allowedFields as $field) {
             if (isset($data[$field])) {
@@ -141,12 +141,16 @@ class MTeamGame extends CI_Model {
      * 生成UUID
      */
     private function generateUUID() {
-        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
             mt_rand(0, 0x0fff) | 0x4000,
             mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
         );
     }
 
@@ -252,7 +256,7 @@ class MTeamGame extends CI_Model {
         $isTeamMember = $game['team_id'] ? $this->isTeamMember($game['team_id'], $user_id) : false;
 
         // 非公开赛事且非队员，拒绝报名
-        if ($game['is_public'] == 'n' && !$isTeamMember) {
+        if ($game['is_public_registration'] == 'n' && !$isTeamMember) {
             return ['success' => false, 'message' => '该赛事仅限球队成员报名'];
         }
 
@@ -651,7 +655,7 @@ class MTeamGame extends CI_Model {
         $this->db->from('t_game g');
         $this->db->join('t_course c', 'g.courseid = c.courseid', 'left');
         $this->db->where('g.team_id', $team_id);
-        $this->db->where('g.is_team_game', 'y');
+        $this->db->where_in('g.game_type', ['single_team', 'cross_teams']);
 
         if ($game_status) {
             $this->db->where('g.game_status', $game_status);
@@ -768,4 +772,3 @@ class MTeamGame extends CI_Model {
         return strpos($match_format, '_match') !== false;
     }
 }
-

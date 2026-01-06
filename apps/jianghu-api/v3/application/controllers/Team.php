@@ -4,18 +4,20 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * 球队管理控制器
  */
-class Team extends CI_Controller {
+
+
+class Team extends MY_Controller {
 
     public function __construct() {
         parent::__construct();
+        header('Access-Control-Allow-Origin: * ');
+        header('Access-Control-Allow-Headers: Origin, X-Requested-With,Content-Type, Accept,authorization');
+        header('Access-Control-Allow-Credentials', true);
+        if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
+            exit();
+        }
     }
 
-    /**
-     * 获取当前用户ID
-     */
-    private function getCurrentUserId() {
-        return $this->session->userdata('user_id');
-    }
 
     /**
      * 返回成功响应
@@ -41,7 +43,7 @@ class Team extends CI_Controller {
      * 要求管理员权限
      */
     private function requireAdmin($team_id) {
-        $user_id = $this->getCurrentUserId();
+        $user_id = $this->getUser();
         if (!$user_id) {
             $this->error('请先登录', 401);
             return false;
@@ -57,7 +59,7 @@ class Team extends CI_Controller {
      * 要求超级管理员权限
      */
     private function requireOwner($team_id) {
-        $user_id = $this->getCurrentUserId();
+        $user_id = $this->getUser();
         if (!$user_id) {
             $this->error('请先登录', 401);
             return false;
@@ -77,7 +79,7 @@ class Team extends CI_Controller {
      * 参数: team_name, team_avatar?, sologan?, description?
      */
     public function createTeam() {
-        $user_id = $this->getCurrentUserId();
+        $user_id = $this->getUser();
         if (!$user_id) {
             return $this->error('请先登录', 401);
         }
@@ -137,7 +139,7 @@ class Team extends CI_Controller {
 
         if ($team) {
             // 检查当前用户是否是成员
-            $user_id = $this->getCurrentUserId();
+            $user_id = $this->getUser();
             if ($user_id) {
                 $team['is_member'] = $this->MTeam->isTeamMember($params['team_id'], $user_id);
                 $team['my_role'] = $this->MTeam->getMemberRole($params['team_id'], $user_id);
@@ -156,7 +158,7 @@ class Team extends CI_Controller {
      * POST /Team/getMyTeams
      */
     public function getMyTeams() {
-        $user_id = $this->getCurrentUserId();
+        $user_id = $this->getUser();
         if (!$user_id) {
             return $this->error('请先登录', 401);
         }
@@ -189,7 +191,7 @@ class Team extends CI_Controller {
      * 参数: team_id
      */
     public function applyToJoin() {
-        $user_id = $this->getCurrentUserId();
+        $user_id = $this->getUser();
         if (!$user_id) {
             return $this->error('请先登录', 401);
         }
@@ -378,7 +380,7 @@ class Team extends CI_Controller {
             return $this->error('参数不完整');
         }
 
-        $user_id = $this->getCurrentUserId();
+        $user_id = $this->getUser();
         if (!$user_id) {
             return $this->error('请先登录', 401);
         }
@@ -398,7 +400,7 @@ class Team extends CI_Controller {
      * 参数: team_id
      */
     public function quitTeam() {
-        $user_id = $this->getCurrentUserId();
+        $user_id = $this->getUser();
         if (!$user_id) {
             return $this->error('请先登录', 401);
         }
