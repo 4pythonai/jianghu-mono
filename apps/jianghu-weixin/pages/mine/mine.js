@@ -12,12 +12,17 @@ Page({
     },
     needBindPhone: false,
     showAuthButton: true,
-    tempNickname: ''
+    tempNickname: '',
+    hasNotification: false
   },
 
   onLoad() {
     this.syncUserState()
     app.on('loginSuccess', () => this.syncUserState())
+  },
+
+  onShow() {
+    this.syncUserState()
   },
 
   syncUserState() {
@@ -31,6 +36,46 @@ Page({
       showAuthButton: !(status.hasNickname && status.hasAvatar),
       tempNickname: state.userInfo?.nickName || ''
     })
+  },
+
+  // 跳转到个人资料
+  goToProfile() {
+    wx.navigateTo({ url: '/pages/profile/profile' })
+  },
+
+  // 跳转到通信录
+  goToContacts() {
+    wx.navigateTo({ url: '/pages/contacts/contacts' })
+  },
+
+  // 跳转到历史成绩
+  goToHistory() {
+    wx.navigateTo({ url: '/pages/history/history' })
+  },
+
+  // 跳转到江湖足迹
+  goToFootprint() {
+    wx.navigateTo({ url: '/pages/footprint/footprint' })
+  },
+
+  // 跳转到我的球队
+  goToMyTeam() {
+    wx.navigateTo({ url: '/pages/my-team/my-team' })
+  },
+
+  // 跳转到我的钱包
+  goToWallet() {
+    wx.navigateTo({ url: '/pages/wallet/wallet' })
+  },
+
+  // 跳转到小账本
+  goToLedger() {
+    wx.navigateTo({ url: '/pages/ledger/ledger' })
+  },
+
+  // 跳转到设置
+  goToSettings() {
+    wx.navigateTo({ url: '/pages/settings/settings' })
   },
 
   onChooseAvatar(e) {
@@ -59,7 +104,7 @@ Page({
       const updatedStatus = { ...app.globalData.profileStatus, hasAvatar: true }
 
       app.setUserInfo(updatedUser, updatedStatus, app.globalData.needBindPhone)
-      this.syncUserState() // 这会自动更新 showAuthButton
+      this.syncUserState()
 
       wx.showToast({ title: '头像上传成功', icon: 'success' })
       app.emit('loginSuccess')
@@ -77,12 +122,7 @@ Page({
   },
 
   onNicknameChange(e) {
-    // 当用户点击键盘上方的"用微信昵称"按钮时，这个事件会触发
     this.setData({ tempNickname: e.detail.value })
-  },
-
-  onNicknameFocus() {
-    // 输入框获得焦点时不需要额外操作，提示文字已在WXML中显示
   },
 
   confirmUserInfo() {
@@ -108,7 +148,7 @@ Page({
       const updatedStatus = { ...app.globalData.profileStatus, hasNickname: true }
 
       app.setUserInfo(updatedUser, updatedStatus, app.globalData.needBindPhone)
-      this.syncUserState() // 这会自动更新 showAuthButton
+      this.syncUserState()
 
       wx.showToast({ title: '保存成功', icon: 'success' })
       app.emit('loginSuccess')
@@ -127,16 +167,9 @@ Page({
       return
     }
 
-    // 检查session是否有效，虽然解密依赖的是服务端缓存的session_key
-    // 但如果session已过期，服务端可能也无法解密（取决于服务端缓存策略）
-    // 这里直接发送加密数据，假设服务端有有效的session_key（由app启动时的login建立）
-
-    // 使用新的获取手机号方式 (code换取)
-    // 注意: e.detail.code 是获取手机号专用的code，与wx.login的code不同
     const phoneCode = e.detail.code
 
     if (!phoneCode) {
-      // 降级处理或提示用户
       wx.showToast({ title: '获取手机号失败(无code)', icon: 'none' })
       return
     }
@@ -144,7 +177,6 @@ Page({
     app.api.user.bindPhoneNumber({
       code: phoneCode
     }).then(response => {
-      // 检查业务状态码
       if (response.code !== 200) {
         throw new Error(response.message || '绑定失败')
       }

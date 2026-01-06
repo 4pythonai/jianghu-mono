@@ -20,6 +20,8 @@
 		"pages/createGame/quickCreate/quickCreate",
 		"pages/createTeamGame/createTeamGame",
 		"pages/createTeamGame/teamGameForm/teamGameForm",
+		"pages/createCrossTeamGame/createCrossTeamGame",
+		"pages/createCrossTeamGame/crossTeamGameForm/crossTeamGameForm",
 		"pages/course-select/course-select",
 		"pages/court-select/court-select",
 		"pages/player-select/player-select",
@@ -42,7 +44,9 @@
 		"pages/gambleResult/gambleResult",
 		"pages/rules/rules",
 		"pages/rules/myRules/myRules",
-		"pages/rules/addRule/addRule"
+		"pages/rules/addRule/addRule",
+		"pages/my-team/my-team",
+		"pages/create-team/create-team"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

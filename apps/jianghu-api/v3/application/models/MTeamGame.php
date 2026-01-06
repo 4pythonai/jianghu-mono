@@ -771,4 +771,384 @@ class MTeamGame extends CI_Model {
     public function isMatchPlay($match_format) {
         return strpos($match_format, '_match') !== false;
     }
+
+    // ========== 队际赛功能 ==========
+
+    /**
+     * 创建队际赛
+     * @param array $data 包含 team_ids, team_aliases 等
+     */
+    public function createCrossTeamGame($data) {
+        $row = [
+            'uuid' => $data['uuid'] ?? $this->generateUUID(),
+            'creatorid' => $data['creator_id'],
+            'name' => $data['name'],
+            'courseid' => $data['courseid'] ?? null,
+            'match_format' => $data['match_format'],
+            'open_time' => $data['open_time'] ?? null,
+            'entry_fee' => $data['entry_fee'] ?? 0,
+            'awards' => $data['awards'] ?? null,
+            'grouping_permission' => $data['grouping_permission'] ?? 'admin',
+            'is_public_registration' => $data['is_public_registration'] ?? 'y',
+            'top_n_ranking' => $data['top_n_ranking'] ?? null,
+            'game_type' => 'cross_teams',
+            'status' => 'init',
+            'game_status' => 'init',
+            'create_time' => date('Y-m-d H:i:s'),
+            'scoring_type' => $this->getScoringTypeFromFormat($data['match_format'])
+        ];
+
+        $this->db->insert('t_game', $row);
+        return $this->db->insert_id();
+    }
+
+    /**
+     * 添加队际赛参赛球队
+     */
+    public function addCrossTeam($game_id, $team_id, $team_alias = null) {
+        // 获取球队信息
+        $team = $this->db->get_where('t_team', ['id' => $team_id])->row_array();
+        if (!$team) {
+            return ['success' => false, 'message' => '球队不存在'];
+        }
+
+        // 检查是否已添加
+        $existing = $this->db->get_where('t_game_cross_team', [
+            'game_id' => $game_id,
+            'team_id' => $team_id
+        ])->row_array();
+
+        if ($existing) {
+            return ['success' => false, 'message' => '该球队已添加'];
+        }
+
+        // 获取当前最大排序号
+        $maxOrder = $this->db->select_max('team_order')
+            ->where('game_id', $game_id)
+            ->get('t_game_cross_team')
+            ->row_array();
+        $order = ($maxOrder['team_order'] ?? 0) + 1;
+
+        $this->db->insert('t_game_cross_team', [
+            'game_id' => $game_id,
+            'team_id' => $team_id,
+            'team_alias' => $team_alias ?? $team['team_name'],
+            'team_order' => $order,
+            'create_time' => date('Y-m-d H:i:s')
+        ]);
+
+        return ['success' => true, 'id' => $this->db->insert_id()];
+    }
+
+    /**
+     * 更新球队简称
+     */
+    public function updateCrossTeamAlias($game_id, $team_id, $team_alias) {
+        $this->db->where(['game_id' => $game_id, 'team_id' => $team_id]);
+        $this->db->update('t_game_cross_team', ['team_alias' => $team_alias]);
+        return $this->db->affected_rows() > 0;
+    }
+
+    /**
+     * 获取队际赛参赛球队列表
+     */
+    public function getCrossTeamList($game_id) {
+        $this->db->select('ct.*, t.team_name, t.team_avatar');
+        $this->db->from('t_game_cross_team ct');
+        $this->db->join('t_team t', 'ct.team_id = t.id', 'left');
+        $this->db->where('ct.game_id', $game_id);
+        $this->db->order_by('ct.team_order', 'ASC');
+
+        $teams = $this->db->get()->result_array();
+
+        // 为每个球队添加报名人数
+        foreach ($teams as &$team) {
+            $team['member_count'] = $this->db->where([
+                'game_id' => $game_id,
+                'cross_team_id' => $team['team_id'],
+                'status' => 'approved'
+            ])->count_all_results('t_game_registration');
+        }
+
+        return $teams;
+    }
+
+    /**
+     * 检查球员是否已在队际赛中报名（唯一性校验）
+     */
+    public function checkCrossTeamRegistration($game_id, $user_id) {
+        $existing = $this->db->select('r.*, ct.team_alias')
+            ->from('t_game_registration r')
+            ->join('t_game_cross_team ct', 'r.cross_team_id = ct.team_id AND ct.game_id = r.game_id', 'left')
+            ->where('r.game_id', $game_id)
+            ->where('r.user_id', $user_id)
+            ->where_in('r.status', ['pending', 'approved'])
+            ->get()
+            ->row_array();
+
+        if ($existing) {
+            return [
+                'registered' => true,
+                'registration' => $existing,
+                'message' => '该球员已在 [' . ($existing['team_alias'] ?? '未知球队') . '] 报名'
+            ];
+        }
+
+        return ['registered' => false];
+    }
+
+    /**
+     * 队际赛报名
+     */
+    public function registerCrossTeamGame($game_id, $user_id, $cross_team_id, $remark = null) {
+        // 检查是否已报名（唯一性校验）
+        $check = $this->checkCrossTeamRegistration($game_id, $user_id);
+        if ($check['registered']) {
+            return ['success' => false, 'message' => $check['message']];
+        }
+
+        // 检查球队是否为参赛球队
+        $crossTeam = $this->db->get_where('t_game_cross_team', [
+            'game_id' => $game_id,
+            'team_id' => $cross_team_id
+        ])->row_array();
+
+        if (!$crossTeam) {
+            return ['success' => false, 'message' => '所选球队不是本赛事的参赛球队'];
+        }
+
+        // 检查是否为该球队成员
+        $isTeamMember = $this->isTeamMember($cross_team_id, $user_id);
+
+        // 获取赛事信息
+        $game = $this->getTeamGame($game_id);
+
+        // 非公开赛事检查
+        if ($game['is_public_registration'] == 'n' && !$isTeamMember) {
+            return ['success' => false, 'message' => '该赛事仅限球队成员报名'];
+        }
+
+        // 队员自动通过，非队员待审核
+        $status = $isTeamMember ? 'approved' : 'pending';
+
+        $this->db->insert('t_game_registration', [
+            'game_id' => $game_id,
+            'user_id' => $user_id,
+            'cross_team_id' => $cross_team_id,
+            'status' => $status,
+            'is_team_member' => $isTeamMember ? 'y' : 'n',
+            'remark' => $remark,
+            'apply_time' => date('Y-m-d H:i:s')
+        ]);
+
+        $registration_id = $this->db->insert_id();
+
+        return [
+            'success' => true,
+            'registration_id' => $registration_id,
+            'status' => $status,
+            'message' => $status == 'approved' ? '报名成功' : '报名已提交，等待审核'
+        ];
+    }
+
+    /**
+     * 比洞赛分组校验
+     * 检查每组是否包含来自两个不同球队的球员
+     */
+    public function validateMatchPlayGrouping($game_id, $groups) {
+        $game = $this->getTeamGame($game_id);
+
+        // 只有比洞赛需要校验
+        if (!$this->isMatchPlay($game['match_format'])) {
+            return ['valid' => true];
+        }
+
+        $errors = [];
+
+        foreach ($groups as $index => $group) {
+            if (empty($group['user_ids']) || count($group['user_ids']) < 2) {
+                continue;
+            }
+
+            // 获取该组所有成员的球队
+            $teamIds = [];
+            foreach ($group['user_ids'] as $user_id) {
+                $registration = $this->db->get_where('t_game_registration', [
+                    'game_id' => $game_id,
+                    'user_id' => $user_id,
+                    'status' => 'approved'
+                ])->row_array();
+
+                if ($registration && $registration['cross_team_id']) {
+                    $teamIds[] = $registration['cross_team_id'];
+                }
+            }
+
+            // 检查是否有至少两个不同的球队
+            $uniqueTeams = array_unique($teamIds);
+            if (count($uniqueTeams) < 2) {
+                $groupName = $group['group_name'] ?? '第' . ($index + 1) . '组';
+                $errors[] = $groupName . ' 必须包含来自两个不同球队的球员';
+            }
+        }
+
+        if (!empty($errors)) {
+            return ['valid' => false, 'errors' => $errors];
+        }
+
+        return ['valid' => true];
+    }
+
+    /**
+     * 获取队际赛中最少参赛人数球队的人数
+     * 用于计算默认 top_n 值
+     */
+    public function getMinCrossTeamMemberCount($game_id) {
+        $teams = $this->getCrossTeamList($game_id);
+
+        if (empty($teams)) {
+            return 0;
+        }
+
+        $minCount = PHP_INT_MAX;
+        foreach ($teams as $team) {
+            if ($team['member_count'] < $minCount) {
+                $minCount = $team['member_count'];
+            }
+        }
+
+        return $minCount == PHP_INT_MAX ? 0 : $minCount;
+    }
+
+    /**
+     * 获取球队成员列表（用于报名选择）
+     */
+    public function getTeamMembersForSelect($team_id, $game_id = null) {
+        $this->db->select('tm.*, u.nickname, u.avatar, u.handicap');
+        $this->db->from('t_team_member tm');
+        $this->db->join('t_user2 u', 'tm.user_id = u.id', 'left');
+        $this->db->where('tm.team_id', $team_id);
+        $this->db->where('tm.status', 'active');
+
+        $members = $this->db->get()->result_array();
+
+        // 如果提供了 game_id，标记已报名的成员
+        if ($game_id) {
+            foreach ($members as &$member) {
+                $registration = $this->db->get_where('t_game_registration', [
+                    'game_id' => $game_id,
+                    'user_id' => $member['user_id']
+                ])->row_array();
+
+                $member['is_registered'] = !empty($registration) && in_array($registration['status'], ['pending', 'approved']);
+                $member['registration_status'] = $registration['status'] ?? null;
+            }
+        }
+
+        return $members;
+    }
+
+    /**
+     * 获取队际赛详情
+     */
+    public function getCrossTeamGameDetail($game_id) {
+        // 基本信息
+        $this->db->select('g.*, c.name as course_name');
+        $this->db->from('t_game g');
+        $this->db->join('t_course c', 'g.courseid = c.courseid', 'left');
+        $this->db->where('g.id', $game_id);
+        $game = $this->db->get()->row_array();
+
+        if (!$game) {
+            return null;
+        }
+
+        // 参赛球队列表
+        $game['cross_teams'] = $this->getCrossTeamList($game_id);
+
+        // 报名人数统计
+        $game['registration_stats'] = [
+            'total' => $this->db->where(['game_id' => $game_id])->count_all_results('t_game_registration'),
+            'approved' => $this->db->where(['game_id' => $game_id, 'status' => 'approved'])->count_all_results('t_game_registration'),
+            'pending' => $this->db->where(['game_id' => $game_id, 'status' => 'pending'])->count_all_results('t_game_registration')
+        ];
+
+        // 分组信息
+        $game['groups'] = $this->getCrossTeamGroups($game_id);
+
+        return $game;
+    }
+
+    /**
+     * 获取队际赛分组详情（包含球队信息）
+     */
+    public function getCrossTeamGroups($game_id) {
+        $groups = $this->db->where('gameid', $game_id)
+            ->order_by('groupid', 'ASC')
+            ->get('t_game_group')
+            ->result_array();
+
+        foreach ($groups as &$group) {
+            $this->db->select('gu.*, u.nickname, u.avatar, u.handicap, ct.team_alias, ct.team_id as cross_team_id');
+            $this->db->from('t_game_group_user gu');
+            $this->db->join('t_user2 u', 'gu.userid = u.id', 'left');
+            $this->db->join('t_game_cross_team ct', 'gu.cross_team_id = ct.team_id AND ct.game_id = gu.gameid', 'left');
+            $this->db->where('gu.groupid', $group['groupid']);
+            $group['members'] = $this->db->get()->result_array();
+        }
+
+        return $groups;
+    }
+
+    /**
+     * 队际赛分组（覆盖原方法，支持 cross_team_id）
+     */
+    public function assignCrossTeamGroups($game_id, $groups) {
+        // 先校验比洞赛分组
+        $game = $this->getTeamGame($game_id);
+        if ($this->isMatchPlay($game['match_format'])) {
+            $validation = $this->validateMatchPlayGrouping($game_id, $groups);
+            if (!$validation['valid']) {
+                return ['success' => false, 'errors' => $validation['errors']];
+            }
+        }
+
+        // 清除现有分组
+        $this->clearGameGroups($game_id);
+
+        $createdGroups = [];
+        foreach ($groups as $index => $group) {
+            // 创建分组
+            $this->db->insert('t_game_group', [
+                'gameid' => $game_id,
+                'group_name' => $group['group_name'] ?? '第' . ($index + 1) . '组',
+                'group_create_time' => date('Y-m-d H:i:s'),
+                'group_start_status' => '0'
+            ]);
+            $groupid = $this->db->insert_id();
+
+            // 添加成员到分组
+            if (!empty($group['user_ids'])) {
+                foreach ($group['user_ids'] as $user_id) {
+                    $registration = $this->db->get_where('t_game_registration', [
+                        'game_id' => $game_id,
+                        'user_id' => $user_id,
+                        'status' => 'approved'
+                    ])->row_array();
+
+                    $this->db->insert('t_game_group_user', [
+                        'gameid' => $game_id,
+                        'groupid' => $groupid,
+                        'userid' => $user_id,
+                        'cross_team_id' => $registration['cross_team_id'] ?? null,
+                        'addtime' => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }
+
+            $createdGroups[] = $groupid;
+        }
+
+        return ['success' => true, 'groups' => $createdGroups];
+    }
 }

@@ -265,6 +265,7 @@ CREATE TABLE `t_game_group_user` (
   `gameid` int DEFAULT '0' COMMENT '比赛id',
   `groupid` int DEFAULT '0' COMMENT '分组id',
   `subteam_id` int DEFAULT NULL COMMENT '所属分队ID',
+  `cross_team_id` int unsigned DEFAULT NULL COMMENT '队际赛所属球队ID',
   `userid` int DEFAULT '0' COMMENT '人员id',
   `tee` char(5) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT 'T台 参数为：BLACK,GOLD,BLUE,WHITE,RED',
   `confirmed` int DEFAULT NULL COMMENT '是否确认 参数：0,1',
@@ -277,7 +278,8 @@ CREATE TABLE `t_game_group_user` (
   KEY `idx_grpid` (`groupid`),
   KEY `idx_userid` (`userid`),
   KEY `idx_userid_gameid` (`userid`,`gameid`),
-  KEY `idx_subteam_id` (`subteam_id`)
+  KEY `idx_subteam_id` (`subteam_id`),
+  KEY `idx_cross_team_id` (`cross_team_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1011 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -351,6 +353,7 @@ CREATE TABLE `t_game_registration` (
   `game_id` int unsigned NOT NULL COMMENT '比赛ID',
   `user_id` int NOT NULL COMMENT '用户ID',
   `subteam_id` int unsigned DEFAULT NULL COMMENT '选择的分队ID（团队赛制时）',
+  `cross_team_id` int unsigned DEFAULT NULL COMMENT '队际赛报名球队ID（选择代表哪个球队）',
   `status` varchar(20) DEFAULT 'pending' COMMENT '报名状态: pending(待审核), approved(已通过), rejected(已拒绝), cancelled(已取消)',
   `is_team_member` char(1) DEFAULT 'n' COMMENT '是否球队成员: y/n',
   `apply_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '报名时间',
@@ -364,6 +367,7 @@ CREATE TABLE `t_game_registration` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_status` (`status`),
   KEY `idx_subteam_id` (`subteam_id`),
+  KEY `idx_cross_team_id` (`cross_team_id`),
   CONSTRAINT `fk_registration_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_registration_subteam` FOREIGN KEY (`subteam_id`) REFERENCES `t_game_subteam` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='赛事报名表';
@@ -453,6 +457,23 @@ CREATE TABLE `t_game_subteam_score` (
   CONSTRAINT `fk_subteam_score_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_subteam_score_subteam` FOREIGN KEY (`subteam_id`) REFERENCES `t_game_subteam` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='队内赛分队总成绩表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `t_game_cross_team` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `game_id` int unsigned NOT NULL COMMENT '赛事ID',
+  `team_id` int unsigned NOT NULL COMMENT '球队ID',
+  `team_alias` varchar(100) DEFAULT NULL COMMENT '球队简称（本赛事中显示，默认为球队全称）',
+  `team_order` int DEFAULT '1' COMMENT '球队排序',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_game_team` (`game_id`,`team_id`),
+  KEY `idx_game_id` (`game_id`),
+  KEY `idx_team_id` (`team_id`),
+  CONSTRAINT `fk_cross_team_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_cross_team_team` FOREIGN KEY (`team_id`) REFERENCES `t_team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='队际赛参赛球队表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;

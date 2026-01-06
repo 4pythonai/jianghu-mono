@@ -827,4 +827,264 @@ class TeamGame extends MY_Controller {
 
         echo json_encode(['code' => 200, 'message' => '分队修改成功'], JSON_UNESCAPED_UNICODE);
     }
+
+    // ==================== 队际赛 API ====================
+
+    /**
+     * 创建队际赛
+     * @param array team_ids 参赛球队ID数组
+     * @param array team_aliases 球队简称数组（可选，与team_ids对应）
+     * @param string name 比赛名称
+     * @param int courseid 球场ID（可选）
+     * @param string match_format 赛制类型
+     * @param string open_time 开球时间（可选）
+     * @param float entry_fee 参赛费用（可选）
+     * @param string awards 奖项设置（可选）
+     * @param string grouping_permission 分组权限（可选，默认admin）
+     * @param string is_public_registration 是否公开（可选，默认y）
+     * @param int top_n_ranking 取前N名成绩（可选）
+     */
+    public function createCrossTeamGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();
+
+        $team_ids = $json_paras['team_ids'];
+        $team_aliases = $json_paras['team_aliases'] ?? [];
+        $match_format = $json_paras['match_format'];
+
+        // 验证参赛球队数量
+        if (count($team_ids) < 2) {
+            echo json_encode(['code' => 400, 'message' => '队际赛至少需要2个球队'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 比洞赛只能2个球队
+        if ($this->MTeamGame->isMatchPlay($match_format) && count($team_ids) > 2) {
+            echo json_encode(['code' => 400, 'message' => '比洞赛仅支持2个球队对抗'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 验证赛制类型
+        $validFormats = [
+            'individual_stroke', 'fourball_best_stroke', 'fourball_oneball_stroke', 'foursome_stroke',
+            'individual_match', 'fourball_best_match', 'fourball_oneball_match', 'foursome_match'
+        ];
+        if (!in_array($match_format, $validFormats)) {
+            echo json_encode(['code' => 400, 'message' => '无效的赛制类型'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 创建队际赛
+        $data = [
+            'creator_id' => $userid,
+            'name' => $json_paras['name'],
+            'courseid' => $json_paras['courseid'] ?? null,
+            'match_format' => $match_format,
+            'open_time' => $json_paras['open_time'] ?? null,
+            'entry_fee' => $json_paras['entry_fee'] ?? 0,
+            'awards' => $json_paras['awards'] ?? null,
+            'grouping_permission' => $json_paras['grouping_permission'] ?? 'admin',
+            'is_public_registration' => $json_paras['is_public_registration'] ?? 'y',
+            'top_n_ranking' => $json_paras['top_n_ranking'] ?? null
+        ];
+
+        $game_id = $this->MTeamGame->createCrossTeamGame($data);
+
+        // 添加参赛球队
+        foreach ($team_ids as $index => $team_id) {
+            $alias = isset($team_aliases[$index]) ? $team_aliases[$index] : null;
+            $this->MTeamGame->addCrossTeam($game_id, $team_id, $alias);
+        }
+
+        echo json_encode([
+            'code' => 200,
+            'message' => '队际赛创建成功',
+            'data' => ['game_id' => $game_id]
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 更新球队简称
+     * @param int game_id 赛事ID
+     * @param int team_id 球队ID
+     * @param string team_alias 新的简称
+     */
+    public function updateCrossTeamAlias() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();
+        $game_id = $json_paras['game_id'];
+        $team_id = $json_paras['team_id'];
+        $team_alias = $json_paras['team_alias'];
+
+        // 验证权限（创建者或参赛球队管理员）
+        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+            echo json_encode(['code' => 403, 'message' => '您没有权限修改球队简称'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MTeamGame->updateCrossTeamAlias($game_id, $team_id, $team_alias);
+
+        if ($result) {
+            echo json_encode(['code' => 200, 'message' => '球队简称更新成功'], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(['code' => 400, 'message' => '更新失败'], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    /**
+     * 获取队际赛参赛球队列表
+     * @param int game_id 赛事ID
+     */
+    public function getCrossTeamList() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $game_id = $json_paras['game_id'];
+
+        $teams = $this->MTeamGame->getCrossTeamList($game_id);
+
+        echo json_encode([
+            'code' => 200,
+            'data' => $teams
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 队际赛报名
+     * @param int game_id 赛事ID
+     * @param int cross_team_id 选择代表的球队ID
+     * @param int user_id 被报名用户ID（可选，默认为当前用户，替好友报名时使用）
+     * @param string remark 报名备注（可选）
+     */
+    public function registerCrossTeamGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();
+        $game_id = $json_paras['game_id'];
+        $cross_team_id = $json_paras['cross_team_id'];
+        $target_user_id = $json_paras['user_id'] ?? $userid;
+        $remark = $json_paras['remark'] ?? null;
+
+        // 检查赛事状态
+        $game = $this->MTeamGame->getTeamGame($game_id);
+        if (!$game || $game['game_type'] != 'cross_teams') {
+            echo json_encode(['code' => 400, 'message' => '赛事不存在或不是队际赛'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        if ($game['game_status'] != 'registering') {
+            echo json_encode(['code' => 400, 'message' => '当前赛事不在报名阶段'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MTeamGame->registerCrossTeamGame($game_id, $target_user_id, $cross_team_id, $remark);
+
+        if ($result['success']) {
+            echo json_encode([
+                'code' => 200,
+                'message' => $result['message'],
+                'data' => [
+                    'registration_id' => $result['registration_id'],
+                    'status' => $result['status']
+                ]
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(['code' => 400, 'message' => $result['message']], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    /**
+     * 获取球队成员列表（用于报名选择）
+     * @param int team_id 球队ID
+     * @param int game_id 赛事ID（可选，用于标记已报名成员）
+     */
+    public function getTeamMembersForSelect() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $team_id = $json_paras['team_id'];
+        $game_id = $json_paras['game_id'] ?? null;
+
+        $members = $this->MTeamGame->getTeamMembersForSelect($team_id, $game_id);
+
+        echo json_encode([
+            'code' => 200,
+            'data' => $members
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 获取队际赛详情
+     * @param int game_id 赛事ID
+     */
+    public function getCrossTeamGameDetail() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $game_id = $json_paras['game_id'];
+
+        $detail = $this->MTeamGame->getCrossTeamGameDetail($game_id);
+
+        if (!$detail) {
+            echo json_encode(['code' => 404, 'message' => '赛事不存在'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        echo json_encode([
+            'code' => 200,
+            'data' => $detail
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 队际赛分组（含比洞赛校验）
+     * @param int game_id 赛事ID
+     * @param array groups 分组数据
+     */
+    public function assignCrossTeamGroups() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();
+        $game_id = $json_paras['game_id'];
+        $groups = $json_paras['groups'];
+
+        // 验证权限
+        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+            echo json_encode(['code' => 403, 'message' => '您没有权限进行分组'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 检查赛事类型
+        $game = $this->MTeamGame->getTeamGame($game_id);
+        if ($game['game_type'] != 'cross_teams') {
+            echo json_encode(['code' => 400, 'message' => '该API仅适用于队际赛'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MTeamGame->assignCrossTeamGroups($game_id, $groups);
+
+        if ($result['success']) {
+            echo json_encode([
+                'code' => 200,
+                'message' => '分组成功',
+                'data' => ['groups' => $result['groups']]
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode([
+                'code' => 400,
+                'message' => '分组校验失败',
+                'errors' => $result['errors']
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    /**
+     * 检查球员报名状态（唯一性校验）
+     * @param int game_id 赛事ID
+     * @param int user_id 用户ID
+     */
+    public function checkCrossTeamRegistration() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $game_id = $json_paras['game_id'];
+        $user_id = $json_paras['user_id'];
+
+        $result = $this->MTeamGame->checkCrossTeamRegistration($game_id, $user_id);
+
+        echo json_encode([
+            'code' => 200,
+            'data' => $result
+        ], JSON_UNESCAPED_UNICODE);
+    }
 }

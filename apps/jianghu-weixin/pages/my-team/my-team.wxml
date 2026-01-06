@@ -1,0 +1,68 @@
+<view class="container">
+  <CustomNavBar title="我的球队" showBack="{{true}}" />
+  
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
+    <input class="search-input" placeholder="搜索球队" bindinput="onSearchInput" value="{{ searchKeyword }}" />
+  </view>
+
+  <!-- 已加入的球队 -->
+  <view class="section" wx:if="{{ joinedTeams.length > 0 }}">
+    <view class="section-header">已加入的球队</view>
+    <view class="team-list">
+      <view class="team-card" wx:for="{{ joinedTeams }}" wx:key="id" bindtap="goToTeamDetail" data-team="{{ item }}">
+        <view class="team-avatar">
+          <image src="{{ item.logo || '/images/default-avatar.png' }}" mode="aspectFill"></image>
+        </view>
+        <view class="team-info">
+          <view class="team-name">{{ item.name }}</view>
+          <view class="team-meta">成立时间：{{ item.created_at }}</view>
+          <view class="team-slogan">{{ item.slogan || '暂无口号' }}</view>
+          <view class="team-staff">
+            <text class="staff-item">队长  {{ item.captain_name || '--' }}</text>
+            <text class="staff-item">秘书长  {{ item.secretary_name || '--' }}</text>
+          </view>
+        </view>
+        <view class="team-badge joined">已加入</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 参加过活动的球队 -->
+  <view class="section" wx:if="{{ activityTeams.length > 0 }}">
+    <view class="section-header">参加过活动的球队</view>
+    <view class="team-list">
+      <view class="team-card" wx:for="{{ activityTeams }}" wx:key="id" bindtap="goToTeamDetail" data-team="{{ item }}">
+        <view class="team-avatar">
+          <image src="{{ item.logo || '/images/default-avatar.png' }}" mode="aspectFill"></image>
+        </view>
+        <view class="team-info">
+          <view class="team-name">{{ item.name }}</view>
+          <view class="team-meta">成立时间：{{ item.created_at }}</view>
+          <view class="team-slogan">{{ item.slogan || '暂无口号' }}</view>
+          <view class="team-staff">
+            <text class="staff-item">队长  {{ item.captain_name || '--' }}</text>
+            <text class="staff-item">秘书长  {{ item.secretary_name || '--' }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{ joinedTeams.length === 0 && activityTeams.length === 0 && !loading }}">
+    <image class="empty-icon" src="/assets/icons/icons8-team-48.png" mode="aspectFit"></image>
+    <text class="empty-text">暂无球队</text>
+    <text class="empty-hint">创建或加入一个球队开始吧</text>
+  </view>
+
+  <!-- 创建球队按钮 -->
+  <view class="create-btn-wrapper">
+    <button class="create-btn" bindtap="goToCreateTeam">
+      <image class="create-icon" src="/assets/icons/icons8-add-48.png" mode="aspectFit"></image>
+      <text>创建球队</text>
+    </button>
+  </view>
+</view>
+

@@ -6,12 +6,13 @@
 const ENV = {
     development: {
         baseURL: 'https://qiaoyincapital.com/v3/index.php',
-        wsURL: 'wss://qiaoyincapital.com/ws/'
+        wsURL: 'wss://qiaoyincapital.com/ws/',
+        staticURL: 'https://qiaoyincapital.com'
     },
     production: {
         baseURL: 'https://qiaoyincapital.com/v3/index.php',
-        wsURL: 'wss://qiaoyincapital.com/ws/'
-
+        wsURL: 'wss://qiaoyincapital.com/ws/',
+        staticURL: 'https://qiaoyincapital.com'
     }
 }
 

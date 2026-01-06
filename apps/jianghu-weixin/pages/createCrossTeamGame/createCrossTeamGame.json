@@ -1,0 +1,7 @@
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "选择参赛球队",
+    "usingComponents": {
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+    }
+}

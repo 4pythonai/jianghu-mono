@@ -1,0 +1,73 @@
+<view class="container">
+  <CustomNavBar title="创建球队" showBack="{{true}}" />
+  
+  <view class="form-container">
+    <!-- Logo 上传 -->
+    <view class="form-section">
+      <view class="section-title">球队 Logo</view>
+      <view class="logo-upload" bindtap="chooseLogo">
+        <image wx:if="{{ formData.logo }}" class="logo-preview" src="{{ formData.logo }}" mode="aspectFill"></image>
+        <view wx:else class="logo-placeholder">
+          <image class="upload-icon" src="/assets/icons/icons8-add-48.png" mode="aspectFit"></image>
+          <text class="upload-text">上传 Logo</text>
+        </view>
+      </view>
+      <view class="logo-hint">建议尺寸 200x200，支持 jpg/png 格式</view>
+    </view>
+
+    <!-- 球队名称 -->
+    <view class="form-section">
+      <view class="section-title required">球队名称</view>
+      <view class="input-wrapper">
+        <input 
+          class="form-input" 
+          placeholder="请输入球队名称" 
+          maxlength="30"
+          value="{{ formData.name }}"
+          bindinput="onNameInput"
+        />
+        <text class="char-count">{{ formData.name.length }}/30</text>
+      </view>
+    </view>
+
+    <!-- 球队口号 -->
+    <view class="form-section">
+      <view class="section-title">球队口号 (Slogan)</view>
+      <view class="input-wrapper">
+        <input 
+          class="form-input" 
+          placeholder="请输入球队口号" 
+          maxlength="50"
+          value="{{ formData.slogan }}"
+          bindinput="onSloganInput"
+        />
+        <text class="char-count">{{ formData.slogan.length }}/50</text>
+      </view>
+    </view>
+
+    <!-- 球队描述 -->
+    <view class="form-section">
+      <view class="section-title">球队描述</view>
+      <view class="textarea-wrapper">
+        <textarea 
+          class="form-textarea" 
+          placeholder="请输入球队描述，介绍一下你的球队..." 
+          maxlength="500"
+          value="{{ formData.description }}"
+          bindinput="onDescInput"
+          auto-height
+        ></textarea>
+        <text class="char-count">{{ formData.description.length }}/500</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-btn-wrapper">
+    <button class="submit-btn {{ canSubmit ? '' : 'disabled' }}" bindtap="submitCreate" disabled="{{ !canSubmit || submitting }}">
+      <text wx:if="{{ submitting }}">创建中...</text>
+      <text wx:else>创建球队</text>
+    </button>
+  </view>
+</view>
+

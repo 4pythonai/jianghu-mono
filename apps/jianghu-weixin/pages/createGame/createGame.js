@@ -41,6 +41,9 @@ Page({
             case 'teamCreate':
                 url = '/pages/createTeamGame/createTeamGame';
                 break;
+            case 'crossTeamCreate':
+                url = '/pages/createCrossTeamGame/createCrossTeamGame';
+                break;
         }
 
         if (url) {

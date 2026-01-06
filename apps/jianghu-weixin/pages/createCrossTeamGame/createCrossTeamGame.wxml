@@ -1,0 +1,143 @@
+<!--
+  创建队际赛 - 多选球队页面
+  支持搜索、多选球队，选择时设置球队简称
+-->
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <CustomNavBar title="选择参赛球队" bind:back="handleBack" />
+
+  <!-- 搜索栏 -->
+  <view class="search-section">
+    <view class="search-bar">
+      <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
+      <input
+        class="search-input"
+        placeholder="搜索球队名称"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="onSearch"
+      />
+      <view class="search-btn" bindtap="onSearch" wx:if="{{searchKeyword}}">搜索</view>
+    </view>
+  </view>
+
+  <!-- 已选球队 -->
+  <view class="selected-section" wx:if="{{selectedTeams.length > 0}}">
+    <view class="section-title">已选球队 ({{selectedTeams.length}})</view>
+    <view class="selected-list">
+      <view class="selected-item" wx:for="{{selectedTeams}}" wx:key="team_id">
+          <image
+            class="selected-avatar"
+            src="{{item.team_avatar || '/assets/icons/team-default.png'}}"
+            mode="aspectFill"
+          ></image>
+          <view class="selected-info">
+            <text class="selected-alias">{{item.team_alias}}</text>
+            <text
+              class="selected-name"
+              wx:if="{{item.team_alias !== item.team_name}}"
+            >{{item.team_name}}</text>
+          </view>
+          <view class="selected-actions">
+            <image
+              class="action-icon edit"
+              src="/assets/icons/icons8-edit-48.png"
+              catchtap="editTeamAlias"
+              data-team-id="{{item.team_id}}"
+            ></image>
+            <image
+              class="action-icon remove"
+              src="/assets/icons/icons8-close-48.png"
+              catchtap="removeTeam"
+              data-team-id="{{item.team_id}}"
+            ></image>
+          </view>
+        </view>
+      </view>
+  </view>
+
+  <!-- 球队列表 -->
+  <view class="team-list-section">
+    <view class="section-title">{{searchKeyword ? '搜索结果' : '我的球队'}}</view>
+
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <view class="empty-container" wx:elif="{{filteredTeams.length === 0}}">
+      <image class="empty-icon" src="/assets/icons/empty.png" mode="aspectFit"></image>
+      <text class="empty-text">{{searchKeyword ? '未找到相关球队' : '暂无可选球队'}}</text>
+    </view>
+
+    <scroll-view class="team-scroll" scroll-y="true" wx:else>
+      <view class="team-list">
+        <view
+          class="team-item {{item.isSelected ? 'selected' : ''}}"
+          wx:for="{{filteredTeams}}"
+          wx:key="id"
+          bindtap="onTeamSelect"
+          data-team-id="{{item.id}}"
+        >
+          <image
+            class="team-avatar"
+            src="{{item.team_avatar || '/assets/icons/team-default.png'}}"
+            mode="aspectFill"
+          ></image>
+          <view class="team-info">
+            <text class="team-name">{{item.team_name}}</text>
+            <text class="team-tag" wx:if="{{item.isMember}}">我的球队</text>
+          </view>
+          <view class="team-check" wx:if="{{item.isSelected}}">
+            <image class="check-icon" src="/assets/icons/icons8-lock-48.png" mode="aspectFit"></image>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar">
+    <view class="tip-text">已选择 {{selectedTeams.length}} 个球队，至少选择2个</view>
+    <button
+      class="btn btn-primary btn-block {{selectedTeams.length < 2 ? 'disabled' : ''}}"
+      bindtap="goToForm"
+      disabled="{{selectedTeams.length < 2}}"
+    >下一步</button>
+  </view>
+
+  <!-- 简称设置弹窗 -->
+  <view class="modal-mask" wx:if="{{showAliasModal}}" catchtap="cancelAliasModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-header">
+        <text class="modal-title">设置球队简称</text>
+      </view>
+      <view class="modal-body">
+        <view class="team-preview" wx:if="{{currentTeam}}">
+          <image
+            class="preview-avatar"
+            src="{{currentTeam.team_avatar || '/assets/icons/team-default.png'}}"
+            mode="aspectFill"
+          ></image>
+          <text class="preview-name">{{currentTeam.team_name}}</text>
+        </view>
+        <view class="alias-input-wrapper">
+          <text class="alias-label">简称（计分卡显示）</text>
+          <input
+            class="alias-input"
+            placeholder="请输入球队简称"
+            value="{{currentAlias}}"
+            bindinput="onAliasInput"
+            maxlength="10"
+            focus="{{showAliasModal}}"
+          />
+        </view>
+        <text class="alias-tip">简称将在计分卡等位置显示，建议4字以内</text>
+      </view>
+      <view class="modal-footer">
+        <button class="modal-btn cancel" bindtap="cancelAliasModal">取消</button>
+        <button class="modal-btn confirm" bindtap="confirmTeamAlias">确定</button>
+      </view>
+    </view>
+  </view>
+</view>

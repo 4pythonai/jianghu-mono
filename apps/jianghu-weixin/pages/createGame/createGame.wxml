@@ -49,6 +49,18 @@
           <text>队内赛</text>
         </view>
       </view>
+      <view class="marker-point point5" bindtap="handleMenuClick" data-type="crossTeamCreate">
+        <view class="menu-item">
+          <image
+            class="menu-icon"
+            src="/assets/icons/icons8-team-48.png"
+            mode="aspectFit"
+            binderror="onImageError"
+            data-img="crossTeam"
+          ></image>
+          <text>队际赛</text>
+        </view>
+      </view>
     </view>
   </view>
 </view>

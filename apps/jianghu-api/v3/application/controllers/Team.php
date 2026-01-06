@@ -74,6 +74,66 @@ class Team extends MY_Controller {
     // ========== 球队管理 ==========
 
     /**
+     * 上传球队 Logo
+     * POST /Team/uploadLogo
+     */
+    public function uploadLogo() {
+        $user_id = $this->getUser();
+        if (!$user_id) {
+            return $this->error('请先登录', 401);
+        }
+
+        try {
+            // 检查是否有文件上传
+            if (!isset($_FILES['logo']) || $_FILES['logo']['error'] !== UPLOAD_ERR_OK) {
+                throw new \RuntimeException('文件上传失败');
+            }
+
+            $file = $_FILES['logo'];
+
+            // 验证文件类型
+            $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!in_array($file['type'], $allowedTypes)) {
+                throw new \RuntimeException('文件类型不支持，仅支持 JPG, PNG, GIF 格式');
+            }
+
+            // 验证文件大小（限制为5MB）
+            $maxSize = 5 * 1024 * 1024;
+            if ($file['size'] > $maxSize) {
+                throw new \RuntimeException('文件大小超过限制（最大5MB）');
+            }
+
+            // 生成文件名
+            $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $fileName = 'team_logo_' . $user_id . '_' . time() . '.' . $extension;
+            $date_folder = date('Y/m/d/');
+            $full_path = '/var/www/html/avatar/team-logo/' . $date_folder;
+
+            if (!is_dir($full_path)) {
+                mkdir($full_path, 0755, true);
+            }
+            $targetPath = $full_path . $fileName;
+
+            // 移动文件到目标目录
+            if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+                throw new \RuntimeException('文件保存失败');
+            }
+
+            $relativePath = '/avatar/team-logo/' . $date_folder . $fileName;
+
+            echo json_encode([
+                'code' => 200,
+                'message' => 'Logo上传成功',
+                'data' => [
+                    'logo' => $relativePath
+                ]
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (\Exception $e) {
+            $this->error($e->getMessage(), 500);
+        }
+    }
+
+    /**
      * 创建球队
      * POST /Team/createTeam
      * 参数: team_name, team_avatar?, sologan?, description?

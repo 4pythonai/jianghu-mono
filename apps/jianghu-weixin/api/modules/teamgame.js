@@ -64,6 +64,24 @@ const teamgame = {
     getMyRegistration: (data, options) => request('/TeamGame/getMyRegistration', data, options),
     // 修改我的分队
     changeMySubteam: (data, options) => request('/TeamGame/changeMySubteam', data, options),
+
+    // ==================== Phase 6: 队际赛 ====================
+    // 创建队际赛
+    createCrossTeamGame: (data, options) => request('/TeamGame/createCrossTeamGame', data, options),
+    // 更新球队简称
+    updateCrossTeamAlias: (data, options) => request('/TeamGame/updateCrossTeamAlias', data, options),
+    // 获取队际赛参赛球队列表
+    getCrossTeamList: (data, options) => request('/TeamGame/getCrossTeamList', data, options),
+    // 队际赛报名
+    registerCrossTeamGame: (data, options) => request('/TeamGame/registerCrossTeamGame', data, options),
+    // 获取球队成员列表（用于报名选择）
+    getTeamMembersForSelect: (data, options) => request('/TeamGame/getTeamMembersForSelect', data, options),
+    // 获取队际赛详情
+    getCrossTeamGameDetail: (data, options) => request('/TeamGame/getCrossTeamGameDetail', data, options),
+    // 队际赛分组（含比洞赛校验）
+    assignCrossTeamGroups: (data, options) => request('/TeamGame/assignCrossTeamGroups', data, options),
+    // 检查球员报名状态（唯一性校验）
+    checkCrossTeamRegistration: (data, options) => request('/TeamGame/checkCrossTeamRegistration', data, options),
 }
 
 export default teamgame
