@@ -6,8 +6,12 @@ if (!defined('BASEPATH')) {
 }
 
 /**
- * 队内赛控制器
- * 处理队内赛的创建、报名、分组、状态管理等功能
+ * 球队赛事控制器（队内赛 + 队际赛统一模型）
+ * 处理队内赛和队际赛的创建、报名、分组、状态管理等功能
+ *
+ * 统一模型说明：
+ * - 队内赛：t_game_subteam.team_id = NULL，subteam_name 为临时队名
+ * - 队际赛：t_game_subteam.team_id 指向真实球队，subteam_name 为球队简称
  */
 class TeamGame extends MY_Controller {
 
@@ -81,6 +85,22 @@ class TeamGame extends MY_Controller {
         ];
 
         $game_id = $this->MTeamGame->createTeamGame($data);
+
+        // 添加半场信息并生成 holeList
+        $front_nine_court_id = $json_paras['front_nine_court_id'] ?? null;
+        $back_nine_court_id = $json_paras['back_nine_court_id'] ?? null;
+
+        if ($front_nine_court_id || $back_nine_court_id) {
+            // 添加半场到 t_game_court
+            $this->load->model('MGame');
+            $this->MGame->addGameCourt($game_id, $front_nine_court_id, $back_nine_court_id);
+
+            // 生成 holeList
+            $this->load->model('MDetailGame');
+            $holeList = $this->MDetailGame->getHoleListByGameId($game_id);
+            $this->db->where('id', $game_id);
+            $this->db->update('t_game', ['holeList' => json_encode($holeList, JSON_UNESCAPED_UNICODE)]);
+        }
 
         echo json_encode([
             'code' => 200,
@@ -876,6 +896,7 @@ class TeamGame extends MY_Controller {
 
         // 创建队际赛
         $data = [
+            'team_ids' => $team_ids,
             'creator_id' => $userid,
             'name' => $json_paras['name'],
             'courseid' => $json_paras['courseid'] ?? null,
@@ -889,6 +910,22 @@ class TeamGame extends MY_Controller {
         ];
 
         $game_id = $this->MTeamGame->createCrossTeamGame($data);
+
+        // 添加半场信息并生成 holeList
+        $front_nine_court_id = $json_paras['front_nine_court_id'] ?? null;
+        $back_nine_court_id = $json_paras['back_nine_court_id'] ?? null;
+
+        if ($front_nine_court_id || $back_nine_court_id) {
+            // 添加半场到 t_game_court
+            $this->load->model('MGame');
+            $this->MGame->addGameCourt($game_id, $front_nine_court_id, $back_nine_court_id);
+
+            // 生成 holeList
+            $this->load->model('MDetailGame');
+            $holeList = $this->MDetailGame->getHoleListByGameId($game_id);
+            $this->db->where('id', $game_id);
+            $this->db->update('t_game', ['holeList' => json_encode($holeList, JSON_UNESCAPED_UNICODE)]);
+        }
 
         // 添加参赛球队
         foreach ($team_ids as $index => $team_id) {
@@ -948,9 +985,9 @@ class TeamGame extends MY_Controller {
     }
 
     /**
-     * 队际赛报名
+     * 队际赛报名（使用统一的 subteam_id）
      * @param int game_id 赛事ID
-     * @param int cross_team_id 选择代表的球队ID
+     * @param int subteam_id 选择代表的分队ID（t_game_subteam.id）
      * @param int user_id 被报名用户ID（可选，默认为当前用户，替好友报名时使用）
      * @param string remark 报名备注（可选）
      */
@@ -958,7 +995,7 @@ class TeamGame extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
-        $cross_team_id = $json_paras['cross_team_id'];
+        $subteam_id = $json_paras['subteam_id'];
         $target_user_id = $json_paras['user_id'] ?? $userid;
         $remark = $json_paras['remark'] ?? null;
 
@@ -974,7 +1011,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $result = $this->MTeamGame->registerCrossTeamGame($game_id, $target_user_id, $cross_team_id, $remark);
+        $result = $this->MTeamGame->registerCrossTeamGame($game_id, $target_user_id, $subteam_id, $remark);
 
         if ($result['success']) {
             echo json_encode([

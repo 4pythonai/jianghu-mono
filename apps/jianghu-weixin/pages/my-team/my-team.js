@@ -22,19 +22,20 @@ Page({
   // 加载我的球队列表
   async loadMyTeams() {
     this.setData({ loading: true })
-    
+
     try {
       const res = await app.api.team.getMyTeams({
         user_id: app.globalData.userInfo?.id
       })
-      
+
       if (res.code === 200) {
         // 后端返回 teams 数组，映射字段名
+        // 注意：后端已返回完整 URL，不需要再拼接 staticURL
         const teams = res.teams || []
         const joinedTeams = teams.map(team => ({
           id: team.id,
           name: team.team_name,
-          logo: team.team_avatar ? config.staticURL + team.team_avatar : '',
+          logo: team.team_avatar || '',  // 后端已返回完整 URL
           slogan: team.sologan,
           description: team.description,
           created_at: this.formatDate(team.create_date),
@@ -43,7 +44,7 @@ Page({
           member_count: team.member_count,
           role: team.role
         }))
-        
+
         this.setData({ joinedTeams, activityTeams: [] })
       }
     } catch (error) {
@@ -68,7 +69,7 @@ Page({
   onSearchInput(e) {
     const keyword = e.detail.value
     this.setData({ searchKeyword: keyword })
-    
+
     // 可以添加搜索防抖逻辑
     if (this.searchTimer) clearTimeout(this.searchTimer)
     this.searchTimer = setTimeout(() => {
@@ -86,10 +87,19 @@ Page({
     try {
       const res = await app.api.team.searchTeams({ keyword })
       if (res.code === 200) {
-        // 搜索结果处理
-        const teams = (res.data?.teams || []).map(team => ({
-          ...team,
-          created_at: this.formatDate(team.created_at)
+        // 注意：后端返回 res.teams，不是 res.data.teams
+        // 后端已返回完整 URL，不需要再拼接 staticURL
+        const teams = (res.teams || []).map(team => ({
+          id: team.id,
+          name: team.team_name,
+          logo: team.team_avatar || '',  // 后端已返回完整 URL
+          slogan: team.sologan,
+          description: team.description,
+          created_at: this.formatDate(team.create_date),
+          captain_name: team.captain_name || '',
+          secretary_name: team.secretary_name || '',
+          member_count: team.member_count,
+          is_member: team.is_member
         }))
         this.setData({
           joinedTeams: teams.filter(t => t.is_member),

@@ -2,8 +2,13 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * 队内赛模型
- * 封装队内赛相关的数据库操作
+ * 球队赛事模型（队内赛 + 队际赛统一模型）
+ * 封装队内赛和队际赛相关的数据库操作
+ *
+ * 统一模型说明：
+ * - 使用 t_game_subteam 表存储分队信息
+ * - 队内赛：team_id = NULL，subteam_name 为临时队名（如：东邪队、西毒队）
+ * - 队际赛：team_id 指向真实球队，subteam_name 为球队简称
  */
 class MTeamGame extends CI_Model {
 
@@ -779,8 +784,15 @@ class MTeamGame extends CI_Model {
      * @param array $data 包含 team_ids, team_aliases 等
      */
     public function createCrossTeamGame($data) {
+        // 处理 team_ids：数组转为逗号分隔字符串
+        $team_id_str = null;
+        if (!empty($data['team_ids']) && is_array($data['team_ids'])) {
+            $team_id_str = implode(',', $data['team_ids']);
+        }
+
         $row = [
             'uuid' => $data['uuid'] ?? $this->generateUUID(),
+            'team_id' => $team_id_str,
             'creatorid' => $data['creator_id'],
             'name' => $data['name'],
             'courseid' => $data['courseid'] ?? null,
@@ -803,7 +815,7 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 添加队际赛参赛球队
+     * 添加队际赛参赛球队（使用统一的 t_game_subteam 表）
      */
     public function addCrossTeam($game_id, $team_id, $team_alias = null) {
         // 获取球队信息
@@ -812,8 +824,8 @@ class MTeamGame extends CI_Model {
             return ['success' => false, 'message' => '球队不存在'];
         }
 
-        // 检查是否已添加
-        $existing = $this->db->get_where('t_game_cross_team', [
+        // 检查是否已添加（通过 team_id 判断）
+        $existing = $this->db->get_where('t_game_subteam', [
             'game_id' => $game_id,
             'team_id' => $team_id
         ])->row_array();
@@ -823,17 +835,17 @@ class MTeamGame extends CI_Model {
         }
 
         // 获取当前最大排序号
-        $maxOrder = $this->db->select_max('team_order')
+        $maxOrder = $this->db->select_max('subteam_order')
             ->where('game_id', $game_id)
-            ->get('t_game_cross_team')
+            ->get('t_game_subteam')
             ->row_array();
-        $order = ($maxOrder['team_order'] ?? 0) + 1;
+        $order = ($maxOrder['subteam_order'] ?? 0) + 1;
 
-        $this->db->insert('t_game_cross_team', [
+        $this->db->insert('t_game_subteam', [
             'game_id' => $game_id,
             'team_id' => $team_id,
-            'team_alias' => $team_alias ?? $team['team_name'],
-            'team_order' => $order,
+            'subteam_name' => $team_alias ?? $team['team_name'],
+            'subteam_order' => $order,
             'create_time' => date('Y-m-d H:i:s')
         ]);
 
@@ -841,23 +853,24 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 更新球队简称
+     * 更新球队简称（使用统一的 t_game_subteam 表）
      */
     public function updateCrossTeamAlias($game_id, $team_id, $team_alias) {
         $this->db->where(['game_id' => $game_id, 'team_id' => $team_id]);
-        $this->db->update('t_game_cross_team', ['team_alias' => $team_alias]);
+        $this->db->update('t_game_subteam', ['subteam_name' => $team_alias]);
         return $this->db->affected_rows() > 0;
     }
 
     /**
-     * 获取队际赛参赛球队列表
+     * 获取队际赛参赛球队列表（使用统一的 t_game_subteam 表）
      */
     public function getCrossTeamList($game_id) {
-        $this->db->select('ct.*, t.team_name, t.team_avatar');
-        $this->db->from('t_game_cross_team ct');
-        $this->db->join('t_team t', 'ct.team_id = t.id', 'left');
-        $this->db->where('ct.game_id', $game_id);
-        $this->db->order_by('ct.team_order', 'ASC');
+        $this->db->select('s.id as subteam_id, s.team_id, s.subteam_name as team_alias, s.subteam_order as team_order, s.color, t.team_name, t.team_avatar');
+        $this->db->from('t_game_subteam s');
+        $this->db->join('t_team t', 's.team_id = t.id', 'left');
+        $this->db->where('s.game_id', $game_id);
+        $this->db->where('s.team_id IS NOT NULL'); // 队际赛的分队有 team_id
+        $this->db->order_by('s.subteam_order', 'ASC');
 
         $teams = $this->db->get()->result_array();
 
@@ -865,7 +878,7 @@ class MTeamGame extends CI_Model {
         foreach ($teams as &$team) {
             $team['member_count'] = $this->db->where([
                 'game_id' => $game_id,
-                'cross_team_id' => $team['team_id'],
+                'subteam_id' => $team['subteam_id'],
                 'status' => 'approved'
             ])->count_all_results('t_game_registration');
         }
@@ -874,12 +887,12 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 检查球员是否已在队际赛中报名（唯一性校验）
+     * 检查球员是否已在队际赛中报名（唯一性校验，使用统一的 subteam_id）
      */
     public function checkCrossTeamRegistration($game_id, $user_id) {
-        $existing = $this->db->select('r.*, ct.team_alias')
+        $existing = $this->db->select('r.*, s.subteam_name as team_alias')
             ->from('t_game_registration r')
-            ->join('t_game_cross_team ct', 'r.cross_team_id = ct.team_id AND ct.game_id = r.game_id', 'left')
+            ->join('t_game_subteam s', 'r.subteam_id = s.id', 'left')
             ->where('r.game_id', $game_id)
             ->where('r.user_id', $user_id)
             ->where_in('r.status', ['pending', 'approved'])
@@ -898,27 +911,31 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 队际赛报名
+     * 队际赛报名（使用统一的 subteam_id）
+     * @param int $game_id 赛事ID
+     * @param int $user_id 用户ID
+     * @param int $subteam_id 分队ID（t_game_subteam.id）
+     * @param string $remark 备注
      */
-    public function registerCrossTeamGame($game_id, $user_id, $cross_team_id, $remark = null) {
+    public function registerCrossTeamGame($game_id, $user_id, $subteam_id, $remark = null) {
         // 检查是否已报名（唯一性校验）
         $check = $this->checkCrossTeamRegistration($game_id, $user_id);
         if ($check['registered']) {
             return ['success' => false, 'message' => $check['message']];
         }
 
-        // 检查球队是否为参赛球队
-        $crossTeam = $this->db->get_where('t_game_cross_team', [
-            'game_id' => $game_id,
-            'team_id' => $cross_team_id
+        // 检查分队是否为参赛球队（team_id 不为空）
+        $subteam = $this->db->get_where('t_game_subteam', [
+            'id' => $subteam_id,
+            'game_id' => $game_id
         ])->row_array();
 
-        if (!$crossTeam) {
+        if (!$subteam || empty($subteam['team_id'])) {
             return ['success' => false, 'message' => '所选球队不是本赛事的参赛球队'];
         }
 
         // 检查是否为该球队成员
-        $isTeamMember = $this->isTeamMember($cross_team_id, $user_id);
+        $isTeamMember = $this->isTeamMember($subteam['team_id'], $user_id);
 
         // 获取赛事信息
         $game = $this->getTeamGame($game_id);
@@ -934,7 +951,7 @@ class MTeamGame extends CI_Model {
         $this->db->insert('t_game_registration', [
             'game_id' => $game_id,
             'user_id' => $user_id,
-            'cross_team_id' => $cross_team_id,
+            'subteam_id' => $subteam_id,
             'status' => $status,
             'is_team_member' => $isTeamMember ? 'y' : 'n',
             'remark' => $remark,
@@ -942,6 +959,11 @@ class MTeamGame extends CI_Model {
         ]);
 
         $registration_id = $this->db->insert_id();
+
+        // 如果已通过，加入分队成员表
+        if ($status == 'approved') {
+            $this->addSubteamMember($subteam_id, $user_id, $game_id);
+        }
 
         return [
             'success' => true,
@@ -952,7 +974,7 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 比洞赛分组校验
+     * 比洞赛分组校验（使用统一的 subteam_id）
      * 检查每组是否包含来自两个不同球队的球员
      */
     public function validateMatchPlayGrouping($game_id, $groups) {
@@ -970,8 +992,8 @@ class MTeamGame extends CI_Model {
                 continue;
             }
 
-            // 获取该组所有成员的球队
-            $teamIds = [];
+            // 获取该组所有成员的分队
+            $subteamIds = [];
             foreach ($group['user_ids'] as $user_id) {
                 $registration = $this->db->get_where('t_game_registration', [
                     'game_id' => $game_id,
@@ -979,14 +1001,14 @@ class MTeamGame extends CI_Model {
                     'status' => 'approved'
                 ])->row_array();
 
-                if ($registration && $registration['cross_team_id']) {
-                    $teamIds[] = $registration['cross_team_id'];
+                if ($registration && $registration['subteam_id']) {
+                    $subteamIds[] = $registration['subteam_id'];
                 }
             }
 
-            // 检查是否有至少两个不同的球队
-            $uniqueTeams = array_unique($teamIds);
-            if (count($uniqueTeams) < 2) {
+            // 检查是否有至少两个不同的分队
+            $uniqueSubteams = array_unique($subteamIds);
+            if (count($uniqueSubteams) < 2) {
                 $groupName = $group['group_name'] ?? '第' . ($index + 1) . '组';
                 $errors[] = $groupName . ' 必须包含来自两个不同球队的球员';
             }
@@ -1080,7 +1102,7 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 获取队际赛分组详情（包含球队信息）
+     * 获取队际赛分组详情（使用统一的 t_game_subteam 表）
      */
     public function getCrossTeamGroups($game_id) {
         $groups = $this->db->where('gameid', $game_id)
@@ -1089,10 +1111,10 @@ class MTeamGame extends CI_Model {
             ->result_array();
 
         foreach ($groups as &$group) {
-            $this->db->select('gu.*, u.nickname, u.avatar, u.handicap, ct.team_alias, ct.team_id as cross_team_id');
+            $this->db->select('gu.*, u.nickname, u.avatar, u.handicap, s.subteam_name as team_alias, s.team_id, s.id as subteam_id');
             $this->db->from('t_game_group_user gu');
-            $this->db->join('t_user2 u', 'gu.userid = u.id', 'left');
-            $this->db->join('t_game_cross_team ct', 'gu.cross_team_id = ct.team_id AND ct.game_id = gu.gameid', 'left');
+            $this->db->join('t_user u', 'gu.userid = u.id', 'left');
+            $this->db->join('t_game_subteam s', 'gu.subteam_id = s.id', 'left');
             $this->db->where('gu.groupid', $group['groupid']);
             $group['members'] = $this->db->get()->result_array();
         }
@@ -1101,7 +1123,7 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 队际赛分组（覆盖原方法，支持 cross_team_id）
+     * 队际赛分组（使用统一的 subteam_id）
      */
     public function assignCrossTeamGroups($game_id, $groups) {
         // 先校验比洞赛分组
@@ -1140,7 +1162,7 @@ class MTeamGame extends CI_Model {
                         'gameid' => $game_id,
                         'groupid' => $groupid,
                         'userid' => $user_id,
-                        'cross_team_id' => $registration['cross_team_id'] ?? null,
+                        'subteam_id' => $registration['subteam_id'] ?? null,
                         'addtime' => date('Y-m-d H:i:s')
                     ]);
                 }

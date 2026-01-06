@@ -24,6 +24,7 @@ Page({
         // 球场信息
         selectedCourse: null,
         selectedCourt: null,
+        courtSelection: null, // 半场选择信息 {frontNineCourtId, backNineCourtId, gameType}
 
         // 表单数据
         formData: {
@@ -107,8 +108,9 @@ Page({
     },
 
     onOpenTimeChange(e) {
-        const { value, display } = e.detail
-        this.setData({ 'formData.openTime': display })
+        const { value } = e.detail
+        // 保存标准格式的时间值，用于提交给后端
+        this.setData({ 'formData.openTime': value })
     },
 
     onEntryFeeInput(e) {
@@ -164,7 +166,13 @@ Page({
 
         this.setData({
             selectedCourse: selectionData.course,
-            selectedCourt: displayCourt
+            selectedCourt: displayCourt,
+            // 保存完整的半场信息，用于提交时传递给后端
+            courtSelection: {
+                frontNineCourtId: selectionData.frontNine?.courtid || null,
+                backNineCourtId: selectionData.backNine?.courtid || null,
+                gameType: selectionData.gameType
+            }
         })
 
         wx.showToast({
@@ -272,7 +280,7 @@ Page({
         this.setData({ submitting: true })
 
         try {
-            const { formData, selectedCourse, selectedTeams } = this.data
+            const { formData, selectedCourse, selectedTeams, courtSelection } = this.data
 
             // 准备球队ID和简称数组
             const teamIds = selectedTeams.map(t => t.team_id)
@@ -284,6 +292,9 @@ Page({
                 team_aliases: teamAliases,
                 name: formData.name.trim(),
                 courseid: selectedCourse.courseid,
+                // 传递半场信息，用于生成 holeList
+                front_nine_court_id: courtSelection?.frontNineCourtId || null,
+                back_nine_court_id: courtSelection?.backNineCourtId || null,
                 match_format: formData.matchFormat,
                 open_time: formData.openTime,
                 entry_fee: formData.entryFee ? parseFloat(formData.entryFee) : 0,

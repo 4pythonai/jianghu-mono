@@ -66,21 +66,21 @@ const teamgame = {
     changeMySubteam: (data, options) => request('/TeamGame/changeMySubteam', data, options),
 
     // ==================== Phase 6: 队际赛 ====================
-    // 创建队际赛
+    // 创建队际赛 {team_ids: [], team_aliases: [], name, ...}
     createCrossTeamGame: (data, options) => request('/TeamGame/createCrossTeamGame', data, options),
-    // 更新球队简称
+    // 更新球队简称 {game_id, team_id, team_alias}
     updateCrossTeamAlias: (data, options) => request('/TeamGame/updateCrossTeamAlias', data, options),
-    // 获取队际赛参赛球队列表
+    // 获取队际赛参赛球队列表 {game_id} -> 返回 [{subteam_id, team_id, team_alias, ...}]
     getCrossTeamList: (data, options) => request('/TeamGame/getCrossTeamList', data, options),
-    // 队际赛报名
+    // 队际赛报名 {game_id, subteam_id, user_id?, remark?} 注意：使用 subteam_id（非 cross_team_id）
     registerCrossTeamGame: (data, options) => request('/TeamGame/registerCrossTeamGame', data, options),
-    // 获取球队成员列表（用于报名选择）
+    // 获取球队成员列表（用于报名选择）{team_id, game_id?}
     getTeamMembersForSelect: (data, options) => request('/TeamGame/getTeamMembersForSelect', data, options),
-    // 获取队际赛详情
+    // 获取队际赛详情 {game_id}
     getCrossTeamGameDetail: (data, options) => request('/TeamGame/getCrossTeamGameDetail', data, options),
-    // 队际赛分组（含比洞赛校验）
+    // 队际赛分组（含比洞赛校验）{game_id, groups}
     assignCrossTeamGroups: (data, options) => request('/TeamGame/assignCrossTeamGroups', data, options),
-    // 检查球员报名状态（唯一性校验）
+    // 检查球员报名状态（唯一性校验）{game_id, user_id}
     checkCrossTeamRegistration: (data, options) => request('/TeamGame/checkCrossTeamRegistration', data, options),
 }
 

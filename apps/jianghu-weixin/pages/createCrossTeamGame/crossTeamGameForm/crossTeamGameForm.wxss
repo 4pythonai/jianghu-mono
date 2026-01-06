@@ -282,9 +282,8 @@
 
 .radio-group radio-group {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 24rpx;
+    flex-direction: column;
+    gap: 16rpx;
     width: 100%;
 }
 
@@ -293,6 +292,7 @@
     align-items: center;
     font-size: 28rpx;
     color: #333;
+    padding: 16rpx 0;
 }
 
 .radio-text {
