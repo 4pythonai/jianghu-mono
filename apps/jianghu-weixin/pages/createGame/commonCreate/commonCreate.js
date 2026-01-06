@@ -2,6 +2,12 @@ import { findUserInGroups, handleAppendPlayersToGroup } from '@/utils/gameGroupU
 import { uuid } from '@/utils/tool'
 import { validateForm } from '@/utils/gameValidate'
 import { gameStore } from '@/stores/game/gameStore'
+import {
+    goToCourseSelect as goToCourseSelectCommon,
+    generateCourtDisplayName,
+    handleBack as handleBackCommon,
+    loadCachedCourtData
+} from '@/utils/createGameCommons'
 
 const app = getApp()
 
@@ -367,16 +373,12 @@ Page({
 
 
     handleBack() {
-        wx.navigateBack({
-            delta: 1
-        });
+        handleBackCommon()
     },
 
 
     goToCourseSelect() {
-        wx.navigateTo({
-            url: '/pages/course-select/course-select'
-        });
+        goToCourseSelectCommon()
     },
 
     setSelectedCourse(course) {
@@ -455,19 +457,10 @@ Page({
     },
 
     /**
-     * 生成半场显示名称
+     * 生成半场显示名称 - 使用公共函数
      */
     generateCourtDisplayName(selectionData) {
-        if (selectionData.gameType === 'full') {
-            return `${selectionData.frontNine?.courtname || '前九洞'} + ${selectionData.backNine?.courtname || '后九洞'}`;
-        }
-        if (selectionData.gameType === 'front_nine') {
-            return selectionData.frontNine?.courtname || '前九洞';
-        }
-        if (selectionData.gameType === 'back_nine') {
-            return selectionData.backNine?.courtname || '后九洞';
-        }
-        return '未知半场';
+        return generateCourtDisplayName(selectionData)
     },
 
     /**
@@ -847,16 +840,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
-        // 检查本地缓存中是否有选择的半场数据(备用方案)
-        try {
-            const cachedCourtData = wx.getStorageSync('selectedCourtData')
-            if (cachedCourtData) {
-                this.setCourtSelection(cachedCourtData)
-                // 清除缓存, 避免重复使用
-                wx.removeStorageSync('selectedCourtData')
-            }
-        } catch (error) {
-            // 静默处理错误
-        }
+        // 使用公共函数读取球场缓存数据
+        loadCachedCourtData(this, this.setCourtSelection)
     },
 }); 

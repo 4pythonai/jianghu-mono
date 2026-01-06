@@ -185,9 +185,12 @@ class MGame  extends CI_Model {
 
     $groupid = $playerRecord['groupid'];
 
+    // 使用事务处理多表删除
+    $this->db->trans_start();
+
     // 1. 删除该用户的比分记录
     $this->db->where('gameid', $gameid)
-      ->where('userid', $userid)
+      ->where('user_id', $userid)
       ->delete('t_game_score');
 
     // 2. 删除该 group 的 gamble 配置
@@ -212,6 +215,15 @@ class MGame  extends CI_Model {
       $this->db->where('gameid', $gameid)
         ->where('groupid', $groupid)
         ->delete('t_game_group');
+    }
+
+    $this->db->trans_complete();
+
+    if ($this->db->trans_status() === FALSE) {
+      return [
+        'code' => 500,
+        'message' => '移除失败，请重试'
+      ];
     }
 
     return [

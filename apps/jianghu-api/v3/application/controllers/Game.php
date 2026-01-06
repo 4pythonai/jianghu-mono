@@ -18,6 +18,34 @@ class Game extends MY_Controller {
         }
     }
 
+    /**
+     * 返回成功响应
+     */
+    private function success($data = [], $message = '操作成功') {
+        echo json_encode(array_merge([
+            'code' => 200,
+            'message' => $message
+        ], $data), JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 返回错误响应
+     */
+    private function error($message, $code = 400) {
+        echo json_encode([
+            'code' => $code,
+            'message' => $message
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 检查是否是球局创建者
+     */
+    private function isGameCreator($gameid, $userid) {
+        $game = $this->db->select('creatorid')->from('t_game')->where('id', $gameid)->get()->row_array();
+        return $game && (int)$game['creatorid'] === (int)$userid;
+    }
+
 
 
 
@@ -309,7 +337,7 @@ class Game extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = $json_paras['gameid'];
         $game_detail = $this->MDetailGame->getGameDetail($gameid);
-        $red_blue  = $this->getFirst4PlayersGambleRedBlug($gameid);
+        $red_blue  = $this->getFirst4PlayersGambleRedBlue($gameid);
         echo json_encode(
             ['code' => 200, 'game_detail' => $game_detail, 'red_blue' => $red_blue],
             JSON_UNESCAPED_UNICODE
@@ -318,23 +346,8 @@ class Game extends MY_Controller {
 
 
 
-    public function getFirst4PlayersGambleRedBlug($game_id) {
-
-
-        $this->load->model('GamblePipe');
-        $this->load->model('GamblePipeRunner');
-        $this->load->model('gamble/MGambleDataFactory');
-        $this->load->model('gamble/MRuntimeConfig');
-        $this->load->model('gamble/MStroking');
-        $this->load->model('gamble/MIndicator');
-        $this->load->model('gamble/MRedBlue');
-        $this->load->model('gamble/MMoney');
-        $this->load->model('gamble/MRanking');
-        $this->load->model('gamble/GambleContext');
-        $this->load->model('gamble/MMeat');
-        $this->load->model('gamble/MDonation');
-
-
+    public function getFirst4PlayersGambleRedBlue($game_id) {
+        // Models are loaded via autoload.php
         $row = $this->db->get_where('t_gamble_x_runtime', ['gameid' => $game_id, 'playersNumber' => 4])->row_array();
         if ($row) {
             $gambleid = $row['id'];
@@ -488,16 +501,46 @@ class Game extends MY_Controller {
 
     public function cancelGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $gameid = $json_paras['gameid'];
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+        
+        if ($gameid <= 0) {
+            return $this->error('缺少有效的 gameid');
+        }
+
+        $userid = $this->getUser();
+        if (!$userid) {
+            return $this->error('请先登录', 401);
+        }
+
+        // 只有创建者可以取消球局
+        if (!$this->isGameCreator($gameid, $userid)) {
+            return $this->error('只有创建者可以取消球局', 403);
+        }
+
         $this->MGame->cancelGame($gameid);
-        echo json_encode(['code' => 200, 'message' => '取消成功'], JSON_UNESCAPED_UNICODE);
+        $this->success([], '取消成功');
     }
 
     public function finishGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $gameid = $json_paras['gameid'];
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+        
+        if ($gameid <= 0) {
+            return $this->error('缺少有效的 gameid');
+        }
+
+        $userid = $this->getUser();
+        if (!$userid) {
+            return $this->error('请先登录', 401);
+        }
+
+        // 只有创建者可以结束球局
+        if (!$this->isGameCreator($gameid, $userid)) {
+            return $this->error('只有创建者可以结束球局', 403);
+        }
+
         $this->MGame->finishGame($gameid);
-        echo json_encode(['code' => 200, 'message' => '结束球局成功'], JSON_UNESCAPED_UNICODE);
+        $this->success([], '结束球局成功');
     }
 
     public function removePlayer() {

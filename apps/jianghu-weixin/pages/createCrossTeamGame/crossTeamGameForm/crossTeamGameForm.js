@@ -2,19 +2,17 @@
  * 队际赛表单页面
  * 复用队内赛表单逻辑，适配多球队模式
  */
-const app = getApp()
+import {
+    goToCourseSelect as goToCourseSelectCommon,
+    generateCourtDisplayName,
+    handleBack as handleBackCommon,
+    handleCourtSelection,
+    loadCachedCourtData,
+    validateBasicInfo
+} from '@/utils/createGameCommons'
+import { MATCH_FORMATS, getMatchFormatsWithDisabled, getMatchFormatByValue } from '@/constants/matchFormats'
 
-// 赛制选项配置
-const MATCH_FORMATS = [
-    { value: 'individual_stroke', label: '个人比杆赛', requireSubteam: false, isMatch: false },
-    { value: 'fourball_best_stroke', label: '四人四球最好成绩比杆赛', requireSubteam: true, isMatch: false },
-    { value: 'fourball_oneball_stroke', label: '四人四球最佳球位比杆赛(旺波)', requireSubteam: true, isMatch: false },
-    { value: 'foursome_stroke', label: '四人两球比杆赛', requireSubteam: true, isMatch: false },
-    { value: 'individual_match', label: '个人比洞赛', requireSubteam: false, isMatch: true },
-    { value: 'fourball_best_match', label: '四人四球最好成绩比洞赛', requireSubteam: true, isMatch: true },
-    { value: 'fourball_oneball_match', label: '四人四球最佳球位比洞赛(旺波)', requireSubteam: true, isMatch: true },
-    { value: 'foursome_match', label: '四人两球比洞赛', requireSubteam: true, isMatch: true }
-]
+const app = getApp()
 
 Page({
     data: {
@@ -78,27 +76,15 @@ Page({
     },
 
     onShow() {
-        // 检查是否有选择的球场数据
-        try {
-            const cachedCourtData = wx.getStorageSync('selectedCourtData')
-            if (cachedCourtData) {
-                this.setCourtSelection(cachedCourtData)
-                wx.removeStorageSync('selectedCourtData')
-            }
-        } catch (error) {
-            console.error('读取球场缓存失败:', error)
-        }
+        // 使用公共函数读取球场缓存数据
+        loadCachedCourtData(this, this.setCourtSelection)
     },
 
     /**
-     * 根据球队数量计算可用赛制
+     * 根据球队数量计算可用赛制 - 使用公共函数
      */
     computeMatchFormats(teamCount) {
-        return MATCH_FORMATS.map(format => ({
-            ...format,
-            // 超过2队时禁用比洞赛
-            disabled: format.isMatch && teamCount > 2
-        }))
+        return getMatchFormatsWithDisabled(teamCount)
     },
 
     // ==================== 表单输入处理 ====================
@@ -152,52 +138,22 @@ Page({
     // ==================== 球场选择 ====================
 
     goToCourseSelect() {
-        wx.navigateTo({
-            url: '/pages/course-select/course-select'
-        })
+        goToCourseSelectCommon()
     },
 
     setCourtSelection(selectionData) {
-        const displayCourt = {
-            name: this.generateCourtDisplayName(selectionData),
-            gameType: selectionData.gameType,
-            totalHoles: selectionData.totalHoles
-        }
-
-        this.setData({
-            selectedCourse: selectionData.course,
-            selectedCourt: displayCourt,
-            // 保存完整的半场信息，用于提交时传递给后端
-            courtSelection: {
-                frontNineCourtId: selectionData.frontNine?.courtid || null,
-                backNineCourtId: selectionData.backNine?.courtid || null,
-                gameType: selectionData.gameType
-            }
-        })
-
-        wx.showToast({
-            title: `已选择 ${selectionData.course?.name || '球场'}`,
-            icon: 'success'
-        })
+        handleCourtSelection(this, selectionData)
     },
 
     generateCourtDisplayName(selectionData) {
-        if (selectionData.gameType === 'full') {
-            return `${selectionData.frontNine?.courtname || '前九洞'} + ${selectionData.backNine?.courtname || '后九洞'}`
-        }
-        if (selectionData.gameType === 'front_nine') {
-            return selectionData.frontNine?.courtname || '前九洞'
-        }
-        if (selectionData.gameType === 'back_nine') {
-            return selectionData.backNine?.courtname || '后九洞'
-        }
-        return '未知半场'
+        return generateCourtDisplayName(selectionData)
     },
 
     clearSelectedCourse() {
         this.setData({
             selectedCourse: null,
-            selectedCourt: null
+            selectedCourt: null,
+            courtSelection: null
         })
     },
 
@@ -244,18 +200,8 @@ Page({
     validateForm() {
         const { formData, selectedCourse, selectedTeams, currentFormat } = this.data
 
-        if (!formData.name.trim()) {
-            wx.showToast({ title: '请输入比赛名称', icon: 'none' })
-            return false
-        }
-
-        if (!selectedCourse) {
-            wx.showToast({ title: '请选择比赛场地', icon: 'none' })
-            return false
-        }
-
-        if (!formData.openTime) {
-            wx.showToast({ title: '请选择比赛时间', icon: 'none' })
+        // 使用公共基础验证
+        if (!validateBasicInfo(this.data, { nameField: 'name' })) {
             return false
         }
 
@@ -335,6 +281,6 @@ Page({
     },
 
     handleBack() {
-        wx.navigateBack({ delta: 1 })
+        handleBackCommon()
     }
 })

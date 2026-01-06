@@ -146,6 +146,18 @@ $autoload['model'] = [
     'MScore',
     'MTeamGame',
     'MTeam',
+    'GamblePipe',
+    'GamblePipeRunner',
+    'gamble/MGambleDataFactory',
+    'gamble/MRuntimeConfig',
+    'gamble/MStroking',
+    'gamble/MIndicator',
+    'gamble/MRedBlue',
+    'gamble/MMoney',
+    'gamble/MRanking',
+    'gamble/GambleContext',
+    'gamble/MMeat',
+    'gamble/MDonation',
     'gamble/MReward',
     'gamble/MPoints'
 ];

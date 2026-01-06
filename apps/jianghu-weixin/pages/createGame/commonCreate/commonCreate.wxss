@@ -1,103 +1,18 @@
-.page-container {
-	min-height: 100vh;
-	background-color: var(--common-bg);
-	padding: 32rpx 30rpx 48rpx;
-	padding-top: 200rpx; /* 预留导航栏空间 */
-}
+/* 引入公共样式 */
+@import '/styles/createGame.wxss';
 
-.main-card {
-	width: 100%;
-	background: #fff;
-	border-radius: 20rpx;
-	position: relative;
-	overflow: hidden;
-	box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.06);
+/* ==================== 普通创建特有样式 ==================== */
+
+/* 搜索框区域 */
+.search-box {
+	margin-bottom: 40rpx;
 }
 
 .top-circle {
 	display: none;
 }
 
-.card-content {
-	padding: 40rpx 32rpx 48rpx;
-	position: relative;
-	z-index: 2;
-}
-
-.search-box {
-	margin-bottom: 40rpx;
-}
-
-/* UUID 显示区域样式 */
-/* 球场选择区域样式 */
-
-.search-input {
-	display: flex;
-	align-items: center;
-	height: 88rpx;
-	background: #f5f5f5;
-	border-radius: 16rpx;
-	padding-left: 20rpx;
-	padding-right: 16rpx;
-}
-
-.search-input input {
-	flex: 1;
-	font-size: 28rpx;
-	color: #333;
-	background: transparent;
-}
-
-.input-placeholder {
-	color: #999;
-}
-
-.arrow-icon {
-	width: 40rpx;
-	height: 40rpx;
-	margin-left: 6rpx;
-}
-
-.arrow-icon image {
-	width: 100%;
-	height: 100%;
-}
-
-/* 选中球场样式 */
-.selected-course {
-	display: flex;
-	align-items: center;
-	background: #f5f5f5;
-	border-radius: 16rpx;
-	padding: 24rpx 16rpx;
-	min-height: 88rpx;
-	box-sizing: border-box;
-}
-
-.course-info {
-	display: flex;
-	align-items: center;
-	flex: 1;
-}
-
-.course-details {
-	flex: 1;
-	margin-left: 20rpx;
-}
-
-.course-name {
-	font-size: 32rpx;
-	color: #333;
-	font-weight: 500;
-	margin-bottom: 8rpx;
-}
-
-.course-address {
-	font-size: 24rpx;
-	color: #666;
-}
-
-/* 半场信息样式 */
+/* 半场信息样式（普通创建特有的样式） */
 .court-info {
 	display: flex;
 	align-items: center;
@@ -111,100 +26,6 @@
 	font-size: 24rpx;
 	color: black;
 	font-weight: 500;
-}
-
-
-.clear-btn {
-	width: 40rpx;
-	height: 40rpx;
-	background: #ff4757;
-	border-radius: 50%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin-left: 16rpx;
-}
-
-.clear-btn image {
-	width: 20rpx;
-	height: 20rpx;
-	filter: brightness(0) invert(1);
-}
-
-/* 表单样式 */
-.game-form {
-	margin-bottom: 40rpx;
-}
-
-.form-item {
-	margin-bottom: 32rpx;
-}
-
-.form-label {
-	font-size: 30rpx;
-	color: #333;
-	font-weight: 500;
-	margin-bottom: 16rpx;
-	display: flex;
-	align-items: baseline;
-}
-
-.form-sub-label {
-	font-size: 24rpx;
-	color: #999;
-	font-weight: 400;
-	margin-left: 8rpx;
-}
-
-.form-input-wrapper {
-	position: relative;
-}
-
-.form-input {
-	width: 100%;
-	height: 88rpx;
-	background: #f8f9fa;
-	border: 2rpx solid #e9ecef;
-	border-radius: 16rpx;
-	padding: 0 24rpx;
-	font-size: 28rpx;
-	color: #333;
-	box-sizing: border-box;
-}
-
-.form-input:focus {
-	border-color: var(--primary-green-dark);
-	background: #fff;
-}
-
-/* 单选按钮组样式 */
-.radio-group {
-	display: flex;
-	align-items: center;
-}
-
-.radio-group radio-group {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 32rpx;
-	width: 100%;
-}
-
-.radio-item {
-	display: flex;
-	align-items: center;
-	font-size: 28rpx;
-	color: #333;
-	margin-right: 32rpx;
-}
-
-.radio-item:last-child {
-	margin-right: 0;
-}
-
-.radio-text {
-	margin-left: 12rpx;
 }
 
 /* 参赛组别样式 */
@@ -258,13 +79,6 @@
 
 .add-group-btn:active {
 	opacity: 0.8;
-}
-
-.add-icon {
-	width: 32rpx;
-	height: 32rpx;
-	margin-right: 12rpx;
-	filter: brightness(0) invert(1);
 }
 
 /* 隐私设置样式 */
@@ -357,49 +171,11 @@
 	color: #999;
 }
 
-/* T台选择区域的箭头样式 */
 .tee-selector-btn .arrow-icon {
 	margin-left: 6rpx;
 }
 
-/* 创建按钮样式 */
-.create-btn {
-	width: 100%;
-	height: 92rpx;
-	border-radius: 12rpx;
-	border: none;
-	background-color: var(--primary-green-dark);
-	color: #fff;
-	font-size: 32rpx;
-	font-weight: 500;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	box-shadow: 0 10rpx 20rpx rgba(56, 142, 60, 0.18);
-	transition: all 0.3s ease;
-}
-
-.create-btn::after {
-	border: none;
-}
-
-.create-btn:active {
-	transform: translateY(2rpx);
-	box-shadow: 0 6rpx 12rpx rgba(56, 142, 60, 0.24);
-}
-
-.create-btn[disabled] {
-	opacity: 0.5;
-	box-shadow: none;
-}
-
-.action-footer {
-	display: flex;
-	flex-direction: column;
-	gap: 24rpx;
-	margin-top: 32rpx;
-}
-
+/* 分享按钮样式 */
 .share-actions {
 	display: flex;
 	gap: 16rpx;
@@ -438,4 +214,18 @@
 
 .share-btn.secondary:active {
 	background-color: rgba(56, 142, 60, 0.08);
+}
+
+/* 覆盖公共样式 - 普通创建特有的按钮和布局 */
+.action-footer {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+	margin-top: 32rpx;
+}
+
+.create-btn {
+	height: 92rpx;
+	border-radius: 12rpx;
+	box-shadow: 0 10rpx 20rpx rgba(56, 142, 60, 0.18);
 }

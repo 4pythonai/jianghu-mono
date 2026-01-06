@@ -152,12 +152,13 @@ class MDetailGame  extends CI_Model {
                 totalPar,
                 totalYard
             FROM t_course 
-            WHERE courseid = $courseid  ";
+            WHERE courseid = ?";
 
-
-        $course_result = $this->db->query($course_query);
+        $course_result = $this->db->query($course_query, [$courseid]);
         $course = $course_result->row_array();
-        $course['avatar'] = config_item('web_url') . $course['avatar'];
+        if ($course && !empty($course['avatar'])) {
+            $course['avatar'] = config_item('web_url') . $course['avatar'];
+        }
         return $course;
     }
 
