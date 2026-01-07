@@ -1,0 +1,18 @@
+<view class="bottom-action-bar">
+    <view class="action-bar-content">
+        <!-- 左侧按钮 -->
+        <button
+            wx:if="{{showLeft}}"
+            class="action-btn left-btn"
+            bindtap="onLeftTap"
+        >{{leftText}}</button>
+
+        <!-- 右侧按钮 -->
+        <button
+            wx:if="{{showRight}}"
+            class="action-btn right-btn {{rightType}} {{rightDisabled ? 'disabled' : ''}}"
+            bindtap="onRightTap"
+            disabled="{{rightDisabled}}"
+        >{{rightText}}</button>
+    </view>
+</view>

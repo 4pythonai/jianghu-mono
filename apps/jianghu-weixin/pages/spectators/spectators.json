@@ -1,0 +1,6 @@
+{
+    "navigationBarTitleText": "围观者",
+    "usingComponents": {
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+    }
+}

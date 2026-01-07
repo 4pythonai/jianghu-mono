@@ -1,0 +1,34 @@
+<view class="player-list-item" bindtap="onTap">
+    <!-- 序号 -->
+    <view class="item-index">
+        <text>{{index}}</text>
+    </view>
+
+    <!-- 头像区域 -->
+    <view class="avatar-section">
+        <!-- 付费标记 -->
+        <view wx:if="{{paid}}" class="paid-badge">
+            <text>付</text>
+        </view>
+        <image
+            class="player-avatar"
+            src="{{avatar || defaultAvatar}}"
+            mode="aspectFill"
+        />
+    </view>
+
+    <!-- 球员信息 -->
+    <view class="player-info">
+        <text class="player-name">{{name || '未知'}}</text>
+        <text class="gender-icon {{gender}}">{{gender === 'male' ? '♂' : '♀'}}</text>
+    </view>
+
+    <!-- 江湖差点 -->
+    <view class="handicap-section">
+        <image
+            class="handicap-icon"
+            src="/assets/icons/handicap.png"
+            mode="aspectFit"
+        />
+    </view>
+</view>

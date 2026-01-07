@@ -1,0 +1,41 @@
+<view class="group-card">
+    <!-- 分组标识 -->
+    <view class="group-badge">
+        <text>{{groupName || 'G' + groupId}}</text>
+    </view>
+
+    <!-- 删除按钮 -->
+    <view wx:if="{{deletable}}" class="delete-btn" catchtap="onDelete">
+        <text class="delete-icon">×</text>
+    </view>
+
+    <!-- 球员列表区域 -->
+    <scroll-view class="players-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="players-list">
+            <!-- 球员项 -->
+            <view
+                wx:for="{{players}}"
+                wx:key="index"
+                class="player-item"
+            >
+                <image
+                    class="player-avatar"
+                    src="{{item.avatar || defaultAvatar}}"
+                    mode="aspectFill"
+                />
+                <text class="player-name">{{item.name}}</text>
+                <text class="player-team">{{item.teamName}}</text>
+            </view>
+
+            <!-- 添加按钮 -->
+            <view class="add-player-btn" catchtap="onAddPlayer">
+                <text class="add-icon">+</text>
+            </view>
+        </view>
+    </scroll-view>
+
+    <!-- 右侧箭头 -->
+    <view wx:if="{{clickable}}" class="arrow-btn" bindtap="onTap">
+        <text class="arrow-icon">›</text>
+    </view>
+</view>

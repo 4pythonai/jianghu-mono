@@ -155,7 +155,9 @@ Page({
         if (teamGameInfo && teamGameInfo.game_type) {
             // 队内赛: single_team, 队际赛: cross_teams
             const gameType = teamGameInfo.game_type
-            navigationHelper.navigateTo(`/pages/team-game/TeamGameDetail?game_id=${gameid}&game-type=${gameType}`)
+            // 将 event 数据存入缓存，供 TeamGameDetail 使用
+            wx.setStorageSync('teamGameEventData', event)
+            navigationHelper.navigateTo(`/pages/team-game/TeamGameDetail?game_id=${gameid}&game_type=${gameType}`)
             return
         }
 

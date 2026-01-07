@@ -1,0 +1,131 @@
+/* 分组卡片 */
+.group-card {
+    position: relative;
+    background: #fff;
+    border-radius: 16rpx;
+    padding: 24rpx;
+    padding-left: 60rpx;
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 分组标识 */
+.group-badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--primary-green-dark);
+    color: #fff;
+    padding: 8rpx 16rpx;
+    border-radius: 16rpx 0 16rpx 0;
+    font-size: 24rpx;
+    font-weight: 500;
+}
+
+/* 删除按钮 */
+.delete-btn {
+    position: absolute;
+    top: -16rpx;
+    right: -16rpx;
+    width: 48rpx;
+    height: 48rpx;
+    background: #e74c3c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.delete-icon {
+    color: #fff;
+    font-size: 32rpx;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* 球员滚动区域 */
+.players-scroll {
+    width: calc(100% - 60rpx);
+    white-space: nowrap;
+}
+
+.players-list {
+    display: inline-flex;
+    gap: 24rpx;
+    padding: 16rpx 0;
+}
+
+/* 球员项 */
+.player-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8rpx;
+    width: 120rpx;
+    flex-shrink: 0;
+}
+
+.player-avatar {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 16rpx;
+    background: #f5f5f5;
+}
+
+.player-name {
+    font-size: 24rpx;
+    color: var(--text-primary);
+    max-width: 120rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.player-team {
+    font-size: 20rpx;
+    color: var(--text-tertiary);
+    max-width: 120rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* 添加球员按钮 */
+.add-player-btn {
+    width: 100rpx;
+    height: 100rpx;
+    border: 2rpx dashed #ccc;
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.add-icon {
+    font-size: 48rpx;
+    color: #ccc;
+    line-height: 1;
+}
+
+/* 右侧箭头 */
+.arrow-btn {
+    position: absolute;
+    right: 16rpx;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48rpx;
+    height: 48rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.arrow-icon {
+    font-size: 48rpx;
+    color: var(--primary-green);
+    font-weight: bold;
+    line-height: 1;
+}

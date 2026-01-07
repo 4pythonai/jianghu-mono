@@ -1,0 +1,116 @@
+/* 封面容器 */
+.team-event-banner {
+    position: relative;
+    width: 100%;
+    height: 400rpx;
+    overflow: hidden;
+}
+
+/* 背景图 */
+.banner-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* 遮罩层 */
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%);
+    z-index: 2;
+}
+
+/* 内容区域 */
+.banner-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    padding: 30rpx;
+    box-sizing: border-box;
+}
+
+/* 队内赛 - 单个球队 */
+.single-team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16rpx;
+}
+
+.team-logo {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+    border: 4rpx solid rgba(255, 255, 255, 0.8);
+    background-color: #fff;
+}
+
+.team-name {
+    font-size: 28rpx;
+    color: #fff;
+    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+}
+
+/* 队际赛 - 多个球队 */
+.cross-teams {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.teams-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20rpx;
+    flex-wrap: wrap;
+}
+
+.team-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.team-logo-small {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    border: 3rpx solid rgba(255, 255, 255, 0.8);
+    background-color: #fff;
+}
+
+/* 赛事标题栏 */
+.title-bar {
+    position: absolute;
+    bottom: 30rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.45);
+    padding: 16rpx 40rpx;
+    border-radius: 8rpx;
+    max-width: 90%;
+}
+
+.event-title {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

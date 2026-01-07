@@ -1,0 +1,46 @@
+/* 信息卡片容器 */
+.info-card {
+    background-color: #fff;
+    border-radius: 16rpx;
+    overflow: hidden;
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+/* 卡片标题 */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28rpx 30rpx 0;
+    gap: 20rpx;
+}
+
+.header-line {
+    flex: 1;
+    height: 1rpx;
+    background: linear-gradient(90deg, transparent, #e0e0e0, transparent);
+}
+
+.header-title {
+    font-size: 28rpx;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+/* 卡片内容 */
+.card-content {
+    width: 100%;
+}
+
+.card-content.padding-normal {
+    padding: 24rpx 30rpx 28rpx;
+}
+
+.card-content.padding-compact {
+    padding: 16rpx 20rpx;
+}
+
+.card-content.padding-none {
+    padding: 0;
+}

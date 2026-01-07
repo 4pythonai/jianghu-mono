@@ -1,0 +1,221 @@
+<CustomNavBar title="{{gameType === 'single_team' ? '队内赛' : '队际赛'}}" bind:back="handleBack" />
+
+<view class="page-container" style="padding-top: {{navBarHeight}}px;">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 主内容 -->
+  <block wx:else>
+    <!-- 围观人数 -->
+    <SpectatorBar
+      count="{{spectatorCount}}"
+      avatars="{{spectatorAvatars}}"
+      bind:more="onSpectatorMore"
+    />
+
+    <!-- Tab 切换区域 -->
+    <view class="tabs-container">
+      <view
+        wx:for="{{tabs}}"
+        wx:key="index"
+        class="tab-item {{currentTab === index ? 'active' : ''}}"
+        data-index="{{index}}"
+        bindtap="switchTab"
+      >
+        <text>{{item}}</text>
+        <view wx:if="{{currentTab === index}}" class="tab-indicator"></view>
+      </view>
+    </view>
+
+    <!-- Tab 内容区域 -->
+    <scroll-view class="tab-content" scroll-y enhanced show-scrollbar="{{false}}">
+      <!-- 赛事详情 Tab -->
+      <view wx:if="{{currentTab === 0}}" class="tab-panel">
+        <!-- 赛事封面 -->
+        <TeamEventBanner
+          gameType="{{gameType}}"
+          title="{{eventDetail.title}}"
+          teamName="{{eventDetail.teamName}}"
+          teamAvatar="{{eventDetail.teamAvatar}}"
+          teams="{{eventDetail.teams}}"
+          backgroundImage="{{eventDetail.backgroundImage}}"
+          coverType="{{eventDetail.coverType}}"
+          covers="{{eventDetail.covers}}"
+        />
+
+        <!-- 基本信息 -->
+        <view class="card-wrapper">
+          <InfoCard title="基本信息">
+            <view class="info-list">
+              <view class="info-item">
+                <image class="info-icon" src="/assets/icons/icons-location.png" mode="aspectFit" />
+                <text class="info-text">{{eventDetail.location}}</text>
+              </view>
+              <view class="info-item">
+                <image class="info-icon" src="/assets/icons/icons-clock.png" mode="aspectFit" />
+                <text class="info-text">{{eventDetail.dateTime}}</text>
+              </view>
+              <view class="info-item">
+                <image class="info-icon" src="/assets/icons/icons-money.png" mode="aspectFit" />
+                <text class="info-text">{{eventDetail.fee}}</text>
+              </view>
+              <view class="info-item">
+                <image class="info-icon" src="/assets/icons/icons-deadline.png" mode="aspectFit" />
+                <text class="info-text">{{eventDetail.deadline}}</text>
+              </view>
+            </view>
+          </InfoCard>
+        </view>
+
+        <!-- 赛事流程 -->
+        <view class="card-wrapper">
+          <InfoCard title="赛事流程">
+            <view class="schedule-list">
+              <view wx:for="{{eventDetail.schedule}}" wx:key="index" class="schedule-item">
+                <text class="schedule-time">{{item.time}}</text>
+                <text class="schedule-content">{{item.content}}</text>
+              </view>
+            </view>
+          </InfoCard>
+        </view>
+
+        <!-- 奖项设置 -->
+        <view class="card-wrapper">
+          <InfoCard title="奖项设置">
+            <view class="awards-list">
+              <text wx:for="{{eventDetail.awards}}" wx:key="index" class="award-item">{{item}}</text>
+            </view>
+          </InfoCard>
+        </view>
+      </view>
+
+      <!-- 报名人员 Tab -->
+      <view wx:if="{{currentTab === 1}}" class="tab-panel">
+        <!-- 表头 -->
+        <view class="player-list-header">
+          <text class="header-index">序号</text>
+          <text class="header-player">球员</text>
+          <text class="header-handicap">江湖差点</text>
+        </view>
+        <!-- 列表 -->
+        <view class="player-list">
+          <PlayerListItem
+            wx:for="{{players}}"
+            wx:key="id"
+            index="{{index + 1}}"
+            avatar="{{item.avatar}}"
+            name="{{item.name}}"
+            gender="{{item.gender}}"
+            handicap="{{item.handicap}}"
+            paid="{{item.paid}}"
+          />
+        </view>
+        <!-- 空状态 -->
+        <view wx:if="{{players.length === 0}}" class="empty-state">
+          <text>暂无报名人员</text>
+        </view>
+      </view>
+
+      <!-- 分组 Tab -->
+      <view wx:if="{{currentTab === 2}}" class="tab-panel groups-panel">
+        <!-- 分组列表 -->
+        <view class="groups-list">
+          <GroupCard
+            wx:for="{{groups}}"
+            wx:key="id"
+            groupId="{{item.id}}"
+            groupName="{{item.name}}"
+            players="{{item.players}}"
+            deletable="{{isCreator}}"
+            bind:tap="onGroupTap"
+            bind:delete="onGroupDelete"
+            bind:addPlayer="onAddPlayerToGroup"
+          />
+        </view>
+
+        <!-- 添加分组按钮 -->
+        <view wx:if="{{isCreator}}" class="add-group-btn" bindtap="onAddGroup">
+          <text class="add-group-icon">+</text>
+          <text class="add-group-text">添加分组</text>
+        </view>
+
+        <!-- 空状态 -->
+        <view wx:if="{{groups.length === 0 && !isCreator}}" class="empty-state">
+          <text>暂无分组</text>
+        </view>
+      </view>
+
+      <!-- 讨论区 Tab -->
+      <view wx:if="{{currentTab === 3}}" class="tab-panel">
+        <view class="placeholder-box">
+          <text class="placeholder-text">讨论区开发中...</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 悬浮更多按钮 -->
+    <view wx:if="{{isCreator}}" class="floating-more-btn" bindtap="onMoreTap">
+      <text>更多</text>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <BottomActionBar
+      leftText="分享"
+      rightText="{{isRegistered ? '取消报名' : '报名'}}"
+      rightType="{{isRegistered ? 'warning' : 'primary'}}"
+      bind:leftTap="onShareTap"
+      bind:rightTap="onRegisterTap"
+    />
+
+    <!-- 更多操作弹窗 -->
+    <view wx:if="{{showMoreActions}}" class="popup-mask" bindtap="onCloseMoreActions">
+      <view class="popup-content" catchtap>
+        <view class="popup-handle"></view>
+        <view class="actions-grid">
+          <view class="action-item" data-action="registerForFriend" bindtap="onActionTap">
+            <view class="action-icon icon-friend"></view>
+            <text class="action-text">替好友报名</text>
+          </view>
+          <view class="action-item" data-action="closeRegistration" bindtap="onActionTap">
+            <view class="action-icon icon-close-reg"></view>
+            <text class="action-text">关闭报名</text>
+          </view>
+          <view class="action-item" data-action="managePlayer" bindtap="onActionTap">
+            <view class="action-icon icon-manage"></view>
+            <text class="action-text">选手管理</text>
+          </view>
+          <view class="action-item" data-action="editGame" bindtap="onActionTap">
+            <view class="action-icon icon-edit"></view>
+            <text class="action-text">修改比赛</text>
+          </view>
+          <view class="action-item" data-action="editGroup" bindtap="onActionTap">
+            <view class="action-icon icon-group"></view>
+            <text class="action-text">修改分组</text>
+          </view>
+          <view class="action-item" data-action="manageFee" bindtap="onActionTap">
+            <view class="action-icon icon-fee"></view>
+            <text class="action-text">收费管理</text>
+          </view>
+          <view class="action-item" data-action="cancelGame" bindtap="onActionTap">
+            <view class="action-icon icon-cancel"></view>
+            <text class="action-text">取消比赛</text>
+          </view>
+          <view class="action-item" data-action="startGame" bindtap="onActionTap">
+            <view class="action-icon icon-start"></view>
+            <text class="action-text">开始比赛</text>
+          </view>
+          <view class="action-item" data-action="manageScore" bindtap="onActionTap">
+            <view class="action-icon icon-score"></view>
+            <text class="action-text">记分管理</text>
+          </view>
+        </view>
+        <view class="popup-cancel" bindtap="onCloseMoreActions">
+          <text>取消</text>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,78 @@
+<view class="team-event-banner">
+    <!-- 背景图 -->
+    <image
+        class="banner-bg"
+        src="{{fullBgImage}}"
+        mode="aspectFill"
+    />
+
+    <!-- 遮罩层 -->
+    <view class="banner-overlay"></view>
+
+    <!-- 内容区域 -->
+    <view class="banner-content">
+        <!-- 优先使用 covers 数据渲染（与 TeamGameItem 一致） -->
+        <block wx:if="{{hasCovers}}">
+            <!-- 单个封面 -->
+            <view wx:if="{{coverType !== 'multiple'}}" class="single-team">
+                <image
+                    class="team-logo"
+                    src="{{processedCovers[0]}}"
+                    mode="aspectFill"
+                />
+                <text class="team-name">{{teamName}}</text>
+            </view>
+            <!-- 多个封面（队际赛） -->
+            <view wx:else class="cross-teams">
+                <view class="teams-row">
+                    <view
+                        wx:for="{{processedCovers}}"
+                        wx:key="index"
+                        class="team-item"
+                    >
+                        <image
+                            class="team-logo-small"
+                            src="{{item}}"
+                            mode="aspectFill"
+                        />
+                    </view>
+                </view>
+            </view>
+        </block>
+
+        <!-- 兼容旧的数据结构 -->
+        <block wx:else>
+            <!-- 队内赛：单个球队 -->
+            <view wx:if="{{gameType === 'single_team'}}" class="single-team">
+                <image
+                    class="team-logo"
+                    src="{{fullTeamAvatar}}"
+                    mode="aspectFill"
+                />
+                <text class="team-name">{{teamName}}</text>
+            </view>
+
+            <!-- 队际赛：多个球队 -->
+            <view wx:else class="cross-teams">
+                <view class="teams-row">
+                    <view
+                        wx:for="{{processedTeams}}"
+                        wx:key="index"
+                        class="team-item"
+                    >
+                        <image
+                            class="team-logo-small"
+                            src="{{item.fullAvatar}}"
+                            mode="aspectFill"
+                        />
+                    </view>
+                </view>
+            </view>
+        </block>
+
+        <!-- 赛事标题 -->
+        <view class="title-bar">
+            <text class="event-title">{{title}}</text>
+        </view>
+    </view>
+</view>

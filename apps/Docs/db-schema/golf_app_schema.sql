@@ -459,7 +459,7 @@ CREATE TABLE `t_game_subteam_score` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_game_watchlist` (
+CREATE TABLE `t_game_spectator` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gameid` int DEFAULT NULL,
   `userid` int DEFAULT NULL,

@@ -221,7 +221,7 @@ class Events extends MY_Controller {
      * 返回结构与 Feed/myFeeds 对齐
      */
     public function getMyEvents() {
-        $userid = $this->userid;
+        $userid = $this->getUser();
 
         if (!$userid) {
             $this->success(['events' => []]);
@@ -357,5 +357,110 @@ class Events extends MY_Controller {
             default:
                 return '已报名';
         }
+    }
+
+    /**
+     * 记录围观（用户浏览比赛详情时调用）
+     * POST /Events/addSpectator
+     * @param int game_id 比赛ID
+     */
+    public function addSpectator() {
+        $userid = $this->getUser();
+        if (!$userid) {
+            $this->error('请先登录');
+            return;
+        }
+
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameId = isset($json_paras['game_id']) ? (int)$json_paras['game_id'] : 0;
+
+        if (!$gameId) {
+            $this->error('缺少比赛ID');
+            return;
+        }
+
+        // 检查比赛是否存在
+        $game = $this->db->select('id')
+            ->from('t_game')
+            ->where('id', $gameId)
+            ->get()
+            ->row_array();
+
+        if (!$game) {
+            $this->error('比赛不存在');
+            return;
+        }
+
+        // 使用 INSERT IGNORE 避免重复记录
+        $this->db->query(
+            "INSERT IGNORE INTO t_game_spectator (game_id, user_id, created_at) VALUES (?, ?, NOW())",
+            [$gameId, $userid]
+        );
+
+        $this->success([], '记录成功');
+    }
+
+    /**
+     * 获取围观者列表（分页）
+     * POST /Events/getSpectatorList
+     * @param int game_id 比赛ID
+     * @param int page 页码，默认1
+     * @param int page_size 每页数量，默认20
+     */
+    public function getSpectatorList() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameId = isset($json_paras['game_id']) ? (int)$json_paras['game_id'] : 0;
+        $page = isset($json_paras['page']) ? max(1, (int)$json_paras['page']) : 1;
+        $pageSize = isset($json_paras['page_size']) ? min(50, max(1, (int)$json_paras['page_size'])) : 20;
+
+        if (!$gameId) {
+            $this->error('缺少比赛ID');
+            return;
+        }
+
+        $webUrl = rtrim(config_item('web_url'), '/');
+        $defaultAvatar = $webUrl . '/avatar/default-avatar.png';
+        $offset = ($page - 1) * $pageSize;
+
+        // 获取围观总人数
+        $countResult = $this->db->select('COUNT(*) as total')
+            ->from('t_game_spectator')
+            ->where('game_id', $gameId)
+            ->get()
+            ->row_array();
+        $total = (int)($countResult['total'] ?? 0);
+
+        // 获取围观者列表
+        $spectators = $this->db->select('gs.user_id, gs.created_at, u.nickname, u.avatar')
+            ->from('t_game_spectator gs')
+            ->join('t_user u', 'gs.user_id = u.id', 'left')
+            ->where('gs.game_id', $gameId)
+            ->order_by('gs.created_at', 'DESC')
+            ->limit($pageSize, $offset)
+            ->get()
+            ->result_array();
+
+        $list = [];
+        foreach ($spectators as $spec) {
+            $avatar = $spec['avatar'] ?? '';
+            if (empty($avatar)) {
+                $avatar = $defaultAvatar;
+            } else if (strpos($avatar, 'http') !== 0) {
+                $avatar = $webUrl . $avatar;
+            }
+            $list[] = [
+                'user_id' => (int)$spec['user_id'],
+                'nickname' => $spec['nickname'] ?? '用户',
+                'avatar' => $avatar,
+                'created_at' => $spec['created_at']
+            ];
+        }
+
+        $this->success([
+            'total' => $total,
+            'page' => $page,
+            'page_size' => $pageSize,
+            'list' => $list
+        ]);
     }
 }

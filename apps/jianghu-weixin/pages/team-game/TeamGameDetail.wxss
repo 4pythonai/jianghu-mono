@@ -1,0 +1,347 @@
+/* 页面容器 */
+.page-container {
+    min-height: 100vh;
+    background-color: var(--bg-secondary);
+    padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+/* 加载状态 */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 300rpx;
+}
+
+.loading-spinner {
+    width: 60rpx;
+    height: 60rpx;
+    border: 4rpx solid #e0e0e0;
+    border-top-color: var(--primary-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    margin-top: 20rpx;
+    font-size: 28rpx;
+    color: var(--text-tertiary);
+}
+
+/* Tab 切换区域 */
+.tabs-container {
+    display: flex;
+    background: var(--primary-green-dark);
+    padding: 0 20rpx;
+}
+
+.tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24rpx 0;
+    position: relative;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 28rpx;
+    transition: all 0.2s ease;
+}
+
+.tab-item.active {
+    color: #fff;
+    font-weight: 500;
+}
+
+.tab-indicator {
+    position: absolute;
+    bottom: 8rpx;
+    width: 40rpx;
+    height: 6rpx;
+    background-color: #fff;
+    border-radius: 3rpx;
+}
+
+/* Tab 内容区域 */
+.tab-content {
+    height: calc(100vh - 200rpx - env(safe-area-inset-bottom));
+}
+
+.tab-panel {
+    min-height: 100%;
+}
+
+/* 卡片包装器 */
+.card-wrapper {
+    padding: 20rpx 20rpx 0;
+}
+
+/* 基本信息列表 */
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20rpx;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+}
+
+.info-icon {
+    width: 36rpx;
+    height: 36rpx;
+    flex-shrink: 0;
+}
+
+.info-text {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+/* 赛事流程 */
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16rpx;
+}
+
+.schedule-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rpx;
+}
+
+.schedule-time {
+    font-size: 28rpx;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.schedule-content {
+    font-size: 26rpx;
+    color: var(--text-secondary);
+}
+
+/* 奖项列表 */
+.awards-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12rpx;
+}
+
+.award-item {
+    font-size: 28rpx;
+    color: var(--text-primary);
+}
+
+/* 占位盒子 */
+.placeholder-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100rpx 40rpx;
+    margin: 20rpx;
+    background: #fff;
+    border-radius: 16rpx;
+}
+
+.placeholder-text {
+    font-size: 28rpx;
+    color: var(--text-tertiary);
+}
+
+/* 报名人员列表 */
+.player-list-header {
+    display: flex;
+    align-items: center;
+    padding: 20rpx 24rpx;
+    background: var(--primary-green-dark);
+    color: #fff;
+}
+
+.header-index {
+    width: 80rpx;
+    font-size: 26rpx;
+    flex-shrink: 0;
+}
+
+.header-player {
+    flex: 1;
+    font-size: 26rpx;
+    text-align: center;
+}
+
+.header-handicap {
+    width: 140rpx;
+    font-size: 26rpx;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.player-list {
+    background: #fff;
+}
+
+.empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100rpx 40rpx;
+    background: #fff;
+}
+
+.empty-state text {
+    font-size: 28rpx;
+    color: var(--text-tertiary);
+}
+
+/* 分组列表 */
+.groups-panel {
+    padding: 20rpx;
+}
+
+.groups-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+}
+
+/* 添加分组按钮 */
+.add-group-btn {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+    margin-top: 24rpx;
+    padding: 24rpx;
+}
+
+.add-group-icon {
+    font-size: 40rpx;
+    color: var(--primary-green);
+    font-weight: bold;
+    line-height: 1;
+}
+
+.add-group-text {
+    font-size: 28rpx;
+    color: var(--primary-green);
+    font-weight: 500;
+}
+
+/* 悬浮更多按钮 */
+.floating-more-btn {
+    position: fixed;
+    right: 20rpx;
+    bottom: calc(180rpx + env(safe-area-inset-bottom));
+    width: 100rpx;
+    height: 48rpx;
+    background: #f5a623;
+    border-radius: 24rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4rpx 12rpx rgba(245, 166, 35, 0.4);
+    z-index: 50;
+}
+
+.floating-more-btn text {
+    font-size: 26rpx;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* 弹窗遮罩 */
+.popup-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* 弹窗内容 */
+.popup-content {
+    width: 100%;
+    background: #fff;
+    border-radius: 24rpx 24rpx 0 0;
+    padding: 20rpx 30rpx calc(40rpx + env(safe-area-inset-bottom));
+}
+
+.popup-handle {
+    width: 80rpx;
+    height: 8rpx;
+    background: #e0e0e0;
+    border-radius: 4rpx;
+    margin: 0 auto 30rpx;
+}
+
+/* 9宫格操作区 */
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30rpx;
+    padding: 20rpx 0;
+}
+
+.action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12rpx;
+}
+
+.action-icon {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-text {
+    font-size: 24rpx;
+    color: var(--text-primary);
+}
+
+/* 操作图标颜色 */
+.icon-friend { background: var(--primary-green); }
+.icon-close-reg { background: var(--primary-green); }
+.icon-manage { background: var(--primary-green); }
+.icon-edit { background: var(--primary-green); }
+.icon-group { background: var(--primary-green); }
+.icon-fee { background: var(--primary-green); }
+.icon-cancel { background: #e74c3c; }
+.icon-start { background: #f5a623; }
+.icon-score { background: var(--primary-green); }
+
+/* 取消按钮 */
+.popup-cancel {
+    margin-top: 20rpx;
+    padding: 24rpx;
+    background: #f5f5f5;
+    border-radius: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-cancel text {
+    font-size: 30rpx;
+    color: var(--text-secondary);
+}

@@ -1,0 +1,88 @@
+/* 底部操作栏 */
+.bottom-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 16rpx 30rpx;
+    padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+    box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+    z-index: 100;
+}
+
+.action-bar-content {
+    display: flex;
+    gap: 24rpx;
+}
+
+/* 通用按钮样式 */
+.action-btn {
+    flex: 1;
+    height: 88rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32rpx;
+    font-weight: 500;
+    border-radius: 16rpx;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.action-btn::after {
+    border: none;
+}
+
+/* 左侧按钮 - 边框样式 */
+.left-btn {
+    background-color: #fff;
+    color: var(--primary-green-dark);
+    border: 2rpx solid var(--primary-green-dark);
+}
+
+.left-btn:active {
+    background-color: var(--pale-green);
+}
+
+/* 右侧按钮 - 主色 */
+.right-btn.primary {
+    background: var(--gradient-primary);
+    color: #fff;
+    box-shadow: 0 4rpx 12rpx var(--shadow-primary);
+}
+
+.right-btn.primary:active {
+    transform: translateY(2rpx);
+    box-shadow: 0 2rpx 8rpx var(--shadow-primary);
+}
+
+/* 右侧按钮 - 警告色（黄色） */
+.right-btn.warning {
+    background: linear-gradient(135deg, #f5a623, #f39c12);
+    color: #fff;
+    box-shadow: 0 4rpx 12rpx rgba(245, 166, 35, 0.3);
+}
+
+.right-btn.warning:active {
+    transform: translateY(2rpx);
+    box-shadow: 0 2rpx 8rpx rgba(245, 166, 35, 0.4);
+}
+
+/* 右侧按钮 - 危险色（红色） */
+.right-btn.danger {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #fff;
+    box-shadow: 0 4rpx 12rpx rgba(231, 76, 60, 0.3);
+}
+
+.right-btn.danger:active {
+    transform: translateY(2rpx);
+    box-shadow: 0 2rpx 8rpx rgba(231, 76, 60, 0.4);
+}
+
+/* 禁用状态 */
+.action-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}

@@ -1,0 +1,13 @@
+<view class="info-card">
+    <!-- 标题区域 -->
+    <view wx:if="{{showTitle && title}}" class="card-header">
+        <view class="header-line"></view>
+        <text class="header-title">{{title}}</text>
+        <view class="header-line"></view>
+    </view>
+
+    <!-- 内容区域 -->
+    <view class="card-content padding-{{padding}}">
+        <slot></slot>
+    </view>
+</view>

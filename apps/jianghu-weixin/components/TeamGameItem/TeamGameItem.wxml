@@ -1,0 +1,36 @@
+<view class="event-card" bindtap="onTap">
+  <!-- 封面区域 -->
+  <view class="event-cover-wrapper">
+    <!-- 单个封面（队内赛/默认） -->
+    <image
+      wx:if="{{event.coverType !== 'multiple'}}"
+      class="event-cover"
+      src="{{event.covers[0]}}"
+      mode="aspectFill"
+    />
+    <!-- 多个封面（队际赛） -->
+    <view wx:else class="event-cover-group">
+      <image
+        wx:for="{{event.covers}}"
+        wx:for-item="cover"
+        wx:for-index="coverIdx"
+        wx:key="coverIdx"
+        class="cover-item cover-item-{{coverIdx}}"
+        src="{{cover}}"
+        mode="aspectFill"
+        style="z-index: {{10 - coverIdx}}"
+      />
+    </view>
+  </view>
+  <view class="event-info">
+    <!-- 标题：队赛用 extra_team_game_info.team_game_title，普通用 game_name -->
+    <view
+      class="event-title"
+    >{{event.extra_team_game_info.team_game_title || event.game_name || '未命名赛事'}}</view>
+    <view class="event-meta">
+      <text class="event-date">{{event.game_start}}</text>
+      <text class="event-location">{{event.course || '待定'}}</text>
+    </view>
+    <view class="event-status {{event.registration_status}}">{{event.registration_status_text}}</view>
+  </view>
+</view>

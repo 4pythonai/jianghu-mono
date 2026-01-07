@@ -502,7 +502,7 @@ class Game extends MY_Controller {
     public function cancelGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
-        
+
         if ($gameid <= 0) {
             return $this->error('缺少有效的 gameid');
         }
@@ -524,7 +524,7 @@ class Game extends MY_Controller {
     public function finishGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
-        
+
         if ($gameid <= 0) {
             return $this->error('缺少有效的 gameid');
         }
@@ -641,14 +641,14 @@ class Game extends MY_Controller {
         // 移除
         $this->MGame->removePlayer($gameid, $userid);
 
-        $existing = $this->db->get_where('t_game_watchlist', ['gameid' => $gameid, 'userid' => $userid])->row_array();
+        $existing = $this->db->get_where('t_game_spectator', ['gameid' => $gameid, 'userid' => $userid])->row_array();
 
         if ($existing) {
             $this->db->where('id', $existing['id']);
-            $this->db->update('t_game_watchlist', ['addtime' => date('Y-m-d H:i:s')]);
+            $this->db->update('t_game_spectator', ['addtime' => date('Y-m-d H:i:s')]);
             echo json_encode(['code' => 200, 'message' => '更新成功'], JSON_UNESCAPED_UNICODE);
         } else {
-            $this->db->insert('t_game_watchlist', [
+            $this->db->insert('t_game_spectator', [
                 'gameid' => $gameid,
                 'userid' => $userid,
                 'addtime' => date('Y-m-d H:i:s')
@@ -678,7 +678,7 @@ class Game extends MY_Controller {
         }
 
         $this->db->where(['gameid' => $gameid, 'userid' => $userid]);
-        $this->db->delete('t_game_watchlist');
+        $this->db->delete('t_game_spectator');
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
 }
