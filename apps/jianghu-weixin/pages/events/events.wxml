@@ -1,27 +1,67 @@
 <view class="container">
-	<view class="page-title">球队</view>
-	<view class="page-desc">这里是球队功能, 管理高尔夫球队</view>
-	<view class="location-section">
-		<button class="location-btn" bindtap="getLocation" loading="{{ locationLoading }}" disabled="{{ locationLoading }}">{{locationLoading ? '获取位置中...' : '获取当前位置'}}</button>
-		<view class="location-info" wx:if="{{ location }}">
-			<view class="location-item">
-				<text class="label">经度:</text>
-				<text class="value">{{location.longitude}}</text>
-			</view>
-			<view class="location-item">
-				<text class="label">纬度:</text>
-				<text class="value">{{location.latitude}}</text>
-			</view>
-			<view class="update-time" wx:if="{{ location.updateTime }}">
-				<text>更新时间:{{location.updateTime}}</text>
-			</view>
-			<button class="get-courses-btn" bindtap="getNearestCourses" loading="{{ courseLoading }}">获取附近球场</button>
-		</view>
-		<!-- 球场列表 -->
-		<view class="course-list" wx:if="{{ courseList.length > 0 }}">
-			<view class="course-item" wx:for="{{ courseList }}" wx:key="id">
-				<text class="course-name">{{item.name}}</text>
-			</view>
-		</view>
-	</view>
+  <!-- 轮播Banner区域 -->
+  <view class="banner-section">
+    <swiper
+      class="banner-swiper"
+      autoplay="{{true}}"
+      interval="{{4000}}"
+      duration="{{500}}"
+      circular="{{true}}"
+      bindchange="onBannerChange"
+    >
+      <swiper-item wx:for="{{banners}}" wx:key="id" bindtap="onBannerTap" data-banner="{{item}}">
+        <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
+      </swiper-item>
+    </swiper>
+    <!-- 自定义轮播指示器 -->
+    <view class="banner-indicator" wx:if="{{banners.length > 1}}">
+      <view
+        wx:for="{{banners}}"
+        wx:key="id"
+        class="indicator-dot {{currentBannerIndex === index ? 'active' : ''}}"
+      />
+    </view>
+  </view>
+
+  <!-- Tab切换区域 -->
+  <view class="tab-container">
+    <view class="tab-header">
+      <view
+        class="tab-item {{currentTab === 0 ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-index="0"
+      >可报名赛事</view>
+      <view
+        class="tab-item {{currentTab === 1 ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-index="1"
+      >已报名赛事</view>
+    </view>
+
+    <!-- Tab内容区域 -->
+    <view class="tab-content">
+      <!-- 加载中 -->
+      <view class="loading-wrapper" wx:if="{{loading}}">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-wrapper" wx:elif="{{isEmpty}}">
+        <image class="empty-icon" src="/assets/icons/empty-box.png" mode="aspectFit" />
+        <text class="empty-text">{{currentTab === 0 ? '暂无可报名赛事' : '您还没有报名任何赛事'}}</text>
+      </view>
+
+      <!-- 赛事列表 -->
+      <view class="event-list" wx:else>
+        <team-game-item
+          wx:for="{{eventList}}"
+          wx:key="gameid"
+          event="{{item}}"
+          bindtap="onEventTap"
+          data-event="{{item}}"
+        />
+      </view>
+    </view>
+  </view>
 </view>

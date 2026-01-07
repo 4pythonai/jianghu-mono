@@ -6,6 +6,7 @@ import feed from './modules/feed'
 import gamble from './modules/gamble'
 import teamgame from './modules/teamgame'
 import team from './modules/team'
+import events from './modules/events'
 
 export default {
     course,
@@ -14,5 +15,6 @@ export default {
     feed,
     gamble,
     teamgame,
-    team
+    team,
+    events
 }

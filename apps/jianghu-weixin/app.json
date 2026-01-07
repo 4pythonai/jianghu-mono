@@ -46,7 +46,8 @@
 		"pages/rules/myRules/myRules",
 		"pages/rules/addRule/addRule",
 		"pages/my-team/my-team",
-		"pages/create-team/create-team"
+		"pages/create-team/create-team",
+		"pages/team-game/TeamGameDetail"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

@@ -1,183 +1,165 @@
-// team.js
+/**
+ * 赛事页面
+ * 包含轮播banner和两个tab：可报名赛事、已报名赛事
+ */
 const app = getApp()
-
 
 Page({
     data: {
-        teamList: [],
+        // 轮播图
+        banners: [],
+        currentBannerIndex: 0,
+
+        // Tab
+        currentTab: 0,  // 0: 可报名赛事, 1: 已报名赛事
+
+        // 赛事列表
+        eventList: [],
         loading: false,
-        page: 1,
-        pageSize: 10,
-        hasMore: true,
-        location: null,
-        locationLoading: false,
-        courseList: [],
-        courseLoading: false
+        isEmpty: false
     },
+
+    // 是否已完成首次加载
+    _hasLoaded: false,
 
     onLoad() {
-        // 页面加载时获取位置和加载团队列表
-        this.getLocation()
-    },
-
-    onPullDownRefresh() { },
-
-
-    getLocation() {
-        if (this.data.locationLoading) return
-        this.setData({ locationLoading: true })
-
-        // 先检查位置权限
-        wx.getSetting({
-            success: (res) => {
-                if (!res.authSetting['scope.userLocation']) {
-                    // 如果没有权限, 请求授权
-                    wx.authorize({
-                        scope: 'scope.userLocation',
-                        success: () => {
-                            this.startLocationRequest()
-                        },
-                        fail: () => {
-                            // 用户拒绝授权, 显示打开设置页面的对话框
-                            wx.showModal({
-                                title: '需要位置权限',
-                                content: '请授权访问您的位置信息, 以便获取当前位置',
-                                confirmText: '去设置',
-                                success: (modalRes) => {
-                                    if (modalRes.confirm) {
-                                        wx.openSetting()
-                                    }
-                                },
-                                complete: () => {
-                                    this.setData({ locationLoading: false })
-                                }
-                            })
-                        }
-                    })
-                } else {
-                    // 已有权限, 直接获取位置
-                    this.startLocationRequest()
-                }
-            },
-            fail: () => {
-                wx.showToast({
-                    title: '获取权限失败',
-                    icon: 'none'
-                })
-                this.setData({ locationLoading: false })
-            }
+        this._hasLoaded = false
+        this.loadBanners()
+        this.loadEvents().then(() => {
+            this._hasLoaded = true
         })
     },
 
-    startLocationRequest() {
-        wx.showLoading({
-            title: '获取位置中...',
-        })
-
-        wx.getLocation({
-            type: 'gcj02',
-            success: (res) => {
-                const { latitude, longitude } = res
-
-                this.setData({
-                    location: {
-                        latitude,
-                        longitude,
-                        updateTime: new Date().toLocaleString('zh-CN')
-                    }
-                })
-
-                // 成功获取位置后自动获取附近球场
-                this.getNearestCourses()
-
-                wx.showToast({
-                    title: '位置更新成功',
-                    icon: 'success',
-                    duration: 1500
-                })
-            },
-            fail: (err) => {
-                console.error('获取位置失败:', err)
-                this.handleLocationError('获取位置失败')
-            },
-            complete: () => {
-                wx.hideLoading()
-                this.setData({ locationLoading: false })
-            }
-        })
-    },
-
-    handleLocationError(errorMsg, coords = null) {
-        wx.showToast({
-            title: errorMsg,
-            icon: 'none',
-            duration: 2000
-        })
-
-        if (coords) {
-            this.setData({
-                location: {
-                    latitude: coords.latitude,
-                    longitude: coords.longitude,
-                    updateTime: new Date().toLocaleString('zh-CN')
-                }
-            })
+    onShow() {
+        // 仅在非首次显示时刷新（从其他页面返回时）
+        if (this._hasLoaded) {
+            this.loadEvents()
         }
+    },
 
-        wx.showModal({
-            title: '位置获取失败',
-            content: '是否重试？',
-            success: (res) => {
-                if (res.confirm) {
-                    setTimeout(() => {
-                        this.getLocation()
-                    }, 1000)
-                }
+    async onPullDownRefresh() {
+        try {
+            await Promise.all([
+                this.loadBanners(),
+                this.loadEvents()
+            ])
+        } catch (error) {
+            console.error('刷新失败:', error)
+        } finally {
+            wx.stopPullDownRefresh()
+        }
+    },
+
+    /**
+     * 加载轮播图
+     */
+    async loadBanners() {
+        try {
+            const response = await app.api.events.getEventBanners()
+            if (response?.banners) {
+                this.setData({
+                    banners: response.banners
+                })
             }
+        } catch (error) {
+            console.error('加载轮播图失败:', error)
+        }
+    },
+
+    /**
+     * 轮播图切换
+     */
+    onBannerChange(e) {
+        this.setData({
+            currentBannerIndex: e.detail.current
         })
     },
 
-    // 获取最近的球场列表
-    async getNearestCourses() {
-        if (!this.data.location) {
-            wx.showToast({
-                title: '请先获取位置',
-                icon: 'none'
-            })
+    /**
+     * 轮播图点击
+     */
+    onBannerTap(e) {
+        const banner = e.currentTarget.dataset.banner
+        console.log('点击轮播图:', banner)
+        // TODO: 跳转到对应的赛事详情页
+    },
+
+    /**
+     * Tab切换
+     */
+    switchTab(e) {
+        const index = Number.parseInt(e.currentTarget.dataset.index)
+        if (this.data.currentTab === index) {
             return
         }
 
-        this.setData({ courseLoading: true })
+        this.setData({
+            currentTab: index
+        })
 
+        this.loadEvents()
+    },
+
+    /**
+     * 加载赛事列表
+     */
+    async loadEvents() {
         try {
-            const { latitude, longitude } = this.data.location
-            console.log("发送请求参数:", { latitude, longitude })
+            this.setData({ loading: true })
 
-            const courseList = await app.api.course.getNearestCourses({ latitude, longitude }, {
-                loadingTitle: '获取球场中...'
-            })
-            console.log("API响应:", courseList)
+            let response
+            if (this.data.currentTab === 0) {
+                // 可报名赛事
+                response = await app.api.events.getAvailableEvents()
+            } else {
+                // 已报名赛事
+                response = await app.api.events.getMyEvents()
+            }
 
-            this.setData({ courseList: courseList.data })
-            wx.showToast({
-                title: '获取球场成功',
-                icon: 'success'
-            })
+            if (response?.events) {
+                this.setData({
+                    eventList: response.events,
+                    isEmpty: response.events.length === 0
+                })
+            } else {
+                this.setData({
+                    eventList: [],
+                    isEmpty: true
+                })
+            }
+
         } catch (error) {
-            console.error('获取球场失败:', error)
-            console.error('错误详情:', {
-                message: error.message,
-                stack: error.stack,
-                errMsg: error.errMsg
-            })
-            wx.showToast({
-                title: '获取球场失败',
-                icon: 'none'
+            console.error('加载赛事列表失败:', error)
+            this.setData({
+                eventList: [],
+                isEmpty: true
             })
         } finally {
-            this.setData({ courseLoading: false })
+            this.setData({ loading: false })
         }
     },
 
+    /**
+     * 点击赛事卡片
+     * 根据赛事类型跳转到对应详情页
+     */
+    onEventTap(e) {
+        const event = e.currentTarget.dataset.event
+        const gameid = event.gameid
+        console.log('点击赛事:', event)
 
+        const navigationHelper = require('@/utils/navigationHelper.js')
+
+        // 判断是否是球队比赛（队内赛/队际赛）
+        const teamGameInfo = event.extra_team_game_info
+        if (teamGameInfo && teamGameInfo.game_type) {
+            // 队内赛: single_team, 队际赛: cross_teams
+            const gameType = teamGameInfo.game_type
+            navigationHelper.navigateTo(`/pages/team-game/TeamGameDetail?game_id=${gameid}&game-type=${gameType}`)
+            return
+        }
+
+        // 普通比赛跳转到记分卡页面
+        navigationHelper.navigateTo(`/pages/gameDetail/score/score?gameid=${gameid}`)
+    }
 })
