@@ -471,7 +471,7 @@ export const gameStore = observable({
         if (!id) return;
 
         try {
-            const res = await teamgameApi.getSubteams({ game_id: id });
+            const res = await teamgameApi.getGameTags({ game_id: id });
             if (res?.code === 200 && res.data) {
                 this.subteams = res.data.map(t => ({
                     id: t.id,

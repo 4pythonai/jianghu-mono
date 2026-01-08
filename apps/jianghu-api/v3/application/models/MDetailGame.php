@@ -61,7 +61,7 @@ class MDetailGame  extends CI_Model {
             'creator' => $creator,
             'game_name' => $game_info['game_name'] ?: '',
             'course' => $course_info['coursename'] ?: '',
-            'status' => $game_info['status'],
+            'game_status' => $game_info['game_status'],
             'players' => $players,
             'watchers_number' => 0, // 暂时设为0
             'game_start' => $game_info['game_start'] ?: $game_info['create_time'],
@@ -117,7 +117,7 @@ class MDetailGame  extends CI_Model {
                 id as gameid,
                 uuid,
                 courseid,
-                status,
+                game_status,
                 private,
                 game_type,
                 scoring_type,

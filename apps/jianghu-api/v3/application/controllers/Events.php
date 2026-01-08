@@ -20,26 +20,6 @@ class Events extends MY_Controller {
     }
 
     /**
-     * 返回成功响应
-     */
-    private function success($data = [], $message = '操作成功') {
-        echo json_encode(array_merge([
-            'code' => 200,
-            'message' => $message
-        ], $data), JSON_UNESCAPED_UNICODE);
-    }
-
-    /**
-     * 返回错误响应
-     */
-    private function error($message, $code = 400) {
-        echo json_encode([
-            'code' => $code,
-            'message' => $message
-        ], JSON_UNESCAPED_UNICODE);
-    }
-
-    /**
      * 检查是否是球局创建者
      */
     private function isGameCreator($gameid, $userid) {

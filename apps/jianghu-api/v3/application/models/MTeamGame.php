@@ -92,7 +92,6 @@ class MTeamGame extends CI_Model {
             'is_public_registration' => $data['is_public_registration'] ?? 'y',
             'top_n_ranking' => $data['top_n_ranking'] ?? null,
             'game_type' => 'single_team',
-            'status' => 'init',
             'game_status' => 'init',
             'create_time' => date('Y-m-d H:i:s'),
             'scoring_type' => $this->getScoringTypeFromFormat($data['match_format'])
@@ -220,7 +219,7 @@ class MTeamGame extends CI_Model {
     /**
      * 获取分队列表
      */
-    public function getSubteams($game_id) {
+    public function getGameTags($game_id) {
         return $this->db->where('game_id', $game_id)
             ->order_by('tag_order', 'ASC')
             ->get('t_team_game_tags')
@@ -228,7 +227,7 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 获取分队信息
+     * 获取TAG信息
      */
     public function getTeamGameTag($tag_id) {
         return $this->db->get_where('t_team_game_tags', ['id' => $tag_id])->row_array();
@@ -609,21 +608,6 @@ class MTeamGame extends CI_Model {
         $this->db->where('id', $game_id);
         $this->db->update('t_game', ['game_status' => $game_status]);
 
-        // 同步更新 status 字段（兼容旧逻辑）
-        $statusMapping = [
-            'init' => 'init',
-            'registering' => 'enrolling',
-            'registration_closed' => 'enrolling',
-            'playing' => 'playing',
-            'finished' => 'finished',
-            'cancelled' => 'canceled'
-        ];
-
-        if (isset($statusMapping[$game_status])) {
-            $this->db->where('id', $game_id);
-            $this->db->update('t_game', ['status' => $statusMapping[$game_status]]);
-        }
-
         return ['success' => true, 'message' => '状态更新成功'];
     }
 
@@ -646,7 +630,7 @@ class MTeamGame extends CI_Model {
         }
 
         // 分队列表
-        $game['subteams'] = $this->getSubteams($game_id);
+        $game['subteams'] = $this->getGameTags($game_id);
 
         // 报名人数统计（从 t_game_tag_member 统计）
         $game['registration_stats'] = [
@@ -801,7 +785,6 @@ class MTeamGame extends CI_Model {
             'is_public_registration' => $data['is_public_registration'] ?? 'y',
             'top_n_ranking' => $data['top_n_ranking'] ?? null,
             'game_type' => 'cross_teams',
-            'status' => 'init',
             'game_status' => 'init',
             'create_time' => date('Y-m-d H:i:s'),
             'scoring_type' => $this->getScoringTypeFromFormat($data['match_format'])
@@ -920,17 +903,17 @@ class MTeamGame extends CI_Model {
         }
 
         // 检查分队是否为参赛球队（team_id 不为空）
-        $subteam = $this->db->get_where('t_team_game_tags', [
+        $tag = $this->db->get_where('t_team_game_tags', [
             'id' => $tag_id,
             'game_id' => $game_id
         ])->row_array();
 
-        if (!$subteam || empty($subteam['team_id'])) {
+        if (!$tag || empty($tag['team_id'])) {
             return ['success' => false, 'message' => '所选球队不是本赛事的参赛球队'];
         }
 
         // 检查是否为该球队成员
-        $isTeamMember = $this->isTeamMember($subteam['team_id'], $user_id);
+        $isTeamMember = $this->isTeamMember($tag['team_id'], $user_id);
 
         // 获取赛事信息
         $game = $this->getTeamGame($game_id);

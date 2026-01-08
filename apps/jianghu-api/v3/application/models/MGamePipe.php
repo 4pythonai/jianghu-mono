@@ -40,7 +40,7 @@ class MGamePipe extends CI_Model implements StageInterface {
 
 
     public function getMyGames() {
-        $sql = "SELECT * FROM t_game  where  courseid is not null  and status != 'init' order by id   desc limit 100";
+        $sql = "SELECT * FROM t_game  where  courseid is not null  and game_status != 'init' order by id   desc limit 100";
         $rows = $this->db->query($sql)->result_array();
         $this->payload['allgames'] =  $rows;
     }

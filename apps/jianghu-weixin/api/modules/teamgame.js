@@ -13,7 +13,7 @@ const teamgame = {
     // 删除分队
     deleteSubteam: (data, options) => request('/TeamGame/deleteSubteam', data, options),
     // 获取分队列表
-    getSubteams: (data, options) => request('/TeamGame/getSubteams', data, options),
+    getGameTags: (data, options) => request('/TeamGame/getGameTags', data, options),
 
     // ==================== Phase 2: 报名管理 ====================
     // 球员报名

@@ -139,12 +139,12 @@ class MGame  extends CI_Model {
 
   public function cancelGame($gameid) {
     $this->db->where('id', $gameid)
-      ->update('t_game', ['status' => 'canceled']);
+      ->update('t_game', ['game_status' => 'cancelled']);
   }
 
   public function finishGame($gameid) {
     $this->db->where('id', $gameid)
-      ->update('t_game', ['status' => 'finished']);
+      ->update('t_game', ['game_status' => 'finished']);
   }
 
   /**
@@ -302,7 +302,7 @@ class MGame  extends CI_Model {
     $response['data']['record_id'] = (int) $this->db->insert_id();
 
     $this->db->where('id', $gameid)
-      ->update('t_game', ['status' => 'enrolling']);
+      ->update('t_game', ['game_status' => 'registering']);
 
     $response['data']['groupid'] = $targetGroupId;
     $this->writeWebSocketMsg($userid, $gameid);

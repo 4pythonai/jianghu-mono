@@ -234,4 +234,24 @@ class MY_Controller extends CI_Controller {
   public function setMobile($mobile) {
     $this->user_mobile = $mobile;
   }
+
+  /**
+   * 返回成功响应
+   */
+  protected function success($data = [], $message = '操作成功') {
+    echo json_encode(array_merge([
+      'code' => 200,
+      'message' => $message
+    ], $data), JSON_UNESCAPED_UNICODE);
+  }
+
+  /**
+   * 返回错误响应
+   */
+  protected function error($message, $code = 400) {
+    echo json_encode([
+      'code' => $code,
+      'message' => $message
+    ], JSON_UNESCAPED_UNICODE);
+  }
 }

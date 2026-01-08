@@ -200,13 +200,13 @@ class TeamGame extends MY_Controller {
         $tag_id = $json_paras['tag_id'];
 
         // 获取分队信息以验证权限
-        $subteam = $this->MTeamGame->getTeamGameTag($tag_id);
-        if (!$subteam) {
+        $tag = $this->MTeamGame->getTeamGameTag($tag_id);
+        if (!$tag) {
             echo json_encode(['code' => 404, 'message' => '分队不存在'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        if (!$this->MTeamGame->isGameAdmin($subteam['game_id'], $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($tag['game_id'], $userid)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -226,13 +226,13 @@ class TeamGame extends MY_Controller {
         $tag_id = $json_paras['tag_id'];
 
         // 获取分队信息以验证权限
-        $subteam = $this->MTeamGame->getTeamGameTag($tag_id);
-        if (!$subteam) {
+        $tag = $this->MTeamGame->getTeamGameTag($tag_id);
+        if (!$tag) {
             echo json_encode(['code' => 404, 'message' => '分队不存在'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        if (!$this->MTeamGame->isGameAdmin($subteam['game_id'], $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($tag['game_id'], $userid)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -243,23 +243,23 @@ class TeamGame extends MY_Controller {
     }
 
     /**
-     * 获取分队列表
+     * 获取TAGSs列表
      * @param int game_id 赛事ID
      */
-    public function getSubteams() {
+    public function getGameTags() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['game_id'];
 
-        $subteams = $this->MTeamGame->getSubteams($game_id);
+        $tags = $this->MTeamGame->getGameTags($game_id);
 
         // 获取每个分队的成员
-        foreach ($subteams as &$subteam) {
-            $subteam['members'] = $this->MTeamGame->getMembersByTag($subteam['id']);
+        foreach ($tags as &$tag) {
+            $tag['members'] = $this->MTeamGame->getMembersByTag($tag['id']);
         }
 
         echo json_encode([
             'code' => 200,
-            'data' => $subteams
+            'data' => $tags
         ], JSON_UNESCAPED_UNICODE);
     }
 

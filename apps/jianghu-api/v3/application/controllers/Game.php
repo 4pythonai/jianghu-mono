@@ -19,26 +19,6 @@ class Game extends MY_Controller {
     }
 
     /**
-     * 返回成功响应
-     */
-    private function success($data = [], $message = '操作成功') {
-        echo json_encode(array_merge([
-            'code' => 200,
-            'message' => $message
-        ], $data), JSON_UNESCAPED_UNICODE);
-    }
-
-    /**
-     * 返回错误响应
-     */
-    private function error($message, $code = 400) {
-        echo json_encode([
-            'code' => $code,
-            'message' => $message
-        ], JSON_UNESCAPED_UNICODE);
-    }
-
-    /**
      * 检查是否是球局创建者
      */
     private function isGameCreator($gameid, $userid) {
@@ -83,7 +63,7 @@ class Game extends MY_Controller {
         $row['private'] = 'n';
         $row['scoring_type'] = 'hole';
         $row['privacy_password'] = null;
-        $row['status'] = 'init';
+        $row['game_status'] = 'init';
         $this->db->insert('t_game', $row);
         $gameid = $this->db->insert_id();
         echo json_encode(['code' => 200, 'uuid' => $uuid, 'gameid' => $gameid], JSON_UNESCAPED_UNICODE);
@@ -256,9 +236,9 @@ class Game extends MY_Controller {
         $groups = $json_paras['groups'];
         $this->MGame->clearGameGroupAndPlayers($gameid);
         $groupid = $this->MGame->addGameGroupAndPlayers($gameid, $groups);
-        // gameid status to enrolling   
+        // gameid game_status to registering   
         $this->db->where('id', $gameid);
-        $this->db->update('t_game', ['status' => 'enrolling']);
+        $this->db->update('t_game', ['game_status' => 'registering']);
 
         $ret = [];
         $ret['code'] = 200;
@@ -388,7 +368,7 @@ class Game extends MY_Controller {
         $hindex = $json_paras['hindex'];
 
         $game_info = $this->MDetailGame->getGameInfo($game_id);
-        if ($game_info['status'] == 'finished' || $game_info['status'] == 'canceled') {
+        if ($game_info['game_status'] == 'finished' || $game_info['game_status'] == 'cancelled') {
             echo json_encode(['code' => 500, 'message' => '球局已结束或取消'], JSON_UNESCAPED_UNICODE);
             return;
         }
