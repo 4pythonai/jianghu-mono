@@ -165,7 +165,7 @@ class MTeamGame extends CI_Model {
     /**
      * 添加分队
      */
-    public function addSubteam($game_id, $tag_name, $color = null) {
+    public function addGameTag($game_id, $tag_name, $color = null) {
         // 获取当前最大排序号
         $maxOrder = $this->db->select_max('tag_order')
             ->where('game_id', $game_id)
@@ -470,7 +470,7 @@ class MTeamGame extends CI_Model {
 
         foreach ($groups as &$group) {
             // 通过 tag_id 直接关联获取用户的分队信息
-            $this->db->select('gu.*, u.nickname, u.avatar, u.handicap, s.tag_name, s.color as subteam_color');
+            $this->db->select('gu.*, u.nickname, u.avatar, u.handicap, s.tag_name, s.color as tag_color');
             $this->db->from('t_game_group_user gu');
             $this->db->join('t_user u', 'gu.userid = u.id', 'left');
             $this->db->join('t_team_game_tags s', 'gu.tag_id = s.id', 'left');
@@ -630,7 +630,7 @@ class MTeamGame extends CI_Model {
         }
 
         // 分队列表
-        $game['subteams'] = $this->getGameTags($game_id);
+        $game['gameTags'] = $this->getGameTags($game_id);
 
         // 报名人数统计（从 t_game_tag_member 统计）
         $game['registration_stats'] = [
@@ -677,7 +677,7 @@ class MTeamGame extends CI_Model {
      */
     public function getScoresUnderTag($game_id) {
         $this->db->select('ss.*, s.tag_name, s.color');
-        $this->db->from('t_game_subteam_score ss');
+        $this->db->from('t_game_score ss');
         $this->db->join('t_team_game_tags s', 'ss.tag_id = s.id', 'left');
         $this->db->where('ss.game_id', $game_id);
         $this->db->order_by('ss.ranking', 'ASC');
@@ -685,26 +685,6 @@ class MTeamGame extends CI_Model {
         return $this->db->get()->result_array();
     }
 
-    // /**
-    //  * 更新分队成绩
-    //  */
-    // public function updateScoreUnderTag($game_id, $tag_id, $data) {
-    //     $existing = $this->db->get_where('t_game_subteam_score', [
-    //         'game_id' => $game_id,
-    //         'tag_id' => $tag_id
-    //     ])->row_array();
-
-    //     if ($existing) {
-    //         $this->db->where('id', $existing['id']);
-    //         $this->db->update('t_game_subteam_score', $data);
-    //     } else {
-    //         $data['game_id'] = $game_id;
-    //         $data['tag_id'] = $tag_id;
-    //         $this->db->insert('t_game_subteam_score', $data);
-    //     }
-
-    //     return true;
-    // }
 
     /**
      * 获取比洞赛结果
@@ -737,7 +717,7 @@ class MTeamGame extends CI_Model {
      * 检查赛制是否需要分队
      */
     public function requiresSettingTags($match_format) {
-        $requireSubteam = [
+        $requireGameTag = [
             'fourball_best_stroke',
             'fourball_oneball_stroke',
             'foursome_stroke',
@@ -746,7 +726,7 @@ class MTeamGame extends CI_Model {
             'foursome_match'
         ];
 
-        return in_array($match_format, $requireSubteam);
+        return in_array($match_format, $requireGameTag);
     }
 
     /**
@@ -952,7 +932,7 @@ class MTeamGame extends CI_Model {
             }
 
             // 获取该组所有成员的分队（从 t_game_tag_member 获取）
-            $subteamIds = [];
+            $gameTagsIds = [];
             foreach ($group['user_ids'] as $user_id) {
                 $member = $this->db->get_where('t_game_tag_member', [
                     'game_id' => $game_id,
@@ -960,12 +940,12 @@ class MTeamGame extends CI_Model {
                 ])->row_array();
 
                 if ($member && $member['tag_id']) {
-                    $subteamIds[] = $member['tag_id'];
+                    $gameTagsIds[] = $member['tag_id'];
                 }
             }
 
             // 检查是否有至少两个不同的分队
-            $uniqueSubteams = array_unique($subteamIds);
+            $uniqueSubteams = array_unique($gameTagsIds);
             if (count($uniqueSubteams) < 2) {
                 $groupName = $group['group_name'] ?? '第' . ($index + 1) . '组';
                 $errors[] = $groupName . ' 必须包含来自两个不同球队的球员';

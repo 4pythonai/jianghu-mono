@@ -77,7 +77,7 @@
 }
 
 /* 分队设置 */
-.subteams-container {
+.gameTags-container {
     background: #f8f9fa;
     border-radius: 16rpx;
     padding: 20rpx;

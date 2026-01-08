@@ -41,7 +41,7 @@ Page({
         },
 
         // 分队列表
-        subteams: [],
+        gameTags: [],
 
         // 赛制选项
         matchFormats: MATCH_FORMATS,
@@ -143,17 +143,17 @@ Page({
         })
 
         // 如果是比洞赛且分队数超过2个，只保留前2个
-        if (format.isMatch && this.data.subteams.length > 2) {
+        if (format.isMatch && this.data.gameTags.length > 2) {
             this.setData({
-                subteams: this.data.subteams.slice(0, 2)
+                gameTags: this.data.gameTags.slice(0, 2)
             })
             wx.showToast({ title: '比洞赛最多2个分队', icon: 'none' })
         }
 
         // 如果需要分队但当前没有，添加默认分队
-        if (format.requireSubteam && this.data.subteams.length === 0) {
+        if (format.requireGameTag && this.data.gameTags.length === 0) {
             this.setData({
-                subteams: [
+                gameTags: [
                     { name: '红队', color: '#D32F2F' },
                     { name: '蓝队', color: '#1976D2' }
                 ]
@@ -239,15 +239,15 @@ Page({
 
     // ==================== 分队管理 ====================
 
-    onSubteamsChange(e) {
-        this.setData({ subteams: e.detail.subteams })
+    onGameTagsChange(e) {
+        this.setData({ gameTags: e.detail.gameTags })
     },
 
-    addSubteam() {
-        const { subteams, currentFormat } = this.data
+    addGameTag() {
+        const { gameTags, currentFormat } = this.data
 
         // 比洞赛限制2个分队
-        if (currentFormat.isMatch && subteams.length >= 2) {
+        if (currentFormat.isMatch && gameTags.length >= 2) {
             wx.showToast({ title: '比洞赛最多2个分队', icon: 'none' })
             return
         }
@@ -266,54 +266,54 @@ Page({
                     }
 
                     // 检查名称是否重复
-                    if (subteams.some(s => s.name === name)) {
+                    if (gameTags.some(s => s.name === name)) {
                         wx.showToast({ title: '分队名称已存在', icon: 'none' })
                         return
                     }
 
                     // 默认颜色池
                     const colors = ['#D32F2F', '#1976D2', '#388E3C', '#F57C00', '#7B1FA2', '#0097A7']
-                    const usedColors = subteams.map(s => s.color)
+                    const usedColors = gameTags.map(s => s.color)
                     const availableColor = colors.find(c => !usedColors.includes(c)) || colors[0]
 
-                    const newSubteam = {
+                    const newGameTag = {
                         name: name,
                         color: availableColor
                     }
 
                     this.setData({
-                        subteams: [...subteams, newSubteam]
+                        gameTags: [...gameTags, newGameTag]
                     })
                 }
             }
         })
     },
 
-    onSubteamNameInput(e) {
+    onTagNameInput(e) {
         const index = e.currentTarget.dataset.index
         const value = e.detail.value
-        const subteams = [...this.data.subteams]
-        subteams[index].name = value
-        this.setData({ subteams })
+        const gameTags = [...this.data.gameTags]
+        gameTags[index].name = value
+        this.setData({ gameTags })
     },
 
-    deleteSubteam(e) {
+    deleteGameTag(e) {
         const index = e.currentTarget.dataset.index
-        const subteams = [...this.data.subteams]
+        const gameTags = [...this.data.gameTags]
 
-        if (subteams.length <= 2 && this.data.currentFormat.requireSubteam) {
+        if (gameTags.length <= 2 && this.data.currentFormat.requireGameTag) {
             wx.showToast({ title: '至少需要2个分队', icon: 'none' })
             return
         }
 
-        subteams.splice(index, 1)
-        this.setData({ subteams })
+        gameTags.splice(index, 1)
+        this.setData({ gameTags })
     },
 
     // ==================== 表单验证与提交 ====================
 
     validateForm() {
-        const { formData, selectedCourse, subteams, currentFormat } = this.data
+        const { formData, selectedCourse, gameTags, currentFormat } = this.data
 
         // 使用公共基础验证
         if (!validateBasicInfo(this.data, { nameField: 'name' })) {
@@ -321,7 +321,7 @@ Page({
         }
 
         // 团队赛制需要至少2个分队
-        if (currentFormat.requireSubteam && subteams.length < 2) {
+        if (currentFormat.requireGameTag && gameTags.length < 2) {
             wx.showToast({ title: '团队赛制需要至少2个分队', icon: 'none' })
             return false
         }
@@ -336,7 +336,7 @@ Page({
         this.setData({ submitting: true })
 
         try {
-            const { teamId, formData, selectedCourse, subteams, courtSelection } = this.data
+            const { teamId, formData, selectedCourse, gameTags, courtSelection } = this.data
 
             // 过滤有效的赛事流程条目
             const validSchedule = formData.schedule.filter(item => item.time || item.content)
@@ -367,7 +367,7 @@ Page({
             const gameId = result.data.game_id
 
             // 如果有分队，创建分队
-            if (subteams.length > 0) {
+            if (gameTags.length > 0) {
                 for (const tag of tags) {
                     await app.api.teamgame.addTag({
                         game_id: gameId,

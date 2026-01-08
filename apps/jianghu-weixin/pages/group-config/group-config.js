@@ -26,7 +26,7 @@ Page({
         playerGroupMap: {},
 
         // 默认值（防止 store 绑定前报错）
-        subteams: [],
+        gameTags: [],
         tagMembers: [],
         groups: []
     },
@@ -49,7 +49,7 @@ Page({
         // 创建 store 绑定
         this.storeBindings = createStoreBindings(this, {
             store: gameStore,
-            fields: ['subteams', 'tagMembers', 'groups', 'gameid'],
+            fields: ['gameTags', 'tagMembers', 'groups', 'gameid'],
             actions: ['updateGroupMembers', 'loadGroups']
         })
 
@@ -123,15 +123,15 @@ Page({
      */
     updateCurrentTagPlayers() {
         const { currentTagIndex, playerGroupMap, groupId, selectedPlayers } = this.data
-        const subteams = gameStore.subteams || []
+        const gameTags = gameStore.gameTags || []
         const tagMembers = gameStore.tagMembers || []
 
-        if (subteams.length === 0) {
+        if (gameTags.length === 0) {
             this.setData({ currentTagPlayers: [] })
             return
         }
 
-        const currentTag = subteams[currentTagIndex]
+        const currentTag = gameTags[currentTagIndex]
         if (!currentTag) {
             this.setData({ currentTagPlayers: [] })
             return
@@ -241,7 +241,7 @@ Page({
                     id: playerId,
                     name: player.name,
                     avatar: player.avatar,
-                    teamName: this.data.subteams[this.data.currentTagIndex]?.tagName || ''
+                    teamName: this.data.gameTags[this.data.currentTagIndex]?.tagName || ''
                 }]
                 this.setData({ selectedPlayers: newSelected })
             }

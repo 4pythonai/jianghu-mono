@@ -92,3 +92,11 @@ Page({
 ```
 
 
+# 获取当前用户信息
+```
+ const app = getApp()
+ const currentUserId = app?.globalData?.userInfo?.id
+           
+
+
+```

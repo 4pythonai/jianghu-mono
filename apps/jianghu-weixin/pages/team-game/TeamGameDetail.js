@@ -23,14 +23,14 @@ Page({
 
         // 默认值（防止 store 绑定前 WXML 报错）
         spectators: { count: 0, avatars: [] },
-        subteams: [],
+        gameTags: [],
         tagMembers: [],
         groups: [],
         eventDetail: {}
     },
 
     onLoad(options) {
-        const gameType = options['game-type'] || options.gameType || 'single_team'
+        const gameType = options.game_type || 'single_team'
         const gameId = options.game_id || options.gameId || null
 
         // 计算导航栏高度
@@ -38,7 +38,8 @@ Page({
         const statusBarHeight = systemInfo.statusBarHeight || 0
         const navBarHeight = statusBarHeight + 44
 
-        this.setData({ navBarHeight })
+        // 先设置本地 gameType，确保页面立即显示正确的 title
+        this.setData({ navBarHeight, gameType })
 
         // 创建 store 绑定
         this.storeBindings = createStoreBindings(this, {
@@ -48,7 +49,7 @@ Page({
                 'gameType',
                 'gameid',
                 'eventDetail',
-                'subteams',
+                'gameTags',
                 'tagMembers',
                 'groups',
                 'spectators',
@@ -57,7 +58,7 @@ Page({
             ],
             actions: [
                 'fetchTeamGameDetail',
-                'loadSubteams',
+                'loadGameTags',
                 'loadTagMembers',
                 'loadGroups',
                 'loadSpectators',
@@ -103,7 +104,7 @@ Page({
             // 并行加载所有数据
             await Promise.all([
                 this.fetchTeamGameDetail(gameId, gameType),
-                this.loadSubteams(gameId),
+                this.loadGameTags(gameId),
                 this.loadTagMembers(gameId),
                 this.loadGroups(gameId),
                 this.loadSpectators(gameId)
@@ -114,8 +115,18 @@ Page({
                 this.storeBindings.updateStoreBindings()
             }
 
-            // 打印调试信息
-            console.log('[TeamGameDetail] initData 完成, groups:', JSON.stringify(this.data.groups))
+            // 检查当前用户是否已报名（直接从 store 读取，避免绑定延迟）
+            const app = getApp()
+            const currentUserId = app?.globalData?.userInfo?.id
+            const tagMembers = gameStore.tagMembers
+            const isRegistered = tagMembers.some(m => String(m.id) === String(currentUserId))
+            console.log('[TeamGameDetail] 报名检查:', {
+                currentUserId,
+                tagMembersCount: tagMembers.length,
+                tagMemberIds: tagMembers.map(m => m.id),
+                isRegistered
+            })
+            this.setData({ isRegistered })
 
             // 静默记录围观
             this.recordSpectator(gameId)

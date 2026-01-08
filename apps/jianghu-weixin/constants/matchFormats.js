@@ -7,49 +7,49 @@ export const MATCH_FORMATS = [
     {
         value: 'individual_stroke',
         label: '个人比杆赛',
-        requireSubteam: false,
+        requireGameTag: false,
         isMatch: false
     },
     {
         value: 'fourball_best_stroke',
         label: '四人四球最好成绩比杆赛',
-        requireSubteam: true,
+        requireGameTag: true,
         isMatch: false
     },
     {
         value: 'fourball_oneball_stroke',
         label: '四人四球最佳球位比杆赛(旺波)',
-        requireSubteam: true,
+        requireGameTag: true,
         isMatch: false
     },
     {
         value: 'foursome_stroke',
         label: '四人两球比杆赛',
-        requireSubteam: true,
+        requireGameTag: true,
         isMatch: false
     },
     {
         value: 'individual_match',
         label: '个人比洞赛',
-        requireSubteam: false,
+        requireGameTag: false,
         isMatch: true
     },
     {
         value: 'fourball_best_match',
         label: '四人四球最好成绩比洞赛',
-        requireSubteam: true,
+        requireGameTag: true,
         isMatch: true
     },
     {
         value: 'fourball_oneball_match',
         label: '四人四球最佳球位比洞赛(旺波)',
-        requireSubteam: true,
+        requireGameTag: true,
         isMatch: true
     },
     {
         value: 'foursome_match',
         label: '四人两球比洞赛',
-        requireSubteam: true,
+        requireGameTag: true,
         isMatch: true
     }
 ]

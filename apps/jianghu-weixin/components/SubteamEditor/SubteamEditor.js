@@ -5,7 +5,7 @@
 Component({
     properties: {
         // 分队列表
-        subteams: {
+        gameTags: {
             type: Array,
             value: []
         },
@@ -45,42 +45,42 @@ Component({
         /**
          * 添加分队
          */
-        addSubteam() {
-            const { subteams, isMatchPlay } = this.properties
+        addGameTag() {
+            const { gameTags, isMatchPlay } = this.properties
             const { colors } = this.data
 
             // 比洞赛限制2个分队
-            if (isMatchPlay && subteams.length >= 2) {
+            if (isMatchPlay && gameTags.length >= 2) {
                 wx.showToast({ title: '比洞赛最多2个分队', icon: 'none' })
                 return
             }
 
             // 获取未使用的颜色
-            const usedColors = subteams.map(s => s.color)
+            const usedColors = gameTags.map(s => s.color)
             const availableColor = colors.find(c => !usedColors.includes(c.value))?.value || colors[0].value
 
             // 生成分队名称
-            const name = `${String.fromCharCode(65 + subteams.length)}队`
+            const name = `${String.fromCharCode(65 + gameTags.length)}队`
 
-            const newSubteams = [...subteams, { name, color: availableColor }]
-            
-            this.triggerEvent('change', { subteams: newSubteams })
+            const newGameTags = [...gameTags, { name, color: availableColor }]
+
+            this.triggerEvent('change', { gameTags: newGameTags })
         },
 
         /**
          * 删除分队
          */
-        deleteSubteam(e) {
+        deleteGameTag(e) {
             const index = e.currentTarget.dataset.index
-            const { subteams, required, minCount } = this.properties
+            const { gameTags, required, minCount } = this.properties
 
-            if (required && subteams.length <= minCount) {
+            if (required && gameTags.length <= minCount) {
                 wx.showToast({ title: `至少需要${minCount}个分队`, icon: 'none' })
                 return
             }
 
-            const newSubteams = subteams.filter((_, i) => i !== index)
-            this.triggerEvent('change', { subteams: newSubteams })
+            const newGameTags = gameTags.filter((_, i) => i !== index)
+            this.triggerEvent('change', { gameTags: newGameTags })
         },
 
         /**
@@ -89,10 +89,10 @@ Component({
         onNameInput(e) {
             const index = e.currentTarget.dataset.index
             const value = e.detail.value
-            const newSubteams = [...this.properties.subteams]
-            newSubteams[index] = { ...newSubteams[index], name: value }
-            
-            this.triggerEvent('change', { subteams: newSubteams })
+            const newGameTags = [...this.properties.gameTags]
+            newGameTags[index] = { ...newGameTags[index], name: value }
+
+            this.triggerEvent('change', { gameTags: newGameTags })
         },
 
         /**
@@ -112,14 +112,14 @@ Component({
         selectColor(e) {
             const color = e.currentTarget.dataset.color
             const { currentEditIndex } = this.data
-            const newSubteams = [...this.properties.subteams]
-            
-            if (currentEditIndex >= 0 && currentEditIndex < newSubteams.length) {
-                newSubteams[currentEditIndex] = { 
-                    ...newSubteams[currentEditIndex], 
-                    color 
+            const newGameTags = [...this.properties.gameTags]
+
+            if (currentEditIndex >= 0 && currentEditIndex < newGameTags.length) {
+                newGameTags[currentEditIndex] = {
+                    ...newGameTags[currentEditIndex],
+                    color
                 }
-                this.triggerEvent('change', { subteams: newSubteams })
+                this.triggerEvent('change', { gameTags: newGameTags })
             }
 
             this.setData({

@@ -1,8 +1,8 @@
 <view class="team-as-tag-editor">
   <!-- 分队列表 -->
-  <view class="subteams-list">
+  <view class="gameTags-list">
     <view
-      wx:for="{{ subteams }}"
+      wx:for="{{ gameTags }}"
       wx:key="index"
       class="team-as-tag-item"
       style="border-left-color: {{ item.color }};"
@@ -31,7 +31,7 @@
         class="delete-btn"
         bindtap="deleteTag"
         data-index="{{ index }}"
-        wx:if="{{ !required || subteams.length > minCount }}"
+        wx:if="{{ !required || gameTags.length > minCount }}"
       >
         <image src="/assets/icons/close.svg" mode="aspectFit"></image>
       </view>
@@ -39,7 +39,7 @@
   </view>
 
   <!-- 添加分队按钮 -->
-  <view class="add-btn" bindtap="addSubteam" wx:if="{{ !isMatchPlay || subteams.length < 2 }}">
+  <view class="add-btn" bindtap="addGameTag" wx:if="{{ !isMatchPlay || gameTags.length < 2 }}">
     <image src="/assets/icons/add.svg" class="add-icon" mode="aspectFit"></image>
     <text>添加分队</text>
   </view>
@@ -52,13 +52,13 @@
         <view
           wx:for="{{ colors }}"
           wx:key="value"
-          class="color-option {{ subteams[currentEditIndex].color === item.value ? 'active' : '' }}"
+          class="color-option {{ gameTags[currentEditIndex].color === item.value ? 'active' : '' }}"
           style="background-color: {{ item.value }};"
           bindtap="selectColor"
           data-color="{{ item.value }}"
         >
           <image
-            wx:if="{{ subteams[currentEditIndex].color === item.value }}"
+            wx:if="{{ gameTags[currentEditIndex].color === item.value }}"
             src="/assets/icons/check.svg"
             class="check-icon"
             mode="aspectFit"

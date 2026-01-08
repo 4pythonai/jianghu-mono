@@ -29,7 +29,7 @@ export const gameStore = observable({
 
     // ==================== 队内/队际赛扩展字段 ====================
     gameType: 'common',           // 'common' | 'single_team' | 'cross_teams'
-    subteams: [],                 // 分队列表（t_team_game_tags）
+    gameTags: [],                 // 分队列表（t_team_game_tags）
     tagMembers: [],               // 报名人员列表（按 tag/分队组织）
     groups: [],                   // 所有分组列表
     spectators: {                 // 围观数据
@@ -70,7 +70,7 @@ export const gameStore = observable({
 
         // 重置队内/队际赛字段
         this.gameType = 'common';
-        this.subteams = [];
+        this.gameTags = [];
         this.tagMembers = [];
         this.groups = [];
         this.spectators = { count: 0, avatars: [] };
@@ -292,7 +292,7 @@ export const gameStore = observable({
             gameAbstract: this.gameAbstract,
             // 队内/队际赛字段
             gameType: this.gameType,
-            subteams: this.subteams,
+            gameTags: this.gameTags,
             tagMembers: this.tagMembers,
             groups: this.groups,
             spectators: this.spectators,
@@ -332,7 +332,7 @@ export const gameStore = observable({
         // 切换比赛时清理旧数据
         if (this.gameid && String(this.gameid) !== String(gameId)) {
             console.log('[gameStore] 切换队内/队际赛，清理旧数据');
-            this.subteams = [];
+            this.gameTags = [];
             this.tagMembers = [];
             this.groups = [];
             this.spectators = { count: 0, avatars: [] };
@@ -466,21 +466,21 @@ export const gameStore = observable({
     /**
      * 加载分队列表（t_team_game_tags）
      */
-    loadSubteams: action(async function (gameId = null) {
+    loadGameTags: action(async function (gameId = null) {
         const id = gameId || this.gameid;
         if (!id) return;
 
         try {
             const res = await teamgameApi.getGameTags({ game_id: id });
             if (res?.code === 200 && res.data) {
-                this.subteams = res.data.map(t => ({
+                this.gameTags = res.data.map(t => ({
                     id: t.id,
                     tagName: t.tag_name,
                     color: t.color || null,
                     order: t.tag_order || 1,
                     teamId: t.team_id || null  // 队际赛时关联的球队ID
                 }));
-                console.log('[gameStore] loadSubteams 完成:', this.subteams.length, '个分队');
+                console.log('[gameStore] loadGameTags 完成:', this.gameTags.length, '个分队');
             }
         } catch (err) {
             console.error('[gameStore] 加载分队失败:', err);

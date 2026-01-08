@@ -7,11 +7,11 @@ const teamgame = {
     // 更新队内赛信息
     updateTeamGame: (data, options) => request('/TeamGame/updateTeamGame', data, options),
     // 添加分队
-    addSubteam: (data, options) => request('/TeamGame/addSubteam', data, options),
+    addGameTag: (data, options) => request('/TeamGame/addGameTag', data, options),
     // 更新分队
-    updateSubteam: (data, options) => request('/TeamGame/updateSubteam', data, options),
+    updateGameTag: (data, options) => request('/TeamGame/updateGameTag', data, options),
     // 删除分队
-    deleteSubteam: (data, options) => request('/TeamGame/deleteSubteam', data, options),
+    deleteGameTag: (data, options) => request('/TeamGame/deleteGameTag', data, options),
     // 获取分队列表
     getGameTags: (data, options) => request('/TeamGame/getGameTags', data, options),
 
@@ -61,13 +61,13 @@ const teamgame = {
     // 获取球队赛事列表
     getTeamGameList: (data, options) => request('/TeamGame/getTeamGameList', data, options),
     // 获取分队成绩
-    getSubteamScores: (data, options) => request('/TeamGame/getSubteamScores', data, options),
+    getScoresByGameTag: (data, options) => request('/TeamGame/getScoresByGameTag', data, options),
     // 获取比洞赛结果
     getMatchResults: (data, options) => request('/TeamGame/getMatchResults', data, options),
     // 获取我的报名状态
     getMyRegistration: (data, options) => request('/TeamGame/getMyRegistration', data, options),
     // 修改我的分队
-    changeMySubteam: (data, options) => request('/TeamGame/changeMySubteam', data, options),
+    changeMyTagInGame: (data, options) => request('/TeamGame/changeMyTagInGame', data, options),
 
     // ==================== Phase 6: 队际赛 ====================
     // 创建队际赛 {team_ids: [], team_aliases: [], name, ...}

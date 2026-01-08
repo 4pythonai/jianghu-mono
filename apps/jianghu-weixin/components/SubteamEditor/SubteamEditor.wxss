@@ -2,7 +2,7 @@
     width: 100%;
 }
 
-.subteams-list {
+.gameTags-list {
     margin-bottom: 16rpx;
 }
 

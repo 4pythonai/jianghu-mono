@@ -154,7 +154,7 @@ class TeamGame extends MY_Controller {
      * @param string tag_name 分队名称
      * @param string color 分队颜色（可选）
      */
-    public function addSubteam() {
+    public function addGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
@@ -168,14 +168,14 @@ class TeamGame extends MY_Controller {
         // 检查赛制对分队数量的限制
         $game = $this->MTeamGame->getTeamGame($game_id);
         if ($this->MTeamGame->isMatchPlay($game['match_format'])) {
-            $subteamCount = $this->MTeamGame->getTagsCount($game_id);
-            if ($subteamCount >= 2) {
+            $tagCount = $this->MTeamGame->getTagsCount($game_id);
+            if ($tagCount >= 2) {
                 echo json_encode(['code' => 400, 'message' => '比洞赛最多只能设置2个分队'], JSON_UNESCAPED_UNICODE);
                 return;
             }
         }
 
-        $tag_id = $this->MTeamGame->addSubteam(
+        $tag_id = $this->MTeamGame->addGameTag(
             $game_id,
             $json_paras['tag_name'],
             $json_paras['color'] ?? null
@@ -635,8 +635,8 @@ class TeamGame extends MY_Controller {
 
         // 如果是团队赛制，检查是否已设置分队
         if ($this->MTeamGame->requiresSettingTags($game['match_format'])) {
-            $subteamCount = $this->MTeamGame->getTagsCount($game_id);
-            if ($subteamCount < 2) {
+            $tagCount = $this->MTeamGame->getTagsCount($game_id);
+            if ($tagCount < 2) {
                 echo json_encode(['code' => 400, 'message' => '团队赛制需要先设置至少2个分队'], JSON_UNESCAPED_UNICODE);
                 return;
             }
@@ -865,7 +865,7 @@ class TeamGame extends MY_Controller {
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
 
-        $this->db->select('m.*, s.tag_name, s.color as subteam_color');
+        $this->db->select('m.*, s.tag_name, s.color as tag_color');
         $this->db->from('t_game_tag_member m');
         $this->db->join('t_team_game_tags s', 'm.tag_id = s.id', 'left');
         $this->db->where('m.game_id', $game_id);
@@ -883,7 +883,7 @@ class TeamGame extends MY_Controller {
      * @param int game_id 赛事ID
      * @param int tag_id 新的分队ID
      */
-    public function changeMySubteam() {
+    public function changeMyTagInGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];

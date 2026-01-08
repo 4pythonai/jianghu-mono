@@ -1,101 +1,107 @@
 <CustomNavBar title="{{groupName || '分组配置'}}" bind:back="handleBack" />
 
 <view class="page-container" style="padding-top: {{navBarHeight}}px;">
-    <!-- 已选球员区域 -->
-    <view class="selected-section">
-        <view class="section-title">已选球员 ({{selectedPlayers.length}}/4)</view>
-        <view class="selected-players">
-            <!-- 已选球员卡片 -->
-            <view
-                wx:for="{{selectedPlayers}}"
-                wx:key="id"
-                class="player-card selected"
-            >
-                <view class="remove-btn" bindtap="onRemovePlayer" data-id="{{item.id}}">×</view>
-                <image class="player-avatar" src="{{item.avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
-                <text class="player-name">{{item.name}}</text>
-                <text class="player-team">{{item.teamName}}</text>
-            </view>
+  <!-- 已选球员区域 -->
+  <view class="selected-section">
+    <view class="section-title">已选球员 ({{selectedPlayers.length}}/4)</view>
+    <view class="selected-players">
+      <!-- 已选球员卡片 -->
+      <view wx:for="{{selectedPlayers}}" wx:key="id" class="player-card selected">
+        <view class="remove-btn" bindtap="onRemovePlayer" data-id="{{item.id}}">×</view>
+        <image
+          class="player-avatar"
+          src="{{item.avatar || '/assets/images/default-avatar.png'}}"
+          mode="aspectFill"
+        />
+        <text class="player-name">{{item.name}}</text>
+        <text class="player-team">{{item.teamName}}</text>
+      </view>
 
-            <!-- 空位槽（补足4个） -->
-            <view wx:for="{{4 - selectedPlayers.length}}" wx:key="index" class="player-card empty">
-                <view class="empty-icon">+</view>
-                <text class="empty-text">待选</text>
-            </view>
-        </view>
+      <!-- 空位槽（补足4个） -->
+      <view wx:for="{{4 - selectedPlayers.length}}" wx:key="index" class="player-card empty">
+        <view class="empty-icon">+</view>
+        <text class="empty-text">待选</text>
+      </view>
     </view>
+  </view>
 
-    <!-- TAG 标签栏 -->
-    <view class="tag-bar">
-        <scroll-view class="tag-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-            <view class="tag-list">
-                <view
-                    wx:for="{{subteams}}"
-                    wx:key="id"
-                    class="tag-item {{currentTagIndex === index ? 'active' : ''}}"
-                    data-index="{{index}}"
-                    bindtap="onTagChange"
-                >
-                    <text>{{item.tagName}}</text>
-                    <view wx:if="{{currentTagIndex === index}}" class="tag-indicator"></view>
-                </view>
-            </view>
-        </scroll-view>
-        <view class="tag-more" bindtap="onShowTagPopup">
-            <text class="more-icon">···</text>
+  <!-- TAG 标签栏 -->
+  <view class="tag-bar">
+    <scroll-view class="tag-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="tag-list">
+        <view
+          wx:for="{{gameTags}}"
+          wx:key="id"
+          class="tag-item {{currentTagIndex === index ? 'active' : ''}}"
+          data-index="{{index}}"
+          bindtap="onTagChange"
+        >
+          <text>{{item.tagName}}</text>
+          <view wx:if="{{currentTagIndex === index}}" class="tag-indicator"></view>
         </view>
-    </view>
-
-    <!-- 球员选择区域 -->
-    <scroll-view class="player-list" scroll-y enhanced show-scrollbar="{{false}}">
-        <view class="player-grid">
-            <view
-                wx:for="{{currentTagPlayers}}"
-                wx:key="id"
-                class="player-item {{item.isDisabled ? 'disabled' : ''}}"
-                bindtap="onPlayerToggle"
-                data-id="{{item.id}}"
-                data-disabled="{{item.isDisabled}}"
-            >
-                <view class="checkbox {{item.isSelected ? 'checked' : ''}} {{item.isDisabled ? 'disabled' : ''}}">
-                    <text wx:if="{{item.isSelected}}">✓</text>
-                </view>
-                <image class="player-avatar" src="{{item.avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
-                <text class="player-name">{{item.name}}</text>
-            </view>
-        </view>
-
-        <!-- 空状态 -->
-        <view wx:if="{{currentTagPlayers.length === 0}}" class="empty-state">
-            <text>暂无球员</text>
-        </view>
+      </view>
     </scroll-view>
-
-    <!-- 底部操作栏 -->
-    <view class="bottom-bar">
-        <button class="btn-cancel" bindtap="onCancel">取消</button>
-        <button class="btn-confirm" bindtap="onSave">确定</button>
+    <view class="tag-more" bindtap="onShowTagPopup">
+      <text class="more-icon">···</text>
     </view>
+  </view>
 
-    <!-- TAG 选择弹窗 -->
-    <view wx:if="{{showTagPopup}}" class="popup-mask" bindtap="onCloseTagPopup">
-        <view class="popup-content" catchtap>
-            <view class="popup-header">
-                <text class="popup-title">选择分队</text>
-                <view class="popup-close" bindtap="onCloseTagPopup">×</view>
-            </view>
-            <scroll-view class="popup-list" scroll-y>
-                <view
-                    wx:for="{{subteams}}"
-                    wx:key="id"
-                    class="popup-item {{currentTagIndex === index ? 'active' : ''}}"
-                    data-index="{{index}}"
-                    bindtap="onSelectTag"
-                >
-                    <text>{{item.tagName}}</text>
-                    <text wx:if="{{currentTagIndex === index}}" class="check-icon">✓</text>
-                </view>
-            </scroll-view>
+  <!-- 球员选择区域 -->
+  <scroll-view class="player-list" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="player-grid">
+      <view
+        wx:for="{{currentTagPlayers}}"
+        wx:key="id"
+        class="player-item {{item.isDisabled ? 'disabled' : ''}}"
+        bindtap="onPlayerToggle"
+        data-id="{{item.id}}"
+        data-disabled="{{item.isDisabled}}"
+      >
+        <view
+          class="checkbox {{item.isSelected ? 'checked' : ''}} {{item.isDisabled ? 'disabled' : ''}}"
+        >
+          <text wx:if="{{item.isSelected}}">✓</text>
         </view>
+        <image
+          class="player-avatar"
+          src="{{item.avatar || '/assets/images/default-avatar.png'}}"
+          mode="aspectFill"
+        />
+        <text class="player-name">{{item.name}}</text>
+      </view>
     </view>
+
+    <!-- 空状态 -->
+    <view wx:if="{{currentTagPlayers.length === 0}}" class="empty-state">
+      <text>暂无球员</text>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <button class="btn-cancel" bindtap="onCancel">取消</button>
+    <button class="btn-confirm" bindtap="onSave">确定</button>
+  </view>
+
+  <!-- TAG 选择弹窗 -->
+  <view wx:if="{{showTagPopup}}" class="popup-mask" bindtap="onCloseTagPopup">
+    <view class="popup-content" catchtap>
+      <view class="popup-header">
+        <text class="popup-title">选择分队</text>
+        <view class="popup-close" bindtap="onCloseTagPopup">×</view>
+      </view>
+      <scroll-view class="popup-list" scroll-y>
+        <view
+          wx:for="{{gameTags}}"
+          wx:key="id"
+          class="popup-item {{currentTagIndex === index ? 'active' : ''}}"
+          data-index="{{index}}"
+          bindtap="onSelectTag"
+        >
+          <text>{{item.tagName}}</text>
+          <text wx:if="{{currentTagIndex === index}}" class="check-icon">✓</text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
 </view>
