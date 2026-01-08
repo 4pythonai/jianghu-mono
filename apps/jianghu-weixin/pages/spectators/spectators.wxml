@@ -22,6 +22,7 @@
             data-userid="{{item.userid}}"
             bindtap="onSpectatorTap"
         >
+            <text class="spectator-index">{{index + 1}}</text>
             <image
                 class="spectator-avatar"
                 src="{{item.avatar || defaultAvatar}}"

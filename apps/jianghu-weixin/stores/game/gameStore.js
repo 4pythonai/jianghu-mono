@@ -1,5 +1,8 @@
 import { observable, action } from 'mobx-miniprogram'
 import gameApi from '../../api/modules/game'
+import teamgameApi from '../../api/modules/teamgame'
+import eventsApi from '../../api/modules/events'
+import { config } from '../../api/config'
 import {
     normalizePlayer,
     normalizeHole,
@@ -16,13 +19,38 @@ export const gameStore = observable({
     groupid: null,
     creatorid: null,     // 创建者ID
     gameData: null,      // 原始游戏数据
-    players: [],         // 玩家列表
+    players: [],         // 玩家列表（记分用，当前组的玩家）
     red_blue: [],        // 红蓝分组数据
     gameAbstract: '',    // 游戏摘要
 
     loading: false,      // 加载状态
     error: null,         // 错误信息
     isSaving: false,     // 保存状态
+
+    // ==================== 队内/队际赛扩展字段 ====================
+    gameType: 'common',           // 'common' | 'single_team' | 'cross_teams'
+    subteams: [],                 // 分队列表（t_team_game_tags）
+    tagMembers: [],               // 报名人员列表（按 tag/分队组织）
+    groups: [],                   // 所有分组列表
+    spectators: {                 // 围观数据
+        count: 0,
+        avatars: []
+    },
+    groupingPermission: 'admin',  // 分组权限：'admin' | 'user'
+    eventDetail: {                // 赛事详情（用于展示）
+        title: '',
+        teamName: '',
+        teamAvatar: '',
+        teams: [],
+        location: '',
+        dateTime: '',
+        fee: '',
+        deadline: '',
+        schedule: [],
+        awards: [],
+        coverType: 'default',
+        covers: []
+    },
 
     /**
      * 重置 store 数据
@@ -39,6 +67,29 @@ export const gameStore = observable({
         this.loading = false;
         this.error = null;
         this.isSaving = false;
+
+        // 重置队内/队际赛字段
+        this.gameType = 'common';
+        this.subteams = [];
+        this.tagMembers = [];
+        this.groups = [];
+        this.spectators = { count: 0, avatars: [] };
+        this.groupingPermission = 'admin';
+        this.eventDetail = {
+            title: '',
+            teamName: '',
+            teamAvatar: '',
+            teams: [],
+            location: '',
+            dateTime: '',
+            fee: '',
+            deadline: '',
+            schedule: [],
+            awards: [],
+            coverType: 'default',
+            covers: []
+        };
+
         // 调用关联 store 的清理方法
         scoreStore.clear();
         holeRangeStore.clear();
@@ -239,6 +290,15 @@ export const gameStore = observable({
             red_blue: this.red_blue,
             kickConfigs: runtimeStore.kickConfigs,
             gameAbstract: this.gameAbstract,
+            // 队内/队际赛字段
+            gameType: this.gameType,
+            subteams: this.subteams,
+            tagMembers: this.tagMembers,
+            groups: this.groups,
+            spectators: this.spectators,
+            groupingPermission: this.groupingPermission,
+            eventDetail: this.eventDetail,
+            isCreator: this.isCreator,
             // 从 holeRangeStore 获取洞相关数据
             ...holeRangeStore.getState()
         };
@@ -250,5 +310,298 @@ export const gameStore = observable({
         return holeRangeStore.holeList;
     },
 
+    // ==================== 队内/队际赛 Actions ====================
 
-}); 
+    /**
+     * 判断当前用户是否为创建者
+     */
+    get isCreator() {
+        const app = getApp();
+        const currentUserId = app?.globalData?.userInfo?.userid;
+        return currentUserId && String(this.creatorid) === String(currentUserId);
+    },
+
+    /**
+     * 加载队内/队际赛详情
+     * @param {number} gameId 比赛ID
+     * @param {string} gameType 'single_team' | 'cross_teams'
+     */
+    fetchTeamGameDetail: action(async function (gameId, gameType = 'single_team') {
+        if (this.loading) return;
+
+        // 切换比赛时清理旧数据
+        if (this.gameid && String(this.gameid) !== String(gameId)) {
+            console.log('[gameStore] 切换队内/队际赛，清理旧数据');
+            this.subteams = [];
+            this.tagMembers = [];
+            this.groups = [];
+            this.spectators = { count: 0, avatars: [] };
+        }
+
+        this.loading = true;
+        this.error = null;
+        this.gameid = gameId;
+        this.gameType = gameType;
+
+        try {
+            // 根据比赛类型调用不同的 API
+            const apiMethod = gameType === 'cross_teams'
+                ? teamgameApi.getCrossTeamGameDetail
+                : teamgameApi.getTeamGameDetail;
+
+            const res = await apiMethod({ game_id: gameId });
+
+            if (res?.code === 200 && res.data) {
+                this._processTeamGameData(res.data);
+                return res;
+            }
+
+            throw new Error(res?.message || '获取赛事详情失败');
+        } catch (err) {
+            console.error('[gameStore] 获取队内/队际赛详情失败:', err);
+            this.error = err.message || '获取数据失败';
+            throw err;
+        } finally {
+            this.loading = false;
+        }
+    }),
+
+    /**
+     * 处理队内/队际赛数据
+     */
+    _processTeamGameData: action(function (data) {
+        this.creatorid = data.creatorid || null;
+        this.groupingPermission = data.grouping_permission || 'admin';
+        this.gameData = data;
+
+        // 解析 awards
+        let awards = [];
+        if (data.awards) {
+            if (Array.isArray(data.awards)) {
+                awards = data.awards;
+            } else if (typeof data.awards === 'string') {
+                awards = data.awards.split(/[,，\n]/).map(s => s.trim()).filter(Boolean);
+            }
+        }
+
+        // 解析 schedule
+        let schedule = [];
+        if (data.schedule) {
+            try {
+                schedule = typeof data.schedule === 'string' ? JSON.parse(data.schedule) : data.schedule;
+            } catch (e) {
+                console.error('[gameStore] 解析赛事流程失败:', e);
+            }
+        }
+
+        // 格式化报名截止时间
+        let deadline = '';
+        if (data.registration_deadline) {
+            try {
+                const date = new Date(data.registration_deadline);
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                deadline = `报名截止: ${month}月${day}日 ${hours}:${minutes}`;
+            } catch (e) {
+                deadline = data.registration_deadline;
+            }
+        }
+
+        this.eventDetail = {
+            title: data.team_game_title || data.name || '',
+            teamName: data.team_name || '',
+            teamAvatar: data.team_avatar || '',
+            teams: data.cross_teams || [],
+            location: data.course_name || '',
+            dateTime: data.open_time || '',
+            fee: data.entry_fee ? `${data.entry_fee}元` : '',
+            deadline: deadline,
+            schedule: schedule,
+            awards: awards,
+            coverType: data.cover_type || 'default',
+            covers: data.covers || []
+        };
+
+        console.log('[gameStore] _processTeamGameData 完成', {
+            creatorid: this.creatorid,
+            groupingPermission: this.groupingPermission
+        });
+    }),
+
+    /**
+     * 加载报名人员列表
+     */
+    loadTagMembers: action(async function (gameId = null) {
+        const id = gameId || this.gameid;
+        if (!id) return;
+
+        try {
+            const res = await teamgameApi.getTagMembersAll({ game_id: id });
+            if (res?.code === 200 && res.data) {
+                const staticURL = config.staticURL;
+                this.tagMembers = res.data.map(m => {
+                    let avatar = m.avatar || '';
+                    if (avatar && avatar.startsWith('/')) {
+                        avatar = staticURL + avatar;
+                    }
+                    return {
+                        id: m.user_id,
+                        seq: m.seq,
+                        name: m.nickname || '球友',
+                        avatar: avatar,
+                        handicap: m.handicap,
+                        tagName: m.tag_name || '',
+                        tagColor: m.color || ''
+                    };
+                });
+                console.log('[gameStore] loadTagMembers 完成:', this.tagMembers.length, '人');
+            }
+        } catch (err) {
+            console.error('[gameStore] 加载报名人员失败:', err);
+        }
+    }),
+
+    /**
+     * 加载分队列表（t_team_game_tags）
+     */
+    loadSubteams: action(async function (gameId = null) {
+        const id = gameId || this.gameid;
+        if (!id) return;
+
+        try {
+            const res = await teamgameApi.getSubteams({ game_id: id });
+            if (res?.code === 200 && res.data) {
+                this.subteams = res.data.map(t => ({
+                    id: t.id,
+                    tagName: t.tag_name,
+                    color: t.color || null,
+                    order: t.tag_order || 1,
+                    teamId: t.team_id || null  // 队际赛时关联的球队ID
+                }));
+                console.log('[gameStore] loadSubteams 完成:', this.subteams.length, '个分队');
+            }
+        } catch (err) {
+            console.error('[gameStore] 加载分队失败:', err);
+        }
+    }),
+
+    /**
+     * 加载分组列表
+     */
+    loadGroups: action(async function (gameId = null) {
+        const id = gameId || this.gameid;
+        if (!id) return;
+
+        try {
+            const res = await teamgameApi.getGroups({ game_id: id });
+            if (res?.code === 200 && res.data) {
+                this.groups = this._parseGroups(res.data);
+                console.log('[gameStore] loadGroups 完成:', this.groups.length, '组');
+            }
+        } catch (err) {
+            console.error('[gameStore] 加载分组失败:', err);
+        }
+    }),
+
+    /**
+     * 解析分组数据
+     */
+    _parseGroups(groups) {
+        if (!Array.isArray(groups)) return [];
+
+        return groups.map((g, index) => {
+            const groupId = g.groupid || g.group_id || g.id || (index + 1);
+            return {
+                id: String(groupId),
+                name: g.group_name || `第${index + 1}组`,
+                players: (g.members || g.players || []).map(p => ({
+                    id: p.userid || p.user_id,
+                    name: p.nickname || p.user_name || '球友',
+                    avatar: p.avatar || '',
+                    teamName: p.tag_name || '',
+                    tee: p.tee || ''
+                }))
+            };
+        });
+    },
+
+    /**
+     * 加载围观数据
+     */
+    loadSpectators: action(async function (gameId = null) {
+        const id = gameId || this.gameid;
+        if (!id) return;
+
+        try {
+            const res = await eventsApi.getSpectatorList({ game_id: id, page: 1, page_size: 8 });
+            if (res?.code === 200) {
+                const avatars = (res.list || []).map(item => item.avatar);
+                this.spectators = {
+                    count: res.total || 0,
+                    avatars: avatars
+                };
+                console.log('[gameStore] loadSpectators 完成:', this.spectators.count, '人');
+            }
+        } catch (err) {
+            console.error('[gameStore] 加载围观数据失败:', err);
+        }
+    }),
+
+    /**
+     * 记录围观（静默调用）
+     */
+    recordSpectator: action(async function (gameId = null) {
+        const id = gameId || this.gameid;
+        if (!id) return;
+
+        try {
+            await eventsApi.addSpectator({ game_id: id });
+        } catch (err) {
+            // 静默失败
+            console.error('[gameStore] 记录围观失败:', err);
+        }
+    }),
+
+    /**
+     * 创建空分组
+     */
+    createGroup: action(async function (gameId = null) {
+        const id = gameId || this.gameid;
+        if (!id) return { success: false, message: '缺少 game_id' };
+
+        try {
+            const res = await teamgameApi.createGroup({ game_id: id });
+            if (res?.code === 200) {
+                // 重新加载分组列表
+                await this.loadGroups(id);
+                return { success: true };
+            }
+            return { success: false, message: res?.message || '创建失败' };
+        } catch (err) {
+            return { success: false, message: err.message || '创建失败' };
+        }
+    }),
+
+    /**
+     * 删除分组
+     */
+    deleteGroup: action(async function (groupId, gameId = null) {
+        const id = gameId || this.gameid;
+        if (!id || !groupId) return { success: false, message: '缺少参数' };
+
+        try {
+            const res = await teamgameApi.deleteGroup({ game_id: id, group_id: groupId });
+            if (res?.code === 200) {
+                // 重新加载分组列表
+                await this.loadGroups(id);
+                return { success: true };
+            }
+            return { success: false, message: res?.message || '删除失败' };
+        } catch (err) {
+            return { success: false, message: err.message || '删除失败' };
+        }
+    }),
+
+});

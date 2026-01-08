@@ -7,12 +7,19 @@ Component({
         /** 分组ID */
         groupId: {
             type: String,
-            value: ''
+            value: '',
+            observer(newVal) {
+                console.log('[GroupCard] groupId 收到:', newVal, typeof newVal)
+                this.setData({ _groupId: newVal })
+            }
         },
         /** 分组名称（如 G1, G2） */
         groupName: {
             type: String,
-            value: ''
+            value: '',
+            observer(newVal) {
+                console.log('[GroupCard] groupName 收到:', newVal)
+            }
         },
         /** 组内球员列表 [{avatar, name, teamName, gender}] */
         players: {
@@ -32,13 +39,17 @@ Component({
     },
 
     data: {
-        defaultAvatar: '/assets/images/default-avatar.png'
+        defaultAvatar: '/assets/images/default-avatar.png',
+        _groupId: ''
     },
 
     methods: {
         onTap() {
+            const groupId = this.data._groupId || this.properties.groupId
+            console.log('[GroupCard] onTap, groupId:', groupId)
             if (this.properties.clickable) {
-                this.triggerEvent('tap', { groupId: this.properties.groupId })
+                // 使用 grouptap 避免与原生 tap 事件冲突
+                this.triggerEvent('grouptap', { groupId })
             }
         },
 

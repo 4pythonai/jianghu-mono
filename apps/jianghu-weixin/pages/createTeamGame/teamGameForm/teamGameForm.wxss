@@ -136,3 +136,5 @@
 .add-subteam-btn:active {
     opacity: 0.8;
 }
+
+/* 赛事流程样式已移至 /styles/createGame.wxss */

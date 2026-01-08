@@ -80,6 +80,21 @@
           </view>
         </view>
 
+        <!-- 报名截止时间 -->
+        <view class="form-item">
+          <view class="form-label">
+            <text>报名截止时间</text>
+            <text class="form-sub-label">(可选)</text>
+          </view>
+          <view class="form-input-wrapper">
+            <TimePicker
+              value="{{ formData.registrationDeadline }}"
+              placeholder="请选择报名截止时间"
+              bind:change="onRegistrationDeadlineChange"
+            />
+          </view>
+        </view>
+
         <!-- 参赛费用 -->
         <view class="form-item">
           <view class="form-label">
@@ -198,6 +213,47 @@
               maxlength="500"
               auto-height
             />
+          </view>
+        </view>
+
+        <!-- 赛事流程 -->
+        <view class="form-item">
+          <view class="form-label">
+            <text>赛事流程</text>
+            <text class="form-sub-label">(可选)</text>
+          </view>
+          <view class="schedule-container">
+            <view
+              wx:for="{{ formData.schedule }}"
+              wx:key="index"
+              class="schedule-item-edit"
+            >
+              <view class="schedule-time-input">
+                <input
+                  type="text"
+                  placeholder="时间，如 08:00"
+                  value="{{ item.time }}"
+                  bindinput="onScheduleTimeInput"
+                  data-index="{{ index }}"
+                />
+              </view>
+              <view class="schedule-content-input">
+                <input
+                  type="text"
+                  placeholder="内容，如 签到集合"
+                  value="{{ item.content }}"
+                  bindinput="onScheduleContentInput"
+                  data-index="{{ index }}"
+                />
+              </view>
+              <view class="delete-schedule-btn" bindtap="deleteScheduleItem" data-index="{{ index }}">
+                <image src="/assets/icons/close.svg" mode="aspectFit"></image>
+              </view>
+            </view>
+            <view class="add-schedule-btn" bindtap="addScheduleItem">
+              <image src="/assets/icons/add.svg" class="add-icon" mode="aspectFit"></image>
+              <text>添加流程</text>
+            </view>
           </view>
         </view>
 

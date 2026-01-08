@@ -30,9 +30,11 @@ Page({
         formData: {
             name: '',                    // 比赛名称
             openTime: '',                // 开球时间
+            registrationDeadline: '',    // 报名截止时间
             entryFee: '',                // 参赛费用
             matchFormat: 'individual_stroke', // 赛制
             awards: '',                  // 奖项设置
+            schedule: [],                // 赛事流程 [{time, content}, ...]
             groupingPermission: 'admin', // 分组权限
             isPublic: 'y',               // 是否公开
             topNRanking: ''              // 取前N名成绩
@@ -122,6 +124,11 @@ Page({
         this.setData({ 'formData.openTime': value })
     },
 
+    onRegistrationDeadlineChange(e) {
+        const { value } = e.detail
+        this.setData({ 'formData.registrationDeadline': value })
+    },
+
     onEntryFeeInput(e) {
         this.setData({ 'formData.entryFee': e.detail.value })
     },
@@ -156,6 +163,36 @@ Page({
 
     onAwardsInput(e) {
         this.setData({ 'formData.awards': e.detail.value })
+    },
+
+    // ==================== 赛事流程管理 ====================
+
+    addScheduleItem() {
+        const schedule = [...this.data.formData.schedule, { time: '', content: '' }]
+        this.setData({ 'formData.schedule': schedule })
+    },
+
+    deleteScheduleItem(e) {
+        const index = e.currentTarget.dataset.index
+        const schedule = [...this.data.formData.schedule]
+        schedule.splice(index, 1)
+        this.setData({ 'formData.schedule': schedule })
+    },
+
+    onScheduleTimeInput(e) {
+        const index = e.currentTarget.dataset.index
+        const value = e.detail.value
+        const schedule = [...this.data.formData.schedule]
+        schedule[index].time = value
+        this.setData({ 'formData.schedule': schedule })
+    },
+
+    onScheduleContentInput(e) {
+        const index = e.currentTarget.dataset.index
+        const value = e.detail.value
+        const schedule = [...this.data.formData.schedule]
+        schedule[index].content = value
+        this.setData({ 'formData.schedule': schedule })
     },
 
     onGroupingPermissionChange(e) {
@@ -301,6 +338,9 @@ Page({
         try {
             const { teamId, formData, selectedCourse, subteams, courtSelection } = this.data
 
+            // 过滤有效的赛事流程条目
+            const validSchedule = formData.schedule.filter(item => item.time || item.content)
+
             // 调用创建队内赛 API
             const result = await app.api.teamgame.createTeamGame({
                 team_id: teamId,
@@ -311,8 +351,10 @@ Page({
                 back_nine_court_id: courtSelection?.backNineCourtId || null,
                 match_format: formData.matchFormat,
                 open_time: formData.openTime,
+                registration_deadline: formData.registrationDeadline || null,
                 entry_fee: formData.entryFee ? parseFloat(formData.entryFee) : 0,
                 awards: formData.awards || null,
+                schedule: validSchedule.length > 0 ? validSchedule : null,
                 grouping_permission: formData.groupingPermission,
                 'is_public_registration': formData.isPublic,
                 top_n_ranking: formData.topNRanking ? parseInt(formData.topNRanking) : null
@@ -329,7 +371,7 @@ Page({
                 for (const subteam of subteams) {
                     await app.api.teamgame.addSubteam({
                         game_id: gameId,
-                        subteam_name: subteam.name,
+                        tag_name: subteam.name,
                         color: subteam.color
                     })
                 }

@@ -179,6 +179,40 @@ Page({
 - 在WXML中进行任何字符串操作前，先检查`utils/es.wxs`是否有对应工具函数，没有则需要先实现
 - 任何需要在WXML中使用的计算逻辑，都应该在JS中通过observers计算后存储到data中
 
+**⚠️ 组件自定义事件命名规范**
+
+**不要使用原生事件名作为自定义事件名**，包括：`tap`, `touchstart`, `touchmove`, `touchend`, `scroll`, `input`, `focus`, `blur` 等。
+
+原因：原生事件会覆盖自定义事件，导致 `e.detail` 只包含原生事件数据（如 x, y 坐标），而不是你传递的自定义数据。
+
+```javascript
+// ❌ 错误：使用原生事件名 'tap'
+Component({
+  methods: {
+    onTap() {
+      this.triggerEvent('tap', { groupId: '123' })  // 会被原生 tap 事件覆盖！
+    }
+  }
+})
+// 父页面 bind:tap="onGroupTap" 收到的 e.detail = { x: 242, y: 287 }
+
+// ✅ 正确：使用自定义事件名
+Component({
+  methods: {
+    onTap() {
+      this.triggerEvent('grouptap', { groupId: '123' })  // 自定义名称
+    }
+  }
+})
+// 父页面 bind:grouptap="onGroupTap" 收到的 e.detail = { groupId: '123' }
+```
+
+**推荐的事件命名方式**：
+- `itemtap` / `itemclick` - 列表项点击
+- `confirm` / `cancel` - 确认/取消操作
+- `change` / `select` - 选择变化
+- `cardtap` / `grouptap` - 特定组件点击
+
 ## Project Overview
 
 这是一个基于微信小程序的高尔夫运动应用，主要功能包括：

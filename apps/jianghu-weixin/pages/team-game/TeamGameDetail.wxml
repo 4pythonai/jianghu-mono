@@ -11,8 +11,8 @@
   <block wx:else>
     <!-- 围观人数 -->
     <SpectatorBar
-      count="{{spectatorCount}}"
-      avatars="{{spectatorAvatars}}"
+      count="{{spectators.count}}"
+      avatars="{{spectators.avatars}}"
       bind:more="onSpectatorMore"
     />
 
@@ -103,18 +103,16 @@
         <!-- 列表 -->
         <view class="player-list">
           <PlayerListItem
-            wx:for="{{players}}"
+            wx:for="{{tagMembers}}"
             wx:key="id"
-            index="{{index + 1}}"
+            index="{{item.seq}}"
             avatar="{{item.avatar}}"
             name="{{item.name}}"
-            gender="{{item.gender}}"
             handicap="{{item.handicap}}"
-            paid="{{item.paid}}"
           />
         </view>
         <!-- 空状态 -->
-        <view wx:if="{{players.length === 0}}" class="empty-state">
+        <view wx:if="{{tagMembers.length === 0}}" class="empty-state">
           <text>暂无报名人员</text>
         </view>
       </view>
@@ -126,24 +124,31 @@
           <GroupCard
             wx:for="{{groups}}"
             wx:key="id"
-            groupId="{{item.id}}"
-            groupName="{{item.name}}"
+            group-id="{{item.id}}"
+            group-name="{{item.name}}"
             players="{{item.players}}"
-            deletable="{{isCreator}}"
-            bind:tap="onGroupTap"
+            deletable="{{groupingPermission === 'user' || isCreator}}"
+            bind:grouptap="onGroupTap"
             bind:delete="onGroupDelete"
             bind:addPlayer="onAddPlayerToGroup"
           />
         </view>
 
-        <!-- 添加分组按钮 -->
-        <view wx:if="{{isCreator}}" class="add-group-btn" bindtap="onAddGroup">
+        <!-- 添加分组按钮：groupingPermission='user' 时所有人可见，='admin' 时仅创建者可见 -->
+        <view
+          wx:if="{{groupingPermission === 'user' || isCreator}}"
+          class="add-group-btn"
+          bindtap="onAddGroup"
+        >
           <text class="add-group-icon">+</text>
           <text class="add-group-text">添加分组</text>
         </view>
 
-        <!-- 空状态 -->
-        <view wx:if="{{groups.length === 0 && !isCreator}}" class="empty-state">
+        <!-- 空状态：仅当无分组且无法添加分组时显示 -->
+        <view
+          wx:if="{{groups.length === 0 && groupingPermission === 'admin' && !isCreator}}"
+          class="empty-state"
+        >
           <text>暂无分组</text>
         </view>
       </view>

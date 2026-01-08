@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS `t_game_cross_team` (
 -- 2. 修改 t_game_registration 表，添加 cross_team_id 字段
 -- ============================================================
 ALTER TABLE `t_game_registration`
-    ADD COLUMN `cross_team_id` INT UNSIGNED DEFAULT NULL COMMENT '队际赛报名球队ID（选择代表哪个球队）' AFTER `subteam_id`,
+    ADD COLUMN `cross_team_id` INT UNSIGNED DEFAULT NULL COMMENT '队际赛报名球队ID（选择代表哪个球队）' AFTER `tag_id`,
     ADD KEY `idx_cross_team_id` (`cross_team_id`);
 
 -- ============================================================
 -- 3. 修改 t_game_group_user 表，添加 cross_team_id 字段
 -- ============================================================
 ALTER TABLE `t_game_group_user`
-    ADD COLUMN `cross_team_id` INT UNSIGNED DEFAULT NULL COMMENT '队际赛所属球队ID' AFTER `subteam_id`,
+    ADD COLUMN `cross_team_id` INT UNSIGNED DEFAULT NULL COMMENT '队际赛所属球队ID' AFTER `tag_id`,
     ADD KEY `idx_cross_team_id` (`cross_team_id`);
 
 -- ============================================================

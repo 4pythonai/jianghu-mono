@@ -10,8 +10,8 @@ if (!defined('BASEPATH')) {
  * 处理队内赛和队际赛的创建、报名、分组、状态管理等功能
  *
  * 统一模型说明：
- * - 队内赛：t_game_subteam.team_id = NULL，subteam_name 为临时队名
- * - 队际赛：t_game_subteam.team_id 指向真实球队，subteam_name 为球队简称
+ * - 队内赛：t_team_game_tags.team_id = NULL，tag_name 为临时队名
+ * - 队际赛：t_team_game_tags.team_id 指向真实球队，tag_name 为球队简称
  */
 class TeamGame extends MY_Controller {
 
@@ -35,8 +35,10 @@ class TeamGame extends MY_Controller {
      * @param int courseid 球场ID（可选）
      * @param string match_format 赛制类型
      * @param string open_time 开球时间（可选）
+     * @param string registration_deadline 报名截止时间（可选）
      * @param float entry_fee 参赛费用（可选）
      * @param string awards 奖项设置（可选）
+     * @param array schedule 赛事流程（可选）[{time, content}, ...]
      * @param string grouping_permission 分组权限 admin/player（可选，默认admin）
      * @param string is_public_registration 是否公开 y/n（可选，默认y）
      * @param int top_n_ranking 取前N名成绩（可选）
@@ -70,6 +72,12 @@ class TeamGame extends MY_Controller {
             return;
         }
 
+        // 处理赛事流程：数组转 JSON 字符串
+        $schedule = null;
+        if (!empty($json_paras['schedule']) && is_array($json_paras['schedule'])) {
+            $schedule = json_encode($json_paras['schedule'], JSON_UNESCAPED_UNICODE);
+        }
+
         $data = [
             'team_id' => $team_id,
             'creator_id' => $userid,
@@ -77,8 +85,10 @@ class TeamGame extends MY_Controller {
             'courseid' => $json_paras['courseid'] ?? null,
             'match_format' => $match_format,
             'open_time' => $json_paras['open_time'] ?? null,
+            'registration_deadline' => $json_paras['registration_deadline'] ?? null,
             'entry_fee' => $json_paras['entry_fee'] ?? 0,
             'awards' => $json_paras['awards'] ?? null,
+            'schedule' => $schedule,
             'grouping_permission' => $json_paras['grouping_permission'] ?? 'admin',
             'is_public_registration' => $json_paras['is_public_registration'] ?? 'y',
             'top_n_ranking' => $json_paras['top_n_ranking'] ?? null
@@ -141,7 +151,7 @@ class TeamGame extends MY_Controller {
     /**
      * 添加分队
      * @param int game_id 赛事ID
-     * @param string subteam_name 分队名称
+     * @param string tag_name 分队名称
      * @param string color 分队颜色（可选）
      */
     public function addSubteam() {
@@ -158,39 +168,39 @@ class TeamGame extends MY_Controller {
         // 检查赛制对分队数量的限制
         $game = $this->MTeamGame->getTeamGame($game_id);
         if ($this->MTeamGame->isMatchPlay($game['match_format'])) {
-            $subteamCount = $this->MTeamGame->getSubteamCount($game_id);
+            $subteamCount = $this->MTeamGame->getTagsCount($game_id);
             if ($subteamCount >= 2) {
                 echo json_encode(['code' => 400, 'message' => '比洞赛最多只能设置2个分队'], JSON_UNESCAPED_UNICODE);
                 return;
             }
         }
 
-        $subteam_id = $this->MTeamGame->addSubteam(
+        $tag_id = $this->MTeamGame->addSubteam(
             $game_id,
-            $json_paras['subteam_name'],
+            $json_paras['tag_name'],
             $json_paras['color'] ?? null
         );
 
         echo json_encode([
             'code' => 200,
             'message' => '分队添加成功',
-            'data' => ['subteam_id' => $subteam_id]
+            'data' => ['tag_id' => $tag_id]
         ], JSON_UNESCAPED_UNICODE);
     }
 
     /**
      * 更新分队
-     * @param int subteam_id 分队ID
-     * @param string subteam_name 分队名称（可选）
+     * @param int tag_id 分队ID
+     * @param string tag_name 分队名称（可选）
      * @param string color 分队颜色（可选）
      */
-    public function updateSubteam() {
+    public function updateTeamGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
-        $subteam_id = $json_paras['subteam_id'];
+        $tag_id = $json_paras['tag_id'];
 
         // 获取分队信息以验证权限
-        $subteam = $this->MTeamGame->getSubteam($subteam_id);
+        $subteam = $this->MTeamGame->getTeamGameTag($tag_id);
         if (!$subteam) {
             echo json_encode(['code' => 404, 'message' => '分队不存在'], JSON_UNESCAPED_UNICODE);
             return;
@@ -201,22 +211,22 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $this->MTeamGame->updateSubteam($subteam_id, $json_paras);
+        $this->MTeamGame->updateTeamGameTag($tag_id, $json_paras);
 
         echo json_encode(['code' => 200, 'message' => '分队更新成功'], JSON_UNESCAPED_UNICODE);
     }
 
     /**
      * 删除分队
-     * @param int subteam_id 分队ID
+     * @param int tag_id 分队ID
      */
-    public function deleteSubteam() {
+    public function deleteGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
-        $subteam_id = $json_paras['subteam_id'];
+        $tag_id = $json_paras['tag_id'];
 
         // 获取分队信息以验证权限
-        $subteam = $this->MTeamGame->getSubteam($subteam_id);
+        $subteam = $this->MTeamGame->getTeamGameTag($tag_id);
         if (!$subteam) {
             echo json_encode(['code' => 404, 'message' => '分队不存在'], JSON_UNESCAPED_UNICODE);
             return;
@@ -227,7 +237,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $this->MTeamGame->deleteSubteam($subteam_id);
+        $this->MTeamGame->deleteGameTag($tag_id);
 
         echo json_encode(['code' => 200, 'message' => '分队删除成功'], JSON_UNESCAPED_UNICODE);
     }
@@ -244,7 +254,7 @@ class TeamGame extends MY_Controller {
 
         // 获取每个分队的成员
         foreach ($subteams as &$subteam) {
-            $subteam['members'] = $this->MTeamGame->getSubteamMembers($subteam['id']);
+            $subteam['members'] = $this->MTeamGame->getMembersByTag($subteam['id']);
         }
 
         echo json_encode([
@@ -258,14 +268,14 @@ class TeamGame extends MY_Controller {
     /**
      * 球员报名
      * @param int game_id 赛事ID
-     * @param int subteam_id 分队ID（团队赛制时可选）
+     * @param int tag_id 分队ID（团队赛制时可选）
      * @param string remark 报名备注（可选）
      */
     public function registerGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
-        $subteam_id = $json_paras['subteam_id'] ?? null;
+        $tag_id = $json_paras['tag_id'] ?? null;
         $remark = $json_paras['remark'] ?? null;
 
         // 检查赛事状态
@@ -281,12 +291,12 @@ class TeamGame extends MY_Controller {
         }
 
         // 如果是团队赛制，检查是否选择了分队
-        if ($this->MTeamGame->requiresSubteam($game['match_format']) && !$subteam_id) {
+        if ($this->MTeamGame->requiresSettingTags($game['match_format']) && !$tag_id) {
             echo json_encode(['code' => 400, 'message' => '团队赛制需要选择分队'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        $result = $this->MTeamGame->registerGame($game_id, $userid, $subteam_id, $remark);
+        $result = $this->MTeamGame->registerGame($game_id, $userid, $tag_id, $remark);
 
         if ($result['success']) {
             echo json_encode([
@@ -514,6 +524,31 @@ class TeamGame extends MY_Controller {
         ], JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * 删除分组
+     * @param int game_id 赛事ID
+     * @param int group_id 分组ID
+     */
+    public function deleteGroup() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();
+        $game_id = $json_paras['game_id'];
+        $group_id = $json_paras['group_id'];
+
+        // 验证管理员权限
+        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+            echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MTeamGame->deleteGroup($game_id, $group_id);
+
+        echo json_encode([
+            'code' => $result ? 200 : 400,
+            'message' => $result ? '分组删除成功' : '删除失败'
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
     // ==================== Phase 4: 状态与流程控制 ====================
 
     /**
@@ -564,8 +599,8 @@ class TeamGame extends MY_Controller {
         }
 
         // 如果是团队赛制，检查是否已设置分队
-        if ($this->MTeamGame->requiresSubteam($game['match_format'])) {
-            $subteamCount = $this->MTeamGame->getSubteamCount($game_id);
+        if ($this->MTeamGame->requiresSettingTags($game['match_format'])) {
+            $subteamCount = $this->MTeamGame->getTagsCount($game_id);
             if ($subteamCount < 2) {
                 echo json_encode(['code' => 400, 'message' => '团队赛制需要先设置至少2个分队'], JSON_UNESCAPED_UNICODE);
                 return;
@@ -749,11 +784,11 @@ class TeamGame extends MY_Controller {
      * 获取分队成绩
      * @param int game_id 赛事ID
      */
-    public function getSubteamScores() {
+    public function getScoresUnderTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['game_id'];
 
-        $scores = $this->MTeamGame->getSubteamScores($game_id);
+        $scores = $this->MTeamGame->getScoresUnderTag($game_id);
 
         echo json_encode([
             'code' => 200,
@@ -795,9 +830,9 @@ class TeamGame extends MY_Controller {
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
 
-        $this->db->select('r.*, s.subteam_name, s.color as subteam_color');
+        $this->db->select('r.*, s.tag_name, s.color as subteam_color');
         $this->db->from('t_game_registration r');
-        $this->db->join('t_game_subteam s', 'r.subteam_id = s.id', 'left');
+        $this->db->join('t_team_game_tags s', 'r.tag_id = s.id', 'left');
         $this->db->where('r.game_id', $game_id);
         $this->db->where('r.user_id', $userid);
         $registration = $this->db->get()->row_array();
@@ -811,13 +846,13 @@ class TeamGame extends MY_Controller {
     /**
      * 修改我的分队
      * @param int game_id 赛事ID
-     * @param int subteam_id 新的分队ID
+     * @param int tag_id 新的分队ID
      */
     public function changeMySubteam() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
-        $subteam_id = $json_paras['subteam_id'];
+        $tag_id = $json_paras['tag_id'];
 
         // 检查赛事状态
         $game = $this->MTeamGame->getTeamGame($game_id);
@@ -840,10 +875,10 @@ class TeamGame extends MY_Controller {
 
         // 更新报名记录的分队
         $this->db->where('id', $registration['id']);
-        $this->db->update('t_game_registration', ['subteam_id' => $subteam_id]);
+        $this->db->update('t_game_registration', ['tag_id' => $tag_id]);
 
         // 更新分队成员表
-        $this->MTeamGame->addSubteamMember($subteam_id, $userid, $game_id);
+        $this->MTeamGame->addMemberToTag($tag_id, $userid, $game_id);
 
         echo json_encode(['code' => 200, 'message' => '分队修改成功'], JSON_UNESCAPED_UNICODE);
     }
@@ -886,12 +921,24 @@ class TeamGame extends MY_Controller {
 
         // 验证赛制类型
         $validFormats = [
-            'individual_stroke', 'fourball_best_stroke', 'fourball_oneball_stroke', 'foursome_stroke',
-            'individual_match', 'fourball_best_match', 'fourball_oneball_match', 'foursome_match'
+            'individual_stroke',
+            'fourball_best_stroke',
+            'fourball_oneball_stroke',
+            'foursome_stroke',
+            'individual_match',
+            'fourball_best_match',
+            'fourball_oneball_match',
+            'foursome_match'
         ];
         if (!in_array($match_format, $validFormats)) {
             echo json_encode(['code' => 400, 'message' => '无效的赛制类型'], JSON_UNESCAPED_UNICODE);
             return;
+        }
+
+        // 处理赛事流程：数组转 JSON 字符串
+        $schedule = null;
+        if (!empty($json_paras['schedule']) && is_array($json_paras['schedule'])) {
+            $schedule = json_encode($json_paras['schedule'], JSON_UNESCAPED_UNICODE);
         }
 
         // 创建队际赛
@@ -902,8 +949,10 @@ class TeamGame extends MY_Controller {
             'courseid' => $json_paras['courseid'] ?? null,
             'match_format' => $match_format,
             'open_time' => $json_paras['open_time'] ?? null,
+            'registration_deadline' => $json_paras['registration_deadline'] ?? null,
             'entry_fee' => $json_paras['entry_fee'] ?? 0,
             'awards' => $json_paras['awards'] ?? null,
+            'schedule' => $schedule,
             'grouping_permission' => $json_paras['grouping_permission'] ?? 'admin',
             'is_public_registration' => $json_paras['is_public_registration'] ?? 'y',
             'top_n_ranking' => $json_paras['top_n_ranking'] ?? null
@@ -985,9 +1034,9 @@ class TeamGame extends MY_Controller {
     }
 
     /**
-     * 队际赛报名（使用统一的 subteam_id）
+     * 队际赛报名（使用统一的 tag_id）
      * @param int game_id 赛事ID
-     * @param int subteam_id 选择代表的分队ID（t_game_subteam.id）
+     * @param int tag_id 选择代表的分队ID（t_team_game_tags.id）
      * @param int user_id 被报名用户ID（可选，默认为当前用户，替好友报名时使用）
      * @param string remark 报名备注（可选）
      */
@@ -995,7 +1044,7 @@ class TeamGame extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
-        $subteam_id = $json_paras['subteam_id'];
+        $tag_id = $json_paras['tag_id'];
         $target_user_id = $json_paras['user_id'] ?? $userid;
         $remark = $json_paras['remark'] ?? null;
 
@@ -1011,7 +1060,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $result = $this->MTeamGame->registerCrossTeamGame($game_id, $target_user_id, $subteam_id, $remark);
+        $result = $this->MTeamGame->registerCrossTeamGame($game_id, $target_user_id, $tag_id, $remark);
 
         if ($result['success']) {
             echo json_encode([
@@ -1122,6 +1171,23 @@ class TeamGame extends MY_Controller {
         echo json_encode([
             'code' => 200,
             'data' => $result
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 获取比赛报名人员列表
+     * @param int game_id 比赛ID
+     * @return array 报名人员列表（含序号seq、昵称nickname、头像avatar、差点handicap）
+     */
+    public function getTagMembersAll() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $game_id = $json_paras['game_id'];
+
+        $members = $this->MTeamGame->getTagMembersAll($game_id);
+
+        echo json_encode([
+            'code' => 200,
+            'data' => $members
         ], JSON_UNESCAPED_UNICODE);
     }
 }

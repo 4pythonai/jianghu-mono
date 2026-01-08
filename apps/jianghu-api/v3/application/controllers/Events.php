@@ -16,6 +16,7 @@ class Events extends MY_Controller {
         if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
             exit();
         }
+        $this->load->model('MDetailGame');
     }
 
     /**
@@ -176,12 +177,17 @@ class Events extends MY_Controller {
      */
     public function getAvailableEvents() {
         // 查询公开报名中的赛事ID列表
+        // registration_deadline 为 NULL 或 >= 今天的都显示
         $gameRows = $this->db->select('g.id, g.team_id, g.game_type')
             ->from('t_game g')
             ->where('g.is_public_registration', 'y')
             ->where_in('g.game_status', ['init', 'registering'])
-            ->where('g.open_time >=', date('Y-m-d'))
-            ->order_by('g.open_time', 'ASC')
+            ->where_in('g.game_type', ['single_team', 'cross_teams'])
+            ->group_start()
+            ->where('g.registration_deadline IS NULL', null, false)
+            ->or_where('g.registration_deadline >=', date('Y-m-d'))
+            ->group_end()
+            ->order_by('g.registration_deadline', 'ASC')
             ->get()
             ->result_array();
 
@@ -436,6 +442,7 @@ class Events extends MY_Controller {
             ->join('t_user u', 'gs.user_id = u.id', 'left')
             ->where('gs.game_id', $gameId)
             ->order_by('gs.created_at', 'DESC')
+            ->order_by('gs.user_id', 'DESC')  // 添加第二排序条件，确保排序稳定
             ->limit($pageSize, $offset)
             ->get()
             ->result_array();

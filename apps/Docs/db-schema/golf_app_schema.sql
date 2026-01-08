@@ -190,6 +190,7 @@ CREATE TABLE `t_gamble_x_runtime` (
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `t_game` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `game_type` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT 'common' COMMENT '比赛类型: common(普通比赛), single_team(队内赛), cross_teams(队际赛)',
   `private` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'n' COMMENT '是否公开 参数为：y/n',
   `holeList` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci COMMENT '球序号',
   `creatorid` int NOT NULL DEFAULT '0' COMMENT '创建人',
@@ -202,17 +203,18 @@ CREATE TABLE `t_game` (
   `match_format` varchar(50) DEFAULT NULL COMMENT '赛制类型: individual_stroke(个人比杆), fourball_best_stroke(四人四球最好成绩比杆), fourball_oneball_stroke(四人四球最佳球位比杆/旺波比杆), foursome_stroke(四人两球比杆), individual_match(个人比洞), fourball_best_match(四人四球最好成绩比洞), fourball_oneball_match(四人四球最佳球位比洞/旺波比洞), foursome_match(四人两球比洞)',
   `entry_fee` decimal(10,2) DEFAULT '0.00' COMMENT '参赛费用（仅展示，不涉及支付）',
   `awards` text COMMENT '奖项设置（纯文本描述）',
+  `schedule` text COMMENT '赛事流程JSON',
   `grouping_permission` char(10) DEFAULT 'admin' COMMENT '分组权限: admin(管理员分组), player(球员自由选择)',
   `is_public_registration` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT 'y' COMMENT '队内赛是否公开: y(Public任意人可报名), n(Private仅队内人员)',
   `uuid` char(40) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'uuid',
   `open_time` datetime DEFAULT NULL COMMENT '开球时间',
+  `registration_deadline` datetime DEFAULT NULL COMMENT '报名截止时间',
   `status` char(40) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'init' COMMENT '状态',
   `game_status` varchar(20) DEFAULT 'init' COMMENT '赛事状态: init(初始), registering(报名中), registration_closed(报名截止), playing(进行中), finished(已结束), cancelled(已取消)',
   `top_n_ranking` int DEFAULT NULL COMMENT '取前N名成绩排行（团队赛制用）',
   `remark` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '' COMMENT '备注',
   `team_game_title` char(200) DEFAULT NULL COMMENT '比赛标题',
   `team_id` varchar(255) DEFAULT NULL COMMENT '关联球队ID（队内赛单个ID，队际赛逗号分隔多个ID）',
-  `game_type` varchar(20) DEFAULT 'common' COMMENT '比赛类型: common(普通比赛), single_team(队内赛), cross_teams(队际赛)',
   PRIMARY KEY (`id`),
   KEY `idx_addid` (`creatorid`),
   KEY `idx_gamestate_privacy` (`private`),
@@ -226,7 +228,7 @@ CREATE TABLE `t_game` (
   KEY `idx_game_status` (`game_status`),
   KEY `idx_is_public` (`is_public_registration`),
   FULLTEXT KEY `fulltext_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1339188 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
+) ENGINE=InnoDB AUTO_INCREMENT=1339198 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -239,7 +241,7 @@ CREATE TABLE `t_game_court` (
   PRIMARY KEY (`id`),
   KEY `idx_gameid` (`gameid`),
   KEY `idx_courtid` (`courtid`)
-) ENGINE=InnoDB AUTO_INCREMENT=475 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
+) ENGINE=InnoDB AUTO_INCREMENT=482 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -256,7 +258,7 @@ CREATE TABLE `t_game_group` (
   PRIMARY KEY (`groupid`),
   KEY `idx_gameid` (`gameid`),
   KEY `idx_groupid` (`groupid`)
-) ENGINE=InnoDB AUTO_INCREMENT=847 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=853 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -264,7 +266,7 @@ CREATE TABLE `t_game_group_user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gameid` int DEFAULT '0' COMMENT '比赛id',
   `groupid` int DEFAULT '0' COMMENT '分组id',
-  `subteam_id` int DEFAULT NULL COMMENT '所属分队ID',
+  `tag_id` int DEFAULT NULL COMMENT '所属分队ID',
   `userid` int DEFAULT '0' COMMENT '人员id',
   `tee` char(5) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT 'T台 参数为：BLACK,GOLD,BLUE,WHITE,RED',
   `confirmed` int DEFAULT NULL COMMENT '是否确认 参数：0,1',
@@ -277,8 +279,8 @@ CREATE TABLE `t_game_group_user` (
   KEY `idx_grpid` (`groupid`),
   KEY `idx_userid` (`userid`),
   KEY `idx_userid_gameid` (`userid`,`gameid`),
-  KEY `idx_subteam_id` (`subteam_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1011 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
+  KEY `idx_subteam_id` (`tag_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1014 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -365,7 +367,7 @@ CREATE TABLE `t_game_registration` (
   KEY `idx_status` (`status`),
   KEY `idx_subteam_id` (`subteam_id`),
   CONSTRAINT `fk_registration_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_registration_subteam` FOREIGN KEY (`subteam_id`) REFERENCES `t_game_subteam` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `fk_registration_subteam` FOREIGN KEY (`subteam_id`) REFERENCES `t_team_game_tags` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='赛事报名表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -403,38 +405,14 @@ CREATE TABLE `t_game_score` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_game_subteam` (
+CREATE TABLE `t_game_spectator` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `game_id` int unsigned NOT NULL COMMENT '比赛ID',
-  `team_id` int unsigned DEFAULT NULL COMMENT '关联真实球队ID（队际赛时有值，队内赛时为NULL）',
-  `subteam_name` varchar(100) NOT NULL COMMENT '分队名称（队际赛=球队简称，队内赛=临时队名如东邪队、西毒队）',
-  `subteam_order` int DEFAULT '1' COMMENT '分队排序',
-  `color` varchar(20) DEFAULT NULL COMMENT '分队颜色标识',
-  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `game_id` int DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_game_id` (`game_id`),
-  KEY `idx_team_id` (`team_id`),
-  CONSTRAINT `fk_subteam_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_subteam_team` FOREIGN KEY (`team_id`) REFERENCES `t_team` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='比赛分队表（队内赛临时分队/队际赛参赛球队）';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_game_subteam_member` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `subteam_id` int unsigned NOT NULL COMMENT '分队ID',
-  `user_id` int NOT NULL COMMENT '用户ID',
-  `game_id` int unsigned NOT NULL COMMENT '比赛ID（冗余，便于查询）',
-  `join_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_subteam_user` (`subteam_id`,`user_id`),
-  UNIQUE KEY `uk_game_user` (`game_id`,`user_id`),
-  KEY `idx_subteam_id` (`subteam_id`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_game_id` (`game_id`),
-  CONSTRAINT `fk_subteam_member_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_subteam_member_subteam` FOREIGN KEY (`subteam_id`) REFERENCES `t_game_subteam` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分队成员表';
+  UNIQUE KEY `game-spectator` (`game_id`,`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=204 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -454,18 +432,27 @@ CREATE TABLE `t_game_subteam_score` (
   KEY `idx_game_id` (`game_id`),
   KEY `idx_subteam_id` (`subteam_id`),
   CONSTRAINT `fk_subteam_score_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_subteam_score_subteam` FOREIGN KEY (`subteam_id`) REFERENCES `t_game_subteam` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_subteam_score_subteam` FOREIGN KEY (`subteam_id`) REFERENCES `t_team_game_tags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='队内赛分队总成绩表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_game_spectator` (
+CREATE TABLE `t_game_tag_member` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `gameid` int DEFAULT NULL,
-  `userid` int DEFAULT NULL,
-  `addtime` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `tag_id` int unsigned NOT NULL COMMENT 'tag_id',
+  `user_id` int NOT NULL COMMENT '用户ID',
+  `game_id` int unsigned NOT NULL COMMENT '比赛ID（冗余，便于查询）',
+  `join_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间',
+  `group_id` int DEFAULT NULL COMMENT '参加的分组',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_subteam_user` (`tag_id`,`user_id`),
+  UNIQUE KEY `uk_game_user` (`game_id`,`user_id`),
+  KEY `idx_subteam_id` (`tag_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_game_id` (`game_id`),
+  CONSTRAINT `fk_subteam_member_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_subteam_member_subteam` FOREIGN KEY (`tag_id`) REFERENCES `t_team_game_tags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分队成员表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -501,6 +488,22 @@ CREATE TABLE `t_team` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `t_team_game_tags` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `game_id` int unsigned NOT NULL COMMENT '比赛ID',
+  `tag_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'TAG/分队名称（如：东邪队、西毒队）',
+  `tag_order` int DEFAULT '1' COMMENT '分队排序',
+  `color` varchar(20) DEFAULT NULL COMMENT '分队颜色标识',
+  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `team_id` int DEFAULT NULL COMMENT '代表的球队ID',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `game_id` (`game_id`,`tag_name`),
+  KEY `idx_game_id` (`game_id`),
+  CONSTRAINT `fk_subteam_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='比赛分队表（队内赛临时分队/队际赛参赛球队）';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;

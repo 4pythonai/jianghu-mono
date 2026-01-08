@@ -63,7 +63,6 @@
     flex: 1;
     display: flex;
     align-items: center;
-    gap: 8rpx;
     min-width: 0;
 }
 
@@ -75,30 +74,17 @@
     white-space: nowrap;
 }
 
-/* 性别图标 */
-.gender-icon {
-    font-size: 26rpx;
-    flex-shrink: 0;
-}
-
-.gender-icon.male {
-    color: #2196f3;
-}
-
-.gender-icon.female {
-    color: #e91e63;
-}
-
 /* 差点区域 */
 .handicap-section {
-    width: 80rpx;
+    width: 140rpx;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
-.handicap-icon {
-    width: 48rpx;
-    height: 48rpx;
+.handicap-value {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    font-weight: 500;
 }

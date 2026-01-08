@@ -3,8 +3,7 @@
     position: relative;
     background: #fff;
     border-radius: 16rpx;
-    padding: 24rpx;
-    padding-left: 60rpx;
+    padding: 40rpx 24rpx 24rpx 70rpx;
     box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
@@ -24,10 +23,10 @@
 /* 删除按钮 */
 .delete-btn {
     position: absolute;
-    top: -16rpx;
-    right: -16rpx;
-    width: 48rpx;
-    height: 48rpx;
+    top: 8rpx;
+    right: 8rpx;
+    width: 44rpx;
+    height: 44rpx;
     background: #e74c3c;
     border-radius: 50%;
     display: flex;
@@ -38,7 +37,7 @@
 
 .delete-icon {
     color: #fff;
-    font-size: 32rpx;
+    font-size: 28rpx;
     font-weight: bold;
     line-height: 1;
 }

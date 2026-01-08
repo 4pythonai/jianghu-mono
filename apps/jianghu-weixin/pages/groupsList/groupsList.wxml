@@ -54,7 +54,7 @@
 
     <!-- 空状态 -->
     <view class="empty-container" wx:if="{{groups.length === 0}}">
-      <view class="empty-text">暂无分组信息</view>
+      <view class="empty-text">暂无分组信息2</view>
     </view>
   </view>
 </view>

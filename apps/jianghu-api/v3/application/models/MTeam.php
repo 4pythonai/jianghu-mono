@@ -105,7 +105,7 @@ class MTeam extends CI_Model {
         // 获取超级管理员信息
         $owner = $this->db->select('tm.*, u.nickname, u.avatar')
             ->from('t_team_member tm')
-            ->join('t_user2 u', 'tm.user_id = u.id', 'left')
+            ->join('t_user u', 'tm.user_id = u.id', 'left')
             ->where(['tm.team_id' => $team_id, 'tm.role' => 'owner', 'tm.status' => 'active'])
             ->get()
             ->row_array();
@@ -305,7 +305,7 @@ class MTeam extends CI_Model {
     public function getTeamMembers($team_id, $status = 'active') {
         $this->db->select('tm.*, u.nickname, u.avatar, u.handicap, u.mobile');
         $this->db->from('t_team_member tm');
-        $this->db->join('t_user2 u', 'tm.user_id = u.id', 'left');
+        $this->db->join('t_user u', 'tm.user_id = u.id', 'left');
         $this->db->where('tm.team_id', $team_id);
         $this->db->where('tm.status', $status);
         $this->db->order_by("FIELD(tm.role, 'owner', 'admin', 'member')");

@@ -19,11 +19,6 @@ Component({
             type: String,
             value: ''
         },
-        /** 性别: male | female */
-        gender: {
-            type: String,
-            value: 'male'
-        },
         /** 江湖差点 */
         handicap: {
             type: null,

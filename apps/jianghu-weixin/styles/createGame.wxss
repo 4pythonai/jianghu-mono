@@ -309,3 +309,86 @@
     margin-right: 12rpx;
     filter: brightness(0) invert(1);
 }
+
+/* ==================== 赛事流程样式 ==================== */
+.schedule-container {
+    background: #f8f9fa;
+    border-radius: 16rpx;
+    padding: 20rpx;
+}
+
+.schedule-item-edit {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12rpx;
+    padding: 16rpx;
+    margin-bottom: 16rpx;
+    gap: 12rpx;
+}
+
+.schedule-time-input {
+    width: 160rpx;
+    flex-shrink: 0;
+}
+
+.schedule-time-input input {
+    font-size: 28rpx;
+    color: #333;
+    background: #f5f5f5;
+    border-radius: 8rpx;
+    padding: 12rpx 16rpx;
+    text-align: center;
+}
+
+.schedule-content-input {
+    flex: 1;
+}
+
+.schedule-content-input input {
+    font-size: 28rpx;
+    color: #333;
+    background: #f5f5f5;
+    border-radius: 8rpx;
+    padding: 12rpx 16rpx;
+}
+
+.delete-schedule-btn {
+    width: 40rpx;
+    height: 40rpx;
+    background: #ff4757;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.delete-schedule-btn image {
+    width: 20rpx;
+    height: 20rpx;
+    filter: brightness(0) invert(1);
+}
+
+.add-schedule-btn {
+    height: 80rpx;
+    background: var(--primary-green-dark);
+    border-radius: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28rpx;
+    color: #fff;
+    font-weight: 500;
+}
+
+.add-schedule-btn:active {
+    opacity: 0.8;
+}
+
+.add-schedule-btn .add-icon {
+    width: 32rpx;
+    height: 32rpx;
+    margin-right: 8rpx;
+    filter: brightness(0) invert(1);
+}

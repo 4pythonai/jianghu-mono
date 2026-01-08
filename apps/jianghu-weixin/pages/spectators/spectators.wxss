@@ -82,6 +82,14 @@
     background-color: #f8f8f8;
 }
 
+.spectator-index {
+    width: 48rpx;
+    font-size: 28rpx;
+    color: #999;
+    text-align: center;
+    flex-shrink: 0;
+}
+
 .spectator-avatar {
     width: 88rpx;
     height: 88rpx;

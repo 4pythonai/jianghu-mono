@@ -20,15 +20,10 @@
     <!-- 球员信息 -->
     <view class="player-info">
         <text class="player-name">{{name || '未知'}}</text>
-        <text class="gender-icon {{gender}}">{{gender === 'male' ? '♂' : '♀'}}</text>
     </view>
 
     <!-- 江湖差点 -->
     <view class="handicap-section">
-        <image
-            class="handicap-icon"
-            src="/assets/icons/handicap.png"
-            mode="aspectFit"
-        />
+        <text class="handicap-value">{{handicap != null ? handicap : '-'}}</text>
     </view>
 </view>
