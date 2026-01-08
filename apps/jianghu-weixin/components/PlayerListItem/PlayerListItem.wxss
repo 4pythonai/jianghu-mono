@@ -26,6 +26,8 @@
 /* 头像区域 */
 .avatar-section {
     position: relative;
+    width: 80rpx;
+    margin-left: 16rpx;
     margin-right: 20rpx;
     flex-shrink: 0;
 }
