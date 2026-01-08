@@ -368,11 +368,11 @@ Page({
 
             // 如果有分队，创建分队
             if (subteams.length > 0) {
-                for (const subteam of subteams) {
-                    await app.api.teamgame.addSubteam({
+                for (const tag of tags) {
+                    await app.api.teamgame.addTag({
                         game_id: gameId,
-                        tag_name: subteam.name,
-                        color: subteam.color
+                        tag_name: tag.name,
+                        color: tag.color
                     })
                 }
             }

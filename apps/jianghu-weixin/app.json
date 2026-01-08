@@ -48,6 +48,7 @@
 		"pages/my-team/my-team",
 		"pages/create-team/create-team",
 		"pages/team-game/TeamGameDetail",
+		"pages/group-config/group-config",
 		"pages/spectators/spectators"
 	],
 	"window": {

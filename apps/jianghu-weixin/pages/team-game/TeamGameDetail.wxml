@@ -96,9 +96,10 @@
       <view wx:if="{{currentTab === 1}}" class="tab-panel">
         <!-- 表头 -->
         <view class="player-list-header">
-          <text class="header-index">序号</text>
-          <text class="header-player">球员</text>
-          <text class="header-handicap">江湖差点</text>
+          <view class="header-index">序号</view>
+          <view class="header-avatar-placeholder"></view>
+          <view class="header-player">球员</view>
+          <view class="header-handicap">江湖差点</view>
         </view>
         <!-- 列表 -->
         <view class="player-list">

@@ -605,6 +605,59 @@ class MTeamGame extends CI_Model {
         return $this->db->affected_rows() > 0;
     }
 
+    /**
+     * 更新单个分组的成员列表
+     * @param int $game_id 比赛ID
+     * @param int $group_id 分组ID
+     * @param array $user_ids 用户ID数组
+     * @return array 操作结果
+     */
+    public function updateGroupMembers($game_id, $group_id, $user_ids) {
+        // 检查分组是否存在
+        $group = $this->db->get_where('t_game_group', [
+            'groupid' => $group_id,
+            'gameid' => $game_id
+        ])->row_array();
+
+        if (!$group) {
+            return ['success' => false, 'message' => '分组不存在'];
+        }
+
+        // 检查人数限制
+        if (count($user_ids) > 4) {
+            return ['success' => false, 'message' => '每组最多4人'];
+        }
+
+        // 1. 删除该分组原有成员
+        $this->db->where('gameid', $game_id);
+        $this->db->where('groupid', $group_id);
+        $this->db->delete('t_game_group_user');
+
+        // 2. 添加新成员
+        foreach ($user_ids as $user_id) {
+            // 获取用户的报名信息（含 tag_id）
+            $registration = $this->db->get_where('t_game_registration', [
+                'game_id' => $game_id,
+                'user_id' => $user_id,
+                'status' => 'approved'
+            ])->row_array();
+
+            if (!$registration) {
+                continue; // 跳过未报名的用户
+            }
+
+            $this->db->insert('t_game_group_user', [
+                'gameid' => $game_id,
+                'groupid' => $group_id,
+                'userid' => $user_id,
+                'tag_id' => $registration['tag_id'] ?? null,
+                'addtime' => date('Y-m-d H:i:s')
+            ]);
+        }
+
+        return ['success' => true, 'message' => '分组成员更新成功'];
+    }
+
     // ========== 状态管理 ==========
 
     /**

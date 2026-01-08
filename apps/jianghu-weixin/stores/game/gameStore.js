@@ -604,4 +604,31 @@ export const gameStore = observable({
         }
     }),
 
+    /**
+     * 更新单个分组的成员列表
+     * @param {string} groupId 分组ID
+     * @param {Array} userIds 用户ID数组
+     * @param {number} gameId 比赛ID（可选）
+     */
+    updateGroupMembers: action(async function (groupId, userIds, gameId = null) {
+        const id = gameId || this.gameid;
+        if (!id || !groupId) return { success: false, message: '缺少参数' };
+
+        try {
+            const res = await teamgameApi.updateGroupMembers({
+                game_id: id,
+                group_id: groupId,
+                user_ids: userIds
+            });
+            if (res?.code === 200) {
+                // 重新加载分组列表
+                await this.loadGroups(id);
+                return { success: true, message: res?.message };
+            }
+            return { success: false, message: res?.message || '更新失败' };
+        } catch (err) {
+            return { success: false, message: err.message || '更新失败' };
+        }
+    }),
+
 });

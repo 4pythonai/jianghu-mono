@@ -5,6 +5,7 @@
  */
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../stores/game/gameStore'
+import navigationHelper from '../../utils/navigationHelper'
 
 Page({
     data: {
@@ -87,7 +88,11 @@ Page({
     },
 
     onShow() {
-        // 页面显示时刷新数据（如果需要）
+        // 页面显示时刷新分组数据（从 group-config 返回后更新）
+        if (this.data.gameid && this.storeBindings) {
+            this.loadGroups(this.data.gameid)
+            this.storeBindings.updateStoreBindings()
+        }
     },
 
     /**
@@ -98,6 +103,7 @@ Page({
             // 并行加载所有数据
             await Promise.all([
                 this.fetchTeamGameDetail(gameId, gameType),
+                this.loadSubteams(gameId),
                 this.loadTagMembers(gameId),
                 this.loadGroups(gameId),
                 this.loadSpectators(gameId)
@@ -248,10 +254,13 @@ Page({
      * 点击分组卡片
      */
     onGroupTap(e) {
-        console.log('[onGroupTap] e:', e)
         const { groupId } = e.detail
-        console.log('[onGroupTap] groupId:', groupId)
-        wx.showToast({ title: `查看分组 ${groupId}`, icon: 'none' })
+        const group = this.data.groups.find(g => String(g.id) === String(groupId))
+        const groupName = encodeURIComponent(group?.name || `第${groupId}组`)
+
+        navigationHelper.navigateTo(
+            `/pages/group-config/group-config?group_id=${groupId}&group_name=${groupName}`
+        )
     },
 
     /**

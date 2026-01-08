@@ -549,6 +549,41 @@ class TeamGame extends MY_Controller {
         ], JSON_UNESCAPED_UNICODE);
     }
 
+    /**
+     * 更新单个分组的成员列表
+     * @param int game_id 赛事ID
+     * @param int group_id 分组ID
+     * @param array user_ids 用户ID数组
+     */
+    public function updateGroupMembers() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();
+        $game_id = $json_paras['game_id'];
+        $group_id = $json_paras['group_id'];
+        $user_ids = $json_paras['user_ids'] ?? [];
+
+        // 验证管理员权限或分组权限
+        $game = $this->MTeamGame->getTeamGame($game_id);
+        if (!$game) {
+            echo json_encode(['code' => 404, 'message' => '赛事不存在'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 检查权限：admin 权限需要是管理员，user 权限所有人可操作
+        $hasPermission = ($game['grouping_permission'] == 'user') || $this->MTeamGame->isGameAdmin($game_id, $userid);
+        if (!$hasPermission) {
+            echo json_encode(['code' => 403, 'message' => '您没有权限修改分组'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MTeamGame->updateGroupMembers($game_id, $group_id, $user_ids);
+
+        echo json_encode([
+            'code' => $result['success'] ? 200 : 400,
+            'message' => $result['message']
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
     // ==================== Phase 4: 状态与流程控制 ====================
 
     /**

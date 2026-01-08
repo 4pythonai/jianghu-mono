@@ -38,6 +38,8 @@ const teamgame = {
     createGroup: (data, options) => request('/TeamGame/createGroup', data, options),
     // 删除分组
     deleteGroup: (data, options) => request('/TeamGame/deleteGroup', data, options),
+    // 更新单个分组的成员列表
+    updateGroupMembers: (data, options) => request('/TeamGame/updateGroupMembers', data, options),
 
     // ==================== Phase 4: 状态与流程控制 ====================
     // 更新赛事状态

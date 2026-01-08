@@ -83,7 +83,7 @@
     padding: 20rpx;
 }
 
-.subteam-item {
+.team-as-tag-item {
     display: flex;
     align-items: center;
     background: #fff;
@@ -93,18 +93,18 @@
     border-left: 6rpx solid #1976D2;
 }
 
-.subteam-item:last-of-type {
+.team-as-tag-item:last-of-type {
     margin-bottom: 16rpx;
 }
 
-.subteam-input {
+.tag-name-input {
     flex: 1;
     font-size: 28rpx;
     color: #333;
     background: transparent;
 }
 
-.delete-subteam-btn {
+.delete-tag-btn {
     width: 40rpx;
     height: 40rpx;
     background: #ff4757;
@@ -115,13 +115,13 @@
     margin-left: 16rpx;
 }
 
-.delete-subteam-btn image {
+.delete-tag-btn image {
     width: 20rpx;
     height: 20rpx;
     filter: brightness(0) invert(1);
 }
 
-.add-subteam-btn {
+.add-tag-btn {
     height: 80rpx;
     background: var(--primary-green-dark);
     border-radius: 12rpx;
@@ -133,7 +133,7 @@
     font-weight: 500;
 }
 
-.add-subteam-btn:active {
+.add-tag-btn:active {
     opacity: 0.8;
 }
 

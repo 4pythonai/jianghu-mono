@@ -147,11 +147,11 @@
             <view
               wx:for="{{ subteams }}"
               wx:key="index"
-              class="subteam-item"
+              class="team-as-tag-item"
               style="border-left-color: {{ item.color }};"
             >
               <input
-                class="subteam-input"
+                class="tag-name-input"
                 type="text"
                 value="{{ item.name }}"
                 bindinput="onSubteamNameInput"
@@ -159,8 +159,8 @@
                 placeholder="分队名称"
               />
               <view
-                class="delete-subteam-btn"
-                bindtap="deleteSubteam"
+                class="delete-tag-btn"
+                bindtap="deleteTag"
                 data-index="{{ index }}"
                 wx:if="{{ subteams.length > 2 || !currentFormat.requireSubteam }}"
               >
@@ -168,7 +168,7 @@
               </view>
             </view>
             <view
-              class="add-subteam-btn"
+              class="add-tag-btn"
               bindtap="addSubteam"
               wx:if="{{ !currentFormat.isMatch || subteams.length < 2 }}"
             >
@@ -223,11 +223,7 @@
             <text class="form-sub-label">(可选)</text>
           </view>
           <view class="schedule-container">
-            <view
-              wx:for="{{ formData.schedule }}"
-              wx:key="index"
-              class="schedule-item-edit"
-            >
+            <view wx:for="{{ formData.schedule }}" wx:key="index" class="schedule-item-edit">
               <view class="schedule-time-input">
                 <input
                   type="text"
@@ -246,7 +242,11 @@
                   data-index="{{ index }}"
                 />
               </view>
-              <view class="delete-schedule-btn" bindtap="deleteScheduleItem" data-index="{{ index }}">
+              <view
+                class="delete-schedule-btn"
+                bindtap="deleteScheduleItem"
+                data-index="{{ index }}"
+              >
                 <image src="/assets/icons/close.svg" mode="aspectFit"></image>
               </view>
             </view>

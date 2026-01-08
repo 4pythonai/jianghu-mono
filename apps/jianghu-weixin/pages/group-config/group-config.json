@@ -1,0 +1,7 @@
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "分组配置",
+    "usingComponents": {
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+    }
+}

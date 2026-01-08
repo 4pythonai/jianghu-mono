@@ -1,4 +1,4 @@
-.subteam-editor {
+.team-as-tag-editor {
     width: 100%;
 }
 
@@ -6,7 +6,7 @@
     margin-bottom: 16rpx;
 }
 
-.subteam-item {
+.team-as-tag-item {
     display: flex;
     align-items: center;
     background: #fff;
@@ -17,7 +17,7 @@
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
-.subteam-item:last-child {
+.team-as-tag-item:last-child {
     margin-bottom: 0;
 }
 
@@ -30,7 +30,7 @@
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
 }
 
-.subteam-name-input {
+.tag-name-input {
     flex: 1;
     font-size: 30rpx;
     color: #333;
