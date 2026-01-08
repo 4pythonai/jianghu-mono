@@ -857,7 +857,7 @@ class TeamGame extends MY_Controller {
     }
 
     /**
-     * 获取我的报名状态
+     * 获取我的报名状态（从 t_game_tag_member 查询）
      * @param int game_id 赛事ID
      */
     public function getMyRegistration() {
@@ -865,11 +865,11 @@ class TeamGame extends MY_Controller {
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
 
-        $this->db->select('r.*, s.tag_name, s.color as subteam_color');
-        $this->db->from('t_game_registration r');
-        $this->db->join('t_team_game_tags s', 'r.tag_id = s.id', 'left');
-        $this->db->where('r.game_id', $game_id);
-        $this->db->where('r.user_id', $userid);
+        $this->db->select('m.*, s.tag_name, s.color as subteam_color');
+        $this->db->from('t_game_tag_member m');
+        $this->db->join('t_team_game_tags s', 'm.tag_id = s.id', 'left');
+        $this->db->where('m.game_id', $game_id);
+        $this->db->where('m.user_id', $userid);
         $registration = $this->db->get()->row_array();
 
         echo json_encode([
@@ -896,21 +896,16 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        // 检查报名记录
-        $registration = $this->db->get_where('t_game_registration', [
+        // 检查报名记录（从 t_game_tag_member 查询）
+        $member = $this->db->get_where('t_game_tag_member', [
             'game_id' => $game_id,
-            'user_id' => $userid,
-            'status' => 'approved'
+            'user_id' => $userid
         ])->row_array();
 
-        if (!$registration) {
-            echo json_encode(['code' => 400, 'message' => '您尚未报名或报名未通过'], JSON_UNESCAPED_UNICODE);
+        if (!$member) {
+            echo json_encode(['code' => 400, 'message' => '您尚未报名'], JSON_UNESCAPED_UNICODE);
             return;
         }
-
-        // 更新报名记录的分队
-        $this->db->where('id', $registration['id']);
-        $this->db->update('t_game_registration', ['tag_id' => $tag_id]);
 
         // 更新分队成员表
         $this->MTeamGame->addMemberToTag($tag_id, $userid, $game_id);

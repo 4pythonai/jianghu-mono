@@ -245,11 +245,11 @@ class MTeamGame extends CI_Model {
     // ========== 报名管理 ==========
 
     /**
-     * 球员报名
+     * 球员报名（直接加入分队成员表）
      */
     public function registerGame($game_id, $user_id, $tag_id = null, $remark = null) {
         // 检查是否已报名
-        $existing = $this->db->get_where('t_game_registration', [
+        $existing = $this->db->get_where('t_game_tag_member', [
             'game_id' => $game_id,
             'user_id' => $user_id
         ])->row_array();
@@ -267,31 +267,22 @@ class MTeamGame extends CI_Model {
             return ['success' => false, 'message' => '该赛事仅限球队成员报名'];
         }
 
-        // 队员自动通过，非队员待审核
-        $status = $isTeamMember ? 'approved' : 'pending';
-
-        $this->db->insert('t_game_registration', [
-            'game_id' => $game_id,
-            'user_id' => $user_id,
-            'tag_id' => $tag_id,
-            'status' => $status,
-            'is_team_member' => $isTeamMember ? 'y' : 'n',
-            'remark' => $remark,
-            'apply_time' => date('Y-m-d H:i:s')
-        ]);
-
-        $registration_id = $this->db->insert_id();
-
-        // 如果选择了分队且已通过，加入分队成员表
-        if ($status == 'approved' && $tag_id) {
+        // 直接加入分队成员表
+        if ($tag_id) {
             $this->addMemberToTag($tag_id, $user_id, $game_id);
+        } else {
+            // 无分队时也插入记录
+            $this->db->insert('t_game_tag_member', [
+                'game_id' => $game_id,
+                'user_id' => $user_id,
+                'tag_id' => null,
+                'join_time' => date('Y-m-d H:i:s')
+            ]);
         }
 
         return [
             'success' => true,
-            'registration_id' => $registration_id,
-            'status' => $status,
-            'message' => $status == 'approved' ? '报名成功' : '报名已提交，等待审核'
+            'message' => '报名成功'
         ];
     }
 
@@ -299,104 +290,37 @@ class MTeamGame extends CI_Model {
      * 取消报名
      */
     public function cancelRegistration($game_id, $user_id) {
-        // 获取报名记录
-        $registration = $this->db->get_where('t_game_registration', [
+        // 从分队成员表中删除
+        $this->db->where([
             'game_id' => $game_id,
             'user_id' => $user_id
-        ])->row_array();
+        ]);
+        $deleted = $this->db->delete('t_game_tag_member');
 
-        if (!$registration) {
+        if ($this->db->affected_rows() == 0) {
             return ['success' => false, 'message' => '未找到报名记录'];
         }
-
-        // 从分队成员中移除
-        if ($registration['tag_id']) {
-            $this->removeMemberFromTag($registration['tag_id'], $user_id);
-        }
-
-        // 更新报名状态
-        $this->db->where('id', $registration['id']);
-        $this->db->update('t_game_registration', ['status' => 'cancelled']);
 
         return ['success' => true, 'message' => '已取消报名'];
     }
 
     /**
-     * 获取报名列表
+     * 获取报名列表（从 t_game_tag_member 获取）
      */
-    public function getRegistrations($game_id, $status = null) {
-        $this->db->select('r.*, u.nickname, u.avatar, u.handicap, s.tag_name');
-        $this->db->from('t_game_registration r');
-        $this->db->join('t_user u', 'r.user_id = u.id', 'left');
-        $this->db->join('t_team_game_tags s', 'r.tag_id = s.id', 'left');
-        $this->db->where('r.game_id', $game_id);
+    public function getRegistrations($game_id, $tag_id = null) {
+        $this->db->select('m.*, u.nickname, u.avatar, u.handicap, s.tag_name');
+        $this->db->from('t_game_tag_member m');
+        $this->db->join('t_user u', 'm.user_id = u.id', 'left');
+        $this->db->join('t_team_game_tags s', 'm.tag_id = s.id', 'left');
+        $this->db->where('m.game_id', $game_id);
 
-        if ($status) {
-            $this->db->where('r.status', $status);
+        if ($tag_id) {
+            $this->db->where('m.tag_id', $tag_id);
         }
 
-        $this->db->order_by('r.apply_time', 'ASC');
+        $this->db->order_by('m.join_time', 'ASC');
 
         return $this->db->get()->result_array();
-    }
-
-    /**
-     * 获取报名记录
-     */
-    public function getRegistration($registration_id) {
-        return $this->db->get_where('t_game_registration', ['id' => $registration_id])->row_array();
-    }
-
-    /**
-     * 审批通过
-     */
-    public function approveRegistration($registration_id, $reviewer_id) {
-        $registration = $this->getRegistration($registration_id);
-        if (!$registration) {
-            return ['success' => false, 'message' => '未找到报名记录'];
-        }
-
-        if ($registration['status'] != 'pending') {
-            return ['success' => false, 'message' => '该报名已处理'];
-        }
-
-        $this->db->where('id', $registration_id);
-        $this->db->update('t_game_registration', [
-            'status' => 'approved',
-            'review_time' => date('Y-m-d H:i:s'),
-            'reviewer_id' => $reviewer_id
-        ]);
-
-        // 如果选择了分队，加入分队成员表
-        if ($registration['tag_id']) {
-            $this->addMemberToTag($registration['tag_id'], $registration['user_id'], $registration['game_id']);
-        }
-
-        return ['success' => true, 'message' => '审批通过'];
-    }
-
-    /**
-     * 审批拒绝
-     */
-    public function rejectRegistration($registration_id, $reviewer_id, $reject_reason = null) {
-        $registration = $this->getRegistration($registration_id);
-        if (!$registration) {
-            return ['success' => false, 'message' => '未找到报名记录'];
-        }
-
-        if ($registration['status'] != 'pending') {
-            return ['success' => false, 'message' => '该报名已处理'];
-        }
-
-        $this->db->where('id', $registration_id);
-        $this->db->update('t_game_registration', [
-            'status' => 'rejected',
-            'review_time' => date('Y-m-d H:i:s'),
-            'reviewer_id' => $reviewer_id,
-            'reject_reason' => $reject_reason
-        ]);
-
-        return ['success' => true, 'message' => '已拒绝报名'];
     }
 
     /**
@@ -457,17 +381,17 @@ class MTeamGame extends CI_Model {
             // 添加成员到分组
             if (!empty($group['user_ids'])) {
                 foreach ($group['user_ids'] as $user_id) {
-                    $registration = $this->db->get_where('t_game_registration', [
+                    // 从 t_game_tag_member 获取分队信息
+                    $member = $this->db->get_where('t_game_tag_member', [
                         'game_id' => $game_id,
-                        'user_id' => $user_id,
-                        'status' => 'approved'
+                        'user_id' => $user_id
                     ])->row_array();
 
                     $this->db->insert('t_game_group_user', [
                         'gameid' => $game_id,
                         'groupid' => $groupid,
                         'userid' => $user_id,
-                        'tag_id' => $registration['tag_id'] ?? null,
+                        'tag_id' => $member['tag_id'] ?? null,
                         'addtime' => date('Y-m-d H:i:s')
                     ]);
                 }
@@ -483,15 +407,14 @@ class MTeamGame extends CI_Model {
      * 球员选择分组
      */
     public function joinGroup($game_id, $group_id, $user_id) {
-        // 检查用户是否已通过报名
-        $registration = $this->db->get_where('t_game_registration', [
+        // 检查用户是否已报名（从 t_game_tag_member 检查）
+        $member = $this->db->get_where('t_game_tag_member', [
             'game_id' => $game_id,
-            'user_id' => $user_id,
-            'status' => 'approved'
+            'user_id' => $user_id
         ])->row_array();
 
-        if (!$registration) {
-            return ['success' => false, 'message' => '您尚未报名或报名未通过'];
+        if (!$member) {
+            return ['success' => false, 'message' => '您尚未报名'];
         }
 
         // 检查分组是否存在
@@ -527,7 +450,7 @@ class MTeamGame extends CI_Model {
                 'gameid' => $game_id,
                 'groupid' => $group_id,
                 'userid' => $user_id,
-                'tag_id' => $registration['tag_id'],
+                'tag_id' => $member['tag_id'],
                 'addtime' => date('Y-m-d H:i:s')
             ]);
         }
@@ -544,6 +467,8 @@ class MTeamGame extends CI_Model {
             ->get('t_game_group')
             ->result_array();
 
+        $web_url = config_item('web_url');
+
         foreach ($groups as &$group) {
             // 通过 tag_id 直接关联获取用户的分队信息
             $this->db->select('gu.*, u.nickname, u.avatar, u.handicap, s.tag_name, s.color as subteam_color');
@@ -552,6 +477,13 @@ class MTeamGame extends CI_Model {
             $this->db->join('t_team_game_tags s', 'gu.tag_id = s.id', 'left');
             $this->db->where('gu.groupid', $group['groupid']);
             $group['members'] = $this->db->get()->result_array();
+
+            // 为 avatar 加上 web_url 前缀
+            foreach ($group['members'] as &$member) {
+                if (!empty($member['avatar'])) {
+                    $member['avatar'] = $web_url . $member['avatar'];
+                }
+            }
         }
 
         return $groups;
@@ -635,27 +567,31 @@ class MTeamGame extends CI_Model {
 
         // 2. 添加新成员
         foreach ($user_ids as $user_id) {
-            // 获取用户的报名信息（含 tag_id）
-            $registration = $this->db->get_where('t_game_registration', [
+            // 从 t_game_tag_member 获取分队信息
+            $member = $this->db->get_where('t_game_tag_member', [
                 'game_id' => $game_id,
-                'user_id' => $user_id,
-                'status' => 'approved'
+                'user_id' => $user_id
             ])->row_array();
 
-            if (!$registration) {
+            if (!$member) {
                 continue; // 跳过未报名的用户
             }
 
-            $this->db->insert('t_game_group_user', [
+            $insert_result = $this->db->insert('t_game_group_user', [
                 'gameid' => $game_id,
                 'groupid' => $group_id,
                 'userid' => $user_id,
-                'tag_id' => $registration['tag_id'] ?? null,
+                'tag_id' => $member['tag_id'] ?? null,
                 'addtime' => date('Y-m-d H:i:s')
             ]);
+
+            if (!$insert_result) {
+                $error = $this->db->error();
+                log_message('error', "t_game_group_user insert failed: game_id={$game_id}, group_id={$group_id}, user_id={$user_id}, error=" . json_encode($error, JSON_UNESCAPED_UNICODE));
+            }
         }
 
-        return ['success' => true, 'message' => '分组成员更新成功'];
+        return ['success' => true, 'message' => '分组成员更新成功!!!'];
     }
 
     // ========== 状态管理 ==========
@@ -712,11 +648,9 @@ class MTeamGame extends CI_Model {
         // 分队列表
         $game['subteams'] = $this->getSubteams($game_id);
 
-        // 报名人数统计
+        // 报名人数统计（从 t_game_tag_member 统计）
         $game['registration_stats'] = [
-            'total' => $this->db->where(['game_id' => $game_id])->count_all_results('t_game_registration'),
-            'approved' => $this->db->where(['game_id' => $game_id, 'status' => 'approved'])->count_all_results('t_game_registration'),
-            'pending' => $this->db->where(['game_id' => $game_id, 'status' => 'pending'])->count_all_results('t_game_registration')
+            'total' => $this->db->where(['game_id' => $game_id])->count_all_results('t_game_tag_member')
         ];
 
         // 分组信息
@@ -744,12 +678,11 @@ class MTeamGame extends CI_Model {
 
         $games = $this->db->get()->result_array();
 
-        // 为每个赛事添加报名人数
+        // 为每个赛事添加报名人数（从 t_game_tag_member 统计）
         foreach ($games as &$game) {
             $game['approved_count'] = $this->db->where([
-                'game_id' => $game['id'],
-                'status' => 'approved'
-            ])->count_all_results('t_game_registration');
+                'game_id' => $game['id']
+            ])->count_all_results('t_game_tag_member');
         }
 
         return $games;
@@ -938,28 +871,26 @@ class MTeamGame extends CI_Model {
 
         $teams = $this->db->get()->result_array();
 
-        // 为每个球队添加报名人数
+        // 为每个球队添加报名人数（从 t_game_tag_member 统计）
         foreach ($teams as &$team) {
             $team['member_count'] = $this->db->where([
                 'game_id' => $game_id,
-                'tag_id' => $team['tag_id'],
-                'status' => 'approved'
-            ])->count_all_results('t_game_registration');
+                'tag_id' => $team['tag_id']
+            ])->count_all_results('t_game_tag_member');
         }
 
         return $teams;
     }
 
     /**
-     * 检查球员是否已在队际赛中报名（唯一性校验，使用统一的 tag_id）
+     * 检查球员是否已在队际赛中报名（唯一性校验）
      */
     public function checkCrossTeamRegistration($game_id, $user_id) {
-        $existing = $this->db->select('r.*, s.tag_name as team_alias')
-            ->from('t_game_registration r')
-            ->join('t_team_game_tags s', 'r.tag_id = s.id', 'left')
-            ->where('r.game_id', $game_id)
-            ->where('r.user_id', $user_id)
-            ->where_in('r.status', ['pending', 'approved'])
+        $existing = $this->db->select('m.*, s.tag_name as team_alias')
+            ->from('t_game_tag_member m')
+            ->join('t_team_game_tags s', 'm.tag_id = s.id', 'left')
+            ->where('m.game_id', $game_id)
+            ->where('m.user_id', $user_id)
             ->get()
             ->row_array();
 
@@ -1009,31 +940,12 @@ class MTeamGame extends CI_Model {
             return ['success' => false, 'message' => '该赛事仅限球队成员报名'];
         }
 
-        // 队员自动通过，非队员待审核
-        $status = $isTeamMember ? 'approved' : 'pending';
-
-        $this->db->insert('t_game_registration', [
-            'game_id' => $game_id,
-            'user_id' => $user_id,
-            'tag_id' => $tag_id,
-            'status' => $status,
-            'is_team_member' => $isTeamMember ? 'y' : 'n',
-            'remark' => $remark,
-            'apply_time' => date('Y-m-d H:i:s')
-        ]);
-
-        $registration_id = $this->db->insert_id();
-
-        // 如果已通过，加入分队成员表
-        if ($status == 'approved') {
-            $this->addMemberToTag($tag_id, $user_id, $game_id);
-        }
+        // 直接加入分队成员表
+        $this->addMemberToTag($tag_id, $user_id, $game_id);
 
         return [
             'success' => true,
-            'registration_id' => $registration_id,
-            'status' => $status,
-            'message' => $status == 'approved' ? '报名成功' : '报名已提交，等待审核'
+            'message' => '报名成功'
         ];
     }
 
@@ -1056,17 +968,16 @@ class MTeamGame extends CI_Model {
                 continue;
             }
 
-            // 获取该组所有成员的分队
+            // 获取该组所有成员的分队（从 t_game_tag_member 获取）
             $subteamIds = [];
             foreach ($group['user_ids'] as $user_id) {
-                $registration = $this->db->get_where('t_game_registration', [
+                $member = $this->db->get_where('t_game_tag_member', [
                     'game_id' => $game_id,
-                    'user_id' => $user_id,
-                    'status' => 'approved'
+                    'user_id' => $user_id
                 ])->row_array();
 
-                if ($registration && $registration['tag_id']) {
-                    $subteamIds[] = $registration['tag_id'];
+                if ($member && $member['tag_id']) {
+                    $subteamIds[] = $member['tag_id'];
                 }
             }
 
@@ -1118,16 +1029,15 @@ class MTeamGame extends CI_Model {
 
         $members = $this->db->get()->result_array();
 
-        // 如果提供了 game_id，标记已报名的成员
+        // 如果提供了 game_id，标记已报名的成员（从 t_game_tag_member 查询）
         if ($game_id) {
             foreach ($members as &$member) {
-                $registration = $this->db->get_where('t_game_registration', [
+                $tagMember = $this->db->get_where('t_game_tag_member', [
                     'game_id' => $game_id,
                     'user_id' => $member['user_id']
                 ])->row_array();
 
-                $member['is_registered'] = !empty($registration) && in_array($registration['status'], ['pending', 'approved']);
-                $member['registration_status'] = $registration['status'] ?? null;
+                $member['is_registered'] = !empty($tagMember);
             }
         }
 
@@ -1152,11 +1062,9 @@ class MTeamGame extends CI_Model {
         // 参赛球队列表
         $game['cross_teams'] = $this->getCrossTeamList($game_id);
 
-        // 报名人数统计
+        // 报名人数统计（从 t_game_tag_member 统计）
         $game['registration_stats'] = [
-            'total' => $this->db->where(['game_id' => $game_id])->count_all_results('t_game_registration'),
-            'approved' => $this->db->where(['game_id' => $game_id, 'status' => 'approved'])->count_all_results('t_game_registration'),
-            'pending' => $this->db->where(['game_id' => $game_id, 'status' => 'pending'])->count_all_results('t_game_registration')
+            'total' => $this->db->where(['game_id' => $game_id])->count_all_results('t_game_tag_member')
         ];
 
         // 分组信息
@@ -1255,17 +1163,17 @@ class MTeamGame extends CI_Model {
             // 添加成员到分组
             if (!empty($group['user_ids'])) {
                 foreach ($group['user_ids'] as $user_id) {
-                    $registration = $this->db->get_where('t_game_registration', [
+                    // 从 t_game_tag_member 获取分队信息
+                    $member = $this->db->get_where('t_game_tag_member', [
                         'game_id' => $game_id,
-                        'user_id' => $user_id,
-                        'status' => 'approved'
+                        'user_id' => $user_id
                     ])->row_array();
 
                     $this->db->insert('t_game_group_user', [
                         'gameid' => $game_id,
                         'groupid' => $groupid,
                         'userid' => $user_id,
-                        'tag_id' => $registration['tag_id'] ?? null,
+                        'tag_id' => $member['tag_id'] ?? null,
                         'addtime' => date('Y-m-d H:i:s')
                     ]);
                 }
