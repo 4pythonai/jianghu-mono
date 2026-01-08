@@ -244,9 +244,14 @@ class MTeamGame extends CI_Model {
     // ========== 报名管理 ==========
 
     /**
-     * 球员报名（直接加入分队成员表）
+     * 球员报名（直接加入某个TAG）
      */
     public function registerGame($game_id, $user_id, $tag_id = null, $remark = null) {
+        // 必须选择分队
+        if (!$tag_id) {
+            return ['success' => false, 'message' => '请选择分队'];
+        }
+
         // 检查是否已报名
         $existing = $this->db->get_where('t_game_tag_member', [
             'game_id' => $game_id,
@@ -257,27 +262,14 @@ class MTeamGame extends CI_Model {
             return ['success' => false, 'message' => '您已报名此赛事'];
         }
 
-        // 检查是否为球队成员
+        // 检查是否公开报名
         $game = $this->getTeamGame($game_id);
-        $isTeamMember = $game['team_id'] ? $this->isTeamMember($game['team_id'], $user_id) : false;
-
-        // 非公开赛事且非队员，拒绝报名
-        if ($game['is_public_registration'] == 'n' && !$isTeamMember) {
-            return ['success' => false, 'message' => '该赛事仅限球队成员报名'];
+        if ($game['is_public_registration'] == 'n') {
+            return ['success' => false, 'message' => '该赛事未开放公开报名'];
         }
 
-        // 直接加入分队成员表
-        if ($tag_id) {
-            $this->addMemberToTag($tag_id, $user_id, $game_id);
-        } else {
-            // 无分队时也插入记录
-            $this->db->insert('t_game_tag_member', [
-                'game_id' => $game_id,
-                'user_id' => $user_id,
-                'tag_id' => null,
-                'join_time' => date('Y-m-d H:i:s')
-            ]);
-        }
+        // 加入分队成员表
+        $this->addMemberToTag($tag_id, $user_id, $game_id);
 
         return [
             'success' => true,

@@ -303,8 +303,7 @@ class TeamGame extends MY_Controller {
                 'code' => 200,
                 'message' => $result['message'],
                 'data' => [
-                    'registration_id' => $result['registration_id'],
-                    'status' => $result['status']
+                    'status' => 'success'
                 ]
             ], JSON_UNESCAPED_UNICODE);
         } else {

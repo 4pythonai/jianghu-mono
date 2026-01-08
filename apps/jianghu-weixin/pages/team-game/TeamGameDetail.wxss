@@ -367,3 +367,155 @@
     font-size: 30rpx;
     color: var(--text-secondary);
 }
+
+/* ========== 报名弹窗样式 ========== */
+.register-popup {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.register-title {
+    font-size: 34rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 30rpx;
+}
+
+.register-form {
+    background: #f8f8f8;
+    border-radius: 12rpx;
+    padding: 20rpx;
+    margin-bottom: 30rpx;
+}
+
+.form-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16rpx 0;
+    border-bottom: 1rpx solid #eee;
+}
+
+.form-item:last-child {
+    border-bottom: none;
+}
+
+.form-label {
+    font-size: 28rpx;
+    color: var(--text-secondary);
+}
+
+.form-value {
+    font-size: 28rpx;
+    color: var(--text-primary);
+}
+
+/* 分队选择区域 */
+.tag-section {
+    margin-bottom: 30rpx;
+}
+
+.tag-section-title {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 20rpx;
+}
+
+.tag-section-title .required {
+    color: #e74c3c;
+    margin-left: 4rpx;
+}
+
+.tag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    padding: 24rpx 20rpx;
+    background: #f8f8f8;
+    border-radius: 12rpx;
+    border: 2rpx solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.tag-item.selected {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: var(--primary-green);
+}
+
+.tag-indicator {
+    width: 24rpx;
+    height: 24rpx;
+    border-radius: 50%;
+    background: #ccc;
+    margin-right: 16rpx;
+    flex-shrink: 0;
+}
+
+.tag-name {
+    flex: 1;
+    font-size: 30rpx;
+    color: var(--text-primary);
+}
+
+.tag-check {
+    width: 40rpx;
+    height: 40rpx;
+    border-radius: 50%;
+    background: var(--primary-green);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24rpx;
+}
+
+.tag-empty {
+    padding: 40rpx;
+    text-align: center;
+}
+
+.tag-empty text {
+    font-size: 26rpx;
+    color: var(--text-tertiary);
+}
+
+/* 报名按钮 */
+.register-buttons {
+    display: flex;
+    gap: 20rpx;
+    margin-top: 20rpx;
+}
+
+.btn-cancel,
+.btn-submit {
+    flex: 1;
+    height: 88rpx;
+    border-radius: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30rpx;
+    font-weight: 500;
+}
+
+.btn-cancel {
+    background: #f5f5f5;
+    color: var(--text-secondary);
+}
+
+.btn-submit {
+    background: var(--primary-green);
+    color: #fff;
+}
+
+.btn-submit.disabled {
+    background: #ccc;
+    color: #999;
+}

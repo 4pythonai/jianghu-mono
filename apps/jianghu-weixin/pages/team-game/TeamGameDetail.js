@@ -20,6 +20,14 @@ Page({
 
         // 弹窗状态
         showMoreActions: false,
+        showRegisterPopup: false,   // 报名弹窗
+        selectedTagId: null,        // 选中的分队ID
+        registerForm: {             // 报名表单数据
+            nickname: '',
+            mobile: '',
+            gender: 0,
+            genderText: '未知'
+        },
 
         // 默认值（防止 store 绑定前 WXML 报错）
         spectators: { count: 0, avatars: [] },
@@ -200,17 +208,121 @@ Page({
     },
 
     /**
-     * 报名
+     * 报名 - 打开报名弹窗
      */
     async register() {
-        wx.showToast({ title: '报名功能开发中', icon: 'none' })
+        const app = getApp()
+        const userInfo = app?.globalData?.userInfo
+
+        if (!userInfo) {
+            wx.showToast({ title: '请先登录', icon: 'none' })
+            return
+        }
+
+        // 获取性别文本
+        const genderMap = { 0: '未知', 1: '男', 2: '女' }
+        const gender = userInfo.gender || userInfo.sex || 0
+        const genderText = genderMap[gender] || '未知'
+
+        // 填充表单数据
+        this.setData({
+            showRegisterPopup: true,
+            selectedTagId: null,
+            registerForm: {
+                nickname: userInfo.nickName || userInfo.nickname || userInfo.wx_nickname || '未设置',
+                mobile: userInfo.mobile || '',
+                gender: gender,
+                genderText: genderText
+            }
+        })
+    },
+
+    /**
+     * 关闭报名弹窗
+     */
+    onCloseRegisterPopup() {
+        this.setData({
+            showRegisterPopup: false,
+            selectedTagId: null
+        })
+    },
+
+    /**
+     * 选择分队
+     */
+    onSelectTag(e) {
+        const tagId = e.currentTarget.dataset.tagId
+        this.setData({ selectedTagId: tagId })
+    },
+
+    /**
+     * 提交报名
+     */
+    async onSubmitRegister() {
+        const { selectedTagId, gameid } = this.data
+
+        if (!selectedTagId) {
+            wx.showToast({ title: '请选择分队', icon: 'none' })
+            return
+        }
+
+        wx.showLoading({ title: '报名中...' })
+
+        try {
+            const app = getApp()
+            const result = await app.api.teamgame.registerGame({
+                game_id: gameid,
+                tag_id: selectedTagId
+            })
+
+            wx.hideLoading()
+
+            if (result.code === 200) {
+                wx.showToast({ title: '报名成功', icon: 'success' })
+                this.setData({
+                    showRegisterPopup: false,
+                    selectedTagId: null,
+                    isRegistered: true
+                })
+                // 刷新报名人员列表
+                this.loadTagMembers(gameid)
+            } else {
+                wx.showToast({ title: result.message || '报名失败', icon: 'none' })
+            }
+        } catch (err) {
+            wx.hideLoading()
+            console.error('[TeamGameDetail] 报名失败:', err)
+            wx.showToast({ title: '报名失败，请稍后重试', icon: 'none' })
+        }
     },
 
     /**
      * 取消报名
      */
     async cancelRegistration() {
-        wx.showToast({ title: '取消报名功能开发中', icon: 'none' })
+        wx.showLoading({ title: '取消中...' })
+
+        try {
+            const app = getApp()
+            const result = await app.api.teamgame.cancelRegistration({
+                game_id: this.data.gameid
+            })
+
+            wx.hideLoading()
+
+            if (result.code === 200) {
+                wx.showToast({ title: '已取消报名', icon: 'success' })
+                this.setData({ isRegistered: false })
+                // 刷新报名人员列表
+                this.loadTagMembers(this.data.gameid)
+            } else {
+                wx.showToast({ title: result.message || '取消失败', icon: 'none' })
+            }
+        } catch (err) {
+            wx.hideLoading()
+            console.error('[TeamGameDetail] 取消报名失败:', err)
+            wx.showToast({ title: '取消失败，请稍后重试', icon: 'none' })
+        }
     },
 
     /**
