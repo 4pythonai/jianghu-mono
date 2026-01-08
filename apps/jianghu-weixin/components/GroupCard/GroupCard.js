@@ -6,8 +6,8 @@ Component({
     properties: {
         /** 分组ID */
         groupId: {
-            type: Number,
-            value: 0
+            type: String,
+            value: ''
         },
         /** 分组名称（如 G1, G2） */
         groupName: {
