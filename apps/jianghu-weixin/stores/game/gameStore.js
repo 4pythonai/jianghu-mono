@@ -449,7 +449,7 @@ export const gameStore = observable({
                     return {
                         id: m.user_id,
                         seq: m.seq,
-                        name: m.nickname || '球友',
+                        name: m.nickname,
                         avatar: avatar,
                         handicap: m.handicap,
                         tagName: m.tag_name || '',
@@ -518,7 +518,7 @@ export const gameStore = observable({
                 name: g.group_name || `第${index + 1}组`,
                 players: (g.members || g.players || []).map(p => ({
                     id: p.userid || p.user_id,
-                    name: p.nickname || p.user_name || '球友',
+                    name: p.nickname || p.user_name,
                     avatar: p.avatar || '',
                     teamName: p.tag_name || '',
                     tee: p.tee || ''

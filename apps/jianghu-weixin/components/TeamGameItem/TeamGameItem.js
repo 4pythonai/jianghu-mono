@@ -9,10 +9,6 @@ Component({
 
     data: {},
 
-    methods: {
-        onTap() {
-            this.triggerEvent('tap', { event: this.properties.event });
-        }
-    }
+    methods: {}
 });
 

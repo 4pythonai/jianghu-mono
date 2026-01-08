@@ -138,7 +138,7 @@ Page({
                                 if (!allPlayers.find(p => p.userid === user.userid)) {
                                     allPlayers.push({
                                         userid: user.userid,
-                                        nickname: user.nickname || user.wx_nickname || '未知',
+                                        nickname: user.nickname || user.wx_nickname,
                                         avatar: user.avatar || '/images/default-avatar.png'
                                     });
                                 }

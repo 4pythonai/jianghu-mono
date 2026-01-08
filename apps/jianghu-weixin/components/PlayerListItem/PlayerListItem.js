@@ -35,9 +35,5 @@ Component({
         defaultAvatar: '/assets/images/default-avatar.png'
     },
 
-    methods: {
-        onTap() {
-            this.triggerEvent('tap')
-        }
-    }
+    methods: {}
 })

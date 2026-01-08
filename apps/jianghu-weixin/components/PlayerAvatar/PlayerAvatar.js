@@ -60,8 +60,6 @@ Component({
         onTap() {
             if (this.properties.selectable) {
                 this.triggerEvent('select', { selected: !this.properties.selected })
-            } else {
-                this.triggerEvent('tap')
             }
         }
     }

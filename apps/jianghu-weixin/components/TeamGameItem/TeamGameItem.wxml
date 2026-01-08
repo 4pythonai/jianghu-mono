@@ -1,4 +1,4 @@
-<view class="event-card" bindtap="onTap">
+<view class="event-card">
   <!-- 封面区域 -->
   <view class="event-cover-wrapper">
     <!-- 单个封面（队内赛/默认） -->

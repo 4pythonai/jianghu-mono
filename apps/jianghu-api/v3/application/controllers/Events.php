@@ -156,9 +156,12 @@ class Events extends MY_Controller {
      * 返回结构与 Feed/myFeeds 对齐
      */
     public function getAvailableEvents() {
+        $userid = $this->getUser();
+
         // 查询公开报名中的赛事ID列表
+        // 条件：is_public_registration='y' 且用户未报名
         // registration_deadline 为 NULL 或 >= 今天的都显示
-        $gameRows = $this->db->select('g.id, g.team_id, g.game_type')
+        $this->db->select('g.id, g.team_id, g.game_type')
             ->from('t_game g')
             ->where('g.is_public_registration', 'y')
             ->where_in('g.game_status', ['init', 'registering'])
@@ -167,9 +170,14 @@ class Events extends MY_Controller {
             ->where('g.registration_deadline IS NULL', null, false)
             ->or_where('g.registration_deadline >=', date('Y-m-d'))
             ->group_end()
-            ->order_by('g.registration_deadline', 'ASC')
-            ->get()
-            ->result_array();
+            ->order_by('g.registration_deadline', 'ASC');
+
+        // 排除用户已报名的比赛
+        if ($userid) {
+            $this->db->where("g.id NOT IN (SELECT game_id FROM t_game_tag_member WHERE user_id = {$userid})", null, false);
+        }
+
+        $gameRows = $this->db->get()->result_array();
 
         $events = [];
         foreach ($gameRows as $row) {
@@ -214,11 +222,11 @@ class Events extends MY_Controller {
             return;
         }
 
-        // 查询用户已加入的赛事ID列表
-        $gameRows = $this->db->select('DISTINCT(g.id) as id, g.team_id, g.game_type, g.game_status')
-            ->from('t_game_group_user ggu')
-            ->join('t_game g', 'ggu.gameid = g.id', 'inner')
-            ->where('ggu.userid', $userid)
+        // 查询用户已报名的赛事ID列表（通过 t_game_tag_member）
+        $gameRows = $this->db->select('DISTINCT(g.id) as id, g.team_id, g.game_type, g.game_status, g.open_time')
+            ->from('t_game_tag_member gtm')
+            ->join('t_game g', 'gtm.game_id = g.id', 'inner')
+            ->where('gtm.user_id', $userid)
             ->order_by('g.open_time', 'DESC')
             ->get()
             ->result_array();

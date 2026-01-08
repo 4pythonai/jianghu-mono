@@ -1,9 +1,5 @@
 <view class="attened-players-container" wx:if="{{displayPlayers.length > 0}}">
-  <view
-    wx:for="{{displayPlayers}}"
-    wx:key="userid"
-    class="player-item"
-  >
+  <view wx:for="{{displayPlayers}}" wx:key="userid" class="player-item">
     <view class="avatar-wrapper">
       <image
         class="player-avatar"
@@ -19,6 +15,6 @@
         catchtap="onDeletePlayer"
       />
     </view>
-    <text class="player-nickname">{{item.nickname || '未知'}}</text>
+    <text class="player-nickname">{{item.nickname }}</text>
   </view>
 </view>
