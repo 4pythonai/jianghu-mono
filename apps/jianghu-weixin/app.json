@@ -57,7 +57,6 @@
 		"navigationBarBackgroundColor": "#ffffff",
 		"navigationStyle": "custom"
 	},
-	"navigationStyle": "custom",
 	"tabBar": {
 		"color": "#999999",
 		"selectedColor": "#025028",

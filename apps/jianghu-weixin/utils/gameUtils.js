@@ -1,4 +1,5 @@
 // 高尔夫相关数据工具函数
+const { config } = require('../api/config');
 
 /**
  * 标准化玩家数据
@@ -6,10 +7,15 @@
  * @returns {object}
  */
 function normalizePlayer(player) {
+    let avatar = player.avatar || '';
+    if (avatar && avatar.startsWith('/')) {
+        avatar = config.staticURL + avatar;
+    }
     return {
         ...player,
         userid: String(player.userid),
         nickname: player.nickname || player.wx_nickname || '未知玩家',
+        avatar: avatar,
     };
 }
 
