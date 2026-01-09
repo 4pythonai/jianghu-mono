@@ -20,8 +20,8 @@
           <view class="team-meta">成立时间：{{ item.created_at }}</view>
           <view class="team-slogan">{{ item.slogan || '暂无口号' }}</view>
           <view class="team-staff">
-            <text class="staff-item">队长  {{ item.captain_name || '--' }}</text>
-            <text class="staff-item">秘书长  {{ item.secretary_name || '--' }}</text>
+            <text class="staff-item">超级管理员: {{ item.super_admin_name || '--' }}</text>
+            <text class="staff-item" wx:if="{{ item.admin_names }}">管理员: {{ item.admin_names }}</text>
           </view>
         </view>
         <view class="team-badge joined">已加入</view>
@@ -42,8 +42,8 @@
           <view class="team-meta">成立时间：{{ item.created_at }}</view>
           <view class="team-slogan">{{ item.slogan || '暂无口号' }}</view>
           <view class="team-staff">
-            <text class="staff-item">队长  {{ item.captain_name || '--' }}</text>
-            <text class="staff-item">秘书长  {{ item.secretary_name || '--' }}</text>
+            <text class="staff-item">超级管理员: {{ item.super_admin_name || '--' }}</text>
+            <text class="staff-item" wx:if="{{ item.admin_names }}">管理员: {{ item.admin_names }}</text>
           </view>
         </view>
       </view>

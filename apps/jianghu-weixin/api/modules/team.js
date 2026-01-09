@@ -54,6 +54,12 @@ const team = {
 
     // 退出球队
     quitTeam: (data, options) => request('/Team/quitTeam', data, options),
+
+    // 获取球队管理信息
+    getTeamManageInfo: (data, options) => request('/Team/getTeamManageInfo', data, options),
+
+    // 设置管理员权限
+    setAdminPermissions: (data, options) => request('/Team/setAdminPermissions', data, options),
 }
 
 export default team

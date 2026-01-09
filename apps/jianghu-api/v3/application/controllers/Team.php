@@ -459,4 +459,82 @@ class Team extends MY_Controller {
             $this->error($result['message']);
         }
     }
+
+    /**
+     * 获取球队管理信息（用于管理页面）
+     * POST /Team/getTeamManageInfo
+     * 参数: team_id
+     * 返回: team(球队基本信息), my_role(我的角色), my_permissions(我的权限), pending_count(待审批人数)
+     */
+    public function getTeamManageInfo() {
+        $user_id = $this->getUser();
+        if (!$user_id) {
+            return $this->error('请先登录', 401);
+        }
+
+        $params = json_decode(file_get_contents('php://input'), true);
+
+        if (empty($params['team_id'])) {
+            return $this->error('球队ID不能为空');
+        }
+
+        $team_id = $params['team_id'];
+
+        // 获取球队基本信息
+        $team = $this->MTeam->getTeamDetail($team_id);
+        if (!$team) {
+            return $this->error('球队不存在');
+        }
+
+        // 获取我的角色和权限
+        $my_role = $this->MTeam->getMemberRole($team_id, $user_id);
+        if (!$my_role) {
+            return $this->error('您不是该球队成员');
+        }
+
+        // 获取我的权限配置（仅 admin 角色有，owner 拥有全部权限，member 无权限）
+        $my_permissions = null;
+        if ($my_role === 'admin') {
+            $my_permissions = $this->MTeam->getMemberPermissions($team_id, $user_id);
+        }
+
+        // 获取待审批人数（仅管理员需要）
+        $pending_count = 0;
+        if ($my_role === 'owner' || $my_role === 'admin') {
+            $pending_count = $this->MTeam->getPendingRequestCount($team_id);
+        }
+
+        $this->success([
+            'team' => $team,
+            'my_role' => $my_role,
+            'my_permissions' => $my_permissions,
+            'pending_count' => $pending_count
+        ]);
+    }
+
+    /**
+     * 设置管理员权限
+     * POST /Team/setAdminPermissions
+     * 参数: team_id, user_id, permissions (JSON对象)
+     */
+    public function setAdminPermissions() {
+        $params = json_decode(file_get_contents('php://input'), true);
+
+        if (empty($params['team_id']) || empty($params['user_id'])) {
+            return $this->error('参数不完整');
+        }
+
+        $owner_id = $this->requireOwner($params['team_id']);
+        if (!$owner_id) return;
+
+        $permissions = $params['permissions'] ?? [];
+
+        $result = $this->MTeam->setAdminPermissions($params['team_id'], $params['user_id'], $permissions);
+
+        if ($result['success']) {
+            $this->success([], $result['message']);
+        } else {
+            $this->error($result['message']);
+        }
+    }
 }

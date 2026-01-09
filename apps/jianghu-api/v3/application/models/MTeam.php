@@ -123,12 +123,31 @@ class MTeam extends CI_Model {
 
         $teams = $this->db->get()->result_array();
 
-        // 为每个球队添加成员数
+        // 为每个球队添加成员数和管理员信息
         foreach ($teams as &$team) {
             $team['member_count'] = $this->db->where([
                 'team_id' => $team['id'],
                 'status' => 'active'
             ])->count_all_results('t_team_member');
+
+            // 获取超级管理员名称
+            $superAdmin = $this->db->select('u.nickname')
+                ->from('t_team_member tm')
+                ->join('t_user u', 'tm.user_id = u.id', 'left')
+                ->where(['tm.team_id' => $team['id'], 'tm.role' => 'SuperAdmin', 'tm.status' => 'active'])
+                ->get()
+                ->row_array();
+            $team['super_admin_name'] = $superAdmin ? $superAdmin['nickname'] : '';
+
+            // 获取普通管理员名称列表
+            $admins = $this->db->select('u.nickname')
+                ->from('t_team_member tm')
+                ->join('t_user u', 'tm.user_id = u.id', 'left')
+                ->where(['tm.team_id' => $team['id'], 'tm.role' => 'admin', 'tm.status' => 'active'])
+                ->get()
+                ->result_array();
+            $adminNames = array_map(function($a) { return $a['nickname']; }, $admins);
+            $team['admin_names'] = implode('、', $adminNames);
         }
 
         return $teams;
@@ -533,5 +552,66 @@ class MTeam extends CI_Model {
         $teams = $this->db->get()->result_array();
 
         return $teams;
+    }
+
+    /**
+     * 获取成员权限配置
+     */
+    public function getMemberPermissions($team_id, $user_id) {
+        $member = $this->db->select('permissions')
+            ->get_where('t_team_member', [
+                'team_id' => $team_id,
+                'user_id' => $user_id,
+                'status' => 'active'
+            ])->row_array();
+
+        if (!$member || !$member['permissions']) {
+            return null;
+        }
+
+        return json_decode($member['permissions'], true);
+    }
+
+    /**
+     * 获取待审批申请数量
+     */
+    public function getPendingRequestCount($team_id) {
+        return $this->db->where([
+            'team_id' => $team_id,
+            'status' => 'pending'
+        ])->count_all_results('t_team_member');
+    }
+
+    /**
+     * 设置管理员权限
+     */
+    public function setAdminPermissions($team_id, $user_id, $permissions) {
+        $member = $this->db->get_where('t_team_member', [
+            'team_id' => $team_id,
+            'user_id' => $user_id,
+            'status' => 'active'
+        ])->row_array();
+
+        if (!$member) {
+            return ['success' => false, 'message' => '未找到该成员'];
+        }
+
+        if ($member['role'] === 'owner') {
+            return ['success' => false, 'message' => '不能修改超级管理员的权限'];
+        }
+
+        // 验证权限字段
+        $allowedPermissions = ['approve_join', 'invite_member', 'remove_member', 'mark_paid', 'create_game', 'finance_stats'];
+        $validPermissions = [];
+        foreach ($allowedPermissions as $key) {
+            $validPermissions[$key] = !empty($permissions[$key]);
+        }
+
+        $this->db->where('id', $member['id']);
+        $this->db->update('t_team_member', [
+            'permissions' => json_encode($validPermissions)
+        ]);
+
+        return ['success' => true, 'message' => '权限设置成功'];
     }
 }

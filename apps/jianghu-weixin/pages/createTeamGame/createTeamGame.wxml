@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="img" />
 <CustomNavBar title="{{ isReselect ? '更换球队' : '选择球队' }}" />
 <view class="page-container">
   <view class="main-card">
@@ -25,7 +26,7 @@
           bindtap="onTeamSelect"
           data-team-id="{{ item.id }}"
         >
-          <image src="{{ item.team_avatar  }}" class="team-avatar" mode="aspectFill"></image>
+          <image src="{{ img.imageUrl(item.team_avatar) }}" class="team-avatar" mode="aspectFill"></image>
           <view class="team-info">
             <view class="team-name">{{ item.team_name }}</view>
             <view class="team-role">

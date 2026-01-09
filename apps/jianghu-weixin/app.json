@@ -46,6 +46,7 @@
 		"pages/rules/myRules/myRules",
 		"pages/rules/addRule/addRule",
 		"pages/my-team/my-team",
+		"pages/team-manage/team-manage",
 		"pages/create-team/create-team",
 		"pages/team-game/TeamGameDetail",
 		"pages/group-config/group-config",

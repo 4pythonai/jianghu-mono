@@ -1,12 +1,13 @@
+<wxs src="/utils/image.wxs" module="img" />
 <view class="container">
   <CustomNavBar title="创建球队" showBack="{{true}}" />
-  
+
   <view class="form-container">
     <!-- Logo 上传 -->
     <view class="form-section">
       <view class="section-title">球队 Logo</view>
       <view class="logo-upload" bindtap="chooseLogo">
-        <image wx:if="{{ formData.logo }}" class="logo-preview" src="{{ formData.logo }}" mode="aspectFill"></image>
+        <image wx:if="{{ formData.logo }}" class="logo-preview" src="{{ img.imageUrl(formData.logo) }}" mode="aspectFill"></image>
         <view wx:else class="logo-placeholder">
           <image class="upload-icon" src="/assets/icons/icons8-add-48.png" mode="aspectFit"></image>
           <text class="upload-text">上传 Logo</text>

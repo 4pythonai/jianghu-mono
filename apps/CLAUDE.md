@@ -91,6 +91,50 @@ Page({
 }
 ```
 
+### 自定义导航栏内容被遮挡问题（重要）
+
+**问题原因：** `CustomNavBar` 组件使用 `position: fixed` 固定在页面顶部，页面内容如果不添加顶部 padding，会被导航栏遮挡。
+
+**解决方案：** 页面内容区域必须添加 `padding-top`，值为 `状态栏高度 + 导航栏高度(44px)`。
+
+**正确写法：**
+
+1. 在 JS 的 `onLoad` 中计算导航栏高度：
+```javascript
+Page({
+  data: {
+    navBarHeight: 88  // 默认值
+  },
+  onLoad(options) {
+    const systemInfo = wx.getSystemInfoSync()
+    const statusBarHeight = systemInfo.statusBarHeight || 0
+    const navBarHeight = statusBarHeight + 44
+    this.setData({ navBarHeight })
+  }
+})
+```
+
+2. 在 WXML 中给内容区域添加 padding-top：
+```html
+<view class="container">
+  <CustomNavBar title="页面标题" showBack="{{true}}" />
+
+  <!-- 内容区域必须添加 padding-top -->
+  <view class="page-content" style="padding-top: {{navBarHeight}}px;">
+    <!-- 页面实际内容 -->
+  </view>
+</view>
+```
+
+**常见错误：**
+```html
+<!-- 错误：内容直接放在 container 下，没有 padding-top -->
+<view class="container">
+  <CustomNavBar title="页面标题" />
+  <view class="content">...</view>  <!-- 会被导航栏遮挡！ -->
+</view>
+```
+
 
 # 获取当前用户信息
 ```

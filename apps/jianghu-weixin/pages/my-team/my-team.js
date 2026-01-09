@@ -38,8 +38,8 @@ Page({
           slogan: team.sologan,
           description: team.description,
           created_at: this.formatDate(team.create_date),
-          captain_name: team.captain_name || '',
-          secretary_name: team.secretary_name || '',
+          super_admin_name: team.super_admin_name || '',
+          admin_names: team.admin_names || '',
           member_count: team.member_count,
           role: team.role
         }))
@@ -94,8 +94,8 @@ Page({
           slogan: team.sologan,
           description: team.description,
           created_at: this.formatDate(team.create_date),
-          captain_name: team.captain_name || '',
-          secretary_name: team.secretary_name || '',
+          super_admin_name: team.super_admin_name || '',
+          admin_names: team.admin_names || '',
           member_count: team.member_count,
           is_member: team.is_member
         }))
@@ -109,11 +109,11 @@ Page({
     }
   },
 
-  // 跳转到球队详情
+  // 跳转到球队管理
   goToTeamDetail(e) {
     const team = e.currentTarget.dataset.team
     wx.navigateTo({
-      url: `/pages/team-detail/team-detail?id=${team.id}`
+      url: `/pages/team-manage/team-manage?id=${team.id}`
     })
   },
 
