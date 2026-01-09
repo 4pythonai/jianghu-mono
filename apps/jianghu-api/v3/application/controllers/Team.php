@@ -38,13 +38,13 @@ class Team extends MY_Controller {
     /**
      * 要求超级管理员权限
      */
-    private function requireOwner($team_id) {
+    private function requireSuperAdmin($team_id) {
         $user_id = $this->getUser();
         if (!$user_id) {
             $this->error('请先登录', 401);
             return false;
         }
-        if (!$this->MTeam->isTeamOwner($team_id, $user_id)) {
+        if (!$this->MTeam->isTeamSuperAdmin($team_id, $user_id)) {
             $this->error('需要超级管理员权限', 403);
             return false;
         }
@@ -396,8 +396,8 @@ class Team extends MY_Controller {
             return $this->error('参数不完整');
         }
 
-        $owner_id = $this->requireOwner($params['team_id']);
-        if (!$owner_id) return;
+        $super_admin_id = $this->requireSuperAdmin($params['team_id']);
+        if (!$super_admin_id) return;
 
         $result = $this->MTeam->setMemberRole($params['team_id'], $params['user_id'], $params['role']);
 
@@ -410,13 +410,13 @@ class Team extends MY_Controller {
 
     /**
      * 转让超级管理员
-     * POST /Team/transferOwner
-     * 参数: team_id, new_owner_id
+     * POST /Team/transferSuperAdmin
+     * 参数: team_id, new_super_admin_id
      */
-    public function transferOwner() {
+    public function transferSuperAdmin() {
         $params = json_decode(file_get_contents('php://input'), true);
 
-        if (empty($params['team_id']) || empty($params['new_owner_id'])) {
+        if (empty($params['team_id']) || empty($params['new_super_admin_id'])) {
             return $this->error('参数不完整');
         }
 
@@ -425,7 +425,7 @@ class Team extends MY_Controller {
             return $this->error('请先登录', 401);
         }
 
-        $result = $this->MTeam->transferOwner($params['team_id'], $user_id, $params['new_owner_id']);
+        $result = $this->MTeam->transferSuperAdmin($params['team_id'], $user_id, $params['new_super_admin_id']);
 
         if ($result['success']) {
             $this->success([], $result['message']);
@@ -492,7 +492,7 @@ class Team extends MY_Controller {
             return $this->error('您不是该球队成员');
         }
 
-        // 获取我的权限配置（仅 admin 角色有，owner 拥有全部权限，member 无权限）
+        // 获取我的权限配置（仅 admin 角色有，SuperAdmin 拥有全部权限，member 无权限）
         $my_permissions = null;
         if ($my_role === 'admin') {
             $my_permissions = $this->MTeam->getMemberPermissions($team_id, $user_id);
@@ -500,7 +500,7 @@ class Team extends MY_Controller {
 
         // 获取待审批人数（仅管理员需要）
         $pending_count = 0;
-        if ($my_role === 'owner' || $my_role === 'admin') {
+        if ($my_role === 'SuperAdmin' || $my_role === 'admin') {
             $pending_count = $this->MTeam->getPendingRequestCount($team_id);
         }
 
@@ -524,8 +524,8 @@ class Team extends MY_Controller {
             return $this->error('参数不完整');
         }
 
-        $owner_id = $this->requireOwner($params['team_id']);
-        if (!$owner_id) return;
+        $super_admin_id = $this->requireSuperAdmin($params['team_id']);
+        if (!$super_admin_id) return;
 
         $permissions = $params['permissions'] ?? [];
 

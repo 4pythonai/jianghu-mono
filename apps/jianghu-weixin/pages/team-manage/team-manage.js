@@ -16,7 +16,7 @@ Page({
   data: {
     teamId: '',
     teamInfo: {},
-    myRole: '',           // owner / admin / member
+    myRole: '',           // 
     myPermissions: null,  // 原始权限数据
     permissions: {},      // 计算后的权限（用于UI判断）
     pendingCount: 0,      // 待审批人数
@@ -80,8 +80,7 @@ Page({
 
   // 计算权限：超管拥有全部权限，普通管理员按配置，成员无权限
   calculatePermissions(role, permissionsData) {
-    // 兼容 SuperAdmin 和 owner 两种写法
-    if (role === 'owner' || role === 'SuperAdmin') {
+    if (role === 'SuperAdmin') {
       return { ...ALL_PERMISSIONS }
     }
 

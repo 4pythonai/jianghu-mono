@@ -15,7 +15,7 @@ class MTeam extends CI_Model {
 
     /**
      * 创建球队
-     * 创建者自动成为超级管理员(owner)
+     * 创建者自动成为超级管理员(SuperAdmin)
      */
     public function createTeam($creator_id, $data) {
         // 检查球队名称唯一性
@@ -41,7 +41,7 @@ class MTeam extends CI_Model {
         $this->db->insert('t_team_member', [
             'team_id' => $team_id,
             'user_id' => $creator_id,
-            'role' => 'owner',
+            'role' => 'SuperAdmin',
             'status' => 'active',
             'join_time' => date('Y-m-d H:i:s')
         ]);
@@ -98,13 +98,13 @@ class MTeam extends CI_Model {
         ])->count_all_results('t_team_member');
 
         // 获取超级管理员信息
-        $owner = $this->db->select('tm.*, u.nickname, u.avatar')
+        $superAdmin = $this->db->select('tm.*, u.nickname, u.avatar')
             ->from('t_team_member tm')
             ->join('t_user u', 'tm.user_id = u.id', 'left')
-            ->where(['tm.team_id' => $team_id, 'tm.role' => 'owner', 'tm.status' => 'active'])
+            ->where(['tm.team_id' => $team_id, 'tm.role' => 'SuperAdmin', 'tm.status' => 'active'])
             ->get()
             ->row_array();
-        $team['owner'] = $owner;
+        $team['super_admin'] = $superAdmin;
 
         return $team;
     }
@@ -299,7 +299,7 @@ class MTeam extends CI_Model {
         }
 
         // 不能踢出超级管理员
-        if ($member['role'] == 'owner') {
+        if ($member['role'] == 'SuperAdmin') {
             return ['success' => false, 'message' => '不能移除超级管理员'];
         }
 
@@ -318,7 +318,7 @@ class MTeam extends CI_Model {
         $this->db->join('t_user u', 'tm.user_id = u.id', 'left');
         $this->db->where('tm.team_id', $team_id);
         $this->db->where('tm.status', $status);
-        $this->db->order_by("FIELD(tm.role, 'owner', 'admin', 'member')");
+        $this->db->order_by("FIELD(tm.role, 'SuperAdmin', 'admin', 'member')");
         $this->db->order_by('tm.join_time', 'ASC');
 
         return $this->db->get()->result_array();
@@ -334,7 +334,7 @@ class MTeam extends CI_Model {
     // ========== 权限管理 ==========
 
     /**
-     * 检查用户是否为球队管理员(owner或admin)
+     * 检查用户是否为球队管理员(SuperAdmin或admin)
      */
     public function isTeamAdmin($team_id, $user_id) {
         $member = $this->db->get_where('t_team_member', [
@@ -347,20 +347,20 @@ class MTeam extends CI_Model {
             return false;
         }
 
-        return in_array($member['role'], ['owner', 'admin']);
+        return in_array($member['role'], ['SuperAdmin', 'admin']);
     }
 
     /**
-     * 检查用户是否为球队超级管理员(owner)
+     * 检查用户是否为球队超级管理员(SuperAdmin)
      */
-    public function isTeamOwner($team_id, $user_id) {
+    public function isTeamSuperAdmin($team_id, $user_id) {
         $member = $this->db->get_where('t_team_member', [
             'team_id' => $team_id,
             'user_id' => $user_id,
             'status' => 'active'
         ])->row_array();
 
-        return $member && $member['role'] == 'owner';
+        return $member && $member['role'] == 'SuperAdmin';
     }
 
     /**
@@ -408,7 +408,7 @@ class MTeam extends CI_Model {
             return ['success' => false, 'message' => '未找到该成员'];
         }
 
-        if ($member['role'] == 'owner') {
+        if ($member['role'] == 'SuperAdmin') {
             return ['success' => false, 'message' => '不能修改超级管理员的角色'];
         }
 
@@ -421,37 +421,37 @@ class MTeam extends CI_Model {
     /**
      * 转让超级管理员
      */
-    public function transferOwner($team_id, $current_owner_id, $new_owner_id) {
-        // 验证当前用户是 owner
-        if (!$this->isTeamOwner($team_id, $current_owner_id)) {
+    public function transferSuperAdmin($team_id, $current_super_admin_id, $new_super_admin_id) {
+        // 验证当前用户是超级管理员
+        if (!$this->isTeamSuperAdmin($team_id, $current_super_admin_id)) {
             return ['success' => false, 'message' => '您不是超级管理员'];
         }
 
-        // 验证新 owner 是球队成员
-        $newOwnerMember = $this->db->get_where('t_team_member', [
+        // 验证新超级管理员是球队成员
+        $newSuperAdminMember = $this->db->get_where('t_team_member', [
             'team_id' => $team_id,
-            'user_id' => $new_owner_id,
+            'user_id' => $new_super_admin_id,
             'status' => 'active'
         ])->row_array();
 
-        if (!$newOwnerMember) {
+        if (!$newSuperAdminMember) {
             return ['success' => false, 'message' => '目标用户不是球队成员'];
         }
 
         // 开始事务
         $this->db->trans_start();
 
-        // 将当前 owner 降为 admin
-        $this->db->where(['team_id' => $team_id, 'user_id' => $current_owner_id]);
+        // 将当前超级管理员降为 admin
+        $this->db->where(['team_id' => $team_id, 'user_id' => $current_super_admin_id]);
         $this->db->update('t_team_member', ['role' => 'admin']);
 
-        // 将新 owner 升为 owner
-        $this->db->where(['team_id' => $team_id, 'user_id' => $new_owner_id]);
-        $this->db->update('t_team_member', ['role' => 'owner']);
+        // 将新超级管理员升为 SuperAdmin
+        $this->db->where(['team_id' => $team_id, 'user_id' => $new_super_admin_id]);
+        $this->db->update('t_team_member', ['role' => 'SuperAdmin']);
 
         // 更新球队创建者
         $this->db->where('id', $team_id);
-        $this->db->update('t_team', ['creator' => $new_owner_id]);
+        $this->db->update('t_team', ['creator' => $new_super_admin_id]);
 
         $this->db->trans_complete();
 
@@ -476,9 +476,9 @@ class MTeam extends CI_Model {
             return ['success' => false, 'message' => '您不是该球队成员'];
         }
 
-        // 如果是超级管理员退出，需要自动指派新 owner
-        if ($member['role'] == 'owner') {
-            $result = $this->autoAssignNewOwner($team_id, $user_id);
+        // 如果是超级管理员退出，需要自动指派新超级管理员
+        if ($member['role'] == 'SuperAdmin') {
+            $result = $this->autoAssignNewSuperAdmin($team_id, $user_id);
             if (!$result['success']) {
                 return $result;
             }
@@ -495,9 +495,9 @@ class MTeam extends CI_Model {
      * 自动指派新超级管理员
      * 规则：优先选择admin，如有多个选最早加入的；如无admin则选最早加入的member
      */
-    private function autoAssignNewOwner($team_id, $exclude_user_id) {
+    private function autoAssignNewSuperAdmin($team_id, $exclude_user_id) {
         // 先找 admin
-        $newOwner = $this->db->where([
+        $newSuperAdmin = $this->db->where([
             'team_id' => $team_id,
             'role' => 'admin',
             'status' => 'active'
@@ -509,8 +509,8 @@ class MTeam extends CI_Model {
             ->row_array();
 
         // 如果没有 admin，找 member
-        if (!$newOwner) {
-            $newOwner = $this->db->where([
+        if (!$newSuperAdmin) {
+            $newSuperAdmin = $this->db->where([
                 'team_id' => $team_id,
                 'role' => 'member',
                 'status' => 'active'
@@ -522,19 +522,19 @@ class MTeam extends CI_Model {
                 ->row_array();
         }
 
-        // 如果没有其他成员，球队将无owner（或可考虑解散球队）
-        if (!$newOwner) {
+        // 如果没有其他成员，球队将无超级管理员（或可考虑解散球队）
+        if (!$newSuperAdmin) {
             // 允许最后一人退出，球队变成无主状态
             return ['success' => true, 'message' => '球队已无其他成员'];
         }
 
-        // 设置新 owner
-        $this->db->where('id', $newOwner['id']);
-        $this->db->update('t_team_member', ['role' => 'owner']);
+        // 设置新超级管理员
+        $this->db->where('id', $newSuperAdmin['id']);
+        $this->db->update('t_team_member', ['role' => 'SuperAdmin']);
 
         // 更新球队创建者
         $this->db->where('id', $team_id);
-        $this->db->update('t_team', ['creator' => $newOwner['user_id']]);
+        $this->db->update('t_team', ['creator' => $newSuperAdmin['user_id']]);
 
         return ['success' => true, 'message' => '已自动指派新超级管理员'];
     }
@@ -596,7 +596,7 @@ class MTeam extends CI_Model {
             return ['success' => false, 'message' => '未找到该成员'];
         }
 
-        if ($member['role'] === 'owner') {
+        if ($member['role'] === 'SuperAdmin') {
             return ['success' => false, 'message' => '不能修改超级管理员的权限'];
         }
 

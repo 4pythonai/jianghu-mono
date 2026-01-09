@@ -135,7 +135,7 @@
     border-radius: 6rpx;
 }
 
-.role-tag.owner {
+.role-tag.team-superadmin {
     background: #fff3e0;
     color: #e65100;
 }

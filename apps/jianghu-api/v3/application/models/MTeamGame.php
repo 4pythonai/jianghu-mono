@@ -19,7 +19,7 @@ class MTeamGame extends CI_Model {
     // ========== 权限校验 ==========
 
     /**
-     * 检查用户是否为球队管理员（owner/admin）
+     * 检查用户是否为球队管理员（SuperAdmin/admin）
      */
     public function isTeamAdmin($team_id, $user_id) {
         $member = $this->db->get_where('t_team_member', [
@@ -32,7 +32,7 @@ class MTeamGame extends CI_Model {
             return false;
         }
 
-        return in_array($member['role'], ['owner', 'admin']);
+        return in_array($member['role'], ['SuperAdmin', 'admin']);
     }
 
     /**

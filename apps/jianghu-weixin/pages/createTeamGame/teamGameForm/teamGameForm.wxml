@@ -11,8 +11,8 @@
             <view class="team-name">{{ selectedTeam.team_name || teamName }}</view>
             <view class="team-role" wx:if="{{ selectedTeam.role }}">
               <text
-                class="role-tag {{ selectedTeam.role }}"
-              >{{ selectedTeam.role === 'owner' ? '队长' : (selectedTeam.role === 'admin' ? '管理员' : '成员') }}</text>
+                class="role-tag {{ selectedTeam.role === 'SuperAdmin' ? 'team-superadmin' : selectedTeam.role }}"
+              >{{ selectedTeam.role === 'SuperAdmin' ? '超级管理员' : (selectedTeam.role === 'admin' ? '管理员' : '成员') }}</text>
             </view>
           </view>
           <view class="reselect-hint">

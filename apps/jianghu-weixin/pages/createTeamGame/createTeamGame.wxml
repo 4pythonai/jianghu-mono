@@ -30,7 +30,7 @@
           <view class="team-info">
             <view class="team-name">{{ item.team_name }}</view>
             <view class="team-role">
-              <text wx:if="{{ item.role === 'owner' }}" class="role-tag owner">队长</text>
+              <text wx:if="{{ item.role === 'SuperAdmin' }}" class="role-tag team-superadmin">超级管理员</text>
               <text wx:elif="{{ item.role === 'admin' }}" class="role-tag admin">管理员</text>
               <text wx:else class="role-tag member">成员</text>
             </view>
