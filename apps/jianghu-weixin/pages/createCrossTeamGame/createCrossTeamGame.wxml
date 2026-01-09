@@ -128,7 +128,7 @@
             placeholder="请输入球队简称"
             value="{{currentAlias}}"
             bindinput="onAliasInput"
-            maxlength="10"
+            maxlength="20"
             focus="{{showAliasModal}}"
           />
         </view>

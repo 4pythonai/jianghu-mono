@@ -404,11 +404,20 @@
 .form-label {
     font-size: 28rpx;
     color: var(--text-secondary);
+    flex-shrink: 0;
 }
 
 .form-value {
     font-size: 28rpx;
     color: var(--text-primary);
+}
+
+.form-input {
+    flex: 1;
+    font-size: 28rpx;
+    color: var(--text-primary);
+    text-align: right;
+    background: transparent;
 }
 
 /* 分队选择区域 */
@@ -518,4 +527,44 @@
 .btn-submit.disabled {
     background: #ccc;
     color: #999;
+}
+
+/* 性别单选按钮 */
+.gender-radio-group {
+    display: flex;
+    gap: 40rpx;
+}
+
+.gender-radio {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+}
+
+.gender-radio text {
+    font-size: 28rpx;
+    color: var(--text-primary);
+}
+
+.radio-circle {
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 50%;
+    border: 2rpx solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-circle.checked {
+    border-color: var(--primary-green);
+    background: var(--primary-green);
+}
+
+.radio-circle.checked::after {
+    content: '';
+    width: 16rpx;
+    height: 16rpx;
+    border-radius: 50%;
+    background: #fff;
 }

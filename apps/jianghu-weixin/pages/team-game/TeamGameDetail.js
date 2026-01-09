@@ -256,6 +256,28 @@ Page({
     },
 
     /**
+     * 选择性别
+     */
+    onGenderSelect(e) {
+        const gender = parseInt(e.currentTarget.dataset.gender)
+        this.setData({ 'registerForm.gender': gender })
+    },
+
+    /**
+     * 昵称输入
+     */
+    onNicknameInput(e) {
+        this.setData({ 'registerForm.nickname': e.detail.value })
+    },
+
+    /**
+     * 手机号输入
+     */
+    onMobileInput(e) {
+        this.setData({ 'registerForm.mobile': e.detail.value })
+    },
+
+    /**
      * 提交报名
      */
     async onSubmitRegister() {
