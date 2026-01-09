@@ -30,12 +30,11 @@ Page({
 
       if (res.code === 200) {
         // 后端返回 teams 数组，映射字段名
-        // 注意：后端已返回完整 URL，不需要再拼接 staticURL
         const teams = res.teams || []
         const joinedTeams = teams.map(team => ({
           id: team.id,
           name: team.team_name,
-          logo: team.team_avatar || '',  // 后端已返回完整 URL
+          logo: team.team_avatar ? config.staticURL + team.team_avatar : '',
           slogan: team.sologan,
           description: team.description,
           created_at: this.formatDate(team.create_date),
@@ -88,11 +87,10 @@ Page({
       const res = await app.api.team.searchTeams({ keyword })
       if (res.code === 200) {
         // 注意：后端返回 res.teams，不是 res.data.teams
-        // 后端已返回完整 URL，不需要再拼接 staticURL
         const teams = (res.teams || []).map(team => ({
           id: team.id,
           name: team.team_name,
-          logo: team.team_avatar || '',  // 后端已返回完整 URL
+          logo: team.team_avatar ? config.staticURL + team.team_avatar : '',
           slogan: team.sologan,
           description: team.description,
           created_at: this.formatDate(team.create_date),

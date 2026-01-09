@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="operation-bar">
   <!-- 比赛情况显示区域 -->
   <view class="game-info">
@@ -33,7 +34,7 @@
     <view class="creator-info">
       <image 
         class="creator-avatar" 
-        src="{{gameData.creator.avatar || '/images/default-avatar.png'}}" 
+        src="{{image.imageUrl(gameData.creator.avatar) || '/images/default-avatar.png'}}" 
         mode="aspectFill"
         lazy-load="true"
       ></image>

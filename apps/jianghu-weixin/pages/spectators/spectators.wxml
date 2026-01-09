@@ -1,53 +1,52 @@
+<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="围观者" bind:back="handleBack" />
 
 <view class="container" style="padding-top: {{navBarHeight}}px;">
-    <!-- 标题区域 -->
-    <view class="header">
-        <view class="title">围观者（{{total}}）</view>
-        <view class="subtitle" wx:if="{{gameName}}">{{gameName}}</view>
+  <!-- 标题区域 -->
+  <view class="header">
+    <view class="title">围观者（{{total}}）</view>
+    <view class="subtitle" wx:if="{{gameName}}">{{gameName}}</view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 围观者列表 -->
+  <view class="spectators-list" wx:elif="{{spectators.length > 0}}">
+    <view
+      class="spectator-item"
+      wx:for="{{spectators}}"
+      wx:key="userid"
+      data-userid="{{item.userid}}"
+      bindtap="onSpectatorTap"
+    >
+      <text class="spectator-index">{{index + 1}}</text>
+      <image
+        class="spectator-avatar"
+        src="{{image.imageUrl(item.avatar) || defaultAvatar}}"
+        mode="aspectFill"
+      />
+      <view class="spectator-info">
+        <text class="spectator-name">{{item.nickname || item.wx_nickname || '匿名用户'}}</text>
+        <text class="spectator-time" wx:if="{{item.watch_time}}">{{item.watch_time}}</text>
+      </view>
     </view>
 
-    <!-- 加载中 -->
-    <view class="loading-container" wx:if="{{loading}}">
-        <view class="loading-spinner"></view>
-        <text class="loading-text">加载中...</text>
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{loadingMore}}">
+      <view class="loading-spinner small"></view>
+      <text class="load-more-text">加载中...</text>
     </view>
-
-    <!-- 围观者列表 -->
-    <view class="spectators-list" wx:elif="{{spectators.length > 0}}">
-        <view
-            class="spectator-item"
-            wx:for="{{spectators}}"
-            wx:key="userid"
-            data-userid="{{item.userid}}"
-            bindtap="onSpectatorTap"
-        >
-            <text class="spectator-index">{{index + 1}}</text>
-            <image
-                class="spectator-avatar"
-                src="{{item.avatar || defaultAvatar}}"
-                mode="aspectFill"
-            />
-            <view class="spectator-info">
-                <text class="spectator-name">{{item.nickname || item.wx_nickname || '匿名用户'}}</text>
-                <text class="spectator-time" wx:if="{{item.watch_time}}">{{item.watch_time}}</text>
-            </view>
-        </view>
-
-        <!-- 加载更多 -->
-        <view class="load-more" wx:if="{{loadingMore}}">
-            <view class="loading-spinner small"></view>
-            <text class="load-more-text">加载中...</text>
-        </view>
-        <view class="no-more" wx:elif="{{!hasMore}}">
-            <text>— 没有更多了 —</text>
-        </view>
+    <view class="no-more" wx:elif="{{!hasMore}}">
+      <text>— 没有更多了 —</text>
     </view>
+  </view>
 
-    <!-- 空状态 -->
-    <view class="empty-container" wx:else>
-        <image class="empty-icon" src="/assets/icons/empty-box.png" mode="aspectFit" />
-        <text class="empty-text">暂无围观者</text>
-    </view>
+  <!-- 空状态 -->
+  <view class="empty-container" wx:else>
+    <text class="empty-text">暂无围观者</text>
+  </view>
 </view>
-

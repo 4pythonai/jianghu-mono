@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view catchtap="itemClick">
   <view class="player-order-item">
     <view class="drag-handle">

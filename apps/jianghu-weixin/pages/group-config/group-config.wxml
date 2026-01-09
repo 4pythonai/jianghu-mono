@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="{{groupName || '分组配置'}}" bind:back="handleBack" />
 
 <view class="page-container" style="padding-top: {{navBarHeight}}px;">
@@ -10,7 +11,7 @@
         <view class="remove-btn" bindtap="onRemovePlayer" data-id="{{item.id}}">×</view>
         <image
           class="player-avatar"
-          src="{{item.avatar || '/assets/images/default-avatar.png'}}"
+          src="{{image.imageUrl(item.avatar) || '/assets/images/default-avatar.png'}}"
           mode="aspectFill"
         />
         <text class="player-name">{{item.name}}</text>
@@ -64,7 +65,7 @@
         </view>
         <image
           class="player-avatar"
-          src="{{item.avatar || '/assets/images/default-avatar.png'}}"
+          src="{{image.imageUrl(item.avatar) || '/assets/images/default-avatar.png'}}"
           mode="aspectFill"
         />
         <text class="player-name">{{item.name}}</text>

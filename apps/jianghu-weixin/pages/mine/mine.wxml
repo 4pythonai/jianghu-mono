@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="container">
   <!-- 顶部用户信息区域 -->
   <view class="user-header">
@@ -10,7 +11,7 @@
     <!-- 用户信息卡片 -->
     <view class="user-card" bindtap="goToProfile">
       <view class="avatar-container">
-        <image class="avatar" src="{{ userInfo.avatar || '/images/default-avatar.png' }}" mode="aspectFill"></image>
+        <image class="avatar" src="{{ image.imageUrl(userInfo.avatar) || '/images/default-avatar.png' }}" mode="aspectFill"></image>
       </view>
       <view class="user-details">
         <view class="nickname-row">
@@ -37,7 +38,7 @@
     <view class="auth-title">完善个人信息</view>
     <view class="auth-form">
       <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <image class="preview-avatar" src="{{ userInfo.avatar || '/images/default-avatar.png' }}"></image>
+        <image class="preview-avatar" src="{{ image.imageUrl(userInfo.avatar) || '/images/default-avatar.png' }}"></image>
         <text class="avatar-text">点击选择头像</text>
       </button>
       <view class="nickname-input-wrapper">

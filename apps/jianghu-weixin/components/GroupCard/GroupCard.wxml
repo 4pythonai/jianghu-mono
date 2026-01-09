@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="group-card">
     <!-- 分组标识 -->
     <view class="group-badge">
@@ -20,7 +21,7 @@
             >
                 <image
                     class="player-avatar"
-                    src="{{item.avatar || defaultAvatar}}"
+                    src="{{image.imageUrl(item.avatar) || defaultAvatar}}"
                     mode="aspectFill"
                 />
                 <text class="player-name">{{item.name}}</text>

@@ -1,4 +1,5 @@
 <!-- Stroking 组件 - 让杆配置 -->
+<wxs src="/utils/image.wxs" module="image" />
 <view class="stroking-container">
   <!-- 让杆选择 -->
   <view class="stroking-selection">
@@ -74,7 +75,7 @@
           </view>
           <view class="user-content">
             <view class="user-avatar">
-              <image src="{{item.avatar}}" mode="aspectFill" class="avatar-image"></image>
+              <image src="{{image.imageUrl(item.avatar)}}" mode="aspectFill" class="avatar-image"></image>
             </view>
             <view class="user-info">
               <text class="user-nickname">{{item.wx_nickname}}</text>

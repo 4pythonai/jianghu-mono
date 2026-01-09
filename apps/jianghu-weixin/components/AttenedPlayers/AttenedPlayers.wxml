@@ -1,9 +1,10 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="attened-players-container" wx:if="{{displayPlayers.length > 0}}">
   <view wx:for="{{displayPlayers}}" wx:key="userid" class="player-item">
     <view class="avatar-wrapper">
       <image
         class="player-avatar"
-        src="{{item.avatar || '/images/default-avatar.png'}}"
+        src="{{image.imageUrl(item.avatar) || '/images/default-avatar.png'}}"
         mode="aspectFill"
       />
       <image

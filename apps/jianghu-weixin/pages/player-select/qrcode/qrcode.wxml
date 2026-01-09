@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="二维码邀请" />
 <view class="container">
   <view class="qrcode-card">
@@ -85,7 +86,7 @@
             <view class="user-item" wx:for="{{group.users}}" wx:key="userid" wx:for-item="user">
               <image
                 class="user-avatar"
-                src="{{user.avatar || '/images/default-avatar.png'}}"
+                src="{{image.imageUrl(user.avatar) || '/images/default-avatar.png'}}"
                 mode="aspectFill"
               ></image>
               <text class="user-name">{{user.nickname || user.nickName || '匿名球友'}}</text>
@@ -119,7 +120,7 @@
     <view
       class="notification-card {{item.state === 'leave' ? 'notification-leave' : 'notification-enter'}}"
     >
-      <image class="notification-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+      <image class="notification-avatar" src="{{image.imageUrl(item.avatar)}}" mode="aspectFill"></image>
       <view class="notification-content">
         <text class="notification-title">{{item.nickname}}</text>
         <text class="notification-message">加入比赛</text>

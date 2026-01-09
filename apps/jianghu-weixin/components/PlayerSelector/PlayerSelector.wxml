@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="player-selector">
 	<view class="group-header">
 		<text class="group-title">第{{groupIndex + 1}}组</text>
@@ -8,7 +9,7 @@
 			<!-- 已选择的玩家 -->
 			<view wx:if="{{ item }}" class="player-card">
 				<view class="player-avatar">
-					<image src="{{ item.avatar }}" mode="aspectFill" class="avatar-image"></image>
+					<image src="{{ image.imageUrl(item.avatar) }}" mode="aspectFill" class="avatar-image"></image>
 				</view>
 				<view class="player-info">
 					<text class="player-nickname">{{item.wx_nickname}}</text>

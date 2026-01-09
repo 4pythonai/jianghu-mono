@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="friend-picker">
   <!-- 搜索框 -->
   <view class="search-section">
@@ -65,7 +66,7 @@
             </view>
             <image
               class="friend-avatar"
-              src="{{item.avatar || '/images/default-avatar.png'}}"
+              src="{{image.imageUrl(item.avatar) || '/images/default-avatar.png'}}"
               mode="aspectFill"
               lazy-load="true"
             ></image>

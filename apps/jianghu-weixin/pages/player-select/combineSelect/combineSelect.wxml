@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="老牌组合" />
 <view class="page-container">
 	<view class="header">
@@ -20,7 +21,7 @@
 				</view>
 				<view class="members-grid">
 					<view wx:for="{{ item }}" wx:for-item="member" wx:key="userid" class="member-card">
-						<image class="member-avatar" src="{{ member.avatar || '/images/default-avatar.png' }}" mode="aspectFill" lazy-load="true"></image>
+						<image class="member-avatar" src="{{ image.imageUrl(member.avatar) || '/images/default-avatar.png' }}" mode="aspectFill" lazy-load="true"></image>
 						<view class="member-info">
 							<text class="member-name">{{member.nickname}}</text>
 							<text class="member-handicap">杆数: {{member.handicap}}</text>

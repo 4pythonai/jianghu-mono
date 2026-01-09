@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="T台分配" />
 <view class="page-container">
   <!-- 页面头部 -->
@@ -22,7 +23,7 @@
         <view class="player-info">
           <view class="player-avatar">
             <image
-              src="{{ item.avatar || '/images/default-avatar.png' }}"
+              src="{{ image.imageUrl(item.avatar) || '/images/default-avatar.png' }}"
               mode="aspectFill"
               class="avatar-image"
             ></image>

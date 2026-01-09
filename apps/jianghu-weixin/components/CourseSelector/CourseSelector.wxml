@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="course-selector">
   <!-- 搜索框 -->
   <view class="search-box">
@@ -52,7 +53,7 @@
       bindtap="onSelectCourse"
       data-course="{{ item }}"
     >
-      <image class="course-image" src="{{ item.avatar }}" mode="aspectFill"></image>
+      <image class="course-image" src="{{ image.imageUrl(item.avatar) }}" mode="aspectFill"></image>
       <view class="course-info">
         <view class="course-name">{{item.name}}</view>
         <view class="course-address">{{item.address}}</view>
