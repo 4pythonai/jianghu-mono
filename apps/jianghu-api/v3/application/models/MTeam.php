@@ -91,11 +91,6 @@ class MTeam extends CI_Model {
             return null;
         }
 
-        // 处理 team_avatar 返回完整 URL
-        if (!empty($team['team_avatar'])) {
-            $team['team_avatar'] = config_item('web_url') . $team['team_avatar'];
-        }
-
         // 获取成员统计
         $team['member_count'] = $this->db->where([
             'team_id' => $team_id,
@@ -128,16 +123,12 @@ class MTeam extends CI_Model {
 
         $teams = $this->db->get()->result_array();
 
-        // 为每个球队添加成员数 & 处理 team_avatar 完整 URL
+        // 为每个球队添加成员数
         foreach ($teams as &$team) {
             $team['member_count'] = $this->db->where([
                 'team_id' => $team['id'],
                 'status' => 'active'
             ])->count_all_results('t_team_member');
-
-            if (!empty($team['team_avatar'])) {
-                $team['team_avatar'] = config_item('web_url') . $team['team_avatar'];
-            }
         }
 
         return $teams;
@@ -540,13 +531,6 @@ class MTeam extends CI_Model {
         $this->db->limit($limit);
 
         $teams = $this->db->get()->result_array();
-
-        // 处理 team_avatar 完整 URL
-        foreach ($teams as &$team) {
-            if (!empty($team['team_avatar'])) {
-                $team['team_avatar'] = config_item('web_url') . $team['team_avatar'];
-            }
-        }
 
         return $teams;
     }

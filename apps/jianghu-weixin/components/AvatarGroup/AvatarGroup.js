@@ -1,5 +1,6 @@
 // showMode
 
+const { imageUrl } = require('../../utils/image');
 
 Component({
     properties: {
@@ -24,7 +25,7 @@ Component({
 
     observers: {
         'players, maxShow': function (players, maxShow) {
-            const avatarUrls = players.map(p => p.avatar)
+            const avatarUrls = players.map(p => imageUrl(p.avatar))
             const showAvatars = avatarUrls.slice(0, maxShow)
             const moreCount = avatarUrls.length - maxShow
             this.setData({

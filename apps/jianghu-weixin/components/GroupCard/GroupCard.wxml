@@ -35,7 +35,7 @@
     </scroll-view>
 
     <!-- 右侧箭头 -->
-    <view wx:if="{{clickable}}" class="arrow-btn" bindtap="onTap">
+    <view wx:if="{{clickable}}" class="arrow-btn" catchtap="onTap">
         <text class="arrow-icon">›</text>
     </view>
 </view>

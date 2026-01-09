@@ -128,16 +128,16 @@
             group-id="{{item.id}}"
             group-name="{{item.name}}"
             players="{{item.players}}"
-            deletable="{{groupingPermission === 'user' || isCreator}}"
+            deletable="{{groupingPermission === 'player' || isCreator}}"
             bind:grouptap="onGroupTap"
             bind:delete="onGroupDelete"
             bind:addPlayer="onAddPlayerToGroup"
           />
         </view>
 
-        <!-- 添加分组按钮：groupingPermission='user' 时所有人可见，='admin' 时仅创建者可见 -->
+        <!-- 添加分组按钮：groupingPermission='player' 时所有人可见，='admin' 时仅创建者可见 -->
         <view
-          wx:if="{{groupingPermission === 'user' || isCreator}}"
+          wx:if="{{groupingPermission === 'player' || isCreator}}"
           class="add-group-btn"
           bindtap="onAddGroup"
         >

@@ -112,19 +112,22 @@
 /* 右侧箭头 */
 .arrow-btn {
     position: absolute;
-    right: 16rpx;
+    right: 8rpx;
     top: 50%;
     transform: translateY(-50%);
-    width: 48rpx;
-    height: 48rpx;
+    width: 44rpx;
+    height: 44rpx;
+    background: var(--primary-green);
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 2;
 }
 
 .arrow-icon {
-    font-size: 48rpx;
-    color: var(--primary-green);
+    font-size: 32rpx;
+    color: #fff;
     font-weight: bold;
     line-height: 1;
 }

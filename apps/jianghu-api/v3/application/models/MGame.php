@@ -311,9 +311,7 @@ class MGame  extends CI_Model {
 
 
   public function m_get_group_info($groupid) {
-    $web_url = config_item('web_url');
-
-    return $this->db->select("userid, wx_nickname as username, wx_nickname as nickname, CONCAT('$web_url', t_user.avatar) as cover", false)
+    return $this->db->select("userid, wx_nickname as username, wx_nickname as nickname, t_user.avatar as cover", false)
       ->from('t_game_group_user')
       ->join('t_user', 't_user.id = t_game_group_user.userid')
       ->where('t_game_group_user.groupid', $groupid)

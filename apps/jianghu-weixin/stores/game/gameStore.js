@@ -36,7 +36,7 @@ export const gameStore = observable({
         count: 0,
         avatars: []
     },
-    groupingPermission: 'admin',  // 分组权限：'admin' | 'user'
+    groupingPermission: 'admin',  // 分组权限：'admin' | 'player'
     eventDetail: {                // 赛事详情（用于展示）
         title: '',
         teamName: '',

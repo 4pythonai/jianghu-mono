@@ -1,0 +1,21 @@
+/**
+ * 图片URL处理工具 (WXS版本，用于WXML模板)
+ */
+
+var IMAGE_BASE_URL = 'https://qiaoyincapital.com';
+
+/**
+ * 将相对路径转换为完整图片URL
+ */
+function imageUrl(path) {
+  if (!path) return '';
+  if (path.indexOf('http://') === 0 || path.indexOf('https://') === 0) {
+    return path;
+  }
+  return IMAGE_BASE_URL + path;
+}
+
+module.exports = {
+  imageUrl: imageUrl,
+  IMAGE_BASE_URL: IMAGE_BASE_URL
+};

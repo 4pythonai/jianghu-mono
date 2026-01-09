@@ -156,9 +156,6 @@ class MDetailGame  extends CI_Model {
 
         $course_result = $this->db->query($course_query, [$courseid]);
         $course = $course_result->row_array();
-        if ($course && !empty($course['avatar'])) {
-            $course['avatar'] = config_item('web_url') . $course['avatar'];
-        }
         return $course;
     }
 
@@ -204,17 +201,16 @@ class MDetailGame  extends CI_Model {
      * @return array 玩家列表
      */
     public function getPlayers($game_id) {
-        $web_url = config_item('web_url');
         $players_query = "
-            SELECT 
+            SELECT
                 ggu.groupid,
                 ggu.tee,
                 u.id as userid,
                 u.wx_nickname as wx_nickname,
-                concat('$web_url', u.avatar) as avatar
+                u.avatar
             FROM t_game_group_user ggu
             LEFT JOIN t_user u ON ggu.userid = u.id
-            WHERE ggu.gameid = ? 
+            WHERE ggu.gameid = ?
             ORDER BY ggu.id ASC ";
 
         $players_result = $this->db->query($players_query, [$game_id])->result_array();
@@ -363,7 +359,7 @@ class MDetailGame  extends CI_Model {
                 $users[] = [
                     'userid' => (int)$user['userid'],
                     'nickname' => $user['wx_nickname'] ?: '',
-                    'avatar' => config_item('web_url') . $user['avatar'] ?: '',
+                    'avatar' => $user['avatar'] ?: '',
                     'confirmed' => (int)$user['confirmed'],
                     'addtime' => $user['addtime']
                 ];

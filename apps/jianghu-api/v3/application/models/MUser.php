@@ -11,7 +11,6 @@ class MUser  extends CI_Model {
   public function getUserProfile($user_id) {
     $this->db->where('id', $user_id);
     $user = $this->db->get('t_user')->row_array();
-    $user['avatar'] = $this->formatAvatarUrl(isset($user['avatar']) ? $user['avatar'] : '');
     return $user;
   }
 
@@ -49,9 +48,6 @@ class MUser  extends CI_Model {
   public function getUserbyMobile($mobile) {
     $this->db->where('mobile', $mobile);
     $user =  $this->db->get('t_user')->row_array();
-    if ($user) {
-      $user['avatar'] = $this->formatAvatarUrl(isset($user['avatar']) ? $user['avatar'] : '');
-    }
     return $user;
   }
 
@@ -59,9 +55,6 @@ class MUser  extends CI_Model {
   public function getUserbyId($user_id) {
     $this->db->where('id', $user_id);
     $user = $this->db->get('t_user')->row_array();
-    if ($user) {
-      $user['avatar'] = $this->formatAvatarUrl(isset($user['avatar']) ? $user['avatar'] : '');
-    }
     return $user;
   }
 
@@ -86,8 +79,7 @@ class MUser  extends CI_Model {
 
 
   public function getFriends($userid) {
-    $web_url = config_item('web_url');
-    $this->db->select("u.wx_nickname, concat('{$web_url}',u.avatar) as avatar, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
+    $this->db->select("u.wx_nickname, u.avatar, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
     $this->db->from('t_friend f');
     $this->db->join('t_user u', 'f.fuserid = u.id');
     $this->db->where('f.userid', $userid);
@@ -177,12 +169,11 @@ class MUser  extends CI_Model {
 
 
   public function getPlayerInfo($userid) {
-    $web_url = config_item('web_url');
     $players_query = "
-        SELECT 
+        SELECT
             u.id as userid,
             u.wx_nickname as wx_nickname,
-            concat('$web_url', u.avatar) as avatar
+            u.avatar
         FROM t_user u
         WHERE id = ? ";
 
@@ -195,18 +186,5 @@ class MUser  extends CI_Model {
     $this->db->where('id', $userid);
     $user = $this->db->get('t_user')->row_array();
     return $user['wx_nickname'];
-  }
-
-  private function formatAvatarUrl($avatar) {
-    if (empty($avatar)) {
-      return '';
-    }
-
-    if (strpos($avatar, 'http://') === 0 || strpos($avatar, 'https://') === 0) {
-      return $avatar;
-    }
-
-    $web_url = rtrim(config_item('web_url'), '/');
-    return $web_url . $avatar;
   }
 }

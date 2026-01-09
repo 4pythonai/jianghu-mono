@@ -2,6 +2,7 @@
   创建队际赛 - 多选球队页面
   支持搜索、多选球队，选择时设置球队简称
 -->
+<wxs module="img" src="../../utils/image.wxs"></wxs>
 <view class="page-container">
   <!-- 自定义导航栏 -->
   <CustomNavBar title="选择参赛球队" bind:back="handleBack" />
@@ -28,7 +29,7 @@
       <view class="selected-item" wx:for="{{selectedTeams}}" wx:key="team_id">
           <image
             class="selected-avatar"
-            src="{{item.team_avatar || '/assets/icons/team-default.png'}}"
+            src="{{img.imageUrl(item.team_avatar) || '/assets/icons/team-default.png'}}"
             mode="aspectFill"
           ></image>
           <view class="selected-info">
@@ -81,7 +82,7 @@
         >
           <image
             class="team-avatar"
-            src="{{item.team_avatar || '/assets/icons/team-default.png'}}"
+            src="{{img.imageUrl(item.team_avatar) || '/assets/icons/team-default.png'}}"
             mode="aspectFill"
           ></image>
           <view class="team-info">
@@ -116,7 +117,7 @@
         <view class="team-preview" wx:if="{{currentTeam}}">
           <image
             class="preview-avatar"
-            src="{{currentTeam.team_avatar || '/assets/icons/team-default.png'}}"
+            src="{{img.imageUrl(currentTeam.team_avatar) || '/assets/icons/team-default.png'}}"
             mode="aspectFill"
           ></image>
           <text class="preview-name">{{currentTeam.team_name}}</text>

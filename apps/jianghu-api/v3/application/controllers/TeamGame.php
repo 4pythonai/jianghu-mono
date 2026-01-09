@@ -269,6 +269,9 @@ class TeamGame extends MY_Controller {
      * 球员报名
      * @param int game_id 赛事ID
      * @param int tag_id 分队ID（团队赛制时可选）
+     * @param string nickname 报名姓名（可选）
+     * @param string gender 性别 male/female（可选）
+     * @param string mobile 手机号（可选）
      * @param string remark 报名备注（可选）
      */
     public function registerGame() {
@@ -276,6 +279,9 @@ class TeamGame extends MY_Controller {
         $userid = $this->getUser();
         $game_id = $json_paras['game_id'];
         $tag_id = $json_paras['tag_id'] ?? null;
+        $nickname = $json_paras['nickname'] ?? null;
+        $gender = $json_paras['gender'] ?? null;
+        $mobile = $json_paras['mobile'] ?? null;
         $remark = $json_paras['remark'] ?? null;
 
         // 检查赛事状态
@@ -296,7 +302,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $result = $this->MTeamGame->registerGame($game_id, $userid, $tag_id, $remark);
+        $result = $this->MTeamGame->registerGame($game_id, $userid, $tag_id, $remark, $nickname, $gender, $mobile);
 
         if ($result['success']) {
             echo json_encode([

@@ -281,7 +281,7 @@ Page({
      * 提交报名
      */
     async onSubmitRegister() {
-        const { selectedTagId, gameid } = this.data
+        const { selectedTagId, gameid, registerForm } = this.data
 
         if (!selectedTagId) {
             wx.showToast({ title: '请选择分队', icon: 'none' })
@@ -292,9 +292,14 @@ Page({
 
         try {
             const app = getApp()
+            // 将 gender 数字转换为字符串: 1 -> male, 2 -> female
+            const genderStr = registerForm.gender === 1 ? 'male' : (registerForm.gender === 2 ? 'female' : '')
             const result = await app.api.teamgame.registerGame({
                 game_id: gameid,
-                tag_id: selectedTagId
+                tag_id: selectedTagId,
+                nickname: registerForm.nickname,
+                gender: genderStr,
+                mobile: registerForm.mobile
             })
 
             wx.hideLoading()
