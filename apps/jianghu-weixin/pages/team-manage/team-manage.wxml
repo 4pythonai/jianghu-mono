@@ -55,12 +55,6 @@
           <text class="item-text">创建队内赛</text>
           <image class="item-arrow" src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
         </view>
-
-        <!-- 财务统计 - 需要 finance_stats 权限 -->
-        <view class="manage-item" wx:if="{{permissions.finance_stats}}" bindtap="goFinanceStats">
-          <text class="item-text">财务统计</text>
-          <image class="item-arrow" src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
-        </view>
       </view>
 
       <!-- 超级管理员专属操作 -->

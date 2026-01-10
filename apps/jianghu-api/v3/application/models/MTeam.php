@@ -146,7 +146,9 @@ class MTeam extends CI_Model {
                 ->where(['tm.team_id' => $team['id'], 'tm.role' => 'admin', 'tm.status' => 'active'])
                 ->get()
                 ->result_array();
-            $adminNames = array_map(function($a) { return $a['nickname']; }, $admins);
+            $adminNames = array_map(function ($a) {
+                return $a['nickname'];
+            }, $admins);
             $team['admin_names'] = implode('、', $adminNames);
         }
 
@@ -613,5 +615,46 @@ class MTeam extends CI_Model {
         ]);
 
         return ['success' => true, 'message' => '权限设置成功'];
+    }
+
+    /**
+     * 搜索可邀请的用户（排除已是球队成员的）
+     */
+    public function searchUsersToInvite($team_id, $keyword, $limit = 20) {
+        // 获取已是成员的用户ID列表
+        $existingMembers = $this->db->select('user_id')
+            ->where('team_id', $team_id)
+            ->where_in('status', ['active', 'pending'])
+            ->get('t_team_member')
+            ->result_array();
+        $existingUserIds = array_column($existingMembers, 'user_id');
+
+        // 搜索用户（按昵称或手机号）
+        $this->db->select('id, nickname, avatar, handicap, mobile');
+        $this->db->from('t_user');
+        $this->db->group_start();
+        $this->db->like('nickname', $keyword);
+        $this->db->or_like('mobile', $keyword);
+        $this->db->group_end();
+
+        // 排除已是成员的用户
+        if (!empty($existingUserIds)) {
+            $this->db->where_not_in('id', $existingUserIds);
+        }
+
+        $this->db->limit($limit);
+        $users = $this->db->get()->result_array();
+
+        // 隐藏手机号中间4位
+        foreach ($users as &$user) {
+            if (!empty($user['mobile']) && strlen($user['mobile']) >= 11) {
+                $user['mobile_display'] = substr($user['mobile'], 0, 3) . '****' . substr($user['mobile'], -4);
+            } else {
+                $user['mobile_display'] = '';
+            }
+            unset($user['mobile']);
+        }
+
+        return $users;
     }
 }

@@ -1,3 +1,6 @@
+<!-- 自定义导航栏 -->
+<CustomNavBar title="游戏配置" showBack="{{true}}" />
+
 <!-- 定义配置项模板 -->
 <template name="configItem">
   <view
@@ -68,7 +71,7 @@
   </view>
 </template>
 <!-- 游戏(Gamble)模块 -->
-<view class="gamble-container">
+<view class="gamble-container" style="padding-top: {{navBarHeight}}px;">
   <!-- 加载中状态 -->
   <view wx:if="{{ loadingRuntimeConfig }}" class="loading-container">
     <view class="loading-spinner"></view>

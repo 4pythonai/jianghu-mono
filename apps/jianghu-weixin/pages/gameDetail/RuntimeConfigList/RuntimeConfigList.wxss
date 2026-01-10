@@ -368,18 +368,19 @@
 	font-weight: 600;
 	color: #333;
 	margin-bottom: 26rpx;
-	text-align: center;
+	text-align: left;
 	background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-	padding: 18rpx 0;
+	padding: 18rpx 24rpx;
 	border-radius: 12rpx;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	gap: 12rpx;
 	width: 100%;
 	position: relative;
 	border: 1px solid #dee2e6;
 	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+	box-sizing: border-box;
 }
 
 .extra-options-title .title-icon {

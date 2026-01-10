@@ -537,4 +537,27 @@ class Team extends MY_Controller {
             $this->error($result['message']);
         }
     }
+
+    /**
+     * 搜索可邀请的用户
+     * POST /Team/searchUsersToInvite
+     * 参数: team_id, keyword
+     */
+    public function searchUsersToInvite() {
+        $params = json_decode(file_get_contents('php://input'), true);
+
+        if (empty($params['team_id'])) {
+            return $this->error('球队ID不能为空');
+        }
+
+        if (empty($params['keyword'])) {
+            return $this->error('请输入搜索关键词');
+        }
+
+        $admin_id = $this->requireAdmin($params['team_id']);
+        if (!$admin_id) return;
+
+        $users = $this->MTeam->searchUsersToInvite($params['team_id'], $params['keyword']);
+        $this->success(['users' => $users]);
+    }
 }

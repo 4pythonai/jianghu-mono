@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="img" />
 <view class="gamble-result-table" style="display: flex; flex-direction: column; min-height: 100vh;">
   <view class="table-wrapper" style="flex: 1;">
     <!-- 表头 -->
@@ -16,7 +17,7 @@
           <image
             wx:if="{{player.cover}}"
             class="player-avatar"
-            src="{{player.cover}}"
+            src="{{img.imageUrl(player.cover)}}"
             mode="aspectFill"
           ></image>
           <view class="player-name">{{player.nickname}}</view>

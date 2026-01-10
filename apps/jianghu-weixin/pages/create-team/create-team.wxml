@@ -1,8 +1,14 @@
 <wxs src="/utils/image.wxs" module="img" />
 <view class="container">
-  <CustomNavBar title="创建球队" showBack="{{true}}" />
+  <CustomNavBar title="{{mode === 'edit' ? '编辑球队' : '创建球队'}}" showBack="{{true}}" />
 
-  <view class="form-container">
+  <!-- 加载中 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <view class="form-container" wx:else>
     <!-- Logo 上传 -->
     <view class="form-section">
       <view class="section-title">球队 Logo</view>
@@ -64,10 +70,10 @@
   </view>
 
   <!-- 提交按钮 -->
-  <view class="submit-btn-wrapper">
-    <button class="submit-btn {{ canSubmit ? '' : 'disabled' }}" bindtap="submitCreate" disabled="{{ !canSubmit || submitting }}">
-      <text wx:if="{{ submitting }}">创建中...</text>
-      <text wx:else>创建球队</text>
+  <view class="submit-btn-wrapper" wx:if="{{!loading}}">
+    <button class="submit-btn {{ canSubmit ? '' : 'disabled' }}" bindtap="submitForm" disabled="{{ !canSubmit || submitting }}">
+      <text wx:if="{{ submitting }}">{{mode === 'edit' ? '保存中...' : '创建中...'}}</text>
+      <text wx:else>{{mode === 'edit' ? '保存修改' : '创建球队'}}</text>
     </button>
   </view>
 </view>

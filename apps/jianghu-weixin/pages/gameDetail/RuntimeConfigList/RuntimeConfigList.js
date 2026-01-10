@@ -8,6 +8,9 @@ const app = getApp();
 
 Page({
     data: {
+        // 导航栏高度
+        navBarHeight: 88,
+
         // 页面参数
         gameid: '',
         groupid: '',
@@ -53,6 +56,12 @@ Page({
 
     onLoad(options) {
         console.log('[RuntimeConfigList] 页面加载，参数:', options);
+
+        // 计算导航栏高度
+        const systemInfo = wx.getSystemInfoSync()
+        const statusBarHeight = systemInfo.statusBarHeight || 0
+        const navBarHeight = statusBarHeight + 44
+        this.setData({ navBarHeight })
 
         // 解析页面参数
         const gameid = options?.gameid || '';

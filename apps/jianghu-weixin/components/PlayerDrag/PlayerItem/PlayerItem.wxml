@@ -12,7 +12,7 @@
     </view>
     <image
       class="player-avatar"
-      src="{{itemData.avatar || '/images/default-avatar.png'}}"
+      src="{{image.imageUrl(itemData.avatar) || '/images/default-avatar.png'}}"
       lazy-load="true"
       mode="aspectFill"
     />

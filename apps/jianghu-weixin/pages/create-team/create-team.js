@@ -2,6 +2,8 @@ const app = getApp()
 
 Page({
   data: {
+    mode: 'create', // 'create' 或 'edit'
+    teamId: '',
     formData: {
       name: '',
       logo: '',
@@ -9,11 +11,44 @@ Page({
       description: ''
     },
     canSubmit: false,
-    submitting: false
+    submitting: false,
+    loading: false
   },
 
-  onLoad() {
-    // 初始化
+  onLoad(options) {
+    const teamId = options.teamId || options.id
+    if (teamId) {
+      // 编辑模式
+      this.setData({ mode: 'edit', teamId })
+      this.loadTeamInfo(teamId)
+    }
+  },
+
+  // 加载球队信息（编辑模式）
+  async loadTeamInfo(teamId) {
+    this.setData({ loading: true })
+    try {
+      const res = await app.api.team.getTeamDetail({ team_id: teamId })
+      if (res.code === 200 && res.team) {
+        const team = res.team
+        this.setData({
+          formData: {
+            name: team.team_name || '',
+            logo: team.team_avatar || '',
+            slogan: team.sologan || '',
+            description: team.description || ''
+          },
+          loading: false
+        })
+        this.checkCanSubmit()
+      } else {
+        throw new Error(res.message || '加载失败')
+      }
+    } catch (error) {
+      console.error('加载球队信息失败', error)
+      wx.showToast({ title: error.message || '加载失败', icon: 'none' })
+      this.setData({ loading: false })
+    }
   },
 
   // 选择 Logo
@@ -82,9 +117,9 @@ Page({
     this.setData({ canSubmit })
   },
 
-  // 提交创建
-  async submitCreate() {
-    const { formData, canSubmit, submitting } = this.data
+  // 提交（创建或更新）
+  async submitForm() {
+    const { formData, canSubmit, submitting, mode, teamId } = this.data
     
     if (!canSubmit || submitting) return
 
@@ -102,27 +137,40 @@ Page({
     this.setData({ submitting: true })
 
     try {
-      const res = await app.api.team.createTeam({
+      let res
+      const payload = {
         team_name: formData.name.trim(),
         team_avatar: formData.logo || '',
         sologan: formData.slogan.trim() || '',
         description: formData.description.trim() || ''
-      })
+      }
+
+      if (mode === 'edit') {
+        // 更新模式
+        payload.team_id = teamId
+        res = await app.api.team.updateTeam(payload)
+      } else {
+        // 创建模式
+        res = await app.api.team.createTeam(payload)
+      }
 
       if (res.code === 200) {
-        wx.showToast({ title: '创建成功', icon: 'success' })
+        wx.showToast({ 
+          title: mode === 'edit' ? '保存成功' : '创建成功', 
+          icon: 'success' 
+        })
         
         // 延迟返回上一页
         setTimeout(() => {
           wx.navigateBack()
         }, 1500)
       } else {
-        throw new Error(res.message || '创建失败')
+        throw new Error(res.message || (mode === 'edit' ? '保存失败' : '创建失败'))
       }
     } catch (error) {
-      console.error('创建球队失败', error)
+      console.error(mode === 'edit' ? '更新球队失败' : '创建球队失败', error)
       wx.showToast({ 
-        title: error.message || '创建失败，请重试', 
+        title: error.message || (mode === 'edit' ? '保存失败，请重试' : '创建失败，请重试'), 
         icon: 'none' 
       })
     } finally {

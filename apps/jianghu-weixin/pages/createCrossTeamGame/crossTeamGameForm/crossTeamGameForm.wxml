@@ -2,6 +2,7 @@
   队际赛表单页面
   复用队内赛表单布局，适配多球队模式
 -->
+<wxs module="img" src="../../../utils/image.wxs"></wxs>
 <CustomNavBar title="创建队际赛" />
 <view class="page-container">
   <view class="main-card">
@@ -16,7 +17,7 @@
           <view class="team-card" wx:for="{{selectedTeams}}" wx:key="team_id">
             <image
               class="team-avatar"
-              src="{{item.team_avatar || '/assets/icons/team-default.png'}}"
+              src="{{img.imageUrl(item.team_avatar) || '/assets/icons/team-default.png'}}"
               mode="aspectFill"
             ></image>
             <view class="team-info">

@@ -8,8 +8,7 @@ const ALL_PERMISSIONS = {
   invite_member: true,   // 拉入队员
   remove_member: true,   // 踢出队员
   mark_paid: true,       // 标注付费
-  create_game: true,     // 创建队内赛
-  finance_stats: true    // 财务统计
+  create_game: true      // 创建队内赛
 }
 
 Page({
@@ -90,8 +89,7 @@ Page({
         invite_member: !!permissionsData.invite_member,
         remove_member: !!permissionsData.remove_member,
         mark_paid: !!permissionsData.mark_paid,
-        create_game: !!permissionsData.create_game,
-        finance_stats: !!permissionsData.finance_stats
+        create_game: !!permissionsData.create_game
       }
     }
 
@@ -101,8 +99,7 @@ Page({
       invite_member: false,
       remove_member: false,
       mark_paid: false,
-      create_game: false,
-      finance_stats: false
+      create_game: false
     }
   },
 
@@ -134,13 +131,6 @@ Page({
     })
   },
 
-  // 财务统计
-  goFinanceStats() {
-    wx.navigateTo({
-      url: `/pages/team-finance/team-finance?teamId=${this.data.teamId}`
-    })
-  },
-
   // 管理员设置
   goAdminManage() {
     wx.navigateTo({
@@ -155,10 +145,10 @@ Page({
     })
   },
 
-  // 编辑球队信息
+  // 编辑球队信息（复用 create-team 页面）
   goEditTeam() {
     wx.navigateTo({
-      url: `/pages/team-edit/team-edit?teamId=${this.data.teamId}`
+      url: `/pages/create-team/create-team?teamId=${this.data.teamId}`
     })
   },
 

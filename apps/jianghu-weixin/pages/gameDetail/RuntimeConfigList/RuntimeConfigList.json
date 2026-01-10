@@ -1,6 +1,8 @@
 {
+	"navigationStyle": "custom",
 	"navigationBarTitleText": "游戏配置",
 	"usingComponents": {
+		"CustomNavBar": "/components/CustomNavBar/CustomNavBar",
 		"kickoff": "./gamblOperationComponent/kickoff/kickoff",
 		"holejump": "./gamblOperationComponent/holejump/holejump",
 		"juanguo": "./gamblOperationComponent/juanguo/juanguo",

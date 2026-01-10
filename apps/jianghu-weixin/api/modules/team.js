@@ -35,6 +35,9 @@ const team = {
     // 直接拉入队员
     inviteMember: (data, options) => request('/Team/inviteMember', data, options),
 
+    // 搜索可邀请的用户
+    searchUsersToInvite: (data, options) => request('/Team/searchUsersToInvite', data, options),
+
     // 踢出队员
     removeMember: (data, options) => request('/Team/removeMember', data, options),
 
