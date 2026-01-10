@@ -89,7 +89,7 @@
                 src="{{image.imageUrl(user.avatar) || '/images/default-avatar.png'}}"
                 mode="aspectFill"
               ></image>
-              <text class="user-name">{{user.nickname || user.nickName || '匿名球友'}}</text>
+              <text class="user-name">{{user.nickname || '匿名球友'}}</text>
             </view>
           </view>
           <view class="group-empty" wx:else>

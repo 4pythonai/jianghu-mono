@@ -20,13 +20,13 @@ Page({
     },
 
     onLoad(options) {
-        const gameId = options.game_id || options.gameId || null
-        const gameName = decodeURIComponent(options.game_name || options.gameName || '')
+        // URL 参数统一使用下划线命名: game_id, game_name
+        const gameId = options.game_id || null
+        const gameName = decodeURIComponent(options.game_name || '')
 
         // 计算导航栏高度
-        const systemInfo = wx.getSystemInfoSync()
-        const statusBarHeight = systemInfo.statusBarHeight || 0
-        const navBarHeight = statusBarHeight + 44
+        const { getNavBarHeight } = require('../../utils/systemInfo')
+        const navBarHeight = getNavBarHeight()
 
         this.setData({ gameId, gameName, navBarHeight })
 

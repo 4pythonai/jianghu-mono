@@ -151,7 +151,8 @@ Component({
 		 *  初始化获取 dom 信息
 		 */
 		initDom() {
-			const { windowWidth, windowHeight, platform, SDKVersion } = wx.getSystemInfoSync();
+			const { getSystemInfo } = require('../../utils/systemInfo');
+			const { windowWidth, windowHeight, platform, SDKVersion } = getSystemInfo();
 			const remScale = (windowWidth || 375) / 375;
 
 			this.data.pageMetaSupport = compareVersion(SDKVersion, '2.9.0') >= 0;

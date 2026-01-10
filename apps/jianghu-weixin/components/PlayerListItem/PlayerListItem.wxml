@@ -1,14 +1,14 @@
 <view class="player-list-item">
     <!-- 序号 -->
     <view class="item-index">
-        <text>{{index}}</text>
+        <text class="index-text">{{index}}</text>
     </view>
 
     <!-- 头像区域 -->
     <view class="avatar-section">
         <!-- 付费标记 -->
         <view wx:if="{{paid}}" class="paid-badge">
-            <text>付</text>
+            <text class="badge-text">付</text>
         </view>
         <image
             class="player-avatar"

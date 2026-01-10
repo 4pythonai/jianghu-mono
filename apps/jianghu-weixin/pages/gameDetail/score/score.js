@@ -38,9 +38,8 @@ Page({
         const { gameid = '', groupid = '' } = queryParams;
 
         // 计算导航栏高度
-        const systemInfo = wx.getSystemInfoSync();
-        const statusBarHeight = systemInfo.statusBarHeight || 0;
-        const navBarHeight = statusBarHeight + 44;
+        const { getNavBarHeight } = require('../../../utils/systemInfo');
+        const navBarHeight = getNavBarHeight();
 
         // 构建返回URL：返回到 live 页面（第一个tab）
         const backUrl = '/pages/live/live';

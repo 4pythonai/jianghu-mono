@@ -58,9 +58,8 @@ Page({
         console.log('[RuntimeConfigList] 页面加载，参数:', options);
 
         // 计算导航栏高度
-        const systemInfo = wx.getSystemInfoSync()
-        const statusBarHeight = systemInfo.statusBarHeight || 0
-        const navBarHeight = statusBarHeight + 44
+        const { getNavBarHeight } = require('../../../utils/systemInfo')
+        const navBarHeight = getNavBarHeight()
         this.setData({ navBarHeight })
 
         // 解析页面参数

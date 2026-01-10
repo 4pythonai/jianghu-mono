@@ -11,9 +11,8 @@ Page({
   },
 
   onLoad(options) {
-    const systemInfo = wx.getSystemInfoSync()
-    const statusBarHeight = systemInfo.statusBarHeight || 0
-    const navBarHeight = statusBarHeight + 44
+    const { getNavBarHeight } = require('../../utils/systemInfo')
+    const navBarHeight = getNavBarHeight()
 
     const teamId = options.teamId || options.id
     if (!teamId) {

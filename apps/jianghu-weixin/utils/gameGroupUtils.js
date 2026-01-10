@@ -75,7 +75,7 @@ export const filterDuplicateUsers = (players, gameGroups, targetGroupIndex) => {
                 type: duplicateType
             });
 
-            console.log(`⚠️ 用户 ${player.wx_nickname || player.nickname} (ID: ${userId}) 已在第${existingGroupIndex}组中, 跳过`);
+            console.log(`⚠️ 用户 ${player.nickname} (ID: ${userId}) 已在第${existingGroupIndex}组中, 跳过`);
             return false;
         }
         return true;

@@ -10,6 +10,7 @@ import navigationHelper from '../../utils/navigationHelper'
 Page({
     data: {
         navBarHeight: 88,       // 导航栏高度（状态栏 + 44px）
+        gameType: 'single_team', // 默认值，防止组件报错
 
         // Tab 相关
         currentTab: 0,          // 0:赛事详情 1:报名人员 2:分组 3:讨论区
@@ -25,7 +26,7 @@ Page({
         registerForm: {             // 报名表单数据
             nickname: '',
             mobile: '',
-            gender: 0,
+            gender: 'unknown',
             genderText: '未知'
         },
 
@@ -34,17 +35,25 @@ Page({
         gameTags: [],
         tagMembers: [],
         groups: [],
-        eventDetail: {}
+        eventDetail: {
+            title: '',
+            teamName: '',
+            teamAvatar: '',
+            teams: [],
+            backgroundImage: '',
+            coverType: '',
+            covers: []
+        }
     },
 
     onLoad(options) {
         const gameType = options.game_type || 'single_team'
-        const gameId = options.game_id || options.gameId || null
+        // URL 参数统一使用下划线命名: game_id
+        const gameId = options.game_id || null
 
         // 计算导航栏高度
-        const systemInfo = wx.getSystemInfoSync()
-        const statusBarHeight = systemInfo.statusBarHeight || 0
-        const navBarHeight = statusBarHeight + 44
+        const { getNavBarHeight } = require('../../utils/systemInfo')
+        const navBarHeight = getNavBarHeight()
 
         // 先设置本地 gameType，确保页面立即显示正确的 title
         this.setData({ navBarHeight, gameType })
@@ -220,16 +229,18 @@ Page({
         }
 
         // 获取性别文本
-        const genderMap = { 0: '未知', 1: '男', 2: '女' }
-        const gender = userInfo.gender || userInfo.sex || 0
+        // userInfo 已通过 normalizeUserInfo 标准化，gender 字段: 'male', 'female', 'unknown'
+        const genderMap = { male: '男', female: '女', unknown: '未知' }
+        const gender = userInfo.gender || 'unknown'
         const genderText = genderMap[gender] || '未知'
 
         // 填充表单数据
+        // userInfo 已通过 normalizeUserInfo 标准化，nickname 字段必存在
         this.setData({
             showRegisterPopup: true,
             selectedTagId: null,
             registerForm: {
-                nickname: userInfo.nickName || userInfo.nickname || userInfo.wx_nickname || '未设置',
+                nickname: userInfo.nickname || '未设置',
                 mobile: userInfo.mobile || '',
                 gender: gender,
                 genderText: genderText
@@ -259,7 +270,7 @@ Page({
      * 选择性别
      */
     onGenderSelect(e) {
-        const gender = parseInt(e.currentTarget.dataset.gender)
+        const gender = e.currentTarget.dataset.gender  // 'male' 或 'female'
         this.setData({ 'registerForm.gender': gender })
     },
 
@@ -292,13 +303,12 @@ Page({
 
         try {
             const app = getApp()
-            // 将 gender 数字转换为字符串: 1 -> male, 2 -> female
-            const genderStr = registerForm.gender === 1 ? 'male' : (registerForm.gender === 2 ? 'female' : '')
+            // gender 已经是字符串: 'male', 'female', 'unknown'
             const result = await app.api.teamgame.registerGame({
                 game_id: gameid,
                 tag_id: selectedTagId,
                 nickname: registerForm.nickname,
-                gender: genderStr,
+                gender: registerForm.gender,
                 mobile: registerForm.mobile
             })
 

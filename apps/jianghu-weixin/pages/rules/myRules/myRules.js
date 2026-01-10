@@ -22,9 +22,8 @@ Page({
         const queryParams = this._extractQueryParams(options);
 
         // 计算导航栏高度
-        const systemInfo = wx.getSystemInfoSync();
-        const statusBarHeight = systemInfo.statusBarHeight || 0;
-        const navBarHeight = statusBarHeight + 44;
+        const { getNavBarHeight } = require('../../../utils/systemInfo');
+        const navBarHeight = getNavBarHeight();
 
         // 构建返回URL：返回到 gamble 页面
         // 尝试从页面栈获取上一个页面的参数

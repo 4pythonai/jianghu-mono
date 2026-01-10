@@ -17,7 +17,7 @@
     flex-shrink: 0;
 }
 
-.item-index text {
+.item-index .index-text {
     font-size: 28rpx;
     color: var(--text-primary);
     font-weight: 500;
@@ -54,7 +54,7 @@
     z-index: 1;
 }
 
-.paid-badge text {
+.paid-badge .badge-text {
     font-size: 18rpx;
     color: #fff;
     font-weight: 500;

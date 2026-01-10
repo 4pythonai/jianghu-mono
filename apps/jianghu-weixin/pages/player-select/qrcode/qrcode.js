@@ -512,7 +512,7 @@ Page({
             (payload && (payload.avatar || payload.headimgurl)) ||
             '/images/default-avatar.png';
         const nickname =
-            (payload && (payload.nickname || payload.nickName || payload.name)) ||
+            (payload && payload.nickname) ||
             '新球友加入';
 
         if (this.joinNotification) {

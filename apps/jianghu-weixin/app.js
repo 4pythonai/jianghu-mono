@@ -217,7 +217,8 @@ App({
      */
     initNavBarSystemInfo() {
         try {
-            const systemInfo = wx.getSystemInfoSync()
+            const { getSystemInfo } = require('./utils/systemInfo')
+            const systemInfo = getSystemInfo()
             const isIOS = this._isIOS(systemInfo)
             const rect = this._getCapsuleRect(systemInfo, isIOS)
             const layout = this._calcNavBarLayout(systemInfo, rect, isIOS)
@@ -446,18 +447,35 @@ App({
     },
 
     normalizeUserInfo(userInfo) {
+        // 标准化用户信息，确保字段名与数据库一致
+        // 数据库 t_user: id, nickname, wx_nickname, avatar, gender
         const user = userInfo ? { ...userInfo } : {}
-        const displayName = user.nickName || user.nickname || user.wx_nickname || ''
 
-        if (!user.nickName && displayName) {
-            user.nickName = displayName
+        // 统一昵称字段: 优先使用 nickname，其次 wx_nickname
+        // 兼容微信 API 返回的 nickName (驼峰)
+        if (!user.nickname) {
+            user.nickname = user.nickName || user.wx_nickname || ''
         }
 
-        if (!user.wx_nickname && displayName) {
-            user.wx_nickname = displayName
+        // 确保 wx_nickname 存在
+        if (!user.wx_nickname && user.nickname) {
+            user.wx_nickname = user.nickname
         }
 
+        // 保留 nickName 以兼容现有代码（后续可移除）
+        if (!user.nickName && user.nickname) {
+            user.nickName = user.nickname
+        }
 
+        // 统一性别字段: 'male', 'female', 'unknown'
+        if (!user.gender || (user.gender !== 'male' && user.gender !== 'female')) {
+            user.gender = 'unknown'
+        }
+
+        // 统一头像字段: 数据库是 avatar，微信 API 返回 avatarUrl
+        if (!user.avatar && user.avatarUrl) {
+            user.avatar = user.avatarUrl
+        }
 
         return user
     },

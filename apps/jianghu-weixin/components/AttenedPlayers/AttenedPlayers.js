@@ -38,7 +38,7 @@ Component({
             const creatorid = gameStore.creatorid || gameStore.gameData?.creatorid
 
             const displayPlayers = players.map(p => ({
-                nickname: p.nickname || p.wx_nickname || '未知',
+                nickname: p.nickname || '未知',
                 avatar: p.avatar || '/images/default-avatar.png',
                 showDelete: String(p.userid) === String(creatorid) ? 'n' : 'y',
                 userid: p.userid

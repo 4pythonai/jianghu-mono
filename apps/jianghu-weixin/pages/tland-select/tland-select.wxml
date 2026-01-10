@@ -29,7 +29,7 @@
             ></image>
           </view>
           <view class="player-details">
-            <view class="player-name">{{ item.wx_nickname || item.nickname }}</view>
+            <view class="player-name">{{ item.nickname }}</view>
             <view class="player-meta">第{{ item.groupIndex + 1 }}组 · 玩家{{ item.playerIndex + 1 }}</view>
           </view>
         </view>

@@ -7,6 +7,7 @@ const { config } = require('../api/config');
  * @returns {object}
  */
 function normalizePlayer(player) {
+    // player 来自 API，数据库字段是 nickname, wx_nickname
     let avatar = player.avatar || '';
     if (avatar && avatar.startsWith('/')) {
         avatar = config.staticURL + avatar;
@@ -14,7 +15,7 @@ function normalizePlayer(player) {
     return {
         ...player,
         userid: String(player.userid),
-        nickname: player.nickname || player.wx_nickname || '未知玩家',
+        nickname: player.nickname || '未知玩家',
         avatar: avatar,
     };
 }

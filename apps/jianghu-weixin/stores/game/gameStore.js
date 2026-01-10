@@ -48,6 +48,7 @@ export const gameStore = observable({
         deadline: '',
         schedule: [],
         awards: [],
+        backgroundImage: '',
         coverType: 'default',
         covers: []
     },
@@ -86,6 +87,7 @@ export const gameStore = observable({
             deadline: '',
             schedule: [],
             awards: [],
+            backgroundImage: '',
             coverType: 'default',
             covers: []
         };
@@ -398,12 +400,17 @@ export const gameStore = observable({
         let deadline = '';
         if (data.registration_deadline) {
             try {
-                const date = new Date(data.registration_deadline);
-                const month = date.getMonth() + 1;
-                const day = date.getDate();
-                const hours = date.getHours().toString().padStart(2, '0');
-                const minutes = date.getMinutes().toString().padStart(2, '0');
-                deadline = `报名截止: ${month}月${day}日 ${hours}:${minutes}`;
+                const { parseDate } = require('../utils/tool');
+                const date = parseDate(data.registration_deadline);
+                if (!isNaN(date.getTime())) {
+                    const month = date.getMonth() + 1;
+                    const day = date.getDate();
+                    const hours = date.getHours().toString().padStart(2, '0');
+                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                    deadline = `报名截止: ${month}月${day}日 ${hours}:${minutes}`;
+                } else {
+                    deadline = data.registration_deadline;
+                }
             } catch (e) {
                 deadline = data.registration_deadline;
             }
@@ -420,6 +427,7 @@ export const gameStore = observable({
             deadline: deadline,
             schedule: schedule,
             awards: awards,
+            backgroundImage: data.background_image || '',
             coverType: data.cover_type || 'default',
             covers: data.covers || []
         };
@@ -511,14 +519,15 @@ export const gameStore = observable({
     _parseGroups(groups) {
         if (!Array.isArray(groups)) return [];
 
+        // API (MTeamGame.getGroups) 返回: groupid, group_name, members[]
+        // members[] 中每项包含: userid, nickname, avatar, tag_name, tee
         return groups.map((g, index) => {
-            const groupId = g.groupid || g.group_id || g.id || (index + 1);
             return {
-                id: String(groupId),
+                id: String(g.groupid),
                 name: g.group_name || `第${index + 1}组`,
-                players: (g.members || g.players || []).map(p => ({
-                    id: p.userid || p.user_id,
-                    name: p.nickname || p.user_name,
+                players: (g.members || []).map(p => ({
+                    id: p.userid,
+                    name: p.nickname || '未知玩家',
                     avatar: p.avatar || '',
                     teamName: p.tag_name || '',
                     tee: p.tee || ''

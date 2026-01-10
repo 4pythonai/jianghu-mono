@@ -314,8 +314,8 @@ Component({
 
             // 方法2：使用scroll-top作为备用
             try {
-                const systemInfo = wx.getSystemInfoSync();
-                const rpxToPx = systemInfo.windowWidth / 750;
+                const { getWindowWidth } = require('../../utils/systemInfo');
+                const rpxToPx = getWindowWidth() / 750;
                 const itemHeightPx = 80 * rpxToPx;
                 const scrollTop = targetIndex * itemHeightPx;
 
@@ -389,8 +389,8 @@ Component({
          */
         alignScrollPosition(currentScrollTop) {
             try {
-                const systemInfo = wx.getSystemInfoSync();
-                const rpxToPx = systemInfo.windowWidth / 750;
+                const { getWindowWidth } = require('../../utils/systemInfo');
+                const rpxToPx = getWindowWidth() / 750;
                 const itemHeightPx = 80 * rpxToPx;
 
                 const currentIndex = Math.round(currentScrollTop / itemHeightPx);

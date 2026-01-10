@@ -1,13 +1,5 @@
-view,
-text,
-scroll-view,
-input,
-button,
-image,
-cover-view {
-  box-sizing: border-box;
-}
-page {
+/* 组件内部样式 - 移除了不允许的标签名选择器 */
+.lxy-nav-bar {
   --height: 44px; /* 4*2+32 */
   --right: 97px; /* 10+87 */
   --navBarExtendHeight: 4px;

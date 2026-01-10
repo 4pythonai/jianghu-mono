@@ -196,7 +196,7 @@ Component({
             alphabet.forEach(letter => { groups[letter] = []; });
 
             friends.forEach(friend => {
-                const name = friend.nickname || friend.wx_nickname || '';
+                const name = friend.nickname || '';
                 const letter = this.getFirstLetter(name);
                 if (groups[letter]) {
                     groups[letter].push(friend);

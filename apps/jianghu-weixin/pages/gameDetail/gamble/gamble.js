@@ -27,9 +27,8 @@ Page({
         const { gameid = '', groupid = '' } = queryParams;
 
         // 计算导航栏高度
-        const systemInfo = wx.getSystemInfoSync();
-        const statusBarHeight = systemInfo.statusBarHeight || 0;
-        const navBarHeight = statusBarHeight + 44;
+        const { getNavBarHeight } = require('../../../utils/systemInfo');
+        const navBarHeight = getNavBarHeight();
 
         // 构建返回URL：始终返回到 score 页面
         const backQuery = this._buildQueryString({ gameid, groupid });

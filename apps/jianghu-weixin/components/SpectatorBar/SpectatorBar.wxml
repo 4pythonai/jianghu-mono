@@ -25,6 +25,6 @@
 
     <!-- 点击更多 -->
     <view class="more-btn" bindtap="onMoreTap">
-        <text>点击更多</text>
+        <text class="more-text">点击更多</text>
     </view>
 </view>

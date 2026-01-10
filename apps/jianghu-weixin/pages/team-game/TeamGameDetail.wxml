@@ -162,8 +162,8 @@
       </view>
     </scroll-view>
 
-    <!-- 悬浮更多按钮 -->
-    <view wx:if="{{isCreator}}" class="floating-more-btn" bindtap="onMoreTap">
+    <!-- 悬浮更多按钮（仅赛事详情Tab显示） -->
+    <view wx:if="{{isCreator && currentTab === 0}}" class="floating-more-btn" bindtap="onMoreTap">
       <text>更多</text>
     </view>
 
@@ -231,19 +231,19 @@
             <text class="form-label">性别</text>
             <view class="gender-radio-group">
               <view
-                class="gender-radio {{registerForm.gender === 1 ? 'selected' : ''}}"
-                data-gender="1"
+                class="gender-radio {{registerForm.gender === 'male' ? 'selected' : ''}}"
+                data-gender="male"
                 bindtap="onGenderSelect"
               >
-                <view class="radio-circle {{registerForm.gender === 1 ? 'checked' : ''}}"></view>
+                <view class="radio-circle {{registerForm.gender === 'male' ? 'checked' : ''}}"></view>
                 <text>男</text>
               </view>
               <view
-                class="gender-radio {{registerForm.gender === 2 ? 'selected' : ''}}"
-                data-gender="2"
+                class="gender-radio {{registerForm.gender === 'female' ? 'selected' : ''}}"
+                data-gender="female"
                 bindtap="onGenderSelect"
               >
-                <view class="radio-circle {{registerForm.gender === 2 ? 'checked' : ''}}"></view>
+                <view class="radio-circle {{registerForm.gender === 'female' ? 'checked' : ''}}"></view>
                 <text>女</text>
               </view>
             </view>

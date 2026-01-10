@@ -138,7 +138,7 @@ Page({
                                 if (!allPlayers.find(p => p.userid === user.userid)) {
                                     allPlayers.push({
                                         userid: user.userid,
-                                        nickname: user.nickname || user.wx_nickname,
+                                        nickname: user.nickname,
                                         avatar: user.avatar || '/images/default-avatar.png'
                                     });
                                 }
@@ -251,9 +251,10 @@ Page({
                 ? appInstance.normalizeUserInfo(userInfo)
                 : userInfo;
 
+            // normalizedUser 已通过 normalizeUserInfo 标准化，使用 nickname
             this.setData({
                 userAvatar: normalizedUser.avatar || '/images/default-avatar.png',
-                userName: normalizedUser.nickName || normalizedUser.nickname || normalizedUser.wx_nickname || '我'
+                userName: normalizedUser.nickname || '我'
             });
         } else {
             // 尝试从存储中获取

@@ -57,7 +57,9 @@ Page({
   // 格式化日期
   formatDate(dateStr) {
     if (!dateStr) return '--'
-    const date = new Date(dateStr)
+    const { parseDate } = require('../../utils/tool')
+    const date = parseDate(dateStr)
+    if (isNaN(date.getTime())) return '--'
     const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()

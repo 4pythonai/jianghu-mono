@@ -27,7 +27,7 @@
 <view class="game-details {{isExpanded ? 'expanded' : 'collapsed'}}">
   <view class="detail-row">
     <text class="detail-label">比赛名称:</text>
-    <text class="detail-value">{{gameData.gameName || gameData.game_name || gameData.title || '友谊赛'}}</text>
+    <text class="detail-value">{{gameData.name || '友谊赛'}}</text>
   </view>
   <view class="detail-row">
     <text class="detail-label">创建人:</text>

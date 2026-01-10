@@ -25,9 +25,8 @@ Page({
 
   onLoad(options) {
     // 计算导航栏高度
-    const systemInfo = wx.getSystemInfoSync()
-    const statusBarHeight = systemInfo.statusBarHeight || 0
-    const navBarHeight = statusBarHeight + 44
+    const { getNavBarHeight } = require('../../utils/systemInfo')
+    const navBarHeight = getNavBarHeight()
 
     const teamId = options.id || options.teamId
     if (!teamId) {

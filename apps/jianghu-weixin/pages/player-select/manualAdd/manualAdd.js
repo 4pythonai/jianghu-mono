@@ -164,15 +164,16 @@ Page({
         console.log('📍 当前页面参数:', { groupIndex: this.data.groupIndex, slotIndex: this.data.slotIndex });
 
         // 转换用户数据格式, 适配PlayerSelector组件的格式
+        // API (User.createAndSelect) 返回 t_user 记录，主键是 id
         const createdUser = {
-            userid: user.id || user.userid, // API返回的是 user.id
+            userid: user.id,
             wx_nickname: user.wx_nickname || user.nickname || this.data.remarkName,
-            nickname: user.nickname || user.wx_nickname || this.data.remarkName,
+            nickname: user.nickname || this.data.remarkName,
             avatar: user.avatar || '/images/default-avatar.png',
             handicap: user.handicap || 0,
             mobile: user.mobile || this.data.mobile || '',
             gender: user.gender || this.data.gender,
-            tee: user.tee || 'blue'  // 添加T台字段, 默认蓝T
+            tee: user.tee || 'blue'
         };
 
 

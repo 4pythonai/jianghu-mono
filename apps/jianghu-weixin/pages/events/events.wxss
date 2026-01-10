@@ -1,13 +1,14 @@
 /* 赛事页面样式 */
 .container {
     min-height: 100vh;
+    padding: 0; /* 覆盖全局 container 的 padding */
     background-color: var(--common-bg, #f5f5f5);
 }
 
 /* ==================== 轮播Banner区域 ==================== */
 .banner-section {
     position: relative;
-    width: 100%;
+    width: 100vw; /* 使用视口宽度确保占满屏幕 */
     height: 360rpx;
 }
 

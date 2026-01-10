@@ -34,7 +34,7 @@ Page({
       profileStatus: status,
       needBindPhone: state.needBindPhone,
       showAuthButton: !(status.hasNickname && status.hasAvatar),
-      tempNickname: state.userInfo?.nickName || ''
+      tempNickname: state.userInfo?.nickname || ''
     })
   },
 
@@ -181,8 +181,9 @@ Page({
         throw new Error(response.message || '绑定失败')
       }
 
+      // response.user 来自后端，字段是 nickname
       const updatedStatus = {
-        hasNickname: !!(response.user?.nickName || response.user?.nickname),
+        hasNickname: !!(response.user?.nickname),
         hasAvatar: !!(response.user?.avatar),
         hasMobile: true
       }

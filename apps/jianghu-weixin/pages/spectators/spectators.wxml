@@ -30,7 +30,7 @@
         mode="aspectFill"
       />
       <view class="spectator-info">
-        <text class="spectator-name">{{item.nickname || item.wx_nickname || '匿名用户'}}</text>
+        <text class="spectator-name">{{item.nickname || '匿名用户'}}</text>
         <text class="spectator-time" wx:if="{{item.watch_time}}">{{item.watch_time}}</text>
       </view>
     </view>

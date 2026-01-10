@@ -166,7 +166,8 @@ Component({
       if (app.globalSystemInfo && !app.globalSystemInfo.ios) {
         return app.globalSystemInfo;
       } else {
-        let systemInfo = wx.getSystemInfoSync();
+        const { getSystemInfo } = require('../../utils/systemInfo');
+        let systemInfo = getSystemInfo();
         let ios = !!(systemInfo.system.toLowerCase().search('ios') + 1);
         let rect;
         try {

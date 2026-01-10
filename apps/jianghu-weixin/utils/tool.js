@@ -70,3 +70,62 @@ export const timestampUuid = () => {
     const standardUuid = uuid();
     return `${timestamp}-${standardUuid}`;
 };
+
+/**
+ * 安全解析日期字符串（兼容 iOS）
+ * iOS 不支持 "yyyy-MM-dd HH:mm:ss" 格式，需要转换为 "yyyy-MM-ddTHH:mm:ss" 或 "yyyy/MM/dd HH:mm:ss"
+ * @param {string|number|Date} dateStr - 日期字符串、时间戳或 Date 对象
+ * @returns {Date} 返回 Date 对象，解析失败返回 Invalid Date
+ */
+export const parseDate = (dateStr) => {
+    if (!dateStr) return new Date(NaN);
+    
+    // 如果已经是 Date 对象，直接返回
+    if (dateStr instanceof Date) return dateStr;
+    
+    // 如果是数字（时间戳），直接创建
+    if (typeof dateStr === 'number') return new Date(dateStr);
+    
+    // 字符串处理：将 "yyyy-MM-dd HH:mm:ss" 转换为 "yyyy-MM-ddTHH:mm:ss"
+    // iOS 支持的格式：
+    // - "yyyy/MM/dd"
+    // - "yyyy/MM/dd HH:mm:ss"
+    // - "yyyy-MM-dd"
+    // - "yyyy-MM-ddTHH:mm:ss"
+    // - "yyyy-MM-ddTHH:mm:ss+HH:mm"
+    const str = String(dateStr).trim();
+    
+    // 如果包含空格且是 "yyyy-MM-dd HH:mm:ss" 格式，替换为 T
+    if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/.test(str)) {
+        return new Date(str.replace(' ', 'T'));
+    }
+    
+    // 其他格式直接尝试解析
+    return new Date(str);
+};
+
+/**
+ * 格式化日期为指定格式
+ * @param {string|number|Date} dateStr - 日期字符串、时间戳或 Date 对象
+ * @param {string} format - 格式模板，支持 yyyy, MM, dd, HH, mm, ss
+ * @returns {string} 格式化后的日期字符串，解析失败返回空字符串
+ */
+export const formatDate = (dateStr, format = 'yyyy-MM-dd') => {
+    const date = parseDate(dateStr);
+    if (isNaN(date.getTime())) return '';
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return format
+        .replace('yyyy', year)
+        .replace('MM', month)
+        .replace('dd', day)
+        .replace('HH', hours)
+        .replace('mm', minutes)
+        .replace('ss', seconds);
+};

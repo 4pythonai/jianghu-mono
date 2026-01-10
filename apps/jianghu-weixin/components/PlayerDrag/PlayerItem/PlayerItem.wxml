@@ -16,6 +16,6 @@
       lazy-load="true"
       mode="aspectFill"
     />
-    <text class="player-name">{{itemData.nickname || itemData.wx_nickname || '未知玩家'}}</text>
+    <text class="player-name">{{itemData.nickname || '未知玩家'}}</text>
   </view>
 </view>

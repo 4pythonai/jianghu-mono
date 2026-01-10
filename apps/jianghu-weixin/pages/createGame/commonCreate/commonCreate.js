@@ -248,14 +248,15 @@ Page({
         }
 
         // 转换好友数据格式, 适配PlayerSelector组件的格式
+        // friend 来自 API，数据库字段是 nickname
         const players = selectedFriends.map(friend => ({
             userid: friend.userid,
-            wx_nickname: friend.nickname || friend.wx_nickname || '未知好友',
-            nickname: friend.nickname || friend.wx_nickname || '未知好友',
-            avatar: friend.avatar || friend.avatar || '/images/default-avatar.png',
+            wx_nickname: friend.nickname || '未知好友',
+            nickname: friend.nickname || '未知好友',
+            avatar: friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
-            join_type: 'friendSelect',  // 添加来源字段
-            tee: friend.tee || 'blue'  // 添加T台字段, 默认蓝T
+            join_type: 'friendSelect',
+            tee: friend.tee || 'blue'
         }));
 
         // 使用追加模式添加好友到组中
@@ -278,15 +279,16 @@ Page({
         }
 
         // 确保用户数据格式正确
+        // createdUser 已在 manualAdd.js 中标准化
         const user = {
             userid: createdUser.userid,
             wx_nickname: createdUser.wx_nickname || createdUser.nickname,
-            nickname: createdUser.nickname || createdUser.wx_nickname,
+            nickname: createdUser.nickname,
             avatar: createdUser.avatar || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
             mobile: createdUser.mobile || '',
-            join_type: 'manualAdd',  // 添加来源字段
-            tee: createdUser.tee || 'blue'  // 添加T台字段, 默认蓝T
+            join_type: 'manualAdd',
+            tee: createdUser.tee || 'blue'
         };
 
         // 使用通用追加方法添加手工创建的用户
@@ -739,11 +741,12 @@ Page({
         const userInfo = app.globalData.userInfo;
 
         // 构建创建者 player 对象
+        // userInfo 已通过 normalizeUserInfo 标准化，字段: id, nickname, avatar
         const creator = {
-            userid: userInfo?.id,  // 使用 id 字段，不是 userid
-            wx_nickname: userInfo?.nickName || userInfo?.nickname || userInfo?.wx_nickname || '我',
-            nickname: userInfo?.nickname || userInfo?.nickName || userInfo?.wx_nickname || '我',
-            avatar: userInfo?.avatar || userInfo?.avatarUrl || '/images/default-avatar.png',
+            userid: userInfo?.id,
+            wx_nickname: userInfo?.nickname || '我',
+            nickname: userInfo?.nickname || '我',
+            avatar: userInfo?.avatar || '/images/default-avatar.png',
             handicap: userInfo?.handicap || 0,
             join_type: 'creator',
             tee: 'blue'
@@ -769,7 +772,7 @@ Page({
         });
 
         // 设置比赛名称缺省值
-        const nickname = userInfo?.nickName || userInfo?.nickname || userInfo?.wx_nickname || '我';
+        const nickname = userInfo?.nickname || '我';
         const defaultGameName = `${nickname}的球局`;
         this.setData({
             'formData.gameName': defaultGameName

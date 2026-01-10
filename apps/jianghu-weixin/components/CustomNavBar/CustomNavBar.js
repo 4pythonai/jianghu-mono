@@ -18,9 +18,9 @@ Component({
     lifetimes: {
         attached() {
             // 获取系统信息，计算导航栏高度
-            const systemInfo = wx.getSystemInfoSync();
+            const { getStatusBarHeight } = require('../../utils/systemInfo');
             this.setData({
-                statusBarHeight: systemInfo.statusBarHeight || 0
+                statusBarHeight: getStatusBarHeight()
             });
         }
     },

@@ -140,7 +140,10 @@ Page({
 ```
  const app = getApp()
  const currentUserId = app?.globalData?.userInfo?.id
-           
-
 
 ```
+
+
+# 永远不要对字段名进行猜测
+
+宁可出错,也不要猜测后台返回字段的格式

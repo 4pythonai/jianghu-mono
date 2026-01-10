@@ -132,17 +132,17 @@ class Events extends MY_Controller {
         $banners = [
             [
                 'id' => 1,
-                'image' => $webUrl . '/events/event-1.png',
+                'image' => $webUrl . '/events/event-1.webp',
                 'title' => '赛事banner1'
             ],
             [
                 'id' => 2,
-                'image' => $webUrl . '/events/event-2.png',
+                'image' => $webUrl . '/events/2.jpeg',
                 'title' => '赛事banner2'
             ],
             [
                 'id' => 3,
-                'image' => $webUrl . '/events/event-3.png',
+                'image' => $webUrl . '/events/3.webp',
                 'title' => '赛事banner3'
             ]
         ];

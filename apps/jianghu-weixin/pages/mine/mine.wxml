@@ -15,9 +15,9 @@
       </view>
       <view class="user-details">
         <view class="nickname-row">
-          <text class="nickname">{{ userInfo.nickName || userInfo.nickname || '微信用户' }}</text>
-          <text class="gender-icon" wx:if="{{ userInfo.gender === 1 }}">♂</text>
-          <text class="gender-icon female" wx:if="{{ userInfo.gender === 2 }}">♀</text>
+          <text class="nickname">{{ userInfo.nickname || '微信用户' }}</text>
+          <text class="gender-icon" wx:if="{{ userInfo.gender === 'male' }}">♂</text>
+          <text class="gender-icon female" wx:if="{{ userInfo.gender === 'female' }}">♀</text>
         </view>
         <view class="stats-row">
           <text class="stat-item">江湖差点 {{ userInfo.handicap || '--' }}</text>
@@ -44,7 +44,7 @@
       <view class="nickname-input-wrapper">
         <text class="input-label">昵称:</text>
         <view class="nickname-input-container">
-          <input class="nickname-input" type="nickname" value="{{ tempNickname || userInfo.nickName || '' }}" placeholder="请输入昵称" maxlength="20" bindinput="onNicknameInput" bindchange="onNicknameChange" />
+          <input class="nickname-input" type="nickname" value="{{ tempNickname || userInfo.nickname || '' }}" placeholder="请输入昵称" maxlength="20" bindinput="onNicknameInput" bindchange="onNicknameChange" />
         </view>
       </view>
       <button class="confirm-btn" bindtap="confirmUserInfo">保存昵称</button>

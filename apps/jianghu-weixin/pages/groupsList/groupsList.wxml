@@ -43,7 +43,7 @@
       <view class="players-list" wx:if="{{item.players && item.players.length > 0}}">
         <view class="player-item" wx:for="{{item.players}}" wx:key="userid" wx:for-item="player">
           <image class="player-avatar" src="{{image.imageUrl(player.avatar) || '/images/default-avatar.png'}}" />
-          <view class="player-name">{{player.nickname || player.wx_nickname || '未知玩家'}}</view>
+          <view class="player-name">{{player.nickname || '未知玩家'}}</view>
         </view>
       </view>
 

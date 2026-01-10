@@ -97,7 +97,7 @@ Component({
                 原始玩家数: players.length,
                 处理后玩家数: playersWithAvatar.length,
                 玩家头像信息: playersWithAvatar.map(p => ({
-                    name: p.nickname || p.wx_nickname,
+                    name: p.nickname,
                     原始头像: p.avatar,
                     处理后头像: p.avatar
                 }))
