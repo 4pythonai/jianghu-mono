@@ -1,0 +1,69 @@
+<wxs src="/utils/image.wxs" module="img" />
+<view class="container">
+  <CustomNavBar title="转让超级管理员" showBack="{{true}}" />
+
+  <view class="page-content" style="padding-top: {{navBarHeight}}px;">
+    <!-- 提示信息 -->
+    <view class="tip-card">
+      <image class="tip-icon" src="/assets/icons/icons8-spam-48.png" mode="aspectFit"></image>
+      <view class="tip-content">
+        <text class="tip-title">转让须知</text>
+        <text class="tip-text">转让后，您将失去超级管理员权限，变为普通成员。此操作不可撤销。</text>
+      </view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading-container" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 成员列表 -->
+    <view class="member-list" wx:else>
+      <view class="section-title">选择新的超级管理员</view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{members.length === 0}}">
+        <image class="empty-icon" src="/assets/icons/icons8-team-48.png" mode="aspectFit"></image>
+        <text class="empty-text">暂无可转让的成员</text>
+      </view>
+
+      <!-- 成员卡片 -->
+      <view
+        class="member-card {{transferring ? 'disabled' : ''}}"
+        wx:for="{{members}}"
+        wx:key="user_id"
+        bindtap="onSelectMember"
+        data-user-id="{{item.user_id}}"
+        data-nickname="{{item.nickname}}"
+      >
+        <image class="member-avatar" src="{{img.imageUrl(item.avatar)}}" mode="aspectFill"></image>
+        <view class="member-info">
+          <view class="member-name">{{item.nickname || '未设置昵称'}}</view>
+          <view class="member-meta">
+            <text
+              class="member-handicap"
+              wx:if="{{item.handicap !== null && item.handicap !== undefined}}"
+            >差点 {{item.handicap}}</text>
+            <text class="member-join-time">{{item.join_time_display}}</text>
+          </view>
+        </view>
+        <view class="member-role">
+          <text wx:if="{{item.role === 'admin'}}" class="role-tag admin">管理员</text>
+          <text wx:else class="role-tag member">成员</text>
+        </view>
+        <view class="select-arrow">
+          <image class="arrow-icon" src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 转让中遮罩 -->
+  <view class="transferring-mask" wx:if="{{transferring}}">
+    <view class="transferring-content">
+      <view class="loading-spinner"></view>
+      <text class="transferring-text">转让中...</text>
+    </view>
+  </view>
+</view>

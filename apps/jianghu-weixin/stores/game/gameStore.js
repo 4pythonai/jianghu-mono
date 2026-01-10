@@ -317,7 +317,7 @@ export const gameStore = observable({
      */
     get isCreator() {
         const app = getApp();
-        const currentUserId = app?.globalData?.userInfo?.userid;
+        const currentUserId = app?.globalData?.userInfo?.id;
         return currentUserId && String(this.creatorid) === String(currentUserId);
     },
 
