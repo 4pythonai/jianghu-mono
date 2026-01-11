@@ -1,16 +1,3 @@
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `t_course` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `courseid` int DEFAULT '0' COMMENT '球场ID',
@@ -40,9 +27,8 @@ CREATE TABLE `t_course` (
   KEY `idx_courseid` (`courseid`),
   FULLTEXT KEY `ind_cname` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=37527 DEFAULT CHARSET=utf8mb3 COMMENT='球场';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_course_court` (
   `id` int NOT NULL AUTO_INCREMENT,
   `courseid` int DEFAULT '0' COMMENT '球场ID',
@@ -52,9 +38,8 @@ CREATE TABLE `t_course_court` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `courtid` (`courtid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=67350 DEFAULT CHARSET=utf8mb3 COMMENT='球场对应半场';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_court_hole` (
   `holeid` int NOT NULL AUTO_INCREMENT,
   `courseid` int DEFAULT '0' COMMENT '球场ID',
@@ -80,9 +65,8 @@ CREATE TABLE `t_court_hole` (
   KEY `idx_holeid` (`holeid`),
   KEY `idx_courtid` (`courtid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=606130 DEFAULT CHARSET=utf8mb3 COMMENT='半场对应球洞';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_follow` (
   `id` int NOT NULL AUTO_INCREMENT,
   `userid` int DEFAULT '0' COMMENT '用户id',
@@ -95,9 +79,8 @@ CREATE TABLE `t_follow` (
   KEY `idx_userid` (`userid`),
   KEY `idx_fuserid` (`fuserid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24026540 DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_gamble_data_adjust` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gambleid` int DEFAULT NULL,
@@ -117,9 +100,8 @@ CREATE TABLE `t_gamble_data_adjust` (
   PRIMARY KEY (`id`),
   KEY `idx_gambleid` (`gambleid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=783317 DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_gamble_game_holeorder` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gameid` int DEFAULT NULL,
@@ -128,9 +110,8 @@ CREATE TABLE `t_gamble_game_holeorder` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idex-gg` (`gameid`,`groupid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=348058 DEFAULT CHARSET=utf8mb3;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_gamble_rules_user` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '主键自增长',
   `badScoreBaseLine` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'Par+4' COMMENT '8421扣分配置，格式：Par+X、DoublePar+X、NoSub',
@@ -153,9 +134,8 @@ CREATE TABLE `t_gamble_rules_user` (
   PRIMARY KEY (`id`),
   KEY `idx_gambleSysName` (`gambleSysName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1344765 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='赌博配置表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_gamble_x_runtime` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '主键自增长',
   `gameid` int DEFAULT NULL COMMENT 'gameid',
@@ -185,9 +165,8 @@ CREATE TABLE `t_gamble_x_runtime` (
   PRIMARY KEY (`id`),
   KEY `fk_gamble_runtime_user_rule` (`userRuleId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1344979 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='赌博配置表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_game` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_type` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT 'common' COMMENT '比赛类型: common(普通比赛), single_team(队内赛), cross_teams(队际赛)',
@@ -230,10 +209,9 @@ CREATE TABLE `t_game` (
   KEY `idx_is_recommended` (`is_recommended`),
   KEY `idx_game_type_status_createtime` (`game_type`,`game_status`,`create_time`),
   FULLTEXT KEY `fulltext_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1339205 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB AUTO_INCREMENT=1339206 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
+
+
 CREATE TABLE `t_game_court` (
   `id` int NOT NULL AUTO_INCREMENT,
   `gameid` int DEFAULT '0' COMMENT '比赛id',
@@ -244,9 +222,8 @@ CREATE TABLE `t_game_court` (
   KEY `idx_gameid` (`gameid`),
   KEY `idx_courtid` (`courtid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=492 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_game_group` (
   `groupid` int NOT NULL AUTO_INCREMENT,
   `gameid` int NOT NULL DEFAULT '0',
@@ -260,10 +237,9 @@ CREATE TABLE `t_game_group` (
   PRIMARY KEY (`groupid`),
   KEY `idx_gameid` (`gameid`),
   KEY `idx_groupid` (`groupid`)
-) ENGINE=InnoDB AUTO_INCREMENT=863 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB AUTO_INCREMENT=864 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 CREATE TABLE `t_game_group_user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gameid` int DEFAULT '0' COMMENT '比赛id',
@@ -283,10 +259,9 @@ CREATE TABLE `t_game_group_user` (
   KEY `idx_userid_gameid` (`userid`,`gameid`),
   KEY `idx_subteam_id` (`tag_id`),
   KEY `idx_userid_gameid_addtime` (`userid`,`gameid`,`addtime`)
-) ENGINE=InnoDB AUTO_INCREMENT=1044 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB AUTO_INCREMENT=1045 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
+
+
 CREATE TABLE `t_game_interaction` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_id` int unsigned NOT NULL,
@@ -300,9 +275,8 @@ CREATE TABLE `t_game_interaction` (
   KEY `idx_user` (`user_id`),
   CONSTRAINT `fk_interaction_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='比赛互动';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_game_match_hole_detail` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `match_result_id` int unsigned NOT NULL COMMENT '对抗结果ID',
@@ -324,9 +298,8 @@ CREATE TABLE `t_game_match_hole_detail` (
   CONSTRAINT `fk_hole_detail_hole` FOREIGN KEY (`hole_id`) REFERENCES `t_court_hole` (`holeid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_hole_detail_match` FOREIGN KEY (`match_result_id`) REFERENCES `t_game_match_result` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='比洞赛每洞对抗详情表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_game_match_result` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_id` int unsigned NOT NULL COMMENT '比赛ID',
@@ -348,9 +321,8 @@ CREATE TABLE `t_game_match_result` (
   CONSTRAINT `fk_match_result_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_match_result_group` FOREIGN KEY (`group_id`) REFERENCES `t_game_group` (`groupid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='比洞赛对抗结果表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_game_score` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gameid` int unsigned NOT NULL,
@@ -380,10 +352,9 @@ CREATE TABLE `t_game_score` (
   CONSTRAINT `fk_score_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_score_hole` FOREIGN KEY (`hole_id`) REFERENCES `t_court_hole` (`holeid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_score_userid` FOREIGN KEY (`userid`) REFERENCES `t_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=433 DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB AUTO_INCREMENT=434 DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
+
+
 CREATE TABLE `t_game_spectator` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_id` int DEFAULT NULL,
@@ -391,10 +362,9 @@ CREATE TABLE `t_game_spectator` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `game-spectator` (`game_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=476 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+) ENGINE=InnoDB AUTO_INCREMENT=477 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 CREATE TABLE `t_game_tag_member` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `tag_id` int unsigned NOT NULL COMMENT 'tag_id',
@@ -414,9 +384,8 @@ CREATE TABLE `t_game_tag_member` (
   CONSTRAINT `fk_subteam_member_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_subteam_member_subteam` FOREIGN KEY (`tag_id`) REFERENCES `t_team_game_tags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分队成员表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_my_stared_games` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `userid` int NOT NULL,
@@ -428,18 +397,16 @@ CREATE TABLE `t_my_stared_games` (
   KEY `idx_userid` (`userid`),
   KEY `idx_gameid` (`gameid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_private_white_list` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gameid` int DEFAULT NULL COMMENT '球局id',
   `userid` int DEFAULT NULL COMMENT '用户id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_team` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `team_name` char(200) DEFAULT NULL COMMENT '球队名称',
@@ -452,9 +419,8 @@ CREATE TABLE `t_team` (
   `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_team_game_tags` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `game_id` int unsigned NOT NULL COMMENT '比赛ID',
@@ -468,9 +434,8 @@ CREATE TABLE `t_team_game_tags` (
   KEY `idx_game_id` (`game_id`),
   CONSTRAINT `fk_subteam_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='比赛分队表（队内赛临时分队/队际赛参赛球队）';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_team_member` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `team_id` int unsigned NOT NULL COMMENT '球队ID',
@@ -487,9 +452,8 @@ CREATE TABLE `t_team_member` (
   KEY `idx_status` (`status`),
   CONSTRAINT `fk_team_member_team` FOREIGN KEY (`team_id`) REFERENCES `t_team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='球队成员表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `t_user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `openid` char(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
@@ -510,14 +474,3 @@ CREATE TABLE `t_user` (
   KEY `idx_telephone` (`mobile`),
   KEY `index_nickname` (`wx_nickname`)
 ) ENGINE=InnoDB AUTO_INCREMENT=837782 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
