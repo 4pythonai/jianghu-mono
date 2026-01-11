@@ -37,7 +37,8 @@ Component({
                 console.log('📊 [OperationBar] 可用字段:', Object.keys(newGameData));
 
                 // 格式化开球时间为欧洲格式
-                const rawTeeTime = newGameData.teeTime || newGameData.tee_time || newGameData.start_time || '2024-01-15 09:00';
+                // 后端 MDetailGame.getGameDetail 返回 game_start（来自 t_game.open_time）
+                const rawTeeTime = newGameData.game_start || '';
                 const formattedTime = this.formatEuropeanDate(rawTeeTime);
 
                 this.setData({

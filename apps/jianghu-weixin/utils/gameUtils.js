@@ -7,7 +7,7 @@ const { config } = require('../api/config');
  * @returns {object}
  */
 function normalizePlayer(player) {
-    // player 来自 API，数据库字段是 nickname, wx_nickname
+    // player 来自后端 API，t_user 表字段: id, nickname, avatar, handicap, mobile, gender
     let avatar = player.avatar || '';
     if (avatar && avatar.startsWith('/')) {
         avatar = config.staticURL + avatar;

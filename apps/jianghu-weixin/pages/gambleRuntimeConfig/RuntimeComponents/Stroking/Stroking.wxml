@@ -78,7 +78,8 @@
               <image src="{{image.imageUrl(item.avatar)}}" mode="aspectFill" class="avatar-image"></image>
             </view>
             <view class="user-info">
-              <text class="user-nickname">{{item.wx_nickname}}</text>
+              <!-- 统一使用 nickname 字段（t_user 表标准字段） -->
+              <text class="user-nickname">{{item.nickname}}</text>
             </view>
           </view>
         </view>

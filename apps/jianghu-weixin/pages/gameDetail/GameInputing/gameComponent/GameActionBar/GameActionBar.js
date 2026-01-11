@@ -31,12 +31,13 @@ Component({
 
     methods: {
         // 解析游戏元信息
+        // 后端 MDetailGame.getGameDetail 返回: uuid, game_name
         resolveGameMeta() {
             const { gameid, gameData } = this.data;
             return {
                 gameid: gameid || gameData?.id,
-                uuid: gameData?.uuid || gameData?.game_uuid,
-                title: gameData?.title || gameData?.game_name,
+                uuid: gameData?.uuid || '',
+                title: gameData?.game_name || '',
             };
         },
 

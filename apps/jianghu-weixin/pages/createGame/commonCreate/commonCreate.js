@@ -220,9 +220,9 @@ Page({
         }
 
         // 转换组合数据格式, 适配PlayerSelector组件的格式
+        // member 数据来自后端，字段: userid, nickname, avatar, handicap
         const players = combination.map(member => ({
             userid: member.userid,
-            wx_nickname: member.nickname || '未知玩家',
             nickname: member.nickname || '未知玩家',
             avatar: member.avatar || '/images/default-avatar.png',
             handicap: member.handicap || 0,
@@ -248,10 +248,9 @@ Page({
         }
 
         // 转换好友数据格式, 适配PlayerSelector组件的格式
-        // friend 来自 API，数据库字段是 nickname
+        // friend 来自后端 User/getFriendList API，字段: userid, nickname, avatar, handicap
         const players = selectedFriends.map(friend => ({
             userid: friend.userid,
-            wx_nickname: friend.nickname || '未知好友',
             nickname: friend.nickname || '未知好友',
             avatar: friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
@@ -279,10 +278,9 @@ Page({
         }
 
         // 确保用户数据格式正确
-        // createdUser 已在 manualAdd.js 中标准化
+        // createdUser 来自 manualAdd.js，已标准化为 t_user 表字段结构
         const user = {
             userid: createdUser.userid,
-            wx_nickname: createdUser.wx_nickname || createdUser.nickname,
             nickname: createdUser.nickname,
             avatar: createdUser.avatar || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
@@ -741,10 +739,9 @@ Page({
         const userInfo = app.globalData.userInfo;
 
         // 构建创建者 player 对象
-        // userInfo 已通过 normalizeUserInfo 标准化，字段: id, nickname, avatar
+        // userInfo 已通过 normalizeUserInfo 标准化，字段: id, nickname, avatar, gender, handicap
         const creator = {
             userid: userInfo?.id,
-            wx_nickname: userInfo?.nickname || '我',
             nickname: userInfo?.nickname || '我',
             avatar: userInfo?.avatar || '/images/default-avatar.png',
             handicap: userInfo?.handicap || 0,

@@ -83,12 +83,12 @@ CREATE TABLE `t_court_hole` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t_friend` (
+CREATE TABLE `t_follow` (
   `id` int NOT NULL AUTO_INCREMENT,
   `userid` int DEFAULT '0' COMMENT '用户id',
   `fuserid` int DEFAULT '0' COMMENT '对方id',
   `nickname` varchar(200) DEFAULT NULL COMMENT '备注昵称',
-  `ifstar` char(1) NOT NULL DEFAULT 'n' COMMENT '星标好友',
+  `ifstar` char(1) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'n' COMMENT '星标关注',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_unq_userid_fuserid` (`userid`,`fuserid`),
   UNIQUE KEY `userid` (`userid`,`fuserid`),
@@ -210,6 +210,7 @@ CREATE TABLE `t_game` (
   `open_time` datetime DEFAULT NULL COMMENT '开球时间',
   `registration_deadline` datetime DEFAULT NULL COMMENT '报名截止时间',
   `game_status` varchar(20) DEFAULT 'init' COMMENT '赛事状态: init(初始), registering(报名中), registration_closed(报名截止), playing(进行中), finished(已结束), cancelled(已取消)',
+  `is_recommended` char(1) NOT NULL DEFAULT 'n' COMMENT '是否系统推荐: y/n',
   `top_n_ranking` int DEFAULT NULL COMMENT '取前N名成绩排行（团队赛制用）',
   `remark` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '' COMMENT '备注',
   `team_game_title` char(200) DEFAULT NULL COMMENT '比赛标题',
@@ -226,6 +227,8 @@ CREATE TABLE `t_game` (
   KEY `idx_match_format` (`match_format`),
   KEY `idx_game_status` (`game_status`),
   KEY `idx_is_public` (`is_public_registration`),
+  KEY `idx_is_recommended` (`is_recommended`),
+  KEY `idx_game_type_status_createtime` (`game_type`,`game_status`,`create_time`),
   FULLTEXT KEY `fulltext_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1339205 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -278,7 +281,8 @@ CREATE TABLE `t_game_group_user` (
   KEY `idx_grpid` (`groupid`),
   KEY `idx_userid` (`userid`),
   KEY `idx_userid_gameid` (`userid`,`gameid`),
-  KEY `idx_subteam_id` (`tag_id`)
+  KEY `idx_subteam_id` (`tag_id`),
+  KEY `idx_userid_gameid_addtime` (`userid`,`gameid`,`addtime`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1044 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -387,7 +391,7 @@ CREATE TABLE `t_game_spectator` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `game-spectator` (`game_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=454 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=476 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -419,7 +423,10 @@ CREATE TABLE `t_my_stared_games` (
   `gameid` int NOT NULL,
   `addtime` datetime DEFAULT NULL,
   `memo` char(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_user_game` (`userid`,`gameid`),
+  KEY `idx_userid` (`userid`),
+  KEY `idx_gameid` (`gameid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

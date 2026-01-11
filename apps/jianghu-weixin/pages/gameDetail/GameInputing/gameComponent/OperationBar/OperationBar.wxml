@@ -25,9 +25,10 @@
 
 <!-- 详细信息区域 -->
 <view class="game-details {{isExpanded ? 'expanded' : 'collapsed'}}">
+  <!-- 后端 MDetailGame.getGameDetail 返回的字段名 -->
   <view class="detail-row">
     <text class="detail-label">比赛名称:</text>
-    <text class="detail-value">{{gameData.name || '友谊赛'}}</text>
+    <text class="detail-value">{{gameData.game_name || '友谊赛'}}</text>
   </view>
   <view class="detail-row">
     <text class="detail-label">创建人:</text>
@@ -38,12 +39,12 @@
         mode="aspectFill"
         lazy-load="true"
       ></image>
-      <text class="creator-name">{{gameData.creator.nickname || gameData.creator.wx_nickname || '未知用户'}}</text>
+      <text class="creator-name">{{gameData.creator.nickname || '未知用户'}}</text>
     </view>
   </view>
   <view class="detail-row">
     <text class="detail-label">创建时间:</text>
-    <text class="detail-value">{{gameData.createTime || gameData.create_time || gameData.created_at || '2024-01-15 14:30'}}</text>
+    <text class="detail-value">{{gameData.create_time || ''}}</text>
   </view>
   <view class="detail-row">
     <text class="detail-label">球场:</text>
@@ -51,7 +52,7 @@
   </view>
   <view class="detail-row">
     <text class="detail-label">开球时间:</text>
-    <text class="detail-value">{{formatEuropeanDate(gameData.teeTime || gameData.tee_time || gameData.start_time || '2024-01-15 09:00')}}</text>
+    <text class="detail-value">{{formattedTeeTime || ''}}</text>
   </view>
 </view>
 

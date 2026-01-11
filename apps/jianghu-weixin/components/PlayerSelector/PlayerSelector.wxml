@@ -12,7 +12,8 @@
 					<image src="{{ image.imageUrl(item.avatar) }}" mode="aspectFill" class="avatar-image"></image>
 				</view>
 				<view class="player-info">
-					<text class="player-nickname">{{item.wx_nickname}}</text>
+					<!-- 统一使用 nickname 字段（t_user 表标准字段） -->
+					<text class="player-nickname">{{item.nickname}}</text>
 					<text class="player-id">ID: {{item.userid}}</text>
 					<text class="player-source">来源: {{joinTypeMap[item.join_type] || '未知来源'}}</text>
 				</view>

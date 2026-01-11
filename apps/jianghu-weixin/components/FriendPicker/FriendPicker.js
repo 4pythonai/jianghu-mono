@@ -329,9 +329,9 @@ Component({
                 return;
             }
 
+            // 后端 User/getFriendList 返回的好友数据使用 nickname 字段
             const filteredFriends = this.data.friends.filter(friend =>
                 friend.nickname?.toLowerCase().includes(keyword) ||
-                friend.wx_nickname?.toLowerCase().includes(keyword) ||
                 friend.userid?.toString().includes(keyword)
             );
 

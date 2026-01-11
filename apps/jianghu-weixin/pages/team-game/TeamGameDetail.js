@@ -157,8 +157,10 @@ Page({
      * 应用缓存数据（快速显示）
      */
     applyCachedData(cachedEvent) {
+        // cachedEvent 来自列表页，包含 extra_team_game_info（由 Events/getExtraTeamGameInfo 返回）
+        // extra_team_game_info 字段: team_game_title, team_avatar, team_name, teams
+        // cachedEvent 字段: game_name, course, game_start 等（由 MDetailGame.getGameDetail 返回）
         const teamGameInfo = cachedEvent.extra_team_game_info || {}
-        // 直接更新 store 的 eventDetail（临时方案）
         gameStore.eventDetail = {
             ...gameStore.eventDetail,
             title: teamGameInfo.team_game_title || cachedEvent.game_name || '未命名赛事',

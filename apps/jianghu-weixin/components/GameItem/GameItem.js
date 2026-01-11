@@ -114,12 +114,13 @@ Component({
                 if (!groupMap.has(groupid)) {
                     let groupName = '';
 
+                    // 后端 MDetailGame.getGroupsInfo 返回的分组信息使用 group_name 字段
                     if (gameData.groups && Array.isArray(gameData.groups)) {
                         const groupInfo = gameData.groups.find(g =>
                             String(g.groupid) === String(groupid)
                         );
                         if (groupInfo) {
-                            groupName = groupInfo.group_name || groupInfo.groupName || groupInfo.name;
+                            groupName = groupInfo.group_name || '';
                         }
                     }
 

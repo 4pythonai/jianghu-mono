@@ -59,8 +59,8 @@ class MDetailGame  extends CI_Model {
             'privacy_password' => $game_info['privacy_password'],
             'creatorid' => $game_info['creatorid'],
             'creator' => $creator,
-            'game_name' => $game_info['game_name'] ?: '',
-            'course' => $course_info['coursename'] ?: '',
+            'game_name' => $game_info['game_name'],
+            'course' => $course_info['coursename'],
             'game_status' => $game_info['game_status'],
             'players' => $players,
             'watchers_number' => 0, // 暂时设为0
@@ -358,8 +358,8 @@ class MDetailGame  extends CI_Model {
             foreach ($users_result->result_array() as $user) {
                 $users[] = [
                     'userid' => (int)$user['userid'],
-                    'nickname' => $user['wx_nickname'] ?: '',
-                    'avatar' => $user['avatar'] ?: '',
+                    'nickname' => $user['wx_nickname'],
+                    'avatar' => $user['avatar'],
                     'confirmed' => (int)$user['confirmed'],
                     'addtime' => $user['addtime']
                 ];

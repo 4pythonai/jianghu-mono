@@ -416,8 +416,13 @@ export const gameStore = observable({
             }
         }
 
+        // 后端 TeamGame/getTeamGameDetail 返回的字段:
+        // - name: 赛事名称 (t_game.name)
+        // - course_name: 球场名称 (join t_course)
+        // - team_name, team_avatar: 球队信息 (join t_team)
+        // - open_time: 开球时间
         this.eventDetail = {
-            title: data.team_game_title || data.name || '',
+            title: data.name || '',
             teamName: data.team_name || '',
             teamAvatar: data.team_avatar || '',
             teams: data.cross_teams || [],

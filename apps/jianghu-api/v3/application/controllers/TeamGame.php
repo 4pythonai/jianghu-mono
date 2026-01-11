@@ -149,10 +149,10 @@ class TeamGame extends MY_Controller {
     }
 
     /**
-     * 添加分队
+     * 添加TAG
      * @param int game_id 赛事ID
-     * @param string tag_name 分队名称
-     * @param string color 分队颜色（可选）
+     * @param string tag_name TAG名称
+     * @param string color TAG颜色（可选）
      */
     public function addGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
@@ -165,12 +165,12 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        // 检查赛制对分队数量的限制
+        // 检查赛制对TAG数量的限制
         $game = $this->MTeamGame->getTeamGame($game_id);
         if ($this->MTeamGame->isMatchPlay($game['match_format'])) {
             $tagCount = $this->MTeamGame->getTagsCount($game_id);
             if ($tagCount >= 2) {
-                echo json_encode(['code' => 400, 'message' => '比洞赛最多只能设置2个分队'], JSON_UNESCAPED_UNICODE);
+                echo json_encode(['code' => 400, 'message' => '比洞赛最多只能设置2个TAG'], JSON_UNESCAPED_UNICODE);
                 return;
             }
         }
@@ -183,26 +183,26 @@ class TeamGame extends MY_Controller {
 
         echo json_encode([
             'code' => 200,
-            'message' => '分队添加成功',
+            'message' => 'TAG添加成功',
             'data' => ['tag_id' => $tag_id]
         ], JSON_UNESCAPED_UNICODE);
     }
 
     /**
-     * 更新分队
-     * @param int tag_id 分队ID
-     * @param string tag_name 分队名称（可选）
-     * @param string color 分队颜色（可选）
+     * 更新TAG
+     * @param int tag_id TAGID
+     * @param string tag_name TAG名称（可选）
+     * @param string color TAG颜色（可选）
      */
     public function updateTeamGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $tag_id = $json_paras['tag_id'];
 
-        // 获取分队信息以验证权限
+        // 获取TAG信息以验证权限
         $tag = $this->MTeamGame->getTeamGameTag($tag_id);
         if (!$tag) {
-            echo json_encode(['code' => 404, 'message' => '分队不存在'], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code' => 404, 'message' => 'TAG不存在'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
@@ -213,22 +213,22 @@ class TeamGame extends MY_Controller {
 
         $this->MTeamGame->updateTeamGameTag($tag_id, $json_paras);
 
-        echo json_encode(['code' => 200, 'message' => '分队更新成功'], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['code' => 200, 'message' => 'TAG更新成功'], JSON_UNESCAPED_UNICODE);
     }
 
     /**
-     * 删除分队
-     * @param int tag_id 分队ID
+     * 删除TAG
+     * @param int tag_id TAGID
      */
     public function deleteGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $tag_id = $json_paras['tag_id'];
 
-        // 获取分队信息以验证权限
+        // 获取TAG信息以验证权限
         $tag = $this->MTeamGame->getTeamGameTag($tag_id);
         if (!$tag) {
-            echo json_encode(['code' => 404, 'message' => '分队不存在'], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code' => 404, 'message' => 'TAG不存在'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
@@ -239,7 +239,7 @@ class TeamGame extends MY_Controller {
 
         $this->MTeamGame->deleteGameTag($tag_id);
 
-        echo json_encode(['code' => 200, 'message' => '分队删除成功'], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['code' => 200, 'message' => 'TAG删除成功'], JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -252,7 +252,7 @@ class TeamGame extends MY_Controller {
 
         $tags = $this->MTeamGame->getGameTags($game_id);
 
-        // 获取每个分队的成员
+        // 获取每个TAG的成员
         foreach ($tags as &$tag) {
             $tag['members'] = $this->MTeamGame->getMembersByTag($tag['id']);
         }
@@ -268,7 +268,7 @@ class TeamGame extends MY_Controller {
     /**
      * 球员报名
      * @param int game_id 赛事ID
-     * @param int tag_id 分队ID（团队赛制时可选）
+     * @param int tag_id TAGID（团队赛制时可选）
      * @param string nickname 报名姓名（可选）
      * @param string gender 性别 male/female（可选）
      * @param string mobile 手机号（可选）
@@ -296,9 +296,9 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        // 如果是团队赛制，检查是否选择了分队
+        // 如果是团队赛制，检查是否选择了TAG
         if ($this->MTeamGame->requiresSettingTags($game['match_format']) && !$tag_id) {
-            echo json_encode(['code' => 400, 'message' => '团队赛制需要选择分队'], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code' => 400, 'message' => '团队赛制需要选择TAG'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
@@ -638,11 +638,11 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        // 如果是团队赛制，检查是否已设置分队
+        // 如果是团队赛制，检查是否已设置TAG
         if ($this->MTeamGame->requiresSettingTags($game['match_format'])) {
             $tagCount = $this->MTeamGame->getTagsCount($game_id);
             if ($tagCount < 2) {
-                echo json_encode(['code' => 400, 'message' => '团队赛制需要先设置至少2个分队'], JSON_UNESCAPED_UNICODE);
+                echo json_encode(['code' => 400, 'message' => '团队赛制需要先设置至少2个TAG'], JSON_UNESCAPED_UNICODE);
                 return;
             }
         }
@@ -821,7 +821,7 @@ class TeamGame extends MY_Controller {
     }
 
     /**
-     * 获取分队成绩
+     * 获取TAG成绩
      * @param int game_id 赛事ID
      */
     public function getScoresUnderTag() {
@@ -884,9 +884,9 @@ class TeamGame extends MY_Controller {
     }
 
     /**
-     * 修改我的分队
+     * 修改我的TAG
      * @param int game_id 赛事ID
-     * @param int tag_id 新的分队ID
+     * @param int tag_id 新的TAGID
      */
     public function changeMyTagInGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
@@ -897,7 +897,7 @@ class TeamGame extends MY_Controller {
         // 检查赛事状态
         $game = $this->MTeamGame->getTeamGame($game_id);
         if ($game['game_status'] != 'registering') {
-            echo json_encode(['code' => 400, 'message' => '当前赛事不在报名阶段，无法修改分队'], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code' => 400, 'message' => '当前赛事不在报名阶段，无法修改TAG'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
@@ -912,10 +912,10 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        // 更新分队成员表
+        // 更新TAG成员表
         $this->MTeamGame->addMemberToTag($tag_id, $userid, $game_id);
 
-        echo json_encode(['code' => 200, 'message' => '分队修改成功'], JSON_UNESCAPED_UNICODE);
+        echo json_encode(['code' => 200, 'message' => 'TAG修改成功'], JSON_UNESCAPED_UNICODE);
     }
 
     // ==================== 队际赛 API ====================
@@ -1071,7 +1071,7 @@ class TeamGame extends MY_Controller {
     /**
      * 队际赛报名（使用统一的 tag_id）
      * @param int game_id 赛事ID
-     * @param int tag_id 选择代表的分队ID（t_team_game_tags.id）
+     * @param int tag_id 选择代表的TAGID（t_team_game_tags.id）
      * @param int user_id 被报名用户ID（可选，默认为当前用户，替好友报名时使用）
      * @param string remark 报名备注（可选）
      */

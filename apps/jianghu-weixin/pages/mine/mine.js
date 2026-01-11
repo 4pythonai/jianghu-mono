@@ -98,7 +98,8 @@ Page({
       name: 'avatar',
       loadingTitle: '上传头像中...'
     }).then(response => {
-      const avatarUrl = response.data?.avatar || response.data?.avatar_url || ''
+      // 后端 User/uploadAvatar 返回 data.avatar 字段
+      const avatarUrl = response.data?.avatar || ''
 
       const updatedUser = { ...app.globalData.userInfo, avatar: avatarUrl }
       const updatedStatus = { ...app.globalData.profileStatus, hasAvatar: true }

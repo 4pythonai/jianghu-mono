@@ -66,6 +66,9 @@ Page({
             needRedBlueDiv: GambleMetaConfig.needRedBlueDiv(existingRuntimeConfig.gambleSysName),
             needsStroking: needsStroking,
             players: existingRuntimeConfig.players,
+            // 后端 t_gamble_x_runtime 表字段:
+            // - bootstrap_order: JSON字符串 (前端通过 gambleUtils.js 解析为 bootstrap_order_parsed)
+            // - playerIndicatorConfig: JSON字符串 (前端通过 gambleUtils.js 解析为 val8421_config_parsed)
             runtimeConfig: {
                 gameid: existingRuntimeConfig.gameid,
                 groupid: existingRuntimeConfig.groupid,
@@ -73,8 +76,10 @@ Page({
                 gambleSysName: existingRuntimeConfig.gambleSysName,
                 gambleUserName: existingRuntimeConfig.gambleUserName,
                 red_blue_config: existingRuntimeConfig.red_blue_config || '4_固拉',
+                // 优先使用前端解析后的数组，否则使用原始字段
                 bootstrap_order: existingRuntimeConfig.bootstrap_order_parsed || existingRuntimeConfig.bootstrap_order || [],
                 ranking_tie_resolve_config: existingRuntimeConfig.ranking_tie_resolve_config || 'score.reverse_score',
+                // 优先使用前端解析后的对象，否则使用原始字段
                 playerIndicatorConfig: existingRuntimeConfig.val8421_config_parsed || existingRuntimeConfig.playerIndicatorConfig || {},
                 stroking_config: existingRuntimeConfig.stroking_config || []
             }

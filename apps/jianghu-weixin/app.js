@@ -433,11 +433,13 @@ App({
             }
         }
 
+        // 后端 Weixin/login, Weixin/getUserProfile, Weixin/bindPhoneNumber 返回的字段:
+        // - user: 用户信息对象
+        // - profile_status: 用户资料状态对象
+        // - need_bind_phone: 是否需要绑定手机
         const user = payload.user || payload || {}
-        const profileStatus = payload.profileStatus || payload.profile_status || null
-        const needBindPhone = payload.needBindPhone !== undefined
-            ? payload.needBindPhone
-            : payload.need_bind_phone
+        const profileStatus = payload.profile_status || null
+        const needBindPhone = payload.need_bind_phone
 
         return {
             user,
@@ -448,23 +450,18 @@ App({
 
     normalizeUserInfo(userInfo) {
         // 标准化用户信息，确保字段名与数据库一致
-        // 数据库 t_user: id, nickname, wx_nickname, avatar, gender
+        // 后端 MUser.getUserbyId 返回的 t_user 表字段:
+        // - id: 用户ID
+        // - nickname: 昵称
+        // - avatar: 头像URL
+        // - gender: 性别 ('male'/'female'/'unknown')
+        // - mobile: 手机号
         const user = userInfo ? { ...userInfo } : {}
 
-        // 统一昵称字段: 优先使用 nickname，其次 wx_nickname
-        // 兼容微信 API 返回的 nickName (驼峰)
+        // 确保 nickname 存在
+        // 注意: 微信 wx.getUserProfile API 返回 nickName (驼峰)，需要转换
         if (!user.nickname) {
-            user.nickname = user.nickName || user.wx_nickname || ''
-        }
-
-        // 确保 wx_nickname 存在
-        if (!user.wx_nickname && user.nickname) {
-            user.wx_nickname = user.nickname
-        }
-
-        // 保留 nickName 以兼容现有代码（后续可移除）
-        if (!user.nickName && user.nickname) {
-            user.nickName = user.nickname
+            user.nickname = user.nickName || ''
         }
 
         // 统一性别字段: 'male', 'female', 'unknown'
@@ -472,7 +469,7 @@ App({
             user.gender = 'unknown'
         }
 
-        // 统一头像字段: 数据库是 avatar，微信 API 返回 avatarUrl
+        // 统一头像字段: 微信 API 返回 avatarUrl，后端使用 avatar
         if (!user.avatar && user.avatarUrl) {
             user.avatar = user.avatarUrl
         }
