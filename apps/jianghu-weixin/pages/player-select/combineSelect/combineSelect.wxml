@@ -1,44 +1,46 @@
 <wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="老牌组合" />
 <view class="page-container">
-	<view class="header">
-		<text class="title">老牌组合</text>
-		<text class="subtitle">为第{{groupIndex + 1}}组玩家{{slotIndex + 1}}选择</text>
-	</view>
-	<view class="content">
-		<!-- 组合列表 -->
-		<view wx:if="{{ combinations.length > 0 }}" class="combinations-list">
-			<view
-				wx:for="{{ combinations }}"
-				wx:key="index"
-				class="combination-item {{ selectedCombination === index ? 'selected' : '' }}"
-				data-index="{{ index }}"
-				bindtap="selectCombination"
-			>
-				<view class="combination-header">
-					<text class="combination-title">组合 {{index + 1}}</text>
-					<text class="member-count">{{item.length}}人</text>
-				</view>
-				<view class="members-grid">
-					<view wx:for="{{ item }}" wx:for-item="member" wx:key="userid" class="member-card">
-						<image class="member-avatar" src="{{ image.imageUrl(member.avatar) || '/images/default-avatar.png' }}" mode="aspectFill" lazy-load="true"></image>
-						<view class="member-info">
-							<text class="member-name">{{member.nickname}}</text>
-							<text class="member-handicap">杆数: {{member.handicap}}</text>
-						</view>
-					</view>
-				</view>
-				<!-- 选中状态指示器 -->
-				<view wx:if="{{ selectedCombination === index }}" class="selected-indicator">
-					<text class="selected-text">✓</text>
-				</view>
-			</view>
-		</view>
-		<!-- 空状态 -->
-		<view wx:else class="empty-state">
-			<view class="empty-icon">🏌️‍♂️</view>
-			<text class="empty-text">暂无老牌组合</text>
-			<text class="empty-desc">您还没有建立过老牌组合</text>
-		</view>
-	</view>
+  <view class="header"></view>
+  <view class="content">
+    <!-- 组合列表 -->
+    <view wx:if="{{ combinations.length > 0 }}" class="combinations-list">
+      <view
+        wx:for="{{ combinations }}"
+        wx:key="index"
+        class="combination-item {{ selectedCombination === index ? 'selected' : '' }}"
+        data-index="{{ index }}"
+        bindtap="selectCombination"
+      >
+        <view class="combination-header">
+          <text class="combination-title">组合 {{index + 1}}</text>
+          <text class="member-count">{{item.length}}人</text>
+        </view>
+        <view class="members-grid">
+          <view wx:for="{{ item }}" wx:for-item="member" wx:key="userid" class="member-card">
+            <image
+              class="member-avatar"
+              src="{{ image.imageUrl(member.avatar) || '/images/default-avatar.png' }}"
+              mode="aspectFill"
+              lazy-load="true"
+            ></image>
+            <view class="member-info">
+              <text class="member-name">{{member.nickname}}</text>
+              <text class="member-handicap">杆数: {{member.handicap}}</text>
+            </view>
+          </view>
+        </view>
+        <!-- 选中状态指示器 -->
+        <view wx:if="{{ selectedCombination === index }}" class="selected-indicator">
+          <text class="selected-text">✓</text>
+        </view>
+      </view>
+    </view>
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <view class="empty-icon">🏌️‍♂️</view>
+      <text class="empty-text">暂无老牌组合</text>
+      <text class="empty-desc">您还没有建立过老牌组合</text>
+    </view>
+  </view>
 </view>

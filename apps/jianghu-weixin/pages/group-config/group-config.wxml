@@ -1,4 +1,3 @@
-<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="{{groupName || '分组配置'}}" bind:back="handleBack" />
 
 <view class="page-container" style="padding-top: {{navBarHeight}}px;">
@@ -9,13 +8,14 @@
       <!-- 已选球员卡片 -->
       <view wx:for="{{selectedPlayers}}" wx:key="id" class="player-card selected">
         <view class="remove-btn" bindtap="onRemovePlayer" data-id="{{item.id}}">×</view>
-        <image
-          class="player-avatar"
-          src="{{image.imageUrl(item.avatar) || '/assets/images/default-avatar.png'}}"
-          mode="aspectFill"
+        <PlayerAvatar
+          avatar="{{item.avatar}}"
+          name="{{item.name}}"
+          teamName="{{item.teamName}}"
+          userId="{{item.user_id}}"
+          size="small"
+          showTeam="{{true}}"
         />
-        <text class="player-name">{{item.name}}</text>
-        <text class="player-team">{{item.teamName}}</text>
       </view>
 
       <!-- 空位槽（补足4个） -->
@@ -63,10 +63,12 @@
         >
           <text wx:if="{{item.isSelected}}">✓</text>
         </view>
-        <image
-          class="player-avatar"
-          src="{{image.imageUrl(item.avatar) || '/assets/images/default-avatar.png'}}"
-          mode="aspectFill"
+        <PlayerAvatar
+          avatar="{{item.avatar}}"
+          userId="{{item.user_id}}"
+          avatarOnly="{{true}}"
+          size="small"
+          clickable="{{false}}"
         />
         <text class="player-name">{{item.name}}</text>
       </view>

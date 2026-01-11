@@ -1,19 +1,7 @@
 <view class="container">
   <view class="menu-container">
     <view class="menu-items">
-      <view class="marker-point point1" bindtap="handleMenuClick" data-type="moreCreate">
-        <view class="menu-item">
-          <image
-            class="menu-icon"
-            src="/images/vectors/more.png"
-            mode="aspectFit"
-            binderror="onImageError"
-            data-img="more"
-          ></image>
-          <text>更多创建</text>
-        </view>
-      </view>
-      <view class="marker-point point2" bindtap="handleMenuClick" data-type="commonCreate">
+      <view class="marker-point point1" bindtap="handleMenuClick" data-type="commonCreate">
         <view class="menu-item">
           <image
             class="menu-icon"
@@ -25,7 +13,7 @@
           <text>普通创建</text>
         </view>
       </view>
-      <view class="marker-point point3" bindtap="handleMenuClick" data-type="quickCreate">
+      <view class="marker-point point2" bindtap="handleMenuClick" data-type="quickCreate">
         <view class="menu-item">
           <image
             class="menu-icon"
@@ -37,7 +25,7 @@
           <text>快速创建</text>
         </view>
       </view>
-      <view class="marker-point point4" bindtap="handleMenuClick" data-type="teamCreate">
+      <view class="marker-point point3" bindtap="handleMenuClick" data-type="teamCreate">
         <view class="menu-item">
           <image
             class="menu-icon"
@@ -49,7 +37,7 @@
           <text>队内赛</text>
         </view>
       </view>
-      <view class="marker-point point5" bindtap="handleMenuClick" data-type="crossTeamCreate">
+      <view class="marker-point point4" bindtap="handleMenuClick" data-type="crossTeamCreate">
         <view class="menu-item">
           <image
             class="menu-icon"

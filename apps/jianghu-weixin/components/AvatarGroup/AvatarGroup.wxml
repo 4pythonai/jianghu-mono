@@ -1,6 +1,14 @@
 <view class="avatar-group-container {{showMode}}">
-  <block wx:for="{{showAvatars}}" wx:key="index">
-    <image src="{{item}}" class="avatar avatar-{{index}}" style="z-index: {{999 - index}};" />
+  <block wx:for="{{showPlayers}}" wx:key="index">
+    <view class="avatar-wrapper avatar-{{index}}" style="z-index: {{999 - index}};">
+      <PlayerAvatar
+        avatar="{{item.avatar}}"
+        userId="{{item.id}}"
+        clickable="{{clickable}}"
+        avatarOnly="{{true}}"
+        size="mini"
+      />
+    </view>
   </block>
   <view class="more-tip" wx:if="{{moreCount > 0}}">+{{moreCount}}</view>
 </view>

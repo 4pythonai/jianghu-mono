@@ -4,32 +4,44 @@ const { imageUrl } = require('../../utils/image');
 
 Component({
     properties: {
+        /** 球员列表 [{id, avatar, name, ...}] */
         players: {
             type: Array,
             value: []
         },
+        /** 最多显示几个头像 */
         maxShow: {
             type: Number,
             value: 4
         },
+        /** 显示模式 */
         showMode: {
             type: String,
             value: 'group'
+        },
+        /** 是否可点击跳转用户主页 */
+        clickable: {
+            type: Boolean,
+            value: true
         }
     },
 
     data: {
-        showAvatars: [],
+        showPlayers: [],
         moreCount: 0
     },
 
     observers: {
         'players, maxShow': function (players, maxShow) {
-            const avatarUrls = players.map(p => imageUrl(p.avatar))
-            const showAvatars = avatarUrls.slice(0, maxShow)
-            const moreCount = avatarUrls.length - maxShow
+            // 保留完整的 player 对象，包含 id 用于跳转
+            const showPlayers = players.slice(0, maxShow).map(p => ({
+                id: p.userid,
+                avatar: imageUrl(p.avatar),
+                name: p.nickname
+            }))
+            const moreCount = players.length - maxShow
             this.setData({
-                showAvatars,
+                showPlayers,
                 moreCount: moreCount > 0 ? moreCount : 0
             })
         }

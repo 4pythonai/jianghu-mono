@@ -1,6 +1,7 @@
 {
 	"usingComponents": {
-		"CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+		"CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+		"PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
 	},
 	"pages": [
 		"pages/live/live",
@@ -54,7 +55,8 @@
 		"pages/create-team/create-team",
 		"pages/team-game/TeamGameDetail",
 		"pages/group-config/group-config",
-		"pages/spectators/spectators"
+		"pages/spectators/spectators",
+		"pages/user-profile/user-profile"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

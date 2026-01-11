@@ -1,4 +1,3 @@
-<wxs src="/utils/image.wxs" module="img" />
 <view class="gamble-result-table">
   <view class="table-wrapper">
     <!-- 表头 -->
@@ -14,13 +13,14 @@
         wx:for-index="index"
       >
         <view class="player-info">
-          <image
-            wx:if="{{player.cover}}"
-            class="player-avatar"
-            src="{{img.imageUrl(player.cover)}}"
-            mode="aspectFill"
-          ></image>
-          <view class="player-name">{{player.nickname}}</view>
+          <PlayerAvatar
+            avatar="{{player.cover}}"
+            name="{{player.nickname}}"
+            userId="{{player.userid}}"
+            size="xs"
+            shape="round"
+            showTeam="{{false}}"
+          />
         </view>
       </view>
     </view>

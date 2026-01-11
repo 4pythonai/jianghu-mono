@@ -64,12 +64,15 @@
               </view>
               <view wx:else class="unselected-circle"></view>
             </view>
-            <image
-              class="friend-avatar"
-              src="{{image.imageUrl(item.avatar) || '/images/default-avatar.png'}}"
-              mode="aspectFill"
-              lazy-load="true"
-            ></image>
+            <view class="friend-avatar-wrap">
+              <PlayerAvatar
+                avatar="{{image.imageUrl(item.avatar)}}"
+                userId="{{item.userid}}"
+                avatarOnly="{{true}}"
+                size="small"
+                clickable="{{false}}"
+              />
+            </view>
             <view class="friend-info">
               <text class="friend-name">{{item.nickname || '未知好友'}}</text>
               <text class="friend-id">ID: {{item.userid}}</text>

@@ -109,6 +109,7 @@
             index="{{item.seq}}"
             avatar="{{item.avatar}}"
             name="{{item.name}}"
+            userId="{{item.user_id}}"
             handicap="{{item.handicap}}"
           />
         </view>

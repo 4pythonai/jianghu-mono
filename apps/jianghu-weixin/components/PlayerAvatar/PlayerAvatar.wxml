@@ -1,4 +1,4 @@
-<view class="player-avatar size-{{size}} {{selectable ? 'selectable' : ''}} {{selected ? 'selected' : ''}}" bindtap="onTap">
+<view class="player-avatar size-{{size}} shape-{{shape}} {{avatarOnly ? 'avatar-only' : ''}} {{selectable ? 'selectable' : ''}} {{selected ? 'selected' : ''}} {{clickable && userId ? 'clickable' : ''}}" bindtap="onTap">
     <!-- 选择框（可选模式） -->
     <view wx:if="{{selectable}}" class="checkbox {{selected ? 'checked' : ''}}">
         <view wx:if="{{selected}}" class="check-icon">✓</view>
@@ -13,12 +13,12 @@
         />
     </view>
 
-    <!-- 名字 + 性别 -->
-    <view wx:if="{{showName}}" class="name-row">
+    <!-- 名字 + 性别（非纯头像模式） -->
+    <view wx:if="{{!avatarOnly && showName}}" class="name-row">
         <text class="player-name">{{name || '未知'}}</text>
         <text class="gender-icon {{gender}}">{{gender === 'male' ? '♂' : '♀'}}</text>
     </view>
 
-    <!-- 球队名称 -->
-    <text wx:if="{{showTeam && teamName}}" class="team-name">{{teamName}}</text>
+    <!-- 球队名称（非纯头像模式） -->
+    <text wx:if="{{!avatarOnly && showTeam && teamName}}" class="team-name">{{teamName}}</text>
 </view>

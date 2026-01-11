@@ -1,17 +1,30 @@
 /* 球员头像容器 */
 .player-avatar {
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     align-items: center;
-    gap: 8rpx;
+    gap: 4rpx;
     position: relative;
 }
 
-.player-avatar.selectable {
+/* 纯头像模式：紧凑布局 */
+.player-avatar.avatar-only {
+    gap: 0;
+}
+
+/* xs 尺寸：更紧凑的名字样式 */
+.size-xs .player-name {
+    font-size: 20rpx;
+    max-width: 64rpx;
+}
+
+.player-avatar.selectable,
+.player-avatar.clickable {
     cursor: pointer;
 }
 
-.player-avatar.selectable:active {
+.player-avatar.selectable:active,
+.player-avatar.clickable:active {
     opacity: 0.8;
 }
 
@@ -50,6 +63,16 @@
 }
 
 /* 头像尺寸 */
+.size-mini .avatar-wrapper {
+    width: 56rpx;
+    height: 56rpx;
+}
+
+.size-xs .avatar-wrapper {
+    width: 64rpx;
+    height: 64rpx;
+}
+
 .size-small .avatar-wrapper {
     width: 80rpx;
     height: 80rpx;
@@ -63,6 +86,11 @@
 .size-large .avatar-wrapper {
     width: 120rpx;
     height: 120rpx;
+}
+
+/* 圆形头像（优先级高于尺寸） */
+.shape-round .avatar-wrapper {
+    border-radius: 50%;
 }
 
 .avatar-img {

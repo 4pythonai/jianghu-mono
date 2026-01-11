@@ -84,6 +84,12 @@ class MUser  extends CI_Model {
     $this->db->join('t_user u', 'f.fuserid = u.id');
     $this->db->where('f.userid', $userid);
     $friends = $this->db->get()->result_array();
+
+    // 为前端添加 nickname 字段：优先使用备注名，否则使用微信昵称
+    foreach ($friends as &$friend) {
+      $friend['nickname'] = !empty($friend['remark_name']) ? $friend['remark_name'] : $friend['wx_nickname'];
+    }
+
     return $friends;
   }
 

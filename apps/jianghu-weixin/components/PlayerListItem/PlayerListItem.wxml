@@ -10,10 +10,11 @@
         <view wx:if="{{paid}}" class="paid-badge">
             <text class="badge-text">付</text>
         </view>
-        <image
-            class="player-avatar"
-            src="{{avatar || defaultAvatar}}"
-            mode="aspectFill"
+        <PlayerAvatar
+            avatar="{{avatar}}"
+            userId="{{userId}}"
+            avatarOnly="{{true}}"
+            size="small"
         />
     </view>
 

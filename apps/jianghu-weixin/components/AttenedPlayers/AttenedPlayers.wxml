@@ -2,10 +2,11 @@
 <view class="attened-players-container" wx:if="{{displayPlayers.length > 0}}">
   <view wx:for="{{displayPlayers}}" wx:key="userid" class="player-item">
     <view class="avatar-wrapper">
-      <image
-        class="player-avatar"
-        src="{{image.imageUrl(item.avatar) || '/images/default-avatar.png'}}"
-        mode="aspectFill"
+      <PlayerAvatar
+        avatar="{{image.imageUrl(item.avatar)}}"
+        userId="{{item.userid}}"
+        avatarOnly="{{true}}"
+        size="small"
       />
       <image
         wx:if="{{item.showDelete === 'y'}}"

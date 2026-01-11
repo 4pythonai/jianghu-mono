@@ -19,6 +19,11 @@ Component({
             type: String,
             value: ''
         },
+        /** 用户ID，用于点击跳转 */
+        userId: {
+            type: Number,
+            value: 0
+        },
         /** 江湖差点 */
         handicap: {
             type: null,

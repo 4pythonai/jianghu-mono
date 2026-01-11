@@ -9,6 +9,8 @@
 	min-height: auto;
 	display: block;
 	box-shadow: none;
+	border-radius: 0;
+	border: none;
 }
 
 /* 移除loading相关样式, 因为API统一管理 */
