@@ -949,8 +949,8 @@ class MTeamGame extends CI_Model {
             }
 
             // 检查是否有至少两个不同的分队
-            $uniqueSubteams = array_unique($gameTagsIds);
-            if (count($uniqueSubteams) < 2) {
+            $uniqueTagss = array_unique($gameTagsIds);
+            if (count($uniqueTagss) < 2) {
                 $groupName = $group['group_name'] ?? '第' . ($index + 1) . '组';
                 $errors[] = $groupName . ' 必须包含来自两个不同球队的球员';
             }

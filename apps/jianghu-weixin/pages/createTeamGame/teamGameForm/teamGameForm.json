@@ -4,7 +4,6 @@
     "usingComponents": {
         "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
         "TimePicker": "/components/TimePicker/time-picker",
-        "SubteamEditor": "/components/SubteamEditor/SubteamEditor"
+        "TagForTeamEditor": "/components/TagForTeamEditor/TagForTeamEditor"
     }
 }
-

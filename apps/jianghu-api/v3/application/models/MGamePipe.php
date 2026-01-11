@@ -21,7 +21,7 @@ class MGamePipe extends CI_Model implements StageInterface {
 
     private function getStarFriends() {
         $_tmpuserid = $this->payload['userid'];
-        $sql = "SELECT * FROM t_friend WHERE userid  = $_tmpuserid  and ifstar = 'y' ";
+        $sql = "SELECT * FROM t_follow WHERE userid  = $_tmpuserid  and ifstar = 'y' ";
         $rows = $this->db->query($sql)->result_array();
         $this->payload['star_friends'] =  $rows;
     }

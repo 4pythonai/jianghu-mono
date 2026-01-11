@@ -30,7 +30,7 @@
         class="tab-item {{currentTab === 0 ? 'active' : ''}}"
         bindtap="switchTab"
         data-index="0"
-      >可报名赛事</view>
+      >赛事招募</view>
       <view
         class="tab-item {{currentTab === 1 ? 'active' : ''}}"
         bindtap="switchTab"

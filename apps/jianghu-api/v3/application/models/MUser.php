@@ -80,7 +80,7 @@ class MUser  extends CI_Model {
 
   public function getFriends($userid) {
     $this->db->select("u.wx_nickname, u.avatar, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
-    $this->db->from('t_friend f');
+    $this->db->from('t_follow f');
     $this->db->join('t_user u', 'f.fuserid = u.id');
     $this->db->where('f.userid', $userid);
     $friends = $this->db->get()->result_array();
