@@ -7,7 +7,7 @@
     flex-direction: column;
     min-height: 100vh;
     background-color: #f5f5f5;
-    padding-top: 88rpx;
+    /* padding-top 由 inline style 动态设置 */
     padding-bottom: 140rpx;
 }
 

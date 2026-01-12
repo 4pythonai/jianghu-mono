@@ -3,7 +3,7 @@
   支持搜索、多选球队，选择时设置球队简称
 -->
 <wxs module="img" src="../../utils/image.wxs"></wxs>
-<view class="page-container">
+<view class="page-container" style="padding-top: {{navBarHeight}}px;">
   <!-- 自定义导航栏 -->
   <CustomNavBar title="选择参赛球队" bind:back="handleBack" />
 

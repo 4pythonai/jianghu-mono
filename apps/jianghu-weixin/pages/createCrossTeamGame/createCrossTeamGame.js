@@ -3,9 +3,11 @@
  * 支持多选球队，选择时设置球队简称
  */
 const app = getApp()
+import { getNavBarHeight } from '@/utils/systemInfo'
 
 Page({
     data: {
+        navBarHeight: 88,       // 导航栏高度
         loading: true,
         searchKeyword: '',
         allTeams: [],           // 所有可选的球队列表
@@ -20,6 +22,8 @@ Page({
     },
 
     async onLoad() {
+        const navBarHeight = getNavBarHeight()
+        this.setData({ navBarHeight })
         await this.loadAllTeams()
     },
 
@@ -41,15 +45,27 @@ Page({
         this.setData({ loading: true })
 
         try {
-            // 先加载用户所属的球队
-            const myTeamsResult = await app.api.team.getMyTeams()
-            let teams = []
+            // 并行加载：用户所属球队 + 所有球队
+            const [myTeamsResult, allTeamsResult] = await Promise.all([
+                app.api.team.getMyTeams(),
+                app.api.team.searchTeams({ keyword: '' })
+            ])
 
+            // 获取用户所属球队的 ID 集合
+            const myTeamIds = new Set()
             if (myTeamsResult.code === 200) {
-                teams = (myTeamsResult.teams || []).map(t => ({
+                (myTeamsResult.teams || []).forEach(t => myTeamIds.add(t.id))
+            }
+
+            // 处理所有球队，标记用户所属的球队
+            let teams = []
+            if (allTeamsResult.code === 200) {
+                teams = (allTeamsResult.teams || []).map(t => ({
                     ...t,
-                    isMember: true
+                    isMember: myTeamIds.has(t.id)
                 }))
+                // 排序：用户所属球队优先
+                teams.sort((a, b) => (b.isMember ? 1 : 0) - (a.isMember ? 1 : 0))
             }
 
             const teamsWithState = this.updateTeamsSelectedState(teams, this.data.selectedTeams)
@@ -81,49 +97,10 @@ Page({
     /**
      * 搜索球队
      */
-    async onSearch() {
+    onSearch() {
         const keyword = this.data.searchKeyword.trim()
-        if (!keyword) {
-            this.filterTeams('')
-            return
-        }
-
-        this.setData({ loading: true })
-
-        try {
-            const result = await app.api.team.searchTeams({ keyword, limit: 50 })
-
-            if (result.code === 200) {
-                const searchResults = (result.teams || []).map(t => ({
-                    ...t,
-                    isMember: false
-                }))
-
-                // 合并用户所属球队和搜索结果，去重
-                const myTeams = this.data.allTeams.filter(t => t.isMember)
-                const mergedTeams = [...myTeams]
-
-                searchResults.forEach(st => {
-                    if (!mergedTeams.find(t => t.id === st.id)) {
-                        mergedTeams.push(st)
-                    }
-                })
-
-                const filtered = mergedTeams.filter(t =>
-                    t.team_name.toLowerCase().includes(keyword.toLowerCase())
-                )
-                const filteredWithState = this.updateTeamsSelectedState(filtered, this.data.selectedTeams)
-
-                this.setData({
-                    allTeams: mergedTeams,
-                    filteredTeams: filteredWithState,
-                    loading: false
-                })
-            }
-        } catch (error) {
-            console.error('搜索球队失败:', error)
-            this.setData({ loading: false })
-        }
+        // 直接使用本地过滤，因为 allTeams 已包含所有球队
+        this.filterTeams(keyword)
     },
 
     /**

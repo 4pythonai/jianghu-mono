@@ -543,12 +543,17 @@ class MTeam extends CI_Model {
 
     /**
      * 搜索球队
+     * @param string $keyword 搜索关键词，为空时返回所有球队
+     * @param int $limit 返回数量限制
      */
-    public function searchTeams($keyword, $limit = 20) {
+    public function searchTeams($keyword = '', $limit = 100) {
         $this->db->select('t.*, (SELECT COUNT(*) FROM t_team_member tm WHERE tm.team_id = t.id AND tm.status = "active") as member_count');
         $this->db->from('t_team t');
-        $this->db->like('t.team_name', $keyword);
+        if (!empty($keyword)) {
+            $this->db->like('t.team_name', $keyword);
+        }
         $this->db->where('t.status', 'active');
+        $this->db->order_by('t.id', 'DESC');
         $this->db->limit($limit);
 
         $teams = $this->db->get()->result_array();

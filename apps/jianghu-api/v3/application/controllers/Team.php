@@ -210,16 +210,13 @@ class Team extends MY_Controller {
     /**
      * 搜索球队
      * POST /Team/searchTeams
-     * 参数: keyword
+     * 参数: keyword (可选，为空时返回所有球队)
      */
     public function searchTeams() {
         $params = json_decode(file_get_contents('php://input'), true);
 
-        if (empty($params['keyword'])) {
-            return $this->error('请输入搜索关键词');
-        }
-
-        $teams = $this->MTeam->searchTeams($params['keyword']);
+        $keyword = isset($params['keyword']) ? trim($params['keyword']) : '';
+        $teams = $this->MTeam->searchTeams($keyword);
         $this->success(['teams' => $teams]);
     }
 
