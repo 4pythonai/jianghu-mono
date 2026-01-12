@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -48,6 +50,31 @@ func normalizeControllerName(name string) string {
 
 // ParseJSDirectory parses all .js files in a directory
 func ParseJSDirectory(dir string) ([]types.Endpoint, error) {
-	// Will be implemented in next step
-	return nil, nil
+	var allEndpoints []types.Endpoint
+
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".js") {
+			continue
+		}
+
+		filePath := filepath.Join(dir, entry.Name())
+		content, err := os.ReadFile(filePath)
+		if err != nil {
+			return nil, err
+		}
+
+		endpoints, err := ParseJSEndpoints(string(content), entry.Name())
+		if err != nil {
+			return nil, err
+		}
+
+		allEndpoints = append(allEndpoints, endpoints...)
+	}
+
+	return allEndpoints, nil
 }
