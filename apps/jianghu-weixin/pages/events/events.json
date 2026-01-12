@@ -2,6 +2,6 @@
     "navigationBarTitleText": "赛事",
     "enablePullDownRefresh": true,
     "usingComponents": {
-        "team-game-item": "/components/TeamGameItem/TeamGameItem"
+        "GameLists": "/components/GameLists/GameLists"
     }
 }

@@ -46,20 +46,9 @@
         <text class="loading-text">加载中...</text>
       </view>
 
-      <!-- 空状态 -->
-      <view class="empty-wrapper" wx:elif="{{isEmpty}}">
-        <text class="empty-text">{{currentTab === 0 ? '暂无可报名赛事' : '您还没有报名任何赛事'}}</text>
-      </view>
-
       <!-- 赛事列表 -->
       <view class="event-list" wx:else>
-        <team-game-item
-          wx:for="{{eventList}}"
-          wx:key="gameid"
-          event="{{item}}"
-          bindtap="onEventTap"
-          data-event="{{item}}"
-        />
+        <GameLists games="{{eventList}}" showEmpty="{{true}}" />
       </view>
     </view>
   </view>

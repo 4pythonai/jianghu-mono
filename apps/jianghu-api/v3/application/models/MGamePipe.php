@@ -2,11 +2,20 @@
 
 use League\Pipeline\StageInterface;
 
+/**
+ * MGamePipe - 我的赛事数据管道
+ * 
+ * 用于获取"我的"Feed列表，包含三部分数据：
+ * 1. "我"参与的所有赛事（即实际参与打球的）
+ * 2. "我"未参与，但是"星标关注"对象参与打球的所有赛事
+ * 3. "我"未参与，但是打了星标的所有赛事
+ */
 class MGamePipe extends CI_Model implements StageInterface {
 
     public $payload = [
         'userid' => null,
         'star_friends' => [],
+        'allgames' => [],
     ];
 
     public function __invoke($cfg) {
@@ -15,17 +24,89 @@ class MGamePipe extends CI_Model implements StageInterface {
 
     public function init($config) {
         $this->payload['userid'] = $config['userid'];
+        $this->payload['allgames'] = [];
         $this->getStarFriends();
     }
 
-
+    /**
+     * 获取用户的星标关注列表
+     * 星标关注：用户关注列表中标记了"特别关注"的人
+     */
     private function getStarFriends() {
         $_tmpuserid = $this->payload['userid'];
-        $sql = "SELECT * FROM t_follow WHERE userid  = $_tmpuserid  and ifstar = 'y' ";
+        $sql = "SELECT * FROM t_follow WHERE userid = $_tmpuserid AND ifstar = 'y'";
         $rows = $this->db->query($sql)->result_array();
-        $this->payload['star_friends'] =  $rows;
+        $this->payload['star_friends'] = $rows;
     }
 
+    /**
+     * 第一部分："我"参与的所有赛事
+     * 查询 t_game_group_user 表，找出用户实际参与打球的比赛
+     * 状态筛选：playing（正在进行）或 finished（已结束）
+     */
+    public function getMyGames() {
+        $_tmpuserid = $this->payload['userid'];
+        
+        if (!$_tmpuserid) {
+            return;
+        }
+
+        $sql = "SELECT DISTINCT g.* 
+                FROM t_game g
+                INNER JOIN t_game_group_user ggu ON g.id = ggu.gameid
+                WHERE ggu.userid = $_tmpuserid
+                AND g.game_status IN ('playing', 'finished')
+                ORDER BY g.create_time DESC
+                LIMIT 100";
+        $rows = $this->db->query($sql)->result_array();
+        
+        $this->payload['allgames'] = $rows;
+    }
+
+    /**
+     * 第二部分："星标关注"对象参与打球的所有赛事
+     * 查询星标好友参与的比赛，合并到 allgames（去重）
+     * 状态筛选：playing（正在进行）或 finished（已结束）
+     */
+    public function getStarFriendsGames() {
+        $_tmpuserid = $this->payload['userid'];
+        $starFriends = $this->payload['star_friends'];
+        
+        if (empty($starFriends)) {
+            return;
+        }
+
+        // 获取星标好友的 userid 列表
+        $starFriendIds = array_column($starFriends, 'fuserid');
+        $starFriendIdList = implode(',', $starFriendIds);
+
+        // 查询星标好友参与的比赛
+        $sql = "SELECT DISTINCT g.* 
+                FROM t_game g
+                INNER JOIN t_game_group_user ggu ON g.id = ggu.gameid
+                WHERE ggu.userid IN ($starFriendIdList)
+                AND g.game_status IN ('playing', 'finished')
+                ORDER BY g.create_time DESC
+                LIMIT 100";
+        $starFriendsGames = $this->db->query($sql)->result_array();
+
+        // 获取已有的 game id 列表，避免重复
+        $existingIds = array_column($this->payload['allgames'], 'id');
+
+        // 合并星标好友的比赛到 allgames（去重）
+        foreach ($starFriendsGames as $game) {
+            if (!in_array($game['id'], $existingIds)) {
+                $this->payload['allgames'][] = $game;
+                $existingIds[] = $game['id'];
+            }
+        }
+    }
+
+    /**
+     * 第三部分："我"打了星标的所有赛事
+     * 查询 t_my_stared_games 表，找出用户主动标记星标的比赛
+     * 状态筛选：playing（正在进行）或 finished（已结束）
+     */
     public function getStarGames() {
         $_tmpuserid = $this->payload['userid'];
 
@@ -34,20 +115,14 @@ class MGamePipe extends CI_Model implements StageInterface {
         $rows = $this->db->query($sql)->result_array();
         $starGameIds = array_column($rows, 'gameid');
 
-        // DEBUG: 记录星标查询结果
-        logtext("[getStarGames] userid=$_tmpuserid, starGameIds=" . json_encode($starGameIds));
-
         if (empty($starGameIds)) {
             return;
         }
 
-        // 查询星标比赛的详细信息（不限制 courseid）
+        // 查询星标比赛的详细信息（筛选状态）
         $gameIdList = implode(',', $starGameIds);
-        $sql = "SELECT * FROM t_game WHERE id IN ($gameIdList)";
+        $sql = "SELECT * FROM t_game WHERE id IN ($gameIdList) AND game_status IN ('playing', 'finished')";
         $starGames = $this->db->query($sql)->result_array();
-
-        // DEBUG: 记录查询到的比赛
-        logtext("[getStarGames] starGames count=" . count($starGames));
 
         // 获取已有的 game id 列表，避免重复
         $existingIds = array_column($this->payload['allgames'] ?? [], 'id');
@@ -59,25 +134,10 @@ class MGamePipe extends CI_Model implements StageInterface {
                 $existingIds[] = $game['id'];
             }
         }
-
-        // DEBUG: 记录合并后的总数
-        logtext("[getStarGames] allgames count after merge=" . count($this->payload['allgames']));
-    }
-
-
-    public function getStarFriendsGames() {
-        return  [];
-    }
-
-
-    public function getMyGames() {
-        $sql = "SELECT * FROM t_game  where  courseid is not null order by id   desc limit 100";
-        $rows = $this->db->query($sql)->result_array();
-        $this->payload['allgames'] =  $rows;
     }
 
     public function setRealRows() {
-        $this->payload['realgames']  = $this->payload['allgames'];
+        $this->payload['realgames'] = $this->payload['allgames'];
     }
 
     public function debug() {
@@ -85,8 +145,7 @@ class MGamePipe extends CI_Model implements StageInterface {
         echo json_encode($this->payload, JSON_PRETTY_PRINT);
     }
 
-
     public function getter() {
-        return  $this->payload;
+        return $this->payload;
     }
 }

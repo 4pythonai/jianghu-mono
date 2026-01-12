@@ -75,8 +75,35 @@ func (v *phpVisitor) EnterNode(w walker.Walkable) bool {
 		})
 
 	case *expr.MethodCall:
-		// Look for $this->SomeProperty->method() pattern
-		// The Variable of MethodCall is PropertyFetch when it's $this->Something->method()
+		// Pattern 1: $this->method() - direct method call on same class
+		if variable, ok := n.Variable.(*expr.Variable); ok {
+			if id, ok := variable.VarName.(*node.Identifier); ok {
+				if id.Value == "this" && v.currentClass != nil {
+					// Get the method name
+					methodName := ""
+					if methodId, ok := n.Method.(*node.Identifier); ok {
+						methodName = methodId.Value
+					}
+
+					if methodName != "" {
+						line := 0
+						if n.Position != nil {
+							line = n.Position.StartLine
+						}
+
+						// Use current class name as receiver for $this->method() calls
+						v.calls = append(v.calls, types.MethodCall{
+							Receiver: v.currentClass.Name,
+							Method:   methodName,
+							File:     v.filename,
+							Line:     line,
+						})
+					}
+				}
+			}
+		}
+
+		// Pattern 2: $this->SomeProperty->method() - method call via property
 		if propFetch, ok := n.Variable.(*expr.PropertyFetch); ok {
 			// Check if the variable is $this
 			if variable, ok := propFetch.Variable.(*expr.Variable); ok {
