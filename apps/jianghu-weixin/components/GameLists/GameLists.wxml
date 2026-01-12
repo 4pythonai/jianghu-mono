@@ -9,7 +9,7 @@
     gameStart="{{item.game_start}}"
     completedHoles="{{item.completed_holes}}"
     holes="{{item.holes ? item.holes : 18}}"
-    starType="{{starType}}"
+    if_star_game="{{item.if_star_game}}"
     gameid="{{item.gameid}}"
     groups="{{item.groups}}"
     groupid="{{item.groupid || ''}}"

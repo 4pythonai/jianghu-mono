@@ -13,9 +13,9 @@ Component({
             type: Number,
             value: 18
         },
-        starType: {
+        if_star_game: {
             type: String,
-            value: 'gray' // gray或yellow
+            value: 'n' // y=已星标, n=未星标
         },
         gameid: {
             type: String,

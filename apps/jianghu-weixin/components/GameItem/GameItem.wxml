@@ -1,7 +1,4 @@
-<view
-  class="match-container {{private === 'y' ? 'private-match' : ''}}"
-  bindtap="onMatchItemTap"
->
+<view class="match-container {{private === 'y' ? 'private-match' : ''}}" bindtap="onMatchItemTap">
   <!-- 左上角三角形标识 (仅隐私比赛显示) -->
   <view wx:if="{{private === 'y'}}" class="privacy-badge">
     <text class="privacy-text">密</text>
@@ -11,7 +8,13 @@
   <view class="avatar-column">
     <!-- 团队赛显示团队头像 -->
     <view wx:if="{{game_type !== 'common' && fullTeamAvatarUrl}}" class="team-avatar-wrapper">
-      <image class="team-avatar" src="{{fullTeamAvatarUrl}}" mode="aspectFill" bindload="onTeamAvatarLoad" binderror="onTeamAvatarError"></image>
+      <image
+        class="team-avatar"
+        src="{{fullTeamAvatarUrl}}"
+        mode="aspectFill"
+        bindload="onTeamAvatarLoad"
+        binderror="onTeamAvatarError"
+      ></image>
     </view>
     <!-- 普通比赛显示玩家头像组 -->
     <view wx:elif="{{private !== 'y' && game_type === 'common'}}">
@@ -24,10 +27,13 @@
     <!-- 第1行:比赛名称 + 星标 (隐私比赛不显示,但保留占位) -->
     <view class="row name-row">
       <!-- 团队赛显示团队标题 -->
-      <text class="game-name" wx:if="{{game_type !== 'common' && extra_team_game_info}}">{{extra_team_game_info.team_game_title}}</text>
+      <text
+        class="game-name"
+        wx:if="{{game_type !== 'common' && extra_team_game_info}}"
+      >{{extra_team_game_info.team_game_title}}</text>
       <!-- 普通比赛显示普通标题 -->
       <text class="game-name" wx:elif="{{private !== 'y'}}">{{gameName}}</text>
-      <view class="star-icon" wx:if="{{private !== 'y'}}">
+      <view class="star-icon" wx:if="{{if_star_game === 'y'}}">
         <image class="icon-img" src="/assets/icons/icons8-star-48.png" mode="aspectFit" />
       </view>
     </view>
