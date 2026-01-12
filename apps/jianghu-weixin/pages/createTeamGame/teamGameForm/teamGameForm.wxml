@@ -7,7 +7,11 @@
       <view class="form-item">
         <view class="form-label">球队</view>
         <view class="selected-team" bindtap="goToTeamSelect">
-          <image src="{{ img.imageUrl(selectedTeam.team_avatar) || '/assets/icons/team-default.png' }}" class="team-avatar" mode="aspectFill"></image>
+          <image
+            src="{{ img.imageUrl(selectedTeam.team_avatar)  }}"
+            class="team-avatar"
+            mode="aspectFill"
+          ></image>
           <view class="team-details">
             <view class="team-name">{{ selectedTeam.team_name || teamName }}</view>
             <view class="team-role" wx:if="{{ selectedTeam.role }}">

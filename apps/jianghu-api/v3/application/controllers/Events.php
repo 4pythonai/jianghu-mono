@@ -35,22 +35,21 @@ class Events extends MY_Controller {
      * POST /Events/getEventBanners
      */
     public function getEventBanners() {
-        $webUrl = rtrim(config_item('web_url'), '/');
 
         $banners = [
             [
                 'id' => 1,
-                'image' => $webUrl . '/events/event-1.webp',
+                'image' => '/events/event-1.webp',
                 'title' => '赛事banner1'
             ],
             [
                 'id' => 2,
-                'image' => $webUrl . '/events/2.jpeg',
+                'image' =>  '/events/2.jpeg',
                 'title' => '赛事banner2'
             ],
             [
                 'id' => 3,
-                'image' => $webUrl . '/events/3.webp',
+                'image' =>   '/events/3.webp',
                 'title' => '赛事banner3'
             ]
         ];
@@ -117,8 +116,7 @@ class Events extends MY_Controller {
             return;
         }
 
-        $webUrl = rtrim(config_item('web_url'), '/');
-        $defaultAvatar = $webUrl . '/avatar/default-avatar.png';
+        $defaultAvatar = '/avatar/default-avatar.png';
         $offset = ($page - 1) * $pageSize;
 
         // 获取围观总人数

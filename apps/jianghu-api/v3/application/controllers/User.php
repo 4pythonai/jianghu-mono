@@ -259,8 +259,7 @@ class User extends MY_Controller {
             $relativePath = '/avatar/' . $date_folder . $fileName;
             $this->MUser->updateUserAvatar($user_id, $relativePath);
 
-            $webUrl = rtrim(config_item('web_url'), '/');
-            $publicUrl = $webUrl . $relativePath;
+            $publicUrl = $relativePath;
 
             echo json_encode([
                 'code' => 200,

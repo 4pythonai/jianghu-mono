@@ -4,6 +4,8 @@
  * 支持可选模式（带checkbox）
  * 支持点击跳转用户主页
  */
+const { imageUrl } = require('../../utils/image')
+
 Component({
     properties: {
         /** 球员头像URL */
@@ -74,7 +76,27 @@ Component({
     },
 
     data: {
-        defaultAvatar: '/assets/images/default-avatar.png'
+        defaultAvatar: '/assets/images/default-avatar.png',
+        fullAvatarUrl: ''
+    },
+
+    observers: {
+        'avatar': function(avatarPath) {
+            // 将相对路径转换为完整 URL
+            const fullUrl = avatarPath ? imageUrl(avatarPath) : ''
+            this.setData({ fullAvatarUrl: fullUrl })
+        }
+    },
+
+    lifetimes: {
+        attached() {
+            // 组件挂载时初始化头像 URL
+            if (this.properties.avatar) {
+                this.setData({ 
+                    fullAvatarUrl: imageUrl(this.properties.avatar) 
+                })
+            }
+        }
     },
 
     methods: {

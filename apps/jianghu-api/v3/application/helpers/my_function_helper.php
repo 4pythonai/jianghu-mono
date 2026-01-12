@@ -652,7 +652,6 @@ function generate_qrcode($text, $filename = null) {
   QRcode::png($text, $file_path, $errorCorrectionLevel, $matrixPointSize, $margin);
 
   // 返回访问URL
-  $web_url = config_item('web_url');
-  $qrcode_url = $web_url . '/upload/qrcodes/' . $filename;
+  $qrcode_url = '/upload/qrcodes/' . $filename;
   return $qrcode_url;
 }

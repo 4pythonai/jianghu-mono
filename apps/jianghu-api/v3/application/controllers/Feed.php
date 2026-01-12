@@ -62,18 +62,98 @@ class Feed extends MY_Controller {
     }
 
     /**
-     * 获取用户星标的比赛ID列表
+     * 获取用户的星标相关数据
+     * 
+     * 星标球局包含：
+     * 1. 我主动打了"星标"的比赛 (t_my_stared_games)
+     * 2. 我创建的任何比赛 (t_game.creatorid)
+     * 3. 星标好友的任何比赛 (t_follow.ifstar='y' + t_game_group_user)
+     * 4. 我报名的任何比赛 (t_game_tag_member)
      */
-    private function getUserStarGameIds($userid) {
+    private function getStarGameData($userid) {
         if (!$userid) {
-            return [];
+            return [
+                'explicit_star_gameids' => [],
+                'my_created_gameids' => [],
+                'star_friend_ids' => [],
+                'registered_gameids' => []
+            ];
         }
+
+        // 1. 我主动打星标的比赛 (t_my_stared_games)
         $rows = $this->db->select('gameid')
             ->from('t_my_stared_games')
             ->where('userid', $userid)
             ->get()
             ->result_array();
-        return array_map('intval', array_column($rows, 'gameid'));
+        $explicit_star_gameids = array_map('intval', array_column($rows, 'gameid'));
+
+        // 2. 我创建的比赛 (t_game.creatorid)
+        $rows = $this->db->select('id')
+            ->from('t_game')
+            ->where('creatorid', $userid)
+            ->get()
+            ->result_array();
+        $my_created_gameids = array_map('intval', array_column($rows, 'id'));
+
+        // 3. 星标好友的 ID 列表 (t_follow.ifstar='y')
+        $rows = $this->db->select('fuserid')
+            ->from('t_follow')
+            ->where('userid', $userid)
+            ->where('ifstar', 'y')
+            ->get()
+            ->result_array();
+        $star_friend_ids = array_map('intval', array_column($rows, 'fuserid'));
+
+        // 4. 我报名的比赛 (t_game_tag_member)
+        $rows = $this->db->select('game_id')
+            ->from('t_game_tag_member')
+            ->where('user_id', $userid)
+            ->get()
+            ->result_array();
+        $registered_gameids = array_map('intval', array_column($rows, 'game_id'));
+
+        return [
+            'explicit_star_gameids' => $explicit_star_gameids,
+            'my_created_gameids' => $my_created_gameids,
+            'star_friend_ids' => $star_friend_ids,
+            'registered_gameids' => $registered_gameids
+        ];
+    }
+
+    /**
+     * 判断比赛是否为星标比赛
+     */
+    private function isStarGame($gameid, $game, $starData) {
+        $gameid = (int)$gameid;
+
+        // 1. 我主动打了星标
+        if (in_array($gameid, $starData['explicit_star_gameids'], true)) {
+            return true;
+        }
+
+        // 2. 我创建的比赛
+        if (in_array($gameid, $starData['my_created_gameids'], true)) {
+            return true;
+        }
+
+        // 3. 我报名的比赛
+        if (in_array($gameid, $starData['registered_gameids'], true)) {
+            return true;
+        }
+
+        // 4. 星标好友参与的比赛（需要查询 t_game_group_user）
+        if (!empty($starData['star_friend_ids'])) {
+            $count = $this->db->from('t_game_group_user')
+                ->where('gameid', $gameid)
+                ->where_in('userid', $starData['star_friend_ids'])
+                ->count_all_results();
+            if ($count > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -84,7 +164,7 @@ class Feed extends MY_Controller {
         $get_data_config = ['userid' => $userid];
         $result = $this->MGamePipeRunner->GameFeedHandler($get_data_config);
         $whitelist_gameids = $this->MPrivateWhiteList->getUserWhiteListGameIds($userid);
-        $star_gameids = $this->getUserStarGameIds($userid);
+        $starData = $this->getStarGameData($userid);
         $allgames = $result['allgames'];
 
         $games = [];
@@ -106,7 +186,7 @@ class Feed extends MY_Controller {
             }
 
             // 添加星标状态
-            $game_detail['if_star_game'] = in_array((int)$gameid, $star_gameids, true) ? 'y' : 'n';
+            $game_detail['if_star_game'] = $this->isStarGame($gameid, $game, $starData) ? 'y' : 'n';
 
             $games[] = $game_detail;
         }
@@ -207,7 +287,7 @@ class Feed extends MY_Controller {
      * 状态筛选：registering（报名中）
      */
     private function getFeedsForRegistering($userid) {
-        $star_gameids = $this->getUserStarGameIds($userid);
+        $starData = $this->getStarGameData($userid);
 
         $this->db->select('g.id, g.team_id, g.game_type, g.create_time')
             ->from('t_game g')
@@ -239,7 +319,7 @@ class Feed extends MY_Controller {
             $game_detail['registration_status_text'] = '报名中';
 
             // 添加星标状态
-            $game_detail['if_star_game'] = in_array((int)$gameid, $star_gameids, true) ? 'y' : 'n';
+            $game_detail['if_star_game'] = $this->isStarGame($gameid, $row, $starData) ? 'y' : 'n';
 
             $games[] = $game_detail;
         }
@@ -256,7 +336,7 @@ class Feed extends MY_Controller {
             return [];
         }
 
-        $star_gameids = $this->getUserStarGameIds($userid);
+        $starData = $this->getStarGameData($userid);
 
         // 查询用户已报名的赛事ID列表
         $gameRows = $this->db->select('DISTINCT(g.id) as id, g.team_id, g.game_type, g.game_status, g.open_time')
@@ -290,7 +370,7 @@ class Feed extends MY_Controller {
             $game_detail['registration_status_text'] = $this->getRegistrationStatusText($row['game_status']);
 
             // 添加星标状态
-            $game_detail['if_star_game'] = in_array((int)$gameid, $star_gameids, true) ? 'y' : 'n';
+            $game_detail['if_star_game'] = $this->isStarGame($gameid, $row, $starData) ? 'y' : 'n';
 
             $games[] = $game_detail;
         }
@@ -302,7 +382,7 @@ class Feed extends MY_Controller {
      * 构建游戏列表
      */
     private function buildGameList($gameRows, $userid = null) {
-        $star_gameids = $this->getUserStarGameIds($userid);
+        $starData = $this->getStarGameData($userid);
 
         $games = [];
         foreach ($gameRows as $row) {
@@ -317,7 +397,7 @@ class Feed extends MY_Controller {
             }
 
             // 添加星标状态
-            $game_detail['if_star_game'] = in_array((int)$gameid, $star_gameids, true) ? 'y' : 'n';
+            $game_detail['if_star_game'] = $this->isStarGame($gameid, $row, $starData) ? 'y' : 'n';
 
             $games[] = $game_detail;
         }

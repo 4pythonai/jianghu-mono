@@ -1,6 +1,7 @@
 import { createJoinNotification } from './joinNotification';
 import { createJoinSocket } from './joinSocket';
 import { config as apiConfig } from '@/api/config';
+import { imageUrl } from '@/utils/image';
 
 const app = getApp();
 
@@ -297,7 +298,7 @@ Page({
         }
 
         wx.previewImage({
-            urls: [this.data.qrcodeUrl]
+            urls: [imageUrl(this.data.qrcodeUrl)]
         });
     },
 
@@ -307,9 +308,11 @@ Page({
             throw new Error('二维码缺失');
         }
 
+        const fullUrl = imageUrl(qrcodeUrl);
+
         // base64 数据写入临时文件
-        if (qrcodeUrl.startsWith('data:image')) {
-            const base64 = qrcodeUrl.split(',')[1];
+        if (fullUrl.startsWith('data:image')) {
+            const base64 = fullUrl.split(',')[1];
             if (!base64) {
                 throw new Error('二维码数据异常');
             }
@@ -328,7 +331,7 @@ Page({
         // 普通网络图片，获取临时路径
         return await new Promise((resolve, reject) => {
             wx.getImageInfo({
-                src: qrcodeUrl,
+                src: fullUrl,
                 success: res => resolve(res.path),
                 fail: reject
             });

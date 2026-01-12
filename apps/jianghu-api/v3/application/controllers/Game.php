@@ -63,7 +63,7 @@ class Game extends MY_Controller {
         $row['private'] = 'n';
         $row['scoring_type'] = 'hole';
         $row['privacy_password'] = null;
-        $row['game_status'] = 'registering';
+        $row['game_status'] = 'playing';
         $this->db->insert('t_game', $row);
         $gameid = $this->db->insert_id();
         echo json_encode(['code' => 200, 'uuid' => $uuid, 'gameid' => $gameid], JSON_UNESCAPED_UNICODE);
@@ -236,10 +236,6 @@ class Game extends MY_Controller {
         $groups = $json_paras['groups'];
         $this->MGame->clearGameGroupAndPlayers($gameid);
         $groupid = $this->MGame->addGameGroupAndPlayers($gameid, $groups);
-        // gameid game_status to registering   
-        $this->db->where('id', $gameid);
-        $this->db->update('t_game', ['game_status' => 'registering']);
-
         $ret = [];
         $ret['code'] = 200;
         $ret['message'] = '分组成功';
@@ -287,8 +283,7 @@ class Game extends MY_Controller {
         }
         file_put_contents($qrcodePath, $result);
 
-        $web_url = config_item('web_url');
-        $qrcodeUrl = $web_url . '/upload/qrcodes/' . $filename;
+        $qrcodeUrl = '/upload/qrcodes/' . $filename;
 
         echo json_encode([
             'code' => 200,

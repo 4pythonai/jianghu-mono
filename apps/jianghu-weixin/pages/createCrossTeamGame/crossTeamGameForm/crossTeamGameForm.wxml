@@ -15,11 +15,7 @@
         </view>
         <view class="teams-container">
           <view class="team-card" wx:for="{{selectedTeams}}" wx:key="team_id">
-            <image
-              class="team-avatar"
-              src="{{img.imageUrl(item.team_avatar) || '/assets/icons/team-default.png'}}"
-              mode="aspectFill"
-            ></image>
+            <image class="team-avatar" src="{{img.imageUrl(item.team_avatar)  }}" mode="aspectFill"></image>
             <view class="team-info">
               <view class="team-alias">{{item.team_alias}}</view>
               <view
@@ -199,11 +195,7 @@
             <text class="form-sub-label">(可选)</text>
           </view>
           <view class="schedule-container">
-            <view
-              wx:for="{{formData.schedule}}"
-              wx:key="index"
-              class="schedule-item-edit"
-            >
+            <view wx:for="{{formData.schedule}}" wx:key="index" class="schedule-item-edit">
               <view class="schedule-time-input">
                 <input
                   type="text"

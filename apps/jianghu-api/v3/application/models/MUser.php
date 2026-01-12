@@ -78,12 +78,32 @@ class MUser  extends CI_Model {
 
 
 
+  /**
+   * 获取好友列表
+   * 
+   * 好友定义：互相关注（我关注他 且 他也关注我）
+   * 排除：我拉黑的人 或 拉黑我的人
+   */
   public function getFriends($userid) {
-    $this->db->select("u.wx_nickname, u.avatar, u.openid, u.unionid, f.fuserid as userid, f.nickname as remark_name");
-    $this->db->from('t_follow f');
-    $this->db->join('t_user u', 'f.fuserid = u.id');
-    $this->db->where('f.userid', $userid);
-    $friends = $this->db->get()->result_array();
+    $sql = "SELECT u.wx_nickname, u.avatar, u.openid, u.unionid, 
+                   f1.fuserid as userid, f1.nickname as remark_name, f1.ifstar
+            FROM t_follow f1
+            -- 互相关注：他也关注了我
+            JOIN t_follow f2 ON f1.userid = f2.fuserid AND f1.fuserid = f2.userid
+            JOIN t_user u ON f1.fuserid = u.id
+            WHERE f1.userid = ?
+            -- 排除我拉黑的人
+            AND NOT EXISTS (
+                SELECT 1 FROM t_user_block b1 
+                WHERE b1.userid = f1.userid AND b1.blocked_userid = f1.fuserid
+            )
+            -- 排除拉黑我的人
+            AND NOT EXISTS (
+                SELECT 1 FROM t_user_block b2 
+                WHERE b2.userid = f1.fuserid AND b2.blocked_userid = f1.userid
+            )";
+
+    $friends = $this->db->query($sql, [$userid])->result_array();
 
     // 为前端添加 nickname 字段：优先使用备注名，否则使用微信昵称
     foreach ($friends as &$friend) {
@@ -91,6 +111,37 @@ class MUser  extends CI_Model {
     }
 
     return $friends;
+  }
+
+  /**
+   * 获取我关注的人列表
+   * 
+   * 排除：我拉黑的人 或 拉黑我的人
+   */
+  public function getFollowings($userid) {
+    $sql = "SELECT u.wx_nickname, u.avatar, u.openid, u.unionid, 
+                   f.fuserid as userid, f.nickname as remark_name, f.ifstar
+            FROM t_follow f
+            JOIN t_user u ON f.fuserid = u.id
+            WHERE f.userid = ?
+            -- 排除我拉黑的人
+            AND NOT EXISTS (
+                SELECT 1 FROM t_user_block b1 
+                WHERE b1.userid = f.userid AND b1.blocked_userid = f.fuserid
+            )
+            -- 排除拉黑我的人
+            AND NOT EXISTS (
+                SELECT 1 FROM t_user_block b2 
+                WHERE b2.userid = f.fuserid AND b2.blocked_userid = f.userid
+            )";
+
+    $followings = $this->db->query($sql, [$userid])->result_array();
+
+    foreach ($followings as &$following) {
+      $following['nickname'] = !empty($following['remark_name']) ? $following['remark_name'] : $following['wx_nickname'];
+    }
+
+    return $followings;
   }
 
 

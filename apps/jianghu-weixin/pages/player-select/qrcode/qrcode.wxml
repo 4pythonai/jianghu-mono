@@ -12,7 +12,7 @@
     <view wx:elif="{{qrcodeUrl}}" class="qrcode-wrapper">
       <image
         class="qrcode-image"
-        src="{{qrcodeUrl}}"
+        src="{{image.imageUrl(qrcodeUrl)}}"
         mode="aspectFit"
         show-menu-by-longpress="true"
         bindtap="handlePreview"

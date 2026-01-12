@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="container">
   <!-- 轮播Banner区域 -->
   <view class="banner-section">
@@ -10,7 +11,7 @@
       bindchange="onBannerChange"
     >
       <swiper-item wx:for="{{banners}}" wx:key="id" bindtap="onBannerTap" data-banner="{{item}}">
-        <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
+        <image class="banner-image" src="{{image.imageUrl(item.image)}}" mode="aspectFill" />
       </swiper-item>
     </swiper>
     <!-- 自定义轮播指示器 -->
