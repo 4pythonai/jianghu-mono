@@ -193,4 +193,94 @@ class MUser  extends CI_Model {
     $user = $this->db->get('t_user')->row_array();
     return $user['wx_nickname'];
   }
+
+
+  /**
+   * 检查当前用户是否关注了目标用户
+   */
+  public function isFollowing($current_user_id, $target_user_id) {
+    $this->db->where('userid', $current_user_id);
+    $this->db->where('fuserid', $target_user_id);
+    return $this->db->count_all_results('t_follow') > 0;
+  }
+
+
+  /**
+   * 获取用户的粉丝数量
+   */
+  public function getFollowersCount($user_id) {
+    $this->db->where('fuserid', $user_id);
+    return $this->db->count_all_results('t_follow');
+  }
+
+
+  /**
+   * 获取用户的关注数量
+   */
+  public function getFollowingCount($user_id) {
+    $this->db->where('userid', $user_id);
+    return $this->db->count_all_results('t_follow');
+  }
+
+
+  /**
+   * 获取用户参与的球局数量
+   */
+  public function getGamesCount($user_id) {
+    $this->db->where('userid', $user_id);
+    return $this->db->count_all_results('t_game_group_user');
+  }
+
+
+  /**
+   * 获取用户所属球队数量
+   */
+  public function getTeamsCount($user_id) {
+    $this->db->where('user_id', $user_id);
+    $this->db->where('status', 'active');
+    return $this->db->count_all_results('t_team_member');
+  }
+
+
+  /**
+   * 检查当前用户是否拉黑了目标用户
+   */
+  public function isBlocked($current_user_id, $target_user_id) {
+    $this->db->where('userid', $current_user_id);
+    $this->db->where('blocked_userid', $target_user_id);
+    return $this->db->count_all_results('t_user_block') > 0;
+  }
+
+
+  /**
+   * 检查当前用户是否被目标用户拉黑
+   */
+  public function isBlockedBy($current_user_id, $target_user_id) {
+    $this->db->where('userid', $target_user_id);
+    $this->db->where('blocked_userid', $current_user_id);
+    return $this->db->count_all_results('t_user_block') > 0;
+  }
+
+
+  /**
+   * 关注用户
+   */
+  public function followUser($userid, $target_userid) {
+    $data = [
+      'userid' => $userid,
+      'fuserid' => $target_userid
+    ];
+    $this->db->insert('t_follow', $data);
+    return $this->db->insert_id();
+  }
+
+
+  /**
+   * 取消关注
+   */
+  public function unfollowUser($userid, $target_userid) {
+    $this->db->where('userid', $userid);
+    $this->db->where('fuserid', $target_userid);
+    return $this->db->delete('t_follow');
+  }
 }

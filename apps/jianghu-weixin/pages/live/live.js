@@ -44,9 +44,9 @@ Page({
         try {
             this.setData({ loading: true })
 
-            const response = await app.api.feed.myFeeds({
-                tab: this.data.currentTab // 传递当前Tab参数
-            })
+            // 根据 tab 选择 feed_type: 0=我的(my), 1=广场(public)
+            const feed_type = this.data.currentTab === 0 ? 'my' : 'public'
+            const response = await app.api.feed.myFeeds({ feed_type })
 
             console.log('📊 我的动态数据:', response)
 

@@ -84,15 +84,25 @@ Component({
                 this.triggerEvent('select', { selected: !this.properties.selected })
                 return
             }
-            
+
             // 可点击模式：跳转用户主页
             if (this.properties.clickable && this.properties.userId) {
-                wx.navigateTo({
-                    url: `/pages/user-profile/user-profile?userId=${this.properties.userId}`
-                })
+                const app = getApp()
+                const currentUserId = app?.globalData?.userInfo?.id
+
+                // 如果是自己，跳转到"我的"页面（转为数字比较，避免类型不匹配）
+                if (currentUserId && Number(this.properties.userId) === Number(currentUserId)) {
+                    wx.switchTab({
+                        url: '/pages/mine/mine'
+                    })
+                } else {
+                    wx.navigateTo({
+                        url: `/pages/user-profile/user-profile?userId=${this.properties.userId}`
+                    })
+                }
                 return
             }
-            
+
             // 触发点击事件（供父组件处理）
             this.triggerEvent('tap')
         }

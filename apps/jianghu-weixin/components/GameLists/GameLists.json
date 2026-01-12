@@ -1,0 +1,7 @@
+{
+    "component": true,
+    "usingComponents": {
+        "GameItem": "/components/GameItem/GameItem",
+        "TeamGameItem": "/components/TeamGameItem/TeamGameItem"
+    }
+}

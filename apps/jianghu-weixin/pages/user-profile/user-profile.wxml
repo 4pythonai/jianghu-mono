@@ -1,0 +1,111 @@
+<wxs src="/utils/image.wxs" module="image" />
+<view class="page-container">
+  <!-- 自定义导航栏 -->
+  <CustomNavBar title="球友主页" showBack="{{true}}" />
+
+  <!-- 内容区域 -->
+  <view class="page-content" style="padding-top: {{navBarHeight}}px;">
+    <!-- 加载状态 -->
+    <view wx:if="{{loading}}" class="loading-container">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 错误状态 -->
+    <view wx:elif="{{error}}" class="error-container">
+      <text class="error-icon">😕</text>
+      <text class="error-text">{{error}}</text>
+      <button class="retry-btn" bindtap="goBack">返回</button>
+    </view>
+
+    <!-- 用户资料 -->
+    <view wx:else class="profile-content">
+      <!-- 用户头部信息卡片 -->
+      <view class="user-header-card">
+        <!-- 背景装饰 -->
+        <view class="header-bg"></view>
+
+        <!-- 头像区域 -->
+        <view class="avatar-section">
+          <image
+            class="user-avatar"
+            src="{{image.imageUrl(userInfo.avatar) || '/assets/images/default-avatar.png'}}"
+            mode="aspectFill"
+          />
+        </view>
+
+        <!-- 用户名和性别 -->
+        <view class="name-section">
+          <text class="user-nickname">{{userInfo.nickname || '球友'}}</text>
+          <text wx:if="{{userInfo.gender === 'male'}}" class="gender-badge male">♂</text>
+          <text wx:elif="{{userInfo.gender === 'female'}}" class="gender-badge female">♀</text>
+        </view>
+
+        <!-- 差点信息 -->
+        <view class="handicap-section">
+          <view class="handicap-item">
+            <text class="handicap-label">江湖差点</text>
+            <text class="handicap-value">{{userInfo.handicap || '--'}}</text>
+          </view>
+          <view class="handicap-divider"></view>
+          <view class="handicap-item">
+            <text class="handicap-label">浮动系数</text>
+            <text class="handicap-value">{{userInfo.floatCoef || '--'}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 统计数据 -->
+      <view class="stats-card">
+        <view class="stat-item">
+          <text class="stat-value">{{stats.gamesCount}}</text>
+          <text class="stat-label">参与球局</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{stats.teamsCount}}</text>
+          <text class="stat-label">所属球队</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{stats.followers_count}}</text>
+          <text class="stat-label">粉丝数量</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮区域 -->
+      <view wx:if="{{!isSelf}}" class="action-section">
+        <button
+          wx:if="{{!relationship.is_following}}"
+          class="action-btn primary"
+          bindtap="toggleFollow"
+          disabled="{{actionLoading}}"
+        >
+          <text class="btn-icon">+</text>
+          <text>关注</text>
+        </button>
+        <button
+          wx:else
+          class="action-btn secondary"
+          bindtap="toggleFollow"
+          disabled="{{actionLoading}}"
+        >
+          <text>取消关注</text>
+        </button>
+      </view>
+
+      <!-- 球队列表（如果有） -->
+      <view wx:if="{{userInfo.teams && userInfo.teams.length > 0}}" class="section-card">
+        <view class="section-title">所属球队</view>
+        <view class="teams-list">
+          <view wx:for="{{userInfo.teams}}" wx:key="id" class="team-item">
+            <image
+              class="team-logo"
+              src="{{image.imageUrl(item.logo) || '/assets/images/default-team.png'}}"
+              mode="aspectFill"
+            />
+            <text class="team-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

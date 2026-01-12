@@ -28,9 +28,40 @@ class MGamePipe extends CI_Model implements StageInterface {
 
     public function getStarGames() {
         $_tmpuserid = $this->payload['userid'];
-        $sql = "SELECT * FROM t_my_stared_games WHERE userid = $_tmpuserid ";
+
+        // 查询星标比赛的 gameid 列表
+        $sql = "SELECT gameid FROM t_my_stared_games WHERE userid = $_tmpuserid";
         $rows = $this->db->query($sql)->result_array();
-        $this->payload['star_games'] =  $rows;
+        $starGameIds = array_column($rows, 'gameid');
+
+        // DEBUG: 记录星标查询结果
+        logtext("[getStarGames] userid=$_tmpuserid, starGameIds=" . json_encode($starGameIds));
+
+        if (empty($starGameIds)) {
+            return;
+        }
+
+        // 查询星标比赛的详细信息（不限制 courseid）
+        $gameIdList = implode(',', $starGameIds);
+        $sql = "SELECT * FROM t_game WHERE id IN ($gameIdList)";
+        $starGames = $this->db->query($sql)->result_array();
+
+        // DEBUG: 记录查询到的比赛
+        logtext("[getStarGames] starGames count=" . count($starGames));
+
+        // 获取已有的 game id 列表，避免重复
+        $existingIds = array_column($this->payload['allgames'] ?? [], 'id');
+
+        // 合并星标比赛到 allgames（去重）
+        foreach ($starGames as $game) {
+            if (!in_array($game['id'], $existingIds)) {
+                $this->payload['allgames'][] = $game;
+                $existingIds[] = $game['id'];
+            }
+        }
+
+        // DEBUG: 记录合并后的总数
+        logtext("[getStarGames] allgames count after merge=" . count($this->payload['allgames']));
     }
 
 
@@ -40,7 +71,7 @@ class MGamePipe extends CI_Model implements StageInterface {
 
 
     public function getMyGames() {
-        $sql = "SELECT * FROM t_game  where  courseid is not null  and game_status != 'init' order by id   desc limit 100";
+        $sql = "SELECT * FROM t_game  where  courseid is not null order by id   desc limit 100";
         $rows = $this->db->query($sql)->result_array();
         $this->payload['allgames'] =  $rows;
     }

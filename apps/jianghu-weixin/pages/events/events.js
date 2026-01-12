@@ -107,19 +107,14 @@ Page({
         try {
             this.setData({ loading: true })
 
-            let response
-            if (this.data.currentTab === 0) {
-                // 可报名赛事
-                response = await app.api.events.getAvailableEvents()
-            } else {
-                // 已报名赛事
-                response = await app.api.events.getMyEvents()
-            }
+            // 根据 tab 选择 feed_type: 0=可报名(registering), 1=已报名(registered)
+            const feed_type = this.data.currentTab === 0 ? 'registering' : 'registered'
+            const response = await app.api.feed.myFeeds({ feed_type })
 
-            if (response?.events) {
+            if (response?.games) {
                 this.setData({
-                    eventList: response.events,
-                    isEmpty: response.events.length === 0
+                    eventList: response.games,
+                    isEmpty: response.games.length === 0
                 })
             } else {
                 this.setData({

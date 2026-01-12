@@ -1,0 +1,29 @@
+<block wx:for="{{games}}" wx:key="gameid">
+  <!-- 普通比赛 -->
+  <GameItem
+    wx:if="{{item.game_type === 'common' || !item.game_type}}"
+    gameName="{{item.game_name}}"
+    course="{{item.course}}"
+    players="{{item.players}}"
+    watchersNumber="{{item.watchers_number}}"
+    gameStart="{{item.game_start}}"
+    completedHoles="{{item.completed_holes}}"
+    holes="{{item.holes ? item.holes : 18}}"
+    starType="{{starType}}"
+    gameid="{{item.gameid}}"
+    groups="{{item.groups}}"
+    groupid="{{item.groupid || ''}}"
+    group_name="{{item.group_name || ''}}"
+    game_type="{{item.game_type}}"
+    private="{{item.private}}"
+    privacy_password="{{item.privacy_password||''}}"
+    has_gamble="{{item.has_gamble}}"
+    extra_team_game_info="{{item.extra_team_game_info}}"
+  />
+  <!-- 队内赛/队际赛 -->
+  <TeamGameItem
+    wx:if="{{item.game_type === 'single_team' || item.game_type === 'cross_teams'}}"
+    event="{{item}}"
+  />
+</block>
+<view wx:if="{{showEmpty && games.length === 0}}" class="empty-tip">暂无比赛</view>

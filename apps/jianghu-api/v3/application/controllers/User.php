@@ -40,6 +40,168 @@ class User extends MY_Controller {
     }
 
 
+    public function getUserProfile() {
+        try {
+            $json_paras = json_decode(file_get_contents('php://input'), true);
+            $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
+
+            if (!$user_id) {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '缺少用户ID'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $user = $this->MUser->getUserProfile($user_id);
+
+            if (!$user) {
+                echo json_encode([
+                    'code' => 404,
+                    'message' => '用户不存在'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            // 获取当前登录用户ID
+            $current_user_id = $this->getUser();
+
+            // 获取关系信息
+            $is_self = ($current_user_id == $user_id);
+            $is_following = false;
+            $is_blocked = false;
+            $is_blocked_by = false;
+            if ($current_user_id && !$is_self) {
+                $is_following = $this->MUser->isFollowing($current_user_id, $user_id);
+                $is_blocked = $this->MUser->isBlocked($current_user_id, $user_id);
+                $is_blocked_by = $this->MUser->isBlockedBy($current_user_id, $user_id);
+            }
+
+            // 获取统计数据
+            $followers_count = $this->MUser->getFollowersCount($user_id);
+            $games_count = $this->MUser->getGamesCount($user_id);
+            $teams_count = $this->MUser->getTeamsCount($user_id);
+
+            echo json_encode([
+                'code' => 200,
+                'message' => 'OK',
+                'data' => [
+                    'user' => $user,
+                    'relationship' => [
+                        'is_self' => $is_self,
+                        'is_following' => $is_following,
+                        'is_blocked' => $is_blocked,
+                        'is_blocked_by' => $is_blocked_by
+                    ],
+                    'stats' => [
+                        'gamesCount' => $games_count,
+                        'teamsCount' => $teams_count,
+                        'followers_count' => $followers_count
+                    ]
+                ]
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    // 关注用户
+    public function followUser() {
+        try {
+            $current_user_id = $this->getUser();
+            if (!$current_user_id) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $json_paras = json_decode(file_get_contents('php://input'), true);
+            $target_user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
+
+            if (!$target_user_id) {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '缺少目标用户ID'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            if ($current_user_id == $target_user_id) {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '不能关注自己'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            // 检查是否已关注
+            if ($this->MUser->isFollowing($current_user_id, $target_user_id)) {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '已经关注过了'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $this->MUser->followUser($current_user_id, $target_user_id);
+
+            echo json_encode([
+                'code' => 200,
+                'message' => '关注成功'
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    // 取消关注
+    public function unfollowUser() {
+        try {
+            $current_user_id = $this->getUser();
+            if (!$current_user_id) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $json_paras = json_decode(file_get_contents('php://input'), true);
+            $target_user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
+
+            if (!$target_user_id) {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '缺少目标用户ID'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $this->MUser->unfollowUser($current_user_id, $target_user_id);
+
+            echo json_encode([
+                'code' => 200,
+                'message' => '取消关注成功'
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
     public function uploadAvatar() {
         logtext('<hr/>');
         logtext('<div><span class =functionname>' . date('Y-m-d H:i:s') . '  User/uploadAvatar</span></div>');

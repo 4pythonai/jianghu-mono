@@ -63,7 +63,7 @@ class Game extends MY_Controller {
         $row['private'] = 'n';
         $row['scoring_type'] = 'hole';
         $row['privacy_password'] = null;
-        $row['game_status'] = 'init';
+        $row['game_status'] = 'registering';
         $this->db->insert('t_game', $row);
         $gameid = $this->db->insert_id();
         echo json_encode(['code' => 200, 'uuid' => $uuid, 'gameid' => $gameid], JSON_UNESCAPED_UNICODE);

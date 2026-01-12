@@ -34,32 +34,12 @@
     <!-- Tab内容区域 -->
     <view class="tab-content">
       <view class="tab-pane" hidden="{{currentTab !== 0}}">
-        <block wx:for="{{games}}" wx:key="gameid">
-          <GameItem
-            gameName="{{item.game_name}}"
-            course="{{item.course}}"
-            players="{{item.players}}"
-            watchersNumber="{{item.watchers_number}}"
-            gameStart="{{item.game_start}}"
-            completedHoles="{{item.completed_holes}}"
-            holes="{{item.holes ? item.holes : 18}}"
-            holeList="{{item.holeList}}"
-            starType="yellow"
-            gameid="{{item.gameid}}"
-            groups="{{item.groups}}"
-            groupid="{{item.groupid || ''}}"
-            group_name="{{item.group_name || ''}}"
-            game_type="{{item.game_type}}"
-            private="{{item.private}}"
-            privacy_password="{{item.privacy_password||''}}"
-            has_gamble="{{item.has_gamble}}"
-            extra_team_game_info="{{item.extra_team_game_info}}"
-          />
-        </block>
+        <!-- 我的比赛 -->
+        <GameLists games="{{games}}" starType="yellow" />
       </view>
       <view class="tab-pane" hidden="{{currentTab !== 1}}">
         <!-- 广场内容 -->
-        您还没有参加任何比球队
+        <GameLists games="{{games}}" starType="yellow" showEmpty="{{true}}" />
       </view>
     </view>
   </view>

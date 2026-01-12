@@ -617,45 +617,6 @@ class TeamGame extends MY_Controller {
     }
 
     /**
-     * 开启报名
-     * @param int game_id 赛事ID
-     */
-    public function startRegistration() {
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
-        $game_id = $json_paras['game_id'];
-
-        // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
-            echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        // 检查当前状态
-        $game = $this->MTeamGame->getTeamGame($game_id);
-        if ($game['game_status'] != 'init') {
-            echo json_encode(['code' => 400, 'message' => '只有初始状态的赛事才能开启报名'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        // 如果是团队赛制，检查是否已设置TAG
-        if ($this->MTeamGame->requiresSettingTags($game['match_format'])) {
-            $tagCount = $this->MTeamGame->getTagsCount($game_id);
-            if ($tagCount < 2) {
-                echo json_encode(['code' => 400, 'message' => '团队赛制需要先设置至少2个TAG'], JSON_UNESCAPED_UNICODE);
-                return;
-            }
-        }
-
-        $result = $this->MTeamGame->updateGameStatus($game_id, 'registering');
-
-        echo json_encode([
-            'code' => $result['success'] ? 200 : 400,
-            'message' => $result['success'] ? '报名已开启' : $result['message']
-        ], JSON_UNESCAPED_UNICODE);
-    }
-
-    /**
      * 截止报名
      * @param int game_id 赛事ID
      */

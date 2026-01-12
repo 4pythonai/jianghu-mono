@@ -33,6 +33,12 @@ const user = {
 
     // 获取其他用户的公开资料
     getUserProfile: (data, options) => request('/User/getUserProfile', data, options),
+
+    // 关注用户
+    followUser: (data, options) => request('/User/followUser', data, options),
+
+    // 取消关注
+    unfollowUser: (data, options) => request('/User/unfollowUser', data, options),
 }
 
 export default user

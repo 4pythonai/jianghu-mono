@@ -1,25 +1,29 @@
 <view class="event-card">
   <!-- 封面区域 -->
   <view class="event-cover-wrapper">
-    <!-- 单个封面（队内赛/默认） -->
+    <!-- 单个封面 -->
     <image
-      wx:if="{{event.coverType !== 'multiple'}}"
+      wx:if="{{coverType === 'single'}}"
       class="event-cover"
-      src="{{event.covers[0]}}"
+      src="{{singleCover}}"
       mode="aspectFill"
     />
-    <!-- 多个封面（队际赛） -->
-    <view wx:else class="event-cover-group">
+    <!-- 多个封面（队际赛多队头像拼接） -->
+    <view wx:elif="{{coverType === 'multiple'}}" class="event-cover-group">
       <image
-        wx:for="{{event.covers}}"
-        wx:for-item="cover"
-        wx:for-index="coverIdx"
-        wx:key="coverIdx"
-        class="cover-item cover-item-{{coverIdx}}"
-        src="{{cover}}"
+        wx:for="{{teamAvatars}}"
+        wx:for-item="avatar"
+        wx:for-index="avatarIdx"
+        wx:key="avatarIdx"
+        class="cover-item cover-item-{{avatarIdx}}"
+        src="{{avatar}}"
         mode="aspectFill"
-        style="z-index: {{10 - coverIdx}}"
+        style="z-index: {{10 - avatarIdx}}"
       />
+    </view>
+    <!-- 默认封面 -->
+    <view wx:else class="event-cover-default">
+      <text class="default-text">暂无封面</text>
     </view>
   </view>
   <view class="event-info">

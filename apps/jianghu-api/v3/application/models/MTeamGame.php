@@ -92,7 +92,7 @@ class MTeamGame extends CI_Model {
             'is_public_registration' => $data['is_public_registration'] ?? 'y',
             'top_n_ranking' => $data['top_n_ranking'] ?? null,
             'game_type' => 'single_team',
-            'game_status' => 'init',
+            'game_status' => 'registering',
             'create_time' => date('Y-m-d H:i:s'),
             'scoring_type' => $this->getScoringTypeFromFormat($data['match_format'])
         ];
@@ -603,7 +603,7 @@ class MTeamGame extends CI_Model {
      * 更新赛事状态
      */
     public function updateGameStatus($game_id, $game_status) {
-        $validStatuses = ['init', 'registering', 'registration_closed', 'playing', 'finished', 'cancelled'];
+        $validStatuses = ['registering', 'registration_closed', 'playing', 'finished', 'cancelled'];
 
         if (!in_array($game_status, $validStatuses)) {
             return ['success' => false, 'message' => '无效的状态值'];
@@ -769,7 +769,7 @@ class MTeamGame extends CI_Model {
             'is_public_registration' => $data['is_public_registration'] ?? 'y',
             'top_n_ranking' => $data['top_n_ranking'] ?? null,
             'game_type' => 'cross_teams',
-            'game_status' => 'init',
+            'game_status' => 'registering',
             'create_time' => date('Y-m-d H:i:s'),
             'scoring_type' => $this->getScoringTypeFromFormat($data['match_format'])
         ];
