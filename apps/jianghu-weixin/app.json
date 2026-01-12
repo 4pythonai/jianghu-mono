@@ -56,7 +56,15 @@
 		"pages/team-game/TeamGameDetail",
 		"pages/group-config/group-config",
 		"pages/spectators/spectators",
-		"pages/user-profile/user-profile"
+		"pages/user-profile/user-profile",
+		"pages/contacts/contacts",
+		"pages/contacts/followings/followings",
+		"pages/contacts/followers/followers",
+		"pages/contacts/ghosts/ghosts",
+		"pages/history/history",
+		"pages/jianghu/jianghu",
+		"pages/my-wallet/my-wallet",
+		"pages/account-book/account-book"
 	],
 	"window": {
 		"navigationBarTitleText": "golfmimi",

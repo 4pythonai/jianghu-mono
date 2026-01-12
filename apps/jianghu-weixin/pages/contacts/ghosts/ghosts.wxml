@@ -1,0 +1,59 @@
+<wxs src="/utils/image.wxs" module="image" />
+<view class="container">
+  <CustomNavBar title="非注册好友" showBack="{{true}}" />
+
+  <!-- 提示信息 -->
+  <view class="tip-section">
+    <text class="tip-text">这些是您手动添加的占位球友，可长按删除</text>
+  </view>
+
+  <!-- 用户列表 -->
+  <view class="user-list">
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading-container">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 用户列表 -->
+    <block wx:elif="{{users.length > 0}}">
+      <view
+        wx:for="{{users}}"
+        wx:key="userid"
+        class="user-item"
+        data-user="{{item}}"
+        bindlongpress="onLongPress"
+      >
+        <view class="user-content">
+          <view class="user-avatar-wrap">
+            <PlayerAvatar
+              avatar="{{image.imageUrl(item.avatar)}}"
+              userId="{{item.userid}}"
+              avatarOnly="{{true}}"
+              size="small"
+              clickable="{{false}}"
+            />
+          </view>
+          <view class="user-info">
+            <view class="user-name-row">
+              <text class="user-name">{{item.nickname || '未知用户'}}</text>
+              <view class="ghost-badge">占位</view>
+            </view>
+            <text class="user-mobile" wx:if="{{item.mobile}}">手机: {{item.mobile}}</text>
+            <text class="user-time">添加时间: {{item.addtime || '--'}}</text>
+          </view>
+          <view class="delete-btn" data-user="{{item}}" catchtap="onDeleteTap">
+            <text>删除</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <view class="empty-icon">👤</view>
+      <text class="empty-text">暂无占位好友</text>
+      <text class="empty-desc">在比赛中手动添加的球友会显示在这里</text>
+    </view>
+  </view>
+</view>

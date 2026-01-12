@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "我的钱包",
+  "usingComponents": {
+    "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+  }
+}

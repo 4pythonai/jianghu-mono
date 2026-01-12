@@ -1,0 +1,190 @@
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.page-content {
+  padding: 20rpx;
+  padding-top: 180rpx; /* CustomNavBar 预留空间 */
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #ddd;
+  border-top-color: #025028;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 比赛卡片 */
+.game-card {
+  display: flex;
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 左侧分数区域 */
+.score-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 30rpx;
+  min-width: 120rpx;
+}
+
+.score-circle {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* T台颜色 */
+.tee-black {
+  background-color: #333;
+}
+
+.tee-gold {
+  background-color: #F5C242;
+}
+
+.tee-blue {
+  background-color: #3498DB;
+}
+
+.tee-white {
+  background-color: #CCCCCC;
+}
+
+.tee-red {
+  background-color: #E74C3C;
+}
+
+.score-value {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.over-par {
+  margin-top: 12rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 右侧信息区域 */
+.info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.course-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.game-time {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 球员成绩区域 */
+.players-section {
+  margin-top: 20rpx;
+}
+
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+}
+
+.player-score {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-right: 12rpx;
+  min-width: 50rpx;
+}
+
+.player-name {
+  font-size: 26rpx;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.more-players {
+  font-size: 26rpx;
+  color: #025028;
+  margin-top: 12rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-top: 30rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: 12rpx;
+  text-align: center;
+}

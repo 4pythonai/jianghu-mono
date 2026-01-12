@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+    "PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
+  },
+  "navigationStyle": "custom"
+}

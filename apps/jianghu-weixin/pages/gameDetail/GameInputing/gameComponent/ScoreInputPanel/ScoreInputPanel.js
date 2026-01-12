@@ -184,9 +184,11 @@ Component({
 
             try {
                 // 4. 调用API
+                const par = this.data.currentHole?.par;
                 const scores = this.data.localScores.map(score => ({
                     ...score,
-                    hindex
+                    hindex,
+                    par
                 }));
                 const apiData = {
                     gameid: this.data.gameid,

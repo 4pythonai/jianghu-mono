@@ -1,0 +1,101 @@
+<wxs module="util">
+  // 根据T台颜色返回样式类
+  function getTeeClass(tee) {
+    if (!tee) return 'tee-white'
+    var t = tee.toUpperCase()
+    if (t === 'BLACK') return 'tee-black'
+    if (t === 'GOLD') return 'tee-gold'
+    if (t === 'BLUE') return 'tee-blue'
+    if (t === 'WHITE') return 'tee-white'
+    if (t === 'RED') return 'tee-red'
+    return 'tee-white'
+  }
+  // 格式化差杆显示
+  function formatOverPar(overPar) {
+    if (overPar > 0) return '+' + overPar
+    if (overPar < 0) return '' + overPar
+    return 'E'
+  }
+  // 格式化时间显示
+  function formatTime(timeStr) {
+    if (!timeStr) return ''
+    var reg = getRegExp('-', 'g')
+    var date = getDate(timeStr.replace(reg, '/'))
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+    var hours = date.getHours()
+    var minutes = date.getMinutes()
+    var minutesStr = minutes < 10 ? '0' + minutes : '' + minutes
+    var ampm = hours < 12 ? '上午' : '下午'
+    var displayHours = hours <= 12 ? hours : hours - 12
+    return year + '年' + month + '月' + day + '日 ' + ampm + ' ' + displayHours + ':' + minutesStr
+  }
+  module.exports = {
+    getTeeClass: getTeeClass,
+    formatOverPar: formatOverPar,
+    formatTime: formatTime
+  }
+</wxs>
+
+<view class="container">
+  <CustomNavBar title="我的历史成绩" showBack="{{true}}" />
+
+  <view class="page-content">
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading-container">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 历史成绩列表 -->
+    <block wx:elif="{{games.length > 0}}">
+      <view
+        wx:for="{{games}}"
+        wx:key="game_id"
+        class="game-card"
+        data-gameid="{{item.game_id}}"
+        bindtap="goToGameDetail"
+      >
+        <!-- 左侧分数圆形 -->
+        <view class="score-section">
+          <view class="score-circle {{util.getTeeClass(item.tee)}}">
+            <text class="score-value">{{item.total_score}}</text>
+          </view>
+          <text class="over-par">{{util.formatOverPar(item.over_par)}}</text>
+        </view>
+
+        <!-- 右侧信息 -->
+        <view class="info-section">
+          <text class="course-name">{{item.course_name}}</text>
+          <text class="game-time">{{util.formatTime(item.open_time)}}</text>
+
+          <!-- 球员成绩 -->
+          <view class="players-section">
+            <view class="players-grid">
+              <block
+                wx:for="{{item.players}}"
+                wx:for-item="player"
+                wx:key="userid"
+                wx:if="{{index < 4}}"
+              >
+                <view class="player-item">
+                  <text class="player-score">{{player.score}}</text>
+                  <text class="player-name">{{player.nickname}}</text>
+                </view>
+              </block>
+            </view>
+            <text wx:if="{{item.total_players > 4}}" class="more-players">共{{item.total_players}}人</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <image class="empty-icon" src="/assets/icons/icons8-history-48.png" mode="aspectFit"></image>
+      <text class="empty-text">暂无历史成绩</text>
+      <text class="empty-desc">完成比赛后这里会显示你的成绩记录</text>
+    </view>
+  </view>
+</view>

@@ -55,7 +55,7 @@ Page({
 
   // 跳转到江湖足迹
   goToFootprint() {
-    wx.navigateTo({ url: '/pages/footprint/footprint' })
+    wx.navigateTo({ url: '/pages/jianghu/jianghu' })
   },
 
   // 跳转到我的球队
@@ -65,12 +65,12 @@ Page({
 
   // 跳转到我的钱包
   goToWallet() {
-    wx.navigateTo({ url: '/pages/wallet/wallet' })
+    wx.navigateTo({ url: '/pages/my-wallet/my-wallet' })
   },
 
   // 跳转到小账本
   goToLedger() {
-    wx.navigateTo({ url: '/pages/ledger/ledger' })
+    wx.navigateTo({ url: '/pages/account-book/account-book' })
   },
 
   // 跳转到设置

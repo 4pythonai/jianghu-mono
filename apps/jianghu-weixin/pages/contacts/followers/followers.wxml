@@ -1,0 +1,52 @@
+<wxs src="/utils/image.wxs" module="image" />
+<view class="container">
+  <CustomNavBar title="我的粉丝" showBack="{{true}}" />
+
+  <!-- 用户列表 -->
+  <view class="user-list">
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading-container">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 用户列表 -->
+    <block wx:elif="{{users.length > 0}}">
+      <view
+        wx:for="{{users}}"
+        wx:key="userid"
+        class="user-item"
+        data-user="{{item}}"
+        bindtap="goToUserProfile"
+      >
+        <view class="user-content">
+          <view class="user-avatar-wrap">
+            <PlayerAvatar
+              avatar="{{image.imageUrl(item.avatar)}}"
+              userId="{{item.userid}}"
+              avatarOnly="{{true}}"
+              size="small"
+              clickable="{{false}}"
+            />
+          </view>
+          <view class="user-info">
+            <view class="user-name-row">
+              <text class="user-name">{{item.nickname || '未知用户'}}</text>
+              <text class="gender-icon male" wx:if="{{item.gender === 'male'}}">♂</text>
+              <text class="gender-icon female" wx:if="{{item.gender === 'female'}}">♀</text>
+            </view>
+            <text class="user-handicap" wx:if="{{item.handicap !== null && item.handicap !== undefined}}">江湖差点: {{item.handicap}}</text>
+            <text class="user-signature" wx:if="{{item.signature}}">{{item.signature}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view wx:else class="empty-state">
+      <view class="empty-icon">🔥</view>
+      <text class="empty-text">暂无粉丝</text>
+      <text class="empty-desc">多打球多分享，粉丝自然来</text>
+    </view>
+  </view>
+</view>

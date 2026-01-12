@@ -1,0 +1,134 @@
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-top: 180rpx; /* 为固定导航栏预留空间 */
+}
+
+.user-list {
+  background: #fff;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #025028;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20rpx;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 用户项 */
+.user-item {
+  background: #fff;
+  transition: background 0.2s ease;
+}
+
+.user-item:active {
+  background: #f5f5f5;
+}
+
+.user-content {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 30rpx;
+  gap: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.user-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  overflow: hidden;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.user-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gender-icon {
+  font-size: 26rpx;
+}
+
+.gender-icon.male {
+  color: #10aeff;
+}
+
+.gender-icon.female {
+  color: #ff6b9d;
+}
+
+.user-handicap {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.user-signature {
+  font-size: 24rpx;
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 30rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 26rpx;
+  color: #999;
+}

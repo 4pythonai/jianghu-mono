@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="添加球员" />
 <view class="page-container">
   <view class="content">
@@ -28,7 +29,7 @@
       <view wx:elif="{{qrcodeUrl}}" class="qrcode-display">
         <image
           class="qrcode-image"
-          src="{{qrcodeUrl}}"
+          src="{{image.imageUrl(qrcodeUrl)}}"
           mode="aspectFit"
           show-menu-by-longpress="true"
         ></image>

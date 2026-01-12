@@ -361,4 +361,213 @@ class User extends MY_Controller {
             return;
         }
     }
+
+
+    /**
+     * 获取通讯录概览数据
+     * 返回: 球队数量、关注数量、粉丝数量、非注册好友数量、好友列表
+     */
+    public function getContactsOverview() {
+        try {
+            $userid = $this->getUser();
+            if (!$userid) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            // 获取各类数量
+            $teams_count = $this->MUser->getTeamsCount($userid);
+            $followings_count = $this->MUser->getFollowingCount($userid);
+            $followers_count = $this->MUser->getFollowersCount($userid);
+            $ghosts_count = $this->MUser->getGhostUsersCount($userid);
+
+            // 获取好友列表 (互相关注)
+            $friends = $this->MUser->getFriends($userid);
+
+            echo json_encode([
+                'code' => 200,
+                'teams_count' => $teams_count,
+                'followings_count' => $followings_count,
+                'followers_count' => $followers_count,
+                'ghosts_count' => $ghosts_count,
+                'friends' => $friends,
+                'friends_count' => count($friends)
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    /**
+     * 获取我的粉丝列表 (关注我的人)
+     */
+    public function getFollowers() {
+        try {
+            $userid = $this->getUser();
+            if (!$userid) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $followers = $this->MUser->getFollowers($userid);
+
+            echo json_encode([
+                'code' => 200,
+                'followers' => $followers,
+                'total' => count($followers)
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    /**
+     * 获取我关注的人列表
+     */
+    public function getFollowings() {
+        try {
+            $userid = $this->getUser();
+            if (!$userid) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $followings = $this->MUser->getFollowings($userid);
+
+            echo json_encode([
+                'code' => 200,
+                'followings' => $followings,
+                'total' => count($followings)
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    /**
+     * 获取非注册好友(占位用户)列表
+     */
+    public function getGhostUsers() {
+        try {
+            $userid = $this->getUser();
+            if (!$userid) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $ghosts = $this->MUser->getGhostUsers($userid);
+
+            echo json_encode([
+                'code' => 200,
+                'ghosts' => $ghosts,
+                'total' => count($ghosts)
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    /**
+     * 删除非注册好友(占位用户)
+     */
+    public function deleteGhostUser() {
+        try {
+            $userid = $this->getUser();
+            if (!$userid) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $json_paras = json_decode(file_get_contents('php://input'), true);
+            $ghost_userid = isset($json_paras['ghost_userid']) ? intval($json_paras['ghost_userid']) : 0;
+
+            if (!$ghost_userid) {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '缺少用户ID'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $result = $this->MUser->deleteGhostUser($userid, $ghost_userid);
+
+            if ($result) {
+                echo json_encode([
+                    'code' => 200,
+                    'message' => '删除成功'
+                ], JSON_UNESCAPED_UNICODE);
+            } else {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '删除失败，该用户不存在或无权删除'
+                ], JSON_UNESCAPED_UNICODE);
+            }
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误'
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    /**
+     * 获取用户历史比赛成绩
+     */
+    public function getGameHistory() {
+        try {
+            $userid = $this->getUser();
+            if (!$userid) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $games = $this->MUser->getGameHistory($userid);
+
+            echo json_encode([
+                'code' => 200,
+                'games' => $games,
+                'total' => count($games)
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
 }

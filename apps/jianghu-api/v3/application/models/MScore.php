@@ -45,6 +45,7 @@ class MScore  extends CI_Model {
       'gir' => $score_data['gir'] ?? null,
       'fairway_hit' => $score_data['fairway_hit'] ?? null,
       'tee_shot_direction' => $score_data['tee_shot_direction'] ?? null,
+      'par' => $score_data['par'] ?? null,
       'recorder_type' => 'app'
     ];
   }

@@ -39,6 +39,24 @@ const user = {
 
     // 取消关注
     unfollowUser: (data, options) => request('/User/unfollowUser', data, options),
+
+    // 通讯录概览 (球队数、关注数、粉丝数、非注册好友数、好友列表)
+    getContactsOverview: (data, options) => request('/User/getContactsOverview', data, options),
+
+    // 获取我的粉丝列表
+    getFollowers: (data, options) => request('/User/getFollowers', data, options),
+
+    // 获取我关注的人列表
+    getFollowings: (data, options) => request('/User/getFollowings', data, options),
+
+    // 获取非注册好友(占位用户)列表
+    getGhostUsers: (data, options) => request('/User/getGhostUsers', data, options),
+
+    // 删除非注册好友
+    deleteGhostUser: (data, options) => request('/User/deleteGhostUser', data, options),
+
+    // 获取历史比赛成绩
+    getGameHistory: (data, options) => request('/User/getGameHistory', data, options),
 }
 
 export default user

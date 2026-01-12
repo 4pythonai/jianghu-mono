@@ -119,7 +119,8 @@ class MUser  extends CI_Model {
    * 排除：我拉黑的人 或 拉黑我的人
    */
   public function getFollowings($userid) {
-    $sql = "SELECT u.wx_nickname, u.avatar, u.openid, u.unionid, 
+    $sql = "SELECT u.wx_nickname, u.avatar, u.openid, u.unionid,
+                   u.handicap, u.signature,
                    f.fuserid as userid, f.nickname as remark_name, f.ifstar
             FROM t_follow f
             JOIN t_user u ON f.fuserid = u.id
@@ -333,5 +334,190 @@ class MUser  extends CI_Model {
     $this->db->where('userid', $userid);
     $this->db->where('fuserid', $target_userid);
     return $this->db->delete('t_follow');
+  }
+
+
+  /**
+   * 获取我的粉丝列表 (关注我的人)
+   * 
+   * 排除：我拉黑的人 或 拉黑我的人
+   */
+  public function getFollowers($userid) {
+    $sql = "SELECT u.id as userid, u.wx_nickname, u.avatar, u.openid, u.unionid,
+                   u.handicap, u.signature,
+                   f.nickname as remark_name, f.ifstar
+            FROM t_follow f
+            JOIN t_user u ON f.userid = u.id
+            WHERE f.fuserid = ?
+            -- 排除我拉黑的人
+            AND NOT EXISTS (
+                SELECT 1 FROM t_user_block b1 
+                WHERE b1.userid = ? AND b1.blocked_userid = f.userid
+            )
+            -- 排除拉黑我的人
+            AND NOT EXISTS (
+                SELECT 1 FROM t_user_block b2 
+                WHERE b2.userid = f.userid AND b2.blocked_userid = ?
+            )";
+
+    $followers = $this->db->query($sql, [$userid, $userid, $userid])->result_array();
+
+    foreach ($followers as &$follower) {
+      $follower['nickname'] = !empty($follower['wx_nickname']) ? $follower['wx_nickname'] : '未知用户';
+    }
+
+    return $followers;
+  }
+
+
+  /**
+   * 获取非注册好友(占位用户)列表
+   * 
+   * 条件：由当前用户创建 (helper_id = userid) 且 reg_type 为手动添加类型
+   */
+  public function getGhostUsers($userid) {
+    $sql = "SELECT id as userid, wx_nickname, nickname, avatar, mobile, addtime
+            FROM t_user
+            WHERE helper_id = ?
+            AND reg_type IN ('manualAdd', 'manualAddWithMobile')
+            ORDER BY addtime DESC";
+
+    $ghosts = $this->db->query($sql, [$userid])->result_array();
+
+    foreach ($ghosts as &$ghost) {
+      $ghost['nickname'] = !empty($ghost['nickname']) ? $ghost['nickname'] : $ghost['wx_nickname'];
+    }
+
+    return $ghosts;
+  }
+
+
+  /**
+   * 获取非注册好友数量
+   */
+  public function getGhostUsersCount($userid) {
+    $this->db->where('helper_id', $userid);
+    $this->db->where_in('reg_type', ['manualAdd', 'manualAddWithMobile']);
+    return $this->db->count_all_results('t_user');
+  }
+
+
+  /**
+   * 删除非注册好友(占位用户)
+   *
+   * 只能删除自己创建的占位用户
+   */
+  public function deleteGhostUser($userid, $ghost_userid) {
+    $this->db->where('id', $ghost_userid);
+    $this->db->where('helper_id', $userid);
+    $this->db->where_in('reg_type', ['manualAdd', 'manualAddWithMobile']);
+    return $this->db->delete('t_user');
+  }
+
+
+  /**
+   * 获取用户的历史比赛成绩
+   */
+  public function getGameHistory($userid) {
+    // 1. 获取用户参与过的所有已完成比赛
+    $sql = "
+      SELECT
+        g.id as game_id,
+        g.name as game_name,
+        g.open_time,
+        g.create_time,
+        c.name as course_name,
+        ggu.groupid,
+        ggu.tee
+      FROM t_game_group_user ggu
+      JOIN t_game g ON ggu.gameid = g.id
+      LEFT JOIN t_course c ON g.courseid = c.id
+      WHERE ggu.userid = ?
+        AND g.game_status = 'finished'
+      ORDER BY COALESCE(g.open_time, g.create_time) DESC
+    ";
+
+    $games = $this->db->query($sql, [$userid])->result_array();
+
+    $result = [];
+
+    foreach ($games as $game) {
+      $game_id = $game['game_id'];
+      $groupid = $game['groupid'];
+
+      // 2. 获取该用户在此比赛的总成绩
+      $score_sql = "
+        SELECT SUM(score) as total_score
+        FROM t_game_score
+        WHERE gameid = ? AND user_id = ?
+      ";
+      $user_score = $this->db->query($score_sql, [$game_id, $userid])->row_array();
+      $total_score = $user_score['total_score'] ? intval($user_score['total_score']) : null;
+
+      // 如果没有成绩记录，跳过
+      if ($total_score === null) {
+        continue;
+      }
+
+      // 3. 获取该比赛使用球场的标准杆
+      $par_sql = "
+        SELECT SUM(ch.par) as total_par
+        FROM t_game_court gc
+        JOIN t_court_hole ch ON gc.courtid = ch.courtid
+        WHERE gc.gameid = ?
+      ";
+      $par_result = $this->db->query($par_sql, [$game_id])->row_array();
+      $total_par = $par_result['total_par'] ? intval($par_result['total_par']) : 72;
+
+      // 4. 获取同组其他球员的成绩
+      $players_sql = "
+        SELECT
+          u.id as userid,
+          COALESCE(u.nickname, u.wx_nickname, '球友') as nickname,
+          SUM(gs.score) as score
+        FROM t_game_group_user ggu
+        JOIN t_user u ON ggu.userid = u.id
+        LEFT JOIN t_game_score gs ON gs.gameid = ggu.gameid AND gs.user_id = ggu.userid
+        WHERE ggu.gameid = ? AND ggu.groupid = ?
+        GROUP BY u.id, u.nickname, u.wx_nickname
+        HAVING SUM(gs.score) IS NOT NULL
+        ORDER BY SUM(gs.score) ASC
+      ";
+      $players = $this->db->query($players_sql, [$game_id, $groupid])->result_array();
+
+      // 格式化球员数据
+      $players_formatted = [];
+      foreach ($players as $player) {
+        $players_formatted[] = [
+          'userid' => intval($player['userid']),
+          'nickname' => $player['nickname'],
+          'score' => intval($player['score'])
+        ];
+      }
+
+      // 5. 获取比赛总人数
+      $count_sql = "
+        SELECT COUNT(DISTINCT userid) as total_players
+        FROM t_game_group_user
+        WHERE gameid = ?
+      ";
+      $count_result = $this->db->query($count_sql, [$game_id])->row_array();
+      $total_players = intval($count_result['total_players']);
+
+      $result[] = [
+        'game_id' => intval($game_id),
+        'game_name' => $game['game_name'],
+        'course_name' => $game['course_name'] ?: '未知球场',
+        'open_time' => $game['open_time'] ?: $game['create_time'],
+        'tee' => $game['tee'] ?: 'WHITE',
+        'total_score' => $total_score,
+        'total_par' => $total_par,
+        'over_par' => $total_score - $total_par,
+        'players' => $players_formatted,
+        'total_players' => $total_players
+      ];
+    }
+
+    return $result;
   }
 }
