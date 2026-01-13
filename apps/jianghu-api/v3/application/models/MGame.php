@@ -301,8 +301,17 @@ class MGame  extends CI_Model {
     $this->db->insert('t_game_group_user', $joinData);
     $response['data']['record_id'] = (int) $this->db->insert_id();
 
-    $this->db->where('id', $gameid)
-      ->update('t_game', ['game_status' => 'registering']);
+    // 检查当前比赛状态，如果已经是 "playing" 则不能改成 "registering"
+    $currentGame = $this->db->select('game_status')
+      ->from('t_game')
+      ->where('id', $gameid)
+      ->get()
+      ->row_array();
+
+    if ($currentGame && $currentGame['game_status'] !== 'playing') {
+      $this->db->where('id', $gameid)
+        ->update('t_game', ['game_status' => 'registering']);
+    }
 
     $response['data']['groupid'] = $targetGroupId;
     $this->writeWebSocketMsg($userid, $gameid);

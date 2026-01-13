@@ -1,22 +1,73 @@
 .container {
-	min-height: 100vh;
-	background-color: #ffffff;
-	padding-top: 200rpx; /* 预留导航栏空间 */
+    min-height: 100vh;
+    background-color: #f5f5f5;
+    padding-top: 180rpx;
+    padding-left: 30rpx;
+    padding-right: 30rpx;
+    box-sizing: border-box;
 }
 
-.header {
-	display: none; /* 使用 CustomNavBar 替代 */
+.card {
+    background-color: #ffffff;
+    border-radius: 16rpx;
+    padding: 20rpx 30rpx;
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
 }
 
-.content {
-	padding: 30rpx;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: calc(100vh - 200rpx);
+.card-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30rpx 0;
+    border-bottom: 1rpx solid #f0f0f0;
 }
 
-.build-text {
-	font-size: 36rpx;
-	color: #999;
+.card-item:last-child {
+    border-bottom: none;
+}
+
+.item-label {
+    font-size: 30rpx;
+    color: #333333;
+    font-weight: 500;
+}
+
+.item-value {
+    font-size: 30rpx;
+    color: #333333;
+    text-align: right;
+    max-width: 60%;
+}
+
+.item-value.placeholder {
+    color: #999999;
+}
+
+.location-btn {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+    background: var(--gradient-primary);
+    padding: 16rpx 28rpx;
+    border-radius: 32rpx;
+    color: #ffffff;
+    font-size: 26rpx;
+}
+
+.location-icon {
+    width: 32rpx;
+    height: 32rpx;
+    filter: brightness(0) invert(1);
+}
+
+.loading-text {
+    color: #999999;
+}
+
+.error-text {
+    color: #ff4d4f;
+}
+
+.button-area {
+    margin-top: 60rpx;
 }

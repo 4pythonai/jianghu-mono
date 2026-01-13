@@ -788,7 +788,8 @@ Page({
         // 立即创建空白游戏
         try {
             const result = await app.api.game.createBlankGame({
-                uuid: gameUuid
+                uuid: gameUuid,
+                create_source: 'common'
             })
 
             if (result?.code === 200) {

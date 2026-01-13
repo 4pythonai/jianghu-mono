@@ -3,7 +3,6 @@
     flex-direction: column;
     min-height: 100vh;
     background: var(--bg-page, #f7f8fa);
-    padding-top: 180rpx; /* CustomNavBar 预留空间 */
 }
 
 .tab-content {

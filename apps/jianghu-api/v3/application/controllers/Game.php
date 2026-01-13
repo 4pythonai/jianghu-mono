@@ -56,6 +56,7 @@ class Game extends MY_Controller {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $userid = $this->getUser();
         $uuid = $json_paras['uuid'];
+        $create_source = isset($json_paras['create_source']) ? $json_paras['create_source'] : null;
         $row = [];
         $row['uuid'] = $uuid;
         $row['creatorid'] = $userid;
@@ -64,6 +65,7 @@ class Game extends MY_Controller {
         $row['scoring_type'] = 'hole';
         $row['privacy_password'] = null;
         $row['game_status'] = 'playing';
+        $row['create_source'] = $create_source;
         $this->db->insert('t_game', $row);
         $gameid = $this->db->insert_id();
         echo json_encode(['code' => 200, 'uuid' => $uuid, 'gameid' => $gameid], JSON_UNESCAPED_UNICODE);

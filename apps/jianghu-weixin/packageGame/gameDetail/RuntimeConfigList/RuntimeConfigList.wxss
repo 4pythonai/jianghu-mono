@@ -1,7 +1,4 @@
 /* 游戏(Gamble)模块样式 */
-page {
-	padding-top: 180rpx; /* CustomNavBar 预留空间 */
-}
 
 .add-more-container {
 	margin-top: 30rpx;

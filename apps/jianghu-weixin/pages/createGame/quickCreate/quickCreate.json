@@ -1,4 +1,7 @@
 {
+	"navigationStyle": "custom",
 	"navigationBarTitleText": "快速创建",
-	"usingComponents": {}
+	"usingComponents": {
+		"CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+	}
 }
