@@ -1,3 +1,8 @@
+<?php
+// 动态计算 canvas 高度
+$year_count = count($years);
+$canvas_height = 800 + ($year_count * 150);
+?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -7,7 +12,19 @@
 <script src="https://qiaoyincapital.com/js/raphael.js"></script>
 </head>
 <style>
- 
+
+/* 文字字体设置 - 类似微软雅黑风格 */
+.bgtxt, .grytxt, .smtxt, .yeartxt, .dayleft, .begin, #shichen, .button_class {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "PingFang SC",
+    "Hiragino Sans GB",
+    "Microsoft YaHei",
+    "Source Han Sans SC",
+    "Noto Sans CJK SC",
+    sans-serif;
+}
 
 .hidden{
   display: none;
@@ -196,8 +213,9 @@ function getWidth() {
  
 
 window.onload = function() {
-	 
-     var paper = new Raphael(document.getElementById('canvas_container'), 400, 2500);
+
+     var canvasHeight = <?php echo $canvas_height; ?>;
+     var paper = new Raphael(document.getElementById('canvas_container'), 400, canvasHeight);
      $("svg").css('position', 'absolute');
      $("svg").css('background', 'transparent');
      
@@ -362,10 +380,9 @@ window.onload = function() {
 
 </script>
 
-
 <body style="background-color:#f2f2f2;">
- 
-  <div  style="background-color:#f2f2f2;z-index:2;width:360px;height:2000px;" id='canvas_container'>
+
+  <div style="background-color:#f2f2f2;z-index:2;width:360px;height:<?php echo $canvas_height; ?>px;" id='canvas_container'>
 
 
 
