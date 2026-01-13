@@ -431,7 +431,7 @@ class MUser  extends CI_Model {
         ggu.tee
       FROM t_game_group_user ggu
       JOIN t_game g ON ggu.gameid = g.id
-      LEFT JOIN t_course c ON g.courseid = c.id
+      LEFT JOIN t_course c ON g.courseid = c.courseid
       WHERE ggu.userid = ?
         AND g.game_status = 'finished'
       ORDER BY COALESCE(g.open_time, g.create_time) DESC

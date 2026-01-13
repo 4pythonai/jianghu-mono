@@ -13,12 +13,22 @@ Page({
     needBindPhone: false,
     showAuthButton: true,
     tempNickname: '',
-    hasNotification: false
+    hasNotification: false,
+    notificationTop: 0
   },
 
   onLoad() {
+    this.initNotificationPosition()
     this.syncUserState()
     app.on('loginSuccess', () => this.syncUserState())
+  },
+
+  initNotificationPosition() {
+    const menuButton = wx.getMenuButtonBoundingClientRect()
+    // 铃铛图标高度 48rpx ≈ 24px，使其与胶囊垂直居中对齐
+    const iconHeight = 24
+    const notificationTop = menuButton.top + (menuButton.height - iconHeight) / 2
+    this.setData({ notificationTop })
   },
 
   onShow() {

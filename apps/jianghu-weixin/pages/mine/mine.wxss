@@ -28,7 +28,6 @@ page {
 /* 通知图标 */
 .notification-icon {
   position: absolute;
-  top: 40rpx;
   left: 30rpx;
   width: 48rpx;
   height: 48rpx;

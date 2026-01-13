@@ -373,6 +373,13 @@ class Game extends MY_Controller {
         $hole_unique_key = $json_paras['holeUniqueKey'];
         $scores = $json_paras['scores'];
         $this->MScore->saveScore($game_id, $group_id, $hole_unique_key, $hindex, $scores);
+
+        // 检查是否所有洞都完成记分，如果是则自动结束比赛
+        $stats = $this->MDetailGame->getGameStats($game_id);
+        if ($stats['completed_holes'] >= $stats['total_holes']) {
+            $this->MGame->finishGame($game_id);
+        }
+
         echo json_encode(['code' => 200, 'message' => '保存成功'], JSON_UNESCAPED_UNICODE);
     }
 

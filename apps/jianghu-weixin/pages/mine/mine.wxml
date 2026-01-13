@@ -3,15 +3,19 @@
   <!-- 顶部用户信息区域 -->
   <view class="user-header">
     <!-- 通知图标 -->
-    <view class="notification-icon">
+    <view class="notification-icon" style="top: {{ notificationTop }}px;">
       <image src="/assets/icons/icons8-notification-48.png" mode="aspectFit"></image>
       <view class="notification-dot" wx:if="{{ hasNotification }}"></view>
     </view>
-    
+
     <!-- 用户信息卡片 -->
     <view class="user-card" bindtap="goToProfile">
       <view class="avatar-container">
-        <image class="avatar" src="{{ image.imageUrl(userInfo.avatar) || '/images/default-avatar.png' }}" mode="aspectFill"></image>
+        <image
+          class="avatar"
+          src="{{ image.imageUrl(userInfo.avatar) || '/images/default-avatar.png' }}"
+          mode="aspectFill"
+        ></image>
       </view>
       <view class="user-details">
         <view class="nickname-row">
@@ -25,7 +29,11 @@
         </view>
       </view>
       <view class="qrcode-container">
-        <image class="qrcode" src="{{ userInfo.qrcode || '/images/default-qrcode.png' }}" mode="aspectFit"></image>
+        <image
+          class="qrcode"
+          src="{{ userInfo.qrcode || '/assets/icons/icons8-qrcode-48.png' }}"
+          mode="aspectFit"
+        ></image>
       </view>
       <view class="arrow-icon">
         <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
@@ -38,13 +46,24 @@
     <view class="auth-title">完善个人信息</view>
     <view class="auth-form">
       <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-        <image class="preview-avatar" src="{{ image.imageUrl(userInfo.avatar) || '/images/default-avatar.png' }}"></image>
+        <image
+          class="preview-avatar"
+          src="{{ image.imageUrl(userInfo.avatar) || '/images/default-avatar.png' }}"
+        ></image>
         <text class="avatar-text">点击选择头像</text>
       </button>
       <view class="nickname-input-wrapper">
         <text class="input-label">昵称:</text>
         <view class="nickname-input-container">
-          <input class="nickname-input" type="nickname" value="{{ tempNickname || userInfo.nickname || '' }}" placeholder="请输入昵称" maxlength="20" bindinput="onNicknameInput" bindchange="onNicknameChange" />
+          <input
+            class="nickname-input"
+            type="nickname"
+            value="{{ tempNickname || userInfo.nickname || '' }}"
+            placeholder="请输入昵称"
+            maxlength="20"
+            bindinput="onNicknameInput"
+            bindchange="onNicknameChange"
+          />
         </view>
       </view>
       <button class="confirm-btn" bindtap="confirmUserInfo">保存昵称</button>
@@ -52,9 +71,12 @@
   </view>
 
   <!-- 绑定手机号按钮 -->
-  <button class="phone-btn" wx:if="{{ needBindPhone && userInfo }}" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">
-    绑定手机号码
-  </button>
+  <button
+    class="phone-btn"
+    wx:if="{{ needBindPhone && userInfo }}"
+    open-type="getPhoneNumber"
+    bindgetphonenumber="getPhoneNumber"
+  >绑定手机号码</button>
 
   <!-- 功能菜单组1 -->
   <view class="menu-group">

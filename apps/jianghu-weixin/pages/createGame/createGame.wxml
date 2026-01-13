@@ -29,7 +29,7 @@
         <view class="menu-item">
           <image
             class="menu-icon"
-            src="/assets/icons/icons8-team-48.png"
+            src="/assets/icons/icons8-single-team.png"
             mode="aspectFit"
             binderror="onImageError"
             data-img="team"
@@ -41,7 +41,7 @@
         <view class="menu-item">
           <image
             class="menu-icon"
-            src="/assets/icons/icons8-team-48.png"
+            src="/assets/icons/icons8-cross-teams-48.png"
             mode="aspectFit"
             binderror="onImageError"
             data-img="crossTeam"
