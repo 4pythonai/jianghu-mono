@@ -5,7 +5,7 @@
         <view class="menu-item">
           <image
             class="menu-icon"
-            src="/images/vectors/quick.png"
+            src="/assets/icons/icons8-quick-48.png"
             mode="aspectFit"
             binderror="onImageError"
             data-img="quick"
@@ -17,7 +17,7 @@
         <view class="menu-item">
           <image
             class="menu-icon"
-            src="/images/vectors/common.png"
+            src="/assets/icons/icons8-common-48.png"
             mode="aspectFit"
             binderror="onImageError"
             data-img="common"

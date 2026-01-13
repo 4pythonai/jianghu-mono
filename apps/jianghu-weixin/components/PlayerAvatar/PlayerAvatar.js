@@ -119,7 +119,7 @@ Component({
                     })
                 } else {
                     wx.navigateTo({
-                        url: `/pages/user-profile/user-profile?userId=${this.properties.userId}`
+                        url: `/packagePlayer/user-profile/user-profile?userId=${this.properties.userId}`
                     })
                 }
                 return

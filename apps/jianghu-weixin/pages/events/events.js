@@ -152,11 +152,11 @@ Page({
             const gameType = teamGameInfo.game_type
             // 将 event 数据存入缓存，供 TeamGameDetail 使用
             wx.setStorageSync('teamGameEventData', event)
-            navigationHelper.navigateTo(`/pages/team-game/TeamGameDetail?game_id=${gameid}&game_type=${gameType}`)
+            navigationHelper.navigateTo(`/packageTeam/team-game/TeamGameDetail?game_id=${gameid}&game_type=${gameType}`)
             return
         }
 
         // 普通比赛跳转到记分卡页面
-        navigationHelper.navigateTo(`/pages/gameDetail/score/score?gameid=${gameid}`)
+        navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}`)
     }
 })

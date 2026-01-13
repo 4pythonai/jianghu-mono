@@ -55,22 +55,22 @@ Page({
 
   // 跳转到通信录
   goToContacts() {
-    wx.navigateTo({ url: '/pages/contacts/contacts' })
+    wx.navigateTo({ url: '/packagePlayer/contacts/contacts' })
   },
 
   // 跳转到历史成绩
   goToHistory() {
-    wx.navigateTo({ url: '/pages/history/history' })
+    wx.navigateTo({ url: '/packagePlayer/history/history' })
   },
 
   // 跳转到江湖足迹
   goToFootprint() {
-    wx.navigateTo({ url: '/pages/jianghu/jianghu' })
+    wx.navigateTo({ url: '/packagePlayer/jianghu/jianghu' })
   },
 
   // 跳转到我的球队
   goToMyTeam() {
-    wx.navigateTo({ url: '/pages/my-team/my-team' })
+    wx.navigateTo({ url: '/packageTeam/my-team/my-team' })
   },
 
   // 跳转到我的钱包

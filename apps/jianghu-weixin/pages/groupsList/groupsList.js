@@ -82,7 +82,7 @@ Page({
         console.log('📝 选择分组:', { gameid, groupid, groupName });
 
         wx.navigateTo({
-            url: `/pages/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`
+            url: `/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`
         });
     },
 

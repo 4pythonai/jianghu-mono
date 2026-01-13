@@ -1,0 +1,336 @@
+/* 分组配置页面样式 */
+
+.page-container {
+    min-height: 100vh;
+    background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    padding-top: 180rpx; /* CustomNavBar 预留空间 */
+    padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+/* ========== 已选球员区域 ========== */
+.selected-section {
+    background: #fff;
+    padding: 24rpx 32rpx;
+    margin-bottom: 16rpx;
+}
+
+.section-title {
+    font-size: 28rpx;
+    color: #666;
+    margin-bottom: 20rpx;
+}
+
+.selected-players {
+    display: flex;
+    gap: 20rpx;
+}
+
+.player-card {
+    width: 150rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.player-card.selected {
+    background: #f8f8f8;
+    border-radius: 12rpx;
+    padding: 16rpx 8rpx;
+}
+
+.player-card.empty {
+    background: #fafafa;
+    border: 2rpx dashed #ddd;
+    border-radius: 12rpx;
+    padding: 24rpx 8rpx;
+    justify-content: center;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 4rpx;
+    right: 4rpx;
+    width: 36rpx;
+    height: 36rpx;
+    background: rgba(255, 77, 79, 0.9);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 24rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.player-card .player-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    margin-bottom: 8rpx;
+}
+
+.player-card .player-name {
+    font-size: 24rpx;
+    color: #333;
+    max-width: 130rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.player-card .player-team {
+    font-size: 20rpx;
+    color: #999;
+    max-width: 130rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.empty-icon {
+    font-size: 48rpx;
+    color: #ccc;
+    margin-bottom: 8rpx;
+}
+
+.empty-text {
+    font-size: 24rpx;
+    color: #ccc;
+}
+
+/* ========== TAG 标签栏 ========== */
+.tag-bar {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1rpx solid #eee;
+}
+
+.tag-scroll {
+    flex: 1;
+    white-space: nowrap;
+}
+
+.tag-list {
+    display: inline-flex;
+    padding: 0 16rpx;
+}
+
+.tag-item {
+    position: relative;
+    padding: 24rpx 28rpx;
+    font-size: 28rpx;
+    color: #666;
+}
+
+.tag-item.active {
+    color: #1a7f37;
+    font-weight: 500;
+}
+
+.tag-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40rpx;
+    height: 4rpx;
+    background: #1a7f37;
+    border-radius: 2rpx;
+}
+
+.tag-more {
+    padding: 24rpx 32rpx;
+    border-left: 1rpx solid #eee;
+}
+
+.more-icon {
+    font-size: 32rpx;
+    color: #666;
+    font-weight: bold;
+}
+
+/* ========== 球员选择区域 ========== */
+.player-list {
+    flex: 1;
+    background: #fff;
+    margin-top: 16rpx;
+}
+
+.player-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24rpx;
+    padding: 24rpx;
+}
+
+.player-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16rpx;
+    border-radius: 12rpx;
+    background: #fafafa;
+}
+
+.player-item.disabled {
+    opacity: 0.5;
+}
+
+.checkbox {
+    width: 40rpx;
+    height: 40rpx;
+    border: 2rpx solid #ddd;
+    border-radius: 6rpx;
+    margin-bottom: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24rpx;
+    color: #fff;
+}
+
+.checkbox.checked {
+    background: #1a7f37;
+    border-color: #1a7f37;
+}
+
+.checkbox.disabled {
+    background: #ccc;
+    border-color: #ccc;
+}
+
+.player-item .player-avatar {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50%;
+    margin-bottom: 12rpx;
+}
+
+.player-item .player-name {
+    font-size: 26rpx;
+    color: #333;
+    max-width: 180rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.empty-state {
+    padding: 80rpx 0;
+    text-align: center;
+    color: #999;
+    font-size: 28rpx;
+}
+
+/* ========== 底部操作栏 ========== */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: 24rpx;
+    padding: 20rpx 32rpx;
+    padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+    background: #fff;
+    box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.btn-cancel,
+.btn-confirm {
+    flex: 1;
+    height: 88rpx;
+    border-radius: 12rpx;
+    font-size: 32rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cancel {
+    background: #f0f0f0;
+    color: #666;
+}
+
+.btn-confirm {
+    background: #1a7f37;
+    color: #fff;
+}
+
+/* ========== TAG 选择弹窗 ========== */
+.popup-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+}
+
+.popup-content {
+    width: 100%;
+    background: #fff;
+    border-radius: 24rpx 24rpx 0 0;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32rpx;
+    border-bottom: 1rpx solid #eee;
+}
+
+.popup-title {
+    font-size: 32rpx;
+    font-weight: 500;
+    color: #333;
+}
+
+.popup-close {
+    font-size: 40rpx;
+    color: #999;
+    padding: 0 16rpx;
+}
+
+.popup-list {
+    flex: 1;
+    max-height: 50vh;
+}
+
+.popup-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32rpx;
+    border-bottom: 1rpx solid #f5f5f5;
+    font-size: 30rpx;
+    color: #333;
+}
+
+.popup-item.active {
+    color: #1a7f37;
+    font-weight: 500;
+}
+
+.check-icon {
+    color: #1a7f37;
+    font-size: 32rpx;
+}

@@ -162,13 +162,13 @@ Page({
         const navigationHelper = require('@/utils/navigationHelper.js')
 
         if (!groups || groups.length === 0) {
-            await navigationHelper.navigateTo(`/pages/gameDetail/score/score?gameid=${gameid}`)
+            await navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}`)
             return
         }
 
         if (groups.length === 1) {
             const groupid = groups[0]?.groupid
-            await navigationHelper.navigateTo(`/pages/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`)
+            await navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`)
             return
         }
 

@@ -165,7 +165,7 @@ Component({
 
             if (!processedGroups || processedGroups.length === 0) {
                 console.warn('⚠️ 游戏没有分组数据, 直接进入游戏详情');
-                navigationHelper.navigateTo(`/pages/gameDetail/score/score?gameid=${gameid}`)
+                navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}`)
                     .catch(err => {
                         console.error('跳转游戏详情失败:', err);
                         wx.showToast({ title: '页面跳转失败', icon: 'none' });
@@ -176,7 +176,7 @@ Component({
             if (processedGroups.length === 1) {
                 const groupid = processedGroups[0]?.groupid;
                 console.log('📍 单组游戏, 直接进入详情页面', { gameid, groupid });
-                navigationHelper.navigateTo(`/pages/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`)
+                navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`)
                     .catch(err => {
                         console.error('跳转游戏详情失败:', err);
                         wx.showToast({ title: '页面跳转失败', icon: 'none' });

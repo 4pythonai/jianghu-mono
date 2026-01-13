@@ -4,69 +4,113 @@
 		"PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
 	},
 	"pages": [
-  "pages/live/live",
-  "pages/events/events",
-  "pages/createGame/createGame",
-  "pages/community/community",
-  "pages/mine/mine",
-  "pages/myprofile/myprofile",
-  "pages/gameDetail/gameDetail",
-		"pages/gameDetail/score/score",
-		"pages/gameDetail/bbs/bbs",
-		"pages/gameDetail/gamble/gamble",
-		"pages/groupsList/groupsList",
+		"pages/live/live",
+		"pages/events/events",
+		"pages/createGame/createGame",
+		"pages/community/community",
+		"pages/mine/mine",
 		"pages/private-access/private-access",
-		"pages/gameDetail/RuntimeConfigList/RuntimeConfigList",
+		"pages/groupsList/groupsList",
+		"pages/myprofile/myprofile",
 		"pages/createGame/moreCreate/moreCreate",
 		"pages/createGame/commonCreate/commonCreate",
 		"pages/createGame/quickCreate/quickCreate",
-		"pages/createTeamGame/createTeamGame",
-		"pages/createTeamGame/teamGameForm/teamGameForm",
-		"pages/createCrossTeamGame/createCrossTeamGame",
-		"pages/createCrossTeamGame/crossTeamGameForm/crossTeamGameForm",
 		"pages/course-select/course-select",
 		"pages/court-select/court-select",
-		"pages/player-select/player-select",
-		"pages/player-select/combineSelect/combineSelect",
-		"pages/player-select/friendSelect/friendSelect",
-		"pages/player-select/qrcode/qrcode",
-		"pages/player-select/manualAdd/manualAdd",
-		"pages/player-select/wxShare/wxShare",
-		"pages/player-select/wxForward/wxForward",
-		"pages/player-select/addPlayerHub/addPlayerHub",
 		"pages/tland-select/tland-select",
-		"pages/gameOperation/feedback/feedback",
-		"pages/gameOperation/scorecard/scorecard",
-		"pages/gameOperation/poster/poster",
-		"pages/gameOperation/personalBilingBook/personalBilingBook",
-		"pages/gameOperation/socreStyle/socreStyle",
-		"pages/rules/RuleEditer/RuleEditer",
-		"pages/gambleRuntimeConfig/addRuntime/addRuntime",
-		"pages/gambleRuntimeConfig/editRuntime/editRuntime",
-		"pages/gambleResult/gambleResult",
-		"pages/rules/rules",
-		"pages/rules/myRules/myRules",
-		"pages/rules/addRule/addRule",
-		"pages/my-team/my-team",
-		"pages/team-manage/team-manage",
-		"pages/team-members/team-members",
-		"pages/team-invite/team-invite",
-		"pages/team-admin/team-admin",
-		"pages/team-transfer/team-transfer",
-		"pages/create-team/create-team",
-		"pages/team-game/TeamGameDetail",
-		"pages/group-config/group-config",
-		"pages/spectators/spectators",
-		"pages/user-profile/user-profile",
-		"pages/contacts/contacts",
-		"pages/contacts/followings/followings",
-		"pages/contacts/followers/followers",
-		"pages/contacts/ghosts/ghosts",
-		"pages/history/history",
-		"pages/jianghu/jianghu",
 		"pages/my-wallet/my-wallet",
 		"pages/account-book/account-book"
 	],
+	"subPackages": [
+		{
+			"root": "packageGame",
+			"name": "game",
+			"pages": [
+				"gameDetail/gameDetail",
+				"gameDetail/score/score",
+				"gameDetail/bbs/bbs",
+				"gameDetail/gamble/gamble",
+				"gameDetail/RuntimeConfigList/RuntimeConfigList",
+				"gambleResult/gambleResult",
+				"gameOperation/feedback/feedback",
+				"gameOperation/scorecard/scorecard",
+				"gameOperation/poster/poster",
+				"gameOperation/personalBilingBook/personalBilingBook",
+				"gameOperation/socreStyle/socreStyle",
+				"spectators/spectators",
+				"group-config/group-config"
+			]
+		},
+		{
+			"root": "packageGamble",
+			"name": "gamble",
+			"pages": [
+				"gambleRuntimeConfig/addRuntime/addRuntime",
+				"gambleRuntimeConfig/editRuntime/editRuntime",
+				"rules/rules",
+				"rules/myRules/myRules",
+				"rules/addRule/addRule",
+				"rules/RuleEditer/RuleEditer"
+			]
+		},
+		{
+			"root": "packagePlayer",
+			"name": "player",
+			"pages": [
+				"player-select/player-select",
+				"player-select/combineSelect/combineSelect",
+				"player-select/friendSelect/friendSelect",
+				"player-select/qrcode/qrcode",
+				"player-select/manualAdd/manualAdd",
+				"player-select/wxShare/wxShare",
+				"player-select/wxForward/wxForward",
+				"player-select/addPlayerHub/addPlayerHub",
+				"contacts/contacts",
+				"contacts/followings/followings",
+				"contacts/followers/followers",
+				"contacts/ghosts/ghosts",
+				"user-profile/user-profile",
+				"history/history",
+				"jianghu/jianghu"
+			]
+		},
+		{
+			"root": "packageTeam",
+			"name": "team",
+			"pages": [
+				"my-team/my-team",
+				"team-manage/team-manage",
+				"team-members/team-members",
+				"team-invite/team-invite",
+				"team-admin/team-admin",
+				"team-transfer/team-transfer",
+				"create-team/create-team",
+				"team-game/TeamGameDetail",
+				"createTeamGame/createTeamGame",
+				"createTeamGame/teamGameForm/teamGameForm",
+				"createCrossTeamGame/createCrossTeamGame",
+				"createCrossTeamGame/crossTeamGameForm/crossTeamGameForm"
+			]
+		}
+	],
+	"preloadRule": {
+		"pages/live/live": {
+			"network": "all",
+			"packages": ["game"]
+		},
+		"pages/events/events": {
+			"network": "all",
+			"packages": ["game", "team"]
+		},
+		"pages/createGame/createGame": {
+			"network": "all",
+			"packages": ["player", "team"]
+		},
+		"pages/mine/mine": {
+			"network": "all",
+			"packages": ["player", "team"]
+		}
+	},
 	"window": {
 		"navigationBarTitleText": "golfmimi",
 		"navigationBarTextStyle": "black",

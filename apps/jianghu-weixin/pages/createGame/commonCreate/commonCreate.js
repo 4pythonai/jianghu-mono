@@ -585,7 +585,7 @@ Page({
         if (gameName) {
             query.push(`title=${encodeURIComponent(gameName)}`);
         }
-        return `/pages/player-select/wxShare/wxShare?${query.join('&')}`;
+        return `/packagePlayer/player-select/wxShare/wxShare?${query.join('&')}`;
     },
 
     /**
@@ -628,7 +628,7 @@ Page({
 
         // 跳转到微信分享预览页面
         const { uuid, gameid, formData, selectedCourse } = this.data;
-        let url = `/pages/player-select/wxForward/wxForward?uuid=${uuid}`;
+        let url = `/packagePlayer/player-select/wxForward/wxForward?uuid=${uuid}`;
 
         if (gameid) {
             url += `&gameid=${gameid}`;
@@ -661,7 +661,7 @@ Page({
         }
 
         const { uuid, gameid, formData } = this.data;
-        let url = `/pages/player-select/qrcode/qrcode?uuid=${uuid}`;
+        let url = `/packagePlayer/player-select/qrcode/qrcode?uuid=${uuid}`;
         if (gameid) {
             url += `&gameid=${gameid}`;
         }
@@ -702,7 +702,7 @@ Page({
 
         // 所有验证通过，进入记分页面
         wx.navigateTo({
-            url: `/pages/gameDetail/score/score?gameid=${this.data.gameid}`
+            url: `/packageGame/gameDetail/score/score?gameid=${this.data.gameid}`
         });
     },
 

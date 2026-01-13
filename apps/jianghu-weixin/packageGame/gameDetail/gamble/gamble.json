@@ -1,0 +1,9 @@
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "比赛详情",
+    "usingComponents": {
+        "GameDetailTabs": "/components/GameDetailTabs/GameDetailTabs",
+        "GambleSummary": "/packageGame/gameDetail/GambleSummary/GambleSummary",
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+    }
+}

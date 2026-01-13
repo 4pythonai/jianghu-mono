@@ -1,6 +1,6 @@
 const DEFAULT_TABS = [
-    { id: 'myRules', label: '我的规则', url: '/pages/rules/myRules/myRules' },
-    { id: 'addRule', label: '添加规则', url: '/pages/rules/addRule/addRule' }
+    { id: 'myRules', label: '我的规则', url: '/packageGamble/rules/myRules/myRules' },
+    { id: 'addRule', label: '添加规则', url: '/packageGamble/rules/addRule/addRule' }
 ];
 
 Component({

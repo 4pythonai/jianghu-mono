@@ -1,0 +1,183 @@
+.container {
+  min-height: 100vh;
+  background: var(--common-bg, #f5f5f5);
+  padding-top: 180rpx; /* CustomNavBar 预留空间 */
+}
+
+.page-content {
+  padding: 24rpx;
+}
+
+/* 搜索栏 */
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 20rpx 24rpx;
+  border-radius: 40rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.search-icon {
+  width: 40rpx;
+  height: 40rpx;
+  opacity: 0.4;
+  margin-right: 16rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.search-btn {
+  padding: 12rpx 24rpx;
+  background: var(--primary-green-dark, #2e7d32);
+  border-radius: 24rpx;
+  margin-left: 16rpx;
+}
+
+.search-btn text {
+  font-size: 26rpx;
+  color: #fff;
+}
+
+.search-btn:active {
+  opacity: 0.8;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #e5e5e5;
+  border-top-color: var(--primary-green-dark, #2e7d32);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state, .hint-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon, .hint-icon {
+  width: 120rpx;
+  height: 120rpx;
+  opacity: 0.3;
+  margin-bottom: 24rpx;
+}
+
+.empty-text, .hint-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.empty-hint {
+  font-size: 24rpx;
+  color: #ccc;
+  margin-top: 12rpx;
+}
+
+/* 用户列表 */
+.user-list {
+  margin-top: 16rpx;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 24rpx;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.user-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #f5f5f5;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+  margin-left: 20rpx;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.user-handicap {
+  font-size: 24rpx;
+  color: var(--primary-green-dark, #2e7d32);
+  background: #e8f5e9;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.user-mobile {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 邀请按钮 */
+.invite-btn {
+  padding: 16rpx 32rpx;
+  background: var(--primary-green-dark, #2e7d32);
+  border-radius: 32rpx;
+  margin-left: 16rpx;
+}
+
+.invite-btn text {
+  font-size: 26rpx;
+  color: #fff;
+}
+
+.invite-btn:active {
+  opacity: 0.8;
+}
+
+.invite-btn.disabled {
+  background: #ccc;
+}

@@ -6,6 +6,7 @@
     align-items: center;
     justify-content: flex-start;
     padding: 0 60rpx;
+    padding-top: 180rpx; /* CustomNavBar 预留空间 */
     box-sizing: border-box;
     position: relative;
 }

@@ -1,7 +1,7 @@
 const DEFAULT_TABS = [
-    { id: 'score', label: '记分', url: '/pages/gameDetail/score/score' },
-    { id: 'bbs', label: '互动', url: '/pages/gameDetail/bbs/bbs' },
-    { id: 'gamble', label: '游戏', url: '/pages/gameDetail/gamble/gamble' }
+    { id: 'score', label: '记分', url: '/packageGame/gameDetail/score/score' },
+    { id: 'bbs', label: '互动', url: '/packageGame/gameDetail/bbs/bbs' },
+    { id: 'gamble', label: '游戏', url: '/packageGame/gameDetail/gamble/gamble' }
 ];
 
 Component({

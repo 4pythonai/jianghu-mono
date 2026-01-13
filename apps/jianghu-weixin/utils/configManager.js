@@ -324,16 +324,16 @@ class ConfigManager {
                     let targetUrl;
                     if (redirectTo === 'rules') {
                         // 明确指定跳转到规则页面
-                        targetUrl = `/pages/rules/rules?activeTab=0`;
+                        targetUrl = `/packageGamble/rules/rules?activeTab=0`;
                     } else if (redirectTo === 'gameDetail') {
                         // 明确指定跳转到游戏详情页面
-                        targetUrl = `/pages/gameDetail/gamble/gamble?gameid=${gameid}${groupid ? `&groupid=${groupid}` : ''}`;
+                        targetUrl = `/packageGame/gameDetail/gamble/gamble?gameid=${gameid}${groupid ? `&groupid=${groupid}` : ''}`;
                     } else {
                         // 自动判断：新增模式下跳转到规则页面，编辑模式下跳转到游戏详情页面
                         if (isEdit) {
-                            targetUrl = `/pages/gameDetail/gamble/gamble?gameid=${gameid}${groupid ? `&groupid=${groupid}` : ''}`;
+                            targetUrl = `/packageGame/gameDetail/gamble/gamble?gameid=${gameid}${groupid ? `&groupid=${groupid}` : ''}`;
                         } else {
-                            targetUrl = `/pages/rules/rules?activeTab=0`;
+                            targetUrl = `/packageGamble/rules/rules?activeTab=0`;
                         }
                     }
 

@@ -1,0 +1,11 @@
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "比赛详情",
+    "usingComponents": {
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+        "GameDetailTabs": "/components/GameDetailTabs/GameDetailTabs",
+        "ScoreTable": "/packageGame/gameDetail/GameInputing/gameComponent/ScoreTable/ScoreTable",
+        "GameActionBar": "/packageGame/gameDetail/GameInputing/gameComponent/GameActionBar/GameActionBar",
+        "ScoreInputPanel": "/packageGame/gameDetail/GameInputing/gameComponent/ScoreInputPanel/ScoreInputPanel"
+    }
+}

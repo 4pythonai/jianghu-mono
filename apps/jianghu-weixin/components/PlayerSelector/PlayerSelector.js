@@ -150,7 +150,7 @@ Component({
             const gameName = commonCreatePage?.data?.formData?.gameName || '';
 
             // 跳转到玩家选择页面, 传递组索引、位置索引和 UUID
-            let url = `/pages/player-select/player-select?groupIndex=${this.properties.groupIndex}&slotIndex=${slotIndex}`;
+            let url = `/packagePlayer/player-select/player-select?groupIndex=${this.properties.groupIndex}&slotIndex=${slotIndex}`;
             if (uuid) {
                 url += `&uuid=${uuid}`;
             }
