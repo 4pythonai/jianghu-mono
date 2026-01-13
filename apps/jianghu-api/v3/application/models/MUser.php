@@ -226,6 +226,15 @@ class MUser  extends CI_Model {
   }
 
 
+  /**
+   * 更新用户二维码
+   */
+  public function updateUserQrcode($user_id, $qrcode_path) {
+    $this->db->where('id', $user_id);
+    $this->db->update('t_user', ['qrcode' => $qrcode_path]);
+  }
+
+
   public function getPlayerInfo($userid) {
     $players_query = "
         SELECT
@@ -519,5 +528,14 @@ class MUser  extends CI_Model {
     }
 
     return $result;
+  }
+
+
+  /**
+   * 更新用户资料
+   */
+  public function updateProfile($userid, $data) {
+    $this->db->where('id', $userid);
+    $this->db->update('t_user', $data);
   }
 }

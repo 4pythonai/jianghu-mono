@@ -12,12 +12,14 @@ Page({
       signature: '',
       gender: 'unknown'
     },
-    saving: false
+    saving: false,
+    loadingQrcode: false
   },
 
   onLoad() {
     this.handleUserInfoChange = this.refreshUserInfo.bind(this)
     this.refreshUserInfo()
+    this.loadUserQrcode()
     app.on('loginSuccess', this.handleUserInfoChange)
     app.on('userInfoChanged', this.handleUserInfoChange)
   },
@@ -35,13 +37,34 @@ Page({
 
     this.setData({
       userInfo,
-      qrcodeUrl: imageUrl(userInfo.qrcode),
       form: {
         nickname: userInfo.nickname || '',
         signature: userInfo.signature || '',
         gender: userInfo.gender || 'unknown'
       }
     })
+  },
+
+  async loadUserQrcode() {
+    if (this.data.loadingQrcode) return
+
+    this.setData({ loadingQrcode: true })
+
+    try {
+      const response = await app.api.user.getUserQrcode({}, {
+        showLoading: false
+      })
+
+      if (response.code === 200 && response.qrcode_url) {
+        this.setData({
+          qrcodeUrl: imageUrl(response.qrcode_url)
+        })
+      }
+    } catch (error) {
+      console.error('获取二维码失败:', error)
+    } finally {
+      this.setData({ loadingQrcode: false })
+    }
   },
 
   onNicknameInput(e) {

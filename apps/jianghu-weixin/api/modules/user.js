@@ -60,6 +60,9 @@ const user = {
 
     // 更新用户资料（签名、性别）
     updateProfile: (data, options) => request('/User/updateProfile', data, options),
+
+    // 获取用户二维码
+    getUserQrcode: (data, options) => request('/User/UserQrcode', data, options),
 }
 
 export default user

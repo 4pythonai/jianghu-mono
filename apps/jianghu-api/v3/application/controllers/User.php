@@ -570,4 +570,206 @@ class User extends MY_Controller {
             ], JSON_UNESCAPED_UNICODE);
         }
     }
+
+
+    /**
+     * 更新用户资料（签名、性别）
+     */
+    public function updateProfile() {
+        try {
+            $userid = $this->getUser();
+            if (!$userid) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $json_paras = json_decode(file_get_contents('php://input'), true);
+
+            $updateData = [];
+
+            // 签名
+            if (isset($json_paras['signature'])) {
+                $updateData['signature'] = trim($json_paras['signature']);
+            }
+
+            // 性别 (male/female/unknown)
+            if (isset($json_paras['gender'])) {
+                $gender = $json_paras['gender'];
+                if (in_array($gender, ['male', 'female', 'unknown'])) {
+                    $updateData['gender'] = $gender;
+                }
+            }
+
+            if (empty($updateData)) {
+                echo json_encode([
+                    'code' => 400,
+                    'message' => '没有需要更新的内容'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            $this->MUser->updateProfile($userid, $updateData);
+
+            // 返回更新后的用户信息
+            $user = $this->MUser->getUserbyId($userid);
+
+            echo json_encode([
+                'code' => 200,
+                'message' => '更新成功',
+                'user' => $user
+            ], JSON_UNESCAPED_UNICODE);
+        } catch (Exception $e) {
+            echo json_encode([
+                'code' => 500,
+                'message' => '服务器内部错误: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    /**
+     * 生成用户二维码
+     * 用于个人资料页面展示
+     */
+    public function UserQrcode() {
+        logtext('<hr/>');
+        logtext('<div><span class=functionname>' . date('Y-m-d H:i:s') . '  User/UserQrcode</span></div>');
+        
+        try {
+            $userid = $this->getUser();
+            if (!$userid) {
+                echo json_encode([
+                    'code' => 401,
+                    'message' => '请先登录'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            logtext("  用户ID: " . $userid);
+
+            // 获取用户信息
+            $user = $this->MUser->getUserbyId($userid);
+            if (!$user) {
+                echo json_encode([
+                    'code' => 404,
+                    'message' => '用户不存在'
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            // 检查是否已经有二维码
+            if (!empty($user['qrcode'])) {
+                logtext("  已有二维码: " . $user['qrcode']);
+                echo json_encode([
+                    'code' => 200,
+                    'message' => '获取成功',
+                    'qrcode_url' => $user['qrcode']
+                ], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            // 生成小程序码
+            $filename = "user_qrcode_{$userid}.png";
+            $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
+            
+            // 获取微信access_token
+            $access_token = $this->getWechatAccessToken();
+            if (!$access_token) {
+                throw new Exception('获取微信access_token失败');
+            }
+            
+            logtext("  access_token获取成功");
+
+            // 使用 getwxacode 接口生成小程序码
+            $wechat_api_url = "https://api.weixin.qq.com/wxa/getwxacode?access_token={$access_token}";
+            
+            // 页面路径和参数
+            $path = "pages/user-profile/user-profile?user_id={$userid}";
+            
+            logtext("  生成小程序码路径: " . $path);
+            
+            $post_data = json_encode([
+                'path' => $path,
+                'width' => 430
+            ]);
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $wechat_api_url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            $result = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            logtext("  微信接口返回HTTP状态码: " . $httpCode);
+
+            if ($httpCode !== 200) {
+                throw new Exception('微信接口返回错误状态码: ' . $httpCode);
+            }
+
+            // 检查返回结果是否是错误信息
+            $resultJson = json_decode($result, true);
+            if ($resultJson && isset($resultJson['errcode']) && $resultJson['errcode'] != 0) {
+                $errorMsg = isset($resultJson['errmsg']) ? $resultJson['errmsg'] : '未知错误';
+                logtext("  微信接口返回错误: errcode={$resultJson['errcode']}, errmsg={$errorMsg}");
+                throw new Exception("微信接口错误: {$errorMsg} (errcode: {$resultJson['errcode']})");
+            }
+
+            // 保存二维码到服务器
+            $upload_path = FCPATH . '../upload/qrcodes/';
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0755, true);
+            }
+            
+            if (!file_put_contents($qrcodePath, $result)) {
+                throw new Exception('保存二维码文件失败');
+            }
+
+            logtext("  二维码保存成功: " . $qrcodePath);
+
+            // 更新数据库中的二维码路径
+            $qrcodeUrl = '/upload/qrcodes/' . $filename;
+            $this->MUser->updateUserQrcode($userid, $qrcodeUrl);
+
+            echo json_encode([
+                'code' => 200,
+                'message' => '生成成功',
+                'qrcode_url' => $qrcodeUrl
+            ], JSON_UNESCAPED_UNICODE);
+
+        } catch (Exception $e) {
+            logtext("  生成二维码失败: " . $e->getMessage());
+            echo json_encode([
+                'code' => 500,
+                'message' => '生成二维码失败: ' . $e->getMessage()
+            ], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+
+    /**
+     * 获取微信access_token
+     * 参考Game控制器的实现
+     */
+    private function getWechatAccessToken() {
+        $appid = config_item('appid');
+        $secret = config_item('secret');
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $result = json_decode($response, true);
+        return isset($result['access_token']) ? $result['access_token'] : false;
+    }
 }
