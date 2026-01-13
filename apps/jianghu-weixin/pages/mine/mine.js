@@ -50,7 +50,7 @@ Page({
 
   // 跳转到个人资料
   goToProfile() {
-    wx.navigateTo({ url: '/pages/profile/profile' })
+    wx.navigateTo({ url: '/pages/myprofile/myprofile' })
   },
 
   // 跳转到通信录

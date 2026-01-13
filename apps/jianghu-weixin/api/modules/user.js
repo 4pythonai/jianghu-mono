@@ -57,6 +57,9 @@ const user = {
 
     // 获取历史比赛成绩
     getGameHistory: (data, options) => request('/User/getGameHistory', data, options),
+
+    // 更新用户资料（签名、性别）
+    updateProfile: (data, options) => request('/User/updateProfile', data, options),
 }
 
 export default user
