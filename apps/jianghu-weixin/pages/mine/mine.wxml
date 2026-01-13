@@ -28,7 +28,7 @@
         <image class="qrcode" src="{{ userInfo.qrcode || '/images/default-qrcode.png' }}" mode="aspectFit"></image>
       </view>
       <view class="arrow-icon">
-        <image src="/assets/icons/icons8-right-arrow-48.png" mode="aspectFit"></image>
+        <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>
     </view>
   </view>
@@ -64,7 +64,7 @@
       </view>
       <text class="menu-text">通信录</text>
       <view class="menu-arrow">
-        <image src="/assets/icons/icons8-right-arrow-48.png" mode="aspectFit"></image>
+        <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>
     </view>
     <view class="menu-item" bindtap="goToHistory">
@@ -73,7 +73,7 @@
       </view>
       <text class="menu-text">历史成绩</text>
       <view class="menu-arrow">
-        <image src="/assets/icons/icons8-right-arrow-48.png" mode="aspectFit"></image>
+        <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>
     </view>
     <view class="menu-item" bindtap="goToFootprint">
@@ -82,7 +82,7 @@
       </view>
       <text class="menu-text">江湖足迹</text>
       <view class="menu-arrow">
-        <image src="/assets/icons/icons8-right-arrow-48.png" mode="aspectFit"></image>
+        <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>
     </view>
     <view class="menu-item" bindtap="goToMyTeam">
@@ -91,7 +91,7 @@
       </view>
       <text class="menu-text">我的球队</text>
       <view class="menu-arrow">
-        <image src="/assets/icons/icons8-right-arrow-48.png" mode="aspectFit"></image>
+        <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>
     </view>
   </view>
@@ -104,7 +104,7 @@
       </view>
       <text class="menu-text">我的钱包</text>
       <view class="menu-arrow">
-        <image src="/assets/icons/icons8-right-arrow-48.png" mode="aspectFit"></image>
+        <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>
     </view>
     <view class="menu-item" bindtap="goToLedger">
@@ -113,7 +113,7 @@
       </view>
       <text class="menu-text">小账本</text>
       <view class="menu-arrow">
-        <image src="/assets/icons/icons8-right-arrow-48.png" mode="aspectFit"></image>
+        <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>
     </view>
   </view>
@@ -126,7 +126,7 @@
       </view>
       <text class="menu-text">设置</text>
       <view class="menu-arrow">
-        <image src="/assets/icons/icons8-right-arrow-48.png" mode="aspectFit"></image>
+        <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>
     </view>
   </view>

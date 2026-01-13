@@ -1,452 +1,399 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0;"
-    name="viewport" />
-  <script src="https://qiaoyincapital.com/js/jquery.js"></script>
-  <title>笑傲江湖</title>
-  <script src="https://qiaoyincapital.com/js/raphael.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0;" name="viewport"/>
+<title>笑傲江湖</title>
+<script src="https://qiaoyincapital.com/js/jquery.js"></script>
+<script src="https://qiaoyincapital.com/js/raphael.js"></script>
 </head>
 <style>
-  .hidden {
-    display: none;
-  }
+ 
 
-  .year {
-    margin-bottom: 70px;
-  }
+.hidden{
+  display: none;
+}
+.year{
+	margin-bottom: 70px;
+}
 
-  .yeartxt {
-    margin-left: 20px;
-    margin-bottom: 1px;
-  }
+.yeartxt{
+	margin-left: 20px;
+	margin-bottom: 1px;
+}
+ 
+ .grytxt{
+ 	color:#838383;
+ }
 
-  .grytxt {
-    color: #838383;
-  }
+#daytbl{
+ margin-left: 30px;
+ margin-bottom: 30px;
+}
 
-  #daytbl {
-    margin-left: 30px;
-    margin-bottom: 30px;
-  }
+ .dayleft{
+ 	text-align: right;
+ 	margin-top: 8px;
+ 	padding-right: 10px;
+ }
 
-  .dayleft {
-    text-align: right;
-    margin-top: 8px;
-    padding-right: 10px;
-  }
+svg {
+   position: absolute;
+    
+}
 
-  svg {
-    position: absolute;
+.smtxt{
+	font-size: 14px;
+}
 
-  }
-
-  .smtxt {
-    font-size: 14px;
-  }
-
-  .bgtxt {
-    font-size: 20px;
-  }
+.bgtxt{
+	font-size: 20px;
+}
 
 
-  .begin {
-    margin-top: 18px;
-    margin-left: 20px;
-  }
+.begin{
+	margin-top: 18px;
+	margin-left: 20px;
+}
 
-  .time {
-    width: 100px;
-    height: 100px;
-    color: #EFEFEF;
-    font-size: 1px;
+.time{
+	width:100px;
+	height:100px;
+	color:#EFEFEF;
+	font-size:1px;
     margin-left: 10px;
     margin-right: 0px;
+}
+
+
+#pktbl{
+	margin-left: 90px;
+	margin-bottom: 40px;
+}
+
+#coursetbl{
+	margin-left: 60px;
+	margin-bottom: 40px;
+}
+
+#gmtbl{
+  margin-left: 60px;
+  margin-bottom: 40px;
+}
+
+
+#tilltbl{
+	margin-top: 10px;
+}
+
+#pk{
+	width:66px;
+	height:66px;
+   
+ }
+
+#shichen{
+ color:#838383;
+ margin-left:18px;
+ margin-bottom:18px;
+
+}
+ 
+
+#course{
+    width:84px;
+	height:84px;
+ }
+ 
+#game{
+	width:116px;
+	height:116px;
+}
+
+#days{
+	width:96px;
+	height:96px;
+
+}
+
+
+#survival{
+	  margin-left: 90px;
+}
+
+
+#tilltoday{
+	width:100px;
+	height:100px;
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+
+.button_class{
+        background: none repeat scroll 0 0 #0099ff;
+        color: #fff;
+        font-size: 20px;
+        margin-top:100px;
+        position: relative;
+        width: 80%;
+        z-index: 2;
+        border-radius: 8px;
+        cursor: pointer;
+        display: block;
+        font-weight: 700;
+        padding: 20px 20px 19px;
+        text-align: center;
+        text-decoration: none;
+
   }
 
 
-  #pktbl {
-    margin-left: 90px;
-    margin-bottom: 40px;
-  }
 
-  #coursetbl {
-    margin-left: 60px;
-    margin-bottom: 40px;
-  }
-
-  #gmtbl {
-    margin-left: 60px;
-    margin-bottom: 40px;
-  }
-
-
-  #tilltbl {
-    margin-top: 10px;
-  }
-
-  #pk {
-    width: 66px;
-    height: 66px;
-
-  }
-
-  #shichen {
-    color: #838383;
-    margin-left: 18px;
-    margin-bottom: 18px;
-
-  }
-
-
-  #course {
-    width: 84px;
-    height: 84px;
-  }
-
-  #game {
-    width: 116px;
-    height: 116px;
-  }
-
-  #days {
-    width: 96px;
-    height: 96px;
-
-  }
-
-
-  #survival {
-    margin-left: 90px;
-  }
-
-
-  #tilltoday {
-    width: 100px;
-    height: 100px;
-    margin-left: 10px;
-    margin-top: 10px;
-  }
-
-
-  .button_class {
-    background: none repeat scroll 0 0 #0099ff;
-    color: #fff;
-    font-size: 20px;
-    margin-top: 100px;
-    position: relative;
-    width: 80%;
-    z-index: 2;
-    border-radius: 8px;
-    cursor: pointer;
-    display: block;
-    font-weight: 700;
-    padding: 20px 20px 19px;
-    text-align: center;
-    text-decoration: none;
-
-  }
 </style>
 
 <script type="text/javascript">
+ 
+function getCenter(div){
+	var $div = $(div);
+	var offset = $(div).offset();
+	var width = $div.width();
+	var height = $div.height();
+	var centerX = offset.left + width / 2 -10;
+	var centerY = offset.top + height / 2 -10;
+    return {x:centerX,y:centerY,r:width/2}
+    
+}	
 
-  function getCenter(div) {
-    var $div = $(div);
-    var offset = $(div).offset();
-    var width = $div.width();
-    var height = $div.height();
-    var centerX = offset.left + width / 2 - 10;
-    var centerY = offset.top + height / 2 - 10;
-    return { x: centerX, y: centerY, r: width / 2 }
+ 
+ 
 
+function getWidth() {
+  if (self.innerHeight) {
+    return self.innerWidth;
   }
 
-
-
-
-  function getWidth() {
-    if (self.innerHeight) {
-      return self.innerWidth;
-    }
-
-    if (document.documentElement && document.documentElement.clientHeight) {
-      return document.documentElement.clientWidth;
-    }
-
-    if (document.body) {
-      return document.body.clientWidth;
-    }
+  if (document.documentElement && document.documentElement.clientHeight) {
+    return document.documentElement.clientWidth;
   }
 
-
-  //color define
-  //var bg='#EFEFEF'
-
-  var blue = '#0099ff'
-  var orange = '#ff9c00'
-  var red = '#ff4e00'
-  var green = '#6ab443'
-  var dark = '#567184'
-  var line = '#B5B5B5'
-  //
+  if (document.body) {
+    return document.body.clientWidth;
+  }
+}
 
 
+//color define
+ //var bg='#EFEFEF'
 
-  window.onload = function () {
+ var blue='#0099ff'
+ var orange='#ff9c00'
+ var red='#ff4e00'
+ var green= '#6ab443'
+ var dark='#567184'
+ var line='#B5B5B5'
+//
 
-    // xxx=document.getElementById("wxtitle").innerHTML;
-    //  console.log(xxx)
-    //  return;
+ 
 
+window.onload = function() {
+	 
+     var paper = new Raphael(document.getElementById('canvas_container'), 400, 2500);
+     $("svg").css('position', 'absolute');
+     $("svg").css('background', 'transparent');
+     
+    $('.time' ).each(function(index,ele ) {
+			    var txt= $(ele).html()
+ 		   	    cfg=getCenter(ele)
+                var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
+      		    timecycle.attr("stroke", blue);
+                timecycle.attr({fill:blue}) 
+         });
 
-    var paper = new Raphael(document.getElementById('canvas_container'), 400, 1400);
-    $("svg").css('position', 'absolute');
-    $("svg").css('background', 'transparent');
+    
+        $('.join' ).each(function(index,ele ) {
+			    var jd1= $('#jd1').html()
+			    var jd2= $('#jd2').html()
+			     cfg=getCenter(ele)
+			    t=paper.text(cfg.x, cfg.y-8,jd1 );
+                t.attr({"fill":'white', "font-size": 26, "font-family": "Arial, Helvetica, sans-serif" });
+			    t=paper.text(cfg.x, cfg.y+12,jd2 );
+                t.attr({"fill":'white', "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
+         });
 
-    $('.time').each(function (index, ele) {
-      var txt = $(ele).html()
-      cfg = getCenter(ele)
-      var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
-      timecycle.attr("stroke", blue);
-      timecycle.attr({ fill: blue })
-    });
-
-
-    $('.join').each(function (index, ele) {
-      var jd1 = $('#jd1').html()
-      var jd2 = $('#jd2').html()
-      cfg = getCenter(ele)
-      t = paper.text(cfg.x, cfg.y - 8, jd1);
-      t.attr({ "fill": 'white', "font-size": 26, "font-family": "Arial, Helvetica, sans-serif" });
-      t = paper.text(cfg.x, cfg.y + 12, jd2);
-      t.attr({ "fill": 'white', "font-size": 20, "font-family": "Arial, Helvetica, sans-serif" });
-    });
-
-
-
-
-    $('.oneyear').each(function (index, ele) {
-      var txt = $(ele).html();
-      cfg = getCenter(ele);
-      var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
-      t = paper.text(cfg.x, cfg.y, txt + '年');
-      t.attr({ "fill": 'white', "font-size": 26, "font-family": "Arial, Helvetica, sans-serif" });
-      timecycle.attr("stroke", blue);
-      timecycle.attr({ fill: blue });
-      var path = "M" + cfg.x + " " + parseInt(parseInt(cfg.y) + 40 + 10) + " " + cfg.x + " " + parseInt(parseInt(cfg.y) + 40 + 70 + 16);
-      var dashedLine = paper.path(path).attr({ 'stroke-dasharray': '-' });
-      dashedLine.attr({ stroke: line, 'stroke-width': 4 });
-    });
+ 
 
 
+	$('.oneyear' ).each(function(index,ele ) {
+    var txt= $(ele).html()
+    cfg=getCenter(ele)
+    var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
+    if(txt == '2015'){
+      console.log(timecycle);
+    }
+    t=paper.text(cfg.x, cfg.y,txt+'年' );
+    t.attr({"fill":'white', "font-size": 26, "font-family": "Arial, Helvetica, sans-serif" });
+    timecycle.attr("stroke", blue);
+    timecycle.attr({fill:blue}) 
+    var path="M"+cfg.x+" "+ parseInt(parseInt(cfg.y)+40+10)+" "+cfg.x+" "+parseInt(parseInt(cfg.y)+40+70+16)
+    var dashedLine = paper.path(path).attr({'stroke-dasharray': '-'});
+    dashedLine.attr({ stroke:line, 'stroke-width':4})
+  });
 
+    
 
-    $('#tilltoday').each(function (index, ele) {
-      cfg = getCenter(ele)
-      var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
-      var t = paper.text(cfg.x, cfg.y, "截至\n今日");
-      t.attr({ "fill": 'white', "font-size": 30, "font-family": "Arial, Helvetica, sans-serif" });
-      timecycle.attr("stroke", blue);
-      timecycle.attr({ fill: blue })
-    });
-
-
-
-
-    $('#pk').each(function (index, ele) {
-      cfg = getCenter(ele)
-      var txt = $(ele).html()
-      $(ele).html('')
-
-      var group = paper.set();
-      var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
-      var picsize = 100;
-      var img = paper.image("http://s1.golf-brother.com/data/static/res/css/images/radar.gif", cfg.x - picsize / 2, cfg.y - picsize / 2, picsize, picsize);
-      //        img.toBack()
-
-      console.log(cfg)
-      t = paper.text(cfg.x, cfg.y, txt);
-      t.attr({ "fill": 'white', "font-size": 30, "font-family": "Arial, Helvetica, sans-serif" });
-      timecycle.attr("stroke", dark);
-      timecycle.attr({ fill: dark })
-
-      group.push(timecycle);
-      group.push(t);
-      group.click(function (event) {
-        var url = window.location.href;
-        var jump = url.replace("jianghu", "pktable");
-        window.location.replace(jump)
-      });
+     
+    $('#tilltoday' ).each(function(index,ele ) {
+			   cfg=getCenter(ele)
+               var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
+               var t=paper.text(cfg.x, cfg.y, "截至\n今日");
+               t.attr({"fill":'white', "font-size": 30, "font-family": "Arial, Helvetica, sans-serif" });
+			    timecycle.attr("stroke", blue);
+                timecycle.attr({fill:blue}) 
+         });
 
 
 
-    });
+ 
+         $('#pk' ).each(function(index,ele ) {
+			   cfg=getCenter(ele)
+			   var txt= $(ele).html()
+			   $(ele).html('')
+
+         var group = paper.set();
+         var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
+         var picsize=100;
+         var img = paper.image("https:///qiaoyincapital.com/images/radar.gif",cfg.x - picsize/2, cfg.y -picsize/2, picsize, picsize);
+//        img.toBack()
+
+        t=paper.text(cfg.x, cfg.y,txt);
+        t.attr({"fill":'white', "font-size": 30, "font-family": "Arial, Helvetica, sans-serif" });
+			  timecycle.attr("stroke", dark);
+        timecycle.attr({fill:dark})
+
+            group.push(timecycle);
+            group.push(t);
+            group.click(function(event){
+             var url=window.location.href;
+             var jump = url.replace("jianghu", "pktable");
+             window.location.replace(jump)
+            });
+            
 
 
-    $('#course').each(function (index, ele) {
-      cfg = getCenter(ele)
-      var txt = $(ele).html()
-      $(ele).html('')
-      var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
-      t = paper.text(cfg.x, cfg.y, txt);
-      t.attr({ "fill": 'white', "font-size": 40, "font-family": "Arial, Helvetica, sans-serif" });
-      timecycle.attr("stroke", green);
-      timecycle.attr({ fill: green })
-    });
+         });
+ 
+
+        $('#course' ).each(function(index,ele ) {
+			    cfg=getCenter(ele)
+			    var txt= $(ele).html()
+			    $(ele).html('')
+                var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
+                t=paper.text(cfg.x, cfg.y, txt);
+                t.attr({"fill":'white', "font-size": 40, "font-family": "Arial, Helvetica, sans-serif" });
+			    timecycle.attr("stroke", green);
+                timecycle.attr({fill:green}) 
+         });
 
 
-    $('#game').each(function (index, ele) {
-      cfg = getCenter(ele)
-      var txt = $(ele).html()
-      $(ele).html('')
-      var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
-      var t = paper.text(cfg.x, cfg.y, txt);
-      t.attr({ "fill": 'white', "font-size": 40, "font-family": "Arial, Helvetica, sans-serif" });
-      timecycle.attr("stroke", red);
-      timecycle.attr({ fill: red })
-    });
-
-    $('#days').each(function (index, ele) {
-      cfg = getCenter(ele)
-      var txt = $(ele).html()
-      $(ele).html('')
-      var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
-      var t = paper.text(cfg.x, cfg.y, txt);
-      t.attr({ "fill": 'white', "font-size": 40, "font-family": "Arial, Helvetica, sans-serif" });
-
-
-      timecycle.attr("stroke", orange);
-      timecycle.attr({ fill: orange })
-    });
+		$('#game' ).each(function(index,ele ) {
+					   cfg=getCenter(ele)
+					   var txt= $(ele).html()
+					   $(ele).html('')
+		               var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
+		               var t=paper.text(cfg.x, cfg.y, txt);
+		               t.attr({"fill":'white', "font-size": 40, "font-family": "Arial, Helvetica, sans-serif" });
+					   timecycle.attr("stroke", red);
+		               timecycle.attr({fill:red}) 
+		         });
+		         
+		$('#days' ).each(function(index,ele ) {
+					   cfg=getCenter(ele)
+					   var txt= $(ele).html()
+			           $(ele).html('')
+		               var timecycle = paper.circle(cfg.x, cfg.y, cfg.r);
+		               var t=paper.text(cfg.x, cfg.y, txt);
+                       t.attr({"fill":'white', "font-size": 40, "font-family": "Arial, Helvetica, sans-serif" });
 
 
+					   timecycle.attr("stroke", orange);
+		               timecycle.attr({fill:orange}) 
+		         });
+		         
 
+ 
 
-
+    //var dashedLine = paper.path("M95 100 C160 130 180 95 220 130").attr({'stroke-dasharray': '-'});
+   
     //first line
-    var dashedLine = paper.path("M95 100 C160 130 165 95 200 130").attr({ 'stroke-dasharray': '-' });
-    dashedLine.attr({ stroke: line, 'stroke-width': 4 })
+    var dashedLine = paper.path("M95 100 C160 130 165 95 200 130").attr({'stroke-dasharray': '-'});
+    dashedLine.attr({ stroke:line, 'stroke-width':4})
 
-    //second
-    var dashedLine = paper.path("M240 212   230 250").attr({ 'stroke-dasharray': '-' });
-    dashedLine.attr({ stroke: line, 'stroke-width': 4 })
+     //second
+    var dashedLine = paper.path("M240 212   230 250").attr({'stroke-dasharray': '-'});
+    dashedLine.attr({ stroke:line, 'stroke-width':4})
 
-
+    
 
     //line from  比赛-球场
-    var p1 = ['M', 190, 420,
-      'Q', 220, 410,
-      220, 367]
-    var dashedLine = paper.path(p1).attr({ 'stroke-dasharray': '-' });
-    dashedLine.attr({ stroke: line, 'stroke-width': 4 })
-
+    var p1=['M',190, 420,
+             'Q', 220,410,
+		       220,367]
+    var dashedLine = paper.path(p1).attr({'stroke-dasharray': '-'});
+    dashedLine.attr({ stroke:line, 'stroke-width':4})
+   
 
     //line from  球场->PK
-    var p1 = ['M', 138, 486,
-      'Q', 140, 520,
-      153, 555]
-    var dashedLine = paper.path(p1).attr({ 'stroke-dasharray': '-' });
-    dashedLine.attr({ stroke: line, 'stroke-width': 4 })
+    var p1=['M',138, 486,
+             'Q', 140,520,
+		       153,555]
+    var dashedLine = paper.path(p1).attr({'stroke-dasharray': '-'});
+    dashedLine.attr({ stroke:line, 'stroke-width':4})
+    
 
+   //line from  PK->Firstyear
+   
+    var p1=['M',149, 590,
+            'Q',80,620,
+		     65,655]
+    var dashedLine = paper.path(p1).attr({'stroke-dasharray': '-'});
+    dashedLine.attr({ stroke:line, 'stroke-width':4})
 
-    //line from  PK->Firstyear
-
-    var p1 = ['M', 149, 590,
-      'Q', 80, 620,
-      65, 655]
-    var dashedLine = paper.path(p1).attr({ 'stroke-dasharray': '-' });
-    dashedLine.attr({ stroke: line, 'stroke-width': 4 })
-
-  }
+}
 
 </script>
 
 
 <body style="background-color:#f2f2f2;">
-  <div style="background-color:#f2f2f2;z-index:2;width:360px;height:1300px;" id='canvas_container'>
-    <table id="tilltbl">
-      <tr>
-        <td>
-          <div id="tilltoday" class="time"></div>
-        </td>
-        <td>
-          <div class='grytxt begin'>
-            <?php echo $today ; ?>
-          </div>
-        </td>
-      </tr>
-    </table>
-    <table id="daytbl">
-      <tr>
-        <td>
-          <div class=dayleft>
-            <div class="bgtxt">我闯荡江湖已有</div>
-            <div class="grytxt">
-              <?php echo $live_hms; ?>
-            </div>
-          </div>
-        </td>
-        <td>
-          <div id="days">
-            <?php echo $live_days; ?>
-          </div>
-        </td>
-        <td>
-          <div style="margin-bottom:10px;" class="bgtxt">天</div>
-        </td>
-      </tr>
-    </table>
-    <table id="gmtbl">
-      <tr>
-        <td>
-          <div class="bgtxt">共计比赛&nbsp;&nbsp;</div>
-        </td>
-        <td>
-          <div id="game">
-            <?php echo $games; ?>
-          </div>
-        </td>
-        <td>
-          <div class="bgtxt">场</div>
-        </td>
-      </tr>
-    </table>
+ 
+  <div  style="background-color:#f2f2f2;z-index:2;width:360px;height:2000px;" id='canvas_container'>
 
-    <table id="coursetbl">
-      <tr>
-        <td>
-          <div class="bgtxt">奔赴了&nbsp;</div>
-        </td>
-        <td>
-          <div id="course">
-            <?php  echo $course_num; ?>
-          </div>
-        </td>
-        <td>
-          <div class="bgtxt">个球场</div>
-        </td>
-      </tr>
-    </table>
 
-    <table id="pktbl">
-      <tr>
-        <td>
-          <div class="bgtxt">曾与&nbsp;&nbsp;&nbsp;</div>
-        </td>
 
-        <td>
-          <div id="pk">
-            <?php echo $pknum; ?>
-          </div>
-        </td>
-        <td>
-          <div style="z-index:99999;" class="bgtxt">&nbsp;&nbsp;人PK</div>
-        </td>
-      </tr>
-    </table>
+ 
+<table id="tilltbl"><tr><td><div id="tilltoday" class="time"></div></td><td><div class='grytxt begin'><?php echo $today ; ?></div></td></tr></table>
+<table id="daytbl"><tr><td><div class=dayleft><div class="bgtxt">我闯荡江湖已有</div><div class="grytxt"><?php echo $live_hms; ?></div></div></td><td><div id="days"><?php echo $live_days; ?> </div></td><td><div style="margin-bottom:10px;" class="bgtxt">天</div></td></tr></table>
+<table id="gmtbl"><tr><td><div class="bgtxt">共计比赛&nbsp;&nbsp;</div></td><td><div id="game"> <?php echo $games; ?></div></td><td><div class="bgtxt">场</div></td></tr></table>
 
-    <?php
+<table id="coursetbl"><tr><td><div class="bgtxt">奔赴了&nbsp;</div></td>
+<td>
+   <div id="course"><?php  echo $course_num; ?> </div>
+</td>
+<td>
+  <div class="bgtxt">个球场</div>
+</td>
+</tr>
+</table>
+
+<table id="pktbl"><tr><td><div class="bgtxt">曾与&nbsp;&nbsp;&nbsp;</div></td>
+
+<td>
+  <div id="pk"><?php echo $pknum; ?> </div>
+</td>
+<td><div style="z-index:99999;"     class="bgtxt">&nbsp;&nbsp;人PK</div>
+</td>
+</tr></table>
+
+<?php
  
  foreach ($years as $year) {
   $game_num=$year['game_num'];
@@ -461,34 +408,27 @@
   $detail.="<tr><td>曾与$player_num"."个人PK</td></tr>";
   $detail.="<tr><td>$year_handicap</td></tr>";
   $detail.="<tr><td>$handicap_change</td></tr>";
+  
   $detail.="</table>";
+
+   
+
   echo '<table class=year><tr><td><div  class="time oneyear">'.$year['year'].'</div></td><td><div class="smtxt yeartxt">'.$detail.'</div></td></tr></table>';
  }
  
 ?>
 
-    <table>
-      <tr>
-        <td>
-          <div class="time join">
-            <?php  echo '<span id=jd1>'.$joind_y.'</span>';echo  '<span id=jd2>'.$joind_md.'</span>';   ?>
-          </div>
-        </td>
-        <td>
-          <div class='grytxt begin'>
-            <?php echo $sc_ke ; ?>
-          </div>
-          <div id=shichen>我踏入江湖</div>
-        </td>
-      </tr>
-    </table>
-   </div>
+<table><tr><td><div  class="time join"><?php  echo '<span id=jd1>'.$joind_y.'</span>';echo  '<span id=jd2>'.$joind_md.'</span>';   ?></div></td><td><div class='grytxt begin'><?php echo $sc_ke ; ?></div><div id=shichen>我踏入江湖</div></td></tr></table>
+<?php if(strlen($sid) > 0){?>
+  <a class="button_class" href="http://test.golf-brother.com/v11/game/jianghu/?uid=<?php echo $sid; ?>">点击查看我的江湖</a>
+ <?php }?>
+  </div>
 
-
-  <div class="hidden" id=wxtitle>在江湖的日子</div>
-  <div class="hidden" id=wxdesc>纵横江湖,败尽英雄,天下更无敌手,故在此求一敌手,以慰寂寥!</div>
+  
+   <div  class="hidden" id=wxtitle>在江湖的日子</div>
+   <div  class="hidden" id=wxdesc>纵横江湖,败尽英雄,天下更无敌手,故在此求一敌手,以慰寂寥!</div>
 
 
 </body>
-
-</html>
+</html> 
+ 

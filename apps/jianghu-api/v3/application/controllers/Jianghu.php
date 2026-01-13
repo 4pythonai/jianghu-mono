@@ -39,7 +39,7 @@ class Jianghu extends CI_Controller {
     /**
      * 江湖页面 - 主入口函数
      */
-    public function jianghu() {
+    public function index() {
         $userid = $this->input->get('userid') ? intval($this->input->get('userid')) : 837590;
 
         $profile = $this->user_footprint($userid);
@@ -53,71 +53,71 @@ class Jianghu extends CI_Controller {
     /**
      * 中国古时辰转换
      */
-    public function china_legcy_time($h, $m) {
+    public function china_legcy_time($hour, $minute) {
 
-        $sc = '';
-        $ke = '';
-        if ($h > 1 and $h <= 3) {
-            $sc = '丑时';
+        $china_shichen = '';
+        $china_ke = '';
+        if ($hour > 1 and $hour <= 3) {
+            $china_shichen = '丑时';
         }
 
-        if ($h > 3 and $h <= 5) {
-            $sc = '寅时';
+        if ($hour > 3 and $hour <= 5) {
+            $china_shichen = '寅时';
         }
 
-        if ($h > 5 and $h <= 7) {
-            $sc = '卯时';
+        if ($hour > 5 and $hour <= 7) {
+            $china_shichen = '卯时';
         }
 
-        if ($h > 7 and $h <= 9) {
-            $sc = '辰时';
+        if ($hour > 7 and $hour <= 9) {
+            $china_shichen = '辰时';
         }
 
-        if ($h > 9 and $h <= 11) {
-            $sc = '巳时';
+        if ($hour > 9 and $hour <= 11) {
+            $china_shichen = '巳时';
         }
 
-        if ($h > 11 and $h <= 13) {
-            $sc = '午时';
+        if ($hour > 11 and $hour <= 13) {
+            $china_shichen = '午时';
         }
 
-        if ($h > 13 and $h <= 15) {
-            $sc = '未时';
+        if ($hour > 13 and $hour <= 15) {
+            $china_shichen = '未时';
         }
 
-        if ($h > 15 and $h <= 17) {
-            $sc = '申时';
+        if ($hour > 15 and $hour <= 17) {
+            $china_shichen = '申时';
         }
 
-        if ($h > 17 and $h <= 19) {
-            $sc = '酉时';
+        if ($hour > 17 and $hour <= 19) {
+            $china_shichen = '酉时';
         }
 
-        if ($h > 19 and $h <= 21) {
-            $sc = '戌时';
+        if ($hour > 19 and $hour <= 21) {
+            $china_shichen = '戌时';
         }
 
-        if ($h > 21 and $h <= 23) {
-            $sc = '亥时';
+        if ($hour > 21 and $hour <= 23) {
+            $china_shichen = '亥时';
         }
 
-        if ($h > 23) {
-            $sc = '子时';
+        if ($hour > 23) {
+            $china_shichen = '子时';
         }
 
-        if ($m > 0 and $m < 15) {
-            $ke = '一刻';
+        if ($minute > 0 and $minute < 15) {
+            $china_ke = '一刻';
         }
 
-        if ($m >= 15 and $m < 30) {
-            $ke = '两刻';
+        if ($minute >= 15 and $minute < 30) {
+            $china_ke = '两刻';
         }
 
-        if ($m >= 30) {
-            $ke = '三刻';
+        if ($minute >= 30) {
+            $china_ke = '三刻';
         }
 
-        return array('sc' => $sc, 'ke' => $ke);
+        return array('sc' => $china_shichen, 'ke' => $china_ke);
     }
 
     /**
@@ -127,9 +127,9 @@ class Jianghu extends CI_Controller {
         $games = array();
         $incomplete_game = array();
         $this->load->database();
-        foreach ($user_all_end_games as $key => $one_game) {
+        foreach ($user_all_end_games as $one_game) {
             $gameid = intval($one_game['gameid']);
-            $sql = "select sum(gross) as sum_gross,min(gross) as gross_min,count(hole_id) as hole_num from t_game_score where gameid=$gameid and userid=$userid";
+            $sql = "select sum(score) as sum_gross,min(score) as gross_min,count(hole_id) as hole_num from t_game_score where gameid=$gameid and user_id=$userid";
             $one_game_info = $this->db->query($sql)->row_array();
             if ($one_game_info['gross_min'] > 0 && $one_game_info['hole_num'] == 18) {
                 $games[] = $gameid;
@@ -183,7 +183,7 @@ class Jianghu extends CI_Controller {
                 }
 
                 if ($handicap_difference < 0) {
-                    $year_data[$year]['handicap_change'] = "较去年降低了" . abs($handicap_difference) . "杆";
+                    $year_data[$year]['handicap_change'] = "较去年降低了" . abs(floatval($handicap_difference)) . "杆";
                 }
 
                 if ($handicap_difference > 0) {
@@ -248,15 +248,15 @@ class Jianghu extends CI_Controller {
     public function one_year_game_handicap($game_str, $userid) {
 
         $sql = "select t_game_score.gameid,
-                       sum(t_game_score.gross) as grossnum,
-                       min(t_game_score.gross) as grossmin,
+                       sum(t_game_score.score) as grossnum,
+                       min(t_game_score.score) as grossmin,
                        sum(t_game_score.par) as sumpar,
                        count(t_game_score.par) as holenum
                 from t_game_score, t_game
-                where t_game_score.gameid in ($game_str) 
-                  and t_game_score.userid=$userid  
+                where t_game_score.gameid in ($game_str)
+                  and t_game_score.user_id=$userid
                   and t_game.id = t_game_score.gameid
-                  and t_game.game_status='finished' 
+                  and t_game.game_status='finished'
                 group by t_game_score.gameid";
 
         $user_game_info = $this->db->query($sql)->result_array();
@@ -264,12 +264,12 @@ class Jianghu extends CI_Controller {
         $sumgross       = 0;
         $sumpar         = 0;
         $gameidnum      = 0;
-        foreach ($user_game_info as $k => $v) {
-            if ($v['grossnum'] != 0) {
-                if ($v['grossmin'] > 0) {
-                    if ($v['holenum'] > 9) {
-                        $sumgross = $sumgross + $v['grossnum'];
-                        $sumpar   = $sumpar + $v['sumpar'];
+        foreach ($user_game_info as $one_game_info) {
+            if ($one_game_info['grossnum'] != 0) {
+                if ($one_game_info['grossmin'] > 0) {
+                    if ($one_game_info['holenum'] > 9) {
+                        $sumgross = $sumgross + $one_game_info['grossnum'];
+                        $sumpar   = $sumpar + $one_game_info['sumpar'];
                         $gameidnum++;
                     }
                 }
