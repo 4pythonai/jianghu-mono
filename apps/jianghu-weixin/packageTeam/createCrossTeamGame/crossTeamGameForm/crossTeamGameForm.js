@@ -298,17 +298,16 @@ Page({
 
             const gameId = result.data.game_id
 
-            // 开启报名
-            await app.api.teamgame.startRegistration({ game_id: gameId })
-
             // 清理缓存
             wx.removeStorageSync('selectedTeamsForCrossGame')
 
             wx.showToast({ title: '创建成功', icon: 'success' })
 
-            // 跳转到赛事详情页（暂时返回首页）
+            // 跳转到赛事页面
             setTimeout(() => {
-                wx.navigateBack({ delta: 2 })
+                wx.switchTab({
+                    url: '/pages/events/events'
+                })
             }, 1500)
 
         } catch (error) {
