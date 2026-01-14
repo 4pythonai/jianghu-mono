@@ -3,7 +3,6 @@
     "navigationBarTitleText": "创建队内赛",
     "usingComponents": {
         "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
-        "TimePicker": "/components/TimePicker/time-picker",
-        "TagForTeamEditor": "/components/TagForTeamEditor/TagForTeamEditor"
+        "TimePicker": "/components/TimePicker/time-picker"
     }
 }

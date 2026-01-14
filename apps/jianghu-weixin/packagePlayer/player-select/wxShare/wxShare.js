@@ -1,5 +1,5 @@
 const app = getApp();
-const RuntimeComponentsUtils = require('../../../utils/runtime-common-utils.js');
+const RuntimeComponentsUtils = require('../../utils/runtime-common-utils.js');
 
 const mergeSourceParams = (target, source) => {
     if (!source) {

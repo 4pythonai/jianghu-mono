@@ -3,7 +3,7 @@
  * 为所有配置组件提供通用的功能
  */
 
-import configManager from '@/utils/configManager.js';
+import configManager from '../../packageGamble/utils/configManager.js';
 import ruleFormatter from '@/utils/formatters/ruleFormatter.js';
 
 /**

@@ -3,8 +3,8 @@
  */
 
 // 静态导入所有Store类
-import { Gamble4PLasiStore } from '../stores/gamble/4p/4p-lasi/Gamble4PLasiStore.js'
-import { NewG48421Store } from '../stores/gamble/4p/4p-8421/Gamble4P8421Store.js'
+import { Gamble4PLasiStore } from '../../../stores/gamble/4p/4p-lasi/Gamble4PLasiStore.js'
+import { NewG48421Store } from '../../../stores/gamble/4p/4p-8421/Gamble4P8421Store.js'
 
 // 游戏编辑器配置
 const GAMBLE_EDITOR_CONFIGS = {
