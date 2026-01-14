@@ -52,6 +52,12 @@ class Feed extends MY_Controller {
                 $extra['star_friends'] = $result['star_friends'];
         }
 
+        // 剔除所有 course = null 的数据, course = null 的数据来源于"普通创建"
+        // 因为普通创建为了提高"微信分享"功能,所以必须先创建一个比赛 
+        $games = array_filter($games, function ($game) {
+            return $game['course'] !== null;
+        });
+
         $ret = [
             'code' => 200,
             'games' => $games
