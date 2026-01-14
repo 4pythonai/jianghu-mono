@@ -3,8 +3,8 @@
  * 使用重构后的规则解析器
  */
 
-import { parse4P8421Config } from '../../../utils/ruleParser/Parser4p8421.js';
-import { parse4PLasiConfig } from '../../../utils/ruleParser/Parser4p-lasi.js';
+import { parse4P8421Config } from '../../utils/ruleParser/Parser4p8421.js';
+import { parse4PLasiConfig } from '../../utils/ruleParser/Parser4p-lasi.js';
 /**
  * 解析赌博规则配置
  * @param {Object} item - 规则配置项

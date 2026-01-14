@@ -10,7 +10,7 @@ import {
     loadCachedCourtData,
     validateBasicInfo
 } from '@/utils/createGameCommons'
-import { MATCH_FORMATS, getMatchFormatByValue } from '../../../constants/matchFormats'
+import { MATCH_FORMATS, getMatchFormatByValue } from '../../constants/matchFormats'
 
 const app = getApp()
 

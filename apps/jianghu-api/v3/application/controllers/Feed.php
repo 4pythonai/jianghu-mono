@@ -58,6 +58,9 @@ class Feed extends MY_Controller {
             return $game['course'] !== null;
         });
 
+        // 重置数组索引，确保返回数字索引数组
+        $games = array_values($games);
+
         $ret = [
             'code' => 200,
             'games' => $games
@@ -407,6 +410,7 @@ class Feed extends MY_Controller {
 
             $games[] = $game_detail;
         }
+
         return $games;
     }
 
