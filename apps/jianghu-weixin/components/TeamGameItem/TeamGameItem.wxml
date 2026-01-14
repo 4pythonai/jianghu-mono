@@ -1,4 +1,4 @@
-<view class="event-card">
+<view class="event-card" bindtap="onItemTap">
   <!-- 封面区域 -->
   <view class="event-cover-wrapper">
     <!-- 单个封面 -->

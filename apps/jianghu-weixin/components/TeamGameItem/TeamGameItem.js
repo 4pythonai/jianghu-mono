@@ -79,6 +79,38 @@ Component({
         }
     },
 
-    methods: {}
+    methods: {
+        /**
+         * 点击赛事卡片
+         * 跳转到队内赛/队际赛详情页
+         */
+        onItemTap() {
+            const event = this.properties.event;
+            if (!event || !event.gameid) {
+                console.warn('[TeamGameItem] 缺少赛事数据');
+                return;
+            }
+
+            const gameid = event.gameid;
+            const teamGameInfo = event.extra_team_game_info;
+            
+            if (!teamGameInfo || !teamGameInfo.game_type) {
+                console.warn('[TeamGameItem] 缺少队赛信息');
+                return;
+            }
+
+            const gameType = teamGameInfo.game_type; // 'single_team' 或 'cross_teams'
+            
+            // 将 event 数据存入缓存，供 TeamGameDetail 使用
+            wx.setStorageSync('teamGameEventData', event);
+            
+            const navigationHelper = require('@/utils/navigationHelper.js');
+            navigationHelper.navigateTo(`/packageTeam/team-game/TeamGameDetail?game_id=${gameid}&game_type=${gameType}`)
+                .catch(err => {
+                    console.error('[TeamGameItem] 跳转失败:', err);
+                    wx.showToast({ title: '页面跳转失败', icon: 'none' });
+                });
+        }
+    }
 });
 
