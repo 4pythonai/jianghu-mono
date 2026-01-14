@@ -114,6 +114,8 @@
     width: 36rpx;
     height: 36rpx;
     flex-shrink: 0;
+    /* 使用 filter 将图标改为深绿色 #1a7f37 */
+    filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(1200%) hue-rotate(100deg) brightness(0.5);
 }
 
 .info-text {
