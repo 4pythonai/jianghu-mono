@@ -1,50 +1,48 @@
 <CustomNavBar title="快速创建" showBack="{{true}}" />
 
 <view class="container">
-    <view class="card">
-        <!-- 球场信息 -->
-        <view class="card-item" bindtap="onGetLocation">
-            <view class="item-label">球场</view>
-            <view class="item-value {{!nearestCourse ? 'placeholder' : ''}}">
-                <block wx:if="{{locationLoading}}">
-                    <text class="loading-text">获取中...</text>
-                </block>
-                <block wx:elif="{{locationError}}">
-                    <text class="error-text">获取失败，点击重试</text>
-                </block>
-                <block wx:elif="{{nearestCourse}}">
-                    <text>{{nearestCourse.name}}</text>
-                </block>
-                <block wx:else>
-                    <view class="location-btn">
-                        <image class="location-icon" src="/assets/icons/icons-location.png" mode="aspectFit" />
-                        <text>点击获取位置</text>
-                    </view>
-                </block>
-            </view>
-        </view>
-
-        <!-- 时间信息 -->
-        <view class="card-item">
-            <view class="item-label">时间</view>
-            <view class="item-value">{{currentTime}}</view>
-        </view>
-
-        <!-- 赛制信息 -->
-        <view class="card-item">
-            <view class="item-label">赛制</view>
-            <view class="item-value">比杆</view>
-        </view>
+  <view class="card">
+    <!-- 球场信息 -->
+    <view class="card-item" bindtap="onGetLocation">
+      <view class="item-label">球场</view>
+      <view class="item-value {{!nearestCourse ? 'placeholder' : ''}}">
+        <block wx:if="{{locationLoading}}">
+          <text class="loading-text">获取中...</text>
+        </block>
+        <block wx:elif="{{locationError}}">
+          <text class="error-text">获取失败，点击重试</text>
+        </block>
+        <block wx:elif="{{nearestCourse}}">
+          <text>{{nearestCourse.name}}</text>
+        </block>
+        <block wx:else>
+          <view class="location-btn">
+            <image class="location-icon" src="/assets/icons/icons-location.png" mode="aspectFit" />
+            <text>最近的球场</text>
+          </view>
+        </block>
+      </view>
     </view>
 
-    <!-- 开始比赛按钮 -->
-    <view class="button-area">
-        <button
-            class="btn btn-primary btn-block btn-large {{!nearestCourse || createLoading ? 'disabled' : ''}}"
-            disabled="{{!nearestCourse || createLoading}}"
-            bindtap="onStartGame"
-        >
-            {{createLoading ? '创建中...' : '开始比赛'}}
-        </button>
+    <!-- 时间信息 -->
+    <view class="card-item">
+      <view class="item-label">时间</view>
+      <view class="item-value">{{currentTime}}</view>
     </view>
+
+    <!-- 赛制信息 -->
+    <view class="card-item">
+      <view class="item-label">赛制</view>
+      <view class="item-value">比杆</view>
+    </view>
+  </view>
+
+  <!-- 开始比赛按钮 -->
+  <view class="button-area">
+    <button
+      class="btn btn-primary btn-block btn-large {{!nearestCourse || createLoading ? 'disabled' : ''}}"
+      disabled="{{!nearestCourse || createLoading}}"
+      bindtap="onStartGame"
+    >{{createLoading ? '创建中...' : '开始比赛'}}</button>
+  </view>
 </view>

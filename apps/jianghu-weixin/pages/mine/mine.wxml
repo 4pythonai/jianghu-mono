@@ -28,13 +28,6 @@
           <text class="stat-item">浮动系数 {{ userInfo.floatCoef || '--' }}</text>
         </view>
       </view>
-      <view class="qrcode-container">
-        <image
-          class="qrcode"
-          src="{{ userInfo.qrcode || '/assets/icons/icons8-qrcode-48.png' }}"
-          mode="aspectFit"
-        ></image>
-      </view>
       <view class="arrow-icon">
         <image src="/assets/icons/icons8-right-arrow-100.png" mode="aspectFit"></image>
       </view>

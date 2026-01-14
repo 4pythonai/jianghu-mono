@@ -131,9 +131,17 @@
 /* 禁用状态 */
 .btn[disabled],
 .btn.disabled {
-	opacity: 0.6;
+	background: #e0e0e0 !important;
+	color: #999999 !important;
 	cursor: not-allowed;
 	pointer-events: none;
+	box-shadow: none !important;
+}
+
+.btn-primary[disabled],
+.btn-primary.disabled {
+	background: #e0e0e0 !important;
+	color: #999999 !important;
 }
 
 .btn[disabled]:active,

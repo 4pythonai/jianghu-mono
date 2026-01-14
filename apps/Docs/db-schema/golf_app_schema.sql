@@ -211,7 +211,7 @@ CREATE TABLE `t_game` (
   KEY `idx_is_recommended` (`is_recommended`),
   KEY `idx_game_type_status_createtime` (`game_type`,`game_status`,`create_time`),
   FULLTEXT KEY `fulltext_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1339274 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
+) ENGINE=InnoDB AUTO_INCREMENT=1339300 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
 
 
 CREATE TABLE `t_game_court` (
@@ -223,7 +223,7 @@ CREATE TABLE `t_game_court` (
   PRIMARY KEY (`id`),
   KEY `idx_gameid` (`gameid`),
   KEY `idx_courtid` (`courtid`)
-) ENGINE=InnoDB AUTO_INCREMENT=565 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
+) ENGINE=InnoDB AUTO_INCREMENT=586 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
 
 
 CREATE TABLE `t_game_group` (
@@ -239,7 +239,7 @@ CREATE TABLE `t_game_group` (
   PRIMARY KEY (`groupid`),
   KEY `idx_gameid` (`gameid`),
   KEY `idx_groupid` (`groupid`)
-) ENGINE=InnoDB AUTO_INCREMENT=934 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=949 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_game_group_user` (
@@ -261,7 +261,7 @@ CREATE TABLE `t_game_group_user` (
   KEY `idx_userid_gameid` (`userid`,`gameid`),
   KEY `idx_subteam_id` (`tag_id`),
   KEY `idx_userid_gameid_addtime` (`userid`,`gameid`,`addtime`)
-) ENGINE=InnoDB AUTO_INCREMENT=1130 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
+) ENGINE=InnoDB AUTO_INCREMENT=1145 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
 
 
 CREATE TABLE `t_game_interaction` (

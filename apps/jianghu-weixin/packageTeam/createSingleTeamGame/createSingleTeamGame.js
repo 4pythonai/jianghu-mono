@@ -95,7 +95,7 @@ Page({
         }
 
         wx.navigateTo({
-            url: `/packageTeam/createTeamGame/teamGameForm/teamGameForm?team_id=${team.id}&team_name=${encodeURIComponent(team.team_name)}`
+            url: `/packageTeam/createSingleTeamGame/singleTeamGameForm/singleTeamGameForm?team_id=${team.id}&team_name=${encodeURIComponent(team.team_name)}`
         })
     },
 
@@ -106,4 +106,3 @@ Page({
         wx.navigateBack({ delta: 1 })
     }
 })
-

@@ -86,8 +86,8 @@
 				"team-transfer/team-transfer",
 				"create-team/create-team",
 				"team-game/TeamGameDetail",
-				"createTeamGame/createTeamGame",
-				"createTeamGame/teamGameForm/teamGameForm",
+				"createSingleTeamGame/createSingleTeamGame",
+				"createSingleTeamGame/singleTeamGameForm/singleTeamGameForm",
 				"createCrossTeamGame/createCrossTeamGame",
 				"createCrossTeamGame/crossTeamGameForm/crossTeamGameForm"
 			]

@@ -142,11 +142,13 @@ Page({
             const courseDetail = await app.api.course.getCourseDetail({
                 courseid: this.data.nearestCourse.courseid
             })
-            if (courseDetail.code !== 200 || !courseDetail.courts || courseDetail.courts.length < 2) {
+            if (courseDetail.code !== 200 || !courseDetail.courts || courseDetail.courts.length < 1) {
                 throw new Error('获取球场场地失败')
             }
+
+            // 快速比赛只需要一个半场即可开始
             const frontNineCourtId = courseDetail.courts[0].courtid
-            const backNineCourtId = courseDetail.courts[1].courtid
+            const backNineCourtId = courseDetail.courts.length >= 2 ? courseDetail.courts[1].courtid : null
 
             // 3. 设置球场和场地
             const updateResult = await app.api.game.updateGameCourseCourt({
@@ -182,7 +184,7 @@ Page({
     },
 
     generateUUID() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             const r = Math.random() * 16 | 0
             const v = c === 'x' ? r : (r & 0x3 | 0x8)
             return v.toString(16)

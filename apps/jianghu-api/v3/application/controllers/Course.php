@@ -29,7 +29,7 @@ class Course extends MY_Controller {
         if (!is_numeric($lat) || !is_numeric($lng)) {
             echo json_encode(array(
                 'code' => 400,
-                'message' => 'Invalid latitude or longitude parameters'
+                'message' => '无效的经纬度'
             ));
             return;
         }
@@ -51,7 +51,6 @@ class Course extends MY_Controller {
             ORDER BY distance_km ASC
             LIMIT 5
             ";
-
 
             $courses = $this->db->query($query)->result_array();
             echo json_encode(['code' => 200, 'data' => $courses], JSON_UNESCAPED_UNICODE);

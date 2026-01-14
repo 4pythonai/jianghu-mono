@@ -126,7 +126,7 @@ Page({
   // 创建队内赛
   goCreateGame() {
     wx.navigateTo({
-      url: `/packageTeam/createTeamGame/createTeamGame?teamId=${this.data.teamId}`
+      url: `/packageTeam/createSingleTeamGame/createSingleTeamGame?teamId=${this.data.teamId}`
     })
   },
 

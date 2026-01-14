@@ -211,7 +211,7 @@ Page({
 
     goToTeamSelect() {
         wx.navigateTo({
-            url: '/packageTeam/createTeamGame/createTeamGame?reselect=true'
+            url: '/packageTeam/createSingleTeamGame/createSingleTeamGame?reselect=true'
         })
     },
 
@@ -368,8 +368,8 @@ Page({
 
             // 如果有分队，创建分队
             if (gameTags.length > 0) {
-                for (const tag of tags) {
-                    await app.api.teamgame.addTag({
+                for (const tag of gameTags) {
+                    await app.api.teamgame.addGameTag({
                         game_id: gameId,
                         tag_name: tag.name,
                         color: tag.color

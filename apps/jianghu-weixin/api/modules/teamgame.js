@@ -44,8 +44,8 @@ const teamgame = {
     // ==================== Phase 4: 状态与流程控制 ====================
     // 更新赛事状态
     updateGameStatus: (data, options) => request('/TeamGame/updateGameStatus', data, options),
-    // 开启报名
-    startRegistration: (data, options) => request('/TeamGame/startRegistration', data, options),
+
+
     // 截止报名
     closeRegistration: (data, options) => request('/TeamGame/closeRegistration', data, options),
     // 开始比赛

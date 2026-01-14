@@ -20,18 +20,27 @@ page {
 .avatar-section {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 30rpx;
+  min-height: 240rpx;
 }
 
 .avatar-btn {
   position: relative;
-  width: 160rpx;
-  height: 160rpx;
+  width: 240rpx;
+  height: 240rpx;
+  min-width: 240rpx;
+  min-height: 240rpx;
   padding: 0;
   margin: 0;
   background: transparent;
   border: none;
-  overflow: visible;
+  overflow: hidden;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .avatar-btn::after {
@@ -39,33 +48,15 @@ page {
 }
 
 .avatar-img {
-  width: 160rpx;
-  height: 160rpx;
+  width: 240rpx;
+  height: 240rpx;
   border-radius: 50%;
-  border: 6rpx solid rgba(255, 255, 255, 0.9);
   background: #fff;
   display: block;
-  object-fit: cover;
+  flex-shrink: 0;
 }
 
-.avatar-mask {
-  position: absolute;
-  bottom: 6rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 148rpx;
-  height: 48rpx;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0 0 74rpx 74rpx;
-}
-
-.avatar-text {
-  font-size: 22rpx;
-  color: #fff;
-}
+ 
 
 .nickname-section {
   position: relative;

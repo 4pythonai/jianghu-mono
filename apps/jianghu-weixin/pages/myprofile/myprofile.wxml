@@ -11,9 +11,6 @@
           src="{{image.imageUrl(userInfo.avatar) || '/images/default-avatar.png'}}"
           mode="aspectFill"
         />
-        <view class="avatar-mask">
-          <text class="avatar-text">更换头像</text>
-        </view>
       </button>
     </view>
 
@@ -37,11 +34,7 @@
       <text class="qrcode-subtitle">扫码查看我的主页</text>
     </view>
     <view class="qrcode-display">
-      <image
-        class="qrcode-img"
-        src="{{qrcodeUrl || '/assets/icons/icons8-qrcode-48.png'}}"
-        mode="aspectFit"
-      />
+      <image class="qrcode-img" src="{{qrcodeUrl }}" mode="aspectFit" />
     </view>
     <text class="qrcode-hint">{{qrcodeUrl ? '点击预览/保存二维码' : '正在生成...'}}</text>
   </view>

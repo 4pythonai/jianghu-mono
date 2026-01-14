@@ -39,7 +39,7 @@ Page({
                 url = '/pages/createGame/quickCreate/quickCreate';
                 break;
             case 'teamCreate':
-                url = '/packageTeam/createTeamGame/createTeamGame';
+                url = '/packageTeam/createSingleTeamGame/createSingleTeamGame';
                 break;
             case 'crossTeamCreate':
                 url = '/packageTeam/createCrossTeamGame/createCrossTeamGame';

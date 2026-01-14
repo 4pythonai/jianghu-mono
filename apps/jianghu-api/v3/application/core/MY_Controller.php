@@ -5,6 +5,12 @@ ini_set('display_startup_errors', 1);
 error_reporting(-1);
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// 在注册异常处理器之前，先加载 helper 文件
+// 因为异常处理器可能在 CodeIgniter 初始化之前就被调用
+if (!function_exists('logtext')) {
+  require_once APPPATH . 'helpers/my_function_helper.php';
+}
+
 // register_shutdown_function('my_shutdownHandler');
 set_error_handler('my_errorHandler');
 set_exception_handler('my_exceptionHandler');
