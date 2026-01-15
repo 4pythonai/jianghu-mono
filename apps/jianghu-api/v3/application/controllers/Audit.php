@@ -127,7 +127,7 @@ class Audit extends CI_Controller {
             $players_detail = [];
             foreach ($rebObj['group_info'] as $player) {
                 $players_detail[] = [
-                    'userid' => $player['userid'],
+                    'userid' => $player['user_id'],
                     'final_points' => 0,
                     'pointsDonated' => 0
                 ];

@@ -115,7 +115,7 @@ class MGame  extends CI_Model {
         $playerData = [
           'gameid' => $gameid,
           'groupid' => $groupid,
-          'userid' => $player['userid'],
+          'user_id' => $player['userid'],
           'tee' => isset($player['tee']) && !empty($player['tee']) ? $player['tee'] : 'blue',
           'confirmed' => 0,
           'confirmed_time' => null,
@@ -132,7 +132,7 @@ class MGame  extends CI_Model {
 
   public function setTee($gameid, $userid, $tee) {
     $this->db->where('gameid', $gameid)
-      ->where('userid', $userid)
+      ->where('user_id', $userid)
       ->update('t_game_group_user', ['tee' => $tee]);
   }
 
@@ -200,7 +200,7 @@ class MGame  extends CI_Model {
 
     // 3. 删除玩家
     $this->db->where('gameid', $gameid)
-      ->where('userid', $userid)
+      ->where('user_id', $userid)
       ->delete('t_game_group_user');
 
     // 4. 检查该 group 是否还有用户，如果没有则删除该组
@@ -247,7 +247,7 @@ class MGame  extends CI_Model {
     $existingRecord = $this->db->select('id, groupid, join_type')
       ->from('t_game_group_user')
       ->where('gameid', $gameid)
-      ->where('userid', $userid)
+      ->where('user_id', $userid)
       ->get()
       ->row_array();
 
@@ -291,7 +291,7 @@ class MGame  extends CI_Model {
     $joinData = [
       'gameid' => $gameid,
       'groupid' => $targetGroupId,
-      'userid' => $userid,
+      'user_id' => $userid,
       'tee' => 'blue',
       'confirmed' => 0,
       'confirmed_time' => null,
@@ -320,9 +320,9 @@ class MGame  extends CI_Model {
 
 
   public function m_get_group_info($groupid) {
-    return $this->db->select("userid, COALESCE(display_name, wx_name) as username, COALESCE(display_name, wx_name) as display_name, t_user.avatar as cover", false)
+    return $this->db->select("user_id, COALESCE(display_name, wx_name) as username, COALESCE(display_name, wx_name) as display_name, t_user.avatar as cover", false)
       ->from('t_game_group_user')
-      ->join('t_user', 't_user.id = t_game_group_user.userid')
+      ->join('t_user', 't_user.id = t_game_group_user.user_id')
       ->where('t_game_group_user.groupid', $groupid)
       ->get()
       ->result_array();

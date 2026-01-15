@@ -4,7 +4,6 @@
     <view class="avatar-column">
       <PlayerAvatar
         avatar="{{avatar}}"
-        wx_name="{{wx_name}}"
         show_name="{{show_name}}"
         userId="{{userId}}"
         size="xs"

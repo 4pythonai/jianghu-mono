@@ -253,7 +253,7 @@ class Feed extends MY_Controller {
 
         // 条件1: 关注的人参与的赛事
         if (!empty($followingIds)) {
-            $this->db->where_in('ggu.userid', $followingIds);
+            $this->db->where_in('ggu.user_id', $followingIds);
             $hasCondition = true;
         }
 

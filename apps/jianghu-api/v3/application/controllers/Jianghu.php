@@ -236,7 +236,7 @@ class Jianghu extends CI_Controller {
         $sql = "select distinct courseid from t_game where id in ($games_str)";
         $courses = $this->db->query($sql)->result_array();
         $course_num = count($courses);
-        $sql = "select id,display_name,wx_name from t_user where id in (select distinct userid from t_game_group_user where gameid in ($games_str))  and id<>$userid";
+        $sql = "select id,display_name,wx_name from t_user where id in (select distinct user_id from t_game_group_user where gameid in ($games_str))  and id<>$userid";
         $play_game_users = $this->db->query($sql)->result_array();
         $player_num = count($play_game_users);
         return array('course_num' => $course_num, 'player_num' => $player_num, 'pkerlist' => $play_game_users);

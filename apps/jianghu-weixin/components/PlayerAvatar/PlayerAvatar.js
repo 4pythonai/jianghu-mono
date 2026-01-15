@@ -13,12 +13,7 @@ Component({
             type: String,
             value: ''
         },
-        /** 球员名字 */
-        wx_name: {
-            type: String,
-            value: ''
-        },
-        /** 显示名称（优先使用，如果没有则使用 wx_name） */
+
         show_name: {
             type: String,
             value: ''
