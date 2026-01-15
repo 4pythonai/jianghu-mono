@@ -34,6 +34,7 @@ Page({
 
     goToUserProfile(e) {
         const user = e.currentTarget.dataset.user
+        console.log(user)
         if (user?.userid) {
             wx.navigateTo({ url: `/packagePlayer/user-profile/user-profile?user_id=${user.userid}` })
         }

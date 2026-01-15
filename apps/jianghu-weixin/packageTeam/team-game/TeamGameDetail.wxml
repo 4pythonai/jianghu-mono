@@ -12,7 +12,7 @@
     <!-- 围观人数 -->
     <SpectatorBar
       count="{{spectators.count}}"
-      avatars="{{spectators.avatars}}"
+      spectators="{{spectators.avatars}}"
       bind:more="onSpectatorMore"
     />
 

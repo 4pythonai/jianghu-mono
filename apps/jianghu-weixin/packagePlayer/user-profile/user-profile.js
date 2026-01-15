@@ -37,8 +37,9 @@ Page({
         const statusBarHeight = systemInfo.statusBarHeight || 0
         const navBarHeight = statusBarHeight + 44
         this.setData({ navBarHeight })
+        console.log(options)
 
-        const userId = parseInt(options.userId, 10)
+        const userId = parseInt(options.user_id, 10)
         if (!userId) {
             this.setData({
                 loading: false,

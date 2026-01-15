@@ -107,6 +107,7 @@ class Events extends MY_Controller {
      */
     public function getSpectatorList() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
+        $userid = $this->getUser();  // '我'
         $gameId = isset($json_paras['game_id']) ? (int)$json_paras['game_id'] : 0;
         $page = isset($json_paras['page']) ? max(1, (int)$json_paras['page']) : 1;
         $pageSize = isset($json_paras['page_size']) ? min(50, max(1, (int)$json_paras['page_size'])) : 20;
@@ -127,10 +128,11 @@ class Events extends MY_Controller {
             ->row_array();
         $total = (int)($countResult['total'] ?? 0);
 
-        // 获取围观者列表
-        $spectators = $this->db->select('gs.user_id, gs.created_at, u.display_name, u.wx_name, u.avatar')
+        // 获取围观者列表，关联备注名表以"我"的视角展示
+        $spectators = $this->db->select('gs.user_id, gs.created_at, u.display_name, u.wx_name, u.avatar, r.remark_name')
             ->from('t_game_spectator gs')
             ->join('t_user u', 'gs.user_id = u.id', 'left')
+            ->join('t_user_remark r', "r.target_id = gs.user_id AND r.user_id = {$userid}", 'left')
             ->where('gs.game_id', $gameId)
             ->order_by('gs.created_at', 'DESC')
             ->order_by('gs.user_id', 'DESC')  // 添加第二排序条件，确保排序稳定
@@ -141,14 +143,13 @@ class Events extends MY_Controller {
         $list = [];
         foreach ($spectators as $spec) {
             $avatar = $spec['avatar'] ?? '';
-            if (empty($avatar)) {
-                $avatar = $defaultAvatar;
-            } else if (strpos($avatar, 'http') !== 0) {
-                $avatar = $webUrl . $avatar;
-            }
+            // 优先级: remark_name > display_name > wx_name > '用户'
+            $showName = !empty($spec['remark_name'])
+                ? $spec['remark_name']
+                : (!empty($spec['display_name']) ? $spec['display_name'] : ($spec['wx_name'] ?? '用户'));
             $list[] = [
                 'user_id' => (int)$spec['user_id'],
-                'display_name' => !empty($spec['display_name']) ? $spec['display_name'] : ($spec['wx_name'] ?? '用户'),
+                'show_name' => $showName,
                 'avatar' => $avatar,
                 'created_at' => $spec['created_at']
             ];

@@ -488,7 +488,7 @@ class MTeamGame extends CI_Model {
             // 通过 tag_id 直接关联获取用户的TAG信息
             $this->db->select('gu.*, u.display_name, u.wx_name, u.avatar, u.handicap, s.tag_name, s.color as tag_color');
             $this->db->from('t_game_group_user gu');
-            $this->db->join('t_user u', 'gu.userid = u.id', 'left');
+            $this->db->join('t_user u', 'gu.user_id = u.id', 'left');
             $this->db->join('t_team_game_tags s', 'gu.tag_id = s.id', 'left');
             $this->db->where('gu.groupid', $group['groupid']);
             $group['members'] = $this->db->get()->result_array();
@@ -1019,7 +1019,7 @@ class MTeamGame extends CI_Model {
     /**
      * 获取队际赛详情
      */
-    public function getCrossTeamGameDetail($game_id) {
+    public function getCrossTeamGameDetail($me, $game_id) {
         // 基本信息
         $this->db->select('g.*, c.name as course_name');
         $this->db->from('t_game g');
@@ -1040,7 +1040,7 @@ class MTeamGame extends CI_Model {
         ];
 
         // 分组信息
-        $game['groups'] = $this->getCrossTeamGroups($game_id);
+        $game['groups'] = $this->getCrossTeamGroups($me, $game_id);
 
         return $game;
     }
@@ -1048,7 +1048,7 @@ class MTeamGame extends CI_Model {
     /**
      * 获取队际赛分组详情（使用统一的 t_team_game_tags 表）
      */
-    public function getCrossTeamGroups($game_id) {
+    public function getCrossTeamGroups($me, $game_id) {
         $groups = $this->db->where('gameid', $game_id)
             ->order_by('groupid', 'ASC')
             ->get('t_game_group')
@@ -1058,7 +1058,7 @@ class MTeamGame extends CI_Model {
             // 通过 tag_id 直接关联获取用户的TAG信息
             $this->db->select('gu.*, u.display_name, u.wx_name, u.avatar, u.handicap, s.tag_name as team_alias, s.team_id, s.id as tag_id');
             $this->db->from('t_game_group_user gu');
-            $this->db->join('t_user u', 'gu.userid = u.id', 'left');
+            $this->db->join('t_user u', 'gu.user_id = u.id', 'left');
             $this->db->join('t_team_game_tags s', 'gu.tag_id = s.id', 'left');
             $this->db->where('gu.groupid', $group['groupid']);
             $group['members'] = $this->db->get()->result_array();
@@ -1073,7 +1073,7 @@ class MTeamGame extends CI_Model {
      * @return array 报名人员列表（含序号、昵称、头像、差点）
      */
     public function getTagMembersAll($game_id) {
-        $this->db->select('m.id, m.tag_id, m.user_id, m.join_time, m.group_id, m.display_name, m.mobile, m.gender, u.avatar, u.handicap, t.tag_name, t.color');
+        $this->db->select('m.id, m.tag_id, m.user_id, m.join_time, m.group_id, m.apply_name, m.mobile, m.gender, u.avatar, u.handicap, t.tag_name, t.color');
         $this->db->from('t_game_tag_member m');
         $this->db->join('t_user u', 'm.user_id = u.id', 'left');
         $this->db->join('t_team_game_tags t', 'm.tag_id = t.id', 'left');
@@ -1097,7 +1097,8 @@ class MTeamGame extends CI_Model {
      * 获取TAG成员列表
      */
     public function getMembersByTag($tag_id) {
-        $this->db->select('sm.id, sm.tag_id, sm.user_id, sm.game_id, sm.join_time, sm.group_id, sm.display_name, sm.mobile, sm.gender, u.avatar, u.handicap');
+        // debug(1111);
+        $this->db->select('sm.id, sm.tag_id, sm.user_id, sm.game_id, sm.join_time, sm.group_id, sm.apply_name, sm.mobile, sm.gender, u.avatar, u.handicap');
         $this->db->from('t_game_tag_member sm');
         $this->db->join('t_user u', 'sm.user_id = u.id', 'left');
         $this->db->where('sm.tag_id', $tag_id);

@@ -26,7 +26,7 @@
         />
       </view>
       <view class="spectator-info">
-        <text class="spectator-name">{{item.display_name || '匿名用户'}}</text>
+        <text class="spectator-name">{{item.show_name }}</text>
         <text class="spectator-time" wx:if="{{item.watch_time}}">{{item.watch_time}}</text>
       </view>
     </view>

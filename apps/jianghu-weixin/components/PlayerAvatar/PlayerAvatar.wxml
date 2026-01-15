@@ -14,7 +14,7 @@
 
   <!-- 名字 + 性别（非纯头像模式） -->
   <view wx:if="{{!avatarOnly }}" class="name-row">
-    <text class="player-name">{{show_name || wx_name || '未知'}}</text>
+    <text class="player-name">{{show_name }}</text>
   </view>
 
   <!-- 球队名称（非纯头像模式） -->
