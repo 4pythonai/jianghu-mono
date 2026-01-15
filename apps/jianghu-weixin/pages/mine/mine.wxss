@@ -77,13 +77,13 @@ page {
   flex: 1;
 }
 
-.nickname-row {
+.showname-row {
   display: flex;
   align-items: center;
   margin-bottom: 12rpx;
 }
 
-.nickname {
+.showname {
   font-size: 36rpx;
   font-weight: bold;
   color: #fff;
@@ -183,7 +183,7 @@ page {
   color: #666;
 }
 
-.nickname-input-wrapper {
+.showname-input-wrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -198,11 +198,11 @@ page {
   margin-bottom: 20rpx;
 }
 
-.nickname-input-container {
+.showname-input-container {
   width: 100%;
 }
 
-.nickname-input {
+.showname-input {
   width: 100%;
   height: 80rpx;
   line-height: 80rpx;
@@ -213,7 +213,7 @@ page {
   box-sizing: border-box;
 }
 
-.nickname-input:focus {
+.showname-input:focus {
   border-color: #1a5c3a;
 }
 

@@ -18,8 +18,8 @@
         ></image>
       </view>
       <view class="user-details">
-        <view class="nickname-row">
-          <text class="nickname">{{ userInfo.display_name || '微信用户' }}</text>
+        <view class="showname-row">
+          <text class="showname">{{ userInfo.display_name || '微信用户' }}</text>
           <text class="gender-icon" wx:if="{{ userInfo.gender === 'male' }}">♂</text>
           <text class="gender-icon female" wx:if="{{ userInfo.gender === 'female' }}">♀</text>
         </view>
@@ -45,12 +45,12 @@
         ></image>
         <text class="avatar-text">点击选择头像</text>
       </button>
-      <view class="nickname-input-wrapper">
+      <view class="showname-input-wrapper">
         <text class="input-label">昵称:</text>
-        <view class="nickname-input-container">
+        <view class="showname-input-container">
           <input
-            class="nickname-input"
-            type="nickname"
+            class="showname-input"
+            type="showname"
             value="{{ tempDisplayName || userInfo.display_name || '' }}"
             placeholder="请输入昵称"
             maxlength="20"

@@ -70,7 +70,7 @@
 	flex-direction: column;
 }
 
-.player-nickname {
+.player-showname {
 	font-size: 30rpx;
 	color: #333;
 	font-weight: 500;

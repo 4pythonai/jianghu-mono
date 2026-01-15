@@ -17,6 +17,6 @@
         catchtap="onDeletePlayer"
       />
     </view>
-    <text class="player-nickname">{{item.display_name }}</text>
+    <text class="player-showname">{{item.display_name }}</text>
   </view>
 </view>

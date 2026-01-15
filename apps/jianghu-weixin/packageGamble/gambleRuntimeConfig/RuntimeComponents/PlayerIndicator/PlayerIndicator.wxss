@@ -63,7 +63,7 @@
 	flex-shrink: 0;
 }
 
-.player-nickname {
+.player-showname {
 	font-size: 24rpx;
 	color: #333;
 	margin-bottom: 20rpx;

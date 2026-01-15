@@ -80,7 +80,7 @@
 	flex: 1;
 }
 
-.user-nickname {
+.user-showname {
 	font-size: 20rpx;
 	color: #333;
 	font-weight: 500;

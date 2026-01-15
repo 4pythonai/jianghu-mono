@@ -32,18 +32,18 @@ class Game extends MY_Controller {
     public function getPlayerCombination() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
 
-        $user1 = ['userid' => 837590, 'nickname' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 0];
-        $user2 = ['userid' => 14, 'nickname' => 'awen', 'avatar' => 'https://qiaoyincapital.com//avatar/14.png', 'handicap' => 0];
-        $user3 = ['userid' => 59, 'nickname' => '唐昆', 'avatar' => 'https://qiaoyincapital.com//avatar/59.png', 'handicap' => 0];
-        $user4 = ['userid' => 122, 'nickname' => 'nice6', 'avatar' => 'https://qiaoyincapital.com//avatar/122.png', 'handicap' => 0];
+        $user1 = ['userid' => 837590, 'show_name' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 0];
+        $user2 = ['userid' => 14, 'show_name' => 'awen', 'avatar' => 'https://qiaoyincapital.com//avatar/14.png', 'handicap' => 0];
+        $user3 = ['userid' => 59, 'show_name' => '唐昆', 'avatar' => 'https://qiaoyincapital.com//avatar/59.png', 'handicap' => 0];
+        $user4 = ['userid' => 122, 'show_name' => 'nice6', 'avatar' => 'https://qiaoyincapital.com//avatar/122.png', 'handicap' => 0];
 
 
 
 
-        $user5 = ['userid' => 837590, 'nickname' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 27.8];
-        $user6 = ['userid' => 126, 'nickname' => 'ecoeco', 'avatar' => 'https://qiaoyincapital.com//avatar/126.png', 'handicap' => 3.8];
-        $user7 = ['userid' => 245, 'nickname' => 'JoYa', 'avatar' => 'https://qiaoyincapital.com//avatar/245.jpg', 'handicap' => 15.6];
-        $user8 = ['userid' => 246, 'nickname' => '阿咪阿咪红', 'avatar' => 'https://qiaoyincapital.com//avatar/246.png', 'handicap' => 0];
+        $user5 = ['userid' => 837590, 'show_name' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 27.8];
+        $user6 = ['userid' => 126, 'show_name' => 'ecoeco', 'avatar' => 'https://qiaoyincapital.com//avatar/126.png', 'handicap' => 3.8];
+        $user7 = ['userid' => 245, 'show_name' => 'JoYa', 'avatar' => 'https://qiaoyincapital.com//avatar/245.jpg', 'handicap' => 15.6];
+        $user8 = ['userid' => 246, 'show_name' => '阿咪阿咪红', 'avatar' => 'https://qiaoyincapital.com//avatar/246.png', 'handicap' => 0];
 
         $group1 = [$user1, $user2, $user3, $user4];
         $group2 = [$user5, $user6, $user7, $user8];

@@ -17,7 +17,7 @@
         </view>
         <view class="player-info">
           <!-- 统一使用 display_name 字段（后端计算的显示名称） -->
-          <text class="player-nickname">{{item.display_name}}</text>
+          <text class="player-showname">{{item.display_name}}</text>
           <text class="player-id">ID: {{item.userid}}</text>
           <text class="player-source">来源: {{joinTypeMap[item.join_type] || '未知来源'}}</text>
         </view>

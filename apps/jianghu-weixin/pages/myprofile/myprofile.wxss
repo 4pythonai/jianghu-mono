@@ -58,11 +58,11 @@ page {
 
  
 
-.nickname-section {
+.showname-section {
   position: relative;
 }
 
-.nickname-input {
+.showname-input {
   width: 100%;
   height: 80rpx;
   padding: 0 24rpx;
@@ -75,11 +75,11 @@ page {
   box-sizing: border-box;
 }
 
-.nickname-input::placeholder {
+.showname-input::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.nickname-hint {
+.showname-hint {
   position: absolute;
   right: 24rpx;
   bottom: -36rpx;

@@ -36,7 +36,7 @@
 
         <!-- 用户名和性别 -->
         <view class="name-section">
-          <text class="user-nickname">{{userInfo.show_name}}</text>
+          <text class="user-showname">{{userInfo.show_name}}</text>
           <text wx:if="{{userInfo.gender === 'male'}}" class="gender-badge male">♂</text>
           <text wx:elif="{{userInfo.gender === 'female'}}" class="gender-badge female">♀</text>
         </view>

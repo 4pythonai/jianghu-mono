@@ -37,7 +37,7 @@
 	border-radius: 50%;
 }
 
-.player-nickname {
+.player-showname {
 	margin-top: 8rpx;
 	font-size: 24rpx;
 	color: #333;

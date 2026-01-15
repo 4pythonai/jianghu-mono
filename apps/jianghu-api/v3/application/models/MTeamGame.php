@@ -290,7 +290,7 @@ class MTeamGame extends CI_Model {
     public function cancelRegistration($game_id, $user_id) {
         // 1. 先从分组中删除该用户（如果存在）
         $this->db->where('gameid', $game_id);
-        $this->db->where('userid', $user_id);
+        $this->db->where('user_id', $user_id);
         $this->db->delete('t_game_group_user');
 
         // 2. 从TAG成员表中删除

@@ -24,7 +24,7 @@
       />
 
       <!-- 球员昵称 -->
-      <text class="player-nickname">{{player.display_name}}</text>
+      <text class="player-showname">{{player.display_name}}</text>
 
       <!-- 配置值 -->
       <text class="player-config">{{player.configString}}</text>

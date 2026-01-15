@@ -79,7 +79,7 @@
             </view>
             <view class="user-info">
               <!-- 统一使用 display_name 字段（后端计算的显示名称） -->
-              <text class="user-nickname">{{item.display_name}}</text>
+              <text class="user-showname">{{item.display_name}}</text>
             </view>
           </view>
         </view>
