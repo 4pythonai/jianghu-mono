@@ -77,7 +77,7 @@ class MGamePipe extends CI_Model implements StageInterface {
         }
 
         // 获取星标好友的 user_id 列表
-        $starFriendIds = array_column($starFriends, 'fuser_id');
+        $starFriendIds = array_column($starFriends, 'target_id');
         $starFriendIdList = implode(',', $starFriendIds);
 
         // 查询星标好友参与的比赛

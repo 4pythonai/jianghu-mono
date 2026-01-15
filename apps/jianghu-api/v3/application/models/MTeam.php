@@ -314,7 +314,7 @@ class MTeam extends CI_Model {
     /**
      * 获取球队成员列表
      */
-    public function getTeamMembers($team_id, $status = 'active') {
+    public function getTeamMembers($userid, $team_id, $status = 'active') {
         $this->db->select('tm.*, u.display_name, u.wx_name, u.avatar, u.handicap, u.mobile');
         $this->db->from('t_team_member tm');
         $this->db->join('t_user u', 'tm.user_id = u.id', 'left');
@@ -326,13 +326,7 @@ class MTeam extends CI_Model {
         return $this->db->get()->result_array();
     }
 
-    /**
-     * 获取待审批申请列表
-     */
-    public function getPendingRequests($team_id) {
-        return $this->getTeamMembers($team_id, 'pending');
-    }
-
+ 
     // ========== 权限管理 ==========
 
     /**

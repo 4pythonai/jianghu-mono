@@ -32,7 +32,7 @@
           />
         </view>
         <view class="member-info">
-          <view class="member-name">{{item.display_name || '未设置昵称'}}</view>
+          <view class="member-name">{{item.show_name}}</view>
           <view class="member-meta">
             <text
               class="member-handicap"

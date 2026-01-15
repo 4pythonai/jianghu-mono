@@ -179,7 +179,7 @@ class Feed extends MY_Controller {
         $games = [];
         foreach ($allgames as $game) {
             $gameid = $game['id'];
-            $game_detail = $this->MDetailGame->getGameDetail($gameid);
+            $game_detail = $this->MDetailGame->getGameDetail($gameid, $userid);
             if (!$game_detail) {
                 continue;
             }
@@ -227,7 +227,7 @@ class Feed extends MY_Controller {
         // 1. 查询我关注的人的ID列表
         $followingRows = $this->db->select('target_id')
             ->from('t_user_follow')
-            ->where('userid', $userid)
+            ->where('user_id', $userid)
             ->get()
             ->result_array();
         $followingIds = array_column($followingRows, 'target_id');
@@ -308,7 +308,7 @@ class Feed extends MY_Controller {
         $games = [];
         foreach ($gameRows as $row) {
             $gameid = $row['id'];
-            $game_detail = $this->MDetailGame->getGameDetail($gameid);
+            $game_detail = $this->MDetailGame->getGameDetail($gameid, $userid);
             if (!$game_detail) {
                 continue;
             }
@@ -359,7 +359,7 @@ class Feed extends MY_Controller {
         $games = [];
         foreach ($gameRows as $row) {
             $gameid = $row['id'];
-            $game_detail = $this->MDetailGame->getGameDetail($gameid);
+            $game_detail = $this->MDetailGame->getGameDetail($gameid, $userid);
             if (!$game_detail) {
                 continue;
             }
@@ -396,7 +396,7 @@ class Feed extends MY_Controller {
         $games = [];
         foreach ($gameRows as $row) {
             $gameid = $row['id'];
-            $game_detail = $this->MDetailGame->getGameDetail($gameid);
+            $game_detail = $this->MDetailGame->getGameDetail($gameid, $userid);
             if (!$game_detail) {
                 continue;
             }

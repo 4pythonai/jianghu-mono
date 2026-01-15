@@ -18,6 +18,11 @@ Component({
             type: String,
             value: ''
         },
+        /** 显示名称（优先使用，如果没有则使用 wx_name） */
+        show_name: {
+            type: String,
+            value: ''
+        },
         /** 所属球队名称 */
         teamName: {
             type: String,

@@ -8,7 +8,7 @@ class MDetailGame  extends CI_Model {
     }
 
 
-    public function getGameDetail($gameid) {
+    public function getGameDetail($gameid, $current_user_id = null) {
         // 获取球局基本信息
         $game_info = $this->getGameInfo($gameid);
         if (!$game_info) {
@@ -24,7 +24,7 @@ class MDetailGame  extends CI_Model {
 
 
         // 获取玩家信息
-        $players = $this->getPlayers($gameid);
+        $players = $this->getPlayers($gameid, $current_user_id);
 
         // 获取球洞列表
         // $holeList = $this->getHoleListByGameId($game_id);
@@ -32,13 +32,20 @@ class MDetailGame  extends CI_Model {
 
 
         // 获取球局分组信息
-        $groups = $this->getGroupsInfo($gameid);
+        $groups = $this->getGroupsInfo($gameid, $current_user_id);
 
         // 成绩
-        $scores = $this->getScoreInfo($gameid);
+        $scores = $this->getScoreInfo($gameid, $current_user_id);
 
         // 创建者信息
         $creator = $this->MUser->getUserProfile($game_info['creatorid']);
+        // 如果提供了当前用户ID，为创建者添加 show_name
+        if ($current_user_id && $creator) {
+            $show_names = $this->MUser->getShowNamesForUsers($current_user_id, [$game_info['creatorid']]);
+            $creator['show_name'] = isset($show_names[$game_info['creatorid']])
+                ? $show_names[$game_info['creatorid']]
+                : (!empty($creator['display_name']) ? $creator['display_name'] : ($creator['wx_name'] ?? '球友'));
+        }
         // 球局的A/B等信息
         // course
         // gameAbstract: ["A场", "B场"]
@@ -84,15 +91,26 @@ class MDetailGame  extends CI_Model {
     }
 
 
-    public function getScoreInfo($game_id) {
+    public function getScoreInfo($game_id, $current_user_id = null) {
         $score_query = "
             SELECT * FROM t_game_score WHERE gameid = ?
         ";
         $score_result = $this->db->query($score_query, [$game_id]);
         $scores = $score_result->result_array();
+
+        // 如果提供了当前用户ID，批量获取所有用户的 show_name
+        $show_names = [];
+        if ($current_user_id) {
+            // 提取所有唯一的 user_id
+            $user_ids = array_unique(array_column($scores, 'user_id'));
+            if (!empty($user_ids)) {
+                $show_names = $this->MUser->getShowNamesForUsers($current_user_id, $user_ids);
+            }
+        }
+
         $fixedd = [];
         foreach ($scores as $score) {
-            $fixedd[] = [
+            $score_data = [
                 'userid' => $score['user_id'],
                 'holeid' => $score['hole_id'],
                 'hindex' => intval($score['hindex']),
@@ -102,6 +120,13 @@ class MDetailGame  extends CI_Model {
                 'sand_save' => intval($score['sand_save']),
                 'tee_shot_direction' => $score['tee_shot_direction']
             ];
+
+            // 如果获取到了 show_name，添加到返回数据中
+            if ($current_user_id && isset($show_names[$score['user_id']])) {
+                $score_data['show_name'] = $show_names[$score['user_id']];
+            }
+
+            $fixedd[] = $score_data;
         }
         return $fixedd;
     }
@@ -198,22 +223,45 @@ class MDetailGame  extends CI_Model {
     /**
      * 获取玩家列表
      * @param int $game_id 球局ID
+     * @param int|null $current_user_id 当前用户ID（用于获取 show_name）
      * @return array 玩家列表
      */
-    public function getPlayers($game_id) {
-        $players_query = "
-            SELECT
-                ggu.groupid,
-                ggu.tee,
-                u.id as userid,
-                u.wx_name as wx_name,
-                u.avatar
-            FROM t_game_group_user ggu
-            LEFT JOIN t_user u ON ggu.user_id = u.id
-            WHERE ggu.gameid = ?
-            ORDER BY ggu.id ASC ";
+    public function getPlayers($game_id, $current_user_id = null) {
+        if ($current_user_id) {
+            // 如果提供了当前用户ID，LEFT JOIN t_user_remark 获取备注名
+            $players_query = "
+                SELECT
+                    ggu.groupid,
+                    ggu.tee,
+                    u.id as userid,
+                    u.wx_name as wx_name,
+                    u.display_name,
+                    u.avatar,
+                    COALESCE(ur.remark_name, u.display_name, u.wx_name, '球友') as show_name
+                FROM t_game_group_user ggu
+                LEFT JOIN t_user u ON ggu.user_id = u.id
+                LEFT JOIN t_user_remark ur ON ur.user_id = ? AND ur.target_id = u.id
+                WHERE ggu.gameid = ?
+                ORDER BY ggu.id ASC ";
 
-        $players_result = $this->db->query($players_query, [$game_id])->result_array();
+            $players_result = $this->db->query($players_query, [$current_user_id, $game_id])->result_array();
+        } else {
+            // 如果没有提供当前用户ID，保持原有行为
+            $players_query = "
+                SELECT
+                    ggu.groupid,
+                    ggu.tee,
+                    u.id as userid,
+                    u.wx_name as wx_name,
+                    u.avatar
+                FROM t_game_group_user ggu
+                LEFT JOIN t_user u ON ggu.user_id = u.id
+                WHERE ggu.gameid = ?
+                ORDER BY ggu.id ASC ";
+
+            $players_result = $this->db->query($players_query, [$game_id])->result_array();
+        }
+
         return $players_result;
     }
 
@@ -319,9 +367,10 @@ class MDetailGame  extends CI_Model {
     /**
      * 获取球局分组信息
      * @param int $gameid 球局ID
+     * @param int|null $current_user_id 当前用户ID（用于获取 show_name）
      * @return array 分组信息列表
      */
-    public function getGroupsInfo($gameid) {
+    public function getGroupsInfo($gameid, $current_user_id = null) {
         $groups = [];
 
         // 获取球局的所有分组
@@ -339,30 +388,60 @@ class MDetailGame  extends CI_Model {
 
         foreach ($groups_result->result_array() as $group) {
             // 获取该分组下的所有用户
-            $users_query = "
-                SELECT 
-                    ggu.user_id,
-                    ggu.confirmed,
-                    ggu.addtime,
-                    u.wx_name,
-                    u.avatar as avatar
-                FROM t_game_group_user ggu
-                LEFT JOIN t_user u ON ggu.user_id = u.id
-                WHERE ggu.gameid = ? AND ggu.groupid = ?
-                ORDER BY ggu.addtime ASC
-            ";
+            if ($current_user_id) {
+                // 如果提供了当前用户ID，LEFT JOIN t_user_remark 获取备注名
+                $users_query = "
+                    SELECT 
+                        ggu.user_id,
+                        ggu.confirmed,
+                        ggu.addtime,
+                        u.wx_name,
+                        u.display_name,
+                        u.avatar as avatar,
+                        COALESCE(ur.remark_name, u.display_name, u.wx_name, '球友') as show_name
+                    FROM t_game_group_user ggu
+                    LEFT JOIN t_user u ON ggu.user_id = u.id
+                    LEFT JOIN t_user_remark ur ON ur.user_id = ? AND ur.target_id = u.id
+                    WHERE ggu.gameid = ? AND ggu.groupid = ?
+                    ORDER BY ggu.addtime ASC
+                ";
 
-            $users_result = $this->db->query($users_query, [$gameid, $group['groupid']]);
+                $users_result = $this->db->query($users_query, [$current_user_id, $gameid, $group['groupid']]);
+            } else {
+                // 如果没有提供当前用户ID，保持原有行为
+                $users_query = "
+                    SELECT 
+                        ggu.user_id,
+                        ggu.confirmed,
+                        ggu.addtime,
+                        u.wx_name,
+                        u.avatar as avatar
+                    FROM t_game_group_user ggu
+                    LEFT JOIN t_user u ON ggu.user_id = u.id
+                    WHERE ggu.gameid = ? AND ggu.groupid = ?
+                    ORDER BY ggu.addtime ASC
+                ";
+
+                $users_result = $this->db->query($users_query, [$gameid, $group['groupid']]);
+            }
+
             $users = [];
 
             foreach ($users_result->result_array() as $user) {
-                $users[] = [
+                $user_data = [
                     'userid' => (int)$user['user_id'],
                     'wx_name' => $user['wx_name'],
                     'avatar' => $user['avatar'],
                     'confirmed' => (int)$user['confirmed'],
                     'addtime' => $user['addtime']
                 ];
+
+                // 如果查询结果中包含 show_name，添加到返回数据中
+                if (isset($user['show_name'])) {
+                    $user_data['show_name'] = $user['show_name'];
+                }
+
+                $users[] = $user_data;
             }
 
             $groups[] = [

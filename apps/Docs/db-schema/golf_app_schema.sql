@@ -449,7 +449,7 @@ CREATE TABLE `t_user` (
   `status` char(1) DEFAULT NULL COMMENT 'g:游客 a:正式用户 n:非注册用户 h:半注册用户 m:已合并',
   `unionid` char(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `mobile` varchar(40) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '' COMMENT '手机号',
-  `display_name` char(100) DEFAULT NULL COMMENT '显示名称（用户可修改）',
+  `display_name` char(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '显示名称（用户可修改）',
   `wx_name` varchar(100) DEFAULT NULL COMMENT '微信名称（系统同步）',
   `reg_type` char(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'weixin' COMMENT 'weixin,remark,remarkwithmobile,jhtransfer',
   `addtime` datetime DEFAULT NULL COMMENT '添加时间',
@@ -514,4 +514,4 @@ CREATE TABLE `t_user_remark` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_remark` (`user_id`,`target_id`),
   KEY `idx_target` (`target_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户备注名表';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户备注名表';

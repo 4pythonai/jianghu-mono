@@ -40,72 +40,146 @@ class User extends MY_Controller {
     }
 
 
+    // public function getUserProfile() {
+    //     try {
+    //         $json_paras = json_decode(file_get_contents('php://input'), true);
+    //         $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
+
+    //         if (!$user_id) {
+    //             echo json_encode([
+    //                 'code' => 400,
+    //                 'message' => '缺少用户ID'
+    //             ], JSON_UNESCAPED_UNICODE);
+    //             return;
+    //         }
+
+    //         $user = $this->MUser->getUserProfile($user_id);
+
+    //         if (!$user) {
+    //             echo json_encode([
+    //                 'code' => 404,
+    //                 'message' => '用户不存在'
+    //             ], JSON_UNESCAPED_UNICODE);
+    //             return;
+    //         }
+
+    //         // 获取当前登录用户ID
+    //         $current_user_id = $this->getUser();
+
+    //         // 获取关系信息
+    //         $is_self = ($current_user_id == $user_id);
+    //         $is_following = false;
+    //         $is_blocked = false;
+    //         $is_blocked_by = false;
+    //         if ($current_user_id && !$is_self) {
+    //             $is_following = $this->MUser->isFollowing($current_user_id, $user_id);
+    //             $is_blocked = $this->MUser->isBlocked($current_user_id, $user_id);
+    //             $is_blocked_by = $this->MUser->isBlockedBy($current_user_id, $user_id);
+    //         }
+
+    //         // 获取统计数据
+    //         $followers_count = $this->MUser->getFollowersCount($user_id);
+    //         $games_count = $this->MUser->getGamesCount($user_id);
+    //         $teams_count = $this->MUser->getTeamsCount($user_id);
+
+    //         echo json_encode([
+    //             'code' => 200,
+    //             'message' => 'OK',
+    //             'data' => [
+    //                 'user' => $user,
+    //                 'relationship' => [
+    //                     'is_self' => $is_self,
+    //                     'is_following' => $is_following,
+    //                     'is_blocked' => $is_blocked,
+    //                     'is_blocked_by' => $is_blocked_by
+    //                 ],
+    //                 'stats' => [
+    //                     'gamesCount' => $games_count,
+    //                     'teamsCount' => $teams_count,
+    //                     'followers_count' => $followers_count
+    //                 ]
+    //             ]
+    //         ], JSON_UNESCAPED_UNICODE);
+    //     } catch (Exception $e) {
+    //         // 记录异常详情到日志
+    //         logtext('<div class="error-block" style="background:#ffebee; border-left:4px solid #f44336; padding:10px; margin:10px 0;">');
+    //         logtext('<strong style="color:#c62828;">[User/getUserProfile ERROR] ' . date('Y-m-d H:i:s') . '</strong>');
+    //         logtext('Exception: ' . get_class($e));
+    //         logtext('Message: ' . $e->getMessage());
+    //         logtext('File: ' . $e->getFile() . ':' . $e->getLine());
+    //         logtext('Stack trace:');
+    //         logtext($e->getTraceAsString());
+    //         logtext('Request params: ' . json_encode($json_paras ?? [], JSON_UNESCAPED_UNICODE));
+    //         logtext('User ID: ' . ($user_id ?? 'N/A'));
+    //         logtext('</div>');
+
+    //         echo json_encode([
+    //             'code' => 500,
+    //             'message' => '服务器内部错误'
+    //         ], JSON_UNESCAPED_UNICODE);
+    //     }
+    // }
+
     public function getUserProfile() {
-        try {
-            $json_paras = json_decode(file_get_contents('php://input'), true);
-            $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
 
-            if (!$user_id) {
-                echo json_encode([
-                    'code' => 400,
-                    'message' => '缺少用户ID'
-                ], JSON_UNESCAPED_UNICODE);
-                return;
-            }
-
-            $user = $this->MUser->getUserProfile($user_id);
-
-            if (!$user) {
-                echo json_encode([
-                    'code' => 404,
-                    'message' => '用户不存在'
-                ], JSON_UNESCAPED_UNICODE);
-                return;
-            }
-
-            // 获取当前登录用户ID
-            $current_user_id = $this->getUser();
-
-            // 获取关系信息
-            $is_self = ($current_user_id == $user_id);
-            $is_following = false;
-            $is_blocked = false;
-            $is_blocked_by = false;
-            if ($current_user_id && !$is_self) {
-                $is_following = $this->MUser->isFollowing($current_user_id, $user_id);
-                $is_blocked = $this->MUser->isBlocked($current_user_id, $user_id);
-                $is_blocked_by = $this->MUser->isBlockedBy($current_user_id, $user_id);
-            }
-
-            // 获取统计数据
-            $followers_count = $this->MUser->getFollowersCount($user_id);
-            $games_count = $this->MUser->getGamesCount($user_id);
-            $teams_count = $this->MUser->getTeamsCount($user_id);
-
+        if (!$user_id) {
             echo json_encode([
-                'code' => 200,
-                'message' => 'OK',
-                'data' => [
-                    'user' => $user,
-                    'relationship' => [
-                        'is_self' => $is_self,
-                        'is_following' => $is_following,
-                        'is_blocked' => $is_blocked,
-                        'is_blocked_by' => $is_blocked_by
-                    ],
-                    'stats' => [
-                        'gamesCount' => $games_count,
-                        'teamsCount' => $teams_count,
-                        'followers_count' => $followers_count
-                    ]
-                ]
+                'code' => 400,
+                'message' => '缺少用户ID'
             ], JSON_UNESCAPED_UNICODE);
-        } catch (Exception $e) {
-            echo json_encode([
-                'code' => 500,
-                'message' => '服务器内部错误'
-            ], JSON_UNESCAPED_UNICODE);
+            return;
         }
+
+        // 获取当前登录用户ID
+        $current_user_id = $this->getUser();
+
+        // 传入当前用户ID以获取 show_name（包含 remark_name）
+        $user = $this->MUser->getUserProfile($user_id, $current_user_id);
+
+        if (!$user) {
+            echo json_encode([
+                'code' => 404,
+                'message' => '用户不存在'
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 获取关系信息
+        $is_self = ($current_user_id == $user_id);
+        $is_following = false;
+        $is_blocked = false;
+        $is_blocked_by = false;
+        if ($current_user_id && !$is_self) {
+            $is_following = $this->MUser->isFollowing($current_user_id, $user_id);
+            $is_blocked = $this->MUser->isBlocked($current_user_id, $user_id);
+            $is_blocked_by = $this->MUser->isBlockedBy($current_user_id, $user_id);
+        }
+
+        // 获取统计数据
+        $followers_count = $this->MUser->getFollowersCount($user_id);
+        $games_count = $this->MUser->getGamesCount($user_id);
+        $teams_count = $this->MUser->getTeamsCount($user_id);
+
+        echo json_encode([
+            'code' => 200,
+            'message' => 'OK',
+            'data' => [
+                'user' => $user,
+                'relationship' => [
+                    'is_self' => $is_self,
+                    'is_following' => $is_following,
+                    'is_blocked' => $is_blocked,
+                    'is_blocked_by' => $is_blocked_by
+                ],
+                'stats' => [
+                    'gamesCount' => $games_count,
+                    'teamsCount' => $teams_count,
+                    'followers_count' => $followers_count
+                ]
+            ]
+        ], JSON_UNESCAPED_UNICODE);
     }
 
 
@@ -368,41 +442,35 @@ class User extends MY_Controller {
      * 返回: 球队数量、关注数量、粉丝数量、非注册好友数量、好友列表
      */
     public function getContactsOverview() {
-        try {
-            $userid = $this->getUser();
-            if (!$userid) {
-                echo json_encode([
-                    'code' => 401,
-                    'message' => '请先登录'
-                ], JSON_UNESCAPED_UNICODE);
-                return;
-            }
-
-            // 获取各类数量
-            $teams_count = $this->MUser->getTeamsCount($userid);
-            $followings_count = $this->MUser->getFollowingCount($userid);
-            $followers_count = $this->MUser->getFollowersCount($userid);
-            $ghosts_count = $this->MUser->getGhostUsersCount($userid);
-
-            // 获取好友列表 (互相关注)
-            $friends = $this->MUser->getFriends($userid);
-
+        $userid = $this->getUser();
+        if (!$userid) {
             echo json_encode([
-                'code' => 200,
-                'teams_count' => $teams_count,
-                'followings_count' => $followings_count,
-                'followers_count' => $followers_count,
-                'ghosts_count' => $ghosts_count,
-                'friends' => $friends,
-                'friends_count' => count($friends)
+                'code' => 401,
+                'message' => '请先登录'
             ], JSON_UNESCAPED_UNICODE);
-        } catch (Exception $e) {
-            echo json_encode([
-                'code' => 500,
-                'message' => '服务器内部错误'
-            ], JSON_UNESCAPED_UNICODE);
+            return;
         }
+
+        // 获取各类数量
+        $teams_count = $this->MUser->getTeamsCount($userid);
+        $followings_count = $this->MUser->getFollowingCount($userid);
+        $followers_count = $this->MUser->getFollowersCount($userid);
+        $ghosts_count = $this->MUser->getGhostUsersCount($userid);
+
+        // 获取好友列表 (互相关注)
+        $friends = $this->MUser->getFriends($userid);
+
+        echo json_encode([
+            'code' => 200,
+            'teams_count' => $teams_count,
+            'followings_count' => $followings_count,
+            'followers_count' => $followers_count,
+            'ghosts_count' => $ghosts_count,
+            'friends' => $friends,
+            'friends_count' => count($friends)
+        ], JSON_UNESCAPED_UNICODE);
     }
+
 
 
     /**
@@ -637,7 +705,7 @@ class User extends MY_Controller {
     public function UserQrcode() {
         logtext('<hr/>');
         logtext('<div><span class=functionname>' . date('Y-m-d H:i:s') . '  User/UserQrcode</span></div>');
-        
+
         try {
             $userid = $this->getUser();
             if (!$userid) {
@@ -674,23 +742,23 @@ class User extends MY_Controller {
             // 生成小程序码
             $filename = "user_qrcode_{$userid}.png";
             $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
-            
+
             // 获取微信access_token
             $access_token = $this->getWechatAccessToken();
             if (!$access_token) {
                 throw new Exception('获取微信access_token失败');
             }
-            
+
             logtext("  access_token获取成功");
 
             // 使用 getwxacode 接口生成小程序码
             $wechat_api_url = "https://api.weixin.qq.com/wxa/getwxacode?access_token={$access_token}";
-            
+
             // 页面路径和参数
             $path = "pages/user-profile/user-profile?user_id={$userid}";
-            
+
             logtext("  生成小程序码路径: " . $path);
-            
+
             $post_data = json_encode([
                 'path' => $path,
                 'width' => 430
@@ -726,7 +794,7 @@ class User extends MY_Controller {
             if (!is_dir($upload_path)) {
                 mkdir($upload_path, 0755, true);
             }
-            
+
             if (!file_put_contents($qrcodePath, $result)) {
                 throw new Exception('保存二维码文件失败');
             }
@@ -742,7 +810,6 @@ class User extends MY_Controller {
                 'message' => '生成成功',
                 'qrcode_url' => $qrcodeUrl
             ], JSON_UNESCAPED_UNICODE);
-
         } catch (Exception $e) {
             logtext("  生成二维码失败: " . $e->getMessage());
             echo json_encode([

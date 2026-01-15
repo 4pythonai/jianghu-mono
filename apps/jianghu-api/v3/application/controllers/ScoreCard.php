@@ -46,7 +46,8 @@ class ScoreCard extends CI_Controller {
         }
 
         // 获取比赛详细信息
-        $game_info = $this->MDetailGame->getGameDetail($game_id);
+        // ScoreCard 继承自 CI_Controller，无法获取当前用户ID，传递 null
+        $game_info = $this->MDetailGame->getGameDetail($game_id, null);
         // debug($game_info);
         // exit;
         if (empty($game_info)) {
@@ -79,7 +80,8 @@ class ScoreCard extends CI_Controller {
         }
 
         // 获取比赛详细信息
-        $game_info = $this->MDetailGame->getGameDetail($game_id);
+        // ScoreCard 继承自 CI_Controller，无法获取当前用户ID，传递 null
+        $game_info = $this->MDetailGame->getGameDetail($game_id, null);
 
         if (empty($game_info)) {
             echo json_encode(['code' => 404, 'message' => '比赛不存在'], JSON_UNESCAPED_UNICODE);
