@@ -8,7 +8,7 @@
       <view
         class="header-cell player-header"
         wx:for="{{players}}"
-        wx:key="userid"
+        wx:key="user_id"
         wx:for-item="player"
         wx:for-index="index"
       >
@@ -16,7 +16,7 @@
           <PlayerAvatar
             avatar="{{player.cover}}"
             name="{{player.display_name}}"
-            userId="{{player.userid}}"
+            userId="{{player.user_id}}"
             size="xs"
             shape="round"
             showTeam="{{false}}"
@@ -39,13 +39,13 @@
           <view
             class="cell"
             wx:for="{{players}}"
-            wx:key="userid"
+            wx:key="user_id"
             wx:for-item="player"
             wx:for-index="index"
           >
             <text
-              class="{{item.holeMoney[player.userid] > 0 ? 'money-positive' : item.holeMoney[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
-            >{{item.holeMoney[player.userid] > 0 ? '+' : ''}}{{item.holeMoney[player.userid]}}</text>
+              class="{{item.holeMoney[player.user_id] > 0 ? 'money-positive' : item.holeMoney[player.user_id] < 0 ? 'money-negative' : 'money-zero'}}"
+            >{{item.holeMoney[player.user_id] > 0 ? '+' : ''}}{{item.holeMoney[player.user_id]}}</text>
           </view>
         </view>
       </view>
@@ -63,13 +63,13 @@
         <view
           class="cell"
           wx:for="{{players}}"
-          wx:key="userid"
+          wx:key="user_id"
           wx:for-item="player"
           wx:for-index="index"
         >
           <text
-            class="{{totalMoney[player.userid] > 0 ? 'money-positive' : totalMoney[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
-          >{{totalMoney[player.userid] > 0 ? '+' : ''}}{{totalMoney[player.userid]}}</text>
+            class="{{totalMoney[player.user_id] > 0 ? 'money-positive' : totalMoney[player.user_id] < 0 ? 'money-negative' : 'money-zero'}}"
+          >{{totalMoney[player.user_id] > 0 ? '+' : ''}}{{totalMoney[player.user_id]}}</text>
         </view>
       </view>
 
@@ -81,13 +81,13 @@
         <view
           class="cell"
           wx:for="{{players}}"
-          wx:key="userid"
+          wx:key="user_id"
           wx:for-item="player"
           wx:for-index="index"
         >
           <text
-            class="{{totalDonated[player.userid] > 0 ? 'money-positive' : totalDonated[player.userid] < 0 ? 'money-negative' : 'money-zero'}}"
-          >{{totalDonated[player.userid] > 0 ? '+' : ''}}{{totalDonated[player.userid]}}</text>
+            class="{{totalDonated[player.user_id] > 0 ? 'money-positive' : totalDonated[player.user_id] < 0 ? 'money-negative' : 'money-zero'}}"
+          >{{totalDonated[player.user_id] > 0 ? '+' : ''}}{{totalDonated[player.user_id]}}</text>
         </view>
       </view>
     </view>

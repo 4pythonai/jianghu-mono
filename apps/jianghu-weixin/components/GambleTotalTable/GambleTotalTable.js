@@ -37,7 +37,8 @@ Component({
             if (groupInfo && Array.isArray(groupInfo)) {
                 for (const player of groupInfo) {
                     players.push(player);
-                    playersMap[player.userid] = player;
+                    // group_info 中使用 user_id
+                    playersMap[player.user_id] = player;
                 }
             }
 
@@ -48,7 +49,8 @@ Component({
             const totalMoney = {};
             const totalDonated = {};
             for (const player of players) {
-                const userid = player.userid;
+                // group_info 中使用 user_id
+                const userid = player.user_id;
                 totalMoney[userid] = 0;
                 totalDonated[userid] = 0;
             }
@@ -61,22 +63,23 @@ Component({
 
                     // 初始化所有球员的金额为0
                     for (const player of players) {
-                        const userid = player.userid;
-                        holeMoney[userid] = 0;
+                        const visitorId = player.user_id;
+                        holeMoney[visitorId] = 0;
                     }
 
                     // 处理 players_detail - 所有用户的输赢情况
                     if (hole.players_detail && Array.isArray(hole.players_detail)) {
                         for (const detail of hole.players_detail) {
-                            const userid = detail.userid;
+                            // players_detail 中使用 userid（无下划线）
+                            const visitorId = detail.userid;
                             const money = detail.final_points || 0;
                             const donated = detail.pointsDonated || 0;
 
                             // 确保该用户存在于我们的球员列表中
-                            if (playersMap[userid]) {
-                                holeMoney[userid] = money;
-                                totalMoney[userid] += money;
-                                totalDonated[userid] += donated;
+                            if (playersMap[visitorId]) {
+                                holeMoney[visitorId] = money;
+                                totalMoney[visitorId] += money;
+                                totalDonated[visitorId] += donated;
                             }
                         }
                     }
