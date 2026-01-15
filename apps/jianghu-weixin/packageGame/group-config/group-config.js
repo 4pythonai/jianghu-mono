@@ -85,8 +85,11 @@ Page({
         const map = {}
         const groups = gameStore.groups || []
 
+        console.log('[group-config] 原始 groups 数据:', JSON.stringify(groups, null, 2))
+
         groups.forEach(group => {
             (group.players || []).forEach(player => {
+                console.log('[group-config] player 原始数据:', player)
                 map[String(player.id)] = String(group.id)
             })
         })
@@ -103,18 +106,21 @@ Page({
         const groups = gameStore.groups || []
         const currentGroup = groups.find(g => String(g.id) === String(groupId))
 
+        console.log('[group-config] currentGroup:', currentGroup)
+
         if (currentGroup && currentGroup.players) {
-            this.setData({
-                selectedPlayers: currentGroup.players.map(p => ({
+            const selectedPlayers = currentGroup.players.map(p => {
+                console.log('[group-config] 当前分组 player 原始:', p)
+                return {
                     id: String(p.id),
                     name: p.name,
                     avatar: p.avatar,
                     teamName: p.teamName || ''
-                }))
+                }
             })
+            this.setData({ selectedPlayers })
+            console.log('[group-config] selectedPlayers (处理后):', selectedPlayers)
         }
-
-        console.log('[group-config] selectedPlayers:', this.data.selectedPlayers)
     },
 
     /**
@@ -124,6 +130,10 @@ Page({
         const { currentTagIndex, playerGroupMap, groupId, selectedPlayers } = this.data
         const gameTags = gameStore.gameTags || []
         const tagMembers = gameStore.tagMembers || []
+
+        console.log('[group-config] === updateCurrentTagPlayers 开始 ===')
+        console.log('[group-config] selectedPlayers:', selectedPlayers)
+        console.log('[group-config] tagMembers 原始数据 (前3条):', tagMembers.slice(0, 3))
 
         if (gameTags.length === 0) {
             this.setData({ currentTagPlayers: [] })
@@ -140,12 +150,22 @@ Page({
         const players = tagMembers
             .filter(m => m.tagName === currentTag.tagName)
             .map(m => {
-                const playerId = String(m.id)
+                // 注意：m.id 是 tag-member 记录ID，m.user_id 才是实际用户ID
+                const playerId = String(m.user_id)
                 const inGroupId = playerGroupMap[playerId]
                 const isInCurrentGroup = selectedPlayers.some(p => String(p.id) === playerId)
-                console.log(m)
+
+                console.log('[group-config] 球员比对:', {
+                    'tagMember.id': m.id,
+                    'tagMember.user_id': m.user_id,
+                    'playerId (用于比对)': playerId,
+                    'selectedPlayers.ids': selectedPlayers.map(p => p.id),
+                    'isInCurrentGroup': isInCurrentGroup
+                })
+
                 return {
                     id: playerId,
+                    user_id: m.user_id,
                     show_name: m.show_name,
                     avatar: m.avatar,
                     handicap: m.handicap,

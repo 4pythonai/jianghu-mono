@@ -588,7 +588,7 @@ class MTeamGame extends CI_Model {
             $insert_result = $this->db->insert('t_game_group_user', [
                 'gameid' => $game_id,
                 'groupid' => $group_id,
-                'userid' => $user_id,
+                'user_id' => $user_id,
                 'tag_id' => $member['tag_id'] ?? null,
                 'addtime' => date('Y-m-d H:i:s')
             ]);

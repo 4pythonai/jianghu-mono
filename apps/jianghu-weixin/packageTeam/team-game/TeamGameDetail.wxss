@@ -101,7 +101,7 @@
 .info-list {
     display: flex;
     flex-direction: column;
-    gap: 20rpx;
+    gap: 32rpx;
 }
 
 .info-item {

@@ -526,13 +526,13 @@ export const gameStore = observable({
         if (!Array.isArray(groups)) return [];
 
         // API (MTeamGame.getGroups) 返回: groupid, group_name, members[]
-        // members[] 中每项包含: userid, display_name, avatar, tag_name, tee
+        // members[] 中每项包含: user_id, display_name, avatar, tag_name, tee
         return groups.map((g, index) => {
             return {
                 id: String(g.groupid),
                 name: g.group_name || `第${index + 1}组`,
                 players: (g.members || []).map(p => ({
-                    id: p.userid,
+                    id: p.user_id,
                     name: p.display_name || '未知玩家',
                     avatar: p.avatar || '',
                     teamName: p.tag_name || '',
