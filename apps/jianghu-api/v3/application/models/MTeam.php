@@ -315,9 +315,13 @@ class MTeam extends CI_Model {
      * 获取球队成员列表
      */
     public function getTeamMembers($userid, $team_id, $status = 'active') {
-        $this->db->select('tm.*, u.display_name, u.wx_name, u.avatar, u.handicap, u.mobile');
+        // 确保 userid 是整数类型，防止 SQL 注入
+        $userid = (int)$userid;
+
+        $this->db->select('tm.*, u.display_name, u.wx_name, u.avatar, u.handicap, u.mobile, ur.remark_name, COALESCE(ur.remark_name, u.display_name, u.wx_name, \'球友\') as show_name');
         $this->db->from('t_team_member tm');
         $this->db->join('t_user u', 'tm.user_id = u.id', 'left');
+        $this->db->join('t_user_remark ur', "ur.user_id = {$userid} AND ur.target_id = u.id", 'left', false);
         $this->db->where('tm.team_id', $team_id);
         $this->db->where('tm.status', $status);
         $this->db->order_by("FIELD(tm.role, 'SuperAdmin', 'admin', 'member')");

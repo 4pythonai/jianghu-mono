@@ -111,7 +111,7 @@
             </view>
             <view class="friend-info">
               <view class="friend-name-row">
-                <text class="friend-name">{{friend.display_name || '未知好友'}}</text>
+                <text class="friend-name">{{friend.show_name }}</text>
                 <text class="gender-icon male" wx:if="{{friend.gender === 'male'}}">♂</text>
                 <text class="gender-icon female" wx:if="{{friend.gender === 'female'}}">♀</text>
               </view>

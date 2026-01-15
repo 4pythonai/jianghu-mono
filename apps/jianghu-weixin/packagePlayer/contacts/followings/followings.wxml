@@ -31,7 +31,7 @@
           </view>
           <view class="user-info">
             <view class="user-name-row">
-              <text class="user-name">{{item.show_name}}</text>
+              <text class="user-name">{{item.show_name || item.display_name || item.wx_name || '球友'}}</text>
               <text class="gender-icon male" wx:if="{{item.gender === 'male'}}">♂</text>
               <text class="gender-icon female" wx:if="{{item.gender === 'female'}}">♀</text>
             </view>
