@@ -98,18 +98,6 @@ Component({
             });
         },
 
-        // 更新用户列表数据（手动更新方法）
-        // updateUserList(newUserList) {
-        //     if (!newUserList || newUserList.length === 0) {
-        //         console.warn('PlayerDrag: updateUserList 传入的数据为空');
-        //         return;
-        //     }
-
-        //     // 直接设置数据，observers会自动处理后续逻辑
-        //     this.setData({
-        //         USERS: newUserList
-        //     });
-        // }
     },
 
     lifetimes: {

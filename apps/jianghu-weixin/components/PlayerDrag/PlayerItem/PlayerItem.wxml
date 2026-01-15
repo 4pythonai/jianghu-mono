@@ -17,6 +17,6 @@
         size="small"
       />
     </view>
-    <text class="player-name">{{itemData.display_name || '未知玩家'}}</text>
+    <text class="player-name">{{itemData.show_name }}</text>
   </view>
 </view>
