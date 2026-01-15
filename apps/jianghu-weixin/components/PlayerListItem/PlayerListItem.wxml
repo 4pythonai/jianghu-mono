@@ -1,30 +1,25 @@
 <view class="player-list-item">
-    <!-- 序号 -->
-    <view class="item-index">
-        <text class="index-text">{{index}}</text>
-    </view>
+  <!-- 序号 -->
+  <view class="item-index">
+    <text class="index-text">{{index}}</text>
+  </view>
 
-    <!-- 头像区域 -->
-    <view class="avatar-section">
-        <!-- 付费标记 -->
-        <view wx:if="{{paid}}" class="paid-badge">
-            <text class="badge-text">付</text>
-        </view>
-        <PlayerAvatar
-            avatar="{{avatar}}"
-            userId="{{userId}}"
-            avatarOnly="{{true}}"
-            size="small"
-        />
+  <!-- 头像区域 -->
+  <view class="avatar-section">
+    <!-- 付费标记 -->
+    <view wx:if="{{paid}}" class="paid-badge">
+      <text class="badge-text">付</text>
     </view>
+    <PlayerAvatar avatar="{{avatar}}" userId="{{userId}}" avatarOnly="{{true}}" size="small" />
+  </view>
 
-    <!-- 球员信息 -->
-    <view class="player-info">
-        <text class="player-name">{{name || '未知'}}</text>
-    </view>
+  <!-- 球员信息 -->
+  <view class="player-info">
+    <text class="player-name">{{show_name}}</text>
+  </view>
 
-    <!-- 江湖差点 -->
-    <view class="handicap-section">
-        <text class="handicap-value">{{handicap != null ? handicap : '-'}}</text>
-    </view>
+  <!-- 江湖差点 -->
+  <view class="handicap-section">
+    <text class="handicap-value">{{handicap != null ? handicap : '-'}}</text>
+  </view>
 </view>

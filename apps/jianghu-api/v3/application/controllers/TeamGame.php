@@ -1177,10 +1177,11 @@ class TeamGame extends MY_Controller {
      * @return array 报名人员列表（含序号seq、昵称nickname、头像avatar、差点handicap）
      */
     public function getTagMembersAll() {
+        $userid = $this->getUser();
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['game_id'];
 
-        $members = $this->MTeamGame->getTagMembersAll($game_id);
+        $members = $this->MTeamGame->getTagMembersAll($userid, $game_id);
 
         echo json_encode([
             'code' => 200,

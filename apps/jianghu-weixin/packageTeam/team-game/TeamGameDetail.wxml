@@ -108,7 +108,7 @@
             wx:key="id"
             index="{{item.seq}}"
             avatar="{{item.avatar}}"
-            name="{{item.name}}"
+            show_name="{{item.show_name}}"
             userId="{{item.user_id}}"
             handicap="{{item.handicap}}"
           />
@@ -186,7 +186,10 @@
 
         <!-- 分队选择 -->
         <view class="tag-section">
-          <view class="tag-section-title">请选中您所代表的参赛球队 <text class="required">*</text></view>
+          <view class="tag-section-title">
+            请选中您所代表的参赛球队
+            <text class="required">*</text>
+          </view>
           <view class="tag-list">
             <view
               wx:for="{{gameTags}}"
@@ -196,7 +199,10 @@
               data-tag-id="{{item.id}}"
               bindtap="onSelectTag"
             >
-              <view class="tag-indicator" style="{{item.color ? 'background-color: ' + item.color : ''}}"></view>
+              <view
+                class="tag-indicator"
+                style="{{item.color ? 'background-color: ' + item.color : ''}}"
+              ></view>
               <text class="tag-name">{{item.tagName}}</text>
               <view wx:if="{{selectedTagId === item.id}}" class="tag-check">✓</view>
             </view>
@@ -254,7 +260,10 @@
         <!-- 操作按钮 -->
         <view class="register-buttons">
           <view class="btn-cancel" bindtap="onCloseRegisterPopup">取消</view>
-          <view class="btn-submit {{!selectedTagId ? 'disabled' : ''}}" bindtap="onSubmitRegister">提交报名</view>
+          <view
+            class="btn-submit {{!selectedTagId ? 'disabled' : ''}}"
+            bindtap="onSubmitRegister"
+          >提交报名</view>
         </view>
       </view>
     </view>

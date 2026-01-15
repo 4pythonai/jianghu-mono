@@ -1069,14 +1069,19 @@ class MTeamGame extends CI_Model {
 
     /**
      * 获取比赛报名人员列表
+     * @param int $me 当前登录用户ID（用于获取备注名）
      * @param int $game_id 比赛ID
      * @return array 报名人员列表（含序号、昵称、头像、差点）
      */
-    public function getTagMembersAll($game_id) {
-        $this->db->select('m.id, m.tag_id, m.user_id, m.join_time, m.group_id, u.display_name as show_name, m.mobile, m.gender, u.avatar, u.handicap, t.tag_name, t.color');
+    public function getTagMembersAll($me, $game_id) {
+        // 确保 $me 是整数类型，防止 SQL 注入
+        $me = (int)$me;
+
+        $this->db->select('m.id, m.tag_id, m.user_id, m.join_time, m.group_id, u.display_name, u.wx_name, m.mobile, m.gender, u.avatar, u.handicap, t.tag_name, t.color, ur.remark_name, COALESCE(ur.remark_name, u.display_name, u.wx_name, \'球友\') as show_name');
         $this->db->from('t_game_tag_member m');
         $this->db->join('t_user u', 'm.user_id = u.id', 'left');
         $this->db->join('t_team_game_tags t', 'm.tag_id = t.id', 'left');
+        $this->db->join('t_user_remark ur', "ur.user_id = {$me} AND ur.target_id = u.id", 'left', false);
         $this->db->where('m.game_id', $game_id);
         $this->db->order_by('m.join_time', 'ASC');
 

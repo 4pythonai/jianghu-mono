@@ -15,7 +15,7 @@ Component({
             value: ''
         },
         /** 球员名字 */
-        name: {
+        show_name: {
             type: String,
             value: ''
         },
