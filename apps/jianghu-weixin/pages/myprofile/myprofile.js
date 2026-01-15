@@ -8,7 +8,7 @@ Page({
     userInfo: {},
     qrcodeUrl: '',
     form: {
-      nickname: '',
+      display_name: '',
       signature: '',
       gender: 'unknown'
     },
@@ -38,7 +38,7 @@ Page({
     this.setData({
       userInfo,
       form: {
-        nickname: userInfo.nickname || '',
+        display_name: userInfo.display_name || '',
         signature: userInfo.signature || '',
         gender: userInfo.gender || 'unknown'
       }
@@ -67,8 +67,8 @@ Page({
     }
   },
 
-  onNicknameInput(e) {
-    this.setData({ 'form.nickname': e.detail.value })
+  onDisplayNameInput(e) {
+    this.setData({ 'form.display_name': e.detail.value })
   },
 
   onSignatureInput(e) {
@@ -132,12 +132,12 @@ Page({
       return
     }
 
-    const nickname = (form.nickname || '').trim()
-    if (!nickname) {
+    const display_name = (form.display_name || '').trim()
+    if (!display_name) {
       wx.showToast({ title: '请输入昵称', icon: 'none' })
       return
     }
-    if (nickname.length > 20) {
+    if (display_name.length > 20) {
       wx.showToast({ title: '昵称不能超过20个字符', icon: 'none' })
       return
     }
@@ -145,7 +145,7 @@ Page({
     const signature = (form.signature || '').trim()
     const gender = form.gender || 'unknown'
 
-    const hasNicknameChange = nickname !== (userInfo.nickname || '')
+    const hasDisplayNameChange = display_name !== (userInfo.display_name || '')
     const profilePayload = {}
     if (signature !== (userInfo.signature || '')) {
       profilePayload.signature = signature
@@ -154,7 +154,7 @@ Page({
       profilePayload.gender = gender
     }
 
-    if (!hasNicknameChange && Object.keys(profilePayload).length === 0) {
+    if (!hasDisplayNameChange && Object.keys(profilePayload).length === 0) {
       wx.showToast({ title: '没有需要保存的修改', icon: 'none' })
       return
     }
@@ -162,15 +162,15 @@ Page({
     this.setData({ saving: true })
 
     try {
-      if (hasNicknameChange) {
-        await app.api.user.updateNickName({
+      if (hasDisplayNameChange) {
+        await app.api.user.updateDisplayName({
           user_id: userInfo.id,
-          nickname
+          display_name
         }, {
           loadingTitle: '保存昵称...'
         })
 
-        const updatedUser = { ...app.globalData.userInfo, nickname, nickName: nickname }
+        const updatedUser = { ...app.globalData.userInfo, display_name }
         app.setUserInfo(updatedUser, app.globalData.profileStatus, app.globalData.needBindPhone)
       }
 

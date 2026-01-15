@@ -60,8 +60,8 @@ Page({
   },
 
   async onInvite(e) {
-    const { userId, nickname, index } = e.currentTarget.dataset
-    const displayName = nickname || '该用户'
+    const { userId, shownName, index } = e.currentTarget.dataset
+    const displayName = shownName || '该用户'
 
     // 设置邀请中状态
     const users = this.data.users

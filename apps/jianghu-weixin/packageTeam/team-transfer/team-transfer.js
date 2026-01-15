@@ -65,8 +65,8 @@ Page({
     onSelectMember(e) {
         if (this.data.transferring) return
 
-        const { userId, nickname } = e.currentTarget.dataset
-        const displayName = nickname || '该成员'
+        const { userId, shownName } = e.currentTarget.dataset
+        const displayName = shownName || '该成员'
 
         wx.showModal({
             title: '确认转让',

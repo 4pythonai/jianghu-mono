@@ -25,7 +25,7 @@
               lazy-load="true"
             ></image>
             <view class="member-info">
-              <text class="member-name">{{member.nickname}}</text>
+              <text class="member-name">{{member.display_name}}</text>
               <text class="member-handicap">杆数: {{member.handicap}}</text>
             </view>
           </view>

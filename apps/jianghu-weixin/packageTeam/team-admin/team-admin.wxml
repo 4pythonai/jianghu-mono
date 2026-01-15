@@ -22,7 +22,7 @@
             />
           </view>
           <view class="member-info">
-            <view class="member-name">{{item.nickname || '未设置昵称'}}</view>
+            <view class="member-name">{{item.display_name || '未设置昵称'}}</view>
             <view class="member-role">
               <text wx:if="{{item.role === 'SuperAdmin'}}" class="role-tag team-superadmin">超级管理员</text>
               <text wx:else class="role-tag admin">管理员</text>
@@ -33,7 +33,12 @@
             <view class="action-btn" catchtap="onEditPermissions" data-member="{{item}}">
               <text>权限</text>
             </view>
-            <view class="action-btn danger" catchtap="onRemoveAdmin" data-user-id="{{item.user_id}}" data-nickname="{{item.nickname}}">
+            <view
+              class="action-btn danger"
+              catchtap="onRemoveAdmin"
+              data-user-id="{{item.user_id}}"
+              data-shown-name="{{item.display_name}}"
+            >
               <text>取消</text>
             </view>
           </view>
@@ -43,7 +48,14 @@
       <!-- 普通成员 -->
       <view class="section">
         <view class="section-title">普通成员（点击设为管理员）</view>
-        <view class="member-card" wx:for="{{normalMembers}}" wx:key="user_id" bindtap="onSetAdmin" data-user-id="{{item.user_id}}" data-nickname="{{item.nickname}}">
+        <view
+          class="member-card"
+          wx:for="{{normalMembers}}"
+          wx:key="user_id"
+          bindtap="onSetAdmin"
+          data-user-id="{{item.user_id}}"
+          data-shown-name="{{item.display_name}}"
+        >
           <view class="member-avatar-wrap">
             <PlayerAvatar
               avatar="{{item.avatar}}"
@@ -54,7 +66,7 @@
             />
           </view>
           <view class="member-info">
-            <view class="member-name">{{item.nickname || '未设置昵称'}}</view>
+            <view class="member-name">{{item.display_name || '未设置昵称'}}</view>
           </view>
           <view class="set-admin-hint">
             <text>设为管理员</text>
@@ -72,14 +84,14 @@
   <view class="modal-mask" wx:if="{{showPermissionModal}}" catchtap="closePermissionModal"></view>
   <view class="modal-content" wx:if="{{showPermissionModal}}" catchtap>
     <view class="modal-header">
-      <text class="modal-title">权限设置 - {{editingMember.nickname}}</text>
+      <text class="modal-title">权限设置 - {{editingMember.display_name}}</text>
       <view class="modal-close" catchtap="closePermissionModal">×</view>
     </view>
     <view class="modal-body">
       <view class="permission-item" wx:for="{{permissionOptions}}" wx:key="key">
         <text class="permission-label">{{item.label}}</text>
-        <switch 
-          class="permission-switch" 
+        <switch
+          class="permission-switch"
           checked="{{editingPermissions[item.key]}}"
           bindchange="onPermissionChange"
           data-key="{{item.key}}"

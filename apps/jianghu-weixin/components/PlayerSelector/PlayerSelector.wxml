@@ -1,37 +1,37 @@
 <view class="player-selector">
-	<view class="group-header">
-		<text class="group-title">第{{groupIndex + 1}}组</text>
-		<view class="player-count">{{validPlayerCount}}/{{maxPlayers}}人</view>
-	</view>
-	<view class="players-list">
-		<view class="player-slot" wx:for="{{ playerSlots }}" wx:key="index">
-			<!-- 已选择的玩家 -->
-			<view wx:if="{{ item }}" class="player-card">
-				<view class="player-avatar">
-					<PlayerAvatar
-						avatar="{{item.avatar}}"
-						userId="{{item.userid}}"
-						avatarOnly="{{true}}"
-						size="medium"
-					/>
-				</view>
-				<view class="player-info">
-					<!-- 统一使用 nickname 字段（t_user 表标准字段） -->
-					<text class="player-nickname">{{item.nickname}}</text>
-					<text class="player-id">ID: {{item.userid}}</text>
-					<text class="player-source">来源: {{joinTypeMap[item.join_type] || '未知来源'}}</text>
-				</view>
-				<view class="remove-btn" bindtap="removePlayer" data-index="{{ index }}">
-					<image src="/assets/icons/close.svg" mode="aspectFit"></image>
-				</view>
-			</view>
-			<!-- 空位 - 显示添加按钮 -->
-			<view wx:else class="empty-slot" bindtap="onSelectPlayer" data-index="{{ index }}">
-				<view class="add-player-btn">
-					<image src="/assets/icons/add.svg" class="add-icon" mode="aspectFit"></image>
-					<text class="add-text">添加玩家{{index + 1}}</text>
-				</view>
-			</view>
-		</view>
-	</view>
+  <view class="group-header">
+    <text class="group-title">第{{groupIndex + 1}}组</text>
+    <view class="player-count">{{validPlayerCount}}/{{maxPlayers}}人</view>
+  </view>
+  <view class="players-list">
+    <view class="player-slot" wx:for="{{ playerSlots }}" wx:key="index">
+      <!-- 已选择的玩家 -->
+      <view wx:if="{{ item }}" class="player-card">
+        <view class="player-avatar">
+          <PlayerAvatar
+            avatar="{{item.avatar}}"
+            userId="{{item.userid}}"
+            avatarOnly="{{true}}"
+            size="medium"
+          />
+        </view>
+        <view class="player-info">
+          <!-- 统一使用 display_name 字段（后端计算的显示名称） -->
+          <text class="player-nickname">{{item.display_name}}</text>
+          <text class="player-id">ID: {{item.userid}}</text>
+          <text class="player-source">来源: {{joinTypeMap[item.join_type] || '未知来源'}}</text>
+        </view>
+        <view class="remove-btn" bindtap="removePlayer" data-index="{{ index }}">
+          <image src="/assets/icons/close.svg" mode="aspectFit"></image>
+        </view>
+      </view>
+      <!-- 空位 - 显示添加按钮 -->
+      <view wx:else class="empty-slot" bindtap="onSelectPlayer" data-index="{{ index }}">
+        <view class="add-player-btn">
+          <image src="/assets/icons/add.svg" class="add-icon" mode="aspectFit"></image>
+          <text class="add-text">添加玩家{{index + 1}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>

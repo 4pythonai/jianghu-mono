@@ -263,10 +263,10 @@ class Weixin extends CI_Controller {
     }
 
     private function buildProfileStatus($profile) {
-        $nickname = isset($profile['wx_nickname']) ? $profile['wx_nickname'] : '';
-        $altNickname = isset($profile['nickname']) ? $profile['nickname'] : '';
+        $wx_name = isset($profile['wx_name']) ? $profile['wx_name'] : '';
+        $display_name = isset($profile['display_name']) ? $profile['display_name'] : '';
         $avatar = isset($profile['avatar']) ? $profile['avatar'] : '';
-        $hasNickname = !empty($nickname) || !empty($altNickname);
+        $hasNickname = !empty($wx_name) || !empty($display_name);
         $hasAvatar = !empty($avatar) && strpos($avatar, 'user_default_avatar.png') === false;
         $hasMobile = !empty($profile['mobile']);
 

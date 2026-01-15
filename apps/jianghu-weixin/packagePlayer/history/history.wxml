@@ -1,40 +1,40 @@
 <wxs module="util">
   // 根据T台颜色返回样式类
   function getTeeClass(tee) {
-    if (!tee) return 'tee-white'
-    var t = tee.toUpperCase()
-    if (t === 'BLACK') return 'tee-black'
-    if (t === 'GOLD') return 'tee-gold'
-    if (t === 'BLUE') return 'tee-blue'
-    if (t === 'WHITE') return 'tee-white'
-    if (t === 'RED') return 'tee-red'
-    return 'tee-white'
+  if (!tee) return 'tee-white'
+  var t = tee.toUpperCase()
+  if (t === 'BLACK') return 'tee-black'
+  if (t === 'GOLD') return 'tee-gold'
+  if (t === 'BLUE') return 'tee-blue'
+  if (t === 'WHITE') return 'tee-white'
+  if (t === 'RED') return 'tee-red'
+  return 'tee-white'
   }
   // 格式化差杆显示
   function formatOverPar(overPar) {
-    if (overPar > 0) return '+' + overPar
-    if (overPar < 0) return '' + overPar
-    return 'E'
+  if (overPar > 0) return '+' + overPar
+  if (overPar < 0) return '' + overPar
+  return 'E'
   }
   // 格式化时间显示
   function formatTime(timeStr) {
-    if (!timeStr) return ''
-    var reg = getRegExp('-', 'g')
-    var date = getDate(timeStr.replace(reg, '/'))
-    var year = date.getFullYear()
-    var month = date.getMonth() + 1
-    var day = date.getDate()
-    var hours = date.getHours()
-    var minutes = date.getMinutes()
-    var minutesStr = minutes < 10 ? '0' + minutes : '' + minutes
-    var ampm = hours < 12 ? '上午' : '下午'
-    var displayHours = hours <= 12 ? hours : hours - 12
-    return year + '年' + month + '月' + day + '日 ' + ampm + ' ' + displayHours + ':' + minutesStr
+  if (!timeStr) return ''
+  var reg = getRegExp('-', 'g')
+  var date = getDate(timeStr.replace(reg, '/'))
+  var year = date.getFullYear()
+  var month = date.getMonth() + 1
+  var day = date.getDate()
+  var hours = date.getHours()
+  var minutes = date.getMinutes()
+  var minutesStr = minutes < 10 ? '0' + minutes : '' + minutes
+  var ampm = hours < 12 ? '上午' : '下午'
+  var displayHours = hours <= 12 ? hours : hours - 12
+  return year + '年' + month + '月' + day + '日 ' + ampm + ' ' + displayHours + ':' + minutesStr
   }
   module.exports = {
-    getTeeClass: getTeeClass,
-    formatOverPar: formatOverPar,
-    formatTime: formatTime
+  getTeeClass: getTeeClass,
+  formatOverPar: formatOverPar,
+  formatTime: formatTime
   }
 </wxs>
 
@@ -81,7 +81,7 @@
               >
                 <view class="player-item">
                   <text class="player-score">{{player.score}}</text>
-                  <text class="player-name">{{player.nickname}}</text>
+                  <text class="player-name">{{player.display_name}}</text>
                 </view>
               </block>
             </view>

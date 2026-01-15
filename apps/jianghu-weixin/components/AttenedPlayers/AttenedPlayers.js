@@ -26,7 +26,7 @@ Component({
     },
 
     observers: {
-        'storePlayers': function(players) {
+        'storePlayers': function (players) {
             console.log('🎯 [AttenedPlayers] storePlayers 变化:', players)
             this.syncDisplayPlayers()
         }
@@ -38,7 +38,7 @@ Component({
             const creatorid = gameStore.creatorid || gameStore.gameData?.creatorid
 
             const displayPlayers = players.map(p => ({
-                nickname: p.nickname || '未知',
+                display_name: p.display_name || '未知',
                 avatar: p.avatar || '/images/default-avatar.png',
                 showDelete: String(p.userid) === String(creatorid) ? 'n' : 'y',
                 userid: p.userid
@@ -53,7 +53,7 @@ Component({
 
             wx.showModal({
                 title: '确认删除',
-                content: `确定要移除球员 ${player.nickname} 吗？`,
+                content: `确定要移除球员 ${player.display_name} 吗？`,
                 success: async (res) => {
                     if (res.confirm) {
                         const result = await gameStore.removePlayer(player.userid)

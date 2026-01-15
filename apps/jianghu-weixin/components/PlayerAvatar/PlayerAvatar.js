@@ -14,7 +14,7 @@ Component({
             value: ''
         },
         /** 球员名字 */
-        name: {
+        wx_name: {
             type: String,
             value: ''
         },
@@ -81,7 +81,7 @@ Component({
     },
 
     observers: {
-        'avatar': function(avatarPath) {
+        'avatar': function (avatarPath) {
             // 将相对路径转换为完整 URL
             const fullUrl = avatarPath ? imageUrl(avatarPath) : ''
             this.setData({ fullAvatarUrl: fullUrl })
@@ -92,8 +92,8 @@ Component({
         attached() {
             // 组件挂载时初始化头像 URL
             if (this.properties.avatar) {
-                this.setData({ 
-                    fullAvatarUrl: imageUrl(this.properties.avatar) 
+                this.setData({
+                    fullAvatarUrl: imageUrl(this.properties.avatar)
                 })
             }
         }

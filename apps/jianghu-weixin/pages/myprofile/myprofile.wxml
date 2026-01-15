@@ -18,12 +18,12 @@
       <input
         class="nickname-input"
         type="text"
-        value="{{form.nickname}}"
+        value="{{form.display_name}}"
         placeholder="请输入昵称"
         maxlength="20"
-        bindinput="onNicknameInput"
+        bindinput="onDisplayNameInput"
       />
-      <text class="nickname-hint">{{form.nickname.length}}/20</text>
+      <text class="nickname-hint">{{form.display_name.length}}/20</text>
     </view>
   </view>
 

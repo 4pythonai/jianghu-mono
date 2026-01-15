@@ -15,11 +15,7 @@
 
   <!-- 围观者列表 -->
   <view class="spectators-list" wx:elif="{{spectators.length > 0}}">
-    <view
-      class="spectator-item"
-      wx:for="{{spectators}}"
-      wx:key="userid"
-    >
+    <view class="spectator-item" wx:for="{{spectators}}" wx:key="userid">
       <text class="spectator-index">{{index + 1}}</text>
       <view class="spectator-avatar-wrap">
         <PlayerAvatar
@@ -30,7 +26,7 @@
         />
       </view>
       <view class="spectator-info">
-        <text class="spectator-name">{{item.nickname || '匿名用户'}}</text>
+        <text class="spectator-name">{{item.display_name || '匿名用户'}}</text>
         <text class="spectator-time" wx:if="{{item.watch_time}}">{{item.watch_time}}</text>
       </view>
     </view>

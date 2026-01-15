@@ -320,7 +320,7 @@ class MGame  extends CI_Model {
 
 
   public function m_get_group_info($groupid) {
-    return $this->db->select("userid, wx_nickname as username, wx_nickname as nickname, t_user.avatar as cover", false)
+    return $this->db->select("userid, COALESCE(display_name, wx_name) as username, COALESCE(display_name, wx_name) as display_name, t_user.avatar as cover", false)
       ->from('t_game_group_user')
       ->join('t_user', 't_user.id = t_game_group_user.userid')
       ->where('t_game_group_user.groupid', $groupid)
@@ -376,7 +376,7 @@ class MGame  extends CI_Model {
     $payload = [];
     $payload['gameId'] = $gameid;
     $payload['playerId'] = $userid;
-    $payload['nickname'] = $user['nickname'];
+    $payload['display_name'] = !empty($user['display_name']) ? $user['display_name'] : $user['wx_name'];
     $payload['avatar'] = $user['avatar'];
     $payload['message'] = 'msgFromMgame';
 

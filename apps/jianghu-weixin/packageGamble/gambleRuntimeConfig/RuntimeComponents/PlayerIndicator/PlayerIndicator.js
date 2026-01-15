@@ -97,7 +97,7 @@ Component({
             });
 
             RuntimeComponentsUtils.logger.log('PLAYER_INDICATOR', '点击球员', {
-                nickname: player.nickname,
+                display_name: player.display_name,
                 currentConfig: configString
             });
         },
@@ -144,7 +144,7 @@ Component({
             };
 
             RuntimeComponentsUtils.logger.log('PLAYER_INDICATOR', '确认配置', {
-                player: currentPlayer.nickname,
+                player: currentPlayer.display_name,
                 configString: configString,
                 config: newConfig
             });

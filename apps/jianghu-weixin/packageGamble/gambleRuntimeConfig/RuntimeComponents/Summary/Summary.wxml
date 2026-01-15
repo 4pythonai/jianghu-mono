@@ -27,7 +27,7 @@
           binderror="onAvatarError"
           data-index="{{index}}"
         />
-        <text class="player-name">{{item.nickname || '未知玩家'}}</text>
+        <text class="player-name">{{item.display_name || '未知玩家'}}</text>
       </view>
     </view>
   </view>

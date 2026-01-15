@@ -31,11 +31,14 @@
           </view>
           <view class="user-info">
             <view class="user-name-row">
-              <text class="user-name">{{item.nickname || '未知用户'}}</text>
+              <text class="user-name">{{item.display_name || '未知用户'}}</text>
               <text class="gender-icon male" wx:if="{{item.gender === 'male'}}">♂</text>
               <text class="gender-icon female" wx:if="{{item.gender === 'female'}}">♀</text>
             </view>
-            <text class="user-handicap" wx:if="{{item.handicap !== null && item.handicap !== undefined}}">江湖差点: {{item.handicap}}</text>
+            <text
+              class="user-handicap"
+              wx:if="{{item.handicap !== null && item.handicap !== undefined}}"
+            >江湖差点: {{item.handicap}}</text>
             <text class="user-signature" wx:if="{{item.signature}}">{{item.signature}}</text>
           </view>
         </view>

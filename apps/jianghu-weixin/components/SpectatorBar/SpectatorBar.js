@@ -9,7 +9,7 @@ Component({
             type: Number,
             value: 0
         },
-        /** 围观者列表 [{id/userid, avatar, nickname}] 或纯头像URL数组（兼容旧数据） */
+        /** 围观者列表 [{id/userid, avatar, display_name}] 或纯头像URL数组（兼容旧数据） */
         spectators: {
             type: Array,
             value: []
@@ -27,7 +27,7 @@ Component({
     },
 
     observers: {
-        'spectators': function(spectators) {
+        'spectators': function (spectators) {
             // 兼容旧数据格式（纯URL数组）和新格式（对象数组）
             const displaySpectators = spectators.slice(0, this.properties.maxShow).map(item => {
                 if (typeof item === 'string') {

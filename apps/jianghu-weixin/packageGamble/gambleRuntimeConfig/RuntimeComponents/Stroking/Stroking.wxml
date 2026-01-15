@@ -25,7 +25,7 @@
     <view class="configured-users-list" wx:if="{{configuredUsers.length > 0}}">
       <view wx:for="{{configuredUsers}}" wx:key="userid" class="configured-user-item">
         <view class="user-basic-info">
-          <text class="user-name">{{item.nickname}}</text>
+          <text class="user-name">{{item.display_name}}</text>
           <text class="hole-count">{{item.holeCount}}洞</text>
         </view>
         <view class="user-par-info">
@@ -78,8 +78,8 @@
               <image src="{{image.imageUrl(item.avatar)}}" mode="aspectFill" class="avatar-image"></image>
             </view>
             <view class="user-info">
-              <!-- 统一使用 nickname 字段（t_user 表标准字段） -->
-              <text class="user-nickname">{{item.nickname}}</text>
+              <!-- 统一使用 display_name 字段（后端计算的显示名称） -->
+              <text class="user-nickname">{{item.display_name}}</text>
             </view>
           </view>
         </view>

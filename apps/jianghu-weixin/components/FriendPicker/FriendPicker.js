@@ -51,7 +51,7 @@ Component({
     },
 
     observers: {
-        'selectedIds': function(ids) {
+        'selectedIds': function (ids) {
             if (ids && ids.length > 0 && this.data.friends.length > 0) {
                 this.syncSelectedState(ids);
             }
@@ -196,7 +196,7 @@ Component({
             alphabet.forEach(letter => { groups[letter] = []; });
 
             friends.forEach(friend => {
-                const name = friend.nickname || '';
+                const name = friend.display_name || '';
                 const letter = this.getFirstLetter(name);
                 if (groups[letter]) {
                     groups[letter].push(friend);
@@ -329,9 +329,9 @@ Component({
                 return;
             }
 
-            // 后端 User/getFriendList 返回的好友数据使用 nickname 字段
+            // 后端 User/getFriendList 返回的好友数据使用 display_name 字段
             const filteredFriends = this.data.friends.filter(friend =>
-                friend.nickname?.toLowerCase().includes(keyword) ||
+                friend.display_name?.toLowerCase().includes(keyword) ||
                 friend.userid?.toString().includes(keyword)
             );
 

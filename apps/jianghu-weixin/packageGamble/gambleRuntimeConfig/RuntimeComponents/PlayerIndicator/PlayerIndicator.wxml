@@ -24,7 +24,7 @@
       />
 
       <!-- 球员昵称 -->
-      <text class="player-nickname">{{player.nickname}}</text>
+      <text class="player-nickname">{{player.display_name}}</text>
 
       <!-- 配置值 -->
       <text class="player-config">{{player.configString}}</text>
@@ -36,7 +36,7 @@
     <view class="modal-container" catchtap="preventClose">
       <!-- 弹框标题 -->
       <view class="modal-header">
-        <text class="modal-title">配置 {{currentPlayer.nickname}} 的指标</text>
+        <text class="modal-title">配置 {{currentPlayer.display_name}} 的指标</text>
         <text class="modal-close" bindtap="onCancel">×</text>
       </view>
 

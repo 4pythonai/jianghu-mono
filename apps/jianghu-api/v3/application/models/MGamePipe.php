@@ -13,7 +13,7 @@ use League\Pipeline\StageInterface;
 class MGamePipe extends CI_Model implements StageInterface {
 
     public $payload = [
-        'userid' => null,
+        'user_id' => null,
         'star_friends' => [],
         'allgames' => [],
     ];
@@ -23,7 +23,7 @@ class MGamePipe extends CI_Model implements StageInterface {
     }
 
     public function init($config) {
-        $this->payload['userid'] = $config['userid'];
+        $this->payload['user_id'] = $config['user_id'];
         $this->payload['allgames'] = [];
         $this->getStarFriends();
     }
@@ -33,8 +33,8 @@ class MGamePipe extends CI_Model implements StageInterface {
      * 星标关注：用户关注列表中标记了"特别关注"的人
      */
     private function getStarFriends() {
-        $_tmpuserid = $this->payload['userid'];
-        $sql = "SELECT * FROM t_follow WHERE userid = $_tmpuserid AND ifstar = 'y'";
+        $_tmpuser_id = $this->payload['user_id'];
+        $sql = "SELECT * FROM t_user_follow WHERE user_id = $_tmpuser_id AND is_special = 'y'";
         $rows = $this->db->query($sql)->result_array();
         $this->payload['star_friends'] = $rows;
     }
@@ -45,21 +45,21 @@ class MGamePipe extends CI_Model implements StageInterface {
      * 状态筛选：playing（正在进行）或 finished（已结束）
      */
     public function getMyGames() {
-        $_tmpuserid = $this->payload['userid'];
-        
-        if (!$_tmpuserid) {
+        $_tmpuser_id = $this->payload['user_id'];
+
+        if (!$_tmpuser_id) {
             return;
         }
 
         $sql = "SELECT DISTINCT g.* 
                 FROM t_game g
                 INNER JOIN t_game_group_user ggu ON g.id = ggu.gameid
-                WHERE ggu.userid = $_tmpuserid
+                WHERE ggu.user_id = $_tmpuser_id
                 AND g.game_status IN ('playing', 'finished')
                 ORDER BY g.create_time DESC
                 LIMIT 100";
         $rows = $this->db->query($sql)->result_array();
-        
+
         $this->payload['allgames'] = $rows;
     }
 
@@ -69,22 +69,22 @@ class MGamePipe extends CI_Model implements StageInterface {
      * 状态筛选：playing（正在进行）或 finished（已结束）
      */
     public function getStarFriendsGames() {
-        $_tmpuserid = $this->payload['userid'];
+        $_tmpuser_id = $this->payload['user_id'];
         $starFriends = $this->payload['star_friends'];
-        
+
         if (empty($starFriends)) {
             return;
         }
 
-        // 获取星标好友的 userid 列表
-        $starFriendIds = array_column($starFriends, 'fuserid');
+        // 获取星标好友的 user_id 列表
+        $starFriendIds = array_column($starFriends, 'fuser_id');
         $starFriendIdList = implode(',', $starFriendIds);
 
         // 查询星标好友参与的比赛
         $sql = "SELECT DISTINCT g.* 
                 FROM t_game g
                 INNER JOIN t_game_group_user ggu ON g.id = ggu.gameid
-                WHERE ggu.userid IN ($starFriendIdList)
+                WHERE ggu.user_id IN ($starFriendIdList)
                 AND g.game_status IN ('playing', 'finished')
                 ORDER BY g.create_time DESC
                 LIMIT 100";
@@ -108,10 +108,10 @@ class MGamePipe extends CI_Model implements StageInterface {
      * 状态筛选：playing（正在进行）或 finished（已结束）
      */
     public function getStarGames() {
-        $_tmpuserid = $this->payload['userid'];
+        $_tmpuser_id = $this->payload['user_id'];
 
         // 查询星标比赛的 gameid 列表
-        $sql = "SELECT gameid FROM t_my_stared_games WHERE userid = $_tmpuserid";
+        $sql = "SELECT gameid FROM t_my_stared_games WHERE user_id = $_tmpuser_id";
         $rows = $this->db->query($sql)->result_array();
         $starGameIds = array_column($rows, 'gameid');
 

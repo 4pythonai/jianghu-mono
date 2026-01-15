@@ -220,10 +220,10 @@ Page({
         }
 
         // 转换组合数据格式, 适配PlayerSelector组件的格式
-        // member 数据来自后端，字段: userid, nickname, avatar, handicap
+        // member 数据来自后端，字段: userid, display_name, avatar, handicap
         const players = combination.map(member => ({
             userid: member.userid,
-            nickname: member.nickname || '未知玩家',
+            display_name: member.display_name || '未知玩家',
             avatar: member.avatar || '/images/default-avatar.png',
             handicap: member.handicap || 0,
             join_type: 'combineSelect',  // 添加来源字段
@@ -248,10 +248,10 @@ Page({
         }
 
         // 转换好友数据格式, 适配PlayerSelector组件的格式
-        // friend 来自后端 User/getFriendList API，字段: userid, nickname, avatar, handicap
+        // friend 来自后端 User/getFriendList API，字段: userid, display_name, avatar, handicap
         const players = selectedFriends.map(friend => ({
             userid: friend.userid,
-            nickname: friend.nickname || '未知好友',
+            display_name: friend.display_name || '未知好友',
             avatar: friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
             join_type: 'friendSelect',
@@ -281,7 +281,7 @@ Page({
         // createdUser 来自 manualAdd.js，已标准化为 t_user 表字段结构
         const user = {
             userid: createdUser.userid,
-            nickname: createdUser.nickname,
+            display_name: createdUser.display_name,
             avatar: createdUser.avatar || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
             mobile: createdUser.mobile || '',
@@ -739,10 +739,10 @@ Page({
         const userInfo = app.globalData.userInfo;
 
         // 构建创建者 player 对象
-        // userInfo 已通过 normalizeUserInfo 标准化，字段: id, nickname, avatar, gender, handicap
+        // userInfo 已通过 normalizeUserInfo 标准化，字段: id, display_name, avatar, gender, handicap
         const creator = {
             userid: userInfo?.id,
-            nickname: userInfo?.nickname || '我',
+            display_name: userInfo?.display_name || '我',
             avatar: userInfo?.avatar || '/images/default-avatar.png',
             handicap: userInfo?.handicap || 0,
             join_type: 'creator',
@@ -769,8 +769,8 @@ Page({
         });
 
         // 设置比赛名称缺省值
-        const nickname = userInfo?.nickname || '我';
-        const defaultGameName = `${nickname}的球局`;
+        const displayName = userInfo?.display_name || '我';
+        const defaultGameName = `${displayName}的球局`;
         this.setData({
             'formData.gameName': defaultGameName
         });

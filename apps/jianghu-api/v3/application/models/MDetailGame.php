@@ -206,10 +206,10 @@ class MDetailGame  extends CI_Model {
                 ggu.groupid,
                 ggu.tee,
                 u.id as userid,
-                u.wx_nickname as wx_nickname,
+                u.wx_name as wx_name,
                 u.avatar
             FROM t_game_group_user ggu
-            LEFT JOIN t_user u ON ggu.userid = u.id
+            LEFT JOIN t_user u ON ggu.user_id = u.id
             WHERE ggu.gameid = ?
             ORDER BY ggu.id ASC ";
 
@@ -341,13 +341,13 @@ class MDetailGame  extends CI_Model {
             // 获取该分组下的所有用户
             $users_query = "
                 SELECT 
-                    ggu.userid,
+                    ggu.user_id,
                     ggu.confirmed,
                     ggu.addtime,
-                    u.wx_nickname,
+                    u.wx_name,
                     u.avatar as avatar
                 FROM t_game_group_user ggu
-                LEFT JOIN t_user u ON ggu.userid = u.id
+                LEFT JOIN t_user u ON ggu.user_id = u.id
                 WHERE ggu.gameid = ? AND ggu.groupid = ?
                 ORDER BY ggu.addtime ASC
             ";
@@ -357,8 +357,8 @@ class MDetailGame  extends CI_Model {
 
             foreach ($users_result->result_array() as $user) {
                 $users[] = [
-                    'userid' => (int)$user['userid'],
-                    'nickname' => $user['wx_nickname'],
+                    'userid' => (int)$user['user_id'],
+                    'wx_name' => $user['wx_name'],
                     'avatar' => $user['avatar'],
                     'confirmed' => (int)$user['confirmed'],
                     'addtime' => $user['addtime']

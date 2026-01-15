@@ -89,7 +89,7 @@
                 src="{{image.imageUrl(user.avatar) || '/images/default-avatar.png'}}"
                 mode="aspectFill"
               ></image>
-              <text class="user-name">{{user.nickname || '匿名球友'}}</text>
+              <text class="user-name">{{user.display_name || '匿名球友'}}</text>
             </view>
           </view>
           <view class="group-empty" wx:else>
@@ -122,7 +122,7 @@
     >
       <image class="notification-avatar" src="{{image.imageUrl(item.avatar)}}" mode="aspectFill"></image>
       <view class="notification-content">
-        <text class="notification-title">{{item.nickname}}</text>
+        <text class="notification-title">{{item.display_name}}</text>
         <text class="notification-message">加入比赛</text>
       </view>
     </view>

@@ -98,7 +98,7 @@ class MTeam extends CI_Model {
         ])->count_all_results('t_team_member');
 
         // 获取超级管理员信息
-        $superAdmin = $this->db->select('tm.*, u.nickname, u.avatar')
+        $superAdmin = $this->db->select('tm.*, u.display_name, u.wx_name, u.avatar')
             ->from('t_team_member tm')
             ->join('t_user u', 'tm.user_id = u.id', 'left')
             ->where(['tm.team_id' => $team_id, 'tm.role' => 'SuperAdmin', 'tm.status' => 'active'])
@@ -131,23 +131,23 @@ class MTeam extends CI_Model {
             ])->count_all_results('t_team_member');
 
             // 获取超级管理员名称
-            $superAdmin = $this->db->select('u.nickname')
+            $superAdmin = $this->db->select('u.display_name, u.wx_name')
                 ->from('t_team_member tm')
                 ->join('t_user u', 'tm.user_id = u.id', 'left')
                 ->where(['tm.team_id' => $team['id'], 'tm.role' => 'SuperAdmin', 'tm.status' => 'active'])
                 ->get()
                 ->row_array();
-            $team['super_admin_name'] = $superAdmin ? $superAdmin['nickname'] : '';
+            $team['super_admin_name'] = $superAdmin ? (!empty($superAdmin['display_name']) ? $superAdmin['display_name'] : $superAdmin['wx_name']) : '';
 
             // 获取普通管理员名称列表
-            $admins = $this->db->select('u.nickname')
+            $admins = $this->db->select('u.display_name, u.wx_name')
                 ->from('t_team_member tm')
                 ->join('t_user u', 'tm.user_id = u.id', 'left')
                 ->where(['tm.team_id' => $team['id'], 'tm.role' => 'admin', 'tm.status' => 'active'])
                 ->get()
                 ->result_array();
             $adminNames = array_map(function ($a) {
-                return $a['nickname'];
+                return !empty($a['display_name']) ? $a['display_name'] : $a['wx_name'];
             }, $admins);
             $team['admin_names'] = implode('、', $adminNames);
         }
@@ -315,7 +315,7 @@ class MTeam extends CI_Model {
      * 获取球队成员列表
      */
     public function getTeamMembers($team_id, $status = 'active') {
-        $this->db->select('tm.*, u.nickname, u.avatar, u.handicap, u.mobile');
+        $this->db->select('tm.*, u.display_name, u.wx_name, u.avatar, u.handicap, u.mobile');
         $this->db->from('t_team_member tm');
         $this->db->join('t_user u', 'tm.user_id = u.id', 'left');
         $this->db->where('tm.team_id', $team_id);
@@ -635,10 +635,11 @@ class MTeam extends CI_Model {
         $existingUserIds = array_column($existingMembers, 'user_id');
 
         // 搜索用户（按昵称或手机号）
-        $this->db->select('id, nickname, avatar, handicap, mobile');
+        $this->db->select('id, display_name, wx_name, avatar, handicap, mobile');
         $this->db->from('t_user');
         $this->db->group_start();
-        $this->db->like('nickname', $keyword);
+        $this->db->like('display_name', $keyword);
+        $this->db->or_like('wx_name', $keyword);
         $this->db->or_like('mobile', $keyword);
         $this->db->group_end();
 

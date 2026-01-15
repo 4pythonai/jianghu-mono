@@ -285,18 +285,18 @@ class User extends MY_Controller {
     }
 
 
-    public function updateNickName() {
+    public function updateDisplayName() {
         try {
             $json_paras = json_decode(file_get_contents('php://input'), true);
             $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
-            $nickname = isset($json_paras['nickname']) ? $json_paras['nickname'] : '';
+            $display_name = isset($json_paras['display_name']) ? $json_paras['display_name'] : '';
 
-            $this->MUser->updateNickName($user_id, $nickname);
+            $this->MUser->updateDisplayName($user_id, $display_name);
 
             echo json_encode([
                 'code' => 200,
                 'success' => true,
-                'message' => 'OK 更新昵称成功',
+                'message' => 'OK 更新显示名称成功',
             ]);
         } catch (Exception $e) {
             $ret = [];

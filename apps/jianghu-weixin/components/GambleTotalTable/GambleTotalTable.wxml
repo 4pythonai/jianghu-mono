@@ -15,7 +15,7 @@
         <view class="player-info">
           <PlayerAvatar
             avatar="{{player.cover}}"
-            name="{{player.nickname}}"
+            name="{{player.display_name}}"
             userId="{{player.userid}}"
             size="xs"
             shape="round"

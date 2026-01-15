@@ -12,7 +12,7 @@ Page({
     },
     needBindPhone: false,
     showAuthButton: true,
-    tempNickname: '',
+    tempDisplayName: '',
     hasNotification: false,
     notificationTop: 0
   },
@@ -44,7 +44,7 @@ Page({
       profileStatus: status,
       needBindPhone: state.needBindPhone,
       showAuthButton: !(status.hasNickname && status.hasAvatar),
-      tempNickname: state.userInfo?.nickname || ''
+      tempDisplayName: state.userInfo?.display_name || ''
     })
   },
 
@@ -128,34 +128,34 @@ Page({
     })
   },
 
-  onNicknameInput(e) {
-    this.setData({ tempNickname: e.detail.value })
+  onDisplayNameInput(e) {
+    this.setData({ tempDisplayName: e.detail.value })
   },
 
-  onNicknameChange(e) {
-    this.setData({ tempNickname: e.detail.value })
+  onDisplayNameChange(e) {
+    this.setData({ tempDisplayName: e.detail.value })
   },
 
   confirmUserInfo() {
-    const nickname = this.data.tempNickname?.trim()
+    const display_name = this.data.tempDisplayName?.trim()
 
-    if (!nickname) {
+    if (!display_name) {
       wx.showToast({ title: '请输入昵称', icon: 'none' })
       return
     }
 
-    if (nickname.length > 20) {
+    if (display_name.length > 20) {
       wx.showToast({ title: '昵称不能超过20个字符', icon: 'none' })
       return
     }
 
-    app.api.user.updateNickName({
+    app.api.user.updateDisplayName({
       user_id: app.globalData.userInfo.id,
-      nickname
+      display_name
     }, {
       loadingTitle: '保存中...'
     }).then(() => {
-      const updatedUser = { ...app.globalData.userInfo, nickName: nickname, nickname }
+      const updatedUser = { ...app.globalData.userInfo, display_name }
       const updatedStatus = { ...app.globalData.profileStatus, hasNickname: true }
 
       app.setUserInfo(updatedUser, updatedStatus, app.globalData.needBindPhone)
@@ -192,9 +192,9 @@ Page({
         throw new Error(response.message || '绑定失败')
       }
 
-      // response.user 来自后端，字段是 nickname
+      // response.user 来自后端，字段是 display_name
       const updatedStatus = {
-        hasNickname: !!(response.user?.nickname),
+        hasNickname: !!(response.user?.display_name),
         hasAvatar: !!(response.user?.avatar),
         hasMobile: true
       }

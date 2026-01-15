@@ -4,7 +4,7 @@
   <CustomNavBar title="球友主页" showBack="{{true}}" />
 
   <!-- 内容区域 -->
-  <view class="page-content" style="padding-top: {{navBarHeight}}px;">
+  <view class="page-content">
     <!-- 加载状态 -->
     <view wx:if="{{loading}}" class="loading-container">
       <view class="loading-spinner"></view>
@@ -36,7 +36,7 @@
 
         <!-- 用户名和性别 -->
         <view class="name-section">
-          <text class="user-nickname">{{userInfo.nickname || '球友'}}</text>
+          <text class="user-nickname">{{userInfo.display_name || '球友'}}</text>
           <text wx:if="{{userInfo.gender === 'male'}}" class="gender-badge male">♂</text>
           <text wx:elif="{{userInfo.gender === 'female'}}" class="gender-badge female">♀</text>
         </view>

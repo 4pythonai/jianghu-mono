@@ -76,7 +76,7 @@ class Feed extends MY_Controller {
      * 星标球局包含：
      * 1. 我主动打了"星标"的比赛 (t_my_stared_games)
      * 2. 我创建的任何比赛 (t_game.creatorid)
-     * 3. 星标好友的任何比赛 (t_follow.ifstar='y' + t_game_group_user)
+     * 3. 星标好友的任何比赛 (t_user_follow.is_special='y' + t_game_group_user)
      * 4. 我报名的任何比赛 (t_game_tag_member)
      */
     private function getStarGameData($userid) {
@@ -92,7 +92,7 @@ class Feed extends MY_Controller {
         // 1. 我主动打星标的比赛 (t_my_stared_games)
         $rows = $this->db->select('gameid')
             ->from('t_my_stared_games')
-            ->where('userid', $userid)
+            ->where('user_id', $userid)
             ->get()
             ->result_array();
         $explicit_star_gameids = array_map('intval', array_column($rows, 'gameid'));
@@ -105,14 +105,14 @@ class Feed extends MY_Controller {
             ->result_array();
         $my_created_gameids = array_map('intval', array_column($rows, 'id'));
 
-        // 3. 星标好友的 ID 列表 (t_follow.ifstar='y')
-        $rows = $this->db->select('fuserid')
-            ->from('t_follow')
-            ->where('userid', $userid)
-            ->where('ifstar', 'y')
+        // 3. 星标好友的 ID 列表 (t_user_follow.is_special='y')
+        $rows = $this->db->select('target_id')
+            ->from('t_user_follow')
+            ->where('user_id', $userid)
+            ->where('is_special', 'y')
             ->get()
             ->result_array();
-        $star_friend_ids = array_map('intval', array_column($rows, 'fuserid'));
+        $star_friend_ids = array_map('intval', array_column($rows, 'target_id'));
 
         // 4. 我报名的比赛 (t_game_tag_member)
         $rows = $this->db->select('game_id')
@@ -170,7 +170,7 @@ class Feed extends MY_Controller {
      * 状态筛选: playing, finished
      */
     private function getFeedsForMy($userid) {
-        $get_data_config = ['userid' => $userid];
+        $get_data_config = ['user_id' => $userid];
         $result = $this->MGamePipeRunner->GameFeedHandler($get_data_config);
         $whitelist_gameids = $this->MPrivateWhiteList->getUserWhiteListGameIds($userid);
         $starData = $this->getStarGameData($userid);
@@ -225,12 +225,12 @@ class Feed extends MY_Controller {
         }
 
         // 1. 查询我关注的人的ID列表
-        $followingRows = $this->db->select('fuserid')
-            ->from('t_follow')
+        $followingRows = $this->db->select('target_id')
+            ->from('t_user_follow')
             ->where('userid', $userid)
             ->get()
             ->result_array();
-        $followingIds = array_column($followingRows, 'fuserid');
+        $followingIds = array_column($followingRows, 'target_id');
 
         // 2. 查询我加入的球队ID列表
         $teamRows = $this->db->select('team_id')

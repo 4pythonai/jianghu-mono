@@ -166,12 +166,12 @@ Page({
         // 转换用户数据格式, 适配PlayerSelector组件的格式
         // API (User/createAndSelect) 返回 t_user 表记录:
         // - id: 用户ID (转换为 userid 供组件使用)
-        // - nickname: 昵称
-        // - wx_nickname: 微信昵称
+        // - display_name: 显示名称
+        // - wx_name: 微信名称
         // - avatar, handicap, mobile, gender 等
         const createdUser = {
             userid: user.id,
-            nickname: user.nickname || this.data.remarkName,
+            display_name: user.display_name || user.wx_name || this.data.remarkName,
             avatar: user.avatar || '/images/default-avatar.png',
             handicap: user.handicap || 0,
             mobile: user.mobile || this.data.mobile || '',

@@ -22,7 +22,7 @@
         <view class="players-grid">
           <view class="player-item" wx:for="{{players}}" wx:key="userid">
             <image class="player-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
-            <text class="player-name">{{item.nickname}}</text>
+            <text class="player-name">{{item.display_name}}</text>
           </view>
         </view>
       </view>

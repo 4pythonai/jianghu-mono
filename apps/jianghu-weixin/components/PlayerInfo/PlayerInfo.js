@@ -21,7 +21,7 @@ Component({
                     currentTee: normalizedTee,
                     isValidTee: isValid,
                     displayText: isValid ? 'T' : 'X',
-                    nickname: newVal.wx_nickname,
+                    wx_name: newVal.wx_name,
                     avatar: newVal.avatar,
                     handicap: newVal.handicap,
                     userId: newVal.userid
@@ -34,7 +34,7 @@ Component({
         currentTee: '',
         isValidTee: false,
         displayText: 'X',
-        nickname: '',
+        display_name: '',
         avatar: '',
         handicap: 0,
         userId: 0

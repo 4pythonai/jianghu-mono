@@ -14,16 +14,16 @@ const user = {
     // 上传头像
     uploadAvatar: (data, options) => request('/User/uploadAvatar', data, options),
 
-    // 设置昵称
-    updateNickName: (data, options) => request('/User/updateNickName', data, options),
+    // 设置显示名称
+    updateDisplayName: (data, options) => request('/User/updateDisplayName', data, options),
 
     // friends 
     getFriendList: (data, options) => request('/User/getFriendList', data, options),
 
     createAndSelect: (data, options) => request('/User/createAndSelect', data, options),
 
-    // search by nickname 
-    searchUserByNickname: (data, options) => request('/User/searchUserByNickname', data, options),
+    // search by display_name
+    searchUserByDisplayName: (data, options) => request('/User/searchUserByDisplayName', data, options),
 
     // double-search mobile ,从小程序和app数据库
     doubleSearchMobile: (data, options) => request('/User/doubleSearchMobile', data, options),

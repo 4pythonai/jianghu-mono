@@ -213,8 +213,8 @@
             <input
               class="form-input"
               placeholder="请输入昵称"
-              value="{{registerForm.nickname}}"
-              bindinput="onNicknameInput"
+              value="{{registerForm.display_name}}"
+              bindinput="onDisplayNameInput"
             />
           </view>
           <view class="form-item">

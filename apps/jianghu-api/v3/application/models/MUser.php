@@ -60,9 +60,9 @@ class MUser  extends CI_Model {
 
 
 
-  public function updateNickName($userid, $nickname) {
+  public function updateDisplayName($userid, $display_name) {
     $this->db->where('id', $userid);
-    $this->db->update('t_user', ['wx_nickname' => $nickname, 'nickname' => $nickname]);
+    $this->db->update('t_user', ['display_name' => $display_name]);
   }
 
 
@@ -85,29 +85,29 @@ class MUser  extends CI_Model {
    * 排除：我拉黑的人 或 拉黑我的人
    */
   public function getFriends($userid) {
-    $sql = "SELECT u.wx_nickname, u.avatar, u.openid, u.unionid, 
-                   f1.fuserid as userid, f1.nickname as remark_name, f1.ifstar
-            FROM t_follow f1
+    $sql = "SELECT u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
+                   f1.fuserid as userid, f1.nickname as remark_name, f1.is_special
+            FROM t_user_follow f1
             -- 互相关注：他也关注了我
-            JOIN t_follow f2 ON f1.userid = f2.fuserid AND f1.fuserid = f2.userid
+            JOIN t_user_follow f2 ON f1.userid = f2.fuserid AND f1.fuserid = f2.userid
             JOIN t_user u ON f1.fuserid = u.id
             WHERE f1.userid = ?
             -- 排除我拉黑的人
             AND NOT EXISTS (
-                SELECT 1 FROM t_user_block b1 
+                SELECT 1 FROM t_user_block b1
                 WHERE b1.userid = f1.userid AND b1.blocked_userid = f1.fuserid
             )
             -- 排除拉黑我的人
             AND NOT EXISTS (
-                SELECT 1 FROM t_user_block b2 
+                SELECT 1 FROM t_user_block b2
                 WHERE b2.userid = f1.fuserid AND b2.blocked_userid = f1.userid
             )";
 
     $friends = $this->db->query($sql, [$userid])->result_array();
 
-    // 为前端添加 nickname 字段：优先使用备注名，否则使用微信昵称
+    // 为前端添加 display_name 字段：优先使用备注名，其次 display_name，最后 wx_name
     foreach ($friends as &$friend) {
-      $friend['nickname'] = !empty($friend['remark_name']) ? $friend['remark_name'] : $friend['wx_nickname'];
+      $friend['display_name'] = !empty($friend['remark_name']) ? $friend['remark_name'] : (!empty($friend['display_name']) ? $friend['display_name'] : $friend['wx_name']);
     }
 
     return $friends;
@@ -119,27 +119,27 @@ class MUser  extends CI_Model {
    * 排除：我拉黑的人 或 拉黑我的人
    */
   public function getFollowings($userid) {
-    $sql = "SELECT u.wx_nickname, u.avatar, u.openid, u.unionid,
+    $sql = "SELECT u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
                    u.handicap, u.signature,
-                   f.fuserid as userid, f.nickname as remark_name, f.ifstar
-            FROM t_follow f
+                   f.fuserid as userid, f.nickname as remark_name, f.is_special
+            FROM t_user_follow f
             JOIN t_user u ON f.fuserid = u.id
             WHERE f.userid = ?
             -- 排除我拉黑的人
             AND NOT EXISTS (
-                SELECT 1 FROM t_user_block b1 
+                SELECT 1 FROM t_user_block b1
                 WHERE b1.userid = f.userid AND b1.blocked_userid = f.fuserid
             )
             -- 排除拉黑我的人
             AND NOT EXISTS (
-                SELECT 1 FROM t_user_block b2 
+                SELECT 1 FROM t_user_block b2
                 WHERE b2.userid = f.fuserid AND b2.blocked_userid = f.userid
             )";
 
     $followings = $this->db->query($sql, [$userid])->result_array();
 
     foreach ($followings as &$following) {
-      $following['nickname'] = !empty($following['remark_name']) ? $following['remark_name'] : $following['wx_nickname'];
+      $following['display_name'] = !empty($following['remark_name']) ? $following['remark_name'] : (!empty($following['display_name']) ? $following['display_name'] : $following['wx_name']);
     }
 
     return $followings;
@@ -167,8 +167,7 @@ class MUser  extends CI_Model {
   //添加非注册用户
   public function addRemakGhostUser($helperid, $remarkName, $mobile) {
     $new_user = [
-      'nickname' => $remarkName,
-      'wx_nickname' => $remarkName,
+      'display_name' => $remarkName,
       'mobile' => $mobile,
       'addtime' => date('Y-m-d H:i:s'),
       'reg_type' => 'manualAdd',
@@ -179,11 +178,10 @@ class MUser  extends CI_Model {
     return $this->db->insert_id();
   }
 
-  //添加注册用户
+  //添加半注册用户
   public function addMobileGhostUser($helperid, $remarkName, $mobile) {
     $new_user = [
-      'wx_nickname' => $remarkName,
-      'nickname' => $remarkName,
+      'display_name' => $remarkName,
       'mobile' => $mobile,
       'addtime' => date('Y-m-d H:i:s'),
       'reg_type' => 'manualAddWithMobile',
@@ -209,8 +207,8 @@ class MUser  extends CI_Model {
 
 
     $row = [];
-    $row['nickname'] = $jhuser['nickname'];
-    $row['wx_nickname'] = $jhuser['nickname'];
+    $row['display_name'] = $jhuser['nickname'];
+    $row['wx_name'] = $jhuser['nickname'];
     $row['mobile'] = $jhuser['mobile'];
     $row['handicap'] = $jhuser['handicap'];
     $row['reg_type'] = 'jhtransfer';
@@ -239,7 +237,8 @@ class MUser  extends CI_Model {
     $players_query = "
         SELECT
             u.id as userid,
-            u.wx_nickname as wx_nickname,
+            u.wx_name,
+            u.display_name,
             u.avatar
         FROM t_user u
         WHERE id = ? ";
@@ -249,10 +248,10 @@ class MUser  extends CI_Model {
   }
 
 
-  public function getNicknameById($userid) {
+  public function getDisplayNameById($userid) {
     $this->db->where('id', $userid);
     $user = $this->db->get('t_user')->row_array();
-    return $user['wx_nickname'];
+    return !empty($user['display_name']) ? $user['display_name'] : $user['wx_name'];
   }
 
 
@@ -262,7 +261,7 @@ class MUser  extends CI_Model {
   public function isFollowing($current_user_id, $target_user_id) {
     $this->db->where('userid', $current_user_id);
     $this->db->where('fuserid', $target_user_id);
-    return $this->db->count_all_results('t_follow') > 0;
+    return $this->db->count_all_results('t_user_follow') > 0;
   }
 
 
@@ -271,7 +270,7 @@ class MUser  extends CI_Model {
    */
   public function getFollowersCount($user_id) {
     $this->db->where('fuserid', $user_id);
-    return $this->db->count_all_results('t_follow');
+    return $this->db->count_all_results('t_user_follow');
   }
 
 
@@ -280,7 +279,7 @@ class MUser  extends CI_Model {
    */
   public function getFollowingCount($user_id) {
     $this->db->where('userid', $user_id);
-    return $this->db->count_all_results('t_follow');
+    return $this->db->count_all_results('t_user_follow');
   }
 
 
@@ -331,7 +330,7 @@ class MUser  extends CI_Model {
       'userid' => $userid,
       'fuserid' => $target_userid
     ];
-    $this->db->insert('t_follow', $data);
+    $this->db->insert('t_user_follow', $data);
     return $this->db->insert_id();
   }
 
@@ -342,7 +341,7 @@ class MUser  extends CI_Model {
   public function unfollowUser($userid, $target_userid) {
     $this->db->where('userid', $userid);
     $this->db->where('fuserid', $target_userid);
-    return $this->db->delete('t_follow');
+    return $this->db->delete('t_user_follow');
   }
 
 
@@ -352,27 +351,27 @@ class MUser  extends CI_Model {
    * 排除：我拉黑的人 或 拉黑我的人
    */
   public function getFollowers($userid) {
-    $sql = "SELECT u.id as userid, u.wx_nickname, u.avatar, u.openid, u.unionid,
+    $sql = "SELECT u.id as userid, u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
                    u.handicap, u.signature,
-                   f.nickname as remark_name, f.ifstar
-            FROM t_follow f
+                   f.nickname as remark_name, f.is_special
+            FROM t_user_follow f
             JOIN t_user u ON f.userid = u.id
             WHERE f.fuserid = ?
             -- 排除我拉黑的人
             AND NOT EXISTS (
-                SELECT 1 FROM t_user_block b1 
+                SELECT 1 FROM t_user_block b1
                 WHERE b1.userid = ? AND b1.blocked_userid = f.userid
             )
             -- 排除拉黑我的人
             AND NOT EXISTS (
-                SELECT 1 FROM t_user_block b2 
+                SELECT 1 FROM t_user_block b2
                 WHERE b2.userid = f.userid AND b2.blocked_userid = ?
             )";
 
     $followers = $this->db->query($sql, [$userid, $userid, $userid])->result_array();
 
     foreach ($followers as &$follower) {
-      $follower['nickname'] = !empty($follower['wx_nickname']) ? $follower['wx_nickname'] : '未知用户';
+      $follower['display_name'] = !empty($follower['display_name']) ? $follower['display_name'] : (!empty($follower['wx_name']) ? $follower['wx_name'] : '未知用户');
     }
 
     return $followers;
@@ -385,7 +384,7 @@ class MUser  extends CI_Model {
    * 条件：由当前用户创建 (helper_id = userid) 且 reg_type 为手动添加类型
    */
   public function getGhostUsers($userid) {
-    $sql = "SELECT id as userid, wx_nickname, nickname, avatar, mobile, addtime
+    $sql = "SELECT id as userid, wx_name, display_name, avatar, mobile, addtime
             FROM t_user
             WHERE helper_id = ?
             AND reg_type IN ('manualAdd', 'manualAddWithMobile')
@@ -394,7 +393,7 @@ class MUser  extends CI_Model {
     $ghosts = $this->db->query($sql, [$userid])->result_array();
 
     foreach ($ghosts as &$ghost) {
-      $ghost['nickname'] = !empty($ghost['nickname']) ? $ghost['nickname'] : $ghost['wx_nickname'];
+      $ghost['display_name'] = !empty($ghost['display_name']) ? $ghost['display_name'] : $ghost['wx_name'];
     }
 
     return $ghosts;
@@ -482,13 +481,13 @@ class MUser  extends CI_Model {
       $players_sql = "
         SELECT
           u.id as userid,
-          COALESCE(u.nickname, u.wx_nickname, '球友') as nickname,
+          COALESCE(u.display_name, u.wx_name, '球友') as display_name,
           SUM(gs.score) as score
         FROM t_game_group_user ggu
         JOIN t_user u ON ggu.userid = u.id
         LEFT JOIN t_game_score gs ON gs.gameid = ggu.gameid AND gs.user_id = ggu.userid
         WHERE ggu.gameid = ? AND ggu.groupid = ?
-        GROUP BY u.id, u.nickname, u.wx_nickname
+        GROUP BY u.id, u.display_name, u.wx_name
         HAVING SUM(gs.score) IS NOT NULL
         ORDER BY SUM(gs.score) ASC
       ";
@@ -499,7 +498,7 @@ class MUser  extends CI_Model {
       foreach ($players as $player) {
         $players_formatted[] = [
           'userid' => intval($player['userid']),
-          'nickname' => $player['nickname'],
+          'display_name' => $player['display_name'],
           'score' => intval($player['score'])
         ];
       }

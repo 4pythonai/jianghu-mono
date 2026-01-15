@@ -249,11 +249,11 @@ class MTeamGame extends CI_Model {
      * @param int $user_id 用户ID
      * @param int $tag_id TAGID
      * @param string $remark 备注
-     * @param string $nickname 报名姓名
+     * @param string $display_name 报名姓名
      * @param string $gender 性别 male/female
      * @param string $mobile 手机号
      */
-    public function registerGame($game_id, $user_id, $tag_id = null, $remark = null, $nickname = null, $gender = null, $mobile = null) {
+    public function registerGame($game_id, $user_id, $tag_id = null, $remark = null, $display_name = null, $gender = null, $mobile = null) {
         // 必须选择TAG
         if (!$tag_id) {
             return ['success' => false, 'message' => '请选择TAG'];
@@ -276,7 +276,7 @@ class MTeamGame extends CI_Model {
         }
 
         // 加入TAG成员表
-        $this->addMemberToTag($tag_id, $user_id, $game_id, $nickname, $gender, $mobile);
+        $this->addMemberToTag($tag_id, $user_id, $game_id, $display_name, $gender, $mobile);
 
         return [
             'success' => true,
@@ -288,7 +288,12 @@ class MTeamGame extends CI_Model {
      * 取消报名
      */
     public function cancelRegistration($game_id, $user_id) {
-        // 从TAG成员表中删除
+        // 1. 先从分组中删除该用户（如果存在）
+        $this->db->where('gameid', $game_id);
+        $this->db->where('userid', $user_id);
+        $this->db->delete('t_game_group_user');
+
+        // 2. 从TAG成员表中删除
         $this->db->where([
             'game_id' => $game_id,
             'user_id' => $user_id
@@ -306,7 +311,7 @@ class MTeamGame extends CI_Model {
      * 获取报名列表（从 t_game_tag_member 获取）
      */
     public function getRegistrations($game_id, $tag_id = null) {
-        $this->db->select('m.*, u.nickname, u.avatar, u.handicap, s.tag_name');
+        $this->db->select('m.*, u.display_name, u.wx_name, u.avatar, u.handicap, s.tag_name');
         $this->db->from('t_game_tag_member m');
         $this->db->join('t_user u', 'm.user_id = u.id', 'left');
         $this->db->join('t_team_game_tags s', 'm.tag_id = s.id', 'left');
@@ -326,11 +331,11 @@ class MTeamGame extends CI_Model {
      * @param int $tag_id TAGID
      * @param int $user_id 用户ID
      * @param int $game_id 赛事ID
-     * @param string $nickname 报名姓名
+     * @param string $display_name 报名姓名
      * @param string $gender 性别 male/female
      * @param string $mobile 手机号
      */
-    public function addMemberToTag($tag_id, $user_id, $game_id, $nickname = null, $gender = null, $mobile = null) {
+    public function addMemberToTag($tag_id, $user_id, $game_id, $display_name = null, $gender = null, $mobile = null) {
         // 检查是否已存在
         $existing = $this->db->get_where('t_game_tag_member', [
             'game_id' => $game_id,
@@ -340,7 +345,7 @@ class MTeamGame extends CI_Model {
         if ($existing) {
             // 更新TAG及报名信息
             $updateData = ['tag_id' => $tag_id];
-            if ($nickname !== null) $updateData['nickname'] = $nickname;
+            if ($display_name !== null) $updateData['display_name'] = $display_name;
             if ($gender !== null) $updateData['gender'] = $gender;
             if ($mobile !== null) $updateData['mobile'] = $mobile;
             $this->db->where('id', $existing['id']);
@@ -352,7 +357,7 @@ class MTeamGame extends CI_Model {
                 'game_id' => $game_id,
                 'join_time' => date('Y-m-d H:i:s')
             ];
-            if ($nickname !== null) $insertData['nickname'] = $nickname;
+            if ($display_name !== null) $insertData['display_name'] = $display_name;
             if ($gender !== null) $insertData['gender'] = $gender;
             if ($mobile !== null) $insertData['mobile'] = $mobile;
             $this->db->insert('t_game_tag_member', $insertData);
@@ -481,7 +486,7 @@ class MTeamGame extends CI_Model {
 
         foreach ($groups as &$group) {
             // 通过 tag_id 直接关联获取用户的TAG信息
-            $this->db->select('gu.*, u.nickname, u.avatar, u.handicap, s.tag_name, s.color as tag_color');
+            $this->db->select('gu.*, u.display_name, u.wx_name, u.avatar, u.handicap, s.tag_name, s.color as tag_color');
             $this->db->from('t_game_group_user gu');
             $this->db->join('t_user u', 'gu.userid = u.id', 'left');
             $this->db->join('t_team_game_tags s', 'gu.tag_id = s.id', 'left');
@@ -988,7 +993,7 @@ class MTeamGame extends CI_Model {
      * 获取球队成员列表（用于报名选择）
      */
     public function getTeamMembersForSelect($team_id, $game_id = null) {
-        $this->db->select('tm.*, u.nickname, u.avatar, u.handicap');
+        $this->db->select('tm.*, u.display_name, u.wx_name, u.avatar, u.handicap');
         $this->db->from('t_team_member tm');
         $this->db->join('t_user u', 'tm.user_id = u.id', 'left');
         $this->db->where('tm.team_id', $team_id);
@@ -1051,7 +1056,7 @@ class MTeamGame extends CI_Model {
 
         foreach ($groups as &$group) {
             // 通过 tag_id 直接关联获取用户的TAG信息
-            $this->db->select('gu.*, u.nickname, u.avatar, u.handicap, s.tag_name as team_alias, s.team_id, s.id as tag_id');
+            $this->db->select('gu.*, u.display_name, u.wx_name, u.avatar, u.handicap, s.tag_name as team_alias, s.team_id, s.id as tag_id');
             $this->db->from('t_game_group_user gu');
             $this->db->join('t_user u', 'gu.userid = u.id', 'left');
             $this->db->join('t_team_game_tags s', 'gu.tag_id = s.id', 'left');
@@ -1068,7 +1073,7 @@ class MTeamGame extends CI_Model {
      * @return array 报名人员列表（含序号、昵称、头像、差点）
      */
     public function getTagMembersAll($game_id) {
-        $this->db->select('m.id, m.tag_id, m.user_id, m.join_time, m.group_id, m.nickname, m.mobile, m.gender, u.avatar, u.handicap, t.tag_name, t.color');
+        $this->db->select('m.id, m.tag_id, m.user_id, m.join_time, m.group_id, m.display_name, m.mobile, m.gender, u.avatar, u.handicap, t.tag_name, t.color');
         $this->db->from('t_game_tag_member m');
         $this->db->join('t_user u', 'm.user_id = u.id', 'left');
         $this->db->join('t_team_game_tags t', 'm.tag_id = t.id', 'left');
@@ -1092,7 +1097,7 @@ class MTeamGame extends CI_Model {
      * 获取TAG成员列表
      */
     public function getMembersByTag($tag_id) {
-        $this->db->select('sm.id, sm.tag_id, sm.user_id, sm.game_id, sm.join_time, sm.group_id, sm.nickname, sm.mobile, sm.gender, u.avatar, u.handicap');
+        $this->db->select('sm.id, sm.tag_id, sm.user_id, sm.game_id, sm.join_time, sm.group_id, sm.display_name, sm.mobile, sm.gender, u.avatar, u.handicap');
         $this->db->from('t_game_tag_member sm');
         $this->db->join('t_user u', 'sm.user_id = u.id', 'left');
         $this->db->where('sm.tag_id', $tag_id);

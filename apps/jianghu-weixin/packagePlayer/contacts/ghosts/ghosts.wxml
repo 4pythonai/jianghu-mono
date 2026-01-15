@@ -36,7 +36,7 @@
           </view>
           <view class="user-info">
             <view class="user-name-row">
-              <text class="user-name">{{item.nickname || '未知用户'}}</text>
+              <text class="user-name">{{item.display_name || '未知用户'}}</text>
               <view class="ghost-badge">占位</view>
             </view>
             <text class="user-mobile" wx:if="{{item.mobile}}">手机: {{item.mobile}}</text>

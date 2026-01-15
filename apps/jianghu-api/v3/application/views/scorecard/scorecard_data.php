@@ -75,7 +75,7 @@ $players_data = [];
 if (isset($game_info['players']) && is_array($game_info['players'])) {
     foreach ($game_info['players'] as $player) {
         $user_id = $player['user_id'];
-        $player_name = !empty($player['wx_nickname']) ? $player['wx_nickname'] : $user_id;
+        $player_name = !empty($player['display_name']) ? $player['display_name'] : (!empty($player['wx_name']) ? $player['wx_name'] : $user_id);
 
         // 获取该球员的完整成绩
         $all_scores = [];

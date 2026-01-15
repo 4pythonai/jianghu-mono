@@ -127,7 +127,7 @@ Page({
         alphabet.forEach(letter => { groups[letter] = [] })
 
         friends.forEach(friend => {
-            const name = friend.nickname || ''
+            const name = friend.display_name || ''
             const letter = this.getFirstLetter(name)
             if (groups[letter]) {
                 groups[letter].push(friend)
@@ -162,7 +162,7 @@ Page({
         }
 
         const filteredFriends = this.data.friends.filter(friend =>
-            friend.nickname?.toLowerCase().includes(keyword) ||
+            friend.display_name?.toLowerCase().includes(keyword) ||
             friend.userid?.toString().includes(keyword)
         )
 

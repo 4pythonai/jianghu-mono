@@ -76,14 +76,14 @@ export function createJoinNotification({ page, displayDuration = 3600, exitDurat
         });
     }
 
-    function push({ avatar, nickname }) {
+    function push({ avatar, display_name }) {
         const id = `notification_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
         const list = getNotifications();
         const nextList = list.concat([
             {
                 id,
                 avatar,
-                nickname,
+                display_name,
                 state: 'enter'
             }
         ]);

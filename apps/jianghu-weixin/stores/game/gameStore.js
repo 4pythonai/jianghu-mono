@@ -218,7 +218,7 @@ export const gameStore = observable({
             this.players = playersWithHandicap;
             console.log('[gameStore] 原子操作：更新 players handicap 完成', {
                 playersCount: this.players.length,
-                handicaps: this.players.map(p => ({ userid: p.userid, nickname: p.nickname, handicap: p.handicap }))
+                handicaps: this.players.map(p => ({ userid: p.userid, display_name: p.display_name, handicap: p.handicap }))
             });
         } else {
             console.log('[gameStore] 原子操作：handicap 未变化，跳过更新（避免循环触发）');
@@ -462,7 +462,7 @@ export const gameStore = observable({
                     return {
                         id: m.user_id,
                         seq: m.seq,
-                        name: m.nickname,
+                        name: m.display_name,
                         avatar: avatar,
                         handicap: m.handicap,
                         tagName: m.tag_name || '',
@@ -525,14 +525,14 @@ export const gameStore = observable({
         if (!Array.isArray(groups)) return [];
 
         // API (MTeamGame.getGroups) 返回: groupid, group_name, members[]
-        // members[] 中每项包含: userid, nickname, avatar, tag_name, tee
+        // members[] 中每项包含: userid, display_name, avatar, tag_name, tee
         return groups.map((g, index) => {
             return {
                 id: String(g.groupid),
                 name: g.group_name || `第${index + 1}组`,
                 players: (g.members || []).map(p => ({
                     id: p.userid,
-                    name: p.nickname || '未知玩家',
+                    name: p.display_name || '未知玩家',
                     avatar: p.avatar || '',
                     teamName: p.tag_name || '',
                     tee: p.tee || ''

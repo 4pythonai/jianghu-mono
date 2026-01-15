@@ -128,7 +128,7 @@ class Events extends MY_Controller {
         $total = (int)($countResult['total'] ?? 0);
 
         // 获取围观者列表
-        $spectators = $this->db->select('gs.user_id, gs.created_at, u.nickname, u.avatar')
+        $spectators = $this->db->select('gs.user_id, gs.created_at, u.display_name, u.wx_name, u.avatar')
             ->from('t_game_spectator gs')
             ->join('t_user u', 'gs.user_id = u.id', 'left')
             ->where('gs.game_id', $gameId)
@@ -148,7 +148,7 @@ class Events extends MY_Controller {
             }
             $list[] = [
                 'user_id' => (int)$spec['user_id'],
-                'nickname' => $spec['nickname'] ?? '用户',
+                'display_name' => !empty($spec['display_name']) ? $spec['display_name'] : ($spec['wx_name'] ?? '用户'),
                 'avatar' => $avatar,
                 'created_at' => $spec['created_at']
             ];

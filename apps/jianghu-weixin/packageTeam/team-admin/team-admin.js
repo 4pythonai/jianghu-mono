@@ -76,8 +76,8 @@ Page({
 
   // 设为管理员
   onSetAdmin(e) {
-    const { userId, nickname } = e.currentTarget.dataset
-    const displayName = nickname || '该成员'
+    const { userId, shownName } = e.currentTarget.dataset
+    const displayName = shownName || '该成员'
 
     wx.showModal({
       title: '设置管理员',
@@ -107,8 +107,8 @@ Page({
 
   // 取消管理员
   onRemoveAdmin(e) {
-    const { userId, nickname } = e.currentTarget.dataset
-    const displayName = nickname || '该成员'
+    const { userId, shownName } = e.currentTarget.dataset
+    const displayName = shownName || '该成员'
 
     wx.showModal({
       title: '取消管理员',

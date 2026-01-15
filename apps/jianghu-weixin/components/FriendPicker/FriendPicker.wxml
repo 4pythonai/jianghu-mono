@@ -74,7 +74,7 @@
               />
             </view>
             <view class="friend-info">
-              <text class="friend-name">{{item.nickname || '未知好友'}}</text>
+              <text class="friend-name">{{item.display_name || '未知好友'}}</text>
               <text class="friend-id">ID: {{item.userid}}</text>
             </view>
           </view>

@@ -81,7 +81,7 @@
                                         <img src="<?php echo $player['cover']; ?>" alt="头像" class="player-avatar">
                                     <?php endif; ?>
                                     <div class="player-name">
-                                        <?php echo $player['nickname']; ?>
+                                        <?php echo $player['display_name']; ?>
                                     </div>
                                 </div>
                             </th>

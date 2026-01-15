@@ -5,9 +5,9 @@
     <!-- 搜索栏 -->
     <view class="search-bar">
       <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
-      <input 
-        class="search-input" 
-        placeholder="搜索昵称或手机号" 
+      <input
+        class="search-input"
+        placeholder="搜索昵称或手机号"
         bindinput="onSearchInput"
         bindconfirm="onSearch"
         value="{{keyword}}"
@@ -45,17 +45,20 @@
             />
           </view>
           <view class="user-info">
-            <view class="user-name">{{item.nickname || '未设置昵称'}}</view>
+            <view class="user-name">{{item.display_name || '未设置昵称'}}</view>
             <view class="user-meta">
-              <text class="user-handicap" wx:if="{{item.handicap !== null && item.handicap !== undefined}}">差点 {{item.handicap}}</text>
+              <text
+                class="user-handicap"
+                wx:if="{{item.handicap !== null && item.handicap !== undefined}}"
+              >差点 {{item.handicap}}</text>
               <text class="user-mobile" wx:if="{{item.mobile_display}}">{{item.mobile_display}}</text>
             </view>
           </view>
-          <view 
-            class="invite-btn {{item.inviting ? 'disabled' : ''}}" 
+          <view
+            class="invite-btn {{item.inviting ? 'disabled' : ''}}"
             catchtap="onInvite"
             data-user-id="{{item.id}}"
-            data-nickname="{{item.nickname}}"
+            data-shown-name="{{item.display_name}}"
             data-index="{{index}}"
           >
             <text>{{item.inviting ? '邀请中...' : '邀请'}}</text>

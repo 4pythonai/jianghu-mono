@@ -32,9 +32,12 @@
           />
         </view>
         <view class="member-info">
-          <view class="member-name">{{item.nickname || '未设置昵称'}}</view>
+          <view class="member-name">{{item.display_name || '未设置昵称'}}</view>
           <view class="member-meta">
-            <text class="member-handicap" wx:if="{{item.handicap !== null && item.handicap !== undefined}}">差点 {{item.handicap}}</text>
+            <text
+              class="member-handicap"
+              wx:if="{{item.handicap !== null && item.handicap !== undefined}}"
+            >差点 {{item.handicap}}</text>
             <text class="member-join-time">{{item.join_time_display}}</text>
           </view>
         </view>
@@ -44,12 +47,12 @@
           <text wx:else class="role-tag member">成员</text>
         </view>
         <!-- 管理模式下显示移除按钮 -->
-        <view 
-          class="remove-btn" 
+        <view
+          class="remove-btn"
           wx:if="{{mode === 'manage' && item.role !== 'SuperAdmin'}}"
           catchtap="onRemoveMember"
           data-user-id="{{item.user_id}}"
-          data-nickname="{{item.nickname}}"
+          data-shown-name="{{item.display_name}}"
         >
           <text>移除</text>
         </view>

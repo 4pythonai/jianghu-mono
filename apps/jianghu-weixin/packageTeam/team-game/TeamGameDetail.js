@@ -24,7 +24,7 @@ Page({
         showRegisterPopup: false,   // 报名弹窗
         selectedTagId: null,        // 选中的分队ID
         registerForm: {             // 报名表单数据
-            nickname: '',
+            display_name: '',
             mobile: '',
             gender: 'unknown',
             genderText: '未知'
@@ -237,12 +237,12 @@ Page({
         const genderText = genderMap[gender] || '未知'
 
         // 填充表单数据
-        // userInfo 已通过 normalizeUserInfo 标准化，nickname 字段必存在
+        // userInfo 已通过 normalizeUserInfo 标准化，display_name 字段必存在
         this.setData({
             showRegisterPopup: true,
             selectedTagId: null,
             registerForm: {
-                nickname: userInfo.nickname || '未设置',
+                display_name: userInfo.display_name || '未设置',
                 mobile: userInfo.mobile || '',
                 gender: gender,
                 genderText: genderText
@@ -279,8 +279,8 @@ Page({
     /**
      * 昵称输入
      */
-    onNicknameInput(e) {
-        this.setData({ 'registerForm.nickname': e.detail.value })
+    onDisplayNameInput(e) {
+        this.setData({ 'registerForm.display_name': e.detail.value })
     },
 
     /**
@@ -309,7 +309,7 @@ Page({
             const result = await app.api.teamgame.registerGame({
                 game_id: gameid,
                 tag_id: selectedTagId,
-                nickname: registerForm.nickname,
+                display_name: registerForm.display_name,
                 gender: registerForm.gender,
                 mobile: registerForm.mobile
             })

@@ -30,7 +30,7 @@
           <view class="user-list">
             <view class="user-item" wx:for="{{item.users}}" wx:key="userid" wx:for-item="user">
               <image class="user-avatar" src="{{user.avatar}}" mode="aspectFill"></image>
-              <text class="user-name">{{user.nickname}}</text>
+              <text class="user-name">{{user.display_name}}</text>
             </view>
           </view>
         </view>
@@ -61,10 +61,7 @@
       <image class="action-card-icon" src="/assets/icons/icons8-eye-48.png" mode="aspectFit"></image>
     </view>
     <!-- 加入比赛 -->
-    <view
-      class="action-card join-card {{joinSuccess ? 'disabled' : ''}}"
-      bindtap="handleJoin"
-    >
+    <view class="action-card join-card {{joinSuccess ? 'disabled' : ''}}" bindtap="handleJoin">
       <text class="action-card-title">{{joinSuccess ? '已加入' : '加入比赛'}}</text>
       <image class="action-card-icon" src="/assets/icons/icons8-add-48.png" mode="aspectFit"></image>
     </view>
