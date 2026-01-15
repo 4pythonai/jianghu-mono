@@ -143,10 +143,10 @@ Page({
                 const playerId = String(m.id)
                 const inGroupId = playerGroupMap[playerId]
                 const isInCurrentGroup = selectedPlayers.some(p => String(p.id) === playerId)
-
+                console.log(m)
                 return {
                     id: playerId,
-                    name: m.name,
+                    show_name: m.show_name,
                     avatar: m.avatar,
                     handicap: m.handicap,
                     // 是否已在当前分组（选中）

@@ -197,7 +197,7 @@ CREATE TABLE `t_game` (
   KEY `idx_is_recommended` (`is_recommended`),
   KEY `idx_game_type_status_createtime` (`game_type`,`game_status`,`create_time`),
   FULLTEXT KEY `fulltext_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1339342 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
+) ENGINE=InnoDB AUTO_INCREMENT=1339343 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
 
 
 CREATE TABLE `t_game_court` (
@@ -209,7 +209,7 @@ CREATE TABLE `t_game_court` (
   PRIMARY KEY (`id`),
   KEY `idx_gameid` (`gameid`),
   KEY `idx_courtid` (`courtid`)
-) ENGINE=InnoDB AUTO_INCREMENT=663 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
+) ENGINE=InnoDB AUTO_INCREMENT=665 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
 
 
 CREATE TABLE `t_game_group` (
@@ -225,7 +225,7 @@ CREATE TABLE `t_game_group` (
   PRIMARY KEY (`groupid`),
   KEY `idx_gameid` (`gameid`),
   KEY `idx_groupid` (`groupid`)
-) ENGINE=InnoDB AUTO_INCREMENT=970 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=976 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_game_group_user` (
@@ -351,7 +351,7 @@ CREATE TABLE `t_game_spectator` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `game-spectator` (`game_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=542 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=548 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_game_tag_member` (
@@ -372,7 +372,7 @@ CREATE TABLE `t_game_tag_member` (
   KEY `idx_game_id` (`game_id`),
   CONSTRAINT `fk_subteam_member_game` FOREIGN KEY (`game_id`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_subteam_member_subteam` FOREIGN KEY (`tag_id`) REFERENCES `t_team_game_tags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分队成员表';
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='分队成员表';
 
 
 CREATE TABLE `t_my_stared_games` (
@@ -465,7 +465,7 @@ CREATE TABLE `t_user` (
   PRIMARY KEY (`id`),
   KEY `idx_telephone` (`mobile`),
   KEY `idx_wx_name` (`wx_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=837783 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=837786 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_user_block` (

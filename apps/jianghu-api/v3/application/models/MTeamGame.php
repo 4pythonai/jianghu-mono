@@ -1073,7 +1073,7 @@ class MTeamGame extends CI_Model {
      * @return array 报名人员列表（含序号、昵称、头像、差点）
      */
     public function getTagMembersAll($game_id) {
-        $this->db->select('m.id, m.tag_id, m.user_id, m.join_time, m.group_id, m.apply_name, m.mobile, m.gender, u.avatar, u.handicap, t.tag_name, t.color');
+        $this->db->select('m.id, m.tag_id, m.user_id, m.join_time, m.group_id, u.display_name as show_name, m.mobile, m.gender, u.avatar, u.handicap, t.tag_name, t.color');
         $this->db->from('t_game_tag_member m');
         $this->db->join('t_user u', 'm.user_id = u.id', 'left');
         $this->db->join('t_team_game_tags t', 'm.tag_id = t.id', 'left');
