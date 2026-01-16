@@ -508,4 +508,32 @@ class User extends MY_Controller {
         $result = json_decode($response, true);
         return isset($result['access_token']) ? $result['access_token'] : false;
     }
+
+    public function updateRemark() {
+        $user_id = $this->getUser();
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $target_user_id = intval($json_paras['target_user_id']);
+        $remark_name = trim($json_paras['remark_name']);
+
+        $this->MUser->updateRemark($user_id, $target_user_id, $remark_name);
+
+        echo json_encode([
+            'code' => 200,
+            'message' => '更新成功'
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+
+
+    public function blockUser() {
+        $user_id = $this->getUser();
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $blocked_userid = intval($json_paras['blocked_userid']);
+        $this->MUser->blockUser($user_id, $blocked_userid);
+
+        echo json_encode([
+            'code' => 200,
+            'message' => '拉黑成功'
+        ], JSON_UNESCAPED_UNICODE);
+    }
 }

@@ -63,6 +63,12 @@ const user = {
 
     // 获取用户二维码
     getUserQrcode: (data, options) => request('/User/UserQrcode', data, options),
+
+    // 拉黑用户
+    blockUser: (data, options) => request('/User/blockUser', data, options),
+
+    // 修改备注名
+    updateRemark: (data, options) => request('/User/updateRemark', data, options),
 }
 
 export default user

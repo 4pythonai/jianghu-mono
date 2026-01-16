@@ -73,23 +73,55 @@
 
       <!-- 操作按钮区域 -->
       <view wx:if="{{!isSelf}}" class="action-section">
-        <button
-          wx:if="{{!relationship.is_following}}"
-          class="action-btn primary"
-          bindtap="toggleFollow"
-          disabled="{{actionLoading}}"
-        >
-          <text class="btn-icon">+</text>
-          <text>关注</text>
-        </button>
-        <button
-          wx:else
-          class="action-btn secondary"
-          bindtap="toggleFollow"
-          disabled="{{actionLoading}}"
-        >
-          <text>取消关注</text>
-        </button>
+        <!-- 更多操作按钮 -->
+        <view class="more-actions">
+          <button
+            class="action-btn-icon"
+            bindtap="openRemarkModal"
+            disabled="{{actionLoading}}"
+          >
+            <image class="btn-icon-img" src="/assets/icons/icons8-edit-48.png" mode="aspectFit" />
+            <text class="btn-text">备注</text>
+          </button>
+          <button
+            wx:if="{{!relationship.is_blocked}}"
+            class="action-btn-icon danger"
+            bindtap="toggleBlock"
+            disabled="{{actionLoading}}"
+          >
+            <image class="btn-icon-img" src="/assets/icons/icons8-block-48.png" mode="aspectFit" />
+            <text class="btn-text">拉黑</text>
+          </button>
+          <button
+            wx:else
+            class="action-btn-icon"
+            bindtap="toggleBlock"
+            disabled="{{actionLoading}}"
+          >
+            <image class="btn-icon-img" src="/assets/icons/icons8-block-48.png" mode="aspectFit" />
+            <text class="btn-text">取消拉黑</text>
+          </button>
+        </view>
+
+        <view class="follow-actions">
+          <button
+            wx:if="{{!relationship.is_following}}"
+            class="action-btn primary"
+            bindtap="toggleFollow"
+            disabled="{{actionLoading}}"
+          >
+            <text class="btn-icon">+</text>
+            <text>关注</text>
+          </button>
+          <button
+            wx:else
+            class="action-btn secondary"
+            bindtap="toggleFollow"
+            disabled="{{actionLoading}}"
+          >
+            <text>取消关注</text>
+          </button>
+        </view>
       </view>
 
       <!-- 球队列表（如果有） -->
@@ -105,6 +137,32 @@
             <text class="team-name">{{item.name}}</text>
           </view>
         </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 修改备注名弹窗 -->
+  <view wx:if="{{showRemarkModal}}" class="remark-modal-mask" bindtap="closeRemarkModal">
+    <view class="remark-modal-content" catchtap="preventClose">
+      <view class="remark-modal-header">
+        <text class="remark-modal-title">修改备注名</text>
+        <text class="remark-modal-close" bindtap="closeRemarkModal">×</text>
+      </view>
+      <view class="remark-modal-body">
+        <input
+          class="remark-input"
+          type="text"
+          placeholder="请输入备注名（最多20个字符）"
+          value="{{remarkInput}}"
+          maxlength="20"
+          bindinput="onRemarkInput"
+          focus="{{showRemarkModal}}"
+        />
+        <text class="remark-hint">为空则删除备注名</text>
+      </view>
+      <view class="remark-modal-footer">
+        <button class="remark-btn cancel" bindtap="closeRemarkModal">取消</button>
+        <button class="remark-btn confirm" bindtap="confirmRemark" disabled="{{actionLoading}}">确定</button>
       </view>
     </view>
   </view>

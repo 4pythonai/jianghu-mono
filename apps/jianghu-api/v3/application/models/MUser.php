@@ -626,4 +626,24 @@ class MUser  extends CI_Model {
 
     return $show_names;
   }
+
+
+  public function updateRemark($user_id, $target_user_id, $remark_name) {
+    $this->db->where('user_id', $user_id);
+    $this->db->where('target_id', $target_user_id);
+    $this->db->update('t_user_remark', ['remark_name' => $remark_name]);
+  }
+
+  public function blockUser($user_id, $blocked_userid) {
+    $this->unBlockUser($user_id, $blocked_userid);
+    $this->db->where('user_id', $user_id);
+    $this->db->where('blocked_userid', $blocked_userid);
+    $this->db->insert('t_user_block', ['user_id' => $user_id, 'blocked_userid' => $blocked_userid]);
+  }
+
+  public function unBlockUser($user_id, $blocked_userid) {
+    $this->db->where('user_id', $user_id);
+    $this->db->where('blocked_userid', $blocked_userid);
+    $this->db->delete('t_user_block');
+  }
 }
