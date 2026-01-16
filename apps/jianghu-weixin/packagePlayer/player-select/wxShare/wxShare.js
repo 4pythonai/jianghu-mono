@@ -54,14 +54,6 @@ Page({
 
         const dataUpdate = {};
 
-        // 接收并显示 UUID
-        if (params.uuid) {
-            console.log('接收到 UUID:', params.uuid);
-            dataUpdate.uuid = params.uuid;
-        } else {
-            console.warn('未接收到 UUID');
-        }
-
         if (params.gameid) {
             dataUpdate.gameid = params.gameid;
             dataUpdate.hasGameId = true;
@@ -78,7 +70,7 @@ Page({
         const uuid = dataUpdate.uuid || this.data.uuid;
         const gameid = dataUpdate.gameid || this.data.gameid;
         const titleForPath = dataUpdate.title || this.data.title;
-        const sharePath = this.buildSharePath(uuid, gameid, titleForPath);
+        const sharePath = this.buildSharePath(gameid);
         dataUpdate.sharePath = sharePath;
 
         const pageTitle = dataUpdate.title
@@ -112,21 +104,12 @@ Page({
         const title = this.data.shareTitle || '邀请加入比赛';
         return {
             title,
-            path: this.buildSharePath(this.data.uuid, this.data.gameid)
+            path: this.buildSharePath(this.data.gameid)
         };
     },
 
-    buildSharePath(uuid, gameid, title = this.data.title) {
-        if (!uuid) {
-            return '/pages/createGame/createGame';
-        }
-        const query = [`uuid=${uuid}`];
-        if (gameid) {
-            query.push(`gameid=${gameid}`);
-        }
-        if (title) {
-            query.push(`title=${encodeURIComponent(title)}`);
-        }
+    buildSharePath(gameid) {
+        const query = [`gameid=${gameid}`];
         return `/packagePlayer/player-select/wxShare/wxShare?${query.join('&')}`;
     },
 

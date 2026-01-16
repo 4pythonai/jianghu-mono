@@ -138,8 +138,8 @@ Page({
                                 if (!allPlayers.find(p => p.user_id === user.user_id)) {
                                     allPlayers.push({
                                         user_id: user.user_id,
-                                        display_name: user.display_name,
-                                        avatar: user.avatar || '/images/default-avatar.png'
+                                        show_name: user.show_name,
+                                        avatar: user.avatar
                                     });
                                 }
                             });
@@ -166,7 +166,6 @@ Page({
                         updateData.title || this.data.title
                     );
                     updateData.sharePath = sharePath;
-
                     this.setData(updateData);
                 }
             }

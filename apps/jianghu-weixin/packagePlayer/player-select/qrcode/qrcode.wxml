@@ -84,12 +84,8 @@
           </view>
           <view class="user-list" wx:if="{{group.users && group.users.length}}">
             <view class="user-item" wx:for="{{group.users}}" wx:key="user_id" wx:for-item="user">
-              <image
-                class="user-avatar"
-                src="{{image.imageUrl(user.avatar) || '/images/default-avatar.png'}}"
-                mode="aspectFill"
-              ></image>
-              <text class="user-name">{{user.display_name || '匿名球友'}}</text>
+              <image class="user-avatar" src="{{image.imageUrl(user.avatar) }}" mode="aspectFill"></image>
+              <text class="user-name">{{user.show_name }}</text>
             </view>
           </view>
           <view class="group-empty" wx:else>

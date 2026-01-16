@@ -253,21 +253,7 @@ class Game extends MY_Controller {
         $filenameSeed = preg_replace('/[^A-Za-z0-9]/', '', $uuid);
         $filename = "game_invite_{$filenameSeed}_{$gameid}.png";
         $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
-
-        // 优先使用前端传递的 path 参数，如果没有则使用默认路径
-        $pathInput = isset($params['path']) ? $params['path'] : 'packagePlayer/player-select/wxShare/wxShare';
-        // 移除路径开头的斜杠（微信小程序路径不需要前导斜杠）
-        $pathInput = ltrim($pathInput, '/');
-        $pathParts = explode('?', $pathInput, 2);
-        $path = $pathParts[0];
-        $queryParams = [];
-        if (isset($pathParts[1])) {
-            parse_str($pathParts[1], $queryParams);
-        }
-
-
         $scene = "gameid={$gameid}";
-
         $payload = [
             'scene' => $scene,
             'page' => 'packagePlayer/player-select/wxShare/wxShare',

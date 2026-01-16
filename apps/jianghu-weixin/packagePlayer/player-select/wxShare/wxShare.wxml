@@ -1,8 +1,9 @@
+<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="邀请好友" />
 <view class="container">
   <view class="invite-card">
     <view class="card-header">
-      <text class="card-title">YOU ARE INVITED TO JOIN THE GAME</text>
+      <text class="card-title">INVITED JOIN GAME</text>
     </view>
     <view class="code-section">
       <view class="section-top">
@@ -29,8 +30,12 @@
           </view>
           <view class="user-list">
             <view class="user-item" wx:for="{{item.users}}" wx:key="user_id" wx:for-item="user">
-              <image class="user-avatar" src="{{user.avatar}}" mode="aspectFill"></image>
-              <text class="user-name">{{user.display_name}}</text>
+              <image
+                class="user-avatar"
+                src="{{image.imageUrl(user.avatar) || '/images/default-avatar.png'}}"
+                mode="aspectFill"
+              ></image>
+              <text class="user-name">{{user.show_name}}</text>
             </view>
           </view>
         </view>

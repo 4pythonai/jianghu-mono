@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <CustomNavBar title="分享邀请" />
 <view class="container">
   <!-- 顶部标题区域 -->
@@ -5,7 +6,7 @@
     <view class="header-content">
       <image
         class="user-avatar"
-        src="{{userAvatar || '/images/default-avatar.png'}}"
+        src="{{image.imageUrl(userAvatar) || '/images/default-avatar.png'}}"
         mode="aspectFill"
       ></image>
       <view class="header-text">
@@ -21,8 +22,12 @@
       <view class="players-section" wx:if="{{players && players.length > 0}}">
         <view class="players-grid">
           <view class="player-item" wx:for="{{players}}" wx:key="user_id">
-            <image class="player-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
-            <text class="player-name">{{item.display_name}}</text>
+            <image
+              class="player-avatar"
+              src="{{image.imageUrl(item.avatar) || '/images/default-avatar.png'}}"
+              mode="aspectFill"
+            ></image>
+            <text class="player-name">{{item.show_name}}</text>
           </view>
         </view>
       </view>
@@ -40,7 +45,7 @@
       <!-- 二维码区域 -->
       <view class="qrcode-section">
         <view class="qrcode-wrapper" wx:if="{{qrcodeUrl}}">
-          <image class="qrcode-image" src="{{qrcodeUrl}}" mode="aspectFit"></image>
+          <image class="qrcode-image" src="{{image.imageUrl(qrcodeUrl)}}" mode="aspectFit"></image>
         </view>
         <view class="qrcode-loading" wx:elif="{{qrcodeLoading}}">
           <text class="loading-text">二维码生成中...</text>
