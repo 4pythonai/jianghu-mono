@@ -20,7 +20,7 @@
       <!-- 球员列表区域 -->
       <view class="players-section" wx:if="{{players && players.length > 0}}">
         <view class="players-grid">
-          <view class="player-item" wx:for="{{players}}" wx:key="userid">
+          <view class="player-item" wx:for="{{players}}" wx:key="user_id">
             <image class="player-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
             <text class="player-name">{{item.display_name}}</text>
           </view>

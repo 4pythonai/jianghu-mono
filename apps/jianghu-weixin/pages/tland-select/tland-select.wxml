@@ -18,7 +18,7 @@
     </view>
 
     <view wx:else class="players-list">
-      <view class="player-item" wx:for="{{ players }}" wx:key="userid">
+      <view class="player-item" wx:for="{{ players }}" wx:key="user_id">
         <!-- 玩家信息 -->
         <view class="player-info">
           <view class="player-avatar">

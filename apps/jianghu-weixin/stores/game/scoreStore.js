@@ -44,7 +44,7 @@ export const scoreStore = observable({
     /**
      * 更新某玩家某洞的成绩（有则更新，无则新增）
      * @param {object} param0
-     * @param {string|number} param0.userid
+     * @param {string|number} param0.userid - 用户ID（参数名保持userid以兼容API）
      * @param {string|number} param0.hindex
      * @param {number} [param0.score]
      * @param {number} [param0.putts]

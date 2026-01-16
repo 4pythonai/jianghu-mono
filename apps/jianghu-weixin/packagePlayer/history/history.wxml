@@ -76,7 +76,7 @@
               <block
                 wx:for="{{item.players}}"
                 wx:for-item="player"
-                wx:key="userid"
+                wx:key="user_id"
                 wx:if="{{index < 4}}"
               >
                 <view class="player-item">

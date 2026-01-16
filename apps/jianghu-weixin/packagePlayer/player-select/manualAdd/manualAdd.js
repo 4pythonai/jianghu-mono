@@ -170,7 +170,7 @@ Page({
         // - wx_name: 微信名称
         // - avatar, handicap, mobile, gender 等
         const createdUser = {
-            userid: user.id,
+            user_id: user.id,
             display_name: user.display_name || user.wx_name || this.data.remarkName,
             avatar: user.avatar || '/images/default-avatar.png',
             handicap: user.handicap || 0,

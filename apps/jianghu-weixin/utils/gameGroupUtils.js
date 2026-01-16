@@ -16,7 +16,7 @@ export const findUserInGroups = (userid, gameGroups) => {
         const group = gameGroups[groupIndex];
         if (group?.players) {
             const foundPlayer = group.players.find(player =>
-                player !== null && player.userid.toString() === userIdStr
+                player !== null && player.user_id.toString() === userIdStr
             );
             if (foundPlayer) {
                 return {
@@ -42,7 +42,7 @@ export const getUserGroupMap = (gameGroups) => {
     for (const [index, group] of gameGroups.entries()) {
         if (group?.players) {
             for (const player of group.players.filter(player => player !== null)) {
-                const userId = player.userid.toString();
+                const userId = player.user_id.toString();
                 allUserIds.push(userId);
                 userGroupMap[userId] = index + 1; // 记录用户在第几组(从1开始)
             }
@@ -64,7 +64,7 @@ export const filterDuplicateUsers = (players, gameGroups, targetGroupIndex) => {
     const duplicateInfo = [];
 
     const newPlayers = players.filter(player => {
-        const userId = player.userid.toString();
+        const userId = player.user_id.toString();
         const existingGroupIndex = userGroupMap[userId];
 
         if (existingGroupIndex) {
@@ -300,12 +300,12 @@ export const validateGameGroups = (gameGroups) => {
         const validPlayers = group.players.filter(player => player !== null);
 
         for (const player of validPlayers) {
-            if (!player.userid) {
+            if (!player.user_id) {
                 issues.push(`第${groupIndex + 1}组中存在无ID用户`);
                 continue;
             }
 
-            const userId = player.userid.toString();
+            const userId = player.user_id.toString();
             if (allUserIds.includes(userId)) {
                 duplicateUsers.push({
                     userId,

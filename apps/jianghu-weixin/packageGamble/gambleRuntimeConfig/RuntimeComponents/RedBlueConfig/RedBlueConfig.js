@@ -129,7 +129,7 @@ Component({
 
             this.setData({
                 players: shuffled,
-                bootstrap_order: shuffled.map(player => player.userid)
+                bootstrap_order: shuffled.map(player => player.user_id)
             });
 
             // 触发变更事件, 传递用户ID数组
@@ -204,7 +204,7 @@ Component({
 
             this.setData({
                 players: shuffled,
-                bootstrap_order: shuffled.map(player => player.userid)
+                bootstrap_order: shuffled.map(player => player.user_id)
             });
 
             // 触发变更事件, 传递用户ID数组
@@ -241,7 +241,7 @@ Component({
 
             this.setData({
                 players: sorted,
-                bootstrap_order: sorted.map(player => player.userid)
+                bootstrap_order: sorted.map(player => player.user_id)
             });
 
             // 触发变更事件, 传递用户ID数组

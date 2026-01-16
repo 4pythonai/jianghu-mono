@@ -104,7 +104,7 @@ const ConfigValidator = {
                     errors.push('玩家顺序数量与总人数不符');
                 } else {
                     // 验证所有玩家ID都存在
-                    const playerIds = players.map(p => Number.parseInt(p.userid));
+                    const playerIds = players.map(p => Number.parseInt(p.user_id));
                     const allPlayersIncluded = bootstrapOrder.every(id =>
                         playerIds.includes(Number.parseInt(id))
                     );
@@ -140,7 +140,7 @@ const ConfigValidator = {
                 errors.push('请配置球员指标');
             } else {
                 // 验证所有球员都有配置
-                const playerIds = players.map(p => String(p.userid));
+                const playerIds = players.map(p => String(p.user_id));
                 const configPlayerIds = Object.keys(val8421Config);
                 const allPlayersConfigured = playerIds.every(id =>
                     configPlayerIds.includes(id)

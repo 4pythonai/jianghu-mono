@@ -220,9 +220,9 @@ Page({
         }
 
         // 转换组合数据格式, 适配PlayerSelector组件的格式
-        // member 数据来自后端，字段: userid, display_name, avatar, handicap
+        // member 数据来自后端，字段: user_id, display_name, avatar, handicap
         const players = combination.map(member => ({
-            userid: member.userid,
+            user_id: member.user_id,
             display_name: member.display_name || '未知玩家',
             avatar: member.avatar || '/images/default-avatar.png',
             handicap: member.handicap || 0,
@@ -248,9 +248,9 @@ Page({
         }
 
         // 转换好友数据格式, 适配PlayerSelector组件的格式
-        // friend 来自后端 User/getFriendList API，字段: userid, display_name, avatar, handicap
+        // friend 来自后端 User/getFriendList API，字段: user_id, display_name, avatar, handicap
         const players = selectedFriends.map(friend => ({
-            userid: friend.userid,
+            user_id: friend.user_id,
             display_name: friend.display_name || '未知好友',
             avatar: friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
@@ -280,7 +280,7 @@ Page({
         // 确保用户数据格式正确
         // createdUser 来自 manualAdd.js，已标准化为 t_user 表字段结构
         const user = {
-            userid: createdUser.userid,
+            user_id: createdUser.user_id,
             display_name: createdUser.display_name,
             avatar: createdUser.avatar || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
@@ -741,7 +741,7 @@ Page({
         // 构建创建者 player 对象
         // userInfo 已通过 normalizeUserInfo 标准化，字段: id, display_name, avatar, gender, handicap
         const creator = {
-            userid: userInfo?.id,
+            user_id: userInfo?.id,
             display_name: userInfo?.display_name || '我',
             avatar: userInfo?.avatar || '/images/default-avatar.png',
             handicap: userInfo?.handicap || 0,
@@ -750,7 +750,7 @@ Page({
         };
 
         // 验证创建者数据
-        if (!creator.userid) {
+        if (!creator.user_id) {
             wx.showModal({
                 title: '用户信息不完整',
                 content: '无法获取用户ID，请重新登录',
@@ -803,7 +803,7 @@ Page({
 
                 // 同步 gameid 和初始玩家到 gameStore
                 gameStore.setGameid(gameid);
-                gameStore.setCreatorid(creator.userid);
+                gameStore.setCreatorid(creator.user_id);
                 this.syncPlayersToStore(this.data.formData.gameGroups);
 
                 // 立即同步创建者到后端第一组

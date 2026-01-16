@@ -28,7 +28,7 @@
             <text class="group-count">{{item.user_count}}人已加入</text>
           </view>
           <view class="user-list">
-            <view class="user-item" wx:for="{{item.users}}" wx:key="userid" wx:for-item="user">
+            <view class="user-item" wx:for="{{item.users}}" wx:key="user_id" wx:for-item="user">
               <image class="user-avatar" src="{{user.avatar}}" mode="aspectFill"></image>
               <text class="user-name">{{user.display_name}}</text>
             </view>

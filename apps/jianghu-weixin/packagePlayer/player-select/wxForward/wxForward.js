@@ -135,9 +135,9 @@ Page({
                         if (group.users && Array.isArray(group.users)) {
                             group.users.forEach(user => {
                                 // 避免重复添加同一用户
-                                if (!allPlayers.find(p => p.userid === user.userid)) {
+                                if (!allPlayers.find(p => p.user_id === user.user_id)) {
                                     allPlayers.push({
-                                        userid: user.userid,
+                                        user_id: user.user_id,
                                         display_name: user.display_name,
                                         avatar: user.avatar || '/images/default-avatar.png'
                                     });

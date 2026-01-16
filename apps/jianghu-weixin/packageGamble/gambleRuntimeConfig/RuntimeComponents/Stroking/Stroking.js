@@ -73,7 +73,7 @@ Component({
 
             // 如果有配置且没有选中用户，选择第一个
             if (validConfigs.length > 0 && !this.data.selectedUser) {
-                this.selectUser(validConfigs[0].userid);
+                this.selectUser(validConfigs[0].user_id);
             }
         },
 
@@ -82,7 +82,7 @@ Component({
          */
         getValidConfigs(configs) {
             return (configs || []).filter(config =>
-                config?.userid &&
+                config?.user_id &&
                 Array.isArray(config.holeRanges) &&
                 config.holeRanges.length > 0 &&
                 (config.PAR3 !== 0 || config.PAR4 !== 0 || config.PAR5 !== 0)
@@ -94,14 +94,14 @@ Component({
          */
         getConfiguredUsersInfo(configs) {
             return configs.map(config => {
-                const user = this.data.players?.find(p => p.userid === config.userid);
+                const user = this.data.players?.find(p => p.user_id === config.user_id);
                 const pars = [];
                 if (config.PAR3 !== 0) pars.push(`PAR3:${config.PAR3}`);
                 if (config.PAR4 !== 0) pars.push(`PAR4:${config.PAR4}`);
                 if (config.PAR5 !== 0) pars.push(`PAR5:${config.PAR5}`);
 
                 return {
-                    userid: config.userid,
+                    user_id: config.user_id,
                     // 统一使用 display_name 字段（后端计算的显示名称）
                     display_name: user?.display_name || '未知用户',
                     holeCount: config.holeRanges?.length || 0,
@@ -114,7 +114,7 @@ Component({
          * 选择用户
          */
         selectUser(userid) {
-            const user = this.data.players.find(p => p.userid === userid);
+            const user = this.data.players.find(p => p.user_id === userid);
             if (!user) return;
 
             // 保存当前用户的临时配置
@@ -122,7 +122,7 @@ Component({
 
             // 加载目标用户的配置
             const tempConfig = this.data.tempConfigs[userid];
-            const existingConfig = this.properties.strokingConfig?.find(c => c.userid === userid);
+            const existingConfig = this.properties.strokingConfig?.find(c => c.user_id === userid);
             const config = tempConfig || existingConfig;
 
             this.setData({
@@ -151,8 +151,8 @@ Component({
             );
 
             const tempConfigs = { ...this.data.tempConfigs };
-            tempConfigs[this.data.selectedUser.userid] = {
-                userid: this.data.selectedUser.userid,
+            tempConfigs[this.data.selectedUser.user_id] = {
+                user_id: this.data.selectedUser.user_id,
                 PAR3: this.data.currentConfig.PAR3,
                 PAR4: this.data.currentConfig.PAR4,
                 PAR5: this.data.currentConfig.PAR5,
@@ -247,7 +247,7 @@ Component({
          * 用户选择事件
          */
         onUserSelect(e) {
-            this.selectUser(e.currentTarget.dataset.userid);
+            this.selectUser(e.currentTarget.dataset.user_id);
         },
 
         /**
@@ -307,7 +307,7 @@ Component({
             const updatedConfigs = [...existingConfigs];
 
             for (const tempConfig of validTempConfigs) {
-                const index = updatedConfigs.findIndex(c => c.userid === tempConfig.userid);
+                const index = updatedConfigs.findIndex(c => c.user_id === tempConfig.user_id);
                 if (index >= 0) {
                     updatedConfigs[index] = tempConfig;
                 } else {
@@ -335,7 +335,7 @@ Component({
 
             // 重新选择用户以恢复状态
             if (this.data.selectedUser) {
-                this.selectUser(this.data.selectedUser.userid);
+                this.selectUser(this.data.selectedUser.user_id);
             }
         },
 
@@ -343,8 +343,8 @@ Component({
          * 删除用户配置
          */
         removeUserConfig(e) {
-            const userid = e.currentTarget.dataset.userid;
-            const user = this.data.players.find(p => p.userid === userid);
+            const userid = e.currentTarget.dataset.user_id;
+            const user = this.data.players.find(p => p.user_id === userid);
 
             wx.showModal({
                 title: '删除确认',
@@ -352,12 +352,12 @@ Component({
                 success: (res) => {
                     if (res.confirm) {
                         const updatedConfigs = (this.properties.strokingConfig || [])
-                            .filter(c => c.userid !== userid);
+                            .filter(c => c.user_id !== userid);
 
                         this.updateFinalConfig(updatedConfigs);
 
                         // 如果删除的是当前选中用户，重置选择
-                        if (this.data.selectedUser?.userid === userid) {
+                        if (this.data.selectedUser?.user_id === userid) {
                             this.setData({
                                 selectedUser: null,
                                 currentConfig: { PAR3: 0, PAR4: 0, PAR5: 0 },
@@ -378,7 +378,7 @@ Component({
          * 编辑用户配置
          */
         editUserConfig(e) {
-            this.selectUser(e.currentTarget.dataset.userid);
+            this.selectUser(e.currentTarget.dataset.user_id);
             this.openConfigModal();
         },
 
@@ -407,7 +407,7 @@ Component({
             const updatedConfigs = [...existingConfigs];
 
             for (const tempConfig of validTempConfigs) {
-                const index = updatedConfigs.findIndex(c => c.userid === tempConfig.userid);
+                const index = updatedConfigs.findIndex(c => c.user_id === tempConfig.user_id);
                 if (index >= 0) {
                     updatedConfigs[index] = tempConfig;
                 } else {

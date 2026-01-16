@@ -23,7 +23,7 @@ const GambleRelatedInitor = {
         };
 
         for (const player of players) {
-            playerIndicatorConfig[String(player.userid)] = { ...defaultPlayerConfig };
+            playerIndicatorConfig[String(player.user_id)] = { ...defaultPlayerConfig };
         }
         return playerIndicatorConfig;
     }

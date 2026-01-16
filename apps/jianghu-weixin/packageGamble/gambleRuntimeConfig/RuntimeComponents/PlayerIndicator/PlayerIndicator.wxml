@@ -5,7 +5,7 @@
   <view class="players-grid">
     <view
       wx:for="{{playersWithConfig}}"
-      wx:key="userid"
+      wx:key="user_id"
       wx:for-item="player"
       wx:for-index="index"
       class="player-item"

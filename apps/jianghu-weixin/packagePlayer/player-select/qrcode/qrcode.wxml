@@ -83,7 +83,7 @@
             >{{group.user_count || (group.users && group.users.length) || 0}}人已加入</text>
           </view>
           <view class="user-list" wx:if="{{group.users && group.users.length}}">
-            <view class="user-item" wx:for="{{group.users}}" wx:key="userid" wx:for-item="user">
+            <view class="user-item" wx:for="{{group.users}}" wx:key="user_id" wx:for-item="user">
               <image
                 class="user-avatar"
                 src="{{image.imageUrl(user.avatar) || '/images/default-avatar.png'}}"

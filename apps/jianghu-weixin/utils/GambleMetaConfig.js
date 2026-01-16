@@ -140,7 +140,7 @@ const GambleMetaConfig = {
             };
 
             for (const player of players) {
-                config.playerIndicatorConfig[String(player.userid)] = { ...defaultPlayerConfig };
+                config.playerIndicatorConfig[String(player.user_id)] = { ...defaultPlayerConfig };
             }
         }
 

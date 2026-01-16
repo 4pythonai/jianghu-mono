@@ -16,7 +16,7 @@ function reorderPlayersByBootStrapOrder(players, bootStrapOrder) {
 
     const idToFirstIndex = new Map();
     for (let i = 0; i < players.length; i++) {
-        const idStr = `${players[i]?.userid}`;
+        const idStr = `${players[i]?.user_id}`;
         if (!idToFirstIndex.has(idStr)) idToFirstIndex.set(idStr, i);
     }
 

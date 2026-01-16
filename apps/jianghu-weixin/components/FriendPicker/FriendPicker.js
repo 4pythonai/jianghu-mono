@@ -65,7 +65,7 @@ Component({
         syncSelectedState(selectedIds) {
             const friends = this.data.friends.map(friend => ({
                 ...friend,
-                selected: selectedIds.includes(friend.userid)
+                selected: selectedIds.includes(friend.user_id)
             }));
             const selectedFriends = friends.filter(f => f.selected);
             const { groups, indexList } = this.groupFriendsByLetter(friends);
@@ -112,7 +112,7 @@ Component({
                     const selectedIds = this.properties.selectedIds || [];
                     const friends = result.friends.map(friend => ({
                         ...friend,
-                        selected: selectedIds.includes(friend.userid)
+                        selected: selectedIds.includes(friend.user_id)
                     }));
                     const { groups, indexList } = this.groupFriendsByLetter(friends);
                     const selectedFriends = friends.filter(f => f.selected);
@@ -290,7 +290,7 @@ Component({
 
             if (friend.selected) {
                 friend.selected = false;
-                const selectedIndex = selectedFriends.findIndex(f => f.userid === friend.userid);
+                const selectedIndex = selectedFriends.findIndex(f => f.user_id === friend.user_id);
                 if (selectedIndex > -1) {
                     selectedFriends.splice(selectedIndex, 1);
                 }
@@ -307,7 +307,7 @@ Component({
             }
 
             const friends = this.data.friends.map(f => {
-                if (f.userid === friend.userid) {
+                if (f.user_id === friend.user_id) {
                     return { ...f, selected: friend.selected };
                 }
                 return f;
@@ -332,7 +332,7 @@ Component({
             // 后端 User/getFriendList 返回的好友数据使用 display_name 字段
             const filteredFriends = this.data.friends.filter(friend =>
                 friend.display_name?.toLowerCase().includes(keyword) ||
-                friend.userid?.toString().includes(keyword)
+                friend.user_id?.toString().includes(keyword)
             );
 
             const { groups, indexList } = this.groupFriendsByLetter(filteredFriends);

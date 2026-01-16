@@ -17,7 +17,7 @@
           <text class="member-count">{{item.length}}人</text>
         </view>
         <view class="members-grid">
-          <view wx:for="{{ item }}" wx:for-item="member" wx:key="userid" class="member-card">
+          <view wx:for="{{ item }}" wx:for-item="member" wx:key="user_id" class="member-card">
             <image
               class="member-avatar"
               src="{{ image.imageUrl(member.avatar) || '/images/default-avatar.png' }}"

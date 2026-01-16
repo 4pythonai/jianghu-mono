@@ -90,7 +90,7 @@ Page({
             return;
         }
 
-        const userids = friends.map(f => f.userid);
+        const userids = friends.map(f => f.user_id);
 
         try {
             const result = await api.game.addFriendsToGame({

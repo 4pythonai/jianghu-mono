@@ -13,7 +13,7 @@
     scroll-top="{{scrollTop}}"
     item-height="{{(750 - 8) / 1}}"
     top-size="{{110}}"
-    unique-key-name="userid"
+    unique-key-name="user_id"
     bottom-size="{{300}}"
     red-blue-config="{{redBlueConfig}}"
   ></DragComponent>

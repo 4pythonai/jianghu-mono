@@ -23,7 +23,7 @@
     </view>
 
     <view class="configured-users-list" wx:if="{{configuredUsers.length > 0}}">
-      <view wx:for="{{configuredUsers}}" wx:key="userid" class="configured-user-item">
+      <view wx:for="{{configuredUsers}}" wx:key="user_id" class="configured-user-item">
         <view class="user-basic-info">
           <text class="user-name">{{item.display_name}}</text>
           <text class="hole-count">{{item.holeCount}}洞</text>
@@ -35,12 +35,12 @@
           <button
             class="action-btn edit-btn"
             bindtap="editUserConfig"
-            data-userid="{{item.userid}}"
+            data-user_id="{{item.user_id}}"
           >编辑</button>
           <button
             class="action-btn delete-btn"
             bindtap="removeUserConfig"
-            data-userid="{{item.userid}}"
+            data-user_id="{{item.user_id}}"
           >删除</button>
         </view>
       </view>
@@ -63,14 +63,14 @@
       <view class="users-grid">
         <view
           wx:for="{{players}}"
-          wx:key="userid"
-          class="user-item {{selectedUser && selectedUser.userid === item.userid ? 'selected' : ''}}"
+          wx:key="user_id"
+          class="user-item {{selectedUser && selectedUser.user_id === item.user_id ? 'selected' : ''}}"
           bindtap="onUserSelect"
-          data-userid="{{item.userid}}"
+          data-user_id="{{item.user_id}}"
         >
           <view class="radio-indicator">
             <view
-              class="radio-circle {{selectedUser && selectedUser.userid === item.userid ? 'checked' : ''}}"
+              class="radio-circle {{selectedUser && selectedUser.user_id === item.user_id ? 'checked' : ''}}"
             ></view>
           </view>
           <view class="user-content">

@@ -26,13 +26,13 @@ Page({
             const player = this.data.players[playerIndex];
             console.log('🏌️ T台更新 - API参数:', {
                 uuid: this.data.uuid,
-                userid: player.userid,
+                userid: player.user_id,
                 tee: tee
             });
 
             app.api.game.setTee({
                 uuid: this.data.uuid,
-                userid: player.userid,
+                userid: player.user_id,
                 tee: tee
             }).then(res => {
                 console.log('🏌️ T台更新 - API响应:', res);
