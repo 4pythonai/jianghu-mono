@@ -24,13 +24,7 @@ class MGame  extends CI_Model {
     return null;
   }
 
-  public function getGameCourtByGameid($gameid) {
-    $query = $this->db->select('*')
-      ->from('t_game_court')
-      ->where('gameid', $gameid)
-      ->get();
-    return $query->result_array();
-  }
+
 
 
   public function clearGameCourt($gameid) {

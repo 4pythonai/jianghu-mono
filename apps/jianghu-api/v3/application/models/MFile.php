@@ -5,32 +5,7 @@ require 'vendor/autoload.php';
 
 class MFile extends CI_Model {
 
-  public  function uploadAction($FILES, $action) {
 
-    $uploadPath = '/var/www/html/upload';
-    $date_folder = $this->create_date_folder($uploadPath);
-    $files_from_client  = [];
-
-    foreach ($FILES as $file) {
-      $this->check_one($file, $action);
-      $filename_with_date = $this->get_new_name($file, $action);
-      $destFileName = $uploadPath . $date_folder . '/' . $filename_with_date;
-      if (!move_uploaded_file($file['tmp_name'], $destFileName)) {
-        $ret = ['code' => 500, 'message' => $file['name'] . '文件上传失败'];
-        echo json_encode($ret, JSON_UNESCAPED_UNICODE);
-        die;
-      } else {
-        $files_from_client[] = [
-          'orginal_name' => $file['name'],
-          'name' => $filename_with_date,
-          'file' =>   $destFileName,
-          'url' =>   'upload' . $date_folder . '/' . $filename_with_date
-        ];
-      }
-    }
-
-    return $files_from_client;
-  }
 
 
   private function create_date_folder($uploadPath) {

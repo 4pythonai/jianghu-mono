@@ -42,13 +42,32 @@ Page({
         const statusBarHeight = systemInfo.statusBarHeight || 0
         const navBarHeight = statusBarHeight + 44
         this.setData({ navBarHeight })
-        console.log(options)
+        console.log('user-profile onLoad options:', options)
+        console.log('user-profile onLoad options.scene:', options.scene)
+        console.log('user-profile onLoad options.user_id:', options.user_id)
 
-        const userId = parseInt(options.user_id, 10)
-        if (!userId) {
+        // 支持两种方式获取 user_id：
+        // 1. 直接跳转：options.user_id（wx.navigateTo 传递）
+        // 2. 扫码进入：options.scene（getwxacodeunlimit 通过 scene 传递，格式：user_id=14）
+        let userId = null
+
+        if (options.user_id) {
+            // 方式1：直接跳转，从查询参数获取
+            userId = parseInt(options.user_id, 10)
+        } else if (options.scene) {
+            // 方式2：扫码进入，从 scene 解析
+            // scene 格式：user_id=14（可能被 URL 编码为 user_id%3D14）
+            const decodedScene = decodeURIComponent(options.scene)
+            const match = decodedScene.match(/user_id=(\d+)/)
+            if (match && match[1]) {
+                userId = parseInt(match[1], 10)
+            }
+        }
+
+        if (!userId || isNaN(userId)) {
             this.setData({
                 loading: false,
-                error: '用户ID无效'
+                error: 'USER-ID无效'
             })
             return
         }

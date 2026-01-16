@@ -26,30 +26,7 @@ class MPrivateWhiteList extends CI_Model {
         return array_map('intval', array_column($rows, 'gameid'));
     }
 
-    /**
-     * 判断用户是否已通过某个私密球局
-     * @param int $user_id 用户ID
-     * @param int $gameid 球局ID
-     * @return bool
-     */
-    public function isUserWhitelisted($user_id, $gameid) {
-        $user_id = (int)$user_id;
-        $gameid = (int)$gameid;
 
-        if ($user_id <= 0 || $gameid <= 0) {
-            return false;
-        }
-
-        $row = $this->db->select('id')
-            ->from('t_private_white_list')
-            ->where('user_id', $user_id)
-            ->where('gameid', $gameid)
-            ->limit(1)
-            ->get()
-            ->row_array();
-
-        return !empty($row);
-    }
 
     /**
      * 将用户写入白名单(幂等)

@@ -181,32 +181,4 @@ class File extends MY_Controller {
     echo json_encode($ret, JSON_UNESCAPED_UNICODE);
     die;
   }
-
-
-  public function uploadAndImportExcel() {
-    $files_from_client = $this->uploadAction($_FILES, 'office');
-    $uploadExcel = $files_from_client[0]['file'];
-
-
-    $rows = $this->MExcel->read_all_sheet_data($uploadExcel, 0);
-
-    $colLength =    $this->MExcel->getColsLength($rows[0]);
-    $trimmedRows = [];
-    foreach ($rows as $row) {
-      $trimmedRow = array_slice($row, 0, $colLength);
-      $trimmedRows[] = $trimmedRow;
-    }
-
-
-    // 固定表名,但结构重新设置
-    $tablename = 'tmp_excel';
-
-    clog("记录数目:" . count($trimmedRows), 'red');
-
-
-    $saveResult =   $this->MExcel->recreateExcelTmpTable($tablename, $trimmedRows);
-    $ret = ['code' => 200, 'tablename' => $tablename, 'saveResult' => $saveResult, 'uploadExcel' => $uploadExcel,  'data' => $files_from_client, 'message' => 'Excel文件上传成功'];
-    echo json_encode($ret, JSON_UNESCAPED_UNICODE);
-    die;
-  }
 }

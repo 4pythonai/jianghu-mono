@@ -426,15 +426,29 @@ class User extends MY_Controller {
      * 用于个人资料页面展示
      */
     public function UserQrcode() {
-        logtext('<hr/>');
-        logtext('<div><span class=functionname>' . date('Y-m-d H:i:s') . '  User/UserQrcode</span></div>');
 
         $user_id = $this->getUser();
-        logtext("  用户ID: " . $user_id);
 
         $user = $this->MUser->getUserbyId($user_id);
 
+        // 检查是否需要强制重新生成
+        // 临时方案：为了修复路径问题，暂时强制重新生成所有二维码
+        // 如果二维码文件不存在，也需要重新生成
+        $forceRegenerate = false;
         if (!empty($user['qrcode'])) {
+            $existingQrcodePath = FCPATH . '..' . $user['qrcode'];
+            if (!file_exists($existingQrcodePath)) {
+                logtext("  二维码文件不存在，需要重新生成");
+                $forceRegenerate = true;
+            }
+            // 临时：强制重新生成以使用新路径
+            // TODO: 后续可以添加路径版本检查，只在新路径格式时重新生成
+            $forceRegenerate = true;
+            logtext("  强制重新生成二维码以使用新路径格式");
+        }
+
+        // 如果不需要强制重新生成，返回已有二维码
+        if (!$forceRegenerate && !empty($user['qrcode'])) {
             logtext("  已有二维码: " . $user['qrcode']);
             echo json_encode([
                 'code' => 200,
@@ -448,16 +462,29 @@ class User extends MY_Controller {
         $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
 
         $access_token = $this->getWechatAccessToken();
-        logtext("  access_token获取成功");
 
-        $wechat_api_url = "https://api.weixin.qq.com/wxa/getwxacode?access_token={$access_token}";
-        $path = "pages/user-profile/user-profile?user_id={$user_id}";
-        logtext("  生成小程序码路径: " . $path);
+        $wechat_api_url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token={$access_token}";
+        $path = "packagePlayer/user-profile/user-profile";
+        $path = ltrim($path, '/');
+
+
+        // scene 字段用于传递参数，最大32个字符
+        // 格式：user_id=14
+        $scene = "user_id={$user_id}";
+
+        logtext("  scene参数: " . $scene);
 
         $post_data = json_encode([
-            'path' => $path,
-            'width' => 430
-        ]);
+            'scene' => $scene,
+            'page' => $path,
+            'width' => 460,
+            'env_version' => 'develop',
+            'auto_color' => false,
+            'is_hyaline' => false,
+            'check_path' => false  // 设置为 false，跳过路径校验（适用于页面未发布或分包页面）
+        ], JSON_UNESCAPED_UNICODE);
+
+        logtext("  请求数据: " . $post_data);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $wechat_api_url);
@@ -467,7 +494,29 @@ class User extends MY_Controller {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
         $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+
+        // 检查返回结果是否是图片（成功时返回图片二进制数据）
+        // 如果返回的是 JSON 错误信息，说明生成失败
+        $isJson = false;
+        $errorInfo = null;
+        if (substr($result, 0, 1) === '{') {
+            $isJson = true;
+            $errorInfo = json_decode($result, true);
+            logtext("  微信API返回错误: " . json_encode($errorInfo, JSON_UNESCAPED_UNICODE));
+        }
+
+        if ($isJson || $httpCode !== 200) {
+            logtext("  二维码生成失败，HTTP状态码: " . $httpCode);
+            $errorMsg = isset($errorInfo['errmsg']) ? $errorInfo['errmsg'] : '未知错误';
+            echo json_encode([
+                'code' => 500,
+                'message' => '二维码生成失败: ' . $errorMsg,
+                'error_info' => $errorInfo
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
 
         $upload_path = FCPATH . '../upload/qrcodes/';
         if (!is_dir($upload_path)) {

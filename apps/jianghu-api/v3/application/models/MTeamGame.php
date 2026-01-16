@@ -366,14 +366,6 @@ class MTeamGame extends CI_Model {
         return true;
     }
 
-    /**
-     * 移除TAG成员
-     */
-    public function removeMemberFromTag($tag_id, $user_id) {
-        $this->db->where(['tag_id' => $tag_id, 'user_id' => $user_id]);
-        $this->db->delete('t_game_tag_member');
-        return true;
-    }
 
     // ========== 分组管理 ==========
 
@@ -968,26 +960,7 @@ class MTeamGame extends CI_Model {
         return ['valid' => true];
     }
 
-    /**
-     * 获取队际赛中最少参赛人数球队的人数
-     * 用于计算默认 top_n 值
-     */
-    public function getMinCrossTeamMemberCount($game_id) {
-        $teams = $this->getCrossTeamList($game_id);
 
-        if (empty($teams)) {
-            return 0;
-        }
-
-        $minCount = PHP_INT_MAX;
-        foreach ($teams as $team) {
-            if ($team['member_count'] < $minCount) {
-                $minCount = $team['member_count'];
-            }
-        }
-
-        return $minCount == PHP_INT_MAX ? 0 : $minCount;
-    }
 
     /**
      * 获取球队成员列表（用于报名选择）
