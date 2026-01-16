@@ -206,7 +206,7 @@ Page({
         if (entryPage.route === 'pages/live/live') {
             const result = await app.api.game.joinGame({
                 gameid: this.data.gameid,
-                userid: user.id,
+                user_id: user.id,
                 source: 'manualAdd'
             }, {
                 loadingTitle: '加入中...'

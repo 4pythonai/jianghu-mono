@@ -37,7 +37,7 @@
             </view>
             <text
               class="user-handicap"
-              wx:if="{{item.handicap !== null && item.handicap !== undefined}}"
+              wx:if="{{item.handicap !== null && item.handicap !== undefined && item.handicap !== 0}}"
             >江湖差点: {{item.handicap}}</text>
             <text class="user-signature" wx:if="{{item.signature}}">{{item.signature}}</text>
           </view>

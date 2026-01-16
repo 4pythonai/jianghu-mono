@@ -58,7 +58,7 @@ $back_nine_count = $is_nine_hole ? 0 : ($total_holes - 9);
 $players_scores = [];
 if (isset($game_info['scores']) && is_array($game_info['scores'])) {
     foreach ($game_info['scores'] as $score_record) {
-        $user_id = $score_record['userid'];
+        $user_id = $score_record['user_id'];
         $hole_id = $score_record['holeid'];
         $score = $score_record['score'];
 
@@ -150,4 +150,3 @@ $scorecard_config = [
     'total_par' => $total_par,
     'hole_names' => $hole_names
 ];
-

@@ -24,15 +24,11 @@ Page({
 
             // 打印API调用所需的参数
             const player = this.data.players[playerIndex];
-            console.log('🏌️ T台更新 - API参数:', {
-                uuid: this.data.uuid,
-                userid: player.user_id,
-                tee: tee
-            });
+
 
             app.api.game.setTee({
                 uuid: this.data.uuid,
-                userid: player.user_id,
+                user_id: player.user_id,
                 tee: tee
             }).then(res => {
                 console.log('🏌️ T台更新 - API响应:', res);

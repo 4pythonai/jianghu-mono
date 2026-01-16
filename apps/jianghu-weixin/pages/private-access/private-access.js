@@ -144,7 +144,7 @@ Page({
             throw new Error('用户未登录')
         }
 
-        const res = await app.api.game.savePrivateWhiteList({ gameid: gameId, userid: user_id })
+        const res = await app.api.game.savePrivateWhiteList({ gameid: gameId, user_id: user_id })
 
         if (res?.code !== 200) {
             throw new Error(res?.message || '保存失败')

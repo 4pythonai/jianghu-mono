@@ -140,7 +140,7 @@ export const gameStore = observable({
         try {
             const result = await gameApi.removePlayer({
                 gameid: this.gameid,
-                userid: user_id
+                user_id: user_id
             }, {
                 loadingTitle: '移除中...'
             })

@@ -67,7 +67,7 @@
                         $players = [];
                         if (isset($group_info) && is_array($group_info)) {
                             foreach ($group_info as $player) {
-                                $players[$player['userid']] = $player;
+                                $players[$player['user_id']] = $player;
                             }
                         }
 
@@ -93,9 +93,9 @@
                     // 初始化每个球员的总金额和总锅
                     $total_money = [];
                     $total_donated = [];
-                    foreach ($players as $userid => $player) {
-                        $total_money[$userid] = 0;
-                        $total_donated[$userid] = 0;
+                    foreach ($players as $user_id => $player) {
+                        $total_money[$user_id] = 0;
+                        $total_donated[$user_id] = 0;
                     }
 
                     // 使用 useful_holes 而不是 holes 来获取实际的赌球结果
@@ -109,34 +109,34 @@
                             $hole_donated = [];
 
                             // 初始化所有球员的金额和锅为0
-                            foreach ($players as $userid => $player) {
-                                $hole_money[$userid] = 0;
-                                $hole_donated[$userid] = 0;
+                            foreach ($players as $user_id => $player) {
+                                $hole_money[$user_id] = 0;
+                                $hole_donated[$user_id] = 0;
                             }
 
                             // 处理获胜者详情
                             if (isset($hole['winner_detail']) && is_array($hole['winner_detail'])) {
                                 foreach ($hole['winner_detail'] as $winner) {
-                                    $userid = $winner['userid'];
+                                    $user_id = $winner['user_id'];
                                     $money = $winner['final_points'] ?? 0;
                                     $donated = $winner['pointsDonated'] ?? 0;
-                                    $hole_money[$userid] = $money;
-                                    $hole_donated[$userid] = $donated;
-                                    $total_money[$userid] += $money;
-                                    $total_donated[$userid] += $donated;
+                                    $hole_money[$user_id] = $money;
+                                    $hole_donated[$user_id] = $donated;
+                                    $total_money[$user_id] += $money;
+                                    $total_donated[$user_id] += $donated;
                                 }
                             }
 
                             // 处理失败者详情
                             if (isset($hole['failer_detail']) && is_array($hole['failer_detail'])) {
                                 foreach ($hole['failer_detail'] as $failer) {
-                                    $userid = $failer['userid'];
+                                    $user_id = $failer['user_id'];
                                     $money = $failer['final_points'] ?? 0;
                                     $donated = $failer['pointsDonated'] ?? 0;
-                                    $hole_money[$userid] = $money;
-                                    $hole_donated[$userid] = $donated;
-                                    $total_money[$userid] += $money;
-                                    $total_donated[$userid] += $donated;
+                                    $hole_money[$user_id] = $money;
+                                    $hole_donated[$user_id] = $donated;
+                                    $total_money[$user_id] += $money;
+                                    $total_donated[$user_id] += $donated;
                                 }
                             }
                     ?>
@@ -151,19 +151,19 @@
                                     }
                                     ?>
                                 </td>
-                                <?php foreach ($players as $userid => $player): ?>
+                                <?php foreach ($players as $user_id => $player): ?>
                                     <td class="<?php
                                                 // 确定球员所属的队伍
                                                 $teamClass = '';
-                                                if (isset($hole['red']) && is_array($hole['red']) && in_array($userid, $hole['red'])) {
+                                                if (isset($hole['red']) && is_array($hole['red']) && in_array($user_id, $hole['red'])) {
                                                     $teamClass = 'team-red';
-                                                } elseif (isset($hole['blue']) && is_array($hole['blue']) && in_array($userid, $hole['blue'])) {
+                                                } elseif (isset($hole['blue']) && is_array($hole['blue']) && in_array($user_id, $hole['blue'])) {
                                                     $teamClass = 'team-blue';
                                                 }
                                                 echo $teamClass;
                                                 ?>">
                                         <?php
-                                        $money = $hole_money[$userid];
+                                        $money = $hole_money[$user_id];
                                         $class = '';
                                         if ($money > 0) {
                                             $class = 'money-positive';
@@ -187,10 +187,10 @@
                     <!-- 总计行 -->
                     <tr class="total-row">
                         <td class="hole-header">总成绩</td>
-                        <?php foreach ($players as $userid => $player): ?>
+                        <?php foreach ($players as $user_id => $player): ?>
                             <td>
                                 <?php
-                                $money = $total_money[$userid];
+                                $money = $total_money[$user_id];
                                 $class = '';
                                 if ($money > 0) {
                                     $class = 'money-positive';
@@ -210,10 +210,10 @@
                     <!-- 锅汇总行 -->
                     <tr class="total-row">
                         <td class="hole-header">总锅</td>
-                        <?php foreach ($players as $userid => $player): ?>
+                        <?php foreach ($players as $user_id => $player): ?>
                             <td>
                                 <?php
-                                $donated = $total_donated[$userid];
+                                $donated = $total_donated[$user_id];
                                 $class = '';
                                 if ($donated > 0) {
                                     $class = 'money-positive';
