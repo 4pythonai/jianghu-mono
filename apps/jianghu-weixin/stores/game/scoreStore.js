@@ -38,7 +38,7 @@ export const scoreStore = observable({
      * @returns {object|undefined}
      */
     getScore(userid, hindex) {
-        return (this.scores || []).find(s => String(s.userid) === String(userid) && String(s.hindex) === String(hindex));
+        return (this.scores || []).find(s => String(s.user_id) === String(userid) && String(s.hindex) === String(hindex));
     },
 
     /**
@@ -53,7 +53,7 @@ export const scoreStore = observable({
      * @param {string} [param0.tee_shot_direction]
      */
     updateScore: action(function ({ userid, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }) {
-        const idx = (this.scores || []).findIndex(s => String(s.userid) === String(userid) && String(s.hindex) === String(hindex));
+        const idx = (this.scores || []).findIndex(s => String(s.user_id) === String(userid) && String(s.hindex) === String(hindex));
         if (idx >= 0) {
             // 更新已有
             const newScore = { ...this.scores[idx] };
@@ -71,7 +71,7 @@ export const scoreStore = observable({
             // 新增
             this.scores = [
                 ...this.scores,
-                { userid, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }
+                { user_id: userid, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }
             ];
         }
     }),
@@ -98,7 +98,7 @@ export const scoreStore = observable({
         const redBlueIndex = buildRedBlueIndex(red_blue);
 
         return players.map(player => {
-            const userId = String(player?.userid ?? '');
+            const userId = String(player?.user_id ?? '');
             const playerScores = scoreIndex.get(userId);
 
             return holeList.map(hole => {
@@ -108,6 +108,7 @@ export const scoreStore = observable({
                 let colorTag = '';
 
                 if (rb) {
+                    // 检查红蓝分组中是否包含该 userId（支持两种字段名）
                     if (rb.redSet.has(userId)) colorTag = 'red';
                     if (rb.blueSet.has(userId)) colorTag = 'blue';
                 }

@@ -7,14 +7,14 @@ const { config } = require('../api/config');
  * @returns {object}
  */
 function normalizePlayer(player) {
-    // player 来自后端 API，t_user 表字段: id, display_name, avatar, handicap, mobile, gender
+    // player 来自后端 API，t_user 表字段: user_id, display_name, avatar, handicap, mobile, gender
     let avatar = player.avatar || '';
     if (avatar && avatar.startsWith('/')) {
         avatar = config.staticURL + avatar;
     }
     return {
         ...player,
-        userid: String(player.userid),
+        user_id: String(player.user_id),
         display_name: player.display_name || '未知玩家',
         avatar: avatar,
     };
@@ -125,7 +125,7 @@ function getScoreClass(diff) {
 function convertToUserIds(playersArray) {
     if (!Array.isArray(playersArray)) return [];
     return playersArray.map(player => {
-        const rawId = player?.userid;
+        const rawId = player?.user_id;
         const id = Number.parseInt(`${rawId}`) || 0;
         return id;
     });
@@ -141,7 +141,7 @@ function buildScoreIndex(scores = []) {
     for (const score of scores) {
         if (!score) continue;
 
-        const userId = String(score.userid ?? '');
+        const userId = String(score.user_id ?? '');
         const holeIndex = String(score.hindex ?? '');
 
         if (!userId || !holeIndex) continue;

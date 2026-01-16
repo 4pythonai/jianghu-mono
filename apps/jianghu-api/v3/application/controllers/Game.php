@@ -312,7 +312,7 @@ class Game extends MY_Controller {
 
     public function gameDetail() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $gameid = $json_paras['gameid'];
+        $gameid = intval($json_paras['gameid']);
         $current_user_id = $this->getUser();
         $game_detail = $this->MDetailGame->getGameDetail($gameid, $current_user_id);
         $red_blue  = $this->getFirst4PlayersGambleRedBlue($gameid);

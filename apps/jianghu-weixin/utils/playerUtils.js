@@ -41,7 +41,7 @@ export function calculatePlayersHandicaps(players, holeList, scores, scoreIndexO
     return players.map(player => {
         let totalScore = 0
         let totalPar = 0
-        const userId = String(player?.userid ?? '')
+        const userId = String(player?.user_id ?? '')
         const playerScores = scoreIndex.get(userId)
 
         // 计算该玩家的总分和总标准杆（使用 hindex 匹配）

@@ -147,7 +147,7 @@ export const gameStore = observable({
 
             if (result?.code === 200) {
                 // 直接从 players 数组中移除该用户，立即更新 UI
-                this.players = this.players.filter(p => String(p.userid) !== String(userid))
+                this.players = this.players.filter(p => String(p.user_id) !== String(userid))
                 return { success: true, message: '移除成功' }
             } else {
                 return { success: false, message: result?.message || '移除失败' }
@@ -218,7 +218,7 @@ export const gameStore = observable({
             this.players = playersWithHandicap;
             console.log('[gameStore] 原子操作：更新 players handicap 完成', {
                 playersCount: this.players.length,
-                handicaps: this.players.map(p => ({ userid: p.userid, display_name: p.display_name, handicap: p.handicap }))
+                handicaps: this.players.map(p => ({ user_id: p.user_id, display_name: p.display_name, handicap: p.handicap }))
             });
         } else {
             console.log('[gameStore] 原子操作：handicap 未变化，跳过更新（避免循环触发）');

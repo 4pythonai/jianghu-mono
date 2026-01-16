@@ -65,13 +65,13 @@ Component({
 
             const localScores = players.map((player) => {
                 const scoreData = (scores || []).find(
-                    s => String(s.userid) === String(player.userid) && String(s.hindex) === String(hole.hindex)
+                    s => String(s.user_id) === String(player.user_id) && String(s.hindex) === String(hole.hindex)
                 ) || {};
                 const defaultScore = (scoreData.score && scoreData.score > 0) ? scoreData.score : (hole.par ?? 0);
 
 
                 return {
-                    userid: player.userid,
+                    user_id: player.user_id,
                     score: defaultScore,
                     putts: scoreData.putts ?? 2,
                     penalty_strokes: scoreData.penalty_strokes ?? 0,
@@ -172,7 +172,7 @@ Component({
             for (let i = 0; i < this.data.localScores.length; i++) {
                 const playerScore = this.data.localScores[i];
                 this.updateScore({
-                    userid: playerScore.userid,
+                    userid: playerScore.user_id,
                     hindex,
                     score: playerScore.score,
                     putts: playerScore.putts,

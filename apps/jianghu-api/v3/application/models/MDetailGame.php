@@ -58,7 +58,7 @@ class MDetailGame  extends CI_Model {
 
         // 组装返回数据
         $result = [
-            'gameid' => (string)$game_info['gameid'],
+            'gameid' => intval($game_info['gameid']),
             'uuid' => $game_info['uuid'],
             'game_type' => $game_info['game_type'] ?? 'common',
             'scoring_type' => $game_info['scoring_type'],

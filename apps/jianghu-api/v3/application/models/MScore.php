@@ -32,7 +32,6 @@ class MScore  extends CI_Model {
 
     return [
       'gameid' => $game_id,
-      'user_id' => $user_id,
       'hindex' => $hindex,
       'user_id' => $user_id,
       'group_id' => $group_id,
@@ -66,8 +65,6 @@ class MScore  extends CI_Model {
       ->num_rows() > 0;
 
     if ($exists) {
-      debug("update");
-      debug($save_data);
       return $this->db->where($where_conditions)->update('t_game_score', $save_data);
     }
 
