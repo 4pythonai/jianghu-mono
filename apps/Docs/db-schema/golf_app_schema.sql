@@ -247,7 +247,7 @@ CREATE TABLE `t_game_group_user` (
   KEY `idx_userid_gameid` (`user_id`,`gameid`),
   KEY `idx_subteam_id` (`tag_id`),
   KEY `idx_userid_gameid_addtime` (`user_id`,`gameid`,`addtime`)
-) ENGINE=InnoDB AUTO_INCREMENT=1177 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
+) ENGINE=InnoDB AUTO_INCREMENT=1178 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
 
 
 CREATE TABLE `t_game_interaction` (
@@ -348,7 +348,7 @@ CREATE TABLE `t_game_spectator` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `game-spectator` (`game_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=578 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=585 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_game_tag_member` (

@@ -533,6 +533,7 @@ export const gameStore = observable({
                 name: g.group_name || `第${index + 1}组`,
                 players: (g.members || []).map(p => ({
                     id: p.user_id,
+                    user_id: p.user_id,
                     name: p.display_name || '未知玩家',
                     avatar: p.avatar || '',
                     teamName: p.tag_name || '',

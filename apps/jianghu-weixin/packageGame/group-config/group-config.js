@@ -111,15 +111,36 @@ Page({
         if (currentGroup && currentGroup.players) {
             const selectedPlayers = currentGroup.players.map(p => {
                 console.log('[group-config] 当前分组 player 原始:', p)
+
+                // 验证 user_id 字段
+                if (p.user_id === undefined || p.user_id === null) {
+                    console.error('🔴🟢🔵 ERROR [group-config] loadCurrentGroupPlayers: player.user_id 不存在', p)
+                } else if (typeof p.user_id !== 'number') {
+                    console.error('🔴🟢🔵 ERROR [group-config] loadCurrentGroupPlayers: player.user_id 不是数字类型', {
+                        user_id: p.user_id,
+                        type: typeof p.user_id,
+                        player: p
+                    })
+                }
+
+                const user_id = typeof p.user_id === 'number' ? p.user_id : Number(p.user_id)
+                if (isNaN(user_id) || user_id === 0) {
+                    console.error('🔴🟢🔵 ERROR [group-config] loadCurrentGroupPlayers: user_id 转换失败', {
+                        original: p.user_id,
+                        converted: user_id,
+                        player: p
+                    })
+                }
+
                 return {
                     id: String(p.id),
+                    user_id: user_id,
                     name: p.name,
                     avatar: p.avatar,
                     teamName: p.teamName || ''
                 }
             })
             this.setData({ selectedPlayers })
-            console.log('[group-config] selectedPlayers (处理后):', selectedPlayers)
         }
     },
 
@@ -131,9 +152,6 @@ Page({
         const gameTags = gameStore.gameTags || []
         const tagMembers = gameStore.tagMembers || []
 
-        console.log('[group-config] === updateCurrentTagPlayers 开始 ===')
-        console.log('[group-config] selectedPlayers:', selectedPlayers)
-        console.log('[group-config] tagMembers 原始数据 (前3条):', tagMembers.slice(0, 3))
 
         if (gameTags.length === 0) {
             this.setData({ currentTagPlayers: [] })
@@ -151,21 +169,35 @@ Page({
             .filter(m => m.tagName === currentTag.tagName)
             .map(m => {
                 // 注意：m.id 是 tag-member 记录ID，m.user_id 才是实际用户ID
-                const playerId = String(m.user_id)
+
+                // 验证 user_id 字段
+                if (m.user_id === undefined || m.user_id === null) {
+                    console.error('🔴🟢🔵 ERROR [group-config] updateCurrentTagPlayers: tagMember.user_id 不存在', m)
+                } else if (typeof m.user_id !== 'number') {
+                    console.error('🔴🟢🔵 ERROR [group-config] updateCurrentTagPlayers: tagMember.user_id 不是数字类型', {
+                        user_id: m.user_id,
+                        type: typeof m.user_id,
+                        tagMember: m
+                    })
+                }
+
+                const user_id = typeof m.user_id === 'number' ? m.user_id : Number(m.user_id)
+                if (isNaN(user_id) || user_id === 0) {
+                    console.error('🔴🟢🔵 ERROR [group-config] updateCurrentTagPlayers: user_id 转换失败', {
+                        original: m.user_id,
+                        converted: user_id,
+                        tagMember: m
+                    })
+                }
+
+                const playerId = String(user_id)
                 const inGroupId = playerGroupMap[playerId]
                 const isInCurrentGroup = selectedPlayers.some(p => String(p.id) === playerId)
 
-                console.log('[group-config] 球员比对:', {
-                    'tagMember.id': m.id,
-                    'tagMember.user_id': m.user_id,
-                    'playerId (用于比对)': playerId,
-                    'selectedPlayers.ids': selectedPlayers.map(p => p.id),
-                    'isInCurrentGroup': isInCurrentGroup
-                })
 
                 return {
                     id: playerId,
-                    user_id: m.user_id,
+                    user_id: user_id,
                     show_name: m.show_name,
                     avatar: m.avatar,
                     handicap: m.handicap,
@@ -179,7 +211,6 @@ Page({
             })
 
         this.setData({ currentTagPlayers: players })
-        console.log('[group-config] currentTagPlayers:', players)
     },
 
     /**
@@ -256,9 +287,30 @@ Page({
             // 找到球员信息
             const player = currentTagPlayers.find(p => String(p.id) === playerId)
             if (player) {
+                // 验证 user_id 字段
+                if (player.user_id === undefined || player.user_id === null) {
+                    console.error('🔴🟢🔵 ERROR [group-config] onPlayerToggle: player.user_id 不存在', player)
+                } else if (typeof player.user_id !== 'number') {
+                    console.error('🔴🟢🔵 ERROR [group-config] onPlayerToggle: player.user_id 不是数字类型', {
+                        user_id: player.user_id,
+                        type: typeof player.user_id,
+                        player: player
+                    })
+                }
+
+                const user_id = typeof player.user_id === 'number' ? player.user_id : Number(player.user_id)
+                if (isNaN(user_id) || user_id === 0) {
+                    console.error('🔴🟢🔵 ERROR [group-config] onPlayerToggle: user_id 转换失败', {
+                        original: player.user_id,
+                        converted: user_id,
+                        player: player
+                    })
+                }
+
                 const newSelected = [...selectedPlayers, {
                     id: playerId,
-                    name: player.name,
+                    user_id: user_id,
+                    name: player.show_name || player.name || '',
                     avatar: player.avatar,
                     teamName: this.data.gameTags[this.data.currentTagIndex]?.tagName || ''
                 }]
