@@ -6,7 +6,7 @@ class G4P8421Parser  extends CI_Model {
         parent::__construct();
     }
 
-    public function parserRawData($userid, $config) {
+    public function parserRawData($user_id, $config) {
 
 
         // 获取必需参数
@@ -16,7 +16,7 @@ class G4P8421Parser  extends CI_Model {
 
         // 准备插入数据
         $insert_data = [
-            'creator_id' => $userid,
+            'creator_id' => $user_id,
             'gambleSysName' => $gambleSysName,
             'gambleUserName' => $gambleUserName,
             'playersNumber' => $config['playersNumber'],

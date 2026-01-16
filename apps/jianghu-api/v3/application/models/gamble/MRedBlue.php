@@ -97,14 +97,14 @@ class MRedBlue extends CI_Model {
 
                 // 添加debug信息
                 $blueDebug = [];
-                foreach ($hole['blue'] as $userid) {
-                    $nickname = $this->getNicknameByUserid($userid, $context);
-                    $blueDebug[] = $userid . '/' . $nickname;
+                foreach ($hole['blue'] as $user_id) {
+                    $nickname = $this->getNicknameByUserid($user_id, $context);
+                    $blueDebug[] = $user_id . '/' . $nickname;
                 }
                 $redDebug = [];
-                foreach ($hole['red'] as $userid) {
-                    $nickname = $this->getNicknameByUserid($userid, $context);
-                    $redDebug[] = $userid . '/' . $nickname;
+                foreach ($hole['red'] as $user_id) {
+                    $nickname = $this->getNicknameByUserid($user_id, $context);
+                    $redDebug[] = $user_id . '/' . $nickname;
                 }
                 $hole['debug'][] = $hole['holename'] . "分组:{$context->redBlueConfig},第{$humanReabableIndex}洞分组, 蓝组为 " . implode(', ', $blueDebug) . ", 红组为 " . implode(', ', $redDebug);
             }
@@ -169,14 +169,14 @@ class MRedBlue extends CI_Model {
     }
 
 
-    private function getNicknameByUserid($userid, $context) {
+    private function getNicknameByUserid($user_id, $context) {
         if (isset($context->group_info) && is_array($context->group_info)) {
             foreach ($context->group_info as $user) {
-                if (isset($user['userid']) && $user['userid'] == $userid) {
-                    return $user['nickname'] ?? $user['username'] ?? $userid;
+                if (isset($user['user_id']) && $user['user_id'] == $user_id) {
+                    return $user['nickname'] ?? $user['username'] ?? $user_id;
                 }
             }
         }
-        return $userid;
+        return $user_id;
     }
 }

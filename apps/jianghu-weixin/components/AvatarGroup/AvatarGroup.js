@@ -35,7 +35,7 @@ Component({
         'players, maxShow': function (players, maxShow) {
             // 保留完整的 player 对象，包含 id 用于跳转
             const showPlayers = players.slice(0, maxShow).map(p => ({
-                id: p.userid,
+                id: p.user_id,
                 avatar: imageUrl(p.avatar),
                 name: p.display_name
             }))

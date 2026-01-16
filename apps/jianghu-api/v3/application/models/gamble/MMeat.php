@@ -27,7 +27,7 @@ class MMeat extends CI_Model {
 
         $winner_performance = $this->calculatePerformance($best_winner['computedScore'], $hole);
 
-        $this->addDebug($hole, "吃肉分析: 最佳赢家(userid: {$best_winner['userid']})杆数: {$best_winner['computedScore']}, Par: {$hole['par']}, 表现: {$winner_performance}");
+        $this->addDebug($hole, "吃肉分析: 最佳赢家(user_id: {$best_winner['user_id']})杆数: {$best_winner['computedScore']}, Par: {$hole['par']}, 表现: {$winner_performance}");
 
         $available_meat_count = $this->getAvailableMeatCount($context);
 

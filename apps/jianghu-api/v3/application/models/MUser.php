@@ -64,13 +64,6 @@ class MUser  extends CI_Model {
 
 
 
-  public function getUserbyMobile($mobile) {
-    $this->db->where('mobile', $mobile);
-    $user =  $this->db->get('t_user')->row_array();
-    return $user;
-  }
-
-
   public function getUserbyId($user_id) {
     $this->db->where('id', $user_id);
     $user = $this->db->get('t_user')->row_array();
@@ -79,8 +72,8 @@ class MUser  extends CI_Model {
 
 
 
-  public function updateDisplayName($userid, $display_name) {
-    $this->db->where('id', $userid);
+  public function updateDisplayName($user_id, $display_name) {
+    $this->db->where('id', $user_id);
     $this->db->update('t_user', ['display_name' => $display_name]);
   }
 
@@ -88,8 +81,8 @@ class MUser  extends CI_Model {
 
 
 
-  public  function updateUserPhone($userid, $phoneNumber) {
-    $this->db->where('id', $userid);
+  public  function updateUserPhone($user_id, $phoneNumber) {
+    $this->db->where('id', $user_id);
     $this->db->update('t_user', ['mobile' => $phoneNumber]);
   }
 
@@ -103,8 +96,8 @@ class MUser  extends CI_Model {
    * 好友定义：互相关注（我关注他 且 他也关注我）
    * 排除：我拉黑的人 或 拉黑我的人
    */
-  public function getFriends($userid) {
-    $sql = "SELECT u.id as userid, u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
+  public function getFriends($user_id) {
+    $sql = "SELECT u.id as user_id, u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
                    f1.is_special,
                    ur.remark_name,
                    COALESCE(ur.remark_name, u.display_name, u.wx_name, '球友') as show_name
@@ -117,18 +110,18 @@ class MUser  extends CI_Model {
             -- 排除我拉黑的人
             AND NOT EXISTS (
                 SELECT 1 FROM t_user_block b1
-                WHERE b1.userid = f1.user_id AND b1.blocked_userid = f1.target_id
+                WHERE b1.user_id = f1.user_id AND b1.blocked_userid = f1.target_id
             )
             -- 排除拉黑我的人
             AND NOT EXISTS (
                 SELECT 1 FROM t_user_block b2
-                WHERE b2.userid = f1.target_id AND b2.blocked_userid = f1.user_id
+                WHERE b2.user_id = f1.target_id AND b2.blocked_userid = f1.user_id
             )";
 
-    $friends = $this->db->query($sql, [$userid, $userid])->result_array();
+    $friends = $this->db->query($sql, [$user_id, $user_id])->result_array();
 
-    // 保持向后兼容，添加 display_name 字段
     foreach ($friends as &$friend) {
+      $friend['user_id'] = (int)$friend['user_id'];
       if (!isset($friend['display_name']) || empty($friend['display_name'])) {
         $friend['display_name'] = $friend['wx_name'];
       }
@@ -142,8 +135,8 @@ class MUser  extends CI_Model {
    * 
    * 排除：我拉黑的人 或 拉黑我的人
    */
-  public function getFollowings($userid) {
-    $sql = "SELECT u.id as userid, u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
+  public function getFollowings($user_id) {
+    $sql = "SELECT u.id as user_id, u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
                    u.handicap, u.signature,
                    f.is_special,
                    ur.remark_name,
@@ -155,18 +148,18 @@ class MUser  extends CI_Model {
             -- 排除我拉黑的人
             AND NOT EXISTS (
                 SELECT 1 FROM t_user_block b1
-                WHERE b1.userid = f.user_id AND b1.blocked_userid = f.target_id
+                WHERE b1.user_id = f.user_id AND b1.blocked_userid = f.target_id
             )
             -- 排除拉黑我的人
             AND NOT EXISTS (
                 SELECT 1 FROM t_user_block b2
-                WHERE b2.userid = f.target_id AND b2.blocked_userid = f.user_id
+                WHERE b2.user_id = f.target_id AND b2.blocked_userid = f.user_id
             )";
 
-    $followings = $this->db->query($sql, [$userid, $userid])->result_array();
+    $followings = $this->db->query($sql, [$user_id, $user_id])->result_array();
 
-    // 保持向后兼容，添加 display_name 字段
     foreach ($followings as &$following) {
+      $following['user_id'] = (int)$following['user_id'];
       if (!isset($following['display_name']) || empty($following['display_name'])) {
         $following['display_name'] = $following['wx_name'];
       }
@@ -263,25 +256,18 @@ class MUser  extends CI_Model {
   }
 
 
-  public function getPlayerInfo($userid) {
+  public function getPlayerInfo($user_id) {
     $players_query = "
         SELECT
-            u.id as userid,
+            u.id as user_id,
             u.wx_name,
             u.display_name,
             u.avatar
         FROM t_user u
         WHERE id = ? ";
 
-    $user = $this->db->query($players_query, [$userid])->row_array();
+    $user = $this->db->query($players_query, [$user_id])->row_array();
     return $user;
-  }
-
-
-  public function getDisplayNameById($userid) {
-    $this->db->where('id', $userid);
-    $user = $this->db->get('t_user')->row_array();
-    return !empty($user['display_name']) ? $user['display_name'] : $user['wx_name'];
   }
 
 
@@ -297,10 +283,34 @@ class MUser  extends CI_Model {
 
   /**
    * 获取用户的粉丝数量
+   * 排除拉黑关系，与 getFollowers 保持一致
    */
   public function getFollowersCount($user_id) {
-    $this->db->where('target_id', $user_id);
-    return $this->db->count_all_results('t_user_follow');
+    return $this->getFollowersCountFiltered($user_id);
+  }
+
+
+  /**
+   * 获取粉丝数量（排除拉黑用户）
+   * 私有方法，供 getFollowersCount 和其他需要的地方调用
+   */
+  private function getFollowersCountFiltered($user_id) {
+    $sql = "SELECT COUNT(*) as cnt
+            FROM t_user_follow f
+            JOIN t_user u ON f.user_id = u.id
+            WHERE f.target_id = ?
+            -- 排除我拉黑的人
+            AND NOT EXISTS (
+                SELECT 1 FROM t_user_block b1
+                WHERE b1.user_id = ? AND b1.blocked_userid = f.user_id
+            )
+            -- 排除拉黑我的人
+            AND NOT EXISTS (
+                SELECT 1 FROM t_user_block b2
+                WHERE b2.user_id = f.user_id AND b2.blocked_userid = ?
+            )";
+    $result = $this->db->query($sql, [$user_id, $user_id, $user_id])->row();
+    return $result ? (int)$result->cnt : 0;
   }
 
 
@@ -336,7 +346,7 @@ class MUser  extends CI_Model {
    * 检查当前用户是否拉黑了目标用户
    */
   public function isBlocked($current_user_id, $target_user_id) {
-    $this->db->where('userid', $current_user_id);
+    $this->db->where('user_id', $current_user_id);
     $this->db->where('blocked_userid', $target_user_id);
     return $this->db->count_all_results('t_user_block') > 0;
   }
@@ -346,7 +356,7 @@ class MUser  extends CI_Model {
    * 检查当前用户是否被目标用户拉黑
    */
   public function isBlockedBy($current_user_id, $target_user_id) {
-    $this->db->where('userid', $target_user_id);
+    $this->db->where('user_id', $target_user_id);
     $this->db->where('blocked_userid', $current_user_id);
     return $this->db->count_all_results('t_user_block') > 0;
   }
@@ -355,9 +365,9 @@ class MUser  extends CI_Model {
   /**
    * 关注用户
    */
-  public function followUser($userid, $target_userid) {
+  public function followUser($user_id, $target_userid) {
     $data = [
-      'user_id' => $userid,
+      'user_id' => $user_id,
       'target_id' => $target_userid
     ];
     $this->db->insert('t_user_follow', $data);
@@ -368,8 +378,8 @@ class MUser  extends CI_Model {
   /**
    * 取消关注
    */
-  public function unfollowUser($userid, $target_userid) {
-    $this->db->where('user_id', $userid);
+  public function unfollowUser($user_id, $target_userid) {
+    $this->db->where('user_id', $user_id);
     $this->db->where('target_id', $target_userid);
     return $this->db->delete('t_user_follow');
   }
@@ -380,8 +390,8 @@ class MUser  extends CI_Model {
    * 
    * 排除：我拉黑的人 或 拉黑我的人
    */
-  public function getFollowers($userid) {
-    $sql = "SELECT u.id as userid, u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
+  public function getFollowers($user_id) {
+    $sql = "SELECT u.id as user_id, u.wx_name, u.display_name, u.avatar, u.openid, u.unionid,
                    u.handicap, u.signature,
                    f.is_special,
                    ur.remark_name,
@@ -393,22 +403,22 @@ class MUser  extends CI_Model {
             -- 排除我拉黑的人
             AND NOT EXISTS (
                 SELECT 1 FROM t_user_block b1
-                WHERE b1.userid = ? AND b1.blocked_userid = f.user_id
+                WHERE b1.user_id = ? AND b1.blocked_userid = f.user_id
             )
             -- 排除拉黑我的人
             AND NOT EXISTS (
                 SELECT 1 FROM t_user_block b2
-                WHERE b2.userid = f.user_id AND b2.blocked_userid = ?
+                WHERE b2.user_id = f.user_id AND b2.blocked_userid = ?
             )";
 
-    $followers = $this->db->query($sql, [$userid, $userid, $userid, $userid])->result_array();
+    $followers = $this->db->query($sql, [$user_id, $user_id, $user_id, $user_id])->result_array();
 
-    // 保持向后兼容，添加 display_name 字段
-    foreach ($followers as &$follower) {
-      if (!isset($follower['display_name']) || empty($follower['display_name'])) {
-        $follower['display_name'] = !empty($follower['wx_name']) ? $follower['wx_name'] : '未知用户';
-      }
-    }
+    // foreach ($followers as &$follower) {
+    //   $follower['user_id'] = (int)$follower['user_id'];
+    //   if (!isset($follower['display_name']) || empty($follower['display_name'])) {
+    //     $follower['display_name'] = !empty($follower['wx_name']) ? $follower['wx_name'] : '未知用户';
+    //   }
+    // }
 
     return $followers;
   }
@@ -417,16 +427,16 @@ class MUser  extends CI_Model {
   /**
    * 获取非注册好友(占位用户)列表
    * 
-   * 条件：由当前用户创建 (helper_id = userid) 且 reg_type 为手动添加类型
+   * 条件：由当前用户创建 (helper_id = user_id) 且 reg_type 为手动添加类型
    */
-  public function getGhostUsers($userid) {
-    $sql = "SELECT id as userid, wx_name, display_name, avatar, mobile, addtime
+  public function getGhostUsers($user_id) {
+    $sql = "SELECT id as user_id, wx_name, display_name, avatar, mobile, addtime
             FROM t_user
             WHERE helper_id = ?
             AND reg_type IN ('manualAdd', 'manualAddWithMobile')
             ORDER BY addtime DESC";
 
-    $ghosts = $this->db->query($sql, [$userid])->result_array();
+    $ghosts = $this->db->query($sql, [$user_id])->result_array();
 
     foreach ($ghosts as &$ghost) {
       $ghost['display_name'] = !empty($ghost['display_name']) ? $ghost['display_name'] : $ghost['wx_name'];
@@ -439,8 +449,8 @@ class MUser  extends CI_Model {
   /**
    * 获取非注册好友数量
    */
-  public function getGhostUsersCount($userid) {
-    $this->db->where('helper_id', $userid);
+  public function getGhostUsersCount($user_id) {
+    $this->db->where('helper_id', $user_id);
     $this->db->where_in('reg_type', ['manualAdd', 'manualAddWithMobile']);
     return $this->db->count_all_results('t_user');
   }
@@ -451,9 +461,9 @@ class MUser  extends CI_Model {
    *
    * 只能删除自己创建的占位用户
    */
-  public function deleteGhostUser($userid, $ghost_userid) {
+  public function deleteGhostUser($user_id, $ghost_userid) {
     $this->db->where('id', $ghost_userid);
-    $this->db->where('helper_id', $userid);
+    $this->db->where('helper_id', $user_id);
     $this->db->where_in('reg_type', ['manualAdd', 'manualAddWithMobile']);
     return $this->db->delete('t_user');
   }
@@ -462,7 +472,7 @@ class MUser  extends CI_Model {
   /**
    * 获取用户的历史比赛成绩
    */
-  public function getGameHistory($userid) {
+  public function getGameHistory($user_id) {
     // 1. 获取用户参与过的所有已完成比赛
     $sql = "
       SELECT
@@ -476,12 +486,12 @@ class MUser  extends CI_Model {
       FROM t_game_group_user ggu
       JOIN t_game g ON ggu.gameid = g.id
       LEFT JOIN t_course c ON g.courseid = c.courseid
-      WHERE ggu.userid = ?
+      WHERE ggu.user_id = ?
         AND g.game_status = 'finished'
       ORDER BY COALESCE(g.open_time, g.create_time) DESC
     ";
 
-    $games = $this->db->query($sql, [$userid])->result_array();
+    $games = $this->db->query($sql, [$user_id])->result_array();
 
     $result = [];
 
@@ -495,7 +505,7 @@ class MUser  extends CI_Model {
         FROM t_game_score
         WHERE gameid = ? AND user_id = ?
       ";
-      $user_score = $this->db->query($score_sql, [$game_id, $userid])->row_array();
+      $user_score = $this->db->query($score_sql, [$game_id, $user_id])->row_array();
       $total_score = $user_score['total_score'] ? intval($user_score['total_score']) : null;
 
       // 如果没有成绩记录，跳过
@@ -516,12 +526,12 @@ class MUser  extends CI_Model {
       // 4. 获取同组其他球员的成绩
       $players_sql = "
         SELECT
-          u.id as userid,
+          u.id as user_id,
           COALESCE(u.display_name, u.wx_name, '球友') as display_name,
           SUM(gs.score) as score
         FROM t_game_group_user ggu
-        JOIN t_user u ON ggu.userid = u.id
-        LEFT JOIN t_game_score gs ON gs.gameid = ggu.gameid AND gs.user_id = ggu.userid
+        JOIN t_user u ON ggu.user_id = u.id
+        LEFT JOIN t_game_score gs ON gs.gameid = ggu.gameid AND gs.user_id = ggu.user_id
         WHERE ggu.gameid = ? AND ggu.groupid = ?
         GROUP BY u.id, u.display_name, u.wx_name
         HAVING SUM(gs.score) IS NOT NULL
@@ -533,7 +543,7 @@ class MUser  extends CI_Model {
       $players_formatted = [];
       foreach ($players as $player) {
         $players_formatted[] = [
-          'userid' => intval($player['userid']),
+          'user_id' => intval($player['user_id']),
           'display_name' => $player['display_name'],
           'score' => intval($player['score'])
         ];
@@ -541,7 +551,7 @@ class MUser  extends CI_Model {
 
       // 5. 获取比赛总人数
       $count_sql = "
-        SELECT COUNT(DISTINCT userid) as total_players
+        SELECT COUNT(DISTINCT user_id) as total_players
         FROM t_game_group_user
         WHERE gameid = ?
       ";
@@ -569,8 +579,8 @@ class MUser  extends CI_Model {
   /**
    * 更新用户资料
    */
-  public function updateProfile($userid, $data) {
-    $this->db->where('id', $userid);
+  public function updateProfile($user_id, $data) {
+    $this->db->where('id', $user_id);
     $this->db->update('t_user', $data);
   }
 

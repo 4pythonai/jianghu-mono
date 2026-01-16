@@ -19,7 +19,7 @@
     <block wx:elif="{{users.length > 0}}">
       <view
         wx:for="{{users}}"
-        wx:key="userid"
+        wx:key="user_id"
         class="user-item"
         data-user="{{item}}"
         bindlongpress="onLongPress"
@@ -28,7 +28,7 @@
           <view class="user-avatar-wrap">
             <PlayerAvatar
               avatar="{{image.imageUrl(item.avatar)}}"
-              userId="{{item.userid}}"
+              userId="{{item.user_id}}"
               avatarOnly="{{true}}"
               size="small"
               clickable="{{false}}"

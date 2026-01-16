@@ -45,13 +45,13 @@ class TeamGame extends MY_Controller {
      */
     public function createTeamGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
 
         $team_id = $json_paras['team_id'];
         $match_format = $json_paras['match_format'];
 
         // 验证球队管理员权限
-        if (!$this->MTeamGame->isTeamAdmin($team_id, $userid)) {
+        if (!$this->MTeamGame->isTeamAdmin($team_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限创建此球队的赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -80,7 +80,7 @@ class TeamGame extends MY_Controller {
 
         $data = [
             'team_id' => $team_id,
-            'creator_id' => $userid,
+            'creator_id' => $user_id,
             'name' => $json_paras['name'],
             'courseid' => $json_paras['courseid'] ?? null,
             'match_format' => $match_format,
@@ -134,11 +134,11 @@ class TeamGame extends MY_Controller {
      */
     public function updateTeamGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限修改此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -156,11 +156,11 @@ class TeamGame extends MY_Controller {
      */
     public function addGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -196,7 +196,7 @@ class TeamGame extends MY_Controller {
      */
     public function updateTeamGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $tag_id = $json_paras['tag_id'];
 
         // 获取TAG信息以验证权限
@@ -206,7 +206,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        if (!$this->MTeamGame->isGameAdmin($tag['game_id'], $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($tag['game_id'], $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -222,7 +222,7 @@ class TeamGame extends MY_Controller {
      */
     public function deleteGameTag() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $tag_id = $json_paras['tag_id'];
 
         // 获取TAG信息以验证权限
@@ -232,7 +232,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        if (!$this->MTeamGame->isGameAdmin($tag['game_id'], $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($tag['game_id'], $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -276,7 +276,7 @@ class TeamGame extends MY_Controller {
      */
     public function registerGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $tag_id = $json_paras['tag_id'] ?? null;
         $nickname = $json_paras['nickname'] ?? null;
@@ -302,7 +302,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $result = $this->MTeamGame->registerGame($game_id, $userid, $tag_id, $remark, $nickname, $gender, $mobile);
+        $result = $this->MTeamGame->registerGame($game_id, $user_id, $tag_id, $remark, $nickname, $gender, $mobile);
 
         if ($result['success']) {
             echo json_encode([
@@ -323,7 +323,7 @@ class TeamGame extends MY_Controller {
      */
     public function cancelRegistration() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
 
         // 检查赛事状态
@@ -333,7 +333,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $result = $this->MTeamGame->cancelRegistration($game_id, $userid);
+        $result = $this->MTeamGame->cancelRegistration($game_id, $user_id);
 
         echo json_encode([
             'code' => $result['success'] ? 200 : 400,
@@ -365,7 +365,7 @@ class TeamGame extends MY_Controller {
      */
     public function approveRegistration() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $registration_id = $json_paras['registration_id'];
 
         // 获取报名记录
@@ -376,12 +376,12 @@ class TeamGame extends MY_Controller {
         }
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($registration['game_id'], $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($registration['game_id'], $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限审批此报名'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        $result = $this->MTeamGame->approveRegistration($registration_id, $userid);
+        $result = $this->MTeamGame->approveRegistration($registration_id, $user_id);
 
         echo json_encode([
             'code' => $result['success'] ? 200 : 400,
@@ -396,7 +396,7 @@ class TeamGame extends MY_Controller {
      */
     public function rejectRegistration() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $registration_id = $json_paras['registration_id'];
         $reject_reason = $json_paras['reject_reason'] ?? null;
 
@@ -408,12 +408,12 @@ class TeamGame extends MY_Controller {
         }
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($registration['game_id'], $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($registration['game_id'], $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限审批此报名'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        $result = $this->MTeamGame->rejectRegistration($registration_id, $userid, $reject_reason);
+        $result = $this->MTeamGame->rejectRegistration($registration_id, $user_id, $reject_reason);
 
         echo json_encode([
             'code' => $result['success'] ? 200 : 400,
@@ -430,12 +430,12 @@ class TeamGame extends MY_Controller {
      */
     public function assignGroups() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $groups = $json_paras['groups'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -463,7 +463,7 @@ class TeamGame extends MY_Controller {
      */
     public function joinGroup() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $group_id = $json_paras['group_id'];
 
@@ -479,7 +479,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $result = $this->MTeamGame->joinGroup($game_id, $group_id, $userid);
+        $result = $this->MTeamGame->joinGroup($game_id, $group_id, $user_id);
 
         echo json_encode([
             'code' => $result['success'] ? 200 : 400,
@@ -510,12 +510,12 @@ class TeamGame extends MY_Controller {
      */
     public function createGroup() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $group_name = $json_paras['group_name'] ?? null;
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -536,12 +536,12 @@ class TeamGame extends MY_Controller {
      */
     public function deleteGroup() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $group_id = $json_paras['group_id'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -562,7 +562,7 @@ class TeamGame extends MY_Controller {
      */
     public function updateGroupMembers() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $group_id = $json_paras['group_id'];
         $user_ids = $json_paras['user_ids'] ?? [];
@@ -575,7 +575,7 @@ class TeamGame extends MY_Controller {
         }
 
         // 检查权限：admin 权限需要是管理员，user 权限所有人可操作
-        $hasPermission = ($game['grouping_permission'] == 'user') || $this->MTeamGame->isGameAdmin($game_id, $userid);
+        $hasPermission = ($game['grouping_permission'] == 'user') || $this->MTeamGame->isGameAdmin($game_id, $user_id);
         if (!$hasPermission) {
             echo json_encode(['code' => 403, 'message' => '您没有权限修改分组'], JSON_UNESCAPED_UNICODE);
             return;
@@ -598,12 +598,12 @@ class TeamGame extends MY_Controller {
      */
     public function updateGameStatus() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $game_status = $json_paras['game_status'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -622,11 +622,11 @@ class TeamGame extends MY_Controller {
      */
     public function closeRegistration() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -652,11 +652,11 @@ class TeamGame extends MY_Controller {
      */
     public function startGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -682,11 +682,11 @@ class TeamGame extends MY_Controller {
      */
     public function finishGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -712,11 +712,11 @@ class TeamGame extends MY_Controller {
      */
     public function cancelGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
 
         // 验证管理员权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -828,14 +828,14 @@ class TeamGame extends MY_Controller {
      */
     public function getMyRegistration() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
 
         $this->db->select('m.*, s.tag_name, s.color as tag_color');
         $this->db->from('t_game_tag_member m');
         $this->db->join('t_team_game_tags s', 'm.tag_id = s.id', 'left');
         $this->db->where('m.game_id', $game_id);
-        $this->db->where('m.user_id', $userid);
+        $this->db->where('m.user_id', $user_id);
         $registration = $this->db->get()->row_array();
 
         echo json_encode([
@@ -851,7 +851,7 @@ class TeamGame extends MY_Controller {
      */
     public function changeMyTagInGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $tag_id = $json_paras['tag_id'];
 
@@ -865,7 +865,7 @@ class TeamGame extends MY_Controller {
         // 检查报名记录（从 t_game_tag_member 查询）
         $member = $this->db->get_where('t_game_tag_member', [
             'game_id' => $game_id,
-            'user_id' => $userid
+            'user_id' => $user_id
         ])->row_array();
 
         if (!$member) {
@@ -874,7 +874,7 @@ class TeamGame extends MY_Controller {
         }
 
         // 更新TAG成员表
-        $this->MTeamGame->addMemberToTag($tag_id, $userid, $game_id);
+        $this->MTeamGame->addMemberToTag($tag_id, $user_id, $game_id);
 
         echo json_encode(['code' => 200, 'message' => 'TAG修改成功'], JSON_UNESCAPED_UNICODE);
     }
@@ -897,7 +897,7 @@ class TeamGame extends MY_Controller {
      */
     public function createCrossTeamGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
 
         $team_ids = $json_paras['team_ids'];
         $team_aliases = $json_paras['team_aliases'] ?? [];
@@ -940,7 +940,7 @@ class TeamGame extends MY_Controller {
         // 创建队际赛
         $data = [
             'team_ids' => $team_ids,
-            'creator_id' => $userid,
+            'creator_id' => $user_id,
             'name' => $json_paras['name'],
             'courseid' => $json_paras['courseid'] ?? null,
             'match_format' => $match_format,
@@ -993,13 +993,13 @@ class TeamGame extends MY_Controller {
      */
     public function updateCrossTeamAlias() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $team_id = $json_paras['team_id'];
         $team_alias = $json_paras['team_alias'];
 
         // 验证权限（创建者或参赛球队管理员）
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限修改球队简称'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -1038,10 +1038,10 @@ class TeamGame extends MY_Controller {
      */
     public function registerCrossTeamGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $tag_id = $json_paras['tag_id'];
-        $target_user_id = $json_paras['user_id'] ?? $userid;
+        $target_user_id = $json_paras['user_id'] ?? $user_id;
         $remark = $json_paras['remark'] ?? null;
 
         // 检查赛事状态
@@ -1095,11 +1095,11 @@ class TeamGame extends MY_Controller {
      * @param int game_id 赛事ID
      */
     public function getCrossTeamGameDetail() {
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['game_id'];
 
-        $detail = $this->MTeamGame->getCrossTeamGameDetail($userid, $game_id);
+        $detail = $this->MTeamGame->getCrossTeamGameDetail($user_id, $game_id);
 
         if (!$detail) {
             echo json_encode(['code' => 404, 'message' => '赛事不存在'], JSON_UNESCAPED_UNICODE);
@@ -1119,12 +1119,12 @@ class TeamGame extends MY_Controller {
      */
     public function assignCrossTeamGroups() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $groups = $json_paras['groups'];
 
         // 验证权限
-        if (!$this->MTeamGame->isGameAdmin($game_id, $userid)) {
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
             echo json_encode(['code' => 403, 'message' => '您没有权限进行分组'], JSON_UNESCAPED_UNICODE);
             return;
         }
@@ -1177,11 +1177,11 @@ class TeamGame extends MY_Controller {
      * @return array 报名人员列表（含序号seq、昵称nickname、头像avatar、差点handicap）
      */
     public function getTagMembersAll() {
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['game_id'];
 
-        $members = $this->MTeamGame->getTagMembersAll($userid, $game_id);
+        $members = $this->MTeamGame->getTagMembersAll($user_id, $game_id);
 
         echo json_encode([
             'code' => 200,

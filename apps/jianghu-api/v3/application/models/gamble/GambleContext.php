@@ -14,7 +14,7 @@ class GambleContext extends CI_Model {
     public $gameid;
     public $gambleid;
     public $groupid;
-    public $userid;
+    public $user_id;
     public $holes;
     public $startHoleindex;
     public $scores;
@@ -65,7 +65,7 @@ class GambleContext extends CI_Model {
         'gameid' => 'getGameid',
         'gambleid' => 'getGambleid',
         'groupid' => 'getGroupid',
-        'userid' => 'getUserid',
+        'user_id' => 'getUserid',
         'holes' => 'getHoles',
         'startHoleindex' => 'getStartHoleindex',
         'scores' => 'getScores',

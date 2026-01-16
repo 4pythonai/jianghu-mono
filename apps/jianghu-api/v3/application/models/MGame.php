@@ -108,14 +108,14 @@ class MGame  extends CI_Model {
 
       // 插入每个玩家到 t_game_group_user 表
       foreach ($group['players'] as $player) {
-        if (empty($player['userid'])) {
+        if (empty($player['user_id'])) {
           continue;
         }
 
         $playerData = [
           'gameid' => $gameid,
           'groupid' => $groupid,
-          'user_id' => $player['userid'],
+          'user_id' => $player['user_id'],
           'tee' => isset($player['tee']) && !empty($player['tee']) ? $player['tee'] : 'blue',
           'confirmed' => 0,
           'confirmed_time' => null,
@@ -130,9 +130,9 @@ class MGame  extends CI_Model {
   }
 
 
-  public function setTee($gameid, $userid, $tee) {
+  public function setTee($gameid, $user_id, $tee) {
     $this->db->where('gameid', $gameid)
-      ->where('user_id', $userid)
+      ->where('user_id', $user_id)
       ->update('t_game_group_user', ['tee' => $tee]);
   }
 
@@ -150,10 +150,10 @@ class MGame  extends CI_Model {
   /**
    * 从球局中移除玩家
    * @param int $gameid 球局ID
-   * @param int $userid 要移除的用户ID
+   * @param int $user_id 要移除的用户ID
    * @return array 操作结果
    */
-  public function removePlayer($gameid, $userid) {
+  public function removePlayer($gameid, $user_id) {
     // 检查是否是创建者
     $game = $this->db->select('creatorid')
       ->from('t_game')
@@ -161,7 +161,7 @@ class MGame  extends CI_Model {
       ->get()
       ->row_array();
 
-    if ($game && (int)$game['creatorid'] === (int)$userid) {
+    if ($game && (int)$game['creatorid'] === (int)$user_id) {
       return [
         'code' => 403,
         'message' => '不能移除比赛创建者'
@@ -172,7 +172,7 @@ class MGame  extends CI_Model {
     $playerRecord = $this->db->select('groupid')
       ->from('t_game_group_user')
       ->where('gameid', $gameid)
-      ->where('userid', $userid)
+      ->where('user_id', $user_id)
       ->get()
       ->row_array();
 
@@ -190,7 +190,7 @@ class MGame  extends CI_Model {
 
     // 1. 删除该用户的比分记录
     $this->db->where('gameid', $gameid)
-      ->where('user_id', $userid)
+      ->where('user_id', $user_id)
       ->delete('t_game_score');
 
     // 2. 删除该 group 的 gamble 配置
@@ -200,7 +200,7 @@ class MGame  extends CI_Model {
 
     // 3. 删除玩家
     $this->db->where('gameid', $gameid)
-      ->where('user_id', $userid)
+      ->where('user_id', $user_id)
       ->delete('t_game_group_user');
 
     // 4. 检查该 group 是否还有用户，如果没有则删除该组
@@ -233,7 +233,7 @@ class MGame  extends CI_Model {
   }
 
 
-  public function gameJoinHandler($userid, $gameid, $joinType = 'wxshare') {
+  public function gameJoinHandler($user_id, $gameid, $joinType = 'wxshare') {
     $response = [
       'code' => 200,
       'message' => '加入成功!!!',
@@ -247,7 +247,7 @@ class MGame  extends CI_Model {
     $existingRecord = $this->db->select('id, groupid, join_type')
       ->from('t_game_group_user')
       ->where('gameid', $gameid)
-      ->where('user_id', $userid)
+      ->where('user_id', $user_id)
       ->get()
       ->row_array();
 
@@ -291,7 +291,7 @@ class MGame  extends CI_Model {
     $joinData = [
       'gameid' => $gameid,
       'groupid' => $targetGroupId,
-      'user_id' => $userid,
+      'user_id' => $user_id,
       'tee' => 'blue',
       'confirmed' => 0,
       'confirmed_time' => null,
@@ -314,7 +314,7 @@ class MGame  extends CI_Model {
     }
 
     $response['data']['groupid'] = $targetGroupId;
-    $this->writeWebSocketMsg($userid, $gameid);
+    $this->writeWebSocketMsg($user_id, $gameid);
     return $response;
   }
 
@@ -369,13 +369,13 @@ class MGame  extends CI_Model {
     ];
   }
 
-  public function writeWebSocketMsg($userid, $gameid) {
+  public function writeWebSocketMsg($user_id, $gameid) {
 
-    $user = $this->MUser->getUserProfile($userid);
+    $user = $this->MUser->getUserProfile($user_id);
 
     $payload = [];
     $payload['gameId'] = $gameid;
-    $payload['playerId'] = $userid;
+    $payload['playerId'] = $user_id;
     $payload['display_name'] = !empty($user['display_name']) ? $user['display_name'] : $user['wx_name'];
     $payload['avatar'] = $user['avatar'];
     $payload['message'] = 'msgFromMgame';

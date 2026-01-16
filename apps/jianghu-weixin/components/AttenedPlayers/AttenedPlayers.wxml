@@ -1,10 +1,10 @@
 <wxs src="/utils/image.wxs" module="image" />
 <view class="attened-players-container" wx:if="{{displayPlayers.length > 0}}">
-  <view wx:for="{{displayPlayers}}" wx:key="userid" class="player-item">
+  <view wx:for="{{displayPlayers}}" wx:key="user_id" class="player-item">
     <view class="avatar-wrapper">
       <PlayerAvatar
         avatar="{{image.imageUrl(item.avatar)}}"
-        userId="{{item.userid}}"
+        userId="{{item.user_id}}"
         avatarOnly="{{true}}"
         size="small"
       />

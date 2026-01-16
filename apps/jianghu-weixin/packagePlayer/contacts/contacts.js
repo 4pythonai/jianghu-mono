@@ -126,7 +126,12 @@ Page({
 
         alphabet.forEach(letter => { groups[letter] = [] })
 
-        friends.forEach(friend => {
+        friends.forEach((friend, index) => {
+            // 添加日志：检查分组时的 user_id 字段
+            if (friend.user_id !== undefined && friend.user_id !== null) {
+                console.log(`分组处理[${index}]: user_id = ${friend.user_id}, 类型 = ${typeof friend.user_id}`)
+            }
+
             const name = friend.display_name || ''
             const letter = this.getFirstLetter(name)
             if (groups[letter]) {
@@ -163,7 +168,7 @@ Page({
 
         const filteredFriends = this.data.friends.filter(friend =>
             friend.display_name?.toLowerCase().includes(keyword) ||
-            friend.userid?.toString().includes(keyword)
+            friend.user_id?.toString().includes(keyword)
         )
 
         const { groups, indexList } = this.groupFriendsByLetter(filteredFriends)
@@ -290,8 +295,8 @@ Page({
      */
     goToUserProfile(e) {
         const friend = e.currentTarget.dataset.friend
-        if (friend?.userid) {
-            wx.navigateTo({ url: `/packagePlayer/user-profile/user-profile?user_id=${friend.userid}` })
+        if (friend?.user_id) {
+            wx.navigateTo({ url: `/packagePlayer/user-profile/user-profile?user_id=${friend.user_id}` })
         }
     }
 })

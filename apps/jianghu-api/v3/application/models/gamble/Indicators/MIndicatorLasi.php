@@ -14,13 +14,13 @@ class MIndicatorLasi extends CI_Model {
         $redScores = [];
         $blueScores = [];
 
-        foreach ($hole['red'] as $userid) {
-            $redScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['red'] as $user_id) {
+            $redScores[] = $hole['strokedScores'][$user_id];
         }
 
         // 收集蓝队成绩
-        foreach ($hole['blue'] as $userid) {
-            $blueScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['blue'] as $user_id) {
+            $blueScores[] = $hole['strokedScores'][$user_id];
         }
 
         $redBestScore   = min($redScores);
@@ -46,13 +46,13 @@ class MIndicatorLasi extends CI_Model {
         $redScores = [];
         $blueScores = [];
 
-        foreach ($hole['red'] as $userid) {
-            $redScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['red'] as $user_id) {
+            $redScores[] = $hole['strokedScores'][$user_id];
         }
 
         // 收集蓝队成绩
-        foreach ($hole['blue'] as $userid) {
-            $blueScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['blue'] as $user_id) {
+            $blueScores[] = $hole['strokedScores'][$user_id];
         }
 
         $redWorstScore   = max($redScores);
@@ -78,13 +78,13 @@ class MIndicatorLasi extends CI_Model {
         $redScores = [];
         $blueScores = [];
 
-        foreach ($hole['red'] as $userid) {
-            $redScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['red'] as $user_id) {
+            $redScores[] = $hole['strokedScores'][$user_id];
         }
 
         // 收集蓝队成绩
-        foreach ($hole['blue'] as $userid) {
-            $blueScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['blue'] as $user_id) {
+            $blueScores[] = $hole['strokedScores'][$user_id];
         }
 
         $redTotalScore   = array_product($redScores);
@@ -110,13 +110,13 @@ class MIndicatorLasi extends CI_Model {
         $redScores = [];
         $blueScores = [];
 
-        foreach ($hole['red'] as $userid) {
-            $redScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['red'] as $user_id) {
+            $redScores[] = $hole['strokedScores'][$user_id];
         }
 
         // 收集蓝队成绩
-        foreach ($hole['blue'] as $userid) {
-            $blueScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['blue'] as $user_id) {
+            $blueScores[] = $hole['strokedScores'][$user_id];
         }
 
 
@@ -155,13 +155,13 @@ class MIndicatorLasi extends CI_Model {
         $blueScores = [];
 
 
-        foreach ($hole['red'] as $userid) {
-            $redScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['red'] as $user_id) {
+            $redScores[] = $hole['strokedScores'][$user_id];
         }
 
         // 收集蓝队成绩
-        foreach ($hole['blue'] as $userid) {
-            $blueScores[] = $hole['strokedScores'][$userid];
+        foreach ($hole['blue'] as $user_id) {
+            $blueScores[] = $hole['strokedScores'][$user_id];
         }
 
 

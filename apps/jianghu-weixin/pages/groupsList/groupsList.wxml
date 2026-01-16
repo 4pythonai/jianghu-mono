@@ -40,11 +40,11 @@
 
       <!-- 玩家列表 -->
       <view class="players-list" wx:if="{{item.players && item.players.length > 0}}">
-        <view class="player-item" wx:for="{{item.players}}" wx:key="userid" wx:for-item="player">
+        <view class="player-item" wx:for="{{item.players}}" wx:key="user_id" wx:for-item="player">
           <PlayerAvatar
             avatar="{{player.avatar}}"
             name="{{player.display_name}}"
-            userId="{{player.userid}}"
+            userId="{{player.user_id}}"
             size="small"
             showTeam="{{false}}"
           />

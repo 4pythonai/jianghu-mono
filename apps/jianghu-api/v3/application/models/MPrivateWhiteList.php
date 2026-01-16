@@ -8,18 +8,18 @@ class MPrivateWhiteList extends CI_Model {
 
     /**
      * 获取用户已通过的私密球局ID列表
-     * @param int $userid 用户ID
+     * @param int $user_id 用户ID
      * @return array
      */
-    public function getUserWhiteListGameIds($userid) {
-        $userid = (int)$userid;
-        if ($userid <= 0) {
+    public function getUserWhiteListGameIds($user_id) {
+        $user_id = (int)$user_id;
+        if ($user_id <= 0) {
             return [];
         }
 
         $rows = $this->db->select('gameid')
             ->from('t_private_white_list')
-            ->where('userid', $userid)
+            ->where('user_id', $user_id)
             ->get()
             ->result_array();
 
@@ -28,21 +28,21 @@ class MPrivateWhiteList extends CI_Model {
 
     /**
      * 判断用户是否已通过某个私密球局
-     * @param int $userid 用户ID
+     * @param int $user_id 用户ID
      * @param int $gameid 球局ID
      * @return bool
      */
-    public function isUserWhitelisted($userid, $gameid) {
-        $userid = (int)$userid;
+    public function isUserWhitelisted($user_id, $gameid) {
+        $user_id = (int)$user_id;
         $gameid = (int)$gameid;
 
-        if ($userid <= 0 || $gameid <= 0) {
+        if ($user_id <= 0 || $gameid <= 0) {
             return false;
         }
 
         $row = $this->db->select('id')
             ->from('t_private_white_list')
-            ->where('userid', $userid)
+            ->where('user_id', $user_id)
             ->where('gameid', $gameid)
             ->limit(1)
             ->get()
@@ -53,21 +53,21 @@ class MPrivateWhiteList extends CI_Model {
 
     /**
      * 将用户写入白名单(幂等)
-     * @param int $userid 用户ID
+     * @param int $user_id 用户ID
      * @param int $gameid 球局ID
      * @return array ['created' => bool, 'record_id' => int|null]
      */
-    public function addWhiteList($userid, $gameid) {
-        $userid = (int)$userid;
+    public function addWhiteList($user_id, $gameid) {
+        $user_id = (int)$user_id;
         $gameid = (int)$gameid;
 
-        if ($userid <= 0 || $gameid <= 0) {
+        if ($user_id <= 0 || $gameid <= 0) {
             return ['created' => false, 'record_id' => null];
         }
 
         $existing = $this->db->select('id')
             ->from('t_private_white_list')
-            ->where('userid', $userid)
+            ->where('user_id', $user_id)
             ->where('gameid', $gameid)
             ->limit(1)
             ->get()
@@ -78,7 +78,7 @@ class MPrivateWhiteList extends CI_Model {
         }
 
         $this->db->insert('t_private_white_list', [
-            'userid' => $userid,
+            'user_id' => $user_id,
             'gameid' => $gameid
         ]);
 

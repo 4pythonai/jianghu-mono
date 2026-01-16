@@ -10,7 +10,7 @@
         <view class="player-avatar">
           <PlayerAvatar
             avatar="{{item.avatar}}"
-            userId="{{item.userid}}"
+            userId="{{item.user_id}}"
             avatarOnly="{{true}}"
             size="medium"
           />
@@ -18,7 +18,7 @@
         <view class="player-info">
           <!-- 统一使用 display_name 字段（后端计算的显示名称） -->
           <text class="player-showname">{{item.display_name}}</text>
-          <text class="player-id">ID: {{item.userid}}</text>
+          <text class="player-id">ID: {{item.user_id}}</text>
           <text class="player-source">来源: {{joinTypeMap[item.join_type] || '未知来源'}}</text>
         </view>
         <view class="remove-btn" bindtap="removePlayer" data-index="{{ index }}">

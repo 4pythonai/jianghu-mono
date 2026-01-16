@@ -127,7 +127,7 @@ class Audit extends CI_Controller {
             $players_detail = [];
             foreach ($rebObj['group_info'] as $player) {
                 $players_detail[] = [
-                    'userid' => $player['user_id'],
+                    'user_id' => $player['user_id'],
                     'final_points' => 0,
                     'pointsDonated' => 0
                 ];
@@ -155,10 +155,10 @@ class Audit extends CI_Controller {
                         // 处理 winner_detail
                         if (isset($result_hole['winner_detail']) && is_array($result_hole['winner_detail'])) {
                             foreach ($result_hole['winner_detail'] as $winner) {
-                                $userid = $winner['userid'];
+                                $user_id = $winner['user_id'];
                                 // 找到对应的玩家并累加分数
                                 foreach ($hole['players_detail'] as &$player) {
-                                    if ($player['userid'] == $userid) {
+                                    if ($player['user_id'] == $user_id) {
                                         $player['final_points'] += isset($winner['final_points']) ? $winner['final_points'] : 0;
                                         $player['pointsDonated'] += isset($winner['pointsDonated']) ? $winner['pointsDonated'] : 0;
                                         break;
@@ -170,10 +170,10 @@ class Audit extends CI_Controller {
                         // 处理 failer_detail
                         if (isset($result_hole['failer_detail']) && is_array($result_hole['failer_detail'])) {
                             foreach ($result_hole['failer_detail'] as $failer) {
-                                $userid = $failer['userid'];
+                                $user_id = $failer['user_id'];
                                 // 找到对应的玩家并累加分数
                                 foreach ($hole['players_detail'] as &$player) {
-                                    if ($player['userid'] == $userid) {
+                                    if ($player['user_id'] == $user_id) {
                                         $player['final_points'] += isset($failer['final_points']) ? $failer['final_points'] : 0;
                                         $player['pointsDonated'] += isset($failer['pointsDonated']) ? $failer['pointsDonated'] : 0;
                                         break;
@@ -206,7 +206,7 @@ class Audit extends CI_Controller {
             'gameid' => $row['gameid'],
             'gambleid' => $gambleid,
             'groupid' => $row['groupid'],
-            'userid' => $row['creator_id']
+            'user_id' => $row['creator_id']
         ];
 
         $web_url = config_item('web_url');

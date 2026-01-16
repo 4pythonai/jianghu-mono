@@ -57,12 +57,12 @@ class MGambleDataFactory extends CI_Model {
       $court_key                  = $one_hole['court_key'];
       $holeid                     = $one_hole['holeid'];
 
-      $sql = "select court_key,userid,score from t_game_score  where gameid=$gameid  and court_key=$court_key and hole_id=$holeid  ";
+      $sql = "select court_key,user_id,score from t_game_score  where gameid=$gameid  and court_key=$court_key and hole_id=$holeid  ";
       $scores         = $this->db->query($sql)->result_array();
       $raw_holedatas = [];
       foreach ($scores as $one_value) {
-        $userid              = $one_value['userid'];
-        $raw_holedatas[$userid] = $one_value['score'];
+        $user_id              = $one_value['user_id'];
+        $raw_holedatas[$user_id] = $one_value['score'];
       }
       $holedata[$index]['raw_scores'] = $raw_holedatas;
       $index++;

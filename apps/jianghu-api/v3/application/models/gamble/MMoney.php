@@ -44,23 +44,23 @@ class MMoney extends CI_Model {
 
             if ($hole['winner'] == 'blue') {
                 $hole['winner_detail'] = [
-                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['strokedScores'][$hole['blue'][0]],  'scorePoints' => $hole['points']],
-                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['strokedScores'][$hole['blue'][1]],  'scorePoints' => $hole['points']],
+                    ['user_id' => $hole['blue'][0], 'computedScore' => $hole['strokedScores'][$hole['blue'][0]],  'scorePoints' => $hole['points']],
+                    ['user_id' => $hole['blue'][1], 'computedScore' => $hole['strokedScores'][$hole['blue'][1]],  'scorePoints' => $hole['points']],
                 ];
                 $hole['failer_detail'] = [
-                    ['userid' => $hole['red'][0], 'computedScore' => $hole['strokedScores'][$hole['red'][0]],   'scorePoints' => -$hole['points']],
-                    ['userid' => $hole['red'][1], 'computedScore' => $hole['strokedScores'][$hole['red'][1]],   'scorePoints' => -$hole['points']],
+                    ['user_id' => $hole['red'][0], 'computedScore' => $hole['strokedScores'][$hole['red'][0]],   'scorePoints' => -$hole['points']],
+                    ['user_id' => $hole['red'][1], 'computedScore' => $hole['strokedScores'][$hole['red'][1]],   'scorePoints' => -$hole['points']],
                 ];
             }
 
             if ($hole['winner'] == 'red') {
                 $hole['winner_detail'] = [
-                    ['userid' => $hole['red'][0], 'computedScore' => $hole['strokedScores'][$hole['red'][0]],  'scorePoints' => $hole['points']],
-                    ['userid' => $hole['red'][1], 'computedScore' => $hole['strokedScores'][$hole['red'][1]],  'scorePoints' => $hole['points']],
+                    ['user_id' => $hole['red'][0], 'computedScore' => $hole['strokedScores'][$hole['red'][0]],  'scorePoints' => $hole['points']],
+                    ['user_id' => $hole['red'][1], 'computedScore' => $hole['strokedScores'][$hole['red'][1]],  'scorePoints' => $hole['points']],
                 ];
                 $hole['failer_detail'] = [
-                    ['userid' => $hole['blue'][0], 'computedScore' => $hole['strokedScores'][$hole['blue'][0]],   'scorePoints' => -$hole['points']],
-                    ['userid' => $hole['blue'][1], 'computedScore' => $hole['strokedScores'][$hole['blue'][1]],   'scorePoints' => -$hole['points']],
+                    ['user_id' => $hole['blue'][0], 'computedScore' => $hole['strokedScores'][$hole['blue'][0]],   'scorePoints' => -$hole['points']],
+                    ['user_id' => $hole['blue'][1], 'computedScore' => $hole['strokedScores'][$hole['blue'][1]],   'scorePoints' => -$hole['points']],
                 ];
             }
         }
@@ -71,25 +71,25 @@ class MMoney extends CI_Model {
 
         if ($hole['winner'] == 'blue') {
             $hole['winner_detail'] = [
-                ['userid' => $hole['blue'][0], 'computedScore' => $hole['strokedScores'][$hole['blue'][0]],  'scorePoints' => $hole['points']],
-                ['userid' => $hole['blue'][1], 'computedScore' => $hole['strokedScores'][$hole['blue'][1]],  'scorePoints' => $hole['points']],
+                ['user_id' => $hole['blue'][0], 'computedScore' => $hole['strokedScores'][$hole['blue'][0]],  'scorePoints' => $hole['points']],
+                ['user_id' => $hole['blue'][1], 'computedScore' => $hole['strokedScores'][$hole['blue'][1]],  'scorePoints' => $hole['points']],
             ];
 
 
             $hole['failer_detail'] = [
-                ['userid' => $hole['red'][0], 'computedScore' => $hole['strokedScores'][$hole['red'][0]],   'scorePoints' => -$hole['points']],
-                ['userid' => $hole['red'][1], 'computedScore' => $hole['strokedScores'][$hole['red'][1]],   'scorePoints' => -$hole['points']],
+                ['user_id' => $hole['red'][0], 'computedScore' => $hole['strokedScores'][$hole['red'][0]],   'scorePoints' => -$hole['points']],
+                ['user_id' => $hole['red'][1], 'computedScore' => $hole['strokedScores'][$hole['red'][1]],   'scorePoints' => -$hole['points']],
             ];
         }
 
         if ($hole['winner'] == 'red') {
             $hole['winner_detail'] = [
-                ['userid' => $hole['red'][0], 'computedScore' => $hole['strokedScores'][$hole['red'][0]],   'scorePoints' => $hole['points']],
-                ['userid' => $hole['red'][1], 'computedScore' => $hole['strokedScores'][$hole['red'][1]],   'scorePoints' => $hole['points']],
+                ['user_id' => $hole['red'][0], 'computedScore' => $hole['strokedScores'][$hole['red'][0]],   'scorePoints' => $hole['points']],
+                ['user_id' => $hole['red'][1], 'computedScore' => $hole['strokedScores'][$hole['red'][1]],   'scorePoints' => $hole['points']],
             ];
             $hole['failer_detail'] = [
-                ['userid' => $hole['blue'][0], 'computedScore' => $hole['strokedScores'][$hole['blue'][0]],  'scorePoints' => -$hole['points']],
-                ['userid' => $hole['blue'][1], 'computedScore' => $hole['strokedScores'][$hole['blue'][1]],  'scorePoints' => -$hole['points']],
+                ['user_id' => $hole['blue'][0], 'computedScore' => $hole['strokedScores'][$hole['blue'][0]],  'scorePoints' => -$hole['points']],
+                ['user_id' => $hole['blue'][1], 'computedScore' => $hole['strokedScores'][$hole['blue'][1]],  'scorePoints' => -$hole['points']],
             ];
         }
     }
@@ -99,11 +99,11 @@ class MMoney extends CI_Model {
             if (count($hole['red']) == 2 && count($hole['blue']) == 2) {
                 if (array_key_exists('failer_detail', $hole)) {
 
-                    $failer1 = $hole['failer_detail'][0]['userid'];
+                    $failer1 = $hole['failer_detail'][0]['user_id'];
                     $_8421_add_sub_max_config = $this->MIndicator8421->get8421AddSubMaxConfig($context, $failer1);
                     $f1_indicator = $this->MIndicator8421->OnePlayer8421Indicator($hole['par'], $hole['strokedScores'][$failer1], $_8421_add_sub_max_config);
 
-                    $failer2 = $hole['failer_detail'][1]['userid'];
+                    $failer2 = $hole['failer_detail'][1]['user_id'];
                     $_8421_add_sub_max_config = $this->MIndicator8421->get8421AddSubMaxConfig($context, $failer2);
                     $f2_indicator = $this->MIndicator8421->OnePlayer8421Indicator($hole['par'], $hole['strokedScores'][$failer2], $_8421_add_sub_max_config);
 

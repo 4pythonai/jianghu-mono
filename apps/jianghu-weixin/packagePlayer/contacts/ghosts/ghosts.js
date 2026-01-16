@@ -52,7 +52,7 @@ Page({
      * 确认删除
      */
     confirmDelete(user) {
-        if (!user?.userid) return
+        if (!user?.user_id) return
 
         wx.showModal({
             title: '确认删除',
@@ -60,7 +60,7 @@ Page({
             confirmColor: '#ff4d4f',
             success: (res) => {
                 if (res.confirm) {
-                    this.deleteGhostUser(user.userid)
+                    this.deleteGhostUser(user.user_id)
                 }
             }
         })

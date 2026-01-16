@@ -27,7 +27,7 @@ class MRankingP2 extends CI_Model {
      * @param int $holeIndex 当前洞的索引
      * @param array $hole 当前洞的数据
      * @param GambleContext $context 赌球上下文对象
-     * @return array 排名结果 [rank => userid]
+     * @return array 排名结果 [rank => user_id]
      */
     public function rankAttenders($context) {
         debug("开始2人排名计算");

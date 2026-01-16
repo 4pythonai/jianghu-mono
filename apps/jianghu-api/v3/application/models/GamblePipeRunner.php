@@ -19,7 +19,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     private $gameid;
     private $gambleid;
     private $groupid;
-    private $userid;
+    private $user_id;
     private $group_info;
 
 
@@ -65,7 +65,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
         $this->gameid = $config['gameid'];
         $this->gambleid = $config['gambleid'];
         $this->groupid = $config['groupid'];
-        $this->userid = $config['userid'];
+        $this->user_id = $config['user_id'];
 
 
         // 运行时配置
@@ -198,7 +198,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
             'stroking_config' => $this->context->stroking_config,
             'badScoreBaseLine' => $this->context->badScoreBaseLine,
             'groupid' => $this->context->groupid,
-            'userid' => $this->context->userid,
+            'user_id' => $this->context->user_id,
             'gambleSysName' => $this->context->gambleSysName,
             'gambleUserName' => $this->context->gambleUserName,
             'redBlueConfig' => $this->context->redBlueConfig,
@@ -247,7 +247,7 @@ class GamblePipeRunner   extends CI_Model implements StageInterface {
     }
 
     public function getUserid() {
-        return $this->userid;
+        return $this->user_id;
     }
 
     public function getHoles() {

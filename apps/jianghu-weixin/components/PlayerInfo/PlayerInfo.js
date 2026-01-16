@@ -24,7 +24,7 @@ Component({
                     show_name: newVal.show_name || '',
                     avatar: newVal.avatar,
                     handicap: newVal.handicap,
-                    userId: newVal.userid
+                    userId: newVal.user_id
                 });
             }
         }

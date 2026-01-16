@@ -50,7 +50,7 @@
           wx:for="{{group.friends}}"
           wx:for-item="item"
           wx:for-index="friendIndex"
-          wx:key="userid"
+          wx:key="user_id"
           class="friend-item {{item.selected ? 'selected' : ''}}"
           data-group-index="{{groupIndex}}"
           data-friend-index="{{friendIndex}}"
@@ -67,7 +67,7 @@
             <view class="friend-avatar-wrap">
               <PlayerAvatar
                 avatar="{{image.imageUrl(item.avatar)}}"
-                userId="{{item.userid}}"
+                userId="{{item.user_id}}"
                 avatarOnly="{{true}}"
                 size="small"
                 clickable="{{false}}"
@@ -75,7 +75,7 @@
             </view>
             <view class="friend-info">
               <text class="friend-name">{{item.show_name}}</text>
-              <text class="friend-id">ID: {{item.userid}}</text>
+              <text class="friend-id">ID: {{item.user_id}}</text>
             </view>
           </view>
         </view>

@@ -407,7 +407,7 @@ class MTeamGame extends CI_Model {
                     $this->db->insert('t_game_group_user', [
                         'gameid' => $game_id,
                         'groupid' => $groupid,
-                        'userid' => $user_id,
+                        'user_id' => $user_id,
                         'tag_id' => $member['tag_id'] ?? null,
                         'addtime' => date('Y-m-d H:i:s')
                     ]);
@@ -455,7 +455,7 @@ class MTeamGame extends CI_Model {
         // 检查用户是否已在其他分组
         $existing = $this->db->get_where('t_game_group_user', [
             'gameid' => $game_id,
-            'userid' => $user_id
+            'user_id' => $user_id
         ])->row_array();
 
         if ($existing) {
@@ -466,7 +466,7 @@ class MTeamGame extends CI_Model {
             $this->db->insert('t_game_group_user', [
                 'gameid' => $game_id,
                 'groupid' => $group_id,
-                'userid' => $user_id,
+                'user_id' => $user_id,
                 'tag_id' => $member['tag_id'],
                 'addtime' => date('Y-m-d H:i:s')
             ]);
@@ -1150,7 +1150,7 @@ class MTeamGame extends CI_Model {
                     $this->db->insert('t_game_group_user', [
                         'gameid' => $game_id,
                         'groupid' => $groupid,
-                        'userid' => $user_id,
+                        'user_id' => $user_id,
                         'tag_id' => $member['tag_id'] ?? null,
                         'addtime' => date('Y-m-d H:i:s')
                     ]);

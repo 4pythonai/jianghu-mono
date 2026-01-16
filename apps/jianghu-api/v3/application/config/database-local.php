@@ -28,6 +28,9 @@ $db['default'] = [
   'stricton' => false,
   'failover' => [],
   'save_queries' => true,
+  'options' => array(
+    MYSQLI_OPT_INT_AND_FLOAT_NATIVE => TRUE
+  )
 ];
 
 

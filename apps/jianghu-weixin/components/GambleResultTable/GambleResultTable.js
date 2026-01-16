@@ -31,24 +31,16 @@ Component({
         processData() {
             const { groupInfo, usefulHoles } = this.properties;
 
-            console.log('[GambleResultTable] ========== processData 开始 ==========')
-            console.log('[GambleResultTable] groupInfo 原始数据:', JSON.stringify(groupInfo, null, 2))
-            console.log('[GambleResultTable] usefulHoles 原始数据:', JSON.stringify(usefulHoles?.slice(0, 2), null, 2))
-
             // 处理球员信息 - 保持为数组格式
             const players = [];
             const playersMap = {}; // 用于快速查找的对象映射
 
             if (groupInfo && Array.isArray(groupInfo)) {
                 for (const player of groupInfo) {
-                    console.log('[GambleResultTable] player 原始字段:', Object.keys(player), 'userid:', player.userid, 'user_id:', player.user_id)
                     players.push(player);
-                    // groupInfo 用 user_id（有下划线）
                     playersMap[player.user_id] = player;
                 }
             }
-
-            console.log('[GambleResultTable] playersMap keys:', Object.keys(playersMap))
 
 
             // 使用 useful_holes 来获取实际的赌球结果
@@ -78,20 +70,15 @@ Component({
 
                     // 处理获胜者详情
                     if (hole.winner_detail && Array.isArray(hole.winner_detail)) {
-                        console.log('[GambleResultTable] winner_detail 第一条:', hole.winner_detail[0])
                         for (const winner of hole.winner_detail) {
-                            // winner_detail 用 userid（无下划线）
-                            const oddsId = winner.userid;
+                            const oddsId = winner.user_id;
                             const money = winner.final_points || 0;
                             const donated = winner.pointsDonated || 0;
 
-                            // 确保该用户存在于我们的球员列表中
                             if (playersMap[oddsId]) {
                                 holeMoney[oddsId] = money;
                                 totalMoney[oddsId] += money;
                                 totalDonated[oddsId] += donated;
-                            } else {
-                                console.log('[GambleResultTable] winner 未找到匹配球员, oddsId:', oddsId, 'playersMap keys:', Object.keys(playersMap))
                             }
                         }
                     }
@@ -99,18 +86,14 @@ Component({
                     // 处理失败者详情
                     if (hole.failer_detail && Array.isArray(hole.failer_detail)) {
                         for (const failer of hole.failer_detail) {
-                            // failer_detail 用 userid（无下划线）
-                            const oddsId = failer.userid;
+                            const oddsId = failer.user_id;
                             const money = failer.final_points || 0;
                             const donated = failer.pointsDonated || 0;
 
-                            // 确保该用户存在于我们的球员列表中
                             if (playersMap[oddsId]) {
                                 holeMoney[oddsId] = money;
                                 totalMoney[oddsId] += money;
                                 totalDonated[oddsId] += donated;
-                            } else {
-                                console.log('[GambleResultTable] failer 未找到匹配球员, oddsId:', oddsId, 'playersMap keys:', Object.keys(playersMap))
                             }
                         }
                     }

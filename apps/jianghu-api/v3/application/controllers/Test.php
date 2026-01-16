@@ -58,4 +58,10 @@ class Test extends CI_Controller {
             ->set_content_type('application/json')
             ->set_output(json_encode($result, JSON_UNESCAPED_UNICODE));
     }
+
+
+    public function phpinfo() {
+        phpinfo();
+        var_dump(mysqli_get_client_info());
+    }
 }

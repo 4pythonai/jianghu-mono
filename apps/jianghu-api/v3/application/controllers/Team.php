@@ -350,7 +350,7 @@ class Team extends MY_Controller {
      * 参数: team_id
      */
     public function getTeamMembers() {
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
 
         $params = json_decode(file_get_contents('php://input'), true);
 
@@ -358,7 +358,7 @@ class Team extends MY_Controller {
             return $this->error('球队ID不能为空');
         }
 
-        $members = $this->MTeam->getTeamMembers($userid, $params['team_id']);
+        $members = $this->MTeam->getTeamMembers($user_id, $params['team_id']);
         $this->success(['members' => $members]);
     }
 

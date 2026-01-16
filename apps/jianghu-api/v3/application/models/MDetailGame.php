@@ -111,7 +111,7 @@ class MDetailGame  extends CI_Model {
         $fixedd = [];
         foreach ($scores as $score) {
             $score_data = [
-                'userid' => $score['user_id'],
+                'user_id' => $score['user_id'],
                 'holeid' => $score['hole_id'],
                 'hindex' => intval($score['hindex']),
                 'score' => intval($score['score']),
@@ -233,7 +233,7 @@ class MDetailGame  extends CI_Model {
                 SELECT
                     ggu.groupid,
                     ggu.tee,
-                    u.id as userid,
+                    u.id as user_id,
                     u.wx_name as wx_name,
                     u.display_name,
                     u.avatar,
@@ -251,7 +251,7 @@ class MDetailGame  extends CI_Model {
                 SELECT
                     ggu.groupid,
                     ggu.tee,
-                    u.id as userid,
+                    u.id as user_id,
                     u.wx_name as wx_name,
                     u.avatar
                 FROM t_game_group_user ggu
@@ -429,7 +429,7 @@ class MDetailGame  extends CI_Model {
 
             foreach ($users_result->result_array() as $user) {
                 $user_data = [
-                    'userid' => (int)$user['user_id'],
+                    'user_id' => (int)$user['user_id'],
                     'wx_name' => $user['wx_name'],
                     'avatar' => $user['avatar'],
                     'confirmed' => (int)$user['confirmed'],

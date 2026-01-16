@@ -36,7 +36,7 @@ Component({
                 }
                 // 新格式：对象
                 return {
-                    id: item.userid,
+                    id: item.user_id,
                     avatar: item.avatar
                 }
             })

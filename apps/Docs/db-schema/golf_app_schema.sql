@@ -131,8 +131,8 @@ CREATE TABLE `t_gamble_x_runtime` (
   `endHoleindex` int NOT NULL COMMENT '终点',
   `roadLength` int DEFAULT NULL COMMENT '起点后几个',
   `holePlayList` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '实际打球顺序',
-  `stroking_config` json DEFAULT NULL COMMENT '让杆配置JSON，格式：{"userid":{"对手userid":{"PAR3":1,"PAR4":0.5,"PAR5":0.5}}}',
-  `playerIndicatorConfig` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '8421用户加分配置JSON，格式：{"userid":{"Par+2":1,"Par+1":2,"Par":4,"Birdie":8}}',
+  `stroking_config` json DEFAULT NULL COMMENT '让杆配置JSON，格式：{"user_id":{"对手userid":{"PAR3":1,"PAR4":0.5,"PAR5":0.5}}}',
+  `playerIndicatorConfig` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '8421用户加分配置JSON，格式：{"user_id":{"Par+2":1,"Par+1":2,"Par":4,"Birdie":8}}',
   `gambleSysName` char(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '规则TAG',
   `gambleUserName` char(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户起名',
   `donationCfg` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '捐锅',
@@ -150,7 +150,7 @@ CREATE TABLE `t_gamble_x_runtime` (
   `bigWind` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'n' COMMENT '大风吹',
   PRIMARY KEY (`id`),
   KEY `fk_gamble_runtime_user_rule` (`userRuleId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1344984 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='赌博配置表';
+) ENGINE=InnoDB AUTO_INCREMENT=1344985 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='赌博配置表';
 
 
 CREATE TABLE `t_game` (
@@ -320,7 +320,6 @@ CREATE TABLE `t_game_score` (
   `court_key` int DEFAULT NULL COMMENT '半场序',
   `par` int DEFAULT NULL,
   `hindex` int DEFAULT NULL COMMENT 'hindex',
-  `userid` int DEFAULT NULL COMMENT 'userid',
   `score` tinyint NOT NULL COMMENT '杆数',
   `putts` tinyint DEFAULT NULL COMMENT '推杆数',
   `penalty_strokes` tinyint DEFAULT NULL COMMENT '罚杆',
@@ -337,11 +336,9 @@ CREATE TABLE `t_game_score` (
   KEY `idx_game_user` (`gameid`,`user_id`),
   KEY `fk_score_user` (`user_id`),
   KEY `fk_score_hole` (`hole_id`),
-  KEY `fk_score_userid` (`userid`),
   CONSTRAINT `fk_score_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_score_hole` FOREIGN KEY (`hole_id`) REFERENCES `t_court_hole` (`holeid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_score_userid` FOREIGN KEY (`userid`) REFERENCES `t_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=540 DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
+  CONSTRAINT `fk_score_hole` FOREIGN KEY (`hole_id`) REFERENCES `t_court_hole` (`holeid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=548 DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
 
 
 CREATE TABLE `t_game_spectator` (
@@ -351,7 +348,7 @@ CREATE TABLE `t_game_spectator` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `game-spectator` (`game_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=576 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=578 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_game_tag_member` (
@@ -391,7 +388,7 @@ CREATE TABLE `t_my_stared_games` (
 CREATE TABLE `t_private_white_list` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `gameid` int DEFAULT NULL COMMENT '球局id',
-  `userid` int DEFAULT NULL COMMENT '用户id',
+  `user_id` int DEFAULT NULL COMMENT '用户id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -470,12 +467,12 @@ CREATE TABLE `t_user` (
 
 CREATE TABLE `t_user_block` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `userid` int NOT NULL COMMENT '用户id（发起拉黑的人）',
+  `user_id` int NOT NULL COMMENT '用户id（发起拉黑的人）',
   `blocked_userid` int NOT NULL COMMENT '被拉黑的用户id',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '拉黑时间',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_userid_blocked` (`userid`,`blocked_userid`),
-  KEY `idx_userid` (`userid`),
+  UNIQUE KEY `uk_userid_blocked` (`user_id`,`blocked_userid`),
+  KEY `idx_userid` (`user_id`),
   KEY `idx_blocked_userid` (`blocked_userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户拉黑表';
 
@@ -488,10 +485,10 @@ CREATE TABLE `t_user_follow` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_unq_userid_fuserid` (`user_id`,`target_id`),
-  UNIQUE KEY `userid` (`user_id`,`target_id`),
+  UNIQUE KEY `user_id` (`user_id`,`target_id`),
   KEY `idx_userid` (`user_id`),
   KEY `idx_fuserid` (`target_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24026563 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 
 
 CREATE TABLE `t_user_privacy` (

@@ -22,9 +22,9 @@ class Events extends MY_Controller {
     /**
      * 检查是否是球局创建者
      */
-    private function isGameCreator($gameid, $userid) {
+    private function isGameCreator($gameid, $user_id) {
         $game = $this->db->select('creatorid')->from('t_game')->where('id', $gameid)->get()->row_array();
-        return $game && (int)$game['creatorid'] === (int)$userid;
+        return $game && (int)$game['creatorid'] === (int)$user_id;
     }
 
 
@@ -63,8 +63,8 @@ class Events extends MY_Controller {
      * @param int game_id 比赛ID
      */
     public function addSpectator() {
-        $userid = $this->getUser();
-        if (!$userid) {
+        $user_id = $this->getUser();
+        if (!$user_id) {
             $this->error('请先登录');
             return;
         }
@@ -92,7 +92,7 @@ class Events extends MY_Controller {
         // 使用 INSERT IGNORE 避免重复记录
         $this->db->query(
             "INSERT IGNORE INTO t_game_spectator (game_id, user_id, created_at) VALUES (?, ?, NOW())",
-            [$gameId, $userid]
+            [$gameId, $user_id]
         );
 
         $this->success([], '记录成功');
@@ -107,7 +107,7 @@ class Events extends MY_Controller {
      */
     public function getSpectatorList() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();  // '我'
+        $user_id = $this->getUser();  // '我'
         $gameId = isset($json_paras['game_id']) ? (int)$json_paras['game_id'] : 0;
         $page = isset($json_paras['page']) ? max(1, (int)$json_paras['page']) : 1;
         $pageSize = isset($json_paras['page_size']) ? min(50, max(1, (int)$json_paras['page_size'])) : 20;
@@ -132,7 +132,7 @@ class Events extends MY_Controller {
         $spectators = $this->db->select('gs.user_id, gs.created_at, u.display_name, u.wx_name, u.avatar, r.remark_name')
             ->from('t_game_spectator gs')
             ->join('t_user u', 'gs.user_id = u.id', 'left')
-            ->join('t_user_remark r', "r.target_id = gs.user_id AND r.user_id = {$userid}", 'left')
+            ->join('t_user_remark r', "r.target_id = gs.user_id AND r.user_id = {$user_id}", 'left')
             ->where('gs.game_id', $gameId)
             ->order_by('gs.created_at', 'DESC')
             ->order_by('gs.user_id', 'DESC')  // 添加第二排序条件，确保排序稳定

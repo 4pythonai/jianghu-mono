@@ -10,7 +10,7 @@ class MStroking extends CI_Model {
 
 
     public function processStroking($scores, $stroking_config) {
-        // 将配置格式转换为以 userid 为键的格式
+        // 将配置格式转换为以 user_id 为键的格式
         $normalized_config = $this->normalizeStrokingConfig($stroking_config);
 
         $fixed = [];
@@ -25,7 +25,7 @@ class MStroking extends CI_Model {
 
     /**
      * 标准化让杆配置格式
-     * 将数组格式转换为以 userid 为键的格式
+     * 将数组格式转换为以 user_id 为键的格式
      */
     private function normalizeStrokingConfig($stroking_config) {
         // 如果参数不是数组，直接返回空数组
@@ -36,14 +36,14 @@ class MStroking extends CI_Model {
         $normalized = [];
 
         foreach ($stroking_config as $config) {
-            if (isset($config['userid']) && isset($config['holeRanges'])) {
-                $userid = $config['userid'];
-                $normalized[$userid] = [];
+            if (isset($config['user_id']) && isset($config['holeRanges'])) {
+                $user_id = $config['user_id'];
+                $normalized[$user_id] = [];
 
                 // 为每个洞号创建配置
                 foreach ($config['holeRanges'] as $hole_number) {
                     $hole_key = '#' . $hole_number;
-                    $normalized[$userid][$hole_key] = [
+                    $normalized[$user_id][$hole_key] = [
                         'PAR3' => isset($config['PAR3']) ? $config['PAR3'] : 0,
                         'PAR4' => isset($config['PAR4']) ? $config['PAR4'] : 0,
                         'PAR5' => isset($config['PAR5']) ? $config['PAR5'] : 0,

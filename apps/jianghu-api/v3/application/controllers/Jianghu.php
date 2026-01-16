@@ -40,9 +40,9 @@ class Jianghu extends CI_Controller {
      * 江湖页面 - 主入口函数
      */
     public function index() {
-        $userid = $this->input->get('userid') ? intval($this->input->get('userid')) : 837590;
+        $user_id = $this->input->get('user_id') ? intval($this->input->get('user_id')) : 837590;
 
-        $profile = $this->user_footprint($userid);
+        $profile = $this->user_footprint($user_id);
         $china_legcy_time = $this->china_legcy_time($profile['joind_h'], $profile['joind_m']);
         $profile['sc_ke'] = $china_legcy_time['sc'] . $china_legcy_time['ke'];
         $profile['sid'] = '';
@@ -123,13 +123,13 @@ class Jianghu extends CI_Controller {
     /**
      * 筛选有效比赛（18洞完整比赛）
      */
-    public function qualified_game($user_all_end_games, $userid) {
+    public function qualified_game($user_all_end_games, $user_id) {
         $games = array();
         $incomplete_game = array();
         $this->load->database();
         foreach ($user_all_end_games as $one_game) {
             $gameid = intval($one_game['gameid']);
-            $sql = "select sum(score) as sum_gross,min(score) as gross_min,count(hole_id) as hole_num from t_game_score where gameid=$gameid and user_id=$userid";
+            $sql = "select sum(score) as sum_gross,min(score) as gross_min,count(hole_id) as hole_num from t_game_score where gameid=$gameid and user_id=$user_id";
             $one_game_info = $this->db->query($sql)->row_array();
             if ($one_game_info['gross_min'] > 0 && $one_game_info['hole_num'] == 18) {
                 $games[] = $gameid;
@@ -149,14 +149,14 @@ class Jianghu extends CI_Controller {
     /**
      * 获取年度足迹数据
      */
-    public function get_year_footprint_date($current_year, $register_year, $userid) {
+    public function get_year_footprint_date($current_year, $register_year, $user_id) {
 
         $year_data = array();
 
         for ($i = 0; $i <= ($current_year - $register_year); $i++) {
             $year = $register_year + $i;
 
-            $year_data[$year] = $this->year_footprint($userid, $year);
+            $year_data[$year] = $this->year_footprint($user_id, $year);
 
             $year_data[$year]['text'] = 'AAA';
 
@@ -201,17 +201,17 @@ class Jianghu extends CI_Controller {
     /**
      * 单年足迹统计
      */
-    public function year_footprint($userid, $year) {
+    public function year_footprint($user_id, $year) {
         $game_status = 'finished';
         $this->load->database();
-        $sql = "select id as gameid  from t_game where create_time between '" . $year . "-01-01 00:00:00' and '" . $year . "-12-31 23:59:59'  and id in (select gameid from t_game_group_user where userid=$userid) and game_status='$game_status'";
+        $sql = "select id as gameid  from t_game where create_time between '" . $year . "-01-01 00:00:00' and '" . $year . "-12-31 23:59:59'  and id in (select gameid from t_game_group_user where user_id=$user_id) and game_status='$game_status'";
         $one_year_games = $this->db->query($sql)->result_array();
 
         if (count($one_year_games) < 1) {
             return array('year' => $year, 'game_num' => 0, 'year_handicap' => 0, 'course_num' => 0, 'player_num' => 0, 'pkerlist' => 0);
         }
 
-        $result = $this->qualified_game($one_year_games, $userid);
+        $result = $this->qualified_game($one_year_games, $user_id);
         $incomplete_game_num = $result['incomplete_game_num'];
         $games = $result['games'];
         $one_year_game_num = count($games);
@@ -219,11 +219,11 @@ class Jianghu extends CI_Controller {
         if (strlen($one_year_game_str) < 1) {
             $one_year_game_str = -1;
         }
-        $year_game_data = $this->get_course_player_num($one_year_game_str, $userid);
+        $year_game_data = $this->get_course_player_num($one_year_game_str, $user_id);
         $year_game_data['year'] = $year;
 
         $year_game_data['game_num'] = $one_year_game_num + $incomplete_game_num;
-        $year_game_data['year_handicap'] = $this->one_year_game_handicap($one_year_game_str, $userid);
+        $year_game_data['year_handicap'] = $this->one_year_game_handicap($one_year_game_str, $user_id);
 
         return $year_game_data;
     }
@@ -231,12 +231,12 @@ class Jianghu extends CI_Controller {
     /**
      * 获取球场和球友数量
      */
-    public function get_course_player_num($games_str, $userid) {
+    public function get_course_player_num($games_str, $user_id) {
         $this->load->database();
         $sql = "select distinct courseid from t_game where id in ($games_str)";
         $courses = $this->db->query($sql)->result_array();
         $course_num = count($courses);
-        $sql = "select id,display_name,wx_name from t_user where id in (select distinct user_id from t_game_group_user where gameid in ($games_str))  and id<>$userid";
+        $sql = "select id,display_name,wx_name from t_user where id in (select distinct user_id from t_game_group_user where gameid in ($games_str))  and id<>$user_id";
         $play_game_users = $this->db->query($sql)->result_array();
         $player_num = count($play_game_users);
         return array('course_num' => $course_num, 'player_num' => $player_num, 'pkerlist' => $play_game_users);
@@ -245,7 +245,7 @@ class Jianghu extends CI_Controller {
     /**
      * 计算年度差点
      */
-    public function one_year_game_handicap($game_str, $userid) {
+    public function one_year_game_handicap($game_str, $user_id) {
 
         $sql = "select t_game_score.gameid,
                        sum(t_game_score.score) as grossnum,
@@ -254,7 +254,7 @@ class Jianghu extends CI_Controller {
                        count(t_game_score.par) as holenum
                 from t_game_score, t_game
                 where t_game_score.gameid in ($game_str)
-                  and t_game_score.user_id=$userid
+                  and t_game_score.user_id=$user_id
                   and t_game.id = t_game_score.gameid
                   and t_game.game_status='finished'
                 group by t_game_score.gameid";
@@ -300,20 +300,20 @@ class Jianghu extends CI_Controller {
     /**
      * 用户足迹汇总
      */
-    public function user_footprint($userid) {
+    public function user_footprint($user_id) {
         // header("Content-type: text/html; charset=utf-8");
 
         $game_status = 'finished';
         $this->load->database();
-        $sql = "select addtime from t_user where id=$userid";
+        $sql = "select addtime from t_user where id=$user_id";
         $user_create_time = $this->db->query($sql)->row_array();
         // 将日期字符串转为时间戳
         $addtime_ts = strtotime($user_create_time['addtime']);
 
-        $sql = "select id as  gameid from t_game where game_status='$game_status' and id in (select gameid from t_game_group_user where userid=$userid)";
+        $sql = "select id as  gameid from t_game where game_status='$game_status' and id in (select gameid from t_game_group_user where user_id=$user_id)";
 
         $user_all_end_games = $this->db->query($sql)->result_array();
-        $result = $this->qualified_game($user_all_end_games, $userid);
+        $result = $this->qualified_game($user_all_end_games, $user_id);
         $incomplete_game_num = $result['incomplete_game_num'];
         $games = $result['games'];
 
@@ -323,7 +323,7 @@ class Jianghu extends CI_Controller {
             $all_end_game_str = -1;
         }
 
-        $all_game_data = $this->get_course_player_num($all_end_game_str, $userid);
+        $all_game_data = $this->get_course_player_num($all_end_game_str, $user_id);
 
         $xx = $this->secondsToTime(time() - $addtime_ts);
 
@@ -331,7 +331,7 @@ class Jianghu extends CI_Controller {
 
         $current_year = date('Y');
 
-        $year_data = $this->get_year_footprint_date($current_year, $register_year, $userid);
+        $year_data = $this->get_year_footprint_date($current_year, $register_year, $user_id);
 
         $today =  date('Y年m月d日', time());
 

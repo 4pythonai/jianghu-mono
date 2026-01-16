@@ -21,9 +21,9 @@ class Game extends MY_Controller {
     /**
      * 检查是否是球局创建者
      */
-    private function isGameCreator($gameid, $userid) {
+    private function isGameCreator($gameid, $user_id) {
         $game = $this->db->select('creatorid')->from('t_game')->where('id', $gameid)->get()->row_array();
-        return $game && (int)$game['creatorid'] === (int)$userid;
+        return $game && (int)$game['creatorid'] === (int)$user_id;
     }
 
 
@@ -32,18 +32,18 @@ class Game extends MY_Controller {
     public function getPlayerCombination() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
 
-        $user1 = ['userid' => 837590, 'show_name' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 0];
-        $user2 = ['userid' => 14, 'show_name' => 'awen', 'avatar' => 'https://qiaoyincapital.com//avatar/14.png', 'handicap' => 0];
-        $user3 = ['userid' => 59, 'show_name' => '唐昆', 'avatar' => 'https://qiaoyincapital.com//avatar/59.png', 'handicap' => 0];
-        $user4 = ['userid' => 122, 'show_name' => 'nice6', 'avatar' => 'https://qiaoyincapital.com//avatar/122.png', 'handicap' => 0];
+        $user1 = ['user_id' => 837590, 'show_name' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 0];
+        $user2 = ['user_id' => 14, 'show_name' => 'awen', 'avatar' => 'https://qiaoyincapital.com//avatar/14.png', 'handicap' => 0];
+        $user3 = ['user_id' => 59, 'show_name' => '唐昆', 'avatar' => 'https://qiaoyincapital.com//avatar/59.png', 'handicap' => 0];
+        $user4 = ['user_id' => 122, 'show_name' => 'nice6', 'avatar' => 'https://qiaoyincapital.com//avatar/122.png', 'handicap' => 0];
 
 
 
 
-        $user5 = ['userid' => 837590, 'show_name' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 27.8];
-        $user6 = ['userid' => 126, 'show_name' => 'ecoeco', 'avatar' => 'https://qiaoyincapital.com//avatar/126.png', 'handicap' => 3.8];
-        $user7 = ['userid' => 245, 'show_name' => 'JoYa', 'avatar' => 'https://qiaoyincapital.com//avatar/245.jpg', 'handicap' => 15.6];
-        $user8 = ['userid' => 246, 'show_name' => '阿咪阿咪红', 'avatar' => 'https://qiaoyincapital.com//avatar/246.png', 'handicap' => 0];
+        $user5 = ['user_id' => 837590, 'show_name' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 27.8];
+        $user6 = ['user_id' => 126, 'show_name' => 'ecoeco', 'avatar' => 'https://qiaoyincapital.com//avatar/126.png', 'handicap' => 3.8];
+        $user7 = ['user_id' => 245, 'show_name' => 'JoYa', 'avatar' => 'https://qiaoyincapital.com//avatar/245.jpg', 'handicap' => 15.6];
+        $user8 = ['user_id' => 246, 'show_name' => '阿咪阿咪红', 'avatar' => 'https://qiaoyincapital.com//avatar/246.png', 'handicap' => 0];
 
         $group1 = [$user1, $user2, $user3, $user4];
         $group2 = [$user5, $user6, $user7, $user8];
@@ -54,12 +54,12 @@ class Game extends MY_Controller {
 
     public function createBlankGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $uuid = $json_paras['uuid'];
         $create_source = isset($json_paras['create_source']) ? $json_paras['create_source'] : null;
         $row = [];
         $row['uuid'] = $uuid;
-        $row['creatorid'] = $userid;
+        $row['creatorid'] = $user_id;
         $row['create_time'] = date('Y-m-d H:i:s');
         $row['private'] = 'n';
         $row['scoring_type'] = 'hole';
@@ -178,27 +178,27 @@ class Game extends MY_Controller {
     public function savePrivateWhiteList() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = isset($json_paras['gameid']) ? intval($json_paras['gameid']) : 0;
-        $request_userid = isset($json_paras['userid']) ? intval($json_paras['userid']) : 0;
-        $userid = intval($this->getUser());
+        $request_userid = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
+        $user_id = intval($this->getUser());
 
         if ($gameid <= 0) {
             echo json_encode(['code' => 400, 'message' => '缺少有效的 gameid'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        if ($request_userid > 0 && $request_userid !== $userid) {
-            echo json_encode(['code' => 403, 'message' => 'userid 与登录用户不匹配'], JSON_UNESCAPED_UNICODE);
+        if ($request_userid > 0 && $request_userid !== $user_id) {
+            echo json_encode(['code' => 403, 'message' => 'user_id 与登录用户不匹配'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        $result = $this->MPrivateWhiteList->addWhiteList($userid, $gameid);
+        $result = $this->MPrivateWhiteList->addWhiteList($user_id, $gameid);
 
         $ret = [];
         $ret['code'] = 200;
         $ret['message'] = $result['created'] ? '白名单已添加' : '白名单已存在';
         $ret['data'] = [
             'gameid' => $gameid,
-            'userid' => $userid,
+            'user_id' => $user_id,
             'created' => $result['created'],
             'record_id' => $result['record_id']
         ];
@@ -337,7 +337,7 @@ class Game extends MY_Controller {
                 'gameid' => $row['gameid'],
                 'gambleid' => $gambleid,
                 'groupid' => $row['groupid'],
-                'userid' => $row['creator_id']
+                'user_id' => $row['creator_id']
             ];
 
 
@@ -444,7 +444,7 @@ class Game extends MY_Controller {
         $params = json_decode(file_get_contents('php://input'), true);
         $joinType = isset($params['source']) && $params['source'] !== '' ? $params['source'] : 'wxshare';
         if ($joinType === 'manualAdd') {
-            $userId = (int) $params['userid'];
+            $userId = (int) $params['user_id'];
         } else {
             $userId = (int) $this->getUser();
         }
@@ -476,11 +476,11 @@ class Game extends MY_Controller {
 
     public function setTee() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $json_paras['userid'];
+        $user_id = $json_paras['user_id'];
         $uuid = $json_paras['uuid'];
         $gameid = $this->MGame->getGameidByUUID($uuid);
         $tee = $json_paras['tee'];
-        $this->MGame->setTee($gameid, $userid, $tee);
+        $this->MGame->setTee($gameid, $user_id, $tee);
         echo json_encode(['code' => 200, 'message' => '保存成功'], JSON_UNESCAPED_UNICODE);
     }
 
@@ -492,13 +492,13 @@ class Game extends MY_Controller {
             return $this->error('缺少有效的 gameid');
         }
 
-        $userid = $this->getUser();
-        if (!$userid) {
+        $user_id = $this->getUser();
+        if (!$user_id) {
             return $this->error('请先登录', 401);
         }
 
         // 只有创建者可以取消球局
-        if (!$this->isGameCreator($gameid, $userid)) {
+        if (!$this->isGameCreator($gameid, $user_id)) {
             return $this->error('只有创建者可以取消球局', 403);
         }
 
@@ -514,13 +514,13 @@ class Game extends MY_Controller {
             return $this->error('缺少有效的 gameid');
         }
 
-        $userid = $this->getUser();
-        if (!$userid) {
+        $user_id = $this->getUser();
+        if (!$user_id) {
             return $this->error('请先登录', 401);
         }
 
         // 只有创建者可以结束球局
-        if (!$this->isGameCreator($gameid, $userid)) {
+        if (!$this->isGameCreator($gameid, $user_id)) {
             return $this->error('只有创建者可以结束球局', 403);
         }
 
@@ -531,14 +531,14 @@ class Game extends MY_Controller {
     public function removePlayer() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
-        $userid = isset($json_paras['userid']) ? (int)$json_paras['userid'] : 0;
+        $user_id = isset($json_paras['user_id']) ? (int)$json_paras['user_id'] : 0;
 
-        if ($gameid <= 0 || $userid <= 0) {
+        if ($gameid <= 0 || $user_id <= 0) {
             echo json_encode(['code' => 400, 'message' => '参数错误'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        $result = $this->MGame->removePlayer($gameid, $userid);
+        $result = $this->MGame->removePlayer($gameid, $user_id);
         echo json_encode($result, JSON_UNESCAPED_UNICODE);
     }
 
@@ -570,16 +570,16 @@ class Game extends MY_Controller {
         $successList = [];
         $failedList = [];
 
-        foreach ($userids as $userid) {
-            $userid = (int)$userid;
+        foreach ($userids as $user_id) {
+            $user_id = (int)$user_id;
 
-            $joinResult = $this->MGame->gameJoinHandler($userid, $gameid, 'friendAdd');
+            $joinResult = $this->MGame->gameJoinHandler($user_id, $gameid, 'friendAdd');
 
             if ((int)$joinResult['code'] === 200) {
-                $successList[] = $userid;
+                $successList[] = $user_id;
             } else {
                 $failedList[] = [
-                    'userid' => $userid,
+                    'user_id' => $user_id,
                     'reason' => $joinResult['message'] ?? '添加失败'
                 ];
             }
@@ -604,29 +604,29 @@ class Game extends MY_Controller {
     }
 
     /**
-     * 添加观看者到球局,同时执行 $this->MGame->removePlayer($gameid, $userid)
+     * 添加观看者到球局,同时执行 $this->MGame->removePlayer($gameid, $user_id)
      *
      * @api POST /game/addWatcher
      *
      * @param int gameid 球局ID（必填）
-     * @param int userid 用户ID（必填）
+     * @param int user_id 用户ID（必填）
      *
      * @return array 返回结果
      */
     public function addWatcher() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
-        $userid = isset($json_paras['userid']) ? (int)$json_paras['userid'] : 0;
+        $user_id = isset($json_paras['user_id']) ? (int)$json_paras['user_id'] : 0;
 
-        if ($gameid <= 0 || $userid <= 0) {
+        if ($gameid <= 0 || $user_id <= 0) {
             echo json_encode(['code' => 400, 'message' => '参数错误'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
         // 移除
-        $this->MGame->removePlayer($gameid, $userid);
+        $this->MGame->removePlayer($gameid, $user_id);
 
-        $existing = $this->db->get_where('t_game_spectator', ['gameid' => $gameid, 'userid' => $userid])->row_array();
+        $existing = $this->db->get_where('t_game_spectator', ['gameid' => $gameid, 'user_id' => $user_id])->row_array();
 
         if ($existing) {
             $this->db->where('id', $existing['id']);
@@ -635,7 +635,7 @@ class Game extends MY_Controller {
         } else {
             $this->db->insert('t_game_spectator', [
                 'gameid' => $gameid,
-                'userid' => $userid,
+                'user_id' => $user_id,
                 'addtime' => date('Y-m-d H:i:s')
             ]);
             echo json_encode(['code' => 200, 'message' => '添加成功'], JSON_UNESCAPED_UNICODE);
@@ -648,21 +648,21 @@ class Game extends MY_Controller {
      * @api POST /game/deleteWatcher
      *
      * @param int gameid 球局ID（必填）
-     * @param int userid 用户ID（必填）
+     * @param int user_id 用户ID（必填）
      *
      * @return array 返回结果
      */
     public function deleteWatcher() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
-        $userid = isset($json_paras['userid']) ? (int)$json_paras['userid'] : 0;
+        $user_id = isset($json_paras['user_id']) ? (int)$json_paras['user_id'] : 0;
 
-        if ($gameid <= 0 || $userid <= 0) {
+        if ($gameid <= 0 || $user_id <= 0) {
             echo json_encode(['code' => 400, 'message' => '参数错误'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
-        $this->db->where(['gameid' => $gameid, 'userid' => $userid]);
+        $this->db->where(['gameid' => $gameid, 'user_id' => $user_id]);
         $this->db->delete('t_game_spectator');
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }

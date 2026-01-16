@@ -28,13 +28,13 @@ class MScore  extends CI_Model {
   }
 
   private function buildScoreData($game_id, $group_id, $hole_id, $court_key, $hindex, $score_data) {
-    $user_id = $score_data['userid'];
+    $user_id = $score_data['user_id'];
 
     return [
       'gameid' => $game_id,
       'user_id' => $user_id,
       'hindex' => $hindex,
-      'userid' => $user_id,
+      'user_id' => $user_id,
       'group_id' => $group_id,
       'hole_id' => $hole_id,
       'court_key' => $court_key,

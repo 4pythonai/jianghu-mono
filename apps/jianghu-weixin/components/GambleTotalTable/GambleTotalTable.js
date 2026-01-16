@@ -70,8 +70,7 @@ Component({
                     // 处理 players_detail - 所有用户的输赢情况
                     if (hole.players_detail && Array.isArray(hole.players_detail)) {
                         for (const detail of hole.players_detail) {
-                            // players_detail 中使用 userid（无下划线）
-                            const visitorId = detail.userid;
+                            const visitorId = detail.user_id;
                             const money = detail.final_points || 0;
                             const donated = detail.pointsDonated || 0;
 

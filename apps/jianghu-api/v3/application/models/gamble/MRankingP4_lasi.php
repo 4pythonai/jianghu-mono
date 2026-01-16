@@ -54,7 +54,7 @@ class MRankingP4_lasi extends CI_Model {
      * @param int $holeIndex 当前洞的索引
      * @param array $hole 当前洞的数据
      * @param GambleContext $context 赌球上下文对象
-     * @return array 排名结果 [rank => userid]
+     * @return array 排名结果 [rank => user_id]
      */
     public function rankAttenders($holeIndex, &$hole, $context) {
         $tieResolveConfig = $context->ranking4TieResolveConfig;
@@ -62,9 +62,9 @@ class MRankingP4_lasi extends CI_Model {
 
         // 打印初始排名顺序
         $initialOrderInfo = [];
-        foreach ($bootStrapOrder as $index => $userid) {
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $initialOrderInfo[] = "#{" . ($index + 1) . "} {$nickname}(ID:{$userid})";
+        foreach ($bootStrapOrder as $index => $user_id) {
+            $nickname = $this->getNicknameByUserid($user_id, $context);
+            $initialOrderInfo[] = "#{" . ($index + 1) . "} {$nickname}(ID:{$user_id})";
         }
         $this->addDebug($hole, "🔴🟢🔵  :初始排名: " . implode(', ', $initialOrderInfo));
 
@@ -112,9 +112,9 @@ class MRankingP4_lasi extends CI_Model {
         // 打印最终排名结果
         if (!empty($ranking)) {
             $finalRankingInfo = [];
-            foreach ($ranking as $rank => $userid) {
-                $nickname = $this->getNicknameByUserid($userid, $context);
-                $finalRankingInfo[] = "#{$rank} {$nickname}(ID:{$userid})";
+            foreach ($ranking as $rank => $user_id) {
+                $nickname = $this->getNicknameByUserid($user_id, $context);
+                $finalRankingInfo[] = "#{$rank} {$nickname}(ID:{$user_id})";
             }
             $this->addDebug($hole, "🎯 最终排名结果: " . implode(', ', $finalRankingInfo));
         }
@@ -158,11 +158,11 @@ class MRankingP4_lasi extends CI_Model {
         // 记录排序后的状态
         $afterSortInfo = [];
         for ($i = 0; $i < count($users); $i++) {
-            $userid = $users[$i];
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['strokedScores'][$userid] ?? 0;
+            $user_id = $users[$i];
+            $nickname = $this->getNicknameByUserid($user_id, $context);
+            $score = $hole['strokedScores'][$user_id] ?? 0;
             $rank = $i + 1;
-            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 成绩:{$score}";
+            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$user_id}) 成绩:{$score}";
         }
         $this->addDebug($hole, "🏆 最终排名: " . implode(', ', $afterSortInfo));
 
@@ -206,11 +206,11 @@ class MRankingP4_lasi extends CI_Model {
         // 记录排序后的状态
         $afterSortInfo = [];
         for ($i = 0; $i < count($users); $i++) {
-            $userid = $users[$i];
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['strokedScores'][$userid] ?? 0;
+            $user_id = $users[$i];
+            $nickname = $this->getNicknameByUserid($user_id, $context);
+            $score = $hole['strokedScores'][$user_id] ?? 0;
             $rank = $i + 1;
-            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 成绩:{$score}";
+            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$user_id}) 成绩:{$score}";
         }
         $this->addDebug($hole, $hole['holename'] . " 🟢🔴🟢🔴 最终排名: " . implode(', ', $afterSortInfo));
 
@@ -264,13 +264,13 @@ class MRankingP4_lasi extends CI_Model {
         // 记录排序后的状态
         $afterSortInfo = [];
         for ($i = 0; $i < count($users); $i++) {
-            $userid = $users[$i];
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['strokedScores'][$userid] ?? 0;
-            $isWinner = $this->isUserWinner($userid, $hole);
+            $user_id = $users[$i];
+            $nickname = $this->getNicknameByUserid($user_id, $context);
+            $score = $hole['strokedScores'][$user_id] ?? 0;
+            $isWinner = $this->isUserWinner($user_id, $hole);
             $winStatus = $isWinner ? "🥇胜" : "🥈负";
             $rank = $i + 1;
-            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
+            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$user_id}) 成绩:{$score} {$winStatus}";
         }
         $this->addDebug($hole, "🏆 最终排名: " . implode(', ', $afterSortInfo));
 
@@ -320,13 +320,13 @@ class MRankingP4_lasi extends CI_Model {
         // 记录排序后的状态
         $afterSortInfo = [];
         for ($i = 0; $i < count($users); $i++) {
-            $userid = $users[$i];
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['strokedScores'][$userid] ?? 0;
-            $isWinner = $this->isUserWinner($userid, $hole);
+            $user_id = $users[$i];
+            $nickname = $this->getNicknameByUserid($user_id, $context);
+            $score = $hole['strokedScores'][$user_id] ?? 0;
+            $isWinner = $this->isUserWinner($user_id, $hole);
             $winStatus = $isWinner ? "🥇胜" : "🥈负";
             $rank = $i + 1;
-            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
+            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$user_id}) 成绩:{$score} {$winStatus}";
         }
         $this->addDebug($hole, "🏆 最终排名: " . implode(', ', $afterSortInfo));
 
@@ -378,13 +378,13 @@ class MRankingP4_lasi extends CI_Model {
         // 记录排序后的状态
         $afterSortInfo = [];
         for ($i = 0; $i < count($users); $i++) {
-            $userid = $users[$i];
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['raw_scores'][$userid] ?? 0;
-            $isWinner = $this->isUserWinner($userid, $hole);
+            $user_id = $users[$i];
+            $nickname = $this->getNicknameByUserid($user_id, $context);
+            $score = $hole['raw_scores'][$user_id] ?? 0;
+            $isWinner = $this->isUserWinner($user_id, $hole);
             $winStatus = $isWinner ? "🥇胜" : "🥈负";
             $rank = $i + 1;
-            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
+            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$user_id}) 成绩:{$score} {$winStatus}";
         }
         $this->addDebug($hole, "🏆 最终排名: " . implode(', ', $afterSortInfo));
 
@@ -433,13 +433,13 @@ class MRankingP4_lasi extends CI_Model {
         // 记录排序后的状态
         $afterSortInfo = [];
         for ($i = 0; $i < count($users); $i++) {
-            $userid = $users[$i];
-            $nickname = $this->getNicknameByUserid($userid, $context);
-            $score = $hole['raw_scores'][$userid] ?? 0;
-            $isWinner = $this->isUserWinner($userid, $hole);
+            $user_id = $users[$i];
+            $nickname = $this->getNicknameByUserid($user_id, $context);
+            $score = $hole['raw_scores'][$user_id] ?? 0;
+            $isWinner = $this->isUserWinner($user_id, $hole);
             $winStatus = $isWinner ? "🥇胜" : "🥈负";
             $rank = $i + 1;
-            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$userid}) 成绩:{$score} {$winStatus}";
+            $afterSortInfo[] = "#{$rank} {$nickname}(ID:{$user_id}) 成绩:{$score} {$winStatus}";
         }
         $this->addDebug($hole, "🏆 最终排名: " . implode(', ', $afterSortInfo));
 
@@ -636,7 +636,7 @@ class MRankingP4_lasi extends CI_Model {
     /**
      * 将用户数组转换为排名格式
      * @param array $users 用户数组
-     * @return array 排名数组 [rank => userid]
+     * @return array 排名数组 [rank => user_id]
      */
     private function arrayToRanking($users) {
         $ranking = [];
@@ -661,18 +661,18 @@ class MRankingP4_lasi extends CI_Model {
 
     /**
      * 根据用户ID获取昵称
-     * @param int $userid 用户ID
+     * @param int $user_id 用户ID
      * @param GambleContext $context 赌球上下文对象
      * @return string 用户昵称，如果未找到则返回用户ID
      */
-    private function getNicknameByUserid($userid, $context) {
+    private function getNicknameByUserid($user_id, $context) {
         if (isset($context->group_info) && is_array($context->group_info)) {
             foreach ($context->group_info as $user) {
-                if (isset($user['userid']) && $user['userid'] == $userid) {
-                    return $user['nickname'] ?? $user['username'] ?? $userid;
+                if (isset($user['user_id']) && $user['user_id'] == $user_id) {
+                    return $user['nickname'] ?? $user['username'] ?? $user_id;
                 }
             }
         }
-        return $userid;
+        return $user_id;
     }
 }

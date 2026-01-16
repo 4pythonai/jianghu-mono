@@ -85,6 +85,8 @@ Component({
             // 将相对路径转换为完整 URL
             const fullUrl = avatarPath ? imageUrl(avatarPath) : ''
             this.setData({ fullAvatarUrl: fullUrl })
+        },
+        'userId': function (userId) {
         }
     },
 
@@ -96,6 +98,8 @@ Component({
                     fullAvatarUrl: imageUrl(this.properties.avatar)
                 })
             }
+
+            // 添加日志：检查接收到的 userId 属性
         }
     },
 
@@ -119,7 +123,7 @@ Component({
                     })
                 } else {
                     wx.navigateTo({
-                        url: `/packagePlayer/user-profile/user-profile?userId=${this.properties.userId}`
+                        url: `/packagePlayer/user-profile/user-profile?user_id=${this.properties.userId}`
                     })
                 }
                 return

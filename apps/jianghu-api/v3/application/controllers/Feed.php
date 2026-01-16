@@ -26,28 +26,28 @@ class Feed extends MY_Controller {
     public function myFeeds() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $feed_type = $json_paras['feed_type'] ?? 'my';
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
 
         $games = [];
         $extra = [];
 
         switch ($feed_type) {
             case 'my':
-                $result = $this->getFeedsForMy($userid);
+                $result = $this->getFeedsForMy($user_id);
                 $games = $result['games'];
                 $extra['star_friends'] = $result['star_friends'];
                 break;
             case 'public':
-                $games = $this->getFeedsForPublic($userid);
+                $games = $this->getFeedsForPublic($user_id);
                 break;
             case 'registering':
-                $games = $this->getFeedsForRegistering($userid);
+                $games = $this->getFeedsForRegistering($user_id);
                 break;
             case 'registered':
-                $games = $this->getFeedsForRegistered($userid);
+                $games = $this->getFeedsForRegistered($user_id);
                 break;
             default:
-                $result = $this->getFeedsForMy($userid);
+                $result = $this->getFeedsForMy($user_id);
                 $games = $result['games'];
                 $extra['star_friends'] = $result['star_friends'];
         }
@@ -79,8 +79,8 @@ class Feed extends MY_Controller {
      * 3. 星标好友的任何比赛 (t_user_follow.is_special='y' + t_game_group_user)
      * 4. 我报名的任何比赛 (t_game_tag_member)
      */
-    private function getStarGameData($userid) {
-        if (!$userid) {
+    private function getStarGameData($user_id) {
+        if (!$user_id) {
             return [
                 'explicit_star_gameids' => [],
                 'my_created_gameids' => [],
@@ -92,7 +92,7 @@ class Feed extends MY_Controller {
         // 1. 我主动打星标的比赛 (t_my_stared_games)
         $rows = $this->db->select('gameid')
             ->from('t_my_stared_games')
-            ->where('user_id', $userid)
+            ->where('user_id', $user_id)
             ->get()
             ->result_array();
         $explicit_star_gameids = array_map('intval', array_column($rows, 'gameid'));
@@ -100,7 +100,7 @@ class Feed extends MY_Controller {
         // 2. 我创建的比赛 (t_game.creatorid)
         $rows = $this->db->select('id')
             ->from('t_game')
-            ->where('creatorid', $userid)
+            ->where('creatorid', $user_id)
             ->get()
             ->result_array();
         $my_created_gameids = array_map('intval', array_column($rows, 'id'));
@@ -108,7 +108,7 @@ class Feed extends MY_Controller {
         // 3. 星标好友的 ID 列表 (t_user_follow.is_special='y')
         $rows = $this->db->select('target_id')
             ->from('t_user_follow')
-            ->where('user_id', $userid)
+            ->where('user_id', $user_id)
             ->where('is_special', 'y')
             ->get()
             ->result_array();
@@ -117,7 +117,7 @@ class Feed extends MY_Controller {
         // 4. 我报名的比赛 (t_game_tag_member)
         $rows = $this->db->select('game_id')
             ->from('t_game_tag_member')
-            ->where('user_id', $userid)
+            ->where('user_id', $user_id)
             ->get()
             ->result_array();
         $registered_gameids = array_map('intval', array_column($rows, 'game_id'));
@@ -155,7 +155,7 @@ class Feed extends MY_Controller {
         if (!empty($starData['star_friend_ids'])) {
             $count = $this->db->from('t_game_group_user')
                 ->where('gameid', $gameid)
-                ->where_in('userid', $starData['star_friend_ids'])
+                ->where_in('user_id', $starData['star_friend_ids'])
                 ->count_all_results();
             if ($count > 0) {
                 return true;
@@ -169,17 +169,17 @@ class Feed extends MY_Controller {
      * 我的赛事
      * 状态筛选: playing, finished
      */
-    private function getFeedsForMy($userid) {
-        $get_data_config = ['user_id' => $userid];
+    private function getFeedsForMy($user_id) {
+        $get_data_config = ['user_id' => $user_id];
         $result = $this->MGamePipeRunner->GameFeedHandler($get_data_config);
-        $whitelist_gameids = $this->MPrivateWhiteList->getUserWhiteListGameIds($userid);
-        $starData = $this->getStarGameData($userid);
+        $whitelist_gameids = $this->MPrivateWhiteList->getUserWhiteListGameIds($user_id);
+        $starData = $this->getStarGameData($user_id);
         $allgames = $result['allgames'];
 
         $games = [];
         foreach ($allgames as $game) {
             $gameid = $game['id'];
-            $game_detail = $this->MDetailGame->getGameDetail($gameid, $userid);
+            $game_detail = $this->MDetailGame->getGameDetail($gameid, $user_id);
             if (!$game_detail) {
                 continue;
             }
@@ -196,7 +196,8 @@ class Feed extends MY_Controller {
 
             // 添加星标状态
             $game_detail['if_star_game'] = $this->isStarGame($gameid, $game, $starData) ? 'y' : 'n';
-
+            // extra_team_game_info
+            $game_detail['extra_team_game_info'] = [];
             $games[] = $game_detail;
         }
 
@@ -211,9 +212,9 @@ class Feed extends MY_Controller {
      * 状态筛选: playing, finished
      * 包含: 关注的人的赛事 + 我的球队的赛事 + 系统推荐
      */
-    private function getFeedsForPublic($userid) {
+    private function getFeedsForPublic($user_id) {
         // 未登录用户，返回所有比赛
-        if (!$userid) {
+        if (!$user_id) {
             $this->db->select('DISTINCT(g.id) as id, g.team_id, g.game_type, g.create_time')
                 ->from('t_game g')
                 ->where_in('g.game_status', ['playing', 'finished'])
@@ -221,13 +222,13 @@ class Feed extends MY_Controller {
                 ->limit(100);
 
             $gameRows = $this->db->get()->result_array();
-            return $this->buildGameList($gameRows, $userid);
+            return $this->buildGameList($gameRows, $user_id);
         }
 
         // 1. 查询我关注的人的ID列表
         $followingRows = $this->db->select('target_id')
             ->from('t_user_follow')
-            ->where('user_id', $userid)
+            ->where('user_id', $user_id)
             ->get()
             ->result_array();
         $followingIds = array_column($followingRows, 'target_id');
@@ -235,7 +236,7 @@ class Feed extends MY_Controller {
         // 2. 查询我加入的球队ID列表
         $teamRows = $this->db->select('team_id')
             ->from('t_team_member')
-            ->where('user_id', $userid)
+            ->where('user_id', $user_id)
             ->where('status', 'active')
             ->get()
             ->result_array();
@@ -281,7 +282,7 @@ class Feed extends MY_Controller {
 
         $gameRows = $this->db->get()->result_array();
 
-        return $this->buildGameList($gameRows, $userid);
+        return $this->buildGameList($gameRows, $user_id);
     }
 
     /**
@@ -295,8 +296,8 @@ class Feed extends MY_Controller {
      * 
      * 状态筛选：registering（报名中）
      */
-    private function getFeedsForRegistering($userid) {
-        $starData = $this->getStarGameData($userid);
+    private function getFeedsForRegistering($user_id) {
+        $starData = $this->getStarGameData($user_id);
 
         $this->db->select('g.id, g.team_id, g.game_type, g.create_time')
             ->from('t_game g')
@@ -308,7 +309,7 @@ class Feed extends MY_Controller {
         $games = [];
         foreach ($gameRows as $row) {
             $gameid = $row['id'];
-            $game_detail = $this->MDetailGame->getGameDetail($gameid, $userid);
+            $game_detail = $this->MDetailGame->getGameDetail($gameid, $user_id);
             if (!$game_detail) {
                 continue;
             }
@@ -340,18 +341,18 @@ class Feed extends MY_Controller {
      * 已报名赛事
      * 状态筛选: 所有状态
      */
-    private function getFeedsForRegistered($userid) {
-        if (!$userid) {
+    private function getFeedsForRegistered($user_id) {
+        if (!$user_id) {
             return [];
         }
 
-        $starData = $this->getStarGameData($userid);
+        $starData = $this->getStarGameData($user_id);
 
         // 查询用户已报名的赛事ID列表
         $gameRows = $this->db->select('DISTINCT(g.id) as id, g.team_id, g.game_type, g.game_status, g.open_time')
             ->from('t_game_tag_member gtm')
             ->join('t_game g', 'gtm.game_id = g.id', 'inner')
-            ->where('gtm.user_id', $userid)
+            ->where('gtm.user_id', $user_id)
             ->order_by('g.open_time', 'DESC')
             ->get()
             ->result_array();
@@ -359,7 +360,7 @@ class Feed extends MY_Controller {
         $games = [];
         foreach ($gameRows as $row) {
             $gameid = $row['id'];
-            $game_detail = $this->MDetailGame->getGameDetail($gameid, $userid);
+            $game_detail = $this->MDetailGame->getGameDetail($gameid, $user_id);
             if (!$game_detail) {
                 continue;
             }
@@ -390,13 +391,13 @@ class Feed extends MY_Controller {
     /**
      * 构建游戏列表
      */
-    private function buildGameList($gameRows, $userid = null) {
-        $starData = $this->getStarGameData($userid);
+    private function buildGameList($gameRows, $user_id = null) {
+        $starData = $this->getStarGameData($user_id);
 
         $games = [];
         foreach ($gameRows as $row) {
             $gameid = $row['id'];
-            $game_detail = $this->MDetailGame->getGameDetail($gameid, $userid);
+            $game_detail = $this->MDetailGame->getGameDetail($gameid, $user_id);
             if (!$game_detail) {
                 continue;
             }

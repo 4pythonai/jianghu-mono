@@ -94,7 +94,7 @@
           wx:for="{{group.friends}}"
           wx:for-item="friend"
           wx:for-index="friendIndex"
-          wx:key="userid"
+          wx:key="user_id"
           class="friend-item"
           data-friend="{{friend}}"
           bindtap="goToUserProfile"
@@ -103,7 +103,7 @@
             <view class="friend-avatar-wrap">
               <PlayerAvatar
                 avatar="{{image.imageUrl(friend.avatar)}}"
-                userId="{{friend.userid}}"
+                userId="{{friend.user_id}}"
                 avatarOnly="{{true}}"
                 size="small"
                 clickable="{{false}}"

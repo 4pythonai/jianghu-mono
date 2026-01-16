@@ -40,8 +40,8 @@ Component({
             const displayPlayers = players.map(p => ({
                 display_name: p.display_name || '未知',
                 avatar: p.avatar || '/images/default-avatar.png',
-                showDelete: String(p.userid) === String(creatorid) ? 'n' : 'y',
-                userid: p.userid
+                showDelete: String(p.user_id) === String(creatorid) ? 'n' : 'y',
+                user_id: p.user_id
             }))
 
             this.setData({ displayPlayers })
@@ -56,7 +56,7 @@ Component({
                 content: `确定要移除球员 ${player.display_name} 吗？`,
                 success: async (res) => {
                     if (res.confirm) {
-                        const result = await gameStore.removePlayer(player.userid)
+                        const result = await gameStore.removePlayer(player.user_id)
                         if (result.success) {
                             wx.showToast({ title: result.message, icon: 'success' })
                         } else {

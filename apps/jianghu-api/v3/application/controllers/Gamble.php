@@ -22,7 +22,7 @@ class Gamble extends MY_Controller {
 
     public function addRuntimeConfig() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
 
         $startHoleindex = $json_paras['startHoleindex'];
 
@@ -51,7 +51,7 @@ class Gamble extends MY_Controller {
             $this->load->model('MAbstract');
             $abstract = $this->MAbstract->createAbstract($json_paras['gambleSysName'], $json_paras['red_blue_config']);
             $insert_data = [
-                'creator_id' => $userid,
+                'creator_id' => $user_id,
                 'gameid' => $gameid,
                 'abstract' => $abstract,
                 'groupid' => $groupid,
@@ -97,7 +97,7 @@ class Gamble extends MY_Controller {
 
     public function updateRuntimeConfig() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         unset($json_paras['holeList']);
 
         // stroking_config
@@ -129,7 +129,7 @@ class Gamble extends MY_Controller {
         $json_paras['bootstrap_order'] = $bootstrap_order;
 
 
-        $json_paras['creator_id'] = $userid;
+        $json_paras['creator_id'] = $user_id;
         unset($json_paras['rangeHolePlayList']);
 
         // 准备更新数据
@@ -176,15 +176,15 @@ class Gamble extends MY_Controller {
         $config = $json_paras;
 
 
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
 
         $gambleSysName = $json_paras['gambleSysName'];
         if ($gambleSysName == '4p-8421') {
-            $insert_data = $this->G4P8421Parser->parserRawData($userid, $config);
+            $insert_data = $this->G4P8421Parser->parserRawData($user_id, $config);
         }
 
         if ($gambleSysName == '4p-lasi') {
-            $insert_data = $this->G4PlasiParser->parserRawData($userid, $config);
+            $insert_data = $this->G4PlasiParser->parserRawData($user_id, $config);
         }
 
 
@@ -203,7 +203,7 @@ class Gamble extends MY_Controller {
                     'userRuleId' => $insert_id,
                     'gambleSysName' => $gambleSysName,
                     'gambleUserName' => $json_paras['gambleUserName'] ?? $json_paras['user_rulename'] ?? null,
-                    'creator_id' => $userid
+                    'creator_id' => $user_id
                 ];
 
                 echo json_encode($ret, JSON_UNESCAPED_UNICODE);
@@ -230,15 +230,15 @@ class Gamble extends MY_Controller {
         $config = $json_paras;
 
 
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
 
         $gambleSysName = $json_paras['gambleSysName'];
         if ($gambleSysName == '4p-8421') {
-            $udpate_data = $this->G4P8421Parser->parserRawData($userid, $config);
+            $udpate_data = $this->G4P8421Parser->parserRawData($user_id, $config);
         }
 
         if ($gambleSysName == '4p-lasi') {
-            $udpate_data = $this->G4PlasiParser->parserRawData($userid, $config);
+            $udpate_data = $this->G4PlasiParser->parserRawData($user_id, $config);
         }
 
 
@@ -259,7 +259,7 @@ class Gamble extends MY_Controller {
      * 返回两人游戏、三人游戏、四人游戏的分组数据
      */
     public function getUserGambleRules() {
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $query = "SELECT id as userRuleId, 
                      create_time,
                      kpis,
@@ -281,10 +281,10 @@ class Gamble extends MY_Controller {
                      WHERE creator_id = ? and softdeleted='n'
                      ORDER BY create_time DESC";
 
-        $rules = $this->db->query($query, [$userid])->result_array();
+        $rules = $this->db->query($query, [$user_id])->result_array();
 
         // 添加调试信息
-        logtext("getUserGambleRules - User ID: " . $userid);
+        logtext("getUserGambleRules - User ID: " . $user_id);
         logtext("getUserGambleRules - Raw rules count: " . count($rules));
         foreach ($rules as $index => $rule) {
             logtext("getUserGambleRules - Rule " . $index . " ID: " . $rule['userRuleId'] . ", Name: " . $rule['gambleUserName']);
@@ -354,7 +354,7 @@ class Gamble extends MY_Controller {
         $ret['code'] = 200;
         $ret['message'] = '获取成功';
         $ret['userRules'] = [
-            'user_id' => $userid,
+            'user_id' => $user_id,
             'twoPlayers' => $twoPlayers,
             'threePlayers' => $threePlayers,
             'fourPlayers' => $fourPlayers,
@@ -417,11 +417,11 @@ class Gamble extends MY_Controller {
 
     public function deleteGambleRule() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
-        $userid = $this->getUser();
+        $user_id = $this->getUser();
         $userRuleId = $json_paras['userRuleId'];
         // using softdelete to  'y' 
         $this->db->where('id', $userRuleId)->update('t_gamble_rules_user', ['softdeleted' => 'y']);
-        // $this->db->delete('t_gamble_rules_user', ['id' => $userRuleId, 'creator_id' => $userid]);
+        // $this->db->delete('t_gamble_rules_user', ['id' => $userRuleId, 'creator_id' => $user_id]);
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
     }
 

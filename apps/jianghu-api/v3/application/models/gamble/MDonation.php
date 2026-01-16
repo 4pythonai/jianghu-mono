@@ -189,7 +189,7 @@ class MDonation extends CI_Model {
                 foreach ($context->usefulHoles as &$hole) {
                     if ($hole['holeid'] == $_hole['holeid']) {
                         foreach ($hole['winner_detail'] as &$winner) {
-                            if ($winner['userid'] == $_winner['userid']) {
+                            if ($winner['user_id'] == $_winner['user_id']) {
                                 $winner['pointsDonated'] = $_final_donation;
                                 $winner['pointsAfterDonation'] = $_points - $_final_donation;
 
@@ -197,7 +197,7 @@ class MDonation extends CI_Model {
                                 $this->addToDonationPool($context, [
                                     'holeid' => $hole['holeid'],
                                     'holename' => $hole['holename'],
-                                    'userid' => $winner['userid'],
+                                    'user_id' => $winner['user_id'],
                                     'pointsDonated' => $_final_donation,
                                     'donationType' => 'all',
                                     'timestamp' => date('Y-m-d H:i:s')
@@ -268,7 +268,7 @@ class MDonation extends CI_Model {
                     $this->addToDonationPool($context, [
                         'holeid' => $hole['holeid'],
                         'holename' => $hole['holename'],
-                        'userid' => $winner['userid'],
+                        'user_id' => $winner['user_id'],
                         'pointsDonated' => $_points_to_donate,
                         'donationType' => 'bigpot_collect',
                         'timestamp' => date('Y-m-d H:i:s')
@@ -292,7 +292,7 @@ class MDonation extends CI_Model {
         foreach ($context->usefulHoles as $hole) {
             if (isset($hole['failer_detail'])) {
                 foreach ($hole['failer_detail'] as $failer) {
-                    $_userid = $failer['userid'];
+                    $_userid = $failer['user_id'];
                     $_score_points = floatval($failer['scorePoints']);
 
                     if ($_score_points < 0) {
@@ -315,7 +315,7 @@ class MDonation extends CI_Model {
 
                 // 添加到捐赠池
                 $this->addToDonationPool($context, [
-                    'userid' => $_userid,
+                    'user_id' => $_userid,
                     'negativePoints' => $_negative_points,
                     'feeShare' => $_user_fee,
                     'donationType' => 'bigpot_distribute',

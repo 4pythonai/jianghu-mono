@@ -32,7 +32,7 @@ class MRanking extends CI_Model {
      * @param array $hole 当前洞的数据 (包含indicators)   
      * @param int $holeIndex 当前洞的索引
      * @param GambleContext $context 赌球上下文对象
-     * @return array 排名结果 [rank => userid]
+     * @return array 排名结果 [rank => user_id]
      */
     public function rankAttendersWithContext($holeIndex, &$hole, $context) {
 
