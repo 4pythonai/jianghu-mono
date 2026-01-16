@@ -129,10 +129,10 @@ export const gameStore = observable({
 
     /**
      * 移除球员
-     * @param {number} userid 要移除的用户ID
+     * @param {number} user_id 要移除的用户ID
      * @returns {Promise<{success: boolean, message: string}>}
      */
-    removePlayer: action(async function (userid) {
+    removePlayer: action(async function (user_id) {
         if (!this.gameid) {
             return { success: false, message: '缺少 gameid' }
         }
@@ -140,14 +140,14 @@ export const gameStore = observable({
         try {
             const result = await gameApi.removePlayer({
                 gameid: this.gameid,
-                userid: userid
+                userid: user_id
             }, {
                 loadingTitle: '移除中...'
             })
 
             if (result?.code === 200) {
                 // 直接从 players 数组中移除该用户，立即更新 UI
-                this.players = this.players.filter(p => String(p.user_id) !== String(userid))
+                this.players = this.players.filter(p => String(p.user_id) !== String(user_id))
                 return { success: true, message: '移除成功' }
             } else {
                 return { success: false, message: result?.message || '移除失败' }

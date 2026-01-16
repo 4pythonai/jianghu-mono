@@ -5,12 +5,12 @@
 
 /**
  * 检查用户是否已存在于任何组中
- * @param {string|number} userid - 用户ID
+ * @param {string|number} user_id - 用户ID
  * @param {Array} gameGroups - 游戏组数据
  * @returns {Object|null} 返回用户所在的组信息, 如果不存在返回null
  */
-export const findUserInGroups = (userid, gameGroups) => {
-    const userIdStr = userid.toString();
+export const findUserInGroups = (user_id, gameGroups) => {
+    const userIdStr = user_id.toString();
 
     for (let groupIndex = 0; groupIndex < gameGroups.length; groupIndex++) {
         const group = gameGroups[groupIndex];

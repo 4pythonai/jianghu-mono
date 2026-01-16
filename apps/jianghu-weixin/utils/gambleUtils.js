@@ -5,7 +5,7 @@
 /**
  * 根据 bootstrap_order 重新排序玩家列表
  * @param {Array} players - 玩家列表
- * @param {Array} bootStrapOrder - 排序顺序（userid数组）
+ * @param {Array} bootStrapOrder - 排序顺序（user_id数组）
  * @returns {Array} 排序后的玩家列表
  */
 function reorderPlayersByBootStrapOrder(players, bootStrapOrder) {

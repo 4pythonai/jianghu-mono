@@ -106,9 +106,9 @@ Page({
      * 点击围观者
      */
     onSpectatorTap(e) {
-        const { userid } = e.currentTarget.dataset
+        const { user_id } = e.currentTarget.dataset
         // 可以跳转到用户主页或显示用户信息
-        console.log('点击围观者:', userid)
+        console.log('点击围观者:', user_id)
     }
 })
 

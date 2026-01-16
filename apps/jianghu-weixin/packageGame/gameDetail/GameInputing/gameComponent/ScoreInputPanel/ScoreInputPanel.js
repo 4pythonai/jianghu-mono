@@ -172,7 +172,7 @@ Component({
             for (let i = 0; i < this.data.localScores.length; i++) {
                 const playerScore = this.data.localScores[i];
                 this.updateScore({
-                    userid: playerScore.user_id,
+                    user_id: playerScore.user_id,
                     hindex,
                     score: playerScore.score,
                     putts: playerScore.putts,

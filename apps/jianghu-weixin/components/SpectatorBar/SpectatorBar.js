@@ -9,7 +9,7 @@ Component({
             type: Number,
             value: 0
         },
-        /** 围观者列表 [{id/userid, avatar, display_name}] 或纯头像URL数组（兼容旧数据） */
+        /** 围观者列表 [{id/user_id, avatar, display_name}] 或纯头像URL数组（兼容旧数据） */
         spectators: {
             type: Array,
             value: []

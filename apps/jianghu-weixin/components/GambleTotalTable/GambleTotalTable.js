@@ -50,9 +50,9 @@ Component({
             const totalDonated = {};
             for (const player of players) {
                 // group_info 中使用 user_id
-                const userid = player.user_id;
-                totalMoney[userid] = 0;
-                totalDonated[userid] = 0;
+                const user_id = player.user_id;
+                totalMoney[user_id] = 0;
+                totalDonated[user_id] = 0;
             }
 
             // 处理洞数据

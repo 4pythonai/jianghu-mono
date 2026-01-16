@@ -27,24 +27,24 @@ function buildRedBlueIndex(redBlue = []) {
  */
 export const scoreStore = observable({
     /**
-     * 分数一维数组 [{userid, hindex, score, ...}]
+     * 分数一维数组 [{user_id, hindex, score, ...}]
      */
     scores: [],
 
     /**
      * 查找某玩家某洞的成绩
-     * @param {string|number} userid
+     * @param {string|number} user_id
      * @param {string|number} hindex
      * @returns {object|undefined}
      */
-    getScore(userid, hindex) {
-        return (this.scores || []).find(s => String(s.user_id) === String(userid) && String(s.hindex) === String(hindex));
+    getScore(user_id, hindex) {
+        return (this.scores || []).find(s => String(s.user_id) === String(user_id) && String(s.hindex) === String(hindex));
     },
 
     /**
      * 更新某玩家某洞的成绩（有则更新，无则新增）
      * @param {object} param0
-     * @param {string|number} param0.userid - 用户ID（参数名保持userid以兼容API）
+     * @param {string|number} param0.user_id - 用户ID
      * @param {string|number} param0.hindex
      * @param {number} [param0.score]
      * @param {number} [param0.putts]
@@ -52,8 +52,8 @@ export const scoreStore = observable({
      * @param {number} [param0.sand_save]
      * @param {string} [param0.tee_shot_direction]
      */
-    updateScore: action(function ({ userid, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }) {
-        const idx = (this.scores || []).findIndex(s => String(s.user_id) === String(userid) && String(s.hindex) === String(hindex));
+    updateScore: action(function ({ user_id, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }) {
+        const idx = (this.scores || []).findIndex(s => String(s.user_id) === String(user_id) && String(s.hindex) === String(hindex));
         if (idx >= 0) {
             // 更新已有
             const newScore = { ...this.scores[idx] };
@@ -71,7 +71,7 @@ export const scoreStore = observable({
             // 新增
             this.scores = [
                 ...this.scores,
-                { user_id: userid, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }
+                { user_id: user_id, hindex, score, putts, penalty_strokes, sand_save, tee_shot_direction }
             ];
         }
     }),

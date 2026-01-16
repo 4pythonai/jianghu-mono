@@ -90,12 +90,12 @@ Page({
             return;
         }
 
-        const userids = friends.map(f => f.user_id);
+        const user_ids = friends.map(f => f.user_id);
 
         try {
             const result = await api.game.addFriendsToGame({
                 gameid: gameid,
-                userids: userids
+                userids: user_ids
             }, {
                 loadingTitle: '添加中...'
             });

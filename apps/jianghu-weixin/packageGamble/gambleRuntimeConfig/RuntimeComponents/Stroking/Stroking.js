@@ -15,7 +15,7 @@ Component({
         enableStroking: false,
         showConfigModal: false,
         selectedUser: null,
-        tempConfigs: {}, // 临时配置，键为userid
+        tempConfigs: {}, // 临时配置，键为user_id
 
         // 当前配置状态
         currentConfig: { PAR3: 0, PAR4: 0, PAR5: 0 },
@@ -113,16 +113,16 @@ Component({
         /**
          * 选择用户
          */
-        selectUser(userid) {
-            const user = this.data.players.find(p => p.user_id === userid);
+        selectUser(user_id) {
+            const user = this.data.players.find(p => p.user_id === user_id);
             if (!user) return;
 
             // 保存当前用户的临时配置
             this.saveCurrentTempConfig();
 
             // 加载目标用户的配置
-            const tempConfig = this.data.tempConfigs[userid];
-            const existingConfig = this.properties.strokingConfig?.find(c => c.user_id === userid);
+            const tempConfig = this.data.tempConfigs[user_id];
+            const existingConfig = this.properties.strokingConfig?.find(c => c.user_id === user_id);
             const config = tempConfig || existingConfig;
 
             this.setData({
@@ -343,8 +343,8 @@ Component({
          * 删除用户配置
          */
         removeUserConfig(e) {
-            const userid = e.currentTarget.dataset.user_id;
-            const user = this.data.players.find(p => p.user_id === userid);
+            const user_id = e.currentTarget.dataset.user_id;
+            const user = this.data.players.find(p => p.user_id === user_id);
 
             wx.showModal({
                 title: '删除确认',
@@ -352,12 +352,12 @@ Component({
                 success: (res) => {
                     if (res.confirm) {
                         const updatedConfigs = (this.properties.strokingConfig || [])
-                            .filter(c => c.user_id !== userid);
+                            .filter(c => c.user_id !== user_id);
 
                         this.updateFinalConfig(updatedConfigs);
 
                         // 如果删除的是当前选中用户，重置选择
-                        if (this.data.selectedUser?.user_id === userid) {
+                        if (this.data.selectedUser?.user_id === user_id) {
                             this.setData({
                                 selectedUser: null,
                                 currentConfig: { PAR3: 0, PAR4: 0, PAR5: 0 },

@@ -55,8 +55,8 @@ const RuntimeComponentsUtils = {
             if (!Array.isArray(players)) return [];
 
             return players.map(player => {
-                const userid = player.user_id;
-                return Number.parseInt(userid) || 0;
+                const user_id = player.user_id;
+                return Number.parseInt(user_id) || 0;
             });
         },
 

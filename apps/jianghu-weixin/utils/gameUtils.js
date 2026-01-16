@@ -132,7 +132,7 @@ function convertToUserIds(playersArray) {
 }
 
 /**
- * 将一维分数数组构建为 userid -> hindex 的索引 Map
+ * 将一维分数数组构建为 user_id -> hindex 的索引 Map
  * @param {Array} scores
  * @returns {Map<string, Map<string, object>>}
  */

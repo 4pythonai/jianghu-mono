@@ -165,7 +165,7 @@ Page({
 
         // 转换用户数据格式, 适配PlayerSelector组件的格式
         // API (User/createAndSelect) 返回 t_user 表记录:
-        // - id: 用户ID (转换为 userid 供组件使用)
+        // - id: 用户ID (转换为 user_id 供组件使用)
         // - display_name: 显示名称
         // - wx_name: 微信名称
         // - avatar, handicap, mobile, gender 等

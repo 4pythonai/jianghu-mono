@@ -264,8 +264,8 @@ Page({
 
 
 
-    checkUserInGroups(userid) {
-        return findUserInGroups(userid, this.data.formData.gameGroups);
+    checkUserInGroups(user_id) {
+        return findUserInGroups(user_id, this.data.formData.gameGroups);
     },
 
     onUserCreated(createdUser, groupIndex, slotIndex) {

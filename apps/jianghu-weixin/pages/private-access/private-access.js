@@ -133,18 +133,18 @@ Page({
 
     async saveWhiteList() {
         const gameId = this.data.gameId
-        let userid = app.globalData?.userInfo?.id
+        let user_id = app.globalData?.userInfo?.id
 
-        if (!userid && app.storage) {
+        if (!user_id && app.storage) {
             const storedUser = app.storage.getUserInfo()
-            userid = storedUser?.id
+            user_id = storedUser?.id
         }
 
-        if (!userid) {
+        if (!user_id) {
             throw new Error('用户未登录')
         }
 
-        const res = await app.api.game.savePrivateWhiteList({ gameid: gameId, userid })
+        const res = await app.api.game.savePrivateWhiteList({ gameid: gameId, userid: user_id })
 
         if (res?.code !== 200) {
             throw new Error(res?.message || '保存失败')
