@@ -159,5 +159,6 @@ $autoload['model'] = [
     'gamble/MMeat',
     'gamble/MDonation',
     'gamble/MReward',
-    'gamble/MPoints'
+    'gamble/MPoints',
+    'MWeixin'
 ];

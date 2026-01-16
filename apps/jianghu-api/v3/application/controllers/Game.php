@@ -254,29 +254,50 @@ class Game extends MY_Controller {
         $filename = "game_invite_{$filenameSeed}_{$gameid}.png";
         $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
 
-        // 生成微信小程序二维码
-        $access_token = $this->getWechatAccessToken();
-        $wechat_api_url = "https://api.weixin.qq.com/wxa/getwxacode?access_token={$access_token}";
-
         // 优先使用前端传递的 path 参数，如果没有则使用默认路径
-        $path = isset($params['path']) ? $params['path'] : "pages/player-select/wxShare/wxShare?uuid={$uuid}&gameid={$gameid}";
+        $pathInput = isset($params['path']) ? $params['path'] : 'packagePlayer/player-select/wxShare/wxShare';
         // 移除路径开头的斜杠（微信小程序路径不需要前导斜杠）
-        $path = ltrim($path, '/');
+        $pathInput = ltrim($pathInput, '/');
+        $pathParts = explode('?', $pathInput, 2);
+        $path = $pathParts[0];
+        $queryParams = [];
+        if (isset($pathParts[1])) {
+            parse_str($pathParts[1], $queryParams);
+        }
 
-        $post_data = json_encode([
-            'path' => $path,
-            'width' => 430
-        ]);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $wechat_api_url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        $result = curl_exec($ch);
-        curl_close($ch);
+        $scene = "gameid={$gameid}";
+
+        $payload = [
+            'scene' => $scene,
+            'page' => 'packagePlayer/player-select/wxShare/wxShare',
+            'width' => 460,
+            'env_version' => 'develop',
+            'auto_color' => false,
+            'is_hyaline' => false,
+            'check_path' => false  // 设置为 false，跳过路径校验（适用于页面未发布或分包页面）
+        ];
+
+
+        $qrcodeResult = $this->MWeixin->fetchMiniProgramCodeImage('getwxacodeunlimit', $payload);
+
+        if (empty($qrcodeResult['success'])) {
+            $errorInfo = $qrcodeResult['error'] ?? null;
+            $errorMsg = '二维码生成失败';
+            if (is_array($errorInfo) && isset($errorInfo['errmsg'])) {
+                $errorMsg = $errorInfo['errmsg'];
+            } elseif (is_array($errorInfo) && isset($errorInfo['message'])) {
+                $errorMsg = $errorInfo['message'];
+            }
+            echo json_encode([
+                'code' => 500,
+                'message' => $errorMsg,
+                'error_info' => $errorInfo
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $qrcodeResult['data'];
 
         // 保存二维码
         $upload_path = FCPATH . '../upload/qrcodes/';
@@ -292,22 +313,6 @@ class Game extends MY_Controller {
             'message' => '二维码生成成功',
             'qrcode_url' => $qrcodeUrl,
         ], JSON_UNESCAPED_UNICODE);
-    }
-
-    private function getWechatAccessToken() {
-        $appid = config_item('appid');
-        $secret = config_item('secret');
-        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $result = json_decode($response, true);
-        return $result['access_token'];
     }
 
     public function gameDetail() {

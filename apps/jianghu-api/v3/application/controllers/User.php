@@ -30,85 +30,6 @@ class User extends MY_Controller {
     }
 
 
-    // public function getUserProfile() {
-    //     try {
-    //         $json_paras = json_decode(file_get_contents('php://input'), true);
-    //         $user_id = isset($json_paras['user_id']) ? intval($json_paras['user_id']) : 0;
-
-    //         if (!$user_id) {
-    //             echo json_encode([
-    //                 'code' => 400,
-    //                 'message' => '缺少用户ID'
-    //             ], JSON_UNESCAPED_UNICODE);
-    //             return;
-    //         }
-
-    //         $user = $this->MUser->getUserProfile($user_id);
-
-    //         if (!$user) {
-    //             echo json_encode([
-    //                 'code' => 404,
-    //                 'message' => '用户不存在'
-    //             ], JSON_UNESCAPED_UNICODE);
-    //             return;
-    //         }
-
-    //         // 获取当前登录用户ID
-    //         $current_user_id = $this->getUser();
-
-    //         // 获取关系信息
-    //         $is_self = ($current_user_id == $user_id);
-    //         $is_following = false;
-    //         $is_blocked = false;
-    //         $is_blocked_by = false;
-    //         if ($current_user_id && !$is_self) {
-    //             $is_following = $this->MUser->isFollowing($current_user_id, $user_id);
-    //             $is_blocked = $this->MUser->isBlocked($current_user_id, $user_id);
-    //             $is_blocked_by = $this->MUser->isBlockedBy($current_user_id, $user_id);
-    //         }
-
-    //         // 获取统计数据
-    //         $followers_count = $this->MUser->getFollowersCount($user_id);
-    //         $games_count = $this->MUser->getGamesCount($user_id);
-    //         $teams_count = $this->MUser->getTeamsCount($user_id);
-
-    //         echo json_encode([
-    //             'code' => 200,
-    //             'message' => 'OK',
-    //             'data' => [
-    //                 'user' => $user,
-    //                 'relationship' => [
-    //                     'is_self' => $is_self,
-    //                     'is_following' => $is_following,
-    //                     'is_blocked' => $is_blocked,
-    //                     'is_blocked_by' => $is_blocked_by
-    //                 ],
-    //                 'stats' => [
-    //                     'gamesCount' => $games_count,
-    //                     'teamsCount' => $teams_count,
-    //                     'followers_count' => $followers_count
-    //                 ]
-    //             ]
-    //         ], JSON_UNESCAPED_UNICODE);
-    //     } catch (Exception $e) {
-    //         // 记录异常详情到日志
-    //         logtext('<div class="error-block" style="background:#ffebee; border-left:4px solid #f44336; padding:10px; margin:10px 0;">');
-    //         logtext('<strong style="color:#c62828;">[User/getUserProfile ERROR] ' . date('Y-m-d H:i:s') . '</strong>');
-    //         logtext('Exception: ' . get_class($e));
-    //         logtext('Message: ' . $e->getMessage());
-    //         logtext('File: ' . $e->getFile() . ':' . $e->getLine());
-    //         logtext('Stack trace:');
-    //         logtext($e->getTraceAsString());
-    //         logtext('Request params: ' . json_encode($json_paras ?? [], JSON_UNESCAPED_UNICODE));
-    //         logtext('User ID: ' . ($user_id ?? 'N/A'));
-    //         logtext('</div>');
-
-    //         echo json_encode([
-    //             'code' => 500,
-    //             'message' => '服务器内部错误'
-    //         ], JSON_UNESCAPED_UNICODE);
-    //     }
-    // }
 
     public function getUserProfile() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
@@ -460,21 +381,13 @@ class User extends MY_Controller {
 
         $filename = "user_qrcode_{$user_id}.png";
         $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
-
-        $access_token = $this->getWechatAccessToken();
-
-        $wechat_api_url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token={$access_token}";
         $path = "packagePlayer/user-profile/user-profile";
         $path = ltrim($path, '/');
-
 
         // scene 字段用于传递参数，最大32个字符
         // 格式：user_id=14
         $scene = "user_id={$user_id}";
-
-        logtext("  scene参数: " . $scene);
-
-        $post_data = json_encode([
+        $payload = [
             'scene' => $scene,
             'page' => $path,
             'width' => 460,
@@ -482,34 +395,29 @@ class User extends MY_Controller {
             'auto_color' => false,
             'is_hyaline' => false,
             'check_path' => false  // 设置为 false，跳过路径校验（适用于页面未发布或分包页面）
-        ], JSON_UNESCAPED_UNICODE);
+        ];
+        $post_data = json_encode($payload, JSON_UNESCAPED_UNICODE);
 
         logtext("  请求数据: " . $post_data);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $wechat_api_url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-        $result = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+        $qrcodeResult = $this->MWeixin->fetchMiniProgramCodeImage('getwxacodeunlimit', $payload);
 
-        // 检查返回结果是否是图片（成功时返回图片二进制数据）
-        // 如果返回的是 JSON 错误信息，说明生成失败
-        $isJson = false;
-        $errorInfo = null;
-        if (substr($result, 0, 1) === '{') {
-            $isJson = true;
-            $errorInfo = json_decode($result, true);
-            logtext("  微信API返回错误: " . json_encode($errorInfo, JSON_UNESCAPED_UNICODE));
-        }
+        if (empty($qrcodeResult['success'])) {
+            $httpCode = $qrcodeResult['http_code'] ?? 0;
+            $errorInfo = $qrcodeResult['error'] ?? null;
+            if (!empty($errorInfo)) {
+                logtext("  微信API返回错误: " . json_encode($errorInfo, JSON_UNESCAPED_UNICODE));
+            } elseif (!empty($qrcodeResult['raw'])) {
+                logtext("  微信API返回内容: " . $qrcodeResult['raw']);
+            }
 
-        if ($isJson || $httpCode !== 200) {
             logtext("  二维码生成失败，HTTP状态码: " . $httpCode);
-            $errorMsg = isset($errorInfo['errmsg']) ? $errorInfo['errmsg'] : '未知错误';
+            $errorMsg = '未知错误';
+            if (is_array($errorInfo) && isset($errorInfo['errmsg'])) {
+                $errorMsg = $errorInfo['errmsg'];
+            } elseif (is_array($errorInfo) && isset($errorInfo['message'])) {
+                $errorMsg = $errorInfo['message'];
+            }
             echo json_encode([
                 'code' => 500,
                 'message' => '二维码生成失败: ' . $errorMsg,
@@ -518,15 +426,15 @@ class User extends MY_Controller {
             return;
         }
 
+        $result = $qrcodeResult['data'];
+
         $upload_path = FCPATH . '../upload/qrcodes/';
         if (!is_dir($upload_path)) {
             mkdir($upload_path, 0755, true);
         }
 
         file_put_contents($qrcodePath, $result);
-
         logtext("  二维码保存成功: " . $qrcodePath);
-
         $qrcodeUrl = '/upload/qrcodes/' . $filename;
         $this->MUser->updateUserQrcode($user_id, $qrcodeUrl);
 
@@ -537,26 +445,6 @@ class User extends MY_Controller {
         ], JSON_UNESCAPED_UNICODE);
     }
 
-
-    /**
-     * 获取微信access_token
-     * 参考Game控制器的实现
-     */
-    private function getWechatAccessToken() {
-        $appid = config_item('appid');
-        $secret = config_item('secret');
-        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appid}&secret={$secret}";
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $result = json_decode($response, true);
-        return isset($result['access_token']) ? $result['access_token'] : false;
-    }
 
     public function updateRemark() {
         $user_id = $this->getUser();
