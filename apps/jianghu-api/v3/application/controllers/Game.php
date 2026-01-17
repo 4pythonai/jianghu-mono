@@ -476,49 +476,7 @@ class Game extends MY_Controller {
         echo json_encode(['code' => 200, 'message' => '保存成功'], JSON_UNESCAPED_UNICODE);
     }
 
-    public function cancelGame() {
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
 
-        if ($gameid <= 0) {
-            return $this->error('缺少有效的 gameid');
-        }
-
-        $user_id = $this->getUser();
-        if (!$user_id) {
-            return $this->error('请先登录', 401);
-        }
-
-        // 只有创建者可以取消球局
-        if (!$this->isGameCreator($gameid, $user_id)) {
-            return $this->error('只有创建者可以取消球局', 403);
-        }
-
-        $this->MGame->cancelGame($gameid);
-        $this->success([], '取消成功');
-    }
-
-    public function finishGame() {
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
-
-        if ($gameid <= 0) {
-            return $this->error('缺少有效的 gameid');
-        }
-
-        $user_id = $this->getUser();
-        if (!$user_id) {
-            return $this->error('请先登录', 401);
-        }
-
-        // 只有创建者可以结束球局
-        if (!$this->isGameCreator($gameid, $user_id)) {
-            return $this->error('只有创建者可以结束球局', 403);
-        }
-
-        $this->MGame->finishGame($gameid);
-        $this->success([], '结束球局成功');
-    }
 
     public function removePlayer() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
@@ -657,5 +615,59 @@ class Game extends MY_Controller {
         $this->db->where(['gameid' => $gameid, 'user_id' => $user_id]);
         $this->db->delete('t_game_spectator');
         echo json_encode(['code' => 200, 'message' => '删除成功'], JSON_UNESCAPED_UNICODE);
+    }
+
+
+    public function cancelGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+
+        if ($gameid <= 0) {
+            return $this->error('缺少有效的 gameid');
+        }
+
+        $user_id = $this->getUser();
+        if (!$user_id) {
+            return $this->error('请先登录', 401);
+        }
+
+        // 只有创建者可以取消球局
+        if (!$this->isGameCreator($gameid, $user_id)) {
+            return $this->error('只有创建者可以取消球局', 403);
+        }
+
+        $this->MGame->cancelGame($gameid);
+        $this->success([], '取消成功');
+    }
+
+    public function finishGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+
+        if ($gameid <= 0) {
+            return $this->error('缺少有效的 gameid');
+        }
+
+        $user_id = $this->getUser();
+        if (!$user_id) {
+            return $this->error('请先登录', 401);
+        }
+
+        // 只有创建者可以结束球局
+        if (!$this->isGameCreator($gameid, $user_id)) {
+            return $this->error('只有创建者可以结束球局', 403);
+        }
+
+        $this->MGame->finishGame($gameid);
+        $this->success([], '结束球局成功');
+    }
+
+
+    // 开始队内赛/队际赛
+    public function startTeamGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+        $this->MGame->startTeamGame($gameid);
+        $this->success([], '成功开始比赛');
     }
 }

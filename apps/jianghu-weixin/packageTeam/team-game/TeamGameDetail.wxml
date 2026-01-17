@@ -120,7 +120,10 @@
       </view>
 
       <!-- 分组 Tab -->
-      <view wx:if="{{currentTab === 2}}" class="tab-panel groups-panel">
+      <view
+        wx:if="{{currentTab === 2}}"
+        class="tab-panel groups-panel {{showGroupHint ? 'groups-panel-hint' : ''}}"
+      >
         <!-- 分组列表 -->
         <view class="groups-list">
           <GroupCard

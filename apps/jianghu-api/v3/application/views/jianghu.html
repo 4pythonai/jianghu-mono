@@ -1,7 +1,8 @@
 <?php
 // 动态计算 canvas 高度
 $year_count = count($years);
-$canvas_height = 800 + ($year_count * 150);
+// 基础高度 800 + 年份列表高度 + 底部内容高度（join圆圈100px + 按钮margin-top 100px + 按钮本身60px + 其他间距40px）
+$canvas_height = 800 + ($year_count * 150) + 300;
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>

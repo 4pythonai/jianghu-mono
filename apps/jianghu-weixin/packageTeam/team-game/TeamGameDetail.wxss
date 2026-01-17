@@ -236,6 +236,18 @@
     padding: 20rpx;
 }
 
+.groups-panel-hint {
+    background: rgba(76, 175, 80, 0.08);
+    border-radius: 16rpx;
+    animation: groupHintPulse 1.5s ease;
+}
+
+@keyframes groupHintPulse {
+    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.25); }
+    70% { box-shadow: 0 0 0 16rpx rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
 .groups-list {
     display: flex;
     flex-direction: column;

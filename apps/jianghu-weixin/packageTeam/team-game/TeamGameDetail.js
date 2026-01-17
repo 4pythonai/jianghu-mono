@@ -22,6 +22,7 @@ Page({
         // 弹窗状态
         showMoreActions: false,
         showRegisterPopup: false,   // 报名弹窗
+        showGroupHint: false,
         selectedTagId: null,        // 选中的分队ID
         registerForm: {             // 报名表单数据
             display_name: '',
@@ -103,10 +104,22 @@ Page({
         if (this.storeBindings) {
             this.storeBindings.destroyStoreBindings()
         }
+
+        if (this.groupHintTimer) {
+            clearTimeout(this.groupHintTimer)
+            this.groupHintTimer = null
+        }
     },
 
     onShow() {
         // 页面显示时刷新分组数据（从 group-config 返回后更新）
+        const needsRefresh = wx.getStorageSync('teamGameDetailNeedsRefresh')
+        if (needsRefresh && this.data.gameid) {
+            wx.removeStorageSync('teamGameDetailNeedsRefresh')
+            this.initData(this.data.gameid, this.data.gameType)
+            return
+        }
+
         if (this.data.gameid && this.storeBindings) {
             this.loadGroups(this.data.gameid)
             this.storeBindings.updateStoreBindings()
@@ -385,20 +398,170 @@ Page({
         const action = e.currentTarget.dataset.action
         this.setData({ showMoreActions: false })
 
+        const actionHandlers = {
+            closeRegistration: () => this.confirmGameAction('关闭报名', () => this.closeRegistration()),
+            startGame: () => this.confirmGameAction('开始比赛', () => this.startGame()),
+            cancelGame: () => this.confirmGameAction('取消比赛', () => this.cancelTeamGame()),
+            editGroup: () => this.openGroupTabWithHint(),
+            editGame: () => this.goToEditGame()
+        }
+
+        if (actionHandlers[action]) {
+            actionHandlers[action]()
+            return
+        }
+
         const actionMessages = {
             registerForFriend: '替好友报名',
-            closeRegistration: '关闭报名',
             managePlayer: '选手管理',
-            editGame: '修改比赛',
             editGroup: '修改分组',
             manageFee: '收费管理',
-            cancelGame: '取消比赛',
-            startGame: '开始比赛',
             manageScore: '记分管理'
         }
 
         if (actionMessages[action]) {
             wx.showToast({ title: actionMessages[action], icon: 'none' })
+        }
+    },
+
+    /**
+     * 确认后执行比赛操作
+     */
+    confirmGameAction(actionText, onConfirm) {
+        wx.showModal({
+            title: '确认操作',
+            content: `确定${actionText} ?`,
+            success: (res) => {
+                if (res.confirm) {
+                    onConfirm()
+                }
+            }
+        })
+    },
+
+    /**
+     * 前往编辑赛事
+     */
+    goToEditGame() {
+        const gameId = this.data.gameid
+        const gameType = this.data.gameType
+
+        if (!gameId) {
+            wx.showToast({ title: '赛事信息缺失', icon: 'none' })
+            return
+        }
+
+        navigationHelper.navigateTo(
+            `/packageTeam/editTeamGame/editTeamGame?game_id=${gameId}&game_type=${gameType}`
+        )
+    },
+
+    /**
+     * 切换到分组 Tab 并显示提示
+     */
+    openGroupTabWithHint() {
+        this.setData({ currentTab: 2, showGroupHint: true })
+        if (this.groupHintTimer) {
+            clearTimeout(this.groupHintTimer)
+        }
+        this.groupHintTimer = setTimeout(() => {
+            this.setData({ showGroupHint: false })
+            this.groupHintTimer = null
+        }, 1500)
+    },
+
+    /**
+     * 刷新赛事详情
+     */
+    async refreshGameDetail() {
+        try {
+            await this.fetchTeamGameDetail(this.data.gameid, this.data.gameType)
+            if (this.storeBindings) {
+                this.storeBindings.updateStoreBindings()
+            }
+        } catch (err) {
+            console.error('[TeamGameDetail] 刷新赛事详情失败:', err)
+        }
+    },
+
+    /**
+     * 截止报名
+     */
+    async closeRegistration() {
+        wx.showLoading({ title: '截止中...' })
+
+        try {
+            const app = getApp()
+            const result = await app.api.teamgame.closeRegistration({
+                game_id: this.data.gameid
+            })
+
+            wx.hideLoading()
+
+            if (result.code === 200) {
+                wx.showToast({ title: result.message || '报名已截止', icon: 'success' })
+                this.refreshGameDetail()
+            } else {
+                wx.showToast({ title: result.message || '操作失败', icon: 'none' })
+            }
+        } catch (err) {
+            wx.hideLoading()
+            console.error('[TeamGameDetail] 截止报名失败:', err)
+            wx.showToast({ title: '操作失败，请稍后重试', icon: 'none' })
+        }
+    },
+
+    /**
+     * 开始比赛
+     */
+    async startGame() {
+        wx.showLoading({ title: '开始中...' })
+
+        try {
+            const app = getApp()
+            const result = await app.api.teamgame.startGame({
+                game_id: this.data.gameid
+            })
+
+            wx.hideLoading()
+
+            if (result.code === 200) {
+                wx.showToast({ title: result.message || '比赛已开始', icon: 'success' })
+                this.refreshGameDetail()
+            } else {
+                wx.showToast({ title: result.message || '操作失败', icon: 'none' })
+            }
+        } catch (err) {
+            wx.hideLoading()
+            console.error('[TeamGameDetail] 开始比赛失败:', err)
+            wx.showToast({ title: '操作失败，请稍后重试', icon: 'none' })
+        }
+    },
+
+    /**
+     * 取消比赛
+     */
+    async cancelTeamGame() {
+        wx.showLoading({ title: '取消中...' })
+
+        try {
+            const app = getApp()
+            const result = await app.api.teamgame.cancelGame({
+                game_id: this.data.gameid
+            })
+
+            wx.hideLoading()
+
+            if (result.code === 200) {
+                wx.showToast({ title: result.message || '比赛已取消', icon: 'success' })
+                this.refreshGameDetail()
+            } else {
+                wx.showToast({ title: result.message || '操作失败', icon: 'none' })
+            }
+        } catch (err) {
+            wx.hideLoading()
+            console.error('[TeamGameDetail] 取消比赛失败:', err)
+            wx.showToast({ title: '操作失败，请稍后重试', icon: 'none' })
         }
     },
 

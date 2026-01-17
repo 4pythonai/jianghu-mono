@@ -131,15 +131,6 @@ class MGame  extends CI_Model {
   }
 
 
-  public function cancelGame($gameid) {
-    $this->db->where('id', $gameid)
-      ->update('t_game', ['game_status' => 'cancelled']);
-  }
-
-  public function finishGame($gameid) {
-    $this->db->where('id', $gameid)
-      ->update('t_game', ['game_status' => 'finished']);
-  }
 
   /**
    * 从球局中移除玩家
@@ -405,5 +396,20 @@ class MGame  extends CI_Model {
       $ret['error'] = $curlError;
     }
     return $ret;
+  }
+
+  public function cancelGame($gameid) {
+    $this->db->where('id', $gameid)
+      ->update('t_game', ['game_status' => 'cancelled']);
+  }
+
+  public function finishGame($gameid) {
+    $this->db->where('id', $gameid)
+      ->update('t_game', ['game_status' => 'finished']);
+  }
+
+  public function startTeamGame($gameid) {
+    $this->db->where('id', $gameid)
+      ->update('t_game', ['game_status' => 'playing']);
   }
 }
