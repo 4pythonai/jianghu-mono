@@ -94,6 +94,9 @@
 
       <!-- 报名人员 Tab -->
       <view wx:if="{{currentTab === 1}}" class="tab-panel">
+        <view class="player-count">
+          <text>报名总人数：{{tagMembers.length}} 人</text>
+        </view>
         <!-- 表头 -->
         <view class="player-list-header">
           <view class="header-index">序号</view>
@@ -101,20 +104,38 @@
           <view class="header-player">球员</view>
           <view class="header-handicap">江湖差点</view>
         </view>
-        <!-- 列表 -->
-        <view class="player-list">
-          <PlayerListItem
-            wx:for="{{tagMembers}}"
-            wx:key="id"
-            index="{{item.seq}}"
-            avatar="{{item.avatar}}"
-            show_name="{{item.show_name}}"
-            userId="{{item.user_id}}"
-            handicap="{{item.handicap}}"
-          />
+        <!-- 分组列表 -->
+        <view
+          wx:for="{{tagMemberGroups}}"
+          wx:key="tagId"
+          wx:for-item="group"
+          class="tag-group"
+        >
+          <view class="tag-group-header">
+            <view
+              class="tag-group-dot"
+              style="{{group.color ? 'background-color: ' + group.color : ''}}"
+            ></view>
+            <text class="tag-group-title">{{group.tagName}} ({{group.members.length}})</text>
+          </view>
+          <view class="player-list">
+            <PlayerListItem
+              wx:for="{{group.members}}"
+              wx:key="id"
+              wx:for-item="member"
+              index="{{member.tagSeq}}"
+              avatar="{{member.avatar}}"
+              show_name="{{member.show_name}}"
+              userId="{{member.user_id}}"
+              handicap="{{member.handicap}}"
+            />
+          </view>
+          <view wx:if="{{group.members.length === 0}}" class="empty-state tag-empty-state">
+            <text>暂无报名人员</text>
+          </view>
         </view>
         <!-- 空状态 -->
-        <view wx:if="{{tagMembers.length === 0}}" class="empty-state">
+        <view wx:if="{{tagMemberGroups.length === 0}}" class="empty-state">
           <text>暂无报名人员</text>
         </view>
       </view>

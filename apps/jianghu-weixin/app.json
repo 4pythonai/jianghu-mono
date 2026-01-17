@@ -86,6 +86,8 @@
 				"team-transfer/team-transfer",
 				"create-team/create-team",
 				"team-game/TeamGameDetail",
+				"teamGamePlayerManage/teamGamePlayerManage",
+				"scorePermissionManage/scorePermissionManage",
 				"createSingleTeamGame/createSingleTeamGame",
 				"createSingleTeamGame/singleTeamGameForm/singleTeamGameForm",
 				"createCrossTeamGame/createCrossTeamGame",

@@ -27,51 +27,6 @@ class Auth extends MY_Controller {
   }
 
 
-  public function db_login($mobile, $pwd_try) {
-    $user = $this->db->select('id,user,password,staff_name,active,salt')->get_where('nanx_user', ['mobile' => $mobile])->result_array();
-
-    if (1 != sizeof($user)) {
-      return 'user_not_found';
-    }
-
-    if (1 == sizeof($user)) {
-      $salt = $user[0]['salt'];
-      $pwd_db = $user[0]['password'];
-
-      $pwd_try_with_salt = md5(md5($pwd_try) . $salt);
-
-      if ($pwd_try_with_salt == $pwd_db) {
-        return  'success';
-      } else {
-        return  'false';
-      }
-    }
-  }
-
-
-  public function tier2_login($mobile, $pwd_try) {
-    $this->db->where('tierUid', $mobile);
-    $user = $this->db->get('tier2')->result_array();
-
-
-    if (1 != sizeof($user)) {
-      return 'user_not_found';
-    }
-
-    if (1 == sizeof($user)) {
-      $salt = $user[0]['salt'];
-      $pwd_db = $user[0]['password'];
-      $pwd_try_with_salt = md5(md5($pwd_try) . $salt);
-
-      if ($pwd_try_with_salt == $pwd_db) {
-        return  'success';
-      } else {
-        return  'false';
-      }
-    }
-  }
-
-
 
   public function logout() {
     http_response_code(401);

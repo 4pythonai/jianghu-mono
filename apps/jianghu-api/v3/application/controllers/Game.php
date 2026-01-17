@@ -670,4 +670,13 @@ class Game extends MY_Controller {
         $this->MGame->startTeamGame($gameid);
         $this->success([], '成功开始比赛');
     }
+
+    public function updateScorePermission() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+        $score_permission = isset($json_paras['score_permission']) ? $json_paras['score_permission'] : [];
+        $this->db->where('id', $gameid);
+        $this->db->update('t_game', ['score_permission' => json_encode($score_permission)]);
+        $this->success([], '更新成功');
+    }
 }

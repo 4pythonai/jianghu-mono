@@ -461,6 +461,7 @@ export const gameStore = observable({
                     }
                     return {
                         id: m.user_id,
+                        tag_id: m.tag_id,
                         user_id: m.user_id,
                         seq: m.seq,
                         show_name: m.show_name,

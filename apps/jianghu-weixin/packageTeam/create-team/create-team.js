@@ -69,7 +69,7 @@ Page({
     wx.showLoading({ title: '上传中...' })
     
     try {
-      const res = await app.http.uploadFile('/Team/uploadLogo', tempFilePath, {
+      const res = await app.api.team.uploadLogo(tempFilePath, {
         name: 'logo'
       })
       
@@ -178,4 +178,3 @@ Page({
     }
   }
 })
-

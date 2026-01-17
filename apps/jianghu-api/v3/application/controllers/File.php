@@ -161,24 +161,4 @@ class File extends MY_Controller {
 
     return $val;
   }
-
-
-
-
-
-
-  public function uploadPicture() {
-    $files_from_client = $this->uploadAction($_FILES, 'image');
-    $ret = ['code' => 200, 'data' => $files_from_client, 'message' => '图片上传成功'];
-    echo json_encode($ret, JSON_UNESCAPED_UNICODE);
-    die;
-  }
-
-
-  public function uploadOfficeFile() {
-    $files_from_client = $this->uploadAction($_FILES, 'office');
-    $ret = ['code' => 200, 'data' => $files_from_client, 'message' => '文件上传成功'];
-    echo json_encode($ret, JSON_UNESCAPED_UNICODE);
-    die;
-  }
 }

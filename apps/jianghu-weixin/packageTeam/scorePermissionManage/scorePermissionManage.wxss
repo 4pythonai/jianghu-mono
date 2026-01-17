@@ -1,0 +1,48 @@
+.container {
+  min-height: 100vh;
+  background: var(--common-bg, #f5f5f5);
+  padding-top: 180rpx; /* CustomNavBar 预留空间 */
+}
+
+.page-content {
+  padding: 32rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 8rpx 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.permission-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.permission-item + .permission-item {
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.permission-label {
+  margin-left: 16rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.hint {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.btn {
+  margin-top: 32rpx;
+}

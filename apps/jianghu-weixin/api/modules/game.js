@@ -12,6 +12,7 @@ const game = {
     updateGamePrivateWithPassword: (data, options) => request('/Game/updateGamePrivateWithPassword', data, options),
     updateGameOpenTime: (data, options) => request('/Game/updateGameOpenTime', data, options),
     updateGameScoringType: (data, options) => request('/Game/updateGameScoringType', data, options),
+    updateScorePermission: (data, options) => request('/Game/updateScorePermission', data, options),
     updateGameGroupAndPlayers: (data, options) => request('/Game/updateGameGroupAndPlayers', data, options),
     saveGameScore: (data, options) => request('/Game/saveGameScore', data, options),
     savePrivateWhiteList: (data, options) => request('/Game/savePrivateWhiteList', data, options),

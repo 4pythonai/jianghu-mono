@@ -28,6 +28,22 @@ func Analyze(
 		usedControllerMethods[key][strings.ToLower(ep.Method)] = true
 	}
 
+	// Include internal controller method calls (e.g. $this->method())
+	controllerNames := make(map[string]bool)
+	for _, class := range controllers {
+		controllerNames[strings.ToLower(class.Name)] = true
+	}
+	for _, call := range calls {
+		receiverKey := strings.ToLower(call.Receiver)
+		if !controllerNames[receiverKey] {
+			continue
+		}
+		if usedControllerMethods[receiverKey] == nil {
+			usedControllerMethods[receiverKey] = make(map[string]bool)
+		}
+		usedControllerMethods[receiverKey][strings.ToLower(call.Method)] = true
+	}
+
 	// Find unused controller methods
 	for _, class := range controllers {
 		classKey := strings.ToLower(class.Name)

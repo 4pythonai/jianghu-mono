@@ -1,0 +1,8 @@
+{
+    "navigationStyle": "custom",
+    "navigationBarTitleText": "编辑比赛",
+    "usingComponents": {
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+        "TimePicker": "/components/TimePicker/time-picker"
+    }
+}

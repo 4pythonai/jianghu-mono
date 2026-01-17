@@ -35,6 +35,7 @@ Page({
         spectators: { count: 0, avatars: [] },
         gameTags: [],
         tagMembers: [],
+        tagMemberGroups: [],
         groups: [],
         eventDetail: {
             title: '',
@@ -126,6 +127,75 @@ Page({
         }
     },
 
+    buildTagMemberGroups(gameTags = [], tagMembers = []) {
+        const tags = Array.isArray(gameTags) ? gameTags : []
+        const members = Array.isArray(tagMembers) ? tagMembers : []
+        const groups = tags.map(tag => ({
+            tagId: tag.id,
+            tagName: tag.tagName,
+            color: tag.color || '',
+            members: []
+        }))
+
+        const groupMap = new Map()
+        const groupCounters = new Map()
+        groups.forEach(group => {
+            if (group.tagId !== undefined && group.tagId !== null) {
+                groupMap.set(String(group.tagId), group)
+            }
+        })
+
+        const extraGroups = new Map()
+        members.forEach(member => {
+            const tagId = member.tag_id
+            const key = tagId !== undefined && tagId !== null ? String(tagId) : ''
+            let group = groupMap.get(key)
+
+            if (group) {
+                const nextIndex = (groupCounters.get(group) || 0) + 1
+                groupCounters.set(group, nextIndex)
+                group.members.push({ ...member, tagSeq: nextIndex })
+                return
+            }
+
+            if (!extraGroups.has(key)) {
+                console.log('[TeamGameDetail] 发现未匹配 tag 的成员', {
+                    tagId: tagId,
+                    tagName: member.tagName || '',
+                    userId: member.user_id
+                })
+                extraGroups.set(key, {
+                    tagId: tagId,
+                    tagName: member.tagName || '未分组',
+                    color: member.tagColor || '',
+                    members: []
+                })
+            }
+            group = extraGroups.get(key)
+            const nextIndex = (groupCounters.get(group) || 0) + 1
+            groupCounters.set(group, nextIndex)
+            group.members.push({ ...member, tagSeq: nextIndex })
+        })
+
+        return groups.concat(Array.from(extraGroups.values()))
+    },
+
+    refreshTagMemberGroups(source = '') {
+        const tagMemberGroups = this.buildTagMemberGroups(gameStore.gameTags, gameStore.tagMembers)
+        console.log('[TeamGameDetail] 刷新报名分组', {
+            source,
+            gameTagsCount: Array.isArray(gameStore.gameTags) ? gameStore.gameTags.length : 0,
+            tagMembersCount: Array.isArray(gameStore.tagMembers) ? gameStore.tagMembers.length : 0,
+            groupCount: tagMemberGroups.length,
+            groups: tagMemberGroups.map(group => ({
+                tagId: group.tagId,
+                tagName: group.tagName,
+                memberCount: group.members.length
+            }))
+        })
+        this.setData({ tagMemberGroups })
+    },
+
     /**
      * 初始化数据
      */
@@ -144,6 +214,7 @@ Page({
             if (this.storeBindings) {
                 this.storeBindings.updateStoreBindings()
             }
+            this.refreshTagMemberGroups('initData')
 
             // 检查当前用户是否已报名（直接从 store 读取，避免绑定延迟）
             const app = getApp()
@@ -337,7 +408,8 @@ Page({
                     isRegistered: true
                 })
                 // 刷新报名人员列表
-                this.loadTagMembers(gameid)
+                await this.loadTagMembers(gameid)
+                this.refreshTagMemberGroups('register')
             } else {
                 wx.showToast({ title: result.message || '报名失败', icon: 'none' })
             }
@@ -366,7 +438,8 @@ Page({
                 wx.showToast({ title: '已取消报名', icon: 'success' })
                 this.setData({ isRegistered: false })
                 // 刷新报名人员列表
-                this.loadTagMembers(this.data.gameid)
+                await this.loadTagMembers(this.data.gameid)
+                this.refreshTagMemberGroups('cancel')
             } else {
                 wx.showToast({ title: result.message || '取消失败', icon: 'none' })
             }
@@ -403,7 +476,9 @@ Page({
             startGame: () => this.confirmGameAction('开始比赛', () => this.startGame()),
             cancelGame: () => this.confirmGameAction('取消比赛', () => this.cancelTeamGame()),
             editGroup: () => this.openGroupTabWithHint(),
-            editGame: () => this.goToEditGame()
+            editGame: () => this.goToEditGame(),
+            manageScore: () => this.goToScorePermissionManage(),
+            managePlayer: () => this.goToTeamGamePlayerManage()
         }
 
         if (actionHandlers[action]) {
@@ -413,10 +488,8 @@ Page({
 
         const actionMessages = {
             registerForFriend: '替好友报名',
-            managePlayer: '选手管理',
             editGroup: '修改分组',
-            manageFee: '收费管理',
-            manageScore: '记分管理'
+            manageFee: '收费管理'
         }
 
         if (actionMessages[action]) {
@@ -453,6 +526,39 @@ Page({
 
         navigationHelper.navigateTo(
             `/packageTeam/editTeamGame/editTeamGame?game_id=${gameId}&game_type=${gameType}`
+        )
+    },
+
+    /**
+     * 前往记分管理
+     */
+    goToScorePermissionManage() {
+        const gameId = this.data.gameid
+        const gameType = this.data.gameType
+
+        if (!gameId) {
+            wx.showToast({ title: '赛事信息缺失', icon: 'none' })
+            return
+        }
+
+        navigationHelper.navigateTo(
+            `/packageTeam/scorePermissionManage/scorePermissionManage?game_id=${gameId}&game_type=${gameType}`
+        )
+    },
+
+    /**
+     * 前往选手管理
+     */
+    goToTeamGamePlayerManage() {
+        const gameId = this.data.gameid
+
+        if (!gameId) {
+            wx.showToast({ title: '赛事信息缺失', icon: 'none' })
+            return
+        }
+
+        navigationHelper.navigateTo(
+            `/packageTeam/teamGamePlayerManage/teamGamePlayerManage?game_id=${gameId}`
         )
     },
 

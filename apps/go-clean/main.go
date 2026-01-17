@@ -4,10 +4,13 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"go-clean/analyzer"
 	"go-clean/parser"
 	"go-clean/reporter"
+	"go-clean/types"
 )
 
 func main() {
@@ -21,6 +24,16 @@ func main() {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+
+	skipper := newPathSkipper([]string{
+		filepath.Join(*controllers, "Audit.php"),
+		filepath.Join(*controllers, "Gamble.php"),
+		filepath.Join(*controllers, "Jianghu.php"),
+		filepath.Join(*models, "GamblePipe.php"),
+		filepath.Join(*models, "GamblePipeRunner.php"),
+		filepath.Join(*models, "gamble"),
+		filepath.Join(*models, "sysrule"),
+	})
 
 	// Parse JS endpoints
 	fmt.Fprintf(os.Stderr, "解析 JS API 端点配置: %s\n", *apiModules)
@@ -38,6 +51,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error parsing controller files: %v\n", err)
 		os.Exit(1)
 	}
+	controllerClasses = filterClasses(controllerClasses, skipper)
+	controllerCalls = filterCalls(controllerCalls, skipper)
 	fmt.Fprintf(os.Stderr, "  找到 %d 个类\n", len(controllerClasses))
 
 	// Parse PHP models
@@ -47,6 +62,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error parsing model files: %v\n", err)
 		os.Exit(1)
 	}
+	modelClasses = filterClasses(modelClasses, skipper)
+	modelCalls = filterCalls(modelCalls, skipper)
 	fmt.Fprintf(os.Stderr, "  找到 %d 个类\n", len(modelClasses))
 
 	// Combine all method calls
@@ -59,4 +76,51 @@ func main() {
 	// Print report
 	fmt.Fprintln(os.Stderr)
 	reporter.PrintTextReport(os.Stdout, result)
+}
+
+type pathSkipper struct {
+	paths []string
+}
+
+func newPathSkipper(paths []string) pathSkipper {
+	cleaned := make([]string, 0, len(paths))
+	for _, path := range paths {
+		cleaned = append(cleaned, filepath.Clean(path))
+	}
+	return pathSkipper{paths: cleaned}
+}
+
+func (s pathSkipper) shouldSkip(path string) bool {
+	if path == "" {
+		return false
+	}
+	cleaned := filepath.Clean(path)
+	for _, skip := range s.paths {
+		if cleaned == skip || strings.HasPrefix(cleaned, skip+string(os.PathSeparator)) {
+			return true
+		}
+	}
+	return false
+}
+
+func filterClasses(classes []types.PHPClass, skipper pathSkipper) []types.PHPClass {
+	filtered := classes[:0]
+	for _, class := range classes {
+		if skipper.shouldSkip(class.File) {
+			continue
+		}
+		filtered = append(filtered, class)
+	}
+	return filtered
+}
+
+func filterCalls(calls []types.MethodCall, skipper pathSkipper) []types.MethodCall {
+	filtered := calls[:0]
+	for _, call := range calls {
+		if skipper.shouldSkip(call.File) {
+			continue
+		}
+		filtered = append(filtered, call)
+	}
+	return filtered
 }

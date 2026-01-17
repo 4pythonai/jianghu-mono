@@ -1,7 +1,7 @@
 /**
  * 球队管理 API 模块
  */
-import request from '../request-simple'
+import request, { httpClient } from '../request-simple'
 
 const team = {
     // ========== 球队管理 ==========
@@ -20,6 +20,12 @@ const team = {
 
     // 搜索球队
     searchTeams: (data, options) => request('/Team/searchTeams', data, options),
+
+    // 上传球队Logo
+    uploadLogo: (filePath, options = {}) => httpClient.uploadFile('/Team/uploadLogo', filePath, {
+        name: 'logo',
+        ...options
+    }),
 
     // ========== 成员管理 ==========
 
@@ -53,7 +59,7 @@ const team = {
     setMemberRole: (data, options) => request('/Team/setMemberRole', data, options),
 
     // 转让超级管理员
-    transferOwner: (data, options) => request('/Team/transferOwner', data, options),
+    transferSuperAdmin: (data, options) => request('/Team/transferSuperAdmin', data, options),
 
     // 退出球队
     quitTeam: (data, options) => request('/Team/quitTeam', data, options),
@@ -66,4 +72,3 @@ const team = {
 }
 
 export default team
-

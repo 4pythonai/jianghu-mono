@@ -1,0 +1,193 @@
+/* 引入公共样式 */
+@import '/styles/createGame.wxss';
+
+/* 加载状态 */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120rpx 0;
+}
+
+.loading-spinner {
+    width: 60rpx;
+    height: 60rpx;
+    border: 4rpx solid #e9ecef;
+    border-top-color: var(--primary-green-dark);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-text {
+    margin-top: 24rpx;
+    font-size: 28rpx;
+    color: #999;
+}
+
+/* 球队选择卡片（队内赛） */
+.selected-team {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-radius: 16rpx;
+    padding: 24rpx 16rpx;
+    min-height: 88rpx;
+    box-sizing: border-box;
+}
+
+.selected-team.readonly:active {
+    transform: none;
+}
+
+.selected-team .team-avatar {
+    width: 96rpx;
+    height: 96rpx;
+    border-radius: 16rpx;
+    background: #e9ecef;
+    border: 2rpx solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.team-details {
+    flex: 1;
+    margin-left: 20rpx;
+}
+
+.team-name {
+    font-size: 32rpx;
+    color: #333;
+    font-weight: 600;
+}
+
+/* 参赛球队列表（队际赛） */
+.teams-container {
+    background: #f8f9fa;
+    border-radius: 16rpx;
+    padding: 20rpx;
+}
+
+.team-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12rpx;
+    padding: 20rpx;
+    margin-bottom: 16rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.team-card:last-of-type {
+    margin-bottom: 0;
+}
+
+.team-card .team-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 12rpx;
+    background: #e9ecef;
+}
+
+.team-info {
+    flex: 1;
+    margin-left: 20rpx;
+}
+
+.team-alias {
+    font-size: 30rpx;
+    color: #333;
+    font-weight: 600;
+}
+
+.team-card .team-name {
+    font-size: 24rpx;
+    color: #999;
+    margin-top: 6rpx;
+    font-weight: 400;
+}
+
+.edit-alias-btn {
+    width: 56rpx;
+    height: 56rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    border-radius: 50%;
+}
+
+.edit-alias-btn image {
+    width: 32rpx;
+    height: 32rpx;
+    opacity: 0.6;
+}
+
+/* 分队设置 */
+.gameTags-container {
+    background: #f8f9fa;
+    border-radius: 16rpx;
+    padding: 20rpx;
+}
+
+.team-as-tag-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12rpx;
+    padding: 16rpx 20rpx;
+    margin-bottom: 16rpx;
+    border-left: 6rpx solid #1976D2;
+}
+
+.team-as-tag-item:last-of-type {
+    margin-bottom: 16rpx;
+}
+
+.tag-name-input {
+    flex: 1;
+    font-size: 28rpx;
+    color: #333;
+    background: transparent;
+}
+
+.delete-tag-btn {
+    width: 40rpx;
+    height: 40rpx;
+    background: #ff4757;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 16rpx;
+}
+
+.delete-tag-btn image {
+    width: 20rpx;
+    height: 20rpx;
+    filter: brightness(0) invert(1);
+}
+
+.add-tag-btn {
+    height: 80rpx;
+    background: var(--primary-green-dark);
+    border-radius: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28rpx;
+    color: #fff;
+    font-weight: 500;
+}
+
+.add-tag-btn:active {
+    opacity: 0.8;
+}
+
+/* 赛制提示 - 队际赛特有 */
+.form-sub-label.match-tip {
+    color: #ff9800;
+}

@@ -85,7 +85,7 @@ Page({
         this.setData({ transferring: true })
 
         try {
-            const result = await app.api.team.transferOwner({
+            const result = await app.api.team.transferSuperAdmin({
                 team_id: this.data.teamId,
                 new_owner_id: userId
             })

@@ -180,6 +180,12 @@
 }
 
 /* 报名人员列表 */
+.player-count {
+    padding: 20rpx 24rpx 0;
+    font-size: 26rpx;
+    color: var(--text-secondary);
+}
+
 .player-list-header {
     display: flex;
     align-items: center;
@@ -218,11 +224,43 @@
     background: #fff;
 }
 
+.tag-group {
+    margin-top: 16rpx;
+    background: #fff;
+}
+
+.tag-group-header {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+    padding: 20rpx 24rpx;
+    border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tag-group-dot {
+    width: 16rpx;
+    height: 16rpx;
+    border-radius: 50%;
+    background: #ccc;
+    flex-shrink: 0;
+}
+
+.tag-group-title {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
 .empty-state {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 100rpx 40rpx;
+    background: #fff;
+}
+
+.tag-empty-state {
+    padding: 40rpx 24rpx;
     background: #fff;
 }
 
