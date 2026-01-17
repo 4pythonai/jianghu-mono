@@ -220,10 +220,11 @@ Page({
         }
 
         // 转换组合数据格式, 适配PlayerSelector组件的格式
-        // member 数据来自后端，字段: user_id, display_name, avatar, handicap
+        // member 数据来自后端，字段: user_id, show_name, avatar, handicap
         const players = combination.map(member => ({
             user_id: member.user_id,
-            display_name: member.display_name || '未知玩家',
+            display_name: member.show_name,
+            show_name: member.show_name,
             avatar: member.avatar || '/images/default-avatar.png',
             handicap: member.handicap || 0,
             join_type: 'combineSelect',  // 添加来源字段
