@@ -1,43 +1,48 @@
 <view class="group-card">
-    <!-- 分组标识 -->
-    <view class="group-badge">
-        <text>{{groupName || 'G' + groupId}}</text>
-    </view>
+  <!-- 分组标识 - 左上角 -->
+  <view class="group-badge">
+    <text>{{groupName || 'G' + groupId}}</text>
+  </view>
 
-    <!-- 删除按钮 -->
-    <view wx:if="{{deletable}}" class="delete-btn" catchtap="onDelete">
-        <text class="delete-icon">×</text>
-    </view>
-
-    <!-- 球员列表区域 -->
+  <!-- 主内容区：flex 横向布局 -->
+  <view class="group-content">
+    <!-- 左侧：球员滚动区 -->
     <scroll-view class="players-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-        <view class="players-list">
-            <!-- 球员项 -->
-            <view
-                wx:for="{{players}}"
-                wx:key="index"
-                class="player-item"
-            >
-                <PlayerAvatar
-                    avatar="{{item.avatar}}"
-                    show_name="{{item.show_name}}"
-                    teamName="{{item.teamName}}"
-                    gender="{{item.gender || 'male'}}"
-                    userId="{{item.user_id}}"
-                    size="small"
-                    showTeam="{{true}}"
-                />
-            </view>
-
-            <!-- 添加按钮 -->
-            <view class="add-player-btn" catchtap="onAddPlayer">
-                <text class="add-icon">+</text>
-            </view>
+      <view class="players-list">
+        <!-- 球员项：最多显示4个用户 -->
+        <view
+          wx:for="{{players}}"
+          wx:for-item="item"
+          wx:for-index="idx"
+          wx:key="index"
+          wx:if="{{idx < 4}}"
+          class="player-item"
+        >
+          <PlayerAvatar
+            avatar="{{item.avatar}}"
+            show_name="{{item.show_name}}"
+            teamName="{{item.teamName}}"
+            gender="{{item.gender || 'male'}}"
+            userId="{{item.user_id}}"
+            size="small"
+            showTeam="{{true}}"
+          />
         </view>
-    </scroll-view>
 
-    <!-- 右侧箭头 -->
-    <view wx:if="{{clickable}}" class="arrow-btn" catchtap="onTap">
-        <text class="arrow-icon">›</text>
+        <!-- 添加按钮：最多4个用户，少于4个时才显示 -->
+        <view wx:if="{{players.length < 4}}" class="add-player-btn" catchtap="onAddPlayer">
+          <text class="add-icon">+</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  <!-- 右侧：按钮组，紧贴球员滚动区 -->
+  <view class="action-buttons">
+    <view wx:if="{{deletable}}" class="delete-btn" catchtap="onDelete">
+      <text class="delete-icon">×</text>
     </view>
+    <view wx:if="{{clickable}}" class="arrow-btn" catchtap="onTap">
+      <text class="arrow-icon">›</text>
+    </view>
+  </view>
 </view>

@@ -87,7 +87,7 @@ class MGame  extends CI_Model {
       // 插入组信息到 t_game_group 表
       $groupData = [
         'gameid' => $gameid,
-        'group_name' => '组' . ($gpidx + 1),
+        'group_name' => '第' . ($gpidx + 1) . '组',
         'group_create_time' => date('Y-m-d H:i:s'),
         'group_start_status' => 0,
         'group_all_confirmed' => 0

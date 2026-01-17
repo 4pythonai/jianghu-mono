@@ -101,7 +101,7 @@ class Course extends MY_Controller {
 
 
     public function getFavorites() {
-        $query = "SELECT * FROM t_course  limit 3";
+        $query = "SELECT * FROM t_course  limit 5";
         $courses = $this->db->query($query)->result_array();
         foreach ($courses as &$course) {
             $course['avatar'] = $course['avatar'];

@@ -1,13 +1,15 @@
 /* 分组卡片 */
 .group-card {
     position: relative;
+    display: flex;
+    align-items: stretch;
     background: #fff;
     border-radius: 16rpx;
-    padding: 40rpx 24rpx 24rpx 70rpx;
+    padding: 40rpx 16rpx 24rpx 16rpx;
     box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
-/* 分组标识 */
+/* 分组标识 - absolute 定位在左上角 */
 .group-badge {
     position: absolute;
     top: 0;
@@ -18,39 +20,25 @@
     border-radius: 16rpx 0 16rpx 0;
     font-size: 24rpx;
     font-weight: 500;
+    z-index: 10;
 }
 
-/* 删除按钮 */
-.delete-btn {
-    position: absolute;
-    top: 8rpx;
-    right: 8rpx;
-    width: 44rpx;
-    height: 44rpx;
-    background: #e74c3c;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
+/* 主内容区：flex: 1 填充剩余空间 */
+.group-content {
+    flex: 1;
+    min-width: 0;
 }
 
-.delete-icon {
-    color: #fff;
-    font-size: 28rpx;
-    font-weight: bold;
-    line-height: 1;
-}
-
-/* 球员滚动区域 */
+/* 球员滚动区域 - flex: 1 自动填充剩余空间 */
 .players-scroll {
-    width: calc(100% - 60rpx);
+    flex: 1;
+    min-width: 0;
     white-space: nowrap;
 }
 
 .players-list {
     display: inline-flex;
-    gap: 24rpx;
+    gap: 20rpx;
     padding: 16rpx 0;
 }
 
@@ -60,7 +48,7 @@
     flex-direction: column;
     align-items: center;
     gap: 8rpx;
-    width: 120rpx;
+    width: 110rpx;
     flex-shrink: 0;
 }
 
@@ -74,7 +62,7 @@
 .player-name {
     font-size: 24rpx;
     color: var(--text-primary);
-    max-width: 120rpx;
+    max-width: 110rpx;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -84,7 +72,7 @@
 .player-team {
     font-size: 20rpx;
     color: var(--text-tertiary);
-    max-width: 120rpx;
+    max-width: 110rpx;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -109,24 +97,48 @@
     line-height: 1;
 }
 
-/* 右侧箭头 */
+/* 右侧按钮组 - 紧贴球员滚动区，高度与滚动区一致 */
+.action-buttons {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 16rpx;
+}
+
+/* 删除按钮 */
+.delete-btn {
+    width: 40rpx;
+    height: 40rpx;
+    background: #e74c3c;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-icon {
+    color: #fff;
+    font-size: 24rpx;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* 右侧箭头 - 在删除按钮下方固定 30rpx */
 .arrow-btn {
-    position: absolute;
-    right: 8rpx;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 44rpx;
-    height: 44rpx;
+    width: 40rpx;
+    height: 40rpx;
     background: var(--primary-green);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    margin-top: 20rpx;
 }
 
 .arrow-icon {
-    font-size: 32rpx;
+    font-size: 28rpx;
     color: #fff;
     font-weight: bold;
     line-height: 1;

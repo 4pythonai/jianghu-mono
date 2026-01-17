@@ -54,6 +54,7 @@
           showHint="{{showGroupHint}}"
           bind:onGroupTap="onGroupTap"
           bind:onAddPlayer="onAddPlayerToGroup"
+          bind:onGroupsReorder="onGroupsReorder"
         />
       </view>
 

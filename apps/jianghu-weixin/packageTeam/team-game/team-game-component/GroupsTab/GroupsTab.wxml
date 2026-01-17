@@ -1,16 +1,35 @@
 <!-- 分组列表 -->
 <view class="groups-tab-groups-list {{showHint ? 'groups-tab-groups-panel-hint' : ''}}">
-  <GroupCard
-    wx:for="{{groups}}"
+  <view
+    wx:for="{{groupsWithDrag}}"
     wx:key="id"
-    group-id="{{item.id}}"
-    group-name="{{item.name}}"
-    players="{{item.players}}"
-    deletable="{{groupingPermission === 'player' || isCreator}}"
-    bind:grouptap="onGroupTap"
-    bind:delete="onGroupDelete"
-    bind:addPlayer="onAddPlayer"
-  />
+    class="groups-tab-group-item {{item.isDragging ? 'groups-tab-dragging' : ''}}"
+    style="{{item.isDragging ? 'transform: translateY(' + item.dragOffset + 'px); z-index: 1000;' : ''}}"
+    data-index="{{index}}"
+  >
+    <view
+      wx:if="{{enableDrag && (groupingPermission === 'player' || isCreator)}}"
+      class="groups-tab-drag-handle"
+      data-index="{{index}}"
+      catch:touchstart="onDragStart"
+      catch:touchmove="onDragMove"
+      catch:touchend="onDragEnd"
+      catch:touchcancel="onDragEnd"
+    >
+      <text class="groups-tab-drag-icon">⋮⋮</text>
+    </view>
+    <view class="groups-tab-group-card-wrapper">
+      <GroupCard
+        group-id="{{item.id}}"
+        group-name="第{{index + 1}}组"
+        players="{{item.players}}"
+        deletable="{{groupingPermission === 'player' || isCreator}}"
+        bind:grouptap="onGroupTap"
+        bind:delete="onGroupDelete"
+        bind:addPlayer="onAddPlayer"
+      />
+    </view>
+  </view>
 </view>
 
 <!-- 添加分组按钮：groupingPermission='player' 时所有人可见，='admin' 时仅创建者可见 -->

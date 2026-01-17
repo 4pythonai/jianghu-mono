@@ -22,6 +22,52 @@
     padding: 20rpx;
 }
 
+.groups-tab-group-item {
+    position: relative;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 12rpx;
+}
+
+.groups-tab-group-item.groups-tab-dragging {
+    transition: none;
+    opacity: 0.8;
+}
+
+.groups-tab-drag-handle {
+    flex-shrink: 0;
+    width: 60rpx;
+    height: 60rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20rpx;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8rpx;
+    cursor: grab;
+    touch-action: none;
+}
+
+.groups-tab-drag-handle:active {
+    cursor: grabbing;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.groups-tab-drag-icon {
+    font-size: 32rpx;
+    color: var(--text-secondary);
+    line-height: 1;
+    letter-spacing: -2rpx;
+}
+
+.groups-tab-group-card-wrapper {
+    flex: 1;
+    touch-action: none;
+    min-width: 0;
+    overflow: hidden;
+}
+
 .groups-tab-groups-list:has(.groups-tab-groups-panel-hint) {
     background: rgba(76, 175, 80, 0.08);
     border-radius: 16rpx;
