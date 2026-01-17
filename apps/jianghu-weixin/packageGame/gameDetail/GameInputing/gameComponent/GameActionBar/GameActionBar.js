@@ -7,6 +7,8 @@ Component({
         gameAbstract: '',
         gameid: null,
         gameData: null,
+        formattedTeeTime: '',
+        isExpanded: false
     },
 
     lifetimes: {
@@ -29,7 +31,48 @@ Component({
         }
     },
 
+    observers: {
+        'gameData': function (newGameData) {
+            if (newGameData) {
+                // 格式化开球时间
+                // 后端 MDetailGame.getGameDetail 返回 game_start（来自 t_game.open_time）
+                const rawTeeTime = newGameData.game_start || '';
+                const formattedTime = this.formatTeeTime(rawTeeTime);
+                this.setData({ formattedTeeTime: formattedTime });
+            }
+        }
+    },
+
     methods: {
+        // 切换信息面板展开/收起
+        toggleInfoPanel() {
+            this.setData({ isExpanded: !this.data.isExpanded });
+        },
+
+        // 格式化开球时间为 DD-MM-YYYY HH:mm 格式
+        formatTeeTime(dateString) {
+            if (!dateString) return '';
+
+            try {
+                const { parseDate } = require('@/utils/tool');
+                const date = parseDate(dateString);
+                if (Number.isNaN(date.getTime())) {
+                    return dateString;
+                }
+
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+
+                return `${day}-${month}-${year} ${hours}:${minutes}`;
+            } catch (error) {
+                console.error('[GameActionBar] 时间格式化错误:', error);
+                return dateString;
+            }
+        },
+
         // 解析游戏元信息
         // 后端 MDetailGame.getGameDetail 返回: uuid, game_name
         resolveGameMeta() {

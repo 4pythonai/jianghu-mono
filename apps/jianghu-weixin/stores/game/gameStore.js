@@ -421,6 +421,16 @@ export const gameStore = observable({
         // - course_name: 球场名称 (join t_course)
         // - team_name, team_avatar: 球队信息 (join t_team)
         // - open_time: 开球时间
+        const backgroundImageValue = data.background_image || ''
+        console.log('[gameStore] _processTeamGameData backgroundImage:', {
+            raw: data.background_image,
+            rawType: typeof data.background_image,
+            processed: backgroundImageValue,
+            processedType: typeof backgroundImageValue,
+            isNull: backgroundImageValue === null,
+            isUndefined: backgroundImageValue === undefined
+        })
+
         this.eventDetail = {
             title: data.name || '',
             teamName: data.team_name || '',
@@ -432,10 +442,15 @@ export const gameStore = observable({
             deadline: deadline,
             schedule: schedule,
             awards: awards,
-            backgroundImage: data.background_image || '',
+            backgroundImage: backgroundImageValue,
             coverType: data.cover_type || 'default',
             covers: data.covers || []
         };
+
+        console.log('[gameStore] _processTeamGameData eventDetail.backgroundImage:', {
+            value: this.eventDetail.backgroundImage,
+            type: typeof this.eventDetail.backgroundImage
+        })
 
         console.log('[gameStore] _processTeamGameData 完成', {
             creatorid: this.creatorid,
@@ -535,7 +550,7 @@ export const gameStore = observable({
                 players: (g.members || []).map(p => ({
                     id: p.user_id,
                     user_id: p.user_id,
-                    name: p.display_name || '未知玩家',
+                    show_name: p.display_name || '未知玩家',
                     avatar: p.avatar || '',
                     teamName: p.tag_name || '',
                     tee: p.tee || ''

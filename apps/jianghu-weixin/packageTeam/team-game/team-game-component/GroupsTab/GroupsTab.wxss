@@ -1,0 +1,63 @@
+/* 分组列表 */
+.groups-tab-groups-panel {
+    padding: 20rpx;
+}
+
+.groups-tab-groups-panel-hint {
+    background: rgba(76, 175, 80, 0.08);
+    border-radius: 16rpx;
+    animation: groupsTabHintPulse 1.5s ease;
+}
+
+@keyframes groupsTabHintPulse {
+    0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.25); }
+    70% { box-shadow: 0 0 0 16rpx rgba(76, 175, 80, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+}
+
+.groups-tab-groups-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+    padding: 20rpx;
+}
+
+.groups-tab-groups-list:has(.groups-tab-groups-panel-hint) {
+    background: rgba(76, 175, 80, 0.08);
+    border-radius: 16rpx;
+}
+
+/* 添加分组按钮 */
+.groups-tab-add-group-btn {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+    margin-top: 24rpx;
+    padding: 24rpx;
+}
+
+.groups-tab-add-group-icon {
+    font-size: 40rpx;
+    color: var(--primary-green);
+    font-weight: bold;
+    line-height: 1;
+}
+
+.groups-tab-add-group-text {
+    font-size: 28rpx;
+    color: var(--primary-green);
+    font-weight: 500;
+}
+
+.groups-tab-empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100rpx 40rpx;
+    background: #fff;
+}
+
+.groups-tab-empty-state text {
+    font-size: 28rpx;
+    color: var(--text-tertiary);
+}

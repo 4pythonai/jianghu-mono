@@ -1,0 +1,8 @@
+{
+    "component": true,
+    "usingComponents": {
+        "TeamEventBanner": "/components/TeamEventBanner/TeamEventBanner",
+        "InfoCard": "/components/InfoCard/InfoCard",
+        "BottomActionBar": "/components/BottomActionBar/BottomActionBar"
+    }
+}

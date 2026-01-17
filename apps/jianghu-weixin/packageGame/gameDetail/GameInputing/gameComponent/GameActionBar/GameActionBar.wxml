@@ -1,15 +1,54 @@
+<wxs src="/utils/image.wxs" module="image" />
+
 <view class="bottom-action-bar">
   <view class="game-abstract" wx:if="{{gameAbstract}}">
     <text class="abstract-text">{{gameAbstract}}</text>
   </view>
 
   <view class="button-group">
+    <!-- 下拉按钮 -->
+    <view class="dropdownBtn" bindtap="toggleInfoPanel">
+      <image
+        class="dropdown-icon"
+        src="{{isExpanded ? '/assets/icons/arrow-up.svg' : '/assets/icons/arrow-down.svg'}}"
+        mode="aspectFit"
+      />
+    </view>
+
     <view class="addPlayerBtn" bindtap="goToAddPlayer">
       <text class="add-icon">+</text>
     </view>
 
     <view class="operationBtn" bindtap="showOperationPanel">
       <text class="operation-icon">⋯</text>
+    </view>
+  </view>
+</view>
+
+<!-- 比赛基本信息展示区域（可折叠） -->
+<view class="game-info-section {{isExpanded ? 'expanded' : 'collapsed'}}" wx:if="{{gameData}}">
+  <view class="info-row">
+    <text class="info-label">球场</text>
+    <text class="info-value">{{gameData.course || '-'}}</text>
+  </view>
+  <view class="info-row">
+    <text class="info-label">比赛</text>
+    <text class="info-value">{{gameData.game_name || '友谊赛'}}</text>
+  </view>
+  <view class="info-row">
+    <text class="info-label">开球</text>
+    <text class="info-value">{{formattedTeeTime || '-'}}</text>
+  </view>
+  <view class="info-row">
+    <text class="info-label">创建</text>
+    <view class="creator-info">
+      <image
+        wx:if="{{gameData.creator.avatar}}"
+        class="creator-avatar"
+        src="{{image.imageUrl(gameData.creator.avatar)}}"
+        mode="aspectFill"
+      />
+      <text class="creator-name">{{gameData.creator.show_name || gameData.creator.display_name || '-'}}</text>
     </view>
   </view>
 </view>

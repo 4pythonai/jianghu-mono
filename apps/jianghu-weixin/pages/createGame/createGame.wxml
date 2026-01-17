@@ -1,31 +1,7 @@
 <view class="container">
   <view class="menu-container">
     <view class="menu-items">
-      <view class="marker-point point1" bindtap="handleMenuClick" data-type="quickCreate">
-        <view class="menu-item">
-          <image
-            class="menu-icon"
-            src="/assets/icons/icons8-quick-48.png"
-            mode="aspectFit"
-            binderror="onImageError"
-            data-img="quick"
-          ></image>
-          <text>快速创建</text>
-        </view>
-      </view>
-      <view class="marker-point point2" bindtap="handleMenuClick" data-type="commonCreate">
-        <view class="menu-item">
-          <image
-            class="menu-icon"
-            src="/assets/icons/icons8-common-48.png"
-            mode="aspectFit"
-            binderror="onImageError"
-            data-img="common"
-          ></image>
-          <text>普通创建</text>
-        </view>
-      </view>
-      <view class="marker-point point3" bindtap="handleMenuClick" data-type="teamCreate">
+      <view class="marker-point point1" bindtap="handleMenuClick" data-type="teamCreate">
         <view class="menu-item">
           <image
             class="menu-icon"
@@ -37,7 +13,7 @@
           <text>队内赛</text>
         </view>
       </view>
-      <view class="marker-point point4" bindtap="handleMenuClick" data-type="crossTeamCreate">
+      <view class="marker-point point2" bindtap="handleMenuClick" data-type="crossTeamCreate">
         <view class="menu-item">
           <image
             class="menu-icon"
@@ -47,6 +23,30 @@
             data-img="crossTeam"
           ></image>
           <text>队际赛</text>
+        </view>
+      </view>
+      <view class="marker-point point3" bindtap="handleMenuClick" data-type="quickCreate">
+        <view class="menu-item">
+          <image
+            class="menu-icon"
+            src="/assets/icons/icons8-quick-48.png"
+            mode="aspectFit"
+            binderror="onImageError"
+            data-img="quick"
+          ></image>
+          <text>快速创建</text>
+        </view>
+      </view>
+      <view class="marker-point point4" bindtap="handleMenuClick" data-type="commonCreate">
+        <view class="menu-item">
+          <image
+            class="menu-icon"
+            src="/assets/icons/icons8-common-48.png"
+            mode="aspectFit"
+            binderror="onImageError"
+            data-img="common"
+          ></image>
+          <text>普通创建</text>
         </view>
       </view>
     </view>

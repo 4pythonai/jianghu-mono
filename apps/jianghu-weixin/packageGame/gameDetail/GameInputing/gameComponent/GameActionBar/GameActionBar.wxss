@@ -29,6 +29,25 @@
 	gap: 20rpx;
 }
 
+/* 下拉按钮样式 */
+.dropdownBtn {
+	width: 80rpx;
+	height: 80rpx;
+	background-color: rgba(255, 255, 255, 0.2);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+	flex-shrink: 0;
+}
+
+.dropdown-icon {
+	width: 36rpx;
+	height: 36rpx;
+	filter: brightness(0) invert(1);
+}
+
 /* 操作按钮样式 */
 .operationBtn {
 	width: 80rpx;
@@ -67,4 +86,67 @@
 	color: white;
 	font-weight: bold;
 	line-height: 1;
+}
+
+/* 比赛基本信息区域 */
+.game-info-section {
+	background-color: #f8f9fa;
+	padding: 24rpx 30rpx;
+	border-top: 1rpx solid #e9ecef;
+	overflow: hidden;
+	transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+}
+
+.game-info-section.expanded {
+	max-height: 500rpx;
+	opacity: 1;
+}
+
+.game-info-section.collapsed {
+	max-height: 0;
+	padding: 0 30rpx;
+	opacity: 0;
+}
+
+.info-row {
+	display: flex;
+	align-items: center;
+	padding: 12rpx 0;
+	border-bottom: 1rpx solid #eee;
+}
+
+.info-row:last-child {
+	border-bottom: none;
+}
+
+.info-label {
+	font-size: 26rpx;
+	color: #999;
+	width: 80rpx;
+	flex-shrink: 0;
+}
+
+.info-value {
+	font-size: 28rpx;
+	color: #333;
+	flex: 1;
+}
+
+/* 创建人信息 */
+.creator-info {
+	display: flex;
+	align-items: center;
+	flex: 1;
+}
+
+.creator-avatar {
+	width: 44rpx;
+	height: 44rpx;
+	border-radius: 50%;
+	margin-right: 12rpx;
+}
+
+.creator-name {
+	font-size: 28rpx;
+	color: #333;
 }

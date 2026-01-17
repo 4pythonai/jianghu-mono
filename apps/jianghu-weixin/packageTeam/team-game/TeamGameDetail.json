@@ -3,11 +3,10 @@
     "navigationBarTitleText": "比赛详情",
     "usingComponents": {
         "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
-        "TeamEventBanner": "/components/TeamEventBanner/TeamEventBanner",
-        "InfoCard": "/components/InfoCard/InfoCard",
-        "BottomActionBar": "/components/BottomActionBar/BottomActionBar",
-        "PlayerListItem": "/components/PlayerListItem/PlayerListItem",
         "SpectatorBar": "/components/SpectatorBar/SpectatorBar",
-        "GroupCard": "/components/GroupCard/GroupCard"
+        "EventDetailTab": "./team-game-component/EventDetailTab/EventDetailTab",
+        "RegistrationTab": "./team-game-component/RegistrationTab/RegistrationTab",
+        "GroupsTab": "./team-game-component/GroupsTab/GroupsTab",
+        "DiscussionTab": "./team-game-component/DiscussionTab/DiscussionTab"
     }
 }

@@ -20,7 +20,7 @@
             >
                 <PlayerAvatar
                     avatar="{{item.avatar}}"
-                    name="{{item.name}}"
+                    show_name="{{item.show_name}}"
                     teamName="{{item.teamName}}"
                     gender="{{item.gender || 'male'}}"
                     userId="{{item.user_id}}"

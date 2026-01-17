@@ -1,0 +1,396 @@
+/* 卡片包装器 */
+.event-detail-card-wrapper {
+    padding: 20rpx 20rpx 0;
+}
+
+/* 基本信息列表 */
+.event-detail-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32rpx;
+}
+
+.event-detail-info-item {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+}
+
+.event-detail-info-icon {
+    width: 36rpx;
+    height: 36rpx;
+    flex-shrink: 0;
+    filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(1200%) hue-rotate(100deg) brightness(0.5);
+}
+
+.event-detail-info-text {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+/* 赛事流程 */
+.event-detail-schedule-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16rpx;
+}
+
+.event-detail-schedule-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rpx;
+}
+
+.event-detail-schedule-time {
+    font-size: 28rpx;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.event-detail-schedule-content {
+    font-size: 26rpx;
+    color: var(--text-secondary);
+}
+
+/* 奖项列表 */
+.event-detail-awards-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12rpx;
+}
+
+.event-detail-award-item {
+    font-size: 28rpx;
+    color: var(--text-primary);
+}
+
+/* 悬浮更多按钮 */
+.event-detail-floating-more-btn {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 80rpx;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.95),
+        rgba(245, 250, 247, 0.95)
+    );
+    border-radius: 20rpx 0 0 20rpx;
+    box-shadow: -4rpx 0 16rpx rgba(0, 0, 0, 0.1);
+    border: 2rpx solid rgba(76, 175, 80, 0.3);
+    border-right: none;
+    z-index: 50;
+    overflow: hidden;
+    padding: 20rpx 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-detail-floating-more-btn:active {
+    background: linear-gradient(
+        135deg,
+        rgba(69, 160, 73, 0.3),
+        rgba(61, 139, 64, 0.3)
+    );
+    transform: translateY(-50%) scale(0.98);
+}
+
+.event-detail-floating-more-btn text {
+    font-size: 26rpx;
+    color: #1a5f3a;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* 弹窗遮罩 */
+.event-detail-popup-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* 弹窗内容 */
+.event-detail-popup-content {
+    width: 100%;
+    background: #fff;
+    border-radius: 24rpx 24rpx 0 0;
+    padding: 20rpx 30rpx calc(40rpx + env(safe-area-inset-bottom));
+}
+
+.event-detail-popup-handle {
+    width: 80rpx;
+    height: 8rpx;
+    background: #e0e0e0;
+    border-radius: 4rpx;
+    margin: 0 auto 30rpx;
+}
+
+/* 9宫格操作区 */
+.event-detail-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30rpx;
+    padding: 20rpx 0;
+}
+
+.event-detail-action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12rpx;
+}
+
+.event-detail-action-icon {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-detail-action-text {
+    font-size: 24rpx;
+    color: var(--text-primary);
+}
+
+/* 操作图标颜色 */
+.event-detail-icon-friend { background: var(--primary-green); }
+.event-detail-icon-close-reg { background: var(--primary-green); }
+.event-detail-icon-manage { background: var(--primary-green); }
+.event-detail-icon-edit { background: var(--primary-green); }
+.event-detail-icon-group { background: var(--primary-green); }
+.event-detail-icon-fee { background: var(--primary-green); }
+.event-detail-icon-cancel { background: #e74c3c; }
+.event-detail-action-icon-start { background: #f5a623; }
+.event-detail-action-icon-score { background: var(--primary-green); }
+
+.event-detail-btn-icon-img {
+    width: 40rpx;
+    height: 40rpx;
+}
+
+/* 取消按钮 */
+.event-detail-popup-cancel {
+    margin-top: 20rpx;
+    padding: 24rpx;
+    background: #f5f5f5;
+    border-radius: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-detail-popup-cancel text {
+    font-size: 30rpx;
+    color: var(--text-secondary);
+}
+
+/* 报名弹窗样式 */
+.event-detail-register-popup {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.event-detail-register-title {
+    font-size: 34rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 30rpx;
+}
+
+.event-detail-register-form {
+    background: #f8f8f8;
+    border-radius: 12rpx;
+    padding: 20rpx;
+    margin-bottom: 30rpx;
+}
+
+.event-detail-form-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16rpx 0;
+    border-bottom: 1rpx solid #eee;
+}
+
+.event-detail-form-item:last-child {
+    border-bottom: none;
+}
+
+.event-detail-form-label {
+    font-size: 28rpx;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.event-detail-form-input {
+    flex: 1;
+    font-size: 28rpx;
+    color: var(--text-primary);
+    text-align: right;
+    background: transparent;
+}
+
+/* 分队选择区域 */
+.event-detail-tag-section {
+    margin-bottom: 30rpx;
+}
+
+.event-detail-tag-section-title {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 20rpx;
+}
+
+.event-detail-required {
+    color: #e74c3c;
+    margin-left: 4rpx;
+}
+
+.event-detail-tag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+}
+
+.event-detail-tag-item {
+    display: flex;
+    align-items: center;
+    padding: 24rpx 20rpx;
+    background: #f8f8f8;
+    border-radius: 12rpx;
+    border: 2rpx solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+.event-detail-tag-item.event-detail-selected {
+    background: rgba(76, 175, 80, 0.1);
+    border-color: var(--primary-green);
+}
+
+.event-detail-tag-indicator {
+    width: 24rpx;
+    height: 24rpx;
+    border-radius: 50%;
+    background: #ccc;
+    margin-right: 16rpx;
+    flex-shrink: 0;
+}
+
+.event-detail-tag-name {
+    flex: 1;
+    font-size: 30rpx;
+    color: var(--text-primary);
+}
+
+.event-detail-tag-check {
+    width: 40rpx;
+    height: 40rpx;
+    border-radius: 50%;
+    background: var(--primary-green);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24rpx;
+}
+
+.event-detail-tag-empty {
+    padding: 40rpx;
+    text-align: center;
+}
+
+.event-detail-tag-empty text {
+    font-size: 26rpx;
+    color: var(--text-tertiary);
+}
+
+/* 报名按钮 */
+.event-detail-register-buttons {
+    display: flex;
+    gap: 20rpx;
+    margin-top: 20rpx;
+}
+
+.event-detail-btn-cancel,
+.event-detail-btn-submit {
+    flex: 1;
+    height: 88rpx;
+    border-radius: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30rpx;
+    font-weight: 500;
+}
+
+.event-detail-btn-cancel {
+    background: #f5f5f5;
+    color: var(--text-secondary);
+}
+
+.event-detail-btn-submit {
+    background: var(--primary-green);
+    color: #fff;
+}
+
+.event-detail-btn-submit.event-detail-disabled {
+    background: #ccc;
+    color: #999;
+}
+
+/* 性别单选按钮 */
+.event-detail-gender-radio-group {
+    display: flex;
+    gap: 40rpx;
+}
+
+.event-detail-gender-radio {
+    display: flex;
+    align-items: center;
+    gap: 12rpx;
+}
+
+.event-detail-gender-radio text {
+    font-size: 28rpx;
+    color: var(--text-primary);
+}
+
+.event-detail-radio-circle {
+    width: 36rpx;
+    height: 36rpx;
+    border-radius: 50%;
+    border: 2rpx solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-detail-radio-circle.event-detail-checked {
+    border-color: var(--primary-green);
+    background: var(--primary-green);
+}
+
+.event-detail-radio-circle.event-detail-checked::after {
+    content: '';
+    width: 16rpx;
+    height: 16rpx;
+    border-radius: 50%;
+    background: #fff;
+}

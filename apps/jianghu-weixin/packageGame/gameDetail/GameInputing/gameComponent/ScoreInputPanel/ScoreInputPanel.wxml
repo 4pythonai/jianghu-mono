@@ -22,7 +22,7 @@
         <view class="player-list-container">
           <scroll-view class="player-list-scroll" scroll-y>
             <view
-              class="player-item {{index === activePlayerIndex ? 'active' : ''}}"
+              class="player-item {{index === activePlayerIndex ? 'active' : ''}} {{item.user_id == currentUserId ? 'is-current-user' : ''}}"
               wx:for="{{players}}"
               wx:key="index"
               bindtap="switchPlayer"

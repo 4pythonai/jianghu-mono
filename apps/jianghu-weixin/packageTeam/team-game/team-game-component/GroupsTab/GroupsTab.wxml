@@ -1,0 +1,32 @@
+<!-- 分组列表 -->
+<view class="groups-tab-groups-list {{showHint ? 'groups-tab-groups-panel-hint' : ''}}">
+  <GroupCard
+    wx:for="{{groups}}"
+    wx:key="id"
+    group-id="{{item.id}}"
+    group-name="{{item.name}}"
+    players="{{item.players}}"
+    deletable="{{groupingPermission === 'player' || isCreator}}"
+    bind:grouptap="onGroupTap"
+    bind:delete="onGroupDelete"
+    bind:addPlayer="onAddPlayer"
+  />
+</view>
+
+<!-- 添加分组按钮：groupingPermission='player' 时所有人可见，='admin' 时仅创建者可见 -->
+<view
+  wx:if="{{groupingPermission === 'player' || isCreator}}"
+  class="groups-tab-add-group-btn"
+  bindtap="onAddGroup"
+>
+  <text class="groups-tab-add-group-icon">+</text>
+  <text class="groups-tab-add-group-text">添加分组</text>
+</view>
+
+<!-- 空状态：仅当无分组且无法添加分组时显示 -->
+<view
+  wx:if="{{groups.length === 0 && groupingPermission === 'admin' && !isCreator}}"
+  class="groups-tab-empty-state"
+>
+  <text>暂无分组</text>
+</view>

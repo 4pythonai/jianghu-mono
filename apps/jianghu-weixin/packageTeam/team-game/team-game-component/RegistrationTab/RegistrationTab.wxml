@@ -1,0 +1,47 @@
+<view class="registration-player-count">
+  <text>报名总人数：{{tagMembers.length}} 人</text>
+</view>
+<!-- 表头 -->
+<view class="registration-player-list-header">
+  <view class="registration-header-index">序号</view>
+  <view class="registration-header-avatar-placeholder"></view>
+  <view class="registration-header-player">球员</view>
+  <view class="registration-header-handicap">江湖差点</view>
+</view>
+<!-- 分组列表 -->
+<view
+  wx:for="{{tagMemberGroups}}"
+  wx:key="tagId"
+  wx:for-item="group"
+  class="registration-tag-group"
+>
+  <view class="registration-tag-group-header">
+    <view
+      class="registration-tag-group-dot"
+      style="{{group.color ? 'background-color: ' + group.color : ''}}"
+    ></view>
+    <text class="registration-tag-group-title">{{group.tagName}} ({{group.members.length}})</text>
+  </view>
+  <view class="registration-player-list">
+    <PlayerListItem
+      wx:for="{{group.members}}"
+      wx:key="id"
+      wx:for-item="member"
+      index="{{member.tagSeq}}"
+      avatar="{{member.avatar}}"
+      show_name="{{member.show_name}}"
+      userId="{{member.user_id}}"
+      handicap="{{member.handicap}}"
+    />
+  </view>
+  <view
+    wx:if="{{group.members.length === 0}}"
+    class="registration-empty-state registration-tag-empty-state"
+  >
+    <text>暂无报名人员</text>
+  </view>
+</view>
+<!-- 空状态 -->
+<view wx:if="{{tagMemberGroups.length === 0}}" class="registration-empty-state">
+  <text>暂无报名人员</text>
+</view>

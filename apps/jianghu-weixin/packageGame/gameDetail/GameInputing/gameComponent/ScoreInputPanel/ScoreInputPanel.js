@@ -19,6 +19,7 @@ Component({
         currentHole: null, // 新增: 用于存储当前显示的洞信息
         currentPlayerTee: '', // 当前用户发球台
         currentPlayerDistance: null, // 当前用户发球台码数
+        currentUserId: null, // 当前登录用户ID
     },
 
     observers: {
@@ -61,6 +62,7 @@ Component({
             const hole = this.data.holeList?.[holeIndex] || {};
             const players = this.data.players || [];
             const scores = this.data.scores || [];
+            const currentUserId = app?.globalData?.userInfo?.id;
 
 
             const localScores = players.map((player) => {
@@ -95,6 +97,7 @@ Component({
                 activePlayerIndex: playerIndex,
                 currentPlayerTee: initialTee,
                 currentPlayerDistance: (initialDistance && initialDistance > 0) ? initialDistance : null,
+                currentUserId,
             });
         },
 

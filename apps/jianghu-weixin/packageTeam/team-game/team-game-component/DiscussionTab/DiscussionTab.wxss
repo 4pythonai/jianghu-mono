@@ -1,0 +1,15 @@
+/* 占位盒子 */
+.discussion-placeholder-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100rpx 40rpx;
+    margin: 20rpx;
+    background: #fff;
+    border-radius: 16rpx;
+}
+
+.discussion-placeholder-text {
+    font-size: 28rpx;
+    color: var(--text-tertiary);
+}

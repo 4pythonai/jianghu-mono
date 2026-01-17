@@ -18,24 +18,12 @@ Page({
 
         // 用户状态（本地）
         isRegistered: false,    // 是否已报名
-
-        // 弹窗状态
-        showMoreActions: false,
-        showRegisterPopup: false,   // 报名弹窗
-        showGroupHint: false,
-        selectedTagId: null,        // 选中的分队ID
-        registerForm: {             // 报名表单数据
-            display_name: '',
-            mobile: '',
-            gender: 'unknown',
-            genderText: '未知'
-        },
+        showGroupHint: false,   // 分组Tab提示动画
 
         // 默认值（防止 store 绑定前 WXML 报错）
         spectators: { count: 0, avatars: [] },
         gameTags: [],
         tagMembers: [],
-        tagMemberGroups: [],
         groups: [],
         eventDetail: {
             title: '',
@@ -127,74 +115,6 @@ Page({
         }
     },
 
-    buildTagMemberGroups(gameTags = [], tagMembers = []) {
-        const tags = Array.isArray(gameTags) ? gameTags : []
-        const members = Array.isArray(tagMembers) ? tagMembers : []
-        const groups = tags.map(tag => ({
-            tagId: tag.id,
-            tagName: tag.tagName,
-            color: tag.color || '',
-            members: []
-        }))
-
-        const groupMap = new Map()
-        const groupCounters = new Map()
-        groups.forEach(group => {
-            if (group.tagId !== undefined && group.tagId !== null) {
-                groupMap.set(String(group.tagId), group)
-            }
-        })
-
-        const extraGroups = new Map()
-        members.forEach(member => {
-            const tagId = member.tag_id
-            const key = tagId !== undefined && tagId !== null ? String(tagId) : ''
-            let group = groupMap.get(key)
-
-            if (group) {
-                const nextIndex = (groupCounters.get(group) || 0) + 1
-                groupCounters.set(group, nextIndex)
-                group.members.push({ ...member, tagSeq: nextIndex })
-                return
-            }
-
-            if (!extraGroups.has(key)) {
-                console.log('[TeamGameDetail] 发现未匹配 tag 的成员', {
-                    tagId: tagId,
-                    tagName: member.tagName || '',
-                    userId: member.user_id
-                })
-                extraGroups.set(key, {
-                    tagId: tagId,
-                    tagName: member.tagName || '未分组',
-                    color: member.tagColor || '',
-                    members: []
-                })
-            }
-            group = extraGroups.get(key)
-            const nextIndex = (groupCounters.get(group) || 0) + 1
-            groupCounters.set(group, nextIndex)
-            group.members.push({ ...member, tagSeq: nextIndex })
-        })
-
-        return groups.concat(Array.from(extraGroups.values()))
-    },
-
-    refreshTagMemberGroups(source = '') {
-        const tagMemberGroups = this.buildTagMemberGroups(gameStore.gameTags, gameStore.tagMembers)
-        console.log('[TeamGameDetail] 刷新报名分组', {
-            source,
-            gameTagsCount: Array.isArray(gameStore.gameTags) ? gameStore.gameTags.length : 0,
-            tagMembersCount: Array.isArray(gameStore.tagMembers) ? gameStore.tagMembers.length : 0,
-            groupCount: tagMemberGroups.length,
-            groups: tagMemberGroups.map(group => ({
-                tagId: group.tagId,
-                tagName: group.tagName,
-                memberCount: group.members.length
-            }))
-        })
-        this.setData({ tagMemberGroups })
-    },
 
     /**
      * 初始化数据
@@ -214,7 +134,6 @@ Page({
             if (this.storeBindings) {
                 this.storeBindings.updateStoreBindings()
             }
-            this.refreshTagMemberGroups('initData')
 
             // 检查当前用户是否已报名（直接从 store 读取，避免绑定延迟）
             const app = getApp()
@@ -284,146 +203,9 @@ Page({
     },
 
     /**
-     * 点击报名/取消报名按钮
+     * 取消报名（EventDetailTab 事件）
      */
-    onRegisterTap() {
-        if (this.data.isRegistered) {
-            wx.showModal({
-                title: '确认取消',
-                content: '确定要取消报名吗？',
-                success: (res) => {
-                    if (res.confirm) {
-                        this.cancelRegistration()
-                    }
-                }
-            })
-        } else {
-            this.register()
-        }
-    },
-
-    /**
-     * 报名 - 打开报名弹窗
-     */
-    async register() {
-        const app = getApp()
-        const userInfo = app?.globalData?.userInfo
-
-        if (!userInfo) {
-            wx.showToast({ title: '请先登录', icon: 'none' })
-            return
-        }
-
-        // 获取性别文本
-        // userInfo 已通过 normalizeUserInfo 标准化，gender 字段: 'male', 'female', 'unknown'
-        const genderMap = { male: '男', female: '女', unknown: '未知' }
-        const gender = userInfo.gender || 'unknown'
-        const genderText = genderMap[gender] || '未知'
-
-        // 填充表单数据
-        // userInfo 已通过 normalizeUserInfo 标准化，display_name 字段必存在
-        this.setData({
-            showRegisterPopup: true,
-            selectedTagId: null,
-            registerForm: {
-                display_name: userInfo.display_name || '未设置',
-                mobile: userInfo.mobile || '',
-                gender: gender,
-                genderText: genderText
-            }
-        })
-    },
-
-    /**
-     * 关闭报名弹窗
-     */
-    onCloseRegisterPopup() {
-        this.setData({
-            showRegisterPopup: false,
-            selectedTagId: null
-        })
-    },
-
-    /**
-     * 选择分队
-     */
-    onSelectTag(e) {
-        const tagId = e.currentTarget.dataset.tagId
-        this.setData({ selectedTagId: tagId })
-    },
-
-    /**
-     * 选择性别
-     */
-    onGenderSelect(e) {
-        const gender = e.currentTarget.dataset.gender  // 'male' 或 'female'
-        this.setData({ 'registerForm.gender': gender })
-    },
-
-    /**
-     * 昵称输入
-     */
-    onDisplayNameInput(e) {
-        this.setData({ 'registerForm.display_name': e.detail.value })
-    },
-
-    /**
-     * 手机号输入
-     */
-    onMobileInput(e) {
-        this.setData({ 'registerForm.mobile': e.detail.value })
-    },
-
-    /**
-     * 提交报名
-     */
-    async onSubmitRegister() {
-        const { selectedTagId, gameid, registerForm } = this.data
-
-        if (!selectedTagId) {
-            wx.showToast({ title: '请选择分队', icon: 'none' })
-            return
-        }
-
-        wx.showLoading({ title: '报名中...' })
-
-        try {
-            const app = getApp()
-            // gender 已经是字符串: 'male', 'female', 'unknown'
-            const result = await app.api.teamgame.registerGame({
-                game_id: gameid,
-                tag_id: selectedTagId,
-                display_name: registerForm.display_name,
-                gender: registerForm.gender,
-                mobile: registerForm.mobile
-            })
-
-            wx.hideLoading()
-
-            if (result.code === 200) {
-                wx.showToast({ title: '报名成功', icon: 'success' })
-                this.setData({
-                    showRegisterPopup: false,
-                    selectedTagId: null,
-                    isRegistered: true
-                })
-                // 刷新报名人员列表
-                await this.loadTagMembers(gameid)
-                this.refreshTagMemberGroups('register')
-            } else {
-                wx.showToast({ title: result.message || '报名失败', icon: 'none' })
-            }
-        } catch (err) {
-            wx.hideLoading()
-            console.error('[TeamGameDetail] 报名失败:', err)
-            wx.showToast({ title: '报名失败，请稍后重试', icon: 'none' })
-        }
-    },
-
-    /**
-     * 取消报名
-     */
-    async cancelRegistration() {
+    async onCancelRegister() {
         wx.showLoading({ title: '取消中...' })
 
         try {
@@ -439,7 +221,9 @@ Page({
                 this.setData({ isRegistered: false })
                 // 刷新报名人员列表
                 await this.loadTagMembers(this.data.gameid)
-                this.refreshTagMemberGroups('cancel')
+                if (this.storeBindings) {
+                    this.storeBindings.updateStoreBindings()
+                }
             } else {
                 wx.showToast({ title: result.message || '取消失败', icon: 'none' })
             }
@@ -451,25 +235,47 @@ Page({
     },
 
     /**
-     * 点击更多按钮
+     * 提交报名（EventDetailTab 事件）
      */
-    onMoreTap() {
-        this.setData({ showMoreActions: true })
+    async onSubmitRegister(e) {
+        const { tagId, formData } = e.detail
+        wx.showLoading({ title: '报名中...' })
+
+        try {
+            const app = getApp()
+            const result = await app.api.teamgame.registerGame({
+                game_id: this.data.gameid,
+                tag_id: tagId,
+                display_name: formData.display_name,
+                gender: formData.gender,
+                mobile: formData.mobile
+            })
+
+            wx.hideLoading()
+
+            if (result.code === 200) {
+                wx.showToast({ title: '报名成功', icon: 'success' })
+                this.setData({ isRegistered: true })
+                // 刷新报名人员列表
+                await this.loadTagMembers(this.data.gameid)
+                if (this.storeBindings) {
+                    this.storeBindings.updateStoreBindings()
+                }
+            } else {
+                wx.showToast({ title: result.message || '报名失败', icon: 'none' })
+            }
+        } catch (err) {
+            wx.hideLoading()
+            console.error('[TeamGameDetail] 报名失败:', err)
+            wx.showToast({ title: '报名失败，请稍后重试', icon: 'none' })
+        }
     },
 
     /**
-     * 关闭更多操作弹窗
-     */
-    onCloseMoreActions() {
-        this.setData({ showMoreActions: false })
-    },
-
-    /**
-     * 处理更多操作
+     * 处理更多操作（EventDetailTab 事件）
      */
     onActionTap(e) {
-        const action = e.currentTarget.dataset.action
-        this.setData({ showMoreActions: false })
+        const { action } = e.detail
 
         const actionHandlers = {
             closeRegistration: () => this.confirmGameAction('关闭报名', () => this.closeRegistration()),
@@ -682,7 +488,7 @@ Page({
     },
 
     /**
-     * 点击分组卡片
+     * 点击分组卡片（GroupsTab 事件）
      */
     onGroupTap(e) {
         const { groupId } = e.detail
@@ -695,7 +501,7 @@ Page({
     },
 
     /**
-     * 删除分组
+     * 删除分组（GroupsTab 事件）
      */
     onGroupDelete(e) {
         const { groupId } = e.detail
@@ -719,7 +525,7 @@ Page({
     },
 
     /**
-     * 添加球员到分组
+     * 添加球员到分组（GroupsTab 事件）
      */
     onAddPlayerToGroup(e) {
         const { groupId } = e.detail
@@ -727,7 +533,7 @@ Page({
     },
 
     /**
-     * 添加新分组
+     * 添加新分组（GroupsTab 事件）
      */
     async onAddGroup() {
         wx.showLoading({ title: '创建中...' })
