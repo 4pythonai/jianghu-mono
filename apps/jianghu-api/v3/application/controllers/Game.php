@@ -267,7 +267,7 @@ class Game extends MY_Controller {
         ];
 
 
-        $qrcodeResult = $this->MWeixin->fetchMiniProgramCodeImage(
+        $qrcodeResult = $this->MWeixin->createQrcodeImg(
             'getwxacodeunlimit',
             $payload,
             [

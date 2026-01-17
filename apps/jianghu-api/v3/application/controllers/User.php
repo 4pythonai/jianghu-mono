@@ -402,7 +402,7 @@ class User extends MY_Controller {
 
         logtext("  请求数据: " . $post_data);
 
-        $qrcodeResult = $this->MWeixin->fetchMiniProgramCodeImage(
+        $qrcodeResult = $this->MWeixin->createQrcodeImg(
             'getwxacodeunlimit',
             $payload,
             [

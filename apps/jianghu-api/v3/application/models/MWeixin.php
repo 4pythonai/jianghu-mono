@@ -28,7 +28,7 @@ class MWeixin extends CI_Model {
     /**
      * 获取小程序码图片（二进制数据）
      */
-    public function fetchMiniProgramCodeImage($apiName, $payload, $fileOptions = null) {
+    public function createQrcodeImg($apiName, $payload, $fileOptions = null) {
         $access_token = $this->getWechatAccessToken();
         if (!$access_token) {
             return [
