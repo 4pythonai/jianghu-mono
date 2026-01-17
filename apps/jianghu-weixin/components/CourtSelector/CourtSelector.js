@@ -131,11 +131,16 @@ Component({
                 console.log('球场详细信息:', res)
 
                 if (res.code === 200) {
+                    const courts = res.courts || []
+
                     this.setData({
                         courseDetail: res.course,
-                        courts: res.courts || [],
+                        courts: courts,
                         loading: false
                     })
+
+                    // 默认选中前后半场（18洞）
+                    this.autoSelectCourts(courts)
 
                     // 触发数据加载完成事件
                     this.triggerEvent('dataLoaded', {
@@ -166,17 +171,32 @@ Component({
             const court = e.currentTarget.dataset.court
             console.log('选择前九洞:', court)
 
-            this.setData({
-                selectedFrontNine: court.courtid,
-                selectedFrontNineCourt: court,
-                frontNineHoles: court.courtholes || []
-            })
+            // 如果点击的是已选中的半场，则取消选择
+            if (this.data.selectedFrontNine === court.courtid) {
+                this.setData({
+                    selectedFrontNine: '',
+                    selectedFrontNineCourt: null,
+                    frontNineHoles: []
+                })
 
-            // 触发前九洞选择事件
-            this.triggerEvent('selectFrontNine', {
-                court: court,
-                holes: court.courtholes || []
-            })
+                // 触发前九洞取消选择事件
+                this.triggerEvent('selectFrontNine', {
+                    court: null,
+                    holes: []
+                })
+            } else {
+                this.setData({
+                    selectedFrontNine: court.courtid,
+                    selectedFrontNineCourt: court,
+                    frontNineHoles: court.courtholes || []
+                })
+
+                // 触发前九洞选择事件
+                this.triggerEvent('selectFrontNine', {
+                    court: court,
+                    holes: court.courtholes || []
+                })
+            }
 
             this.checkSelectionComplete()
         },
@@ -188,18 +208,62 @@ Component({
             const court = e.currentTarget.dataset.court
             console.log('选择后九洞:', court)
 
+            // 如果点击的是已选中的半场，则取消选择
+            if (this.data.selectedBackNine === court.courtid) {
+                this.setData({
+                    selectedBackNine: '',
+                    selectedBackNineCourt: null,
+                    backNineHoles: []
+                })
+
+                // 触发后九洞取消选择事件
+                this.triggerEvent('selectBackNine', {
+                    court: null,
+                    holes: []
+                })
+            } else {
+                this.setData({
+                    selectedBackNine: court.courtid,
+                    selectedBackNineCourt: court,
+                    backNineHoles: court.courtholes || []
+                })
+
+                // 触发后九洞选择事件
+                this.triggerEvent('selectBackNine', {
+                    court: court,
+                    holes: court.courtholes || []
+                })
+            }
+
+            this.checkSelectionComplete()
+        },
+
+        /**
+         * 自动选中前后半场（默认18洞）
+         */
+        autoSelectCourts(courts) {
+            if (!courts || courts.length === 0) return
+
+            // 前九洞选第一个 court
+            const frontNineCourt = courts[0]
+            // 后九洞选第二个 court，如果没有则选第一个
+            const backNineCourt = courts.length > 1 ? courts[1] : courts[0]
+
             this.setData({
-                selectedBackNine: court.courtid,
-                selectedBackNineCourt: court,
-                backNineHoles: court.courtholes || []
+                selectedFrontNine: frontNineCourt.courtid,
+                selectedFrontNineCourt: frontNineCourt,
+                frontNineHoles: frontNineCourt.courtholes || [],
+                selectedBackNine: backNineCourt.courtid,
+                selectedBackNineCourt: backNineCourt,
+                backNineHoles: backNineCourt.courtholes || []
             })
 
-            // 触发后九洞选择事件
-            this.triggerEvent('selectBackNine', {
-                court: court,
-                holes: court.courtholes || []
+            console.log('自动选中前后半场:', {
+                frontNine: frontNineCourt.courtname,
+                backNine: backNineCourt.courtname
             })
 
+            // 触发选择完成事件
             this.checkSelectionComplete()
         },
 
