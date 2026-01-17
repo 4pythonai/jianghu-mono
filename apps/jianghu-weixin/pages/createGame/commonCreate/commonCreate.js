@@ -334,10 +334,16 @@ Page({
     onPrivateChange(e) {
         const isPrivate = e.detail.value;
 
+        // 如果开启秘密比赛，自动生成6位数字密码
+        let password = '';
+        if (isPrivate) {
+            // 生成6位随机数字
+            password = Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
         this.setData({
             'formData.isPrivate': isPrivate,
-            // 如果取消私密, 清空密码
-            'formData.password': isPrivate ? this.data.formData.password : ''
+            'formData.password': password
         });
 
         // 如果取消秘密比赛，立即同步到后端
@@ -348,7 +354,16 @@ Page({
                 password: ''
             }, '取消秘密比赛')
         }
-        // 如果开启秘密比赛，等待用户输入密码后再同步（在 onPasswordInput 中处理）
+        // 如果开启秘密比赛，自动同步生成的密码
+        if (this.data.gameCreated && isPrivate && password) {
+            this.debounce('privateSettings', () => {
+                this.callUpdateAPI('updateGamePrivateWithPassword', {
+                    uuid: this.data.uuid,
+                    isPrivate: true,
+                    password: password
+                }, '秘密比赛设置')
+            })
+        }
     },
 
     onPasswordInput(e) {
@@ -368,6 +383,30 @@ Page({
                 }, '秘密比赛设置')
             })
         }
+    },
+
+    /**
+     * 复制密码到剪贴板
+     */
+    copyPassword() {
+        const password = this.data.formData.password;
+        if (!password) {
+            wx.showToast({
+                title: '密码为空',
+                icon: 'none'
+            });
+            return;
+        }
+
+        wx.setClipboardData({
+            data: password,
+            success: () => {
+                wx.showToast({
+                    title: '密码已复制',
+                    icon: 'success'
+                });
+            }
+        });
     },
 
 
@@ -569,24 +608,6 @@ Page({
         return teeNames[tee] || '未知T台';
     },
 
-    /**
-     * 构建分享路径
-     */
-    buildSharePath() {
-        const { uuid, gameid } = this.data;
-        if (!uuid) {
-            return '/pages/createGame/createGame';
-        }
-        const query = [`uuid=${uuid}`];
-        if (gameid) {
-            query.push(`gameid=${gameid}`);
-        }
-        const gameName = this.data.formData?.gameName;
-        if (gameName) {
-            query.push(`title=${encodeURIComponent(gameName)}`);
-        }
-        return `/packagePlayer/player-select/wxShare/wxShare?${query.join('&')}`;
-    },
 
     /**
      * 更新分享按钮可用态
@@ -605,74 +626,6 @@ Page({
         }
     },
 
-    /**
-     * 分享入口提示
-     */
-    showShareNotReadyToast() {
-        wx.showModal({
-            title: '提示',
-            content: '请选择球场/开球时间',
-            showCancel: false,
-            success(res) { }
-        })
-    },
-
-    /**
-     * 分享邀请按钮点击
-     */
-    onShareButtonTap() {
-        if (!this.data.shareReady) {
-            this.showShareNotReadyToast();
-            return;
-        }
-
-        // 跳转到微信分享预览页面
-        const { uuid, gameid, formData, selectedCourse } = this.data;
-        let url = `/packagePlayer/player-select/wxForward/wxForward?uuid=${uuid}`;
-
-        if (gameid) {
-            url += `&gameid=${gameid}`;
-        }
-        if (formData?.gameName) {
-            url += `&title=${encodeURIComponent(formData.gameName)}`;
-        }
-        if (formData?.openTime) {
-            url += `&openTime=${encodeURIComponent(formData.openTime)}`;
-        }
-        if (selectedCourse) {
-            url += `&courseName=${encodeURIComponent(selectedCourse.name || '')}`;
-            if (selectedCourse.address) {
-                url += `&courseAddress=${encodeURIComponent(selectedCourse.address)}`;
-            }
-        }
-
-        wx.navigateTo({
-            url
-        });
-    },
-
-    /**
-     * 打开二维码邀请页
-     */
-    onShowInviteQrcode() {
-        if (!this.data.shareReady) {
-            this.showShareNotReadyToast();
-            return;
-        }
-
-        const { uuid, gameid, formData } = this.data;
-        let url = `/packagePlayer/player-select/qrcode/qrcode?uuid=${uuid}`;
-        if (gameid) {
-            url += `&gameid=${gameid}`;
-        }
-        if (formData?.gameName) {
-            url += `&title=${encodeURIComponent(formData.gameName)}`;
-        }
-
-        wx.navigateTo({
-            url
-        });
-    },
 
 
     /**
@@ -706,27 +659,6 @@ Page({
         });
     },
 
-    /**
-     * 分享给好友
-     */
-    onShareAppMessage() {
-        if (!this.data.shareReady) {
-            return {
-                title: '高尔夫江湖 - 创建你的比赛',
-                path: '/pages/createGame/createGame'
-            };
-        }
-
-        const { formData } = this.data;
-        const title = formData.gameName
-            ? `${formData.gameName} 邀请你加入比赛`
-            : '高尔夫江湖邀请你加入比赛';
-
-        return {
-            title,
-            path: this.buildSharePath()
-        };
-    },
 
     /**
      * 生命周期函数--监听页面加载
@@ -775,15 +707,6 @@ Page({
             'formData.gameName': defaultGameName
         });
 
-        try {
-            wx.showShareMenu({
-                withShareTicket: true,
-                menus: ['shareAppMessage']
-            });
-        } catch (error) {
-            // 静默处理, 某些基础库版本不支持 menus 参数
-            wx.showShareMenu();
-        }
 
         // 立即创建空白游戏
         try {

@@ -6,23 +6,17 @@
     <view class="card">
       <checkbox-group bindchange="onPermissionChange">
         <label class="permission-item" wx:for="{{permissionOptions}}" wx:key="key">
-          <checkbox
-            value="{{item.key}}"
-            checked="{{item.checked}}"
-            color="#2e7d32"
-          />
+          <checkbox value="{{item.key}}" checked="{{item.checked}}" color="#2e7d32" />
           <text class="permission-label">{{item.label}}</text>
         </label>
       </checkbox-group>
     </view>
-    <view class="hint">至少选择一项</view>
+    <view class="hint">至少选择一项(选中球童,则要出现球童二维码)</view>
     <button
       class="btn btn-primary btn-block {{saving ? 'disabled' : ''}}"
       bindtap="onSave"
       loading="{{saving}}"
       disabled="{{saving}}"
-    >
-      保存
-    </button>
+    >保存</button>
   </view>
 </view>
