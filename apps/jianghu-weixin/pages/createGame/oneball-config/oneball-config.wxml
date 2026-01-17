@@ -1,0 +1,12 @@
+<CustomNavBar title="旺波配置" />
+<view class="container">
+  <view class="page-header">
+    <view class="title">为每组分配旺波队伍</view>
+    <view class="subtitle">点击球员选择 A队 或 B队</view>
+  </view>
+  <OneBallConfig groups="{{groups}}" bind:configChange="onConfigChange" />
+  <view class="bottom-actions">
+    <button class="btn btn-cancel" bindtap="onCancel">取消</button>
+    <button class="btn btn-confirm" bindtap="onConfirm">确定</button>
+  </view>
+</view>

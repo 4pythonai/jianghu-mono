@@ -14,6 +14,7 @@ const game = {
     updateGameScoringType: (data, options) => request('/Game/updateGameScoringType', data, options),
     updateScorePermission: (data, options) => request('/Game/updateScorePermission', data, options),
     updateGameGroupAndPlayers: (data, options) => request('/Game/updateGameGroupAndPlayers', data, options),
+    saveOneBallConfig: (data, options) => request('/Game/saveOneBallConfig', data, options),
     saveGameScore: (data, options) => request('/Game/saveGameScore', data, options),
     savePrivateWhiteList: (data, options) => request('/Game/savePrivateWhiteList', data, options),
     // set gameScoreStype,设置计分风格

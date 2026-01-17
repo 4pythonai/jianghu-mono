@@ -14,6 +14,7 @@
 		"pages/myprofile/myprofile",
 		"pages/createGame/moreCreate/moreCreate",
 		"pages/createGame/commonCreate/commonCreate",
+		"pages/createGame/oneball-config/oneball-config",
 		"pages/createGame/quickCreate/quickCreate",
 		"pages/course-select/course-select",
 		"pages/court-select/court-select",

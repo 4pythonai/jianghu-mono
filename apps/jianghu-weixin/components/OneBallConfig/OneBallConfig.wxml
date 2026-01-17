@@ -1,0 +1,47 @@
+<wxs src="/utils/image.wxs" module="image" />
+<view class="oneball-config">
+  <view wx:for="{{ viewGroups }}" wx:for-index="groupIndex" wx:key="index" class="group-card">
+    <view class="group-header">
+      <text class="group-title">第{{groupIndex + 1}}组</text>
+      <text class="group-count">{{item.players.length}}人</text>
+    </view>
+    <view class="players-list">
+      <view
+        wx:for="{{ item.players }}"
+        wx:for-item="player"
+        wx:for-index="playerIndex"
+        wx:key="user_id"
+        class="player-row"
+      >
+        <view class="player-info">
+          <image
+            class="player-avatar"
+            src="{{ image.imageUrl(player.avatar) || '/images/default-avatar.png' }}"
+            mode="aspectFill"
+          ></image>
+          <text class="player-name">{{player.display_name}}</text>
+        </view>
+        <view class="side-actions">
+          <view
+            class="side-btn side-a {{player._oneballSide === 'A' ? 'selected' : ''}}"
+            data-group-index="{{groupIndex}}"
+            data-user-id="{{player.user_id}}"
+            data-side="A"
+            bindtap="onAssignSide"
+          >
+            A队
+          </view>
+          <view
+            class="side-btn side-b {{player._oneballSide === 'B' ? 'selected' : ''}}"
+            data-group-index="{{groupIndex}}"
+            data-user-id="{{player.user_id}}"
+            data-side="B"
+            bindtap="onAssignSide"
+          >
+            B队
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

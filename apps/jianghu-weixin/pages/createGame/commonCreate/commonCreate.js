@@ -77,7 +77,8 @@ Page({
                     uuid: this.data.uuid,
                     groups: newGameGroups.map((group, index) => ({
                         groupIndex: index,
-                        players: group.players || []
+                        players: group.players || [],
+                        groupOneballConfig: group.groupOneballConfig || {}
                     }))
                 };
 
@@ -628,6 +629,56 @@ Page({
     },
 
 
+    /**
+     * 判断旺波配置是否完整
+     */
+    isOneBallConfigComplete(gameGroups) {
+        if (!Array.isArray(gameGroups) || gameGroups.length === 0) return false;
+        return gameGroups.every(group => this.isGroupOneBallConfigured(group));
+    },
+
+    /**
+     * 检查单个分组旺波配置
+     */
+    isGroupOneBallConfigured(group) {
+        const players = Array.isArray(group?.players) ? group.players : [];
+        if (players.length === 0) return false;
+
+        const config = group?.groupOneballConfig && typeof group.groupOneballConfig === 'object'
+            ? group.groupOneballConfig
+            : {};
+        const sideCount = { A: 0, B: 0 };
+
+        for (const player of players) {
+            const playerKey = String(player.user_id);
+            const side = config[playerKey];
+            if (side !== 'A' && side !== 'B') {
+                console.log('[commonCreate] invalid side', {
+                    groupid: group?.groupid,
+                    playerKey,
+                    side,
+                    config
+                });
+                return false;
+            }
+            sideCount[side] += 1;
+        }
+
+        console.log('[commonCreate] group configured', {
+            groupid: group?.groupid,
+            sideCount
+        });
+        return sideCount.A > 0 && sideCount.B > 0;
+    },
+
+    /**
+     * 旺波配置完成回调
+     */
+    onOneBallConfigComplete(updatedGroups) {
+        if (!Array.isArray(updatedGroups)) return;
+        this.updateGameGroups(updatedGroups, '旺波配置更新');
+    },
+
 
     /**
      * 点击"开始记分"按钮, 跳转到 gameDetail 记分界面
@@ -652,6 +703,35 @@ Page({
                 icon: 'none'
             });
             return;
+        }
+
+        // 旺波赛制需配置组内分配
+        if (this.data.formData.ScoringType === 'oneball') {
+            const gameGroups = this.data.formData.gameGroups || [];
+            console.log('[commonCreate] start scoring check', {
+                groupCount: gameGroups.length,
+                groups: gameGroups.map(group => ({
+                    groupid: group?.groupid,
+                    playerCount: Array.isArray(group?.players) ? group.players.length : 0,
+                    config: group?.groupOneballConfig
+                }))
+            });
+            if (!this.isOneBallConfigComplete(gameGroups)) {
+                wx.showModal({
+                    title: '你未配置旺波',
+                    content: '请先为每个组完成旺波分配',
+                    confirmText: '去配置',
+                    cancelText: '稍后',
+                    success: (res) => {
+                        if (res.confirm) {
+                            wx.navigateTo({
+                                url: `/pages/createGame/oneball-config/oneball-config?gameid=${this.data.gameid}`
+                            });
+                        }
+                    }
+                });
+                return;
+            }
         }
 
         // 所有验证通过，进入记分页面
