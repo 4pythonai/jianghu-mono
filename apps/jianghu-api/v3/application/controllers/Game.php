@@ -679,4 +679,18 @@ class Game extends MY_Controller {
         $this->db->update('t_game', ['score_permission' => json_encode($score_permission)]);
         $this->success([], '更新成功');
     }
+
+
+    public function saveOneBallConfig() {
+
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $groups = isset($json_paras['groups']) ? $json_paras['groups'] : [];
+        foreach ($groups as $group) {
+            $groupid = isset($group['groupid']) ? (int)$group['groupid'] : 0;
+            $groupOneballConfig = isset($group['groupOneballConfig']) ? $group['groupOneballConfig'] : [];
+            $this->db->where('groupid', $groupid);
+            $this->db->update('t_game_group', ['groupOneballConfig' => json_encode($groupOneballConfig)]);
+        }
+        $this->success([], '更新成功');
+    }
 }

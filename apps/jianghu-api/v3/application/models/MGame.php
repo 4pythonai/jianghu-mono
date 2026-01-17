@@ -75,6 +75,7 @@ class MGame  extends CI_Model {
   }
 
 
+  // 包含 oneball 配置
   public function addGameGroupAndPlayers($gameid, $groups) {
     $firstGroupId = null;
 
@@ -90,7 +91,8 @@ class MGame  extends CI_Model {
         'group_name' => '第' . ($gpidx + 1) . '组',
         'group_create_time' => date('Y-m-d H:i:s'),
         'group_start_status' => 0,
-        'group_all_confirmed' => 0
+        'group_all_confirmed' => 0,
+        'groupOneballConfig' => isset($group['groupOneballConfig']) ? json_encode($group['groupOneballConfig']) : null
       ];
       $this->db->insert('t_game_group', $groupData);
       $groupid = $this->db->insert_id();

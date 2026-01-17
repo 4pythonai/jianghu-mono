@@ -198,24 +198,25 @@ CREATE TABLE `t_game` (
   KEY `idx_is_recommended` (`is_recommended`),
   KEY `idx_game_type_status_createtime` (`game_type`,`game_status`,`create_time`),
   FULLTEXT KEY `fulltext_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1339386 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
+) ENGINE=InnoDB AUTO_INCREMENT=1339417 DEFAULT CHARSET=utf8mb3 COMMENT='比赛表';
 
 
 CREATE TABLE `t_game_court` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `gameid` int DEFAULT '0' COMMENT '比赛id',
+  `gameid` int unsigned NOT NULL DEFAULT '0',
   `courtid` int DEFAULT NULL COMMENT '半场id',
   `court_key` int DEFAULT NULL COMMENT '半场标识',
   `uuid` char(32) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_gameid` (`gameid`),
-  KEY `idx_courtid` (`courtid`)
-) ENGINE=InnoDB AUTO_INCREMENT=715 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
+  KEY `idx_courtid` (`courtid`),
+  CONSTRAINT `fk_game_court_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=759 DEFAULT CHARSET=utf8mb3 COMMENT='比赛半场表';
 
 
 CREATE TABLE `t_game_group` (
   `groupid` int NOT NULL AUTO_INCREMENT,
-  `gameid` int NOT NULL DEFAULT '0',
+  `gameid` int unsigned NOT NULL DEFAULT '0',
   `group_name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `group_create_time` datetime DEFAULT NULL,
   `group_start_status` char(30) NOT NULL DEFAULT '0',
@@ -223,15 +224,17 @@ CREATE TABLE `t_game_group` (
   `firstholeindex` int DEFAULT NULL,
   `first_record_hole_index` int DEFAULT NULL,
   `first_record_court_index` int DEFAULT NULL,
+  `groupOneballConfig` json DEFAULT NULL,
   PRIMARY KEY (`groupid`),
   KEY `idx_gameid` (`gameid`),
-  KEY `idx_groupid` (`groupid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1048 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `idx_groupid` (`groupid`),
+  CONSTRAINT `fk_game_group_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1114 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_game_group_user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `gameid` int DEFAULT '0' COMMENT '比赛id',
+  `gameid` int unsigned NOT NULL DEFAULT '0',
   `groupid` int DEFAULT '0' COMMENT '分组id',
   `tag_id` int DEFAULT NULL COMMENT '所属分队ID',
   `user_id` int DEFAULT '0' COMMENT '人员id',
@@ -247,8 +250,9 @@ CREATE TABLE `t_game_group_user` (
   KEY `idx_userid` (`user_id`),
   KEY `idx_userid_gameid` (`user_id`,`gameid`),
   KEY `idx_subteam_id` (`tag_id`),
-  KEY `idx_userid_gameid_addtime` (`user_id`,`gameid`,`addtime`)
-) ENGINE=InnoDB AUTO_INCREMENT=1300 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
+  KEY `idx_userid_gameid_addtime` (`user_id`,`gameid`,`addtime`),
+  CONSTRAINT `fk_game_group_user_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1455 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
 
 
 CREATE TABLE `t_game_interaction` (
@@ -339,7 +343,7 @@ CREATE TABLE `t_game_score` (
   KEY `fk_score_hole` (`hole_id`),
   CONSTRAINT `fk_score_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_score_hole` FOREIGN KEY (`hole_id`) REFERENCES `t_court_hole` (`holeid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=567 DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
+) ENGINE=InnoDB AUTO_INCREMENT=576 DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
 
 
 CREATE TABLE `t_game_spectator` (
@@ -391,7 +395,7 @@ CREATE TABLE `t_private_white_list` (
   `gameid` int DEFAULT NULL COMMENT '球局id',
   `user_id` int DEFAULT NULL COMMENT '用户id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_team` (
