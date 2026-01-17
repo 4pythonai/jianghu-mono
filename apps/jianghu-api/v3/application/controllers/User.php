@@ -380,7 +380,9 @@ class User extends MY_Controller {
         }
 
         $filename = "user_qrcode_{$user_id}.png";
-        $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
+        $upload_path = FCPATH . '../upload/qrcodes/';
+        $qrcodePath = $upload_path . $filename;
+        $qrcodeUrl = '/upload/qrcodes/' . $filename;
         $path = "packagePlayer/user-profile/user-profile";
         $path = ltrim($path, '/');
 
@@ -400,7 +402,15 @@ class User extends MY_Controller {
 
         logtext("  请求数据: " . $post_data);
 
-        $qrcodeResult = $this->MWeixin->fetchMiniProgramCodeImage('getwxacodeunlimit', $payload);
+        $qrcodeResult = $this->MWeixin->fetchMiniProgramCodeImage(
+            'getwxacodeunlimit',
+            $payload,
+            [
+                'save_path' => $qrcodePath,
+                'public_url' => $qrcodeUrl,
+                'ensure_dir' => $upload_path
+            ]
+        );
 
         if (empty($qrcodeResult['success'])) {
             $httpCode = $qrcodeResult['http_code'] ?? 0;
@@ -426,16 +436,9 @@ class User extends MY_Controller {
             return;
         }
 
-        $result = $qrcodeResult['data'];
-
-        $upload_path = FCPATH . '../upload/qrcodes/';
-        if (!is_dir($upload_path)) {
-            mkdir($upload_path, 0755, true);
-        }
-
-        file_put_contents($qrcodePath, $result);
-        logtext("  二维码保存成功: " . $qrcodePath);
-        $qrcodeUrl = '/upload/qrcodes/' . $filename;
+        $qrcodeUrl = $qrcodeResult['file_url'] ?? $qrcodeUrl;
+        $savedPath = $qrcodeResult['file_path'] ?? $qrcodePath;
+        logtext("  二维码保存成功: " . $savedPath);
         $this->MUser->updateUserQrcode($user_id, $qrcodeUrl);
 
         echo json_encode([

@@ -252,7 +252,9 @@ class Game extends MY_Controller {
 
         $filenameSeed = preg_replace('/[^A-Za-z0-9]/', '', $uuid);
         $filename = "game_invite_{$filenameSeed}_{$gameid}.png";
-        $qrcodePath = FCPATH . '../upload/qrcodes/' . $filename;
+        $upload_path = FCPATH . '../upload/qrcodes/';
+        $qrcodePath = $upload_path . $filename;
+        $qrcodeUrl = '/upload/qrcodes/' . $filename;
         $scene = "gameid={$gameid}";
         $payload = [
             'scene' => $scene,
@@ -265,7 +267,15 @@ class Game extends MY_Controller {
         ];
 
 
-        $qrcodeResult = $this->MWeixin->fetchMiniProgramCodeImage('getwxacodeunlimit', $payload);
+        $qrcodeResult = $this->MWeixin->fetchMiniProgramCodeImage(
+            'getwxacodeunlimit',
+            $payload,
+            [
+                'save_path' => $qrcodePath,
+                'public_url' => $qrcodeUrl,
+                'ensure_dir' => $upload_path
+            ]
+        );
 
         if (empty($qrcodeResult['success'])) {
             $errorInfo = $qrcodeResult['error'] ?? null;
@@ -283,16 +293,7 @@ class Game extends MY_Controller {
             return;
         }
 
-        $result = $qrcodeResult['data'];
-
-        // 保存二维码
-        $upload_path = FCPATH . '../upload/qrcodes/';
-        if (!is_dir($upload_path)) {
-            mkdir($upload_path, 0755, true);
-        }
-        file_put_contents($qrcodePath, $result);
-
-        $qrcodeUrl = '/upload/qrcodes/' . $filename;
+        $qrcodeUrl = $qrcodeResult['file_url'] ?? $qrcodeUrl;
 
         echo json_encode([
             'code' => 200,
