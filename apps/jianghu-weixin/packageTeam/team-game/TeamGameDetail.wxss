@@ -364,6 +364,7 @@
 }
 
 /* 操作图标颜色 */
+
 .icon-friend { background: var(--primary-green); }
 .icon-close-reg { background: var(--primary-green); }
 .icon-manage { background: var(--primary-green); }
@@ -371,8 +372,16 @@
 .icon-group { background: var(--primary-green); }
 .icon-fee { background: var(--primary-green); }
 .icon-cancel { background: #e74c3c; }
-.icon-start { background: #f5a623; }
-.icon-score { background: var(--primary-green); }
+.action-icon-start { background: #f5a623; }
+.action-icon-score { background: var(--primary-green); }
+
+
+.btn-icon-img {
+    width: 40rpx;
+    height: 40rpx;
+}
+
+
 
 /* 取消按钮 */
 .popup-cancel {
