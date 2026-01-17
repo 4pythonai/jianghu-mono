@@ -150,8 +150,8 @@
           </view>
         </view>
 
-        <!-- 取前N名成绩 -->
-        <view class="form-item">
+        <!-- 取前N名成绩 (比洞赛不显示) -->
+        <view class="form-item" wx:if="{{!currentFormat.isMatch}}">
           <view class="form-label">
             <text>取前N名成绩排行</text>
             <text class="form-sub-label">(可选，默认取人数最少球队的人数)</text>

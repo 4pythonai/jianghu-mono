@@ -13,25 +13,25 @@ export const MATCH_FORMATS = [
     {
         value: 'fourball_best_stroke',
         label: '四人四球最好成绩比杆赛',
-        requireGameTag: true,
+        requireGameTag: false,
         isMatch: false
     },
     {
         value: 'fourball_oneball_stroke',
         label: '四人四球最佳球位比杆赛(旺波)',
-        requireGameTag: true,
+        requireGameTag: false,
         isMatch: false
     },
     {
         value: 'foursome_stroke',
         label: '四人两球比杆赛',
-        requireGameTag: true,
+        requireGameTag: false,
         isMatch: false
     },
     {
         value: 'individual_match',
         label: '个人比洞赛',
-        requireGameTag: false,
+        requireGameTag: true,
         isMatch: true
     },
     {

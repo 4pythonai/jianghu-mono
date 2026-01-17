@@ -202,6 +202,13 @@
           </view>
         </view>
 
+        <view class="form-item">
+          <view class="form-label">
+            <text>分队设置</text>
+            <text class="form-sub-label">展开按钮(显示缺省分队,可以添加)</text>
+          </view>
+        </view>
+
         <!-- 奖项设置 -->
         <view class="form-item">
           <view class="form-label">
