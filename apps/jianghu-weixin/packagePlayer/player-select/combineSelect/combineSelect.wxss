@@ -108,6 +108,14 @@
 	white-space: nowrap;
 }
 
+.member-nickname {
+	font-size: 24rpx;
+	color: #888;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .member-handicap {
 	font-size: 24rpx;
 	color: #666;

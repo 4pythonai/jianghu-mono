@@ -197,7 +197,7 @@ Component({
             // 显示添加成功提示, 包含来源信息
             const joinTypeText = this.data.joinTypeMap[join_type] || '未知来源';
             wx.showToast({
-                title: `已添加 ${player.display_name}(${joinTypeText})`,
+                title: `已添加 ${player.show_name}(${joinTypeText})`,
                 icon: 'success'
             });
         },
@@ -231,7 +231,7 @@ Component({
             // 显示移除成功提示, 包含来源信息
             const joinTypeText = this.data.joinTypeMap[removedPlayer.join_type] || '未知来源';
             wx.showToast({
-                title: `已移除 ${removedPlayer.display_name}(${joinTypeText})`,
+                title: `已移除 ${removedPlayer.show_name}(${joinTypeText})`,
                 icon: 'success'
             });
         }

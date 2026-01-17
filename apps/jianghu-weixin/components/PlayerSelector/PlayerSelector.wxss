@@ -77,6 +77,12 @@
 	margin-bottom: 6rpx;
 }
 
+.player-nickname {
+	font-size: 24rpx;
+	color: #888;
+	margin-bottom: 6rpx;
+}
+
 .player-id {
 	font-size: 24rpx;
 	color: #999;

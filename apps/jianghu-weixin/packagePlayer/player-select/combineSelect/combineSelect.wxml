@@ -26,6 +26,7 @@
             ></image>
             <view class="member-info">
               <text class="member-name">{{member.display_name}}</text>
+              <text class="member-nickname">昵称: {{member.show_name}}</text>
               <text class="member-handicap">杆数: {{member.handicap}}</text>
             </view>
           </view>
