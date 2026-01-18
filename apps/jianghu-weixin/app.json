@@ -1,7 +1,8 @@
 {
 	"usingComponents": {
 		"CustomNavBar": "/components/CustomNavBar/CustomNavBar",
-		"PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
+		"PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar",
+		"ApplyerLists": "/components/ApplyerLists/ApplyerLists"
 	},
 	"pages": [
 		"pages/live/live",

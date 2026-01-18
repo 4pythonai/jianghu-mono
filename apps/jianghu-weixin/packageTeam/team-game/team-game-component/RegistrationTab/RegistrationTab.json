@@ -1,6 +1,6 @@
 {
     "component": true,
     "usingComponents": {
-        "PlayerListItem": "/components/PlayerListItem/PlayerListItem"
+        "ApplyerLists": "/components/ApplyerLists/ApplyerLists"
     }
 }

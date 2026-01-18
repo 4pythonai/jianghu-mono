@@ -16,14 +16,11 @@
   class="registration-tag-group"
 >
   <view class="registration-tag-group-header">
-    <view
-      class="registration-tag-group-dot"
-      style="{{group.color ? 'background-color: ' + group.color : ''}}"
-    ></view>
+    <view class="registration-tag-group-dot" style="{{ 'background-color:#0a860a '  }}"></view>
     <text class="registration-tag-group-title">{{group.tagName}} ({{group.members.length}})</text>
   </view>
   <view class="registration-player-list">
-    <PlayerListItem
+    <ApplyerLists
       wx:for="{{group.members}}"
       wx:key="id"
       wx:for-item="member"
