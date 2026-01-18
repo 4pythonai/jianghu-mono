@@ -25,6 +25,10 @@
 	height: 100%;
 }
 
+.fixed-column.oneball-column {
+	width: 120px;
+}
+
 .player-column {
 	border-right: 1px solid #ddd;
 }
@@ -210,6 +214,21 @@
 	gap: 4px;
 }
 
+.oneball-player {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.oneball-player-name {
+	font-size: 12px;
+	color: #444;
+	max-width: 48px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
 .oneball-score-label {
 	display: flex;
 	align-items: center;
@@ -222,10 +241,13 @@
 
 .oneball-score-row {
 	background-color: #f7f9fc;
+	border-top: 1px solid #e0e0e0;
+	border-bottom: 1px solid #e0e0e0;
 }
 
 .oneball-score-cell {
 	background-color: #f7f9fc;
+	border-right: 1px solid #e0e0e0;
 }
 
 .oneball-score-text {

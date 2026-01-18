@@ -1,7 +1,7 @@
 <view class="score-table-margin"></view>
 <view class="score-container">
   <!-- 左侧固定列 -->
-  <view class="fixed-column player-column">
+  <view class="fixed-column player-column {{isOneballMode ? 'oneball-column' : ''}}">
     <view class="tb-header tb-header-player">{{isOneballMode ? '组别' : '球员'}}</view>
     <scroll-view
       scroll-y
@@ -14,17 +14,18 @@
         <view class="cell-player" wx:for="{{oneballRows}}" wx:key="key">
           <view wx:if="{{item.type === 'group'}}" class="oneball-player-cell">
             <view class="oneball-avatar-list">
-              <PlayerAvatar
-                wx:for="{{item.players}}"
-                wx:key="user_id"
-                avatar="{{item.avatar}}"
-                show_name="{{item.show_name}}"
-                userId="{{item.user_id}}"
-                size="mini"
-                shape="round"
-                avatarOnly="{{true}}"
-                clickable="{{false}}"
-              />
+              <view class="oneball-player" wx:for="{{item.players}}" wx:key="user_id">
+                <PlayerAvatar
+                  avatar="{{item.avatar}}"
+                  show_name="{{item.show_name}}"
+                  userId="{{item.user_id}}"
+                  size="mini"
+                  shape="round"
+                  avatarOnly="{{true}}"
+                  clickable="{{false}}"
+                />
+                <text class="oneball-player-name">{{item.show_name}}</text>
+              </view>
             </view>
           </view>
           <view wx:elif="{{item.type === 'score'}}" class="oneball-score-label">
