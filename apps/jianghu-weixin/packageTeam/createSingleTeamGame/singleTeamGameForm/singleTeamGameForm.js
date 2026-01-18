@@ -10,7 +10,7 @@ import {
     loadCachedCourtData,
     validateBasicInfo
 } from '@/utils/createGameCommons'
-import { MATCH_FORMATS, getMatchFormatByValue } from '../../constants/matchFormats'
+import { MATCH_FORMATS } from '../../constants/matchFormats'
 
 const app = getApp()
 
@@ -20,6 +20,7 @@ Page({
         teamId: null,
         teamName: '',
         selectedTeam: null, // 完整的球队对象(含logo、角色等)
+        defaultTag: { name: '', color: '#FFFFFF' },
 
         // 球场信息
         selectedCourse: null,
@@ -81,6 +82,7 @@ Page({
             teamId,
             teamName,
             selectedTeam: selectedTeam || { id: teamId, team_name: teamName },
+            defaultTag: { name: teamName, color: '#FFFFFF' },
             'formData.name': defaultName
         })
     },
@@ -94,7 +96,8 @@ Page({
                 this.setData({
                     teamId: cachedTeam.id,
                     teamName: cachedTeam.team_name,
-                    selectedTeam: cachedTeam
+                    selectedTeam: cachedTeam,
+                    defaultTag: { name: cachedTeam.team_name, color: '#FFFFFF' }
                 })
                 // 更新默认比赛名称(如果用户没有修改过)
                 const currentName = this.data.formData.name
@@ -150,15 +153,24 @@ Page({
             wx.showToast({ title: '比洞赛最多2个分队', icon: 'none' })
         }
 
-        // 如果需要分队但当前没有，添加默认分队
-        if (format.requireGameTag && this.data.gameTags.length === 0) {
+
+        // if format=MATCH_FORMATS[0,1,2,3] , add defaultTag
+        if (format.value === 'individual_stroke' || format.value === 'fourball_best_stroke' || format.value === 'fourball_oneball_stroke' || format.value === 'foursome_stroke') {
             this.setData({
-                gameTags: [
-                    { name: '红队', color: '#D32F2F' },
-                    { name: '蓝队', color: '#1976D2' }
-                ]
+                gameTags: [this.data.defaultTag]
             })
         }
+
+        if (format.value === 'individual_match' || format.value === 'fourball_best_match' || format.value === 'fourball_oneball_match' || format.value === 'foursome_match') {
+            this.setData({
+                gameTags:
+                    [
+                        { name: '红队', color: '#D32F2F' },
+                        { name: '蓝队', color: '#1976D2' }
+                    ]
+            })
+        }
+
     },
 
     onAwardsInput(e) {
@@ -401,4 +413,3 @@ Page({
         handleBackCommon()
     }
 })
-

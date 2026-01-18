@@ -45,7 +45,7 @@
 
       <!-- 报名人员 Tab -->
       <view wx:if="{{currentTab === 1}}" class="tab-panel">
-        <RegistrationTab />
+        <RegistrationTab mode="display" />
       </view>
 
       <!-- 分组 Tab -->

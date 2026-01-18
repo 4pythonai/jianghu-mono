@@ -884,7 +884,7 @@ class TeamGame extends MY_Controller {
     /**
      * 创建队际赛
      * @param array team_ids 参赛球队ID数组
-     * @param array team_aliases 球队简称数组（可选，与team_ids对应）
+     * @param array teamGameTags 球队简称数组（可选，与team_ids对应）
      * @param string name 比赛名称
      * @param int courseid 球场ID（可选）
      * @param string match_format 赛制类型
@@ -900,7 +900,7 @@ class TeamGame extends MY_Controller {
         $user_id = $this->getUser();
 
         $team_ids = $json_paras['team_ids'];
-        $team_aliases = $json_paras['team_aliases'] ?? [];
+        $teamGameTags = $json_paras['teamGameTags'] ?? [];
         $match_format = $json_paras['match_format'];
 
         // 验证参赛球队数量
@@ -974,8 +974,8 @@ class TeamGame extends MY_Controller {
 
         // 添加参赛球队
         foreach ($team_ids as $index => $team_id) {
-            $alias = isset($team_aliases[$index]) ? $team_aliases[$index] : null;
-            $this->MTeamGame->addCrossTeam($game_id, $team_id, $alias);
+            $alias = isset($teamGameTags[$index]) ? $teamGameTags[$index] : null;
+            $this->MTeamGame->addTeamGameTags($game_id, $team_id, $alias);
         }
 
         echo json_encode([

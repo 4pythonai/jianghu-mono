@@ -114,11 +114,32 @@
 }
 
 .court-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	padding: 24rpx 20rpx;
 	border-bottom: 1rpx solid #f0f0f0;
 	cursor: pointer;
 	border-left: none;
 	transition: none;
+}
+
+.court-info {
+	flex: 1;
+}
+
+.check-icon {
+	width: 40rpx;
+	height: 40rpx;
+	background: #1aad19;
+	color: #fff;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24rpx;
+	font-weight: bold;
+	flex-shrink: 0;
 }
 
 .court-item:last-child {

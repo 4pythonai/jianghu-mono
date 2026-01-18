@@ -741,7 +741,7 @@ class MTeamGame extends CI_Model {
 
     /**
      * 创建队际赛
-     * @param array $data 包含 team_ids, team_aliases 等
+     * @param array $data 包含 team_ids, teamGameTags 等
      */
     public function createCrossTeamGame($data) {
         // 处理 team_ids：数组转为逗号分隔字符串
@@ -778,7 +778,7 @@ class MTeamGame extends CI_Model {
     /**
      * 添加队际赛参赛球队（使用统一的 t_team_game_tags 表）
      */
-    public function addCrossTeam($game_id, $team_id, $team_alias = null) {
+    public function addTeamGameTags($game_id, $team_id, $team_alias = null) {
         // 获取球队信息
         $team = $this->db->get_where('t_team', ['id' => $team_id])->row_array();
         if (!$team) {

@@ -1,6 +1,7 @@
 /**
  * 比赛赛制配置
  * 队内赛和队际赛共用
+ * 队际赛不读取 requireGameTag 参数
  */
 
 export const MATCH_FORMATS = [
@@ -8,49 +9,57 @@ export const MATCH_FORMATS = [
         value: 'individual_stroke',
         label: '个人比杆赛',
         requireGameTag: false,
-        isMatch: false
+        isMatch: false,
+        hideTags: true
     },
     {
         value: 'fourball_best_stroke',
         label: '四人四球最好成绩比杆赛',
         requireGameTag: false,
-        isMatch: false
+        isMatch: false,
+        hideTags: true
     },
     {
         value: 'fourball_oneball_stroke',
         label: '四人四球最佳球位比杆赛(旺波)',
         requireGameTag: false,
-        isMatch: false
+        isMatch: false,
+        hideTags: true
     },
     {
         value: 'foursome_stroke',
         label: '四人两球比杆赛',
         requireGameTag: false,
-        isMatch: false
+        isMatch: false,
+        hideTags: true
     },
     {
         value: 'individual_match',
         label: '个人比洞赛',
         requireGameTag: true,
-        isMatch: true
+        isMatch: true,
+        hideTags: false
     },
     {
         value: 'fourball_best_match',
         label: '四人四球最好成绩比洞赛',
         requireGameTag: true,
-        isMatch: true
+        isMatch: true,
+        hideTags: false
     },
     {
         value: 'fourball_oneball_match',
         label: '四人四球最佳球位比洞赛(旺波)',
         requireGameTag: true,
-        isMatch: true
+        isMatch: true,
+        hideTags: false
     },
     {
         value: 'foursome_match',
         label: '四人两球比洞赛',
         requireGameTag: true,
-        isMatch: true
+        isMatch: true,
+        hideTags: false
     }
 ]
 

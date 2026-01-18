@@ -29,6 +29,8 @@ export const gameStore = observable({
 
     // ==================== 队内/队际赛扩展字段 ====================
     gameType: 'common',           // 'common' | 'single_team' | 'cross_teams'
+    game_type: null,
+    match_format: null,
     gameTags: [],                 // 分队列表（t_team_game_tags）
     tagMembers: [],               // 报名人员列表（按 tag/分队组织）
     groups: [],                   // 所有分组列表
@@ -71,6 +73,8 @@ export const gameStore = observable({
 
         // 重置队内/队际赛字段
         this.gameType = 'common';
+        this.game_type = null;
+        this.match_format = null;
         this.gameTags = [];
         this.tagMembers = [];
         this.groups = [];
@@ -375,6 +379,8 @@ export const gameStore = observable({
         this.creatorid = data.creatorid || null;
         this.groupingPermission = data.grouping_permission || 'admin';
         this.gameData = data;
+        this.game_type = data.game_type;
+        this.match_format = data.match_format;
 
         // 解析 awards
         let awards = [];

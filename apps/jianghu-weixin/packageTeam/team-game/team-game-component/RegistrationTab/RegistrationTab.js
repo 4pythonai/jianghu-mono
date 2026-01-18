@@ -11,6 +11,12 @@ Component({
     },
 
     observers: {
+        'game_type, match_format': function (game_type, match_format) {
+            console.log('[RegistrationTab] game_type/match_format:', {
+                game_type,
+                match_format
+            })
+        },
         'gameTags, tagMembers': function (gameTags, tagMembers) {
             this.buildTagMemberGroups(gameTags, tagMembers)
         }
@@ -22,6 +28,8 @@ Component({
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
                 fields: [
+                    'game_type',
+                    'match_format',
                     'gameTags',
                     'tagMembers'
                 ],

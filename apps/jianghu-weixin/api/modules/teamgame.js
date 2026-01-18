@@ -70,7 +70,7 @@ const teamgame = {
     changeMyTagInGame: (data, options) => request('/TeamGame/changeMyTagInGame', data, options),
 
     // ==================== Phase 6: 队际赛 ====================
-    // 创建队际赛 {team_ids: [], team_aliases: [], name, ...}
+    // 创建队际赛 {team_ids: [], teamGameTags: [], name, ...}
     createCrossTeamGame: (data, options) => request('/TeamGame/createCrossTeamGame', data, options),
     // 更新球队简称 {game_id, team_id, team_alias}
     updateCrossTeamAlias: (data, options) => request('/TeamGame/updateCrossTeamAlias', data, options),

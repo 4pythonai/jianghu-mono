@@ -1,6 +1,7 @@
 {
     "usingComponents": {
-        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+        "RegistrationTab": "../team-game/team-game-component/RegistrationTab/RegistrationTab"
     },
     "navigationStyle": "custom"
 }

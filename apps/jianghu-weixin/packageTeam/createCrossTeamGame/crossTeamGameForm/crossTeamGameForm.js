@@ -10,7 +10,7 @@ import {
     loadCachedCourtData,
     validateBasicInfo
 } from '@/utils/createGameCommons'
-import { MATCH_FORMATS, getMatchFormatsWithDisabled, getMatchFormatByValue } from '../../constants/matchFormats'
+import { MATCH_FORMATS, getMatchFormatsWithDisabled } from '../../constants/matchFormats'
 
 const app = getApp()
 
@@ -267,7 +267,7 @@ Page({
 
             // 准备球队ID和简称数组
             const teamIds = selectedTeams.map(t => t.team_id)
-            const teamAliases = selectedTeams.map(t => t.team_alias || t.team_name)
+            const _teamGameTags = selectedTeams.map(t => t.team_alias || t.team_name)
 
             // 过滤有效的赛事流程条目
             const validSchedule = formData.schedule.filter(item => item.time || item.content)
@@ -275,7 +275,7 @@ Page({
             // 调用创建队际赛 API
             const result = await app.api.teamgame.createCrossTeamGame({
                 team_ids: teamIds,
-                team_aliases: teamAliases,
+                teamGameTags: _teamGameTags,
                 name: formData.name.trim(),
                 courseid: selectedCourse.courseid,
                 // 传递半场信息，用于生成 holeList

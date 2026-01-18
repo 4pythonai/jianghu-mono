@@ -36,6 +36,7 @@ Component({
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
                 fields: [
+                    'gameid',
                     'groups',
                     'groupingPermission',
                     'isCreator'
@@ -48,6 +49,7 @@ Component({
 
             // 初始化时获取元素高度
             this.initItemHeight()
+            console.log('[GroupsTab] 🔴🟢🔵 gameid:', this.data.gameid)
         },
         detached() {
             if (this.storeBindings) {
@@ -57,6 +59,9 @@ Component({
     },
 
     observers: {
+        gameid(gameid) {
+            console.log('[GroupsTab] 🔴🟢🔵 gameid:', gameid)
+        },
         'groups': function (groups) {
             // 同步 groups 到 groupsWithDrag，添加拖拽状态
             this.setData({

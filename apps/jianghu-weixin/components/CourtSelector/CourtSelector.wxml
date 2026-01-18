@@ -30,8 +30,11 @@
             bindtap="onSelectFrontNine"
             data-court="{{ item }}"
           >
-            <view class="court-name">{{item.courtname}}</view>
-            <view class="court-holes-count">{{item.courtholes.length}}洞</view>
+            <view class="court-info">
+              <view class="court-name">{{item.courtname}}</view>
+              <view class="court-holes-count">{{item.courtholes.length}}洞</view>
+            </view>
+            <view class="check-icon" wx:if="{{ selectedFrontNine === item.courtid }}">✓</view>
           </view>
         </view>
       </view>
@@ -46,8 +49,11 @@
             bindtap="onSelectBackNine"
             data-court="{{ item }}"
           >
-            <view class="court-name">{{item.courtname}}</view>
-            <view class="court-holes-count">{{item.courtholes.length}}洞</view>
+            <view class="court-info">
+              <view class="court-name">{{item.courtname}}</view>
+              <view class="court-holes-count">{{item.courtholes.length}}洞</view>
+            </view>
+            <view class="check-icon" wx:if="{{ selectedBackNine === item.courtid }}">✓</view>
           </view>
         </view>
       </view>
