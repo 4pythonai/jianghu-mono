@@ -3,7 +3,7 @@ import request from '../request-simple'
 const teamgame = {
     // ==================== Phase 1: 赛事创建与配置 ====================
     // 创建队内赛
-    createTeamGame: (data, options) => request('/TeamGame/createTeamGame', data, options),
+    createTeamSingleGame: (data, options) => request('/TeamGame/createTeamSingleGame', data, options),
     // 更新队内赛信息
     updateTeamGame: (data, options) => request('/TeamGame/updateTeamGame', data, options),
     // 添加分队

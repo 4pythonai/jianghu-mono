@@ -75,7 +75,8 @@ class MTeamGame extends CI_Model {
     /**
      * 创建队内赛
      */
-    public function createTeamGame($data) {
+    public function createTeamSingleGame($data) {
+        $score_permission = $data['score_permission'] ?? $this->getDefaultScorePermission();
         $row = [
             'uuid' => $data['uuid'] ?? $this->generateUUID(),
             'team_id' => $data['team_id'],
@@ -91,6 +92,7 @@ class MTeamGame extends CI_Model {
             'grouping_permission' => $data['grouping_permission'] ?? 'admin',
             'is_public_registration' => $data['is_public_registration'] ?? 'y',
             'top_n_ranking' => $data['top_n_ranking'] ?? null,
+            'score_permission' => json_encode($score_permission, JSON_UNESCAPED_UNICODE),
             'game_type' => 'single_team',
             'game_status' => 'registering',
             'create_time' => date('Y-m-d H:i:s'),
@@ -158,6 +160,14 @@ class MTeamGame extends CI_Model {
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff)
         );
+    }
+
+    private function getDefaultScorePermission() {
+        return [
+            'admin' => true,
+            'caddie' => false,
+            'group_player' => true
+        ];
     }
 
     // ========== TAG管理 ==========
@@ -750,6 +760,7 @@ class MTeamGame extends CI_Model {
             $team_id_str = implode(',', $data['team_ids']);
         }
 
+        $score_permission = $data['score_permission'] ?? $this->getDefaultScorePermission();
         $row = [
             'uuid' => $data['uuid'] ?? $this->generateUUID(),
             'team_id' => $team_id_str,
@@ -765,6 +776,7 @@ class MTeamGame extends CI_Model {
             'grouping_permission' => $data['grouping_permission'] ?? 'admin',
             'is_public_registration' => $data['is_public_registration'] ?? 'y',
             'top_n_ranking' => $data['top_n_ranking'] ?? null,
+            'score_permission' => json_encode($score_permission, JSON_UNESCAPED_UNICODE),
             'game_type' => 'cross_teams',
             'game_status' => 'registering',
             'create_time' => date('Y-m-d H:i:s'),

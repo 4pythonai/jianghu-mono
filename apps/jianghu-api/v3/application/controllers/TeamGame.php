@@ -43,7 +43,7 @@ class TeamGame extends MY_Controller {
      * @param string is_public_registration 是否公开 y/n（可选，默认y）
      * @param int top_n_ranking 取前N名成绩（可选）
      */
-    public function createTeamGame() {
+    public function createTeamSingleGame() {
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $user_id = $this->getUser();
 
@@ -94,7 +94,7 @@ class TeamGame extends MY_Controller {
             'top_n_ranking' => $json_paras['top_n_ranking'] ?? null
         ];
 
-        $game_id = $this->MTeamGame->createTeamGame($data);
+        $game_id = $this->MTeamGame->createTeamSingleGame($data);
 
         // 添加半场信息并生成 holeList
         $front_nine_court_id = $json_paras['front_nine_court_id'] ?? null;

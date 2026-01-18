@@ -354,7 +354,7 @@ Page({
             const validSchedule = formData.schedule.filter(item => item.time || item.content)
 
             // 调用创建队内赛 API
-            const result = await app.api.teamgame.createTeamGame({
+            const result = await app.api.teamgame.createTeamSingleGame({
                 team_id: teamId,
                 name: formData.name.trim(),
                 courseid: selectedCourse.courseid,
