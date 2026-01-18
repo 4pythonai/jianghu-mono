@@ -51,7 +51,7 @@ Component({
         // 更新洞序列表
         updateKIcoHolesList() {
             // 直接从 gameStore 获取真实的洞数据，参考 holejump.js 的实现
-            const holeList = gameStore.gameData?.holeList || [];
+            const holeList = gameStore.getHoleList || [];
 
 
             if (holeList && holeList.length > 0) {

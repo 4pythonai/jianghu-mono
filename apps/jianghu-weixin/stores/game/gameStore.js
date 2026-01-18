@@ -1,17 +1,33 @@
 import { observable, action } from 'mobx-miniprogram'
-import gameApi from '../../api/modules/game'
-import teamgameApi from '../../api/modules/teamgame'
-import eventsApi from '../../api/modules/events'
-import { config } from '../../api/config'
+import gameApi from '@/api/modules/game'
+import teamgameApi from '@/api/modules/teamgame'
+import eventsApi from '@//api/modules/events'
+import { config } from '@/api/config'
 import {
     normalizePlayer,
     normalizeHole,
     normalizeScoreCards,
-} from '../../utils/gameUtils'
-import { filterPlayersByGroup, calculatePlayersHandicaps } from '../../utils/playerUtils'
+} from '@/utils/gameUtils'
+import { filterPlayersByGroup, calculatePlayersHandicaps } from '@/utils/playerUtils'
 import { scoreStore } from './scoreStore'
 import { holeRangeStore } from './holeRangeStore'
 import { runtimeStore } from '../gamble/runtimeStore'
+
+const DEFAULT_EVENT_DETAIL = {
+    title: '',
+    teamName: '',
+    teamAvatar: '',
+    teams: [],
+    location: '',
+    dateTime: '',
+    fee: '',
+    deadline: '',
+    schedule: [],
+    awards: [],
+    backgroundImage: '',
+    coverType: 'default',
+    covers: []
+}
 
 export const gameStore = observable({
 
@@ -39,21 +55,7 @@ export const gameStore = observable({
         avatars: []
     },
     groupingPermission: 'admin',  // 分组权限：'admin' | 'player'
-    eventDetail: {                // 赛事详情（用于展示）
-        title: '',
-        teamName: '',
-        teamAvatar: '',
-        teams: [],
-        location: '',
-        dateTime: '',
-        fee: '',
-        deadline: '',
-        schedule: [],
-        awards: [],
-        backgroundImage: '',
-        coverType: 'default',
-        covers: []
-    },
+    eventDetail: { ...DEFAULT_EVENT_DETAIL }, // 队内/队际赛赛事详情（用于展示）
 
     /**
      * 重置 store 数据
@@ -72,29 +74,7 @@ export const gameStore = observable({
         this.isSaving = false;
 
         // 重置队内/队际赛字段
-        this.gameType = 'common';
-        this.game_type = null;
-        this.match_format = null;
-        this.gameTags = [];
-        this.tagMembers = [];
-        this.groups = [];
-        this.spectators = { count: 0, avatars: [] };
-        this.groupingPermission = 'admin';
-        this.eventDetail = {
-            title: '',
-            teamName: '',
-            teamAvatar: '',
-            teams: [],
-            location: '',
-            dateTime: '',
-            fee: '',
-            deadline: '',
-            schedule: [],
-            awards: [],
-            backgroundImage: '',
-            coverType: 'default',
-            covers: []
-        };
+        this.resetTeamGameFields();
 
         // 调用关联 store 的清理方法
         scoreStore.clear();
@@ -195,6 +175,21 @@ export const gameStore = observable({
         this.isSaving = status;
     }),
 
+    /**
+     * 重置队内/队际赛字段
+     */
+    resetTeamGameFields: action(function () {
+        this.gameType = 'common';
+        this.game_type = null;
+        this.match_format = null;
+        this.gameTags = [];
+        this.tagMembers = [];
+        this.groups = [];
+        this.spectators = { count: 0, avatars: [] };
+        this.groupingPermission = 'admin';
+        this.eventDetail = { ...DEFAULT_EVENT_DETAIL };
+    }),
+
     // 更新玩家 handicap（原子操作的一部分）
     // 用于在分数变动时实时更新 players 的 handicap
     updatePlayersHandicaps: action(function (holeList, scoreIndex) {
@@ -247,6 +242,10 @@ export const gameStore = observable({
             scoreStore.clear();
             holeRangeStore.clear();
             runtimeStore.clearKickConfigs();
+        }
+
+        if (this.gameType !== 'common') {
+            this.resetTeamGameFields();
         }
 
         this.loading = true;
@@ -305,6 +304,7 @@ export const gameStore = observable({
             groupingPermission: this.groupingPermission,
             eventDetail: this.eventDetail,
             isCreator: this.isCreator,
+            isRegistered: this.isRegistered,
             // 从 holeRangeStore 获取洞相关数据
             ...holeRangeStore.getState()
         };
@@ -325,6 +325,18 @@ export const gameStore = observable({
         const app = getApp();
         const currentUserId = app?.globalData?.userInfo?.id;
         return currentUserId && String(this.creatorid) === String(currentUserId);
+    },
+
+    /**
+     * 判断当前用户是否已报名
+     */
+    get isRegistered() {
+        const app = getApp();
+        const currentUserId = app?.globalData?.userInfo?.id;
+        if (!currentUserId) {
+            return false;
+        }
+        return this.tagMembers.some(member => String(member.id) === String(currentUserId));
     },
 
     /**
@@ -406,7 +418,7 @@ export const gameStore = observable({
         let deadline = '';
         if (data.registration_deadline) {
             try {
-                const { parseDate } = require('../utils/tool');
+                const { parseDate } = require('../../utils/tool');
                 const date = parseDate(data.registration_deadline);
                 if (!isNaN(date.getTime())) {
                     const month = date.getMonth() + 1;

@@ -37,6 +37,8 @@ const game = {
     removePlayer: (data, options) => request('/Game/removePlayer', data, options),
     // 批量添加好友到球局
     addFriendsToGame: (data, options) => request('/Game/addFriendsToGame', data, options),
+    // 修改报名信息
+    changeUerApplyConfig: (data, options) => request('/Game/changeUerApplyConfig', data, options),
 
     // 添加观看者到球局
     addWatcher: (data, options) => request('/Game/addWatcher', data, options),

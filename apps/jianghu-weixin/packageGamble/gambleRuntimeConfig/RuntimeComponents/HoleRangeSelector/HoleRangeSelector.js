@@ -40,7 +40,7 @@ Component({
         attached() {
 
             // 直接从 gameStore 获取洞数据
-            const holeList = gameStore.gameData?.holeList || [];
+            const holeList = gameStore.getHoleList || [];
 
             // 直接从 properties 获取参数，并确保类型转换
             const startHoleindex = this.properties.startHoleindex ? Number(this.properties.startHoleindex) : null;
@@ -50,7 +50,7 @@ Component({
 
             this.disposer = autorun(() => {
                 // 直接从 gameStore 获取最新的洞数据
-                const currentHoleList = gameStore.gameData?.holeList || [];
+                const currentHoleList = gameStore.getHoleList || [];
                 // 从 properties 获取最新的参数值，并确保类型转换
                 const currentStartHoleindex = this.properties.startHoleindex ? Number(this.properties.startHoleindex) : null;
                 const currentRoadLength = this.properties.roadLength ? Number(this.properties.roadLength) : 0;
@@ -185,7 +185,7 @@ Component({
         // 从属性更新洞显示
         updateHoleDisplayFromProperties() {
             // 直接从 gameStore 获取洞数据
-            const holeList = gameStore.gameData?.holeList || [];
+            const holeList = gameStore.getHoleList || [];
 
             // 从 properties 获取最新的参数值，并确保类型转换
             const startHoleindex = this.properties.startHoleindex ? Number(this.properties.startHoleindex) : null;

@@ -61,7 +61,8 @@ Page({
                 'groups',
                 'spectators',
                 'groupingPermission',
-                'isCreator'
+                'isCreator',
+                'isRegistered'
             ],
             actions: [
                 'fetchTeamGameDetail',
@@ -134,19 +135,6 @@ Page({
             if (this.storeBindings) {
                 this.storeBindings.updateStoreBindings()
             }
-
-            // 检查当前用户是否已报名（直接从 store 读取，避免绑定延迟）
-            const app = getApp()
-            const currentUserId = app?.globalData?.userInfo?.id
-            const tagMembers = gameStore.tagMembers
-            const isRegistered = tagMembers.some(m => String(m.id) === String(currentUserId))
-            console.log('[TeamGameDetail] 报名检查:', {
-                currentUserId,
-                tagMembersCount: tagMembers.length,
-                tagMemberIds: tagMembers.map(m => m.id),
-                isRegistered
-            })
-            this.setData({ isRegistered })
 
             // 静默记录围观
             this.recordSpectator(gameId)

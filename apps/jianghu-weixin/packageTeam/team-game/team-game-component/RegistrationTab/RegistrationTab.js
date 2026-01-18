@@ -4,6 +4,9 @@
  */
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../../../stores/game/gameStore'
+import { buildTagMemberGroups } from '../../../../utils/teamGameUtils'
+
+const app = getApp()
 
 Component({
     properties: {
@@ -36,7 +39,7 @@ Component({
             })
         },
         'gameTags, tagMembers': function (gameTags, tagMembers) {
-            this.buildTagMemberGroups(gameTags, tagMembers)
+            this.refreshTagMemberGroups(gameTags, tagMembers)
         }
     },
 
@@ -52,10 +55,12 @@ Component({
                     'tagMembers',
                     'gameid'
                 ],
-                actions: []
+                actions: [
+                    'loadTagMembers'
+                ]
             })
             // 初始化时计算一次
-            this.buildTagMemberGroups(gameStore.gameTags, gameStore.tagMembers)
+            this.refreshTagMemberGroups(gameStore.gameTags, gameStore.tagMembers)
         },
         detached() {
             if (this.storeBindings) {
@@ -65,60 +70,10 @@ Component({
     },
 
     methods: {
-        /**
-         * 构建报名人员分组数据
-         */
-        buildTagMemberGroups(gameTags = [], tagMembers = []) {
+        refreshTagMemberGroups(gameTags = [], tagMembers = []) {
             const tags = Array.isArray(gameTags) ? gameTags : []
             const members = Array.isArray(tagMembers) ? tagMembers : []
-            const groups = tags.map(tag => ({
-                tagId: tag.id,
-                tagName: tag.tagName,
-                color: tag.color || '',
-                members: []
-            }))
-
-            const groupMap = new Map()
-            const groupCounters = new Map()
-            groups.forEach(group => {
-                if (group.tagId !== undefined && group.tagId !== null) {
-                    groupMap.set(String(group.tagId), group)
-                }
-            })
-
-            const extraGroups = new Map()
-            members.forEach(member => {
-                const tagId = member.tag_id
-                const key = tagId !== undefined && tagId !== null ? String(tagId) : ''
-                let group = groupMap.get(key)
-
-                if (group) {
-                    const nextIndex = (groupCounters.get(group) || 0) + 1
-                    groupCounters.set(group, nextIndex)
-                    group.members.push({ ...member, tagSeq: nextIndex })
-                    return
-                }
-
-                if (!extraGroups.has(key)) {
-                    console.log('[RegistrationTab] 发现未匹配 tag 的成员', {
-                        tagId: tagId,
-                        tagName: member.tagName || '',
-                        userId: member.user_id
-                    })
-                    extraGroups.set(key, {
-                        tagId: tagId,
-                        tagName: member.tagName || '未分组',
-                        color: member.tagColor || '',
-                        members: []
-                    })
-                }
-                group = extraGroups.get(key)
-                const nextIndex = (groupCounters.get(group) || 0) + 1
-                groupCounters.set(group, nextIndex)
-                group.members.push({ ...member, tagSeq: nextIndex })
-            })
-
-            const result = groups.concat(Array.from(extraGroups.values()))
+            const result = buildTagMemberGroups(tags, members)
             console.log('[RegistrationTab] 刷新报名分组', {
                 gameTagsCount: tags.length,
                 tagMembersCount: members.length,
@@ -189,9 +144,50 @@ Component({
             const { gameid, editForm } = this.data
             console.log('[RegistrationTab] edit confirm', {
                 gameid,
+                user_id: editForm.userId,
+                new_nickname: editForm.showName,
+                new_gender: editForm.gender,
                 prev_tag_id: editForm.prevTagId,
                 new_tag_id: editForm.newTagId
             })
+
+            this.submitEditForm()
+        },
+
+        async submitEditForm() {
+            const { gameid, editForm } = this.data
+            if (!gameid || !editForm.userId) {
+                wx.showToast({ title: '缺少必要参数', icon: 'none' })
+                return
+            }
+
+            wx.showLoading({ title: '保存中...' })
+
+            try {
+                const result = await app.api.game.changeUerApplyConfig({
+                    gameid,
+                    user_id: editForm.userId,
+                    new_nickname: editForm.showName,
+                    new_gender: editForm.gender,
+                    new_tag_id: editForm.newTagId
+                })
+
+                wx.hideLoading()
+
+                if (result?.code === 200) {
+                    wx.showToast({ title: result.message || '保存成功', icon: 'success' })
+                    await this.loadTagMembers(gameid)
+                    this.storeBindings?.updateStoreBindings()
+                    this.setData({ editVisible: false })
+                    return
+                }
+
+                wx.showToast({ title: result?.message || '保存失败', icon: 'none' })
+            } catch (error) {
+                wx.hideLoading()
+                console.error('[RegistrationTab] submit edit failed:', error)
+                wx.showToast({ title: '保存失败，请稍后重试', icon: 'none' })
+            }
         }
     }
 })

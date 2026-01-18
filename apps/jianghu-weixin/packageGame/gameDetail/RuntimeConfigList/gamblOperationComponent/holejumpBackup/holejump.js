@@ -29,7 +29,7 @@ Component({
     lifetimes: {
         attached() {
             // 初始化洞序列表
-            const holeList = gameStore.gameData.holeList || [];
+            const holeList = gameStore.getHoleList || [];
             console.log('🏌️ [holejump] attached, holeList.length:', holeList.length);
             this.initHoleList(holeList);
         },

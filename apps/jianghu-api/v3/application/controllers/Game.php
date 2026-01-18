@@ -680,6 +680,54 @@ class Game extends MY_Controller {
         $this->success([], '更新成功');
     }
 
+    public function changeUerApplyConfig() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $gameid = isset($json_paras['gameid']) ? (int)$json_paras['gameid'] : 0;
+        $user_id = isset($json_paras['user_id']) ? (int)$json_paras['user_id'] : 0;
+
+        if ($gameid <= 0 || $user_id <= 0) {
+            return $this->error('参数错误');
+        }
+
+        $current_user_id = $this->getUser();
+        if (!$current_user_id) {
+            return $this->error('请先登录', 401);
+        }
+
+
+        $existing = $this->db->get_where('t_game_tag_member', [
+            'game_id' => $gameid,
+            'user_id' => $user_id
+        ])->row_array();
+
+        if (!$existing) {
+            return $this->error('未找到报名记录', 404);
+        }
+
+        $updateData = [];
+        if (array_key_exists('new_nickname', $json_paras)) {
+            $updateData['apply_name'] = $json_paras['new_nickname'];
+        }
+        if (array_key_exists('new_gender', $json_paras)) {
+            $updateData['gender'] = $json_paras['new_gender'];
+        }
+        if (array_key_exists('new_tag_id', $json_paras)) {
+            $updateData['tag_id'] = (int)$json_paras['new_tag_id'];
+        }
+
+        if (empty($updateData)) {
+            return $this->error('没有可更新字段');
+        }
+
+        $this->db->where([
+            'game_id' => $gameid,
+            'user_id' => $user_id
+        ]);
+        $this->db->update('t_game_tag_member', $updateData);
+
+        $this->success([], '更新成功');
+    }
+
 
     public function saveOneBallConfig() {
 

@@ -5,6 +5,11 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../stores/game/gameStore'
 import navigationHelper from '../../utils/navigationHelper'
+import {
+    buildPlayerGroupMap,
+    buildSelectedPlayersForGroup,
+    buildCurrentTagPlayers
+} from '../../utils/teamGameUtils'
 
 Page({
     data: {
@@ -82,17 +87,11 @@ Page({
      * 构建球员分组映射
      */
     buildPlayerGroupMap() {
-        const map = {}
         const groups = gameStore.groups || []
 
         console.log('[group-config] 原始 groups 数据:', JSON.stringify(groups, null, 2))
 
-        groups.forEach(group => {
-            (group.players || []).forEach(player => {
-                console.log('[group-config] player 原始数据:', player)
-                map[String(player.id)] = String(group.id)
-            })
-        })
+        const map = buildPlayerGroupMap(groups)
 
         this.setData({ playerGroupMap: map })
         console.log('[group-config] playerGroupMap:', map)
@@ -104,44 +103,8 @@ Page({
     loadCurrentGroupPlayers() {
         const { groupId } = this.data
         const groups = gameStore.groups || []
-        const currentGroup = groups.find(g => String(g.id) === String(groupId))
-
-        console.log('[group-config] currentGroup:', currentGroup)
-
-        if (currentGroup && currentGroup.players) {
-            const selectedPlayers = currentGroup.players.map(p => {
-                console.log('[group-config] 当前分组 player 原始:', p)
-
-                // 验证 user_id 字段
-                if (p.user_id === undefined || p.user_id === null) {
-                    console.error('🔴🟢🔵 ERROR [group-config] loadCurrentGroupPlayers: player.user_id 不存在', p)
-                } else if (typeof p.user_id !== 'number') {
-                    console.error('🔴🟢🔵 ERROR [group-config] loadCurrentGroupPlayers: player.user_id 不是数字类型', {
-                        user_id: p.user_id,
-                        type: typeof p.user_id,
-                        player: p
-                    })
-                }
-
-                const user_id = typeof p.user_id === 'number' ? p.user_id : Number(p.user_id)
-                if (isNaN(user_id) || user_id === 0) {
-                    console.error('🔴🟢🔵 ERROR [group-config] loadCurrentGroupPlayers: user_id 转换失败', {
-                        original: p.user_id,
-                        converted: user_id,
-                        player: p
-                    })
-                }
-
-                return {
-                    id: String(p.id),
-                    user_id: user_id,
-                    name: p.name,
-                    avatar: p.avatar,
-                    teamName: p.teamName || ''
-                }
-            })
-            this.setData({ selectedPlayers })
-        }
+        const selectedPlayers = buildSelectedPlayersForGroup(groups, groupId)
+        this.setData({ selectedPlayers })
     },
 
     /**
@@ -151,64 +114,14 @@ Page({
         const { currentTagIndex, playerGroupMap, groupId, selectedPlayers } = this.data
         const gameTags = gameStore.gameTags || []
         const tagMembers = gameStore.tagMembers || []
-
-
-        if (gameTags.length === 0) {
-            this.setData({ currentTagPlayers: [] })
-            return
-        }
-
-        const currentTag = gameTags[currentTagIndex]
-        if (!currentTag) {
-            this.setData({ currentTagPlayers: [] })
-            return
-        }
-
-        // 过滤当前 TAG 下的球员
-        const players = tagMembers
-            .filter(m => m.tagName === currentTag.tagName)
-            .map(m => {
-                // 注意：m.id 是 tag-member 记录ID，m.user_id 才是实际用户ID
-
-                // 验证 user_id 字段
-                if (m.user_id === undefined || m.user_id === null) {
-                    console.error('🔴🟢🔵 ERROR [group-config] updateCurrentTagPlayers: tagMember.user_id 不存在', m)
-                } else if (typeof m.user_id !== 'number') {
-                    console.error('🔴🟢🔵 ERROR [group-config] updateCurrentTagPlayers: tagMember.user_id 不是数字类型', {
-                        user_id: m.user_id,
-                        type: typeof m.user_id,
-                        tagMember: m
-                    })
-                }
-
-                const user_id = typeof m.user_id === 'number' ? m.user_id : Number(m.user_id)
-                if (isNaN(user_id) || user_id === 0) {
-                    console.error('🔴🟢🔵 ERROR [group-config] updateCurrentTagPlayers: user_id 转换失败', {
-                        original: m.user_id,
-                        converted: user_id,
-                        tagMember: m
-                    })
-                }
-
-                const playerId = String(user_id)
-                const inGroupId = playerGroupMap[playerId]
-                const isInCurrentGroup = selectedPlayers.some(p => String(p.id) === playerId)
-
-
-                return {
-                    id: playerId,
-                    user_id: user_id,
-                    show_name: m.show_name,
-                    avatar: m.avatar,
-                    handicap: m.handicap,
-                    // 是否已在当前分组（选中）
-                    isSelected: isInCurrentGroup,
-                    // 是否已在其他分组（禁用）
-                    isDisabled: inGroupId && String(inGroupId) !== String(groupId),
-                    // 所在分组ID
-                    inGroupId: inGroupId || null
-                }
-            })
+        const players = buildCurrentTagPlayers({
+            gameTags,
+            tagMembers,
+            currentTagIndex,
+            playerGroupMap,
+            groupId,
+            selectedPlayers
+        })
 
         this.setData({ currentTagPlayers: players })
     },
@@ -287,29 +200,9 @@ Page({
             // 找到球员信息
             const player = currentTagPlayers.find(p => String(p.id) === playerId)
             if (player) {
-                // 验证 user_id 字段
-                if (player.user_id === undefined || player.user_id === null) {
-                    console.error('🔴🟢🔵 ERROR [group-config] onPlayerToggle: player.user_id 不存在', player)
-                } else if (typeof player.user_id !== 'number') {
-                    console.error('🔴🟢🔵 ERROR [group-config] onPlayerToggle: player.user_id 不是数字类型', {
-                        user_id: player.user_id,
-                        type: typeof player.user_id,
-                        player: player
-                    })
-                }
-
-                const user_id = typeof player.user_id === 'number' ? player.user_id : Number(player.user_id)
-                if (isNaN(user_id) || user_id === 0) {
-                    console.error('🔴🟢🔵 ERROR [group-config] onPlayerToggle: user_id 转换失败', {
-                        original: player.user_id,
-                        converted: user_id,
-                        player: player
-                    })
-                }
-
                 const newSelected = [...selectedPlayers, {
                     id: playerId,
-                    user_id: user_id,
+                    user_id: player.user_id,
                     name: player.show_name || player.name || '',
                     avatar: player.avatar,
                     teamName: this.data.gameTags[this.data.currentTagIndex]?.tagName || ''

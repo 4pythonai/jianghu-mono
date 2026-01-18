@@ -30,7 +30,7 @@ Component({
         // 初始化洞序数据
         initHoleList() {
             // 从 gameStore 获取真实的洞数据
-            const holeList = gameStore.gameData?.holeList || [];
+            const holeList = gameStore.getHoleList || [];
 
             console.log('holejump: 从gameStore获取的洞数据:', holeList);
 

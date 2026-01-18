@@ -1,5 +1,6 @@
 import { storeBindingsBehavior } from 'mobx-miniprogram-bindings'
 import { gameStore } from '@/stores/game/gameStore'
+import { buildDisplayPlayers } from '@/utils/teamGameUtils'
 
 Component({
     behaviors: [storeBindingsBehavior],
@@ -37,14 +38,7 @@ Component({
             const players = gameStore.players || []
             const creatorid = gameStore.creatorid || gameStore.gameData?.creatorid
 
-            const displayPlayers = players.map(p => ({
-                show_name: p.show_name || '未知',
-                avatar: p.avatar || '/images/default-avatar.png',
-                showDelete: String(p.user_id) === String(creatorid) ? 'n' : 'y',
-                user_id: p.user_id
-            }))
-
-            this.setData({ displayPlayers })
+            this.setData({ displayPlayers: buildDisplayPlayers(players, creatorid) })
         },
 
         onDeletePlayer(e) {

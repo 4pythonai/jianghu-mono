@@ -50,7 +50,7 @@ Page({
         const defaultConfig = GambleMetaConfig.getDefaultGambleConfig(gambleSysName, processedData.players);
 
         // 计算洞范围配置
-        const roadLength = gameData?.holeList?.length || 0;
+        const roadLength = (gameStore.getHoleList || []).length;
         const holeRangeConfig = { startHoleindex: 1, roadLength };
 
         console.log("🉐💮🆚🉐💮🆚🉐💮🆚🉐💮🆚🉐💮🆚🉐💮🆚🉐💮🆚 processedData", processedData)

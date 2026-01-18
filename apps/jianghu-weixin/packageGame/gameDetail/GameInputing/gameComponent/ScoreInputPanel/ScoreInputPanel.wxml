@@ -9,18 +9,33 @@
           <view class="hole-name-main">{{currentHole.holename}}</view>
         </view>
         <view class="hole-details-wrapper">
-          <view class="hole-detail">PAR {{currentHole.par}}</view>
-          <view class="hole-detail">码数 {{currentPlayerDistance || ''}}</view>
           <view class="hole-detail">
-            发球台
-            <view class="tee-indicator tee-{{currentPlayerTee}}"></view>
+            <text class="hole-detail-label">PAR</text>
+            <text class="hole-detail-value">{{currentHole.par}}</text>
+          </view>
+          <view class="hole-detail-divider"></view>
+          <view class="hole-detail">
+            <text class="hole-detail-label">YARDS</text>
+            <text class="hole-detail-value">{{currentPlayerDistance || ''}}</text>
+          </view>
+          <view class="hole-detail-divider"></view>
+          <view class="hole-detail">
+            <text class="hole-detail-label">TEE</text>
+            <view class="hole-tee-detail">
+              <text class="hole-detail-value tee-text">{{currentPlayerTee || ''}}</text>
+              <view class="tee-indicator tee-{{currentPlayerTee}}"></view>
+            </view>
           </view>
         </view>
       </view>
 
       <view class="main-content">
         <view class="player-list-container">
-          <scroll-view class="player-list-scroll" scroll-y>
+          <scroll-view
+            class="player-list-scroll"
+            scroll-y="{{players.length > 4}}"
+            show-scrollbar="false"
+          >
             <view
               class="player-item {{index === activePlayerIndex ? 'active' : ''}} {{item.user_id == currentUserId ? 'is-current-user' : ''}}"
               wx:for="{{players}}"
@@ -29,7 +44,9 @@
               data-index="{{index}}"
             >
               <image class="player-avatar" src="{{image.imageUrl(item.avatar)}}" />
-              <view class="player-score">{{localScores[index] ? localScores[index].score : ''}}</view>
+              <view
+                class="player-score-badge"
+              >{{localScores[index] ? localScores[index].score : ''}}</view>
             </view>
           </scroll-view>
         </view>
@@ -37,7 +54,10 @@
         <view class="scoring-area-container">
           <view class="scoring-area">
             <view class="score-row">
-              <text class="score-label">成绩</text>
+              <view class="score-label">
+                <text class="score-label-cn">成绩</text>
+                <text class="score-label-en">Score</text>
+              </view>
               <view class="score-control">
                 <view
                   class="control-btn minus"
@@ -55,7 +75,10 @@
               </view>
             </view>
             <view class="score-row">
-              <text class="score-label">推杆</text>
+              <view class="score-label">
+                <text class="score-label-cn">推杆</text>
+                <text class="score-label-en">Putts</text>
+              </view>
               <view class="score-control">
                 <view
                   class="control-btn minus"
@@ -73,7 +96,10 @@
               </view>
             </view>
             <view class="score-row">
-              <text class="score-label">罚杆</text>
+              <view class="score-label">
+                <text class="score-label-cn">罚杆</text>
+                <text class="score-label-en">Pen</text>
+              </view>
               <view class="score-control">
                 <view
                   class="control-btn minus"
@@ -91,7 +117,10 @@
               </view>
             </view>
             <view class="score-row">
-              <text class="score-label">沙坑</text>
+              <view class="score-label">
+                <text class="score-label-cn">沙坑</text>
+                <text class="score-label-en">Sand</text>
+              </view>
               <view class="score-control">
                 <view
                   class="control-btn minus"
@@ -168,12 +197,19 @@
     </view>
 
     <view class="modal-actions">
-      <button class="modal-btn cancel" bind:tap="handleClear" disabled="{{isSaving}}">清除</button>
-      <button
-        class="modal-btn confirm"
-        bind:tap="handleConfirm"
-        disabled="{{isSaving}}"
-      >{{isSaving ? '保存中...' : '确定'}}</button>
+      <button class="modal-btn cancel" bind:tap="handleClear" disabled="{{isSaving}}">
+        <view class="btn-text">
+          <text class="btn-main">清除</text>
+          <text class="btn-sub"></text>
+        </view>
+      </button>
+      <button class="modal-btn confirm" bind:tap="handleConfirm" disabled="{{isSaving}}">
+        <view class="btn-text" wx:if="{{!isSaving}}">
+          <text class="btn-main">确定</text>
+          <text class="btn-sub"></text>
+        </view>
+        <text class="btn-saving" wx:else>保存中...</text>
+      </button>
     </view>
   </view>
 </view>

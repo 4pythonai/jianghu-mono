@@ -26,7 +26,7 @@ Component({
     lifetimes: {
         attached() {
             // 直接从 gameStore 获取洞数据
-            const holeList = gameStore.gameData?.holeList || [];
+            const holeList = gameStore.getHoleList || [];
 
             // 设置起始洞索引和道路长度
             const startHoleindex = holeList.length > 0 ? holeList[0].hindex : 1;

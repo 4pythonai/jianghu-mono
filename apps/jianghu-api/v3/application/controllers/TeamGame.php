@@ -279,7 +279,7 @@ class TeamGame extends MY_Controller {
         $user_id = $this->getUser();
         $game_id = $json_paras['game_id'];
         $tag_id = $json_paras['tag_id'] ?? null;
-        $nickname = $json_paras['nickname'] ?? null;
+        $nickname = $json_paras['show_name'] ?? null;
         $gender = $json_paras['gender'] ?? null;
         $mobile = $json_paras['mobile'] ?? null;
         $remark = $json_paras['remark'] ?? null;
