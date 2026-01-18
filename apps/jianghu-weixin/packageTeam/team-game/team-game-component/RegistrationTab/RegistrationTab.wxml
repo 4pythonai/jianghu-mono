@@ -29,6 +29,11 @@
       show_name="{{member.show_name}}"
       userId="{{member.user_id}}"
       handicap="{{member.handicap}}"
+      gender="{{member.gender}}"
+      tagId="{{member.tag_id}}"
+      tagName="{{member.tagName}}"
+      mode="{{mode}}"
+      bindedit="handleEditMember"
     />
   </view>
   <view
@@ -41,4 +46,66 @@
 <!-- 空状态 -->
 <view wx:if="{{tagMemberGroups.length === 0}}" class="registration-empty-state">
   <text>暂无报名人员</text>
+</view>
+
+<view wx:if="{{editVisible}}" class="edit-mask" bindtap="handleEditCancel"></view>
+<view wx:if="{{editVisible}}" class="edit-sheet">
+  <view class="edit-header">编辑球员</view>
+  <view class="edit-field">
+    <text class="edit-label">昵称</text>
+    <input
+      class="edit-input"
+      value="{{editForm.showName}}"
+      placeholder="请输入昵称"
+      bindinput="handleNicknameInput"
+    />
+  </view>
+  <view class="edit-field">
+    <text class="edit-label">性别</text>
+    <view class="edit-gender-options">
+      <view
+        class="edit-gender-option {{editForm.gender === 'male' ? 'active' : ''}}"
+        data-value="male"
+        bindtap="handleGenderSelect"
+      >
+        男
+      </view>
+      <view
+        class="edit-gender-option {{editForm.gender === 'female' ? 'active' : ''}}"
+        data-value="female"
+        bindtap="handleGenderSelect"
+      >
+        女
+      </view>
+      <view
+        class="edit-gender-option {{editForm.gender === 'unknown' ? 'active' : ''}}"
+        data-value="unknown"
+        bindtap="handleGenderSelect"
+      >
+        未知
+      </view>
+    </view>
+  </view>
+  <view class="edit-field">
+    <text class="edit-label">当前分队</text>
+    <text class="edit-value">{{editForm.prevTagName}}</text>
+  </view>
+  <view class="edit-field">
+    <text class="edit-label">切换分队</text>
+    <picker
+      class="edit-picker"
+      range="{{gameTags}}"
+      range-key="tagName"
+      value="{{editTagIndex}}"
+      bindchange="handleTagChange"
+    >
+      <view class="edit-picker-value">
+        {{editForm.newTagName || '请选择分队'}}
+      </view>
+    </picker>
+  </view>
+  <view class="edit-actions">
+    <view class="edit-action cancel" bindtap="handleEditCancel">取消</view>
+    <view class="edit-action confirm" bindtap="handleEditConfirm">确定</view>
+  </view>
 </view>

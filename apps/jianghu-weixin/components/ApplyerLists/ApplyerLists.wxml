@@ -16,6 +16,13 @@
   <!-- 球员信息 -->
   <view class="player-info">
     <text class="player-name">{{show_name}}</text>
+    <view
+      wx:if="{{mode === 'edit'}}"
+      class="player-edit-button"
+      bindtap="handleEditTap"
+    >
+      编辑
+    </view>
   </view>
 
   <!-- 江湖差点 -->

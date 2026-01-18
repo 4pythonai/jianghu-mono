@@ -71,9 +71,21 @@
 .player-name {
     font-size: 30rpx;
     color: var(--text-primary);
+    flex: 1;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.player-edit-button {
+    margin-left: 16rpx;
+    padding: 6rpx 16rpx;
+    border: 1rpx solid var(--primary-green);
+    border-radius: 999rpx;
+    font-size: 22rpx;
+    color: var(--primary-green);
+    flex-shrink: 0;
 }
 
 /* 差点区域 */

@@ -6,8 +6,26 @@ import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../../../stores/game/gameStore'
 
 Component({
+    properties: {
+        mode: {
+            type: String,
+            value: 'display'
+        }
+    },
+
     data: {
-        tagMemberGroups: []
+        tagMemberGroups: [],
+        editVisible: false,
+        editForm: {
+            userId: null,
+            showName: '',
+            gender: 'unknown',
+            prevTagId: null,
+            newTagId: null,
+            prevTagName: '',
+            newTagName: ''
+        },
+        editTagIndex: 0
     },
 
     observers: {
@@ -31,7 +49,8 @@ Component({
                     'game_type',
                     'match_format',
                     'gameTags',
-                    'tagMembers'
+                    'tagMembers',
+                    'gameid'
                 ],
                 actions: []
             })
@@ -106,6 +125,73 @@ Component({
                 groupCount: result.length
             })
             this.setData({ tagMemberGroups: result })
+        },
+
+        handleEditMember(event) {
+            if (this.data.mode !== 'edit') return
+
+            const member = event.detail?.member
+            if (!member) return
+
+            const tags = Array.isArray(this.data.gameTags) ? this.data.gameTags : []
+            const targetTagId = member.tagId
+            const tagIndex = tags.findIndex(tag => String(tag.id) === String(targetTagId))
+            const safeIndex = tagIndex >= 0 ? tagIndex : 0
+            const selectedTag = tags[safeIndex]
+            const prevTagName = member.tagName || selectedTag?.tagName || ''
+            const newTagName = selectedTag?.tagName || prevTagName
+            const newTagId = selectedTag?.id ?? targetTagId
+
+            this.setData({
+                editVisible: true,
+                editTagIndex: safeIndex,
+                editForm: {
+                    userId: member.userId,
+                    showName: member.showName || '',
+                    gender: member.gender || 'unknown',
+                    prevTagId: targetTagId ?? null,
+                    newTagId: newTagId ?? null,
+                    prevTagName: prevTagName,
+                    newTagName: newTagName
+                }
+            })
+        },
+
+        handleEditCancel() {
+            this.setData({ editVisible: false })
+        },
+
+        handleNicknameInput(event) {
+            const value = event.detail?.value || ''
+            this.setData({ 'editForm.showName': value })
+        },
+
+        handleGenderSelect(event) {
+            const value = event.currentTarget?.dataset?.value
+            if (!value) return
+            this.setData({ 'editForm.gender': value })
+        },
+
+        handleTagChange(event) {
+            const index = Number(event.detail?.value || 0)
+            const tags = Array.isArray(this.data.gameTags) ? this.data.gameTags : []
+            const selectedTag = tags[index]
+            if (!selectedTag) return
+
+            this.setData({
+                editTagIndex: index,
+                'editForm.newTagId': selectedTag.id,
+                'editForm.newTagName': selectedTag.tagName || ''
+            })
+        },
+
+        handleEditConfirm() {
+            const { gameid, editForm } = this.data
+            console.log('[RegistrationTab] edit confirm', {
+                gameid,
+                prev_tag_id: editForm.prevTagId,
+                new_tag_id: editForm.newTagId
+            })
         }
     }
 })

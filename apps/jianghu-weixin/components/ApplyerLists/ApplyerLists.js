@@ -29,10 +29,30 @@ Component({
             type: null,
             value: null
         },
+        /** 分队ID */
+        tagId: {
+            type: null,
+            value: null
+        },
+        /** 分队名称 */
+        tagName: {
+            type: String,
+            value: ''
+        },
+        /** 性别 */
+        gender: {
+            type: String,
+            value: 'unknown'
+        },
         /** 是否已付费 */
         paid: {
             type: Boolean,
             value: false
+        },
+        /** 显示模式 */
+        mode: {
+            type: String,
+            value: 'display'
         }
     },
 
@@ -40,5 +60,17 @@ Component({
         defaultAvatar: '/assets/images/default-avatar.png'
     },
 
-    methods: {}
+    methods: {
+        handleEditTap() {
+            this.triggerEvent('edit', {
+                member: {
+                    userId: this.properties.userId,
+                    showName: this.properties.show_name,
+                    gender: this.properties.gender,
+                    tagId: this.properties.tagId,
+                    tagName: this.properties.tagName
+                }
+            })
+        }
+    }
 })
