@@ -44,7 +44,7 @@ Page({
       profileStatus: status,
       needBindPhone: state.needBindPhone,
       showAuthButton: !(status.hasNickname && status.hasAvatar),
-      tempDisplayName: state.userInfo?.display_name || ''
+      tempDisplayName: state.userInfo?.show_name || ''
     })
   },
 
@@ -137,25 +137,25 @@ Page({
   },
 
   confirmUserInfo() {
-    const display_name = this.data.tempDisplayName?.trim()
+    const show_name = this.data.tempDisplayName?.trim()
 
-    if (!display_name) {
+    if (!show_name) {
       wx.showToast({ title: '请输入昵称', icon: 'none' })
       return
     }
 
-    if (display_name.length > 20) {
+    if (show_name.length > 20) {
       wx.showToast({ title: '昵称不能超过20个字符', icon: 'none' })
       return
     }
 
     app.api.user.updateDisplayName({
       user_id: app.globalData.userInfo.id,
-      display_name
+      show_name
     }, {
       loadingTitle: '保存中...'
     }).then(() => {
-      const updatedUser = { ...app.globalData.userInfo, display_name }
+      const updatedUser = { ...app.globalData.userInfo, show_name }
       const updatedStatus = { ...app.globalData.profileStatus, hasNickname: true }
 
       app.setUserInfo(updatedUser, updatedStatus, app.globalData.needBindPhone)
@@ -192,9 +192,9 @@ Page({
         throw new Error(response.message || '绑定失败')
       }
 
-      // response.user 来自后端，字段是 display_name
+      // response.user 来自后端，字段是 show_name
       const updatedStatus = {
-        hasNickname: !!(response.user?.display_name),
+        hasNickname: !!(response.user?.show_name),
         hasAvatar: !!(response.user?.avatar),
         hasMobile: true
       }

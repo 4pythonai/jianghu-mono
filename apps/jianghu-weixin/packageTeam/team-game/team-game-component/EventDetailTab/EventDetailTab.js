@@ -40,7 +40,7 @@ Component({
         showRegisterPopup: false,
         selectedTagId: null,
         registerForm: {
-            display_name: '',
+            show_name: '',
             mobile: '',
             gender: 'unknown',
             genderText: '未知'
@@ -76,7 +76,7 @@ Component({
                     'loadGameTags'
                 ]
             })
-            
+
             // 初始化时也打印一次
             console.log('[EventDetailTab] attached, 初始 eventDetail:', {
                 eventDetail: gameStore.eventDetail,
@@ -114,7 +114,7 @@ Component({
                 showRegisterPopup: true,
                 selectedTagId: null,
                 registerForm: {
-                    display_name: userInfo.display_name || '未设置',
+                    show_name: userInfo.show_name || '未设置',
                     mobile: userInfo.mobile || '',
                     gender: gender,
                     genderText: genderText
@@ -152,7 +152,7 @@ Component({
          * 昵称输入
          */
         onDisplayNameInput(e) {
-            this.setData({ 'registerForm.display_name': e.detail.value })
+            this.setData({ 'registerForm.show_name': e.detail.value })
         },
 
         /**
@@ -181,7 +181,7 @@ Component({
                 const result = await app.api.teamgame.registerGame({
                     game_id: gameId,
                     tag_id: selectedTagId,
-                    display_name: registerForm.display_name,
+                    show_name: registerForm.show_name,
                     gender: registerForm.gender,
                     mobile: registerForm.mobile
                 })

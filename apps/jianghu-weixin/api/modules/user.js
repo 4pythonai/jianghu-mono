@@ -22,7 +22,7 @@ const user = {
 
     createAndSelect: (data, options) => request('/User/createAndSelect', data, options),
 
-    // search by display_name
+    // search by show_name
     searchUserByDisplayName: (data, options) => request('/User/searchUserByDisplayName', data, options),
 
     // double-search mobile ,从小程序和app数据库

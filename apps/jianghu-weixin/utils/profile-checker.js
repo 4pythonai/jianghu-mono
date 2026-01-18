@@ -113,8 +113,8 @@ class ProfileChecker {
             return profileStatus.hasNickname
         }
 
-        // userInfo 已通过 normalizeUserInfo 标准化，使用 display_name
-        return !!(userInfo && userInfo.display_name)
+        // userInfo 已通过 normalizeUserInfo 标准化，使用 show_name
+        return !!(userInfo && userInfo.show_name)
     }
 
     /**

@@ -81,7 +81,7 @@
               >
                 <view class="player-item">
                   <text class="player-score">{{player.score}}</text>
-                  <text class="player-name">{{player.display_name}}</text>
+                  <text class="player-name">{{player.show_name}}</text>
                 </view>
               </block>
             </view>

@@ -15,7 +15,11 @@
   <InfoCard title="基本信息">
     <view class="event-detail-info-list">
       <view class="event-detail-info-item">
-        <image class="event-detail-info-icon" src="/assets/icons/icons-location.png" mode="aspectFit" />
+        <image
+          class="event-detail-info-icon"
+          src="/assets/icons/icons-location.png"
+          mode="aspectFit"
+        />
         <text class="event-detail-info-text">{{eventDetail.location}}</text>
       </view>
       <view class="event-detail-info-item">
@@ -27,7 +31,11 @@
         <text class="event-detail-info-text">{{eventDetail.fee}}</text>
       </view>
       <view class="event-detail-info-item">
-        <image class="event-detail-info-icon" src="/assets/icons/icons-deadline.png" mode="aspectFit" />
+        <image
+          class="event-detail-info-icon"
+          src="/assets/icons/icons-deadline.png"
+          mode="aspectFit"
+        />
         <text class="event-detail-info-text">{{eventDetail.deadline}}</text>
       </view>
     </view>
@@ -110,7 +118,7 @@
         <input
           class="event-detail-form-input"
           placeholder="请输入昵称"
-          value="{{registerForm.display_name}}"
+          value="{{registerForm.show_name}}"
           bindinput="onDisplayNameInput"
         />
       </view>
@@ -133,7 +141,9 @@
             data-gender="male"
             bindtap="onGenderSelect"
           >
-            <view class="event-detail-radio-circle {{registerForm.gender === 'male' ? 'event-detail-checked' : ''}}"></view>
+            <view
+              class="event-detail-radio-circle {{registerForm.gender === 'male' ? 'event-detail-checked' : ''}}"
+            ></view>
             <text>男</text>
           </view>
           <view
@@ -141,7 +151,9 @@
             data-gender="female"
             bindtap="onGenderSelect"
           >
-            <view class="event-detail-radio-circle {{registerForm.gender === 'female' ? 'event-detail-checked' : ''}}"></view>
+            <view
+              class="event-detail-radio-circle {{registerForm.gender === 'female' ? 'event-detail-checked' : ''}}"
+            ></view>
             <text>女</text>
           </view>
         </view>
@@ -166,7 +178,11 @@
     <view class="event-detail-actions-grid">
       <view class="event-detail-action-item" data-action="registerForFriend" bindtap="onActionTap">
         <view class="event-detail-action-icon event-detail-icon-friend">
-          <image class="event-detail-btn-icon-img" src="/assets/icons/icons8-apply-48.png" mode="aspectFit" />
+          <image
+            class="event-detail-btn-icon-img"
+            src="/assets/icons/icons8-apply-48.png"
+            mode="aspectFit"
+          />
         </view>
         <text class="event-detail-action-text">替好友报名</text>
       </view>
@@ -182,25 +198,41 @@
       </view>
       <view class="event-detail-action-item" data-action="managePlayer" bindtap="onActionTap">
         <view class="event-detail-action-icon event-detail-icon-manage">
-          <image class="event-detail-btn-icon-img" src="/assets/icons/icons8-swap-48.png" mode="aspectFit" />
+          <image
+            class="event-detail-btn-icon-img"
+            src="/assets/icons/icons8-swap-48.png"
+            mode="aspectFit"
+          />
         </view>
         <text class="event-detail-action-text">选手管理</text>
       </view>
       <view class="event-detail-action-item" data-action="editGame" bindtap="onActionTap">
         <view class="event-detail-action-icon event-detail-icon-edit">
-          <image class="event-detail-btn-icon-img" src="/assets/icons/icons8-edit-48.png" mode="aspectFit" />
+          <image
+            class="event-detail-btn-icon-img"
+            src="/assets/icons/icons8-edit-48.png"
+            mode="aspectFit"
+          />
         </view>
         <text class="event-detail-action-text">修改比赛</text>
       </view>
       <view class="event-detail-action-item" data-action="editGroup" bindtap="onActionTap">
         <view class="event-detail-action-icon event-detail-icon-group">
-          <image class="event-detail-btn-icon-img" src="/assets/icons/icons8-group-48.png" mode="aspectFit" />
+          <image
+            class="event-detail-btn-icon-img"
+            src="/assets/icons/icons8-group-48.png"
+            mode="aspectFit"
+          />
         </view>
         <text class="event-detail-action-text">修改分组</text>
       </view>
       <view class="event-detail-action-item" data-action="manageFee" bindtap="onActionTap">
         <view class="event-detail-action-icon event-detail-icon-fee">
-          <image class="event-detail-btn-icon-img" src="/assets/icons/icons8-coins-48.png" mode="aspectFit" />
+          <image
+            class="event-detail-btn-icon-img"
+            src="/assets/icons/icons8-coins-48.png"
+            mode="aspectFit"
+          />
         </view>
         <text class="event-detail-action-text">收费管理</text>
       </view>
@@ -216,13 +248,21 @@
       </view>
       <view class="event-detail-action-item" data-action="startGame" bindtap="onActionTap">
         <view class="event-detail-action-icon event-detail-action-icon-start">
-          <image class="event-detail-btn-icon-img" src="/assets/icons/icons8-start-48.png" mode="aspectFit" />
+          <image
+            class="event-detail-btn-icon-img"
+            src="/assets/icons/icons8-start-48.png"
+            mode="aspectFit"
+          />
         </view>
         <text class="event-detail-action-text">开始比赛</text>
       </view>
       <view class="event-detail-action-item" data-action="manageScore" bindtap="onActionTap">
         <view class="event-detail-action-icon event-detail-action-icon-score">
-          <image class="event-detail-btn-icon-img" src="/assets/icons/icons8-edit-48.png" mode="aspectFit" />
+          <image
+            class="event-detail-btn-icon-img"
+            src="/assets/icons/icons8-edit-48.png"
+            mode="aspectFit"
+          />
         </view>
         <text class="event-detail-action-text">记分管理</text>
       </view>

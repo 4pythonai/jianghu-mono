@@ -132,7 +132,7 @@ Page({
                 console.log(`分组处理[${index}]: user_id = ${friend.user_id}, 类型 = ${typeof friend.user_id}`)
             }
 
-            const name = friend.display_name || ''
+            const name = friend.show_name || ''
             const letter = this.getFirstLetter(name)
             if (groups[letter]) {
                 groups[letter].push(friend)
@@ -167,7 +167,7 @@ Page({
         }
 
         const filteredFriends = this.data.friends.filter(friend =>
-            friend.display_name?.toLowerCase().includes(keyword) ||
+            friend.show_name?.toLowerCase().includes(keyword) ||
             friend.user_id?.toString().includes(keyword)
         )
 

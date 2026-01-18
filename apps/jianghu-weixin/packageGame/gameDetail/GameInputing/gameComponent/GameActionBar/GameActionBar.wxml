@@ -48,7 +48,7 @@
         src="{{image.imageUrl(gameData.creator.avatar)}}"
         mode="aspectFill"
       />
-      <text class="creator-name">{{gameData.creator.show_name || gameData.creator.display_name || '-'}}</text>
+      <text class="creator-name">{{gameData.creator.show_name || gameData.creator.show_name || '-'}}</text>
     </view>
   </view>
 </view>

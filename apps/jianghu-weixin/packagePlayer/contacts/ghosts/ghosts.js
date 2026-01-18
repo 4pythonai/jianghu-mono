@@ -56,7 +56,7 @@ Page({
 
         wx.showModal({
             title: '确认删除',
-            content: `确定要删除"${user.display_name || '该用户'}"吗？`,
+            content: `确定要删除"${user.show_name || '该用户'}"吗？`,
             confirmColor: '#ff4d4f',
             success: (res) => {
                 if (res.confirm) {

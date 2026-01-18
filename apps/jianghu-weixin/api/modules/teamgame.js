@@ -86,7 +86,7 @@ const teamgame = {
     assignCrossTeamGroups: (data, options) => request('/TeamGame/assignCrossTeamGroups', data, options),
     // 检查球员报名状态（唯一性校验）{game_id, user_id}
     checkCrossTeamRegistration: (data, options) => request('/TeamGame/checkCrossTeamRegistration', data, options),
-    // 获取比赛报名人员列表 {game_id} -> 返回 [{seq, display_name, avatar, handicap, tag_name, ...}]
+    // 获取比赛报名人员列表 {game_id} -> 返回 [{seq, show_name, avatar, handicap, tag_name, ...}]
     getTagMembersAll: (data, options) => request('/TeamGame/getTagMembersAll', data, options),
 }
 

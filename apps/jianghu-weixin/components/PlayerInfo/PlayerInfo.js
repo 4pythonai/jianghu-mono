@@ -34,7 +34,7 @@ Component({
         currentTee: '',
         isValidTee: false,
         displayText: 'X',
-        display_name: '',
+        show_name: '',
         show_name: '',
         avatar: '',
         handicap: 0,

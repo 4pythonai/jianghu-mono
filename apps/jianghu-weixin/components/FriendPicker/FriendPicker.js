@@ -196,7 +196,7 @@ Component({
             alphabet.forEach(letter => { groups[letter] = []; });
 
             friends.forEach(friend => {
-                const name = friend.display_name || '';
+                const name = friend.show_name || '';
                 const letter = this.getFirstLetter(name);
                 if (groups[letter]) {
                     groups[letter].push(friend);
@@ -329,9 +329,9 @@ Component({
                 return;
             }
 
-            // 后端 User/getFriendList 返回的好友数据使用 display_name 字段
+            // 后端 User/getFriendList 返回的好友数据使用 show_name 字段
             const filteredFriends = this.data.friends.filter(friend =>
-                friend.display_name?.toLowerCase().includes(keyword) ||
+                friend.show_name?.toLowerCase().includes(keyword) ||
                 friend.user_id?.toString().includes(keyword)
             );
 

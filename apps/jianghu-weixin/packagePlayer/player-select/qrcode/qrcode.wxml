@@ -118,7 +118,7 @@
     >
       <image class="notification-avatar" src="{{image.imageUrl(item.avatar)}}" mode="aspectFill"></image>
       <view class="notification-content">
-        <text class="notification-title">{{item.display_name}}</text>
+        <text class="notification-title">{{item.show_name}}</text>
         <text class="notification-message">加入比赛</text>
       </view>
     </view>

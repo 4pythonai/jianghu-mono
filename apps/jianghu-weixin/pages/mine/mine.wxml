@@ -19,7 +19,7 @@
       </view>
       <view class="user-details">
         <view class="showname-row">
-          <text class="showname">{{ userInfo.display_name || '微信用户' }}</text>
+          <text class="showname">{{ userInfo.show_name || '微信用户' }}</text>
           <text class="gender-icon" wx:if="{{ userInfo.gender === 'male' }}">♂</text>
           <text class="gender-icon female" wx:if="{{ userInfo.gender === 'female' }}">♀</text>
         </view>
@@ -51,7 +51,7 @@
           <input
             class="showname-input"
             type="showname"
-            value="{{ tempDisplayName || userInfo.display_name || '' }}"
+            value="{{ tempDisplayName || userInfo.show_name || '' }}"
             placeholder="请输入昵称"
             maxlength="20"
             bindinput="onDisplayNameInput"

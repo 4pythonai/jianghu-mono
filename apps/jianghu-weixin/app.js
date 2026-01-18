@@ -452,17 +452,17 @@ App({
         // 标准化用户信息，确保字段名与数据库一致
         // 后端 MUser.getUserbyId 返回的 t_user 表字段:
         // - id: 用户ID
-        // - display_name: 显示名称（用户可修改）
+        // - show_name: 显示名称（用户可修改）
         // - wx_name: 微信名称（系统同步）
         // - avatar: 头像URL
         // - gender: 性别 ('male'/'female'/'unknown')
         // - mobile: 手机号
         const user = userInfo ? { ...userInfo } : {}
 
-        // 确保 display_name 存在
+        // 确保 show_name 存在
         // 注意: 微信 wx.getUserProfile API 返回 nickName (驼峰)，需要转换
-        if (!user.display_name) {
-            user.display_name = user.nickName || user.wx_name || ''
+        if (!user.show_name) {
+            user.show_name = user.nickName || user.wx_name || ''
         }
 
         // 统一性别字段: 'male', 'female', 'unknown'

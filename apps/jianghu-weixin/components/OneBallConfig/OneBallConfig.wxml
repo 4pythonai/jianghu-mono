@@ -19,7 +19,7 @@
             src="{{ image.imageUrl(player.avatar) || '/images/default-avatar.png' }}"
             mode="aspectFill"
           ></image>
-          <text class="player-name">{{player.display_name}}</text>
+          <text class="player-name">{{player.show_name}}</text>
         </view>
         <view class="side-actions">
           <view
@@ -28,18 +28,14 @@
             data-user-id="{{player.user_id}}"
             data-side="A"
             bindtap="onAssignSide"
-          >
-            A队
-          </view>
+          >A队</view>
           <view
             class="side-btn side-b {{player._oneballSide === 'B' ? 'selected' : ''}}"
             data-group-index="{{groupIndex}}"
             data-user-id="{{player.user_id}}"
             data-side="B"
             bindtap="onAssignSide"
-          >
-            B队
-          </view>
+          >B队</view>
         </view>
       </view>
     </view>

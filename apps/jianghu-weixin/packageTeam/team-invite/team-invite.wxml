@@ -45,7 +45,7 @@
             />
           </view>
           <view class="user-info">
-            <view class="user-name">{{item.display_name || '未设置昵称'}}</view>
+            <view class="user-name">{{item.show_name || '未设置昵称'}}</view>
             <view class="user-meta">
               <text
                 class="user-handicap"
@@ -58,7 +58,7 @@
             class="invite-btn {{item.inviting ? 'disabled' : ''}}"
             catchtap="onInvite"
             data-user-id="{{item.id}}"
-            data-shown-name="{{item.display_name}}"
+            data-shown-name="{{item.show_name}}"
             data-index="{{index}}"
           >
             <text>{{item.inviting ? '邀请中...' : '邀请'}}</text>

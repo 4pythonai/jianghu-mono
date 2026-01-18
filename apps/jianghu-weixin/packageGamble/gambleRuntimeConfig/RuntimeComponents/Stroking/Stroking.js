@@ -102,8 +102,8 @@ Component({
 
                 return {
                     user_id: config.user_id,
-                    // 统一使用 display_name 字段（后端计算的显示名称）
-                    display_name: user?.display_name || '未知用户',
+                    // 统一使用 show_name 字段（后端计算的显示名称）
+                    show_name: user?.show_name || '未知用户',
                     holeCount: config.holeRanges?.length || 0,
                     parSummary: pars.join(', ') || '无让杆'
                 };
@@ -348,7 +348,7 @@ Component({
 
             wx.showModal({
                 title: '删除确认',
-                content: `确定要删除 ${user?.display_name || '该用户'} 的让杆配置吗？`,
+                content: `确定要删除 ${user?.show_name || '该用户'} 的让杆配置吗？`,
                 success: (res) => {
                     if (res.confirm) {
                         const updatedConfigs = (this.properties.strokingConfig || [])
@@ -366,7 +366,7 @@ Component({
                         }
 
                         wx.showToast({
-                            title: `已删除 ${user?.display_name || '该用户'} 的配置`,
+                            title: `已删除 ${user?.show_name || '该用户'} 的配置`,
                             icon: 'success'
                         });
                     }

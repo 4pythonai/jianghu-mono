@@ -514,14 +514,14 @@ Page({
         const avatar =
             (payload && (payload.avatar || payload.headimgurl)) ||
             '/images/default-avatar.png';
-        const display_name =
-            (payload && payload.display_name) ||
+        const show_name =
+            (payload && payload.show_name) ||
             '新球友加入';
 
         if (this.joinNotification) {
             this.joinNotification.push({
                 avatar,
-                display_name
+                show_name
             });
         }
     },
@@ -578,7 +578,7 @@ Page({
         }
         this.joinNotification.push({
             avatar: 'https://qiaoyincapital.com/avatar/2025/10/31/avatar_837616_1761890982.jpeg',
-            display_name: 'Demo1'
+            show_name: 'Demo1'
         });
     },
 

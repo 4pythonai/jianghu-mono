@@ -143,9 +143,9 @@ class AuthManager {
             ? !!(user?.avatar && !isDefaultAvatar(user?.avatar))
             : false
 
-        // user 已通过 normalizeUserInfo 标准化，使用 display_name
+        // user 已通过 normalizeUserInfo 标准化，使用 show_name
         return {
-            hasNickname: !!(user?.display_name),
+            hasNickname: !!(user?.show_name),
             hasAvatar: hasAvatar,
             hasMobile: !!(user?.mobile)
         }

@@ -34,7 +34,7 @@
         wx:key="user_id"
         bindtap="onSelectMember"
         data-user-id="{{item.user_id}}"
-        data-shown-name="{{item.display_name}}"
+        data-shown-name="{{item.show_name}}"
       >
         <view class="member-avatar-wrap">
           <PlayerAvatar
@@ -46,7 +46,7 @@
           />
         </view>
         <view class="member-info">
-          <view class="member-name">{{item.display_name || '未设置昵称'}}</view>
+          <view class="member-name">{{item.show_name || '未设置昵称'}}</view>
           <view class="member-meta">
             <text
               class="member-handicap"

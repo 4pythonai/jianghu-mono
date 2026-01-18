@@ -246,7 +246,7 @@ Page({
             const result = await app.api.teamgame.registerGame({
                 game_id: this.data.gameid,
                 tag_id: tagId,
-                display_name: formData.display_name,
+                show_name: formData.show_name,
                 gender: formData.gender,
                 mobile: formData.mobile
             })
@@ -539,14 +539,14 @@ Page({
     onGroupsReorder(e) {
         const { groups } = e.detail
         console.log('[TeamGameDetail] 分组顺序变化:', groups)
-        
+
         // TODO: 如果后端有更新分组顺序的接口，可以在这里调用
         // 例如：await gameStore.updateGroupOrder(gameId, groups.map(g => g.id))
-        
+
         // 暂时只更新前端显示（gameStore 会自动同步）
         // 如果需要持久化，需要添加后端接口支持
-        wx.showToast({ 
-            title: '分组顺序已更新', 
+        wx.showToast({
+            title: '分组顺序已更新',
             icon: 'success',
             duration: 1500
         })

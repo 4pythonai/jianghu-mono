@@ -224,7 +224,7 @@ Page({
         // member 数据来自后端，字段: user_id, show_name, avatar, handicap
         const players = combination.map(member => ({
             user_id: member.user_id,
-            display_name: member.show_name,
+            show_name: member.show_name,
             show_name: member.show_name,
             avatar: member.avatar || '/images/default-avatar.png',
             handicap: member.handicap || 0,
@@ -250,10 +250,10 @@ Page({
         }
 
         // 转换好友数据格式, 适配PlayerSelector组件的格式
-        // friend 来自后端 User/getFriendList API，字段: user_id, display_name, avatar, handicap
+        // friend 来自后端 User/getFriendList API，字段: user_id, show_name, avatar, handicap
         const players = selectedFriends.map(friend => ({
             user_id: friend.user_id,
-            display_name: friend.display_name || '未知好友',
+            show_name: friend.show_name || '未知好友',
             avatar: friend.avatar || '/images/default-avatar.png',
             handicap: friend.handicap || 0,
             join_type: 'friendSelect',
@@ -283,7 +283,7 @@ Page({
         // createdUser 来自 manualAdd.js，已标准化为 t_user 表字段结构
         const user = {
             user_id: createdUser.user_id,
-            display_name: createdUser.display_name,
+            show_name: createdUser.show_name,
             avatar: createdUser.avatar || '/images/default-avatar.png',
             handicap: createdUser.handicap || 0,
             mobile: createdUser.mobile || '',
@@ -752,10 +752,10 @@ Page({
         const userInfo = app.globalData.userInfo;
 
         // 构建创建者 player 对象
-        // userInfo 已通过 normalizeUserInfo 标准化，字段: id, display_name, avatar, gender, handicap
+        // userInfo 已通过 normalizeUserInfo 标准化，字段: id, show_name, avatar, gender, handicap
         const creator = {
             user_id: userInfo?.id,
-            display_name: userInfo?.display_name || '我',
+            show_name: userInfo?.show_name || '我',
             avatar: userInfo?.avatar || '/images/default-avatar.png',
             handicap: userInfo?.handicap || 0,
             join_type: 'creator',
@@ -782,7 +782,7 @@ Page({
         });
 
         // 设置比赛名称缺省值
-        const displayName = userInfo?.display_name || '我';
+        const displayName = userInfo?.show_name || '我';
         const defaultGameName = `${displayName}的球局`;
         this.setData({
             'formData.gameName': defaultGameName

@@ -43,7 +43,7 @@
         <view class="player-item" wx:for="{{item.players}}" wx:key="user_id" wx:for-item="player">
           <PlayerAvatar
             avatar="{{player.avatar}}"
-            name="{{player.display_name}}"
+            name="{{player.show_name}}"
             userId="{{player.user_id}}"
             size="small"
             showTeam="{{false}}"

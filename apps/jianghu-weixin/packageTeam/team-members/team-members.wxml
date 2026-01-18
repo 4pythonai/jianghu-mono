@@ -52,7 +52,7 @@
           wx:if="{{mode === 'manage' && item.role !== 'SuperAdmin'}}"
           catchtap="onRemoveMember"
           data-user-id="{{item.user_id}}"
-          data-shown-name="{{item.display_name}}"
+          data-shown-name="{{item.show_name}}"
         >
           <text>移除</text>
         </view>

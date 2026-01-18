@@ -250,10 +250,10 @@ Page({
                 ? appInstance.normalizeUserInfo(userInfo)
                 : userInfo;
 
-            // normalizedUser 已通过 normalizeUserInfo 标准化，使用 display_name
+            // normalizedUser 已通过 normalizeUserInfo 标准化，使用 show_name
             this.setData({
                 userAvatar: normalizedUser.avatar || '/images/default-avatar.png',
-                userName: normalizedUser.display_name || '我'
+                userName: normalizedUser.show_name || '我'
             });
         } else {
             // 尝试从存储中获取

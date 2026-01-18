@@ -37,7 +37,7 @@ Component({
             const showPlayers = players.slice(0, maxShow).map(p => ({
                 id: p.user_id,
                 avatar: imageUrl(p.avatar),
-                name: p.display_name
+                name: p.show_name
             }))
             const moreCount = players.length - maxShow
             this.setData({

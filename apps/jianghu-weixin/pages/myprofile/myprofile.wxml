@@ -18,12 +18,12 @@
       <input
         class="showname-input"
         type="text"
-        value="{{form.display_name}}"
+        value="{{form.show_name}}"
         placeholder="请输入昵称"
         maxlength="20"
         bindinput="onDisplayNameInput"
       />
-      <text class="showname-hint">{{form.display_name.length}}/20</text>
+      <text class="showname-hint">{{form.show_name.length}}/20</text>
     </view>
   </view>
 

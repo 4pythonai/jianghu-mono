@@ -8,7 +8,7 @@ Page({
     userInfo: {},
     qrcodeUrl: '',
     form: {
-      display_name: '',
+      show_name: '',
       signature: '',
       gender: 'unknown'
     },
@@ -38,7 +38,7 @@ Page({
     this.setData({
       userInfo,
       form: {
-        display_name: userInfo.display_name || '',
+        show_name: userInfo.show_name || '',
         signature: userInfo.signature || '',
         gender: userInfo.gender || 'unknown'
       }
@@ -68,7 +68,7 @@ Page({
   },
 
   onDisplayNameInput(e) {
-    this.setData({ 'form.display_name': e.detail.value })
+    this.setData({ 'form.show_name': e.detail.value })
   },
 
   onSignatureInput(e) {
@@ -132,12 +132,12 @@ Page({
       return
     }
 
-    const display_name = (form.display_name || '').trim()
-    if (!display_name) {
+    const show_name = (form.show_name || '').trim()
+    if (!show_name) {
       wx.showToast({ title: '请输入昵称', icon: 'none' })
       return
     }
-    if (display_name.length > 20) {
+    if (show_name.length > 20) {
       wx.showToast({ title: '昵称不能超过20个字符', icon: 'none' })
       return
     }
@@ -145,7 +145,7 @@ Page({
     const signature = (form.signature || '').trim()
     const gender = form.gender || 'unknown'
 
-    const hasDisplayNameChange = display_name !== (userInfo.display_name || '')
+    const hasDisplayNameChange = show_name !== (userInfo.show_name || '')
     const profilePayload = {}
     if (signature !== (userInfo.signature || '')) {
       profilePayload.signature = signature
@@ -165,12 +165,12 @@ Page({
       if (hasDisplayNameChange) {
         await app.api.user.updateDisplayName({
           user_id: userInfo.id,
-          display_name
+          show_name
         }, {
           loadingTitle: '保存昵称...'
         })
 
-        const updatedUser = { ...app.globalData.userInfo, display_name }
+        const updatedUser = { ...app.globalData.userInfo, show_name }
         app.setUserInfo(updatedUser, app.globalData.profileStatus, app.globalData.needBindPhone)
       }
 
