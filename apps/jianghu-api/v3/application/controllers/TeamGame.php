@@ -1188,4 +1188,64 @@ class TeamGame extends MY_Controller {
             'data' => $members
         ], JSON_UNESCAPED_UNICODE);
     }
+
+    /**
+     * 获取球童记分二维码
+     * @param int game_id 赛事ID
+     * @return string qrcode 二维码图片URL
+     */
+    public function CaddieInputQrcode() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $game_id = (int) $json_paras['game_id'];
+
+        $filename = "caddie_input_{$game_id}.png";
+        $upload_path = FCPATH . '../upload/qrcodes/';
+        $qrcodePath = $upload_path . $filename;
+        $qrcodeUrl = '/upload/qrcodes/' . $filename;
+
+        $scene = "game_id={$game_id}";
+        $payload = [
+            'scene' => $scene,
+            'page' => 'packageGame/gameDetail/caddieInput/caddieInput',
+            'width' => 460,
+            'env_version' => 'develop',
+            'auto_color' => false,
+            'is_hyaline' => false,
+            'check_path' => false
+        ];
+
+        $qrcodeResult = $this->MWeixin->createQrcodeImg(
+            'getwxacodeunlimit',
+            $payload,
+            [
+                'save_path' => $qrcodePath,
+                'public_url' => $qrcodeUrl,
+                'ensure_dir' => $upload_path
+            ]
+        );
+
+        if (empty($qrcodeResult['success'])) {
+            $errorInfo = $qrcodeResult['error'] ?? null;
+            $errorMsg = '二维码生成失败';
+            if (is_array($errorInfo) && isset($errorInfo['errmsg'])) {
+                $errorMsg = $errorInfo['errmsg'];
+            } elseif (is_array($errorInfo) && isset($errorInfo['message'])) {
+                $errorMsg = $errorInfo['message'];
+            }
+            echo json_encode([
+                'code' => 500,
+                'message' => $errorMsg,
+                'error_info' => $errorInfo
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $qrcodeUrl = $qrcodeResult['file_url'] ?? $qrcodeUrl;
+
+        echo json_encode([
+            'code' => 200,
+            'message' => '二维码生成成功',
+            'data' => ['qrcode' => $qrcodeUrl]
+        ], JSON_UNESCAPED_UNICODE);
+    }
 }

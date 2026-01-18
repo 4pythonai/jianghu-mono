@@ -88,6 +88,8 @@ const teamgame = {
     checkCrossTeamRegistration: (data, options) => request('/TeamGame/checkCrossTeamRegistration', data, options),
     // 获取比赛报名人员列表 {game_id} -> 返回 [{seq, show_name, avatar, handicap, tag_name, ...}]
     getTagMembersAll: (data, options) => request('/TeamGame/getTagMembersAll', data, options),
+    // 获取球童记分二维码 {game_id}
+    caddieInputQrcode: (data, options) => request('/TeamGame/CaddieInputQrcode', data, options),
 }
 
 export default teamgame

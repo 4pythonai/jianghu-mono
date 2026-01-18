@@ -138,3 +138,14 @@
 }
 
 /* 赛事流程样式已移至 /styles/createGame.wxss */
+
+/* 分组权限和公开报名选项对齐样式 */
+.radio-group radio-group .radio-item:first-of-type {
+    width: 50%;
+    flex-shrink: 0;
+}
+
+.radio-group radio-group .radio-item:last-of-type {
+    width: 45%;
+    flex-shrink: 0;
+}

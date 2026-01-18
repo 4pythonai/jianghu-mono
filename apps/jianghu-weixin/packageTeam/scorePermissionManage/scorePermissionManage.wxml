@@ -11,7 +11,33 @@
         </label>
       </checkbox-group>
     </view>
-    <view class="hint">至少选择一项(选中球童,则要出现球童二维码)</view>
+    <view class="hint">至少选择一项</view>
+
+    <!-- 球童二维码区域 -->
+    <block wx:if="{{showCaddieQrcode}}">
+      <view class="qrcode-section">
+        <view class="qrcode-title">球童记分二维码</view>
+        <view class="qrcode-card">
+          <view class="qrcode-loading" wx:if="{{loadingQrcode}}">
+            <view class="loading-spinner"></view>
+            <text>加载中...</text>
+          </view>
+          <block wx:elif="{{caddieQrcode}}">
+            <image
+              class="qrcode-image"
+              src="{{caddieQrcode}}"
+              mode="aspectFit"
+              show-menu-by-longpress="{{true}}"
+            />
+            <view class="qrcode-hint">球童扫码进入记分页面</view>
+          </block>
+          <view class="qrcode-error" wx:else>
+            <text>二维码获取失败</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
     <button
       class="btn btn-primary btn-block {{saving ? 'disabled' : ''}}"
       bindtap="onSave"

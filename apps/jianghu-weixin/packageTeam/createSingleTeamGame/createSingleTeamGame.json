@@ -2,6 +2,7 @@
     "navigationStyle": "custom",
     "navigationBarTitleText": "选择球队",
     "usingComponents": {
-        "CustomNavBar": "/components/CustomNavBar/CustomNavBar"
+        "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+        "TeamSelectorForEvents": "/components/TeamSelectorForEvents/TeamSelectorForEvents"
     }
 }

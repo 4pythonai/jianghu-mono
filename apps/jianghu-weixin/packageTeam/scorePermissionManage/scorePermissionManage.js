@@ -1,4 +1,5 @@
 const app = getApp()
+const { imageUrl } = require('@/utils/image')
 
 const PERMISSION_OPTIONS = [
     { key: 'admin', label: '球队管理员' },
@@ -15,7 +16,10 @@ Page({
             checked: false
         })),
         selectedPermissions: [],
-        saving: false
+        saving: false,
+        caddieQrcode: '',
+        loadingQrcode: false,
+        showCaddieQrcode: false
     },
 
     onLoad(options) {
@@ -34,7 +38,13 @@ Page({
     onPermissionChange(e) {
         const selectedPermissions = (e.detail.value || []).map(value => String(value))
         const permissionOptions = this.buildPermissionOptions(selectedPermissions)
-        this.setData({ selectedPermissions, permissionOptions })
+        const showCaddieQrcode = selectedPermissions.includes('caddie')
+        this.setData({ selectedPermissions, permissionOptions, showCaddieQrcode })
+
+        // 如果选中了球童，加载二维码
+        if (showCaddieQrcode && !this.data.caddieQrcode) {
+            this.loadCaddieQrcode()
+        }
     },
 
     buildScorePermissionPayload() {
@@ -114,11 +124,37 @@ Page({
 
             console.log('[scorePermissionManage] selectedPermissions:', selectedPermissions)
 
-            this.setData({ selectedPermissions, permissionOptions })
+            const showCaddieQrcode = selectedPermissions.includes('caddie')
+            this.setData({ selectedPermissions, permissionOptions, showCaddieQrcode })
+
+            // 如果已选中球童，加载二维码
+            if (showCaddieQrcode) {
+                this.loadCaddieQrcode()
+            }
         } catch (err) {
             wx.hideLoading()
             console.error('[scorePermissionManage] 加载失败:', err)
             wx.showToast({ title: '加载失败，请稍后重试', icon: 'none' })
+        }
+    },
+
+    async loadCaddieQrcode() {
+        const { gameId, loadingQrcode, caddieQrcode } = this.data
+        if (loadingQrcode || caddieQrcode) return
+
+        this.setData({ loadingQrcode: true })
+
+        try {
+            const result = await app.api.teamgame.caddieInputQrcode({ game_id: gameId })
+            console.log('[scorePermissionManage] caddieInputQrcode response:', result)
+
+            if (result?.code === 200 && result.data?.qrcode) {
+                this.setData({ caddieQrcode: imageUrl(result.data.qrcode) })
+            }
+        } catch (err) {
+            console.error('[scorePermissionManage] 获取球童二维码失败:', err)
+        } finally {
+            this.setData({ loadingQrcode: false })
         }
     },
 
