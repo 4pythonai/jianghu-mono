@@ -188,6 +188,56 @@
 	flex-shrink: 0; /* 防止被压缩 */
 }
 
+.oneball-player-cell {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 6px;
+	padding: 6px 8px;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.oneball-group-label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #666;
+}
+
+.oneball-avatar-list {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.oneball-score-label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	font-size: 14px;
+	font-weight: 600;
+	color: #666;
+}
+
+.oneball-score-row {
+	background-color: #f7f9fc;
+}
+
+.oneball-score-cell {
+	background-color: #f7f9fc;
+}
+
+.oneball-score-text {
+	font-size: 14px;
+	font-weight: 600;
+	color: #333;
+}
+
+.oneball-score-text.is-loss {
+	color: #2196f3;
+}
+
 /* OUT汇总单元格 */
 .cell-out {
 	background-color: #fff3e0; /* 浅橙色背景 */
@@ -241,4 +291,3 @@
 	background-color: #fafafa;
 	opacity: 0.6;
 }
-

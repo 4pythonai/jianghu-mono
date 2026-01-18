@@ -19,6 +19,12 @@ Component({
         displayOutTotals: null, // 初始为 null，避免渲染空数组
         displayInTotals: null, // 初始为 null，避免渲染空数组
         red_blue: [],
+        isOneballMode: false,
+        oneballRows: [],
+        oneballMatchResults: [],
+        oneballRowTotals: [],
+        oneballRowOutTotals: [],
+        oneballRowInTotals: [],
     },
 
     lifetimes: {
@@ -28,6 +34,8 @@ Component({
                 fields: {
                     players: 'players',
                     red_blue: 'red_blue',
+                    gameData: 'gameData',
+                    groupid: 'groupid',
                 },
                 actions: [],
             });
@@ -70,7 +78,7 @@ Component({
     },
 
     observers: {
-        'playerScores,players,holeList,red_blue': function (scores, players, holeList, red_blue) {
+        'playerScores,players,holeList,red_blue,gameData,groupid': function (scores, players, holeList, red_blue, gameData, groupid) {
             // 数据不完整时，不执行计算
             if (!scores || !players || !holeList || players.length === 0 || holeList.length === 0) {
                 if (this.data.displayScores !== null) {
@@ -78,7 +86,13 @@ Component({
                         displayScores: null,
                         displayTotals: null,
                         displayOutTotals: null,
-                        displayInTotals: null
+                        displayInTotals: null,
+                        isOneballMode: false,
+                        oneballRows: [],
+                        oneballMatchResults: [],
+                        oneballRowTotals: [],
+                        oneballRowOutTotals: [],
+                        oneballRowInTotals: []
                     });
                 }
                 return;
@@ -90,7 +104,7 @@ Component({
             }
             this._debounceTimer = setTimeout(() => {
                 this._debounceTimer = null;
-                this.runAtomicScoreUpdate(players, holeList, red_blue);
+                this.runAtomicScoreUpdate(players, holeList, red_blue, gameData, groupid);
             }, 16); // 约一帧的时间
         }
     },
@@ -99,7 +113,7 @@ Component({
         /**
          * 汇总分数统计的原子操作
          */
-        runAtomicScoreUpdate(players, holeList, red_blue = []) {
+        runAtomicScoreUpdate(players, holeList, red_blue = [], gameData = null, groupid = null) {
             if (!Array.isArray(players) || players.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
@@ -114,6 +128,15 @@ Component({
                 scoreIndex
             } = computeScoreTableStats(players, holeList, red_blue);
 
+            const {
+                isOneballMode,
+                oneballRows,
+                oneballMatchResults,
+                oneballRowTotals,
+                oneballRowOutTotals,
+                oneballRowInTotals
+            } = this.computeOneballRows(players, holeList, displayScores, displayTotals, displayOutTotals, displayInTotals, gameData, groupid);
+
             // 更新 handicap（使用 nextTick 避免阻塞渲染）
             wx.nextTick(() => {
                 gameStore.updatePlayersHandicaps(holeList, scoreIndex);
@@ -126,7 +149,13 @@ Component({
                 displayScores,
                 displayTotals,
                 displayOutTotals: paddedOutTotals,
-                displayInTotals: paddedInTotals
+                displayInTotals: paddedInTotals,
+                isOneballMode,
+                oneballRows,
+                oneballMatchResults,
+                oneballRowTotals,
+                oneballRowOutTotals,
+                oneballRowInTotals
             }, () => {
                 this._isCalculating = false;
             });
@@ -139,7 +168,9 @@ Component({
             const players = this.data.players || [];
             const holeList = this.data.holeList || [];
             const redBlue = this.data.red_blue || [];
-            this.runAtomicScoreUpdate(players, holeList, redBlue);
+            const gameData = this.data.gameData || null;
+            const groupid = this.data.groupid || null;
+            this.runAtomicScoreUpdate(players, holeList, redBlue, gameData, groupid);
         },
 
         // ===================== UI 交互相关 =====================
@@ -177,6 +208,107 @@ Component({
 
         onCellClick(e) {
             this.triggerEvent('cellclick', e.detail);
+        },
+
+        computeOneballRows(players, holeList, displayScores, displayTotals, displayOutTotals, displayInTotals, gameData, groupid) {
+            const scoringType = gameData?.scoring_type || '';
+            if (scoringType !== 'oneball') {
+                return {
+                    isOneballMode: false,
+                    oneballRows: [],
+                    oneballMatchResults: [],
+                    oneballRowTotals: [],
+                    oneballRowOutTotals: [],
+                    oneballRowInTotals: []
+                };
+            }
+
+            const groups = Array.isArray(gameData?.groups) ? gameData.groups : [];
+            const currentGroup = groups.find(group => String(group.groupid) === String(groupid));
+            const groupOneballConfig = currentGroup?.groupOneballConfig;
+
+            if (!groupOneballConfig || typeof groupOneballConfig !== 'object') {
+                return {
+                    isOneballMode: false,
+                    oneballRows: [],
+                    oneballMatchResults: [],
+                    oneballRowTotals: [],
+                    oneballRowOutTotals: [],
+                    oneballRowInTotals: []
+                };
+            }
+
+            const groupedPlayers = { A: [], B: [] };
+            let hasInvalidConfig = false;
+            players.forEach((player, index) => {
+                const side = groupOneballConfig[String(player.user_id)];
+                if (side !== 'A' && side !== 'B') {
+                    hasInvalidConfig = true;
+                    return;
+                }
+                groupedPlayers[side].push({ ...player, index });
+            });
+
+            if (hasInvalidConfig || groupedPlayers.A.length === 0 || groupedPlayers.B.length === 0) {
+                return {
+                    isOneballMode: false,
+                    oneballRows: [],
+                    oneballMatchResults: [],
+                    oneballRowTotals: [],
+                    oneballRowOutTotals: [],
+                    oneballRowInTotals: []
+                };
+            }
+
+            const groupAIndex = groupedPlayers.A[0].index;
+            const groupBIndex = groupedPlayers.B[0].index;
+
+            const oneballRows = [
+                { key: 'A', type: 'group', label: 'A组', playerIndex: groupAIndex, players: groupedPlayers.A },
+                { key: 'score', type: 'score', label: '得分' },
+                { key: 'B', type: 'group', label: 'B组', playerIndex: groupBIndex, players: groupedPlayers.B }
+            ];
+
+            const oneballMatchResults = holeList.map((_, holeIndex) => {
+                const aScore = displayScores?.[groupAIndex]?.[holeIndex]?.score;
+                const bScore = displayScores?.[groupBIndex]?.[holeIndex]?.score;
+                const hasScore = typeof aScore === 'number' && aScore > 0 && typeof bScore === 'number' && bScore > 0;
+                if (!hasScore) {
+                    return { text: '', status: 'empty' };
+                }
+                if (aScore < bScore) {
+                    return { text: '1UP', status: 'win' };
+                }
+                if (aScore > bScore) {
+                    return { text: '-1', status: 'lose' };
+                }
+                return { text: 'A/S', status: 'tie' };
+            });
+
+            const oneballRowTotals = [
+                displayTotals?.[groupAIndex] ?? null,
+                null,
+                displayTotals?.[groupBIndex] ?? null
+            ];
+            const oneballRowOutTotals = [
+                displayOutTotals?.[groupAIndex] ?? null,
+                null,
+                displayOutTotals?.[groupBIndex] ?? null
+            ];
+            const oneballRowInTotals = [
+                displayInTotals?.[groupAIndex] ?? null,
+                null,
+                displayInTotals?.[groupBIndex] ?? null
+            ];
+
+            return {
+                isOneballMode: true,
+                oneballRows,
+                oneballMatchResults,
+                oneballRowTotals,
+                oneballRowOutTotals,
+                oneballRowInTotals
+            };
         }
     }
 })

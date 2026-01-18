@@ -2,6 +2,7 @@
 	"component": true,
 	"usingComponents": {
 		"PlayerInfo": "/components/PlayerInfo/PlayerInfo",
-		"HoleCell": "/components/HoleCell/HoleCell"
+		"HoleCell": "/components/HoleCell/HoleCell",
+		"PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
 	}
 }
