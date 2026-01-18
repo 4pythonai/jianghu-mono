@@ -20,6 +20,9 @@ Component({
         currentPlayerTee: '', // 当前用户发球台
         currentPlayerDistance: null, // 当前用户发球台码数
         currentUserId: null, // 当前登录用户ID
+        isOneballMode: false,
+        oneballGroups: { A: [], B: [] },
+        activeGroupKey: 'A',
     },
 
     observers: {
@@ -63,7 +66,43 @@ Component({
             const players = this.data.players || [];
             const scores = this.data.scores || [];
             const currentUserId = app?.globalData?.userInfo?.id;
+            const gameData = this.data.gameData || {};
+            const groups = Array.isArray(gameData.groups) ? gameData.groups : [];
+            const currentGroup = groups.find(
+                group => String(group.groupid) === String(this.data.groupid)
+            );
+            const groupOneballConfig = currentGroup?.groupOneballConfig;
+            const scoringType = gameData.scoring_type;
 
+            console.log('[ScoreInputPanel] game meta', {
+                gameid: this.data.gameid,
+                scoring_type: scoringType,
+                groupid: this.data.groupid,
+                groupOneballConfig
+            });
+
+            let isOneballMode = false;
+            let activeGroupKey = 'A';
+            const oneballGroups = { A: [], B: [] };
+            const isOneballScoring = scoringType === 'oneball';
+            if (isOneballScoring && groupOneballConfig && typeof groupOneballConfig === 'object') {
+                let hasInvalidConfig = false;
+                players.forEach((player, index) => {
+                    const side = groupOneballConfig[String(player.user_id)];
+                    if (side !== 'A' && side !== 'B') {
+                        hasInvalidConfig = true;
+                        return;
+                    }
+                    oneballGroups[side].push({ ...player, index });
+                });
+                const hasBothSides = oneballGroups.A.length > 0 && oneballGroups.B.length > 0;
+                isOneballMode = !hasInvalidConfig && hasBothSides;
+                if (isOneballMode) {
+                    const initialPlayer = players[playerIndex];
+                    const initialSide = groupOneballConfig[String(initialPlayer?.user_id)];
+                    activeGroupKey = initialSide === 'B' ? 'B' : 'A';
+                }
+            }
 
             const localScores = players.map((player) => {
                 const scoreData = (scores || []).find(
@@ -92,9 +131,12 @@ Component({
                 currentHole: hole,
                 holeInfo: { ...hole, originalIndex: holeIndex, unique_key: hole.unique_key },
                 players,
-                gameData: this.data.gameData,
+                gameData,
                 localScores,
                 activePlayerIndex: playerIndex,
+                isOneballMode,
+                oneballGroups,
+                activeGroupKey,
                 currentPlayerTee: initialTee,
                 currentPlayerDistance: (initialDistance && initialDistance > 0) ? initialDistance : null,
                 currentUserId,
@@ -114,13 +156,27 @@ Component({
 
         switchPlayer(e) {
             const index = e.currentTarget.dataset.index;
+            if (this.data.isOneballMode) {
+                const groupKey = this._getGroupKeyByPlayerIndex(index);
+                if (groupKey) {
+                    this.setData({ activeGroupKey: groupKey });
+                }
+            }
             this._updateScopingAreaPosition(index);
+        },
+
+        switchGroup(e) {
+            const groupKey = e.currentTarget.dataset.group;
+            if (!this.data.isOneballMode || !groupKey) return;
+            this._setActiveGroup(groupKey);
         },
 
         changeScore(e) {
             const { type, amount } = e.currentTarget.dataset;
-            const index = this.data.activePlayerIndex;
-            const currentScore = this.data.localScores[index][type] || 0;
+            const targetIndexes = this._getActiveGroupPlayerIndexes();
+            if (targetIndexes.length === 0) return;
+            const baseIndex = targetIndexes[0];
+            const currentScore = this.data.localScores[baseIndex][type] || 0;
             const newValue = currentScore + Number(amount);
 
             // 成绩最少为1，不能变成0或负数
@@ -130,15 +186,19 @@ Component({
                     return;
                 }
                 // 如果当前大于1但减去后会小于1，设置为1
-                this.setData({
-                    [`localScores[${index}].${type}`]: 1
+                const updates = {};
+                targetIndexes.forEach((index) => {
+                    updates[`localScores[${index}].${type}`] = 1;
                 });
+                this.setData(updates);
                 return;
             }
 
-            this.setData({
-                [`localScores[${index}].${type}`]: newValue
+            const updates = {};
+            targetIndexes.forEach((index) => {
+                updates[`localScores[${index}].${type}`] = newValue;
             });
+            this.setData(updates);
         },
 
         _updateScopingAreaPosition(index) {
@@ -152,6 +212,34 @@ Component({
                 currentPlayerTee: tee,
                 currentPlayerDistance: (distance && distance > 0) ? distance : null
             });
+        },
+
+        _setActiveGroup(groupKey) {
+            const groupPlayers = this.data.oneballGroups?.[groupKey] || [];
+            if (groupPlayers.length === 0) return;
+            this.setData({ activeGroupKey: groupKey });
+            this._updateScopingAreaPosition(groupPlayers[0].index);
+        },
+
+        _getActiveGroupPlayerIndexes() {
+            if (!this.data.isOneballMode) {
+                return [this.data.activePlayerIndex];
+            }
+            const groupPlayers = this.data.oneballGroups?.[this.data.activeGroupKey] || [];
+            const groupIndexes = groupPlayers.map(player => player.index).filter(index => index !== undefined);
+            const activeIndex = this.data.activePlayerIndex;
+            if (groupIndexes.includes(activeIndex)) {
+                return [activeIndex, ...groupIndexes.filter(index => index !== activeIndex)];
+            }
+            return groupIndexes;
+        },
+
+        _getGroupKeyByPlayerIndex(index) {
+            const groupA = this.data.oneballGroups?.A || [];
+            if (groupA.some(player => player.index === index)) return 'A';
+            const groupB = this.data.oneballGroups?.B || [];
+            if (groupB.some(player => player.index === index)) return 'B';
+            return null;
         },
 
 
@@ -351,16 +439,33 @@ Component({
          * @returns {boolean} 是否到达最后一个用户
          */
         isLastPlayer() {
-            return this.data.activePlayerIndex >= this.data.players.length - 1;
+            if (!this.data.isOneballMode) {
+                return this.data.activePlayerIndex >= this.data.players.length - 1;
+            }
+            const groupKeys = ['A', 'B'].filter(
+                key => (this.data.oneballGroups?.[key] || []).length > 0
+            );
+            return this.data.activeGroupKey === groupKeys[groupKeys.length - 1];
         },
 
         /**
          * 切换到下一个用户
          */
         switchToNextPlayer() {
-            const nextIndex = this.data.activePlayerIndex + 1;
-            if (nextIndex < this.data.players.length) {
-                this._updateScopingAreaPosition(nextIndex);
+            if (!this.data.isOneballMode) {
+                const nextIndex = this.data.activePlayerIndex + 1;
+                if (nextIndex < this.data.players.length) {
+                    this._updateScopingAreaPosition(nextIndex);
+                }
+                return;
+            }
+            const groupKeys = ['A', 'B'].filter(
+                key => (this.data.oneballGroups?.[key] || []).length > 0
+            );
+            const currentIndex = groupKeys.indexOf(this.data.activeGroupKey);
+            const nextKey = groupKeys[currentIndex + 1];
+            if (nextKey) {
+                this._setActiveGroup(nextKey);
             }
         },
 
@@ -380,15 +485,19 @@ Component({
          */
         handleTeeShotDirection(e) {
             const direction = e.currentTarget.dataset.direction;
-            const index = this.data.activePlayerIndex;
+            const targetIndexes = this._getActiveGroupPlayerIndexes();
+            if (targetIndexes.length === 0) return;
+            const baseIndex = targetIndexes[0];
 
             // 如果点击的是已选中的方向，则取消选择（设为null）
-            const currentDirection = this.data.localScores[index].tee_shot_direction;
+            const currentDirection = this.data.localScores[baseIndex].tee_shot_direction;
             const newDirection = currentDirection === direction ? null : direction;
 
-            this.setData({
-                [`localScores[${index}].tee_shot_direction`]: newDirection
+            const updates = {};
+            targetIndexes.forEach((index) => {
+                updates[`localScores[${index}].tee_shot_direction`] = newDirection;
             });
+            this.setData(updates);
         },
     }
 }) 

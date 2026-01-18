@@ -30,9 +30,50 @@
       </view>
 
       <view class="main-content">
-        <view class="player-list-container">
+        <view class="player-list-container {{isOneballMode ? 'oneball' : ''}}">
+          <view class="oneball-group-list" wx:if="{{isOneballMode}}">
+            <view
+              class="group-card {{activeGroupKey === 'A' ? 'active' : ''}}"
+              wx:if="{{oneballGroups.A.length}}"
+              data-group="A"
+              bindtap="switchGroup"
+            >
+              <text class="group-card-title">A组</text>
+              <text class="group-card-score-large">
+                {{oneballGroups.A.length ? (localScores[oneballGroups.A[0].index] ? localScores[oneballGroups.A[0].index].score : '') : ''}}
+              </text>
+              <view class="group-card-avatars">
+                <image
+                  class="group-card-avatar"
+                  wx:for="{{oneballGroups.A}}"
+                  wx:key="user_id"
+                  src="{{image.imageUrl(item.avatar)}}"
+                />
+              </view>
+            </view>
+            <view
+              class="group-card {{activeGroupKey === 'B' ? 'active' : ''}}"
+              wx:if="{{oneballGroups.B.length}}"
+              data-group="B"
+              bindtap="switchGroup"
+            >
+              <text class="group-card-title">B组</text>
+              <text class="group-card-score-large">
+                {{oneballGroups.B.length ? (localScores[oneballGroups.B[0].index] ? localScores[oneballGroups.B[0].index].score : '') : ''}}
+              </text>
+              <view class="group-card-avatars">
+                <image
+                  class="group-card-avatar"
+                  wx:for="{{oneballGroups.B}}"
+                  wx:key="user_id"
+                  src="{{image.imageUrl(item.avatar)}}"
+                />
+              </view>
+            </view>
+          </view>
           <scroll-view
             class="player-list-scroll"
+            wx:else
             scroll-y="{{players.length > 4}}"
             show-scrollbar="false"
           >

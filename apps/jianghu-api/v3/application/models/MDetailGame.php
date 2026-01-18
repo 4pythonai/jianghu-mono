@@ -378,7 +378,8 @@ class MDetailGame  extends CI_Model {
             SELECT 
                 gg.groupid ,
                 gg.group_name,
-                gg.group_create_time
+                gg.group_create_time,
+                gg.groupOneballConfig
             FROM t_game_group gg
             WHERE gg.gameid = ?
             ORDER BY gg.groupid ASC
@@ -388,9 +389,8 @@ class MDetailGame  extends CI_Model {
 
         foreach ($groups_result->result_array() as $group) {
             // 获取该分组下的所有用户
-            if ($current_user_id) {
-                // 如果提供了当前用户ID，LEFT JOIN t_user_remark 获取备注名
-                $users_query = "
+            // 如果提供了当前用户ID，LEFT JOIN t_user_remark 获取备注名
+            $users_query = "
                     SELECT 
                         ggu.user_id,
                         ggu.confirmed,
@@ -406,24 +406,8 @@ class MDetailGame  extends CI_Model {
                     ORDER BY ggu.addtime ASC
                 ";
 
-                $users_result = $this->db->query($users_query, [$current_user_id, $gameid, $group['groupid']]);
-            } else {
-                // 如果没有提供当前用户ID，保持原有行为
-                $users_query = "
-                    SELECT 
-                        ggu.user_id,
-                        ggu.confirmed,
-                        ggu.addtime,
-                        u.wx_name,
-                        u.avatar as avatar
-                    FROM t_game_group_user ggu
-                    LEFT JOIN t_user u ON ggu.user_id = u.id
-                    WHERE ggu.gameid = ? AND ggu.groupid = ?
-                    ORDER BY ggu.addtime ASC
-                ";
+            $users_result = $this->db->query($users_query, [$current_user_id, $gameid, $group['groupid']]);
 
-                $users_result = $this->db->query($users_query, [$gameid, $group['groupid']]);
-            }
 
             $users = [];
 
@@ -448,6 +432,7 @@ class MDetailGame  extends CI_Model {
                 'groupid' => (int)$group['groupid'],
                 'group_name' => $group['group_name'] ?: '',
                 'group_create_time' => $group['group_create_time'],
+                'groupOneballConfig' => $group['groupOneballConfig'] ? json_decode($group['groupOneballConfig'], true) : [],
                 'users' => $users,
                 'user_count' => count($users)
             ];
