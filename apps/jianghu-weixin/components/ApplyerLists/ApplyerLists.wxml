@@ -1,3 +1,4 @@
+<wxs src="/utils/image.wxs" module="image" />
 <view class="player-list-item">
   <!-- 序号 -->
   <view class="item-index">
@@ -10,19 +11,18 @@
     <view wx:if="{{paid}}" class="paid-badge">
       <text class="badge-text">付</text>
     </view>
-    <PlayerAvatar avatar="{{avatar}}" userId="{{userId}}" avatarOnly="{{true}}" size="small" />
+    <PlayerAvatar
+      avatar="{{image.imageUrl(avatar)}}"
+      userId="{{userId}}"
+      avatarOnly="{{true}}"
+      size="small"
+    />
   </view>
 
   <!-- 球员信息 -->
   <view class="player-info">
     <text class="player-name">{{show_name}}</text>
-    <view
-      wx:if="{{mode === 'edit'}}"
-      class="player-edit-button"
-      bindtap="handleEditTap"
-    >
-      编辑
-    </view>
+    <view wx:if="{{mode === 'edit'}}" class="player-edit-button" bindtap="handleEditTap">编辑</view>
   </view>
 
   <!-- 江湖差点 -->
