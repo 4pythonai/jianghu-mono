@@ -265,10 +265,16 @@ Component({
             const groupBIndex = groupedPlayers.B[0].index;
 
             // 仅非 common 类型时添加中间结果行
-            const showScoreRow = gameData?.game_type !== 'common';
+            // 比杆赛没有中间，比洞赛才有
+
+
+
+            console.log(" 🔴🟢🔵 中间行出现的逻辑", gameData.game_type)
+            const holeBasedMatchTypes = ['fourball_best_match', 'fourball_oneball_match', 'foursome_match', 'individual_match'];
+            const showMiddleRow = (gameData?.game_type !== 'common') && (gameData.scoring_type in holeBasedMatchTypes);
             const oneballRows = [
                 { key: 'A', type: 'group', label: 'A组', playerIndex: groupAIndex, players: groupedPlayers.A },
-                ...(showScoreRow ? [{ key: 'score', type: 'score', label: '得分' }] : []),
+                ...(showMiddleRow ? [{ key: 'score', type: 'score', label: '得分' }] : []),
                 { key: 'B', type: 'group', label: 'B组', playerIndex: groupBIndex, players: groupedPlayers.B }
             ];
 

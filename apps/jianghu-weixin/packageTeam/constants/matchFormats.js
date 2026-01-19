@@ -71,7 +71,6 @@ export const MATCH_FORMATS = [
         isMatch: true,
         hideTags: false,
         byScore: false,
-
     }
 ]
 
