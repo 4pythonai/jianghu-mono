@@ -2,7 +2,6 @@
 <view class="page-container">
   <TeamSelectorForEvents
     teamGameType="single_team"
-    isReselect="{{isReselect}}"
     bind:loaded="handleTeamsLoaded"
     bind:confirm="handleTeamsConfirm"
   />

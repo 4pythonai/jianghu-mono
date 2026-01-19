@@ -724,21 +724,7 @@ class MTeamGame extends CI_Model {
     }
 
 
-    /**
-     * 检查赛制是否需要TAG
-     */
-    public function requiresSettingTags($match_format) {
-        $requireGameTag = [
-            'fourball_best_stroke',
-            'fourball_oneball_stroke',
-            'foursome_stroke',
-            'fourball_best_match',
-            'fourball_oneball_match',
-            'foursome_match'
-        ];
 
-        return in_array($match_format, $requireGameTag);
-    }
 
     /**
      * 检查是否为比洞赛

@@ -46,7 +46,7 @@ Page({
         }
 
         wx.navigateTo({
-            url: `/packageTeam/createSingleTeamGame/singleTeamGameForm/singleTeamGameForm?team_id=${team.id}&team_name=${encodeURIComponent(team.team_name)}`
+            url: `/packageTeam/commonTeamGameForm/commonTeamGameForm?game_type=single_team&team_id=${team.id}&team_name=${encodeURIComponent(team.team_name)}`
         })
     }
 })

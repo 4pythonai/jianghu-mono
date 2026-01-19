@@ -94,14 +94,9 @@
           wx:for="{{gameTags}}"
           wx:key="id"
           class="event-detail-tag-item {{selectedTagId === item.id ? 'event-detail-selected' : ''}}"
-          style="{{item.color ? 'border-color: ' + item.color : ''}}"
           data-tag-id="{{item.id}}"
           bindtap="onSelectTag"
         >
-          <view
-            class="event-detail-tag-indicator"
-            style="{{item.color ? 'background-color: ' + item.color : ''}}"
-          ></view>
           <text class="event-detail-tag-name">{{item.tagName}}</text>
           <view wx:if="{{selectedTagId === item.id}}" class="event-detail-tag-check">✓</view>
         </view>

@@ -1,4 +1,8 @@
 <view class="page-container" style="padding-top: {{navBarHeight}}px;">
   <CustomNavBar title="选择参赛球队" bind:back="handleBack" />
-  <TeamSelectorForEvents teamGameType="cross_teams" bind:confirm="handleTeamsConfirm" />
+  <TeamSelectorForEvents
+    teamGameType="cross_teams"
+    bind:loaded="handleTeamsLoaded"
+    bind:confirm="handleTeamsConfirm"
+  />
 </view>

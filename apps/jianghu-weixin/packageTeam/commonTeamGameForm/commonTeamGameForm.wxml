@@ -1,14 +1,15 @@
-<wxs module="img" src="../../../utils/image.wxs"></wxs>
-<CustomNavBar title="创建队内赛" />
+<wxs module="img" src="../../utils/image.wxs"></wxs>
 <view class="page-container">
+  <CustomNavBar title="{{ gameType === 'cross_teams' ? '创建队际赛' : '创建队内赛' }}" />
   <view class="main-card">
+    <view>通用</view>
     <view class="card-content">
-      <!-- 球队选择 -->
-      <view class="form-item">
+      <!-- 球队选择 (队内赛) -->
+      <view class="form-item" wx:if="{{ gameType === 'single_team' }}">
         <view class="form-label">球队</view>
         <view class="selected-team" bindtap="goToTeamSelect">
           <image
-            src="{{ img.imageUrl(selectedTeam.team_avatar)  }}"
+            src="{{ img.imageUrl(selectedTeam.team_avatar) }}"
             class="team-avatar"
             mode="aspectFill"
           ></image>
@@ -25,6 +26,32 @@
           </view>
           <view class="arrow-icon">
             <image src="/assets/icons/arrow-right.svg" mode="aspectFit"></image>
+          </view>
+        </view>
+      </view>
+
+      <!-- 参赛球队列表 (队际赛) -->
+      <view class="form-item" wx:if="{{ gameType === 'cross_teams' }}">
+        <view class="form-label">
+          <text>参赛球队</text>
+          <text class="form-sub-label">({{ selectedTeams.length }}个球队)</text>
+        </view>
+        <view class="teams-container">
+          <view class="team-card" wx:for="{{ selectedTeams }}" wx:key="team_id">
+            <image class="team-avatar" src="{{ img.imageUrl(item.team_avatar) }}" mode="aspectFill"></image>
+            <view class="team-info">
+              <view class="team-alias">{{ item.team_alias }}</view>
+              <view
+                class="team-name"
+                wx:if="{{ item.team_alias !== item.team_name }}"
+              >{{ item.team_name }}</view>
+            </view>
+            <view class="edit-alias-btn" bindtap="editTeamAlias" data-team-id="{{ item.team_id }}">
+              <image src="/assets/icons/icons8-edit-48.png" mode="aspectFit"></image>
+            </view>
+          </view>
+          <view class="reselect-teams-btn" bindtap="goBackToTeamSelect">
+            <text>重新选择球队</text>
           </view>
         </view>
       </view>
@@ -121,29 +148,41 @@
 
         <!-- 比赛赛制 -->
         <view class="form-item">
-          <view class="form-label">比赛赛制</view>
+          <view class="form-label">
+            <text>比赛赛制</text>
+            <text
+              class="form-sub-label match-tip"
+              wx:if="{{ gameType === 'cross_teams' && selectedTeams.length > 2 }}"
+            >(超过2队不可选比洞赛)</text>
+          </view>
           <view class="format-options">
             <radio-group bindchange="onMatchFormatChange">
               <view
                 wx:for="{{ matchFormats }}"
                 wx:key="value"
-                class="format-item {{ formData.matchFormat === item.value ? 'active' : '' }}"
+                class="format-item {{ formData.matchFormat === item.value ? 'active' : '' }} {{ item.disabled ? 'disabled' : '' }}"
               >
                 <label class="format-label">
                   <radio
                     value="{{ item.value }}"
                     checked="{{ formData.matchFormat === item.value }}"
                     color="{{ 'var(--primary-green-dark)' }}"
+                    disabled="{{ item.disabled }}"
                   />
-                  <text class="format-text">{{ item.label }}</text>
+                  <text
+                    class="format-text {{ item.disabled ? 'text-disabled' : '' }}"
+                  >{{ item.label }}</text>
                 </label>
               </view>
             </radio-group>
           </view>
         </view>
 
-        <!-- 分队设置 (团队赛制时显示) -->
-        <view class="form-item" wx:if="{{ currentFormat.requireGameTag }}">
+        <!-- 分队设置 (队内赛团队赛制显示) -->
+        <view
+          class="form-item"
+          wx:if="{{ gameType === 'single_team' && currentFormat.requireGameTag }}"
+        >
           <view class="form-label">
             <text>分队设置</text>
             <text class="form-sub-label" wx:if="{{ currentFormat.isMatch }}">(比洞赛限2队)</text>
@@ -165,7 +204,7 @@
               />
               <view
                 class="delete-tag-btn"
-                bindtap="deleteTag"
+                bindtap="deleteGameTag"
                 data-index="{{ index }}"
                 wx:if="{{ gameTags.length > 2 || !currentFormat.requireGameTag }}"
               >
@@ -183,11 +222,12 @@
           </view>
         </view>
 
-        <!-- 取前N名成绩 (团队赛制时显示) -->
-        <view class="form-item" wx:if="{{ currentFormat.requireGameTag }}">
+        <!-- 取前N名成绩 -->
+        <view class="form-item" wx:if="{{ showTopNRanking }}">
           <view class="form-label">
             <text>取前N名成绩排行</text>
-            <text class="form-sub-label">(可选)</text>
+            <text class="form-sub-label" wx:if="{{ gameType === 'cross_teams' }}">(可选，默认取人数最少球队的人数)</text>
+            <text class="form-sub-label" wx:if="{{ gameType === 'single_team' }}">(可选)</text>
           </view>
           <view class="form-input-wrapper input-with-unit">
             <input
@@ -306,7 +346,7 @@
                   checked="{{ formData.isPublic === 'n' }}"
                   color="{{ 'var(--primary-green-dark)' }}"
                 />
-                <text class="radio-text">仅队内 (仅球队成员)</text>
+                <text class="radio-text">{{ gameType === 'cross_teams' ? '仅参赛球队成员' : '仅球队成员' }}</text>
               </label>
             </radio-group>
           </view>

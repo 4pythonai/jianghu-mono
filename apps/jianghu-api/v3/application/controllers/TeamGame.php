@@ -296,8 +296,8 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        // 如果是团队赛制，检查是否选择了TAG
-        if ($this->MTeamGame->requiresSettingTags($game['match_format']) && !$tag_id) {
+        // 检查是否选择了TAG
+        if (!$tag_id) {
             echo json_encode(['code' => 400, 'message' => '团队赛制需要选择TAG'], JSON_UNESCAPED_UNICODE);
             return;
         }

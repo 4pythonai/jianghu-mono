@@ -1,6 +1,6 @@
 {
     "navigationStyle": "custom",
-    "navigationBarTitleText": "创建队际赛",
+    "navigationBarTitleText": "创建比赛",
     "usingComponents": {
         "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
         "TimePicker": "/components/TimePicker/time-picker"

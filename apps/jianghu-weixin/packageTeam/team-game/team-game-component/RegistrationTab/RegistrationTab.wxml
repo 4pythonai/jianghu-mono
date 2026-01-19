@@ -39,9 +39,7 @@
   <view
     wx:if="{{group.members.length === 0}}"
     class="registration-empty-state registration-tag-empty-state"
-  >
-    <text>暂无报名人员</text>
-  </view>
+  ></view>
 </view>
 <!-- 空状态 -->
 <view wx:if="{{tagMemberGroups.length === 0}}" class="registration-empty-state">
@@ -67,23 +65,17 @@
         class="edit-gender-option {{editForm.gender === 'male' ? 'active' : ''}}"
         data-value="male"
         bindtap="handleGenderSelect"
-      >
-        男
-      </view>
+      >男</view>
       <view
         class="edit-gender-option {{editForm.gender === 'female' ? 'active' : ''}}"
         data-value="female"
         bindtap="handleGenderSelect"
-      >
-        女
-      </view>
+      >女</view>
       <view
         class="edit-gender-option {{editForm.gender === 'unknown' ? 'active' : ''}}"
         data-value="unknown"
         bindtap="handleGenderSelect"
-      >
-        未知
-      </view>
+      >未知</view>
     </view>
   </view>
   <view class="edit-field">
@@ -99,9 +91,7 @@
       value="{{editTagIndex}}"
       bindchange="handleTagChange"
     >
-      <view class="edit-picker-value">
-        {{editForm.newTagName || '请选择分队'}}
-      </view>
+      <view class="edit-picker-value">{{editForm.newTagName || '请选择分队'}}</view>
     </picker>
   </view>
   <view class="edit-actions">

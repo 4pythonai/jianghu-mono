@@ -10,11 +10,14 @@ Page({
         this.setData({ navBarHeight })
     },
 
+    handleTeamsLoaded() {
+    },
+
     handleTeamsConfirm(e) {
         const { selectedTeams } = e.detail
         wx.setStorageSync('selectedTeamsForCrossGame', selectedTeams)
         wx.navigateTo({
-            url: '/packageTeam/createCrossTeamGame/crossTeamGameForm/crossTeamGameForm'
+            url: '/packageTeam/commonTeamGameForm/commonTeamGameForm?game_type=cross_teams'
         })
     },
 

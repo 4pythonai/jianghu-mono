@@ -91,9 +91,8 @@
 				"teamGamePlayerManage/teamGamePlayerManage",
 				"scorePermissionManage/scorePermissionManage",
 				"createSingleTeamGame/createSingleTeamGame",
-				"createSingleTeamGame/singleTeamGameForm/singleTeamGameForm",
 				"createCrossTeamGame/createCrossTeamGame",
-				"createCrossTeamGame/crossTeamGameForm/crossTeamGameForm",
+				"commonTeamGameForm/commonTeamGameForm",
 				"editTeamGame/editTeamGame"
 			]
 		}
@@ -101,19 +100,30 @@
 	"preloadRule": {
 		"pages/live/live": {
 			"network": "all",
-			"packages": ["game"]
+			"packages": [
+				"game"
+			]
 		},
 		"pages/events/events": {
 			"network": "all",
-			"packages": ["game", "team"]
+			"packages": [
+				"game",
+				"team"
+			]
 		},
 		"pages/createGame/createGame": {
 			"network": "all",
-			"packages": ["player", "team"]
+			"packages": [
+				"player",
+				"team"
+			]
 		},
 		"pages/mine/mine": {
 			"network": "all",
-			"packages": ["player", "team"]
+			"packages": [
+				"player",
+				"team"
+			]
 		}
 	},
 	"window": {

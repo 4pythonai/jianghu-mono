@@ -5,10 +5,6 @@ Component({
         teamGameType: {
             type: String,
             value: 'single_team'
-        },
-        isReselect: {
-            type: Boolean,
-            value: false
         }
     },
 
@@ -53,37 +49,37 @@ Component({
                     app.api.team.searchTeams({ keyword: '' })
                 ])
 
-            const myTeams = myTeamsResult.code === 200 ? (myTeamsResult.teams || []) : []
-            const myTeamIds = new Set()
-            if (myTeamsResult.code === 200) {
-                myTeams.forEach(team => myTeamIds.add(team.id))
-            }
-            const myTeamMap = new Map(myTeams.map(team => [team.id, team]))
+                const myTeams = myTeamsResult.code === 200 ? (myTeamsResult.teams || []) : []
+                const myTeamIds = new Set()
+                if (myTeamsResult.code === 200) {
+                    myTeams.forEach(team => myTeamIds.add(team.id))
+                }
+                const myTeamMap = new Map(myTeams.map(team => [team.id, team]))
 
-            let teams = []
-            if (allTeamsResult.code === 200) {
-                teams = (allTeamsResult.teams || []).map(team => ({
-                    ...team,
-                    isMember: myTeamIds.has(team.id),
-                    role: myTeamMap.get(team.id)?.role || team.role
-                }))
-                teams.sort((a, b) => (b.isMember ? 1 : 0) - (a.isMember ? 1 : 0))
-            }
+                let teams = []
+                if (allTeamsResult.code === 200) {
+                    teams = (allTeamsResult.teams || []).map(team => ({
+                        ...team,
+                        isMember: myTeamIds.has(team.id),
+                        role: myTeamMap.get(team.id)?.role || team.role
+                    }))
+                    teams.sort((a, b) => (b.isMember ? 1 : 0) - (a.isMember ? 1 : 0))
+                }
 
-            const teamsWithState = this.updateTeamsSelectedState(teams, this.data.selectedTeams)
+                const teamsWithState = this.updateTeamsSelectedState(teams, this.data.selectedTeams)
 
-            this.setData({
-                myTeams,
-                allTeams: teams,
-                filteredTeams: teamsWithState,
-                loading: false
-            })
-            this.triggerEvent('loaded', { teams, myTeams })
-        } catch (error) {
-            console.error('加载球队列表失败:', error)
-            this.setData({ loading: false })
-            wx.showToast({
-                title: '加载失败，请重试',
+                this.setData({
+                    myTeams,
+                    allTeams: teams,
+                    filteredTeams: teamsWithState,
+                    loading: false
+                })
+                this.triggerEvent('loaded', { teams, myTeams })
+            } catch (error) {
+                console.error('加载球队列表失败:', error)
+                this.setData({ loading: false })
+                wx.showToast({
+                    title: '加载失败，请重试',
                     icon: 'none'
                 })
             }
@@ -116,20 +112,41 @@ Component({
 
         onTeamSelect(e) {
             const teamId = e.currentTarget.dataset.teamId
+            const team = this.data.allTeams.find(item => item.id === teamId)
+            if (!team) {
+                return
+            }
 
-            if (this.data.selectedTeams.find(team => team.team_id === teamId)) {
+            const alreadySelected = this.data.selectedTeams.find(item => item.team_id === teamId)
+
+            if (this.properties.teamGameType === 'single_team') {
+                if (alreadySelected && this.data.selectedTeams.length === 1) {
+                    return
+                }
+
+                const newSelectedTeams = [{ ...team, team_id: team.id }]
+                const filteredWithState = this.updateTeamsSelectedState(
+                    this.data.filteredTeams.map(item => ({ ...item, isSelected: undefined })),
+                    newSelectedTeams
+                )
+
+                this.setData({
+                    selectedTeams: newSelectedTeams,
+                    filteredTeams: filteredWithState
+                })
+                return
+            }
+
+            if (alreadySelected) {
                 wx.showToast({ title: '该球队已选择', icon: 'none' })
                 return
             }
 
-            const team = this.data.allTeams.find(item => item.id === teamId)
-            if (team) {
-                this.setData({
-                    showAliasModal: true,
-                    currentTeam: team,
-                    currentAlias: team.team_name
-                })
-            }
+            this.setData({
+                showAliasModal: true,
+                currentTeam: team,
+                currentAlias: team.team_name
+            })
         },
 
         onAliasInput(e) {
@@ -155,6 +172,7 @@ Component({
             } else {
                 const newTeam = {
                     team_id: currentTeam.id,
+                    id: currentTeam.id,
                     team_name: currentTeam.team_name,
                     team_alias: currentAlias.trim(),
                     team_avatar: currentTeam.team_avatar
@@ -221,31 +239,19 @@ Component({
             }
         },
 
-        confirmCrossTeams() {
+        confirmSelection() {
             const { selectedTeams } = this.data
+            const minSelected = this.properties.teamGameType === 'cross_teams' ? 2 : 1
 
-            if (selectedTeams.length < 2) {
-                wx.showToast({ title: '请至少选择2个球队', icon: 'none' })
+            if (selectedTeams.length < minSelected) {
+                wx.showToast({ title: `请至少选择${minSelected}个球队`, icon: 'none' })
                 return
             }
 
             this.triggerEvent('confirm', {
-                teamGameType: 'cross_teams',
+                teamGameType: this.properties.teamGameType,
                 selectedTeams
             })
-        },
-
-        onSingleTeamSelect(e) {
-            const teamId = e.currentTarget.dataset.teamId
-            const team = this.data.myTeams.find(item => item.id === teamId)
-
-            if (team) {
-                this.triggerEvent('confirm', {
-                    teamGameType: 'single_team',
-                    selectedTeams: [team],
-                    team
-                })
-            }
         },
 
         preventBubble() {

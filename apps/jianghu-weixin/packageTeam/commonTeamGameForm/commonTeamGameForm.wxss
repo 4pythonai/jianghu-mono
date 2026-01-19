@@ -1,9 +1,7 @@
 /* 引入公共样式 */
 @import '/styles/createGame.wxss';
 
-/* ==================== 队内赛特有样式 ==================== */
-
-/* 球队选择卡片 */
+/* ==================== 队内赛选择球队样式 ==================== */
 .selected-team {
     display: flex;
     align-items: center;
@@ -20,7 +18,7 @@
     transform: scale(0.98);
 }
 
-.team-avatar {
+.selected-team .team-avatar {
     width: 96rpx;
     height: 96rpx;
     border-radius: 16rpx;
@@ -76,7 +74,90 @@
     color: var(--primary-green-dark);
 }
 
-/* 分队设置 */
+/* ==================== 队际赛参赛球队样式 ==================== */
+.teams-container {
+    background: #f8f9fa;
+    border-radius: 16rpx;
+    padding: 20rpx;
+}
+
+.team-card {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12rpx;
+    padding: 20rpx;
+    margin-bottom: 16rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+.team-card:last-of-type {
+    margin-bottom: 16rpx;
+}
+
+.team-card .team-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 12rpx;
+    background: #e9ecef;
+}
+
+.team-info {
+    flex: 1;
+    margin-left: 20rpx;
+}
+
+.team-alias {
+    font-size: 30rpx;
+    color: #333;
+    font-weight: 600;
+}
+
+.team-card .team-name {
+    font-size: 24rpx;
+    color: #999;
+    margin-top: 6rpx;
+    margin-bottom: 0;
+    font-weight: 400;
+}
+
+.edit-alias-btn {
+    width: 56rpx;
+    height: 56rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f0f0;
+    border-radius: 50%;
+}
+
+.edit-alias-btn image {
+    width: 32rpx;
+    height: 32rpx;
+    opacity: 0.6;
+}
+
+.reselect-teams-btn {
+    height: 72rpx;
+    background: #fff;
+    border: 2rpx dashed #ddd;
+    border-radius: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26rpx;
+    color: #666;
+}
+
+.reselect-teams-btn:active {
+    background: #f5f5f5;
+}
+
+.form-sub-label.match-tip {
+    color: #ff9800;
+}
+
+/* ==================== 分队设置 ==================== */
 .gameTags-container {
     background: #f8f9fa;
     border-radius: 16rpx;
@@ -136,8 +217,6 @@
 .add-tag-btn:active {
     opacity: 0.8;
 }
-
-/* 赛事流程样式已移至 /styles/createGame.wxss */
 
 /* 分组权限和公开报名选项对齐样式 */
 .radio-group radio-group .radio-item:first-of-type {
