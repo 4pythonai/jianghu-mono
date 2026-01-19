@@ -34,7 +34,7 @@ export const gameStore = observable({
     gameid: null,
     groupid: null,
     creatorid: null,     // 创建者ID
-    gameData: null,      // 原始游戏数据
+    gameData: null,
     players: [],         // 玩家列表（记分用，当前组的玩家）
     red_blue: [],        // 红蓝分组数据
     gameAbstract: '',    // 游戏摘要

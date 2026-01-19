@@ -421,7 +421,7 @@ Page({
     },
 
     onTagNameInput(e) {
-        const index = e.currentTarget.dataset.index
+        const index = e.detail?.index ?? e.currentTarget.dataset.index
         const value = e.detail.value
         const gameTags = [...this.data.gameTags]
         gameTags[index].name = value
@@ -429,7 +429,7 @@ Page({
     },
 
     deleteGameTag(e) {
-        const index = e.currentTarget.dataset.index
+        const index = e.detail?.index ?? e.currentTarget.dataset.index
         const gameTags = [...this.data.gameTags]
 
         if (gameTags.length <= 2 && this.data.currentFormat.requireGameTag) {

@@ -171,12 +171,6 @@ Component({
                     selectedTime: displayTime
                 });
 
-                console.log('🕐 时间选择器变化:', {
-                    display: displayTime,
-                    value: valueTime,
-                    dateIndex,
-                    timeIndex
-                });
 
                 // 触发父组件事件
                 this.triggerEvent('change', {
@@ -241,13 +235,6 @@ Component({
 
             this.setData(updates);
 
-            console.log('🚀 时间选择器组件初始化完成');
-            console.log('📅 日期范围:', dateRange.length, '天 (过去30天 + 今天 + 未来30天)');
-            console.log('📍 今天索引:', todayIndex, '默认选择:', defaultDateIndex);
-            console.log('⏰ 小时范围:', hourRange.length, '小时');
-            console.log('⏰ 分钟范围:', minuteRange.length, '分钟');
-            console.log('🕐 默认时间:', currentHour + ':' + currentMinute);
-            console.log('📝 默认显示:', defaultDisplayTime);
 
             // 如果没有传入 value 属性，自动触发 change 事件，将默认值传递给父组件
             // 这样即使用户不调整开球时间，formData.openTime 也会被设置为默认值
@@ -309,17 +296,9 @@ Component({
                         updates.currentSelectedMinute = String(roundedMinute).padStart(2, '0');
                     }
                     updates.selectedTime = value;
-
                     this.setData(updates);
-
-                    console.log('🔍 解析时间值:', {
-                        原始值: value,
-                        日期索引: dateIndex,
-                        时间索引: timeIndex
-                    });
                 }
             } catch (error) {
-                console.error('解析时间值失败:', error, value);
             }
         },
 
@@ -397,13 +376,7 @@ Component({
 
             this.setData(updates);
 
-            console.log('🕐 自定义时间选择器确认:', {
-                display: display,
-                value: value,
-                dateIndex,
-                hour: hour.value,
-                minute: minute.value
-            });
+
 
             // 触发父组件事件（保持与原 picker 组件相同的接口）
             this.triggerEvent('change', {
@@ -435,14 +408,12 @@ Component({
          * 组件实例刚刚被创建时执行
          */
         created() {
-            console.log('⏰ TimePicker 组件创建');
         },
 
         /**
          * 组件实例进入页面节点树时执行
          */
         attached() {
-            console.log('⏰ TimePicker 组件挂载');
             // 初始化时间选择器数据
             this.initTimePickerData();
 
@@ -456,7 +427,6 @@ Component({
          * 组件实例被从页面节点树移除时执行
          */
         detached() {
-            console.log('⏰ TimePicker 组件卸载');
         }
     },
 
@@ -465,7 +435,6 @@ Component({
      */
     observers: {
         'value': function (newValue) {
-            console.log('⏰ TimePicker value 变化:', newValue);
             if (newValue) {
                 // 如果有新值，解析并设置
                 this.parseAndSetValue(newValue);

@@ -114,6 +114,7 @@ Component({
          * 汇总分数统计的原子操作
          */
         runAtomicScoreUpdate(players, holeList, red_blue = [], gameData = null, groupid = null) {
+            console.log('🟡🟠🔴🟢🔵🟡 gameData:', gameData);
             if (!Array.isArray(players) || players.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
@@ -263,9 +264,11 @@ Component({
             const groupAIndex = groupedPlayers.A[0].index;
             const groupBIndex = groupedPlayers.B[0].index;
 
+            // 仅非 common 类型时添加中间结果行
+            const showScoreRow = gameData?.game_type !== 'common';
             const oneballRows = [
                 { key: 'A', type: 'group', label: 'A组', playerIndex: groupAIndex, players: groupedPlayers.A },
-                { key: 'score', type: 'score', label: '得分' },
+                ...(showScoreRow ? [{ key: 'score', type: 'score', label: '得分' }] : []),
                 { key: 'B', type: 'group', label: 'B组', playerIndex: groupBIndex, players: groupedPlayers.B }
             ];
 
