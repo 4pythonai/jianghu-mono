@@ -110,6 +110,92 @@ Component({
             this.setData({ filteredTeams: filteredWithState })
         },
 
+        promptCreateTeam() {
+            const keyword = this.data.searchKeyword.trim()
+            if (!keyword) {
+                return
+            }
+
+            wx.showModal({
+                title: '创建球队',
+                content: `"${keyword}"队目前不存在，立刻创建吗？`,
+                confirmText: '是',
+                cancelText: '否',
+                success: (res) => {
+                    if (res.confirm) {
+                        this.navigateToCreateTeam(keyword)
+                    }
+                }
+            })
+        },
+
+        navigateToCreateTeam(keyword) {
+            wx.navigateTo({
+                url: `/packageTeam/create-team/create-team?prefillName=${encodeURIComponent(keyword)}`,
+                events: {
+                    onTeamCreated: (data) => {
+                        this.onTeamCreated(data)
+                    }
+                }
+            })
+        },
+
+        onTeamCreated(data) {
+            const team = data.team
+            const createdTeam = {
+                id: team.id,
+                team_name: team.team_name,
+                team_avatar: team.team_avatar,
+                isMember: true
+            }
+
+            const allTeams = this.mergeTeamList(this.data.allTeams, createdTeam)
+            const myTeams = this.mergeTeamList(this.data.myTeams, createdTeam)
+            const selectedTeams = this.buildSelectedTeamsForCreatedTeam(team)
+
+            this.setData({ allTeams, myTeams, selectedTeams }, () => {
+                this.filterTeams(this.data.searchKeyword)
+            })
+        },
+
+        mergeTeamList(list, team) {
+            const index = list.findIndex(item => item.id === team.id)
+            if (index === -1) {
+                return [team, ...list]
+            }
+
+            const nextList = [...list]
+            nextList[index] = { ...nextList[index], ...team }
+            return nextList
+        },
+
+        buildSelectedTeamsForCreatedTeam(team) {
+            const baseTeam = {
+                id: team.id,
+                team_id: team.id,
+                team_name: team.team_name,
+                team_avatar: team.team_avatar
+            }
+
+            if (this.properties.teamGameType === 'single_team') {
+                return [baseTeam]
+            }
+
+            const selectedTeams = this.data.selectedTeams
+            const exists = selectedTeams.find(item => item.team_id === team.id)
+            if (exists) {
+                return selectedTeams
+            }
+
+            return [
+                ...selectedTeams,
+                {
+                    ...baseTeam,
+                    team_alias: team.team_name
+                }
+            ]
+        },
+
         onTeamSelect(e) {
             const teamId = e.currentTarget.dataset.teamId
             const team = this.data.allTeams.find(item => item.id === teamId)

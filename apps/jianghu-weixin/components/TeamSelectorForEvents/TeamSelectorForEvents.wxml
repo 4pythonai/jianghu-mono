@@ -21,7 +21,9 @@
       <view class="selected-item" wx:for="{{selectedTeams}}" wx:key="team_id">
         <image class="selected-avatar" src="{{img.imageUrl(item.team_avatar)}}" mode="aspectFill"></image>
         <view class="selected-info">
-          <text class="selected-alias">{{teamGameType === 'cross_teams' ? item.team_alias : item.team_name}}</text>
+          <text
+            class="selected-alias"
+          >{{teamGameType === 'cross_teams' ? item.team_alias : item.team_name}}</text>
           <text
             class="selected-name"
             wx:if="{{teamGameType === 'cross_teams' && item.team_alias !== item.team_name}}"
@@ -55,8 +57,12 @@
     </view>
 
     <view class="empty-container" wx:elif="{{filteredTeams.length === 0}}">
-      <image class="empty-icon" src="/assets/icons/empty.png" mode="aspectFit"></image>
-      <text class="empty-text">{{searchKeyword ? '未找到相关球队' : '暂无可选球队'}}</text>
+      <view class="empty-create" wx:if="{{searchKeyword}}">
+        <text class="empty-text">"{{searchKeyword}}"队目前不存在</text>
+        <text class="empty-subtext">立刻创建吗？</text>
+        <button class="btn btn-primary btn-medium" bindtap="promptCreateTeam">立即创建</button>
+      </view>
+      <text class="empty-text" wx:else>暂无可选球队</text>
     </view>
 
     <scroll-view class="team-scroll" scroll-y="true" wx:else>
@@ -82,7 +88,9 @@
   </view>
 
   <view class="bottom-bar">
-    <view class="tip-text">已选择 {{selectedTeams.length}} 个球队，至少选择{{teamGameType === 'cross_teams' ? 2 : 1}}个</view>
+    <view
+      class="tip-text"
+    >已选择 {{selectedTeams.length}} 个球队，至少选择{{teamGameType === 'cross_teams' ? 2 : 1}}个</view>
     <button
       class="btn btn-primary btn-block {{selectedTeams.length < (teamGameType === 'cross_teams' ? 2 : 1) ? 'disabled' : ''}}"
       bindtap="confirmSelection"
@@ -90,7 +98,11 @@
     >下一步</button>
   </view>
 
-  <view class="modal-mask" wx:if="{{teamGameType === 'cross_teams' && showAliasModal}}" catchtap="cancelAliasModal">
+  <view
+    class="modal-mask"
+    wx:if="{{teamGameType === 'cross_teams' && showAliasModal}}"
+    catchtap="cancelAliasModal"
+  >
     <view class="modal-content" catchtap="preventBubble">
       <view class="modal-header">
         <text class="modal-title">设置球队简称</text>

@@ -39,9 +39,9 @@
               bindtap="switchGroup"
             >
               <text class="group-card-title">A组</text>
-              <text class="group-card-score-large">
-                {{oneballGroups.A.length ? (localScores[oneballGroups.A[0].index] ? localScores[oneballGroups.A[0].index].score : '') : ''}}
-              </text>
+              <text
+                class="group-card-score-large"
+              >{{oneballGroups.A.length ? (localScores[oneballGroups.A[0].index] ? localScores[oneballGroups.A[0].index].score : '') : ''}}</text>
               <view class="group-card-avatars">
                 <image
                   class="group-card-avatar"
@@ -58,9 +58,9 @@
               bindtap="switchGroup"
             >
               <text class="group-card-title">B组</text>
-              <text class="group-card-score-large">
-                {{oneballGroups.B.length ? (localScores[oneballGroups.B[0].index] ? localScores[oneballGroups.B[0].index].score : '') : ''}}
-              </text>
+              <text
+                class="group-card-score-large"
+              >{{oneballGroups.B.length ? (localScores[oneballGroups.B[0].index] ? localScores[oneballGroups.B[0].index].score : '') : ''}}</text>
               <view class="group-card-avatars">
                 <image
                   class="group-card-avatar"

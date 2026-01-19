@@ -1,17 +1,28 @@
 <view class="container">
   <CustomNavBar title="我的球队" showBack="{{true}}" />
-  
+
   <!-- 搜索栏 -->
   <view class="search-bar">
     <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
-    <input class="search-input" placeholder="搜索球队" bindinput="onSearchInput" value="{{ searchKeyword }}" />
+    <input
+      class="search-input"
+      placeholder="搜索球队"
+      bindinput="onSearchInput"
+      value="{{ searchKeyword }}"
+    />
   </view>
 
   <!-- 已加入的球队 -->
   <view class="section" wx:if="{{ joinedTeams.length > 0 }}">
     <view class="section-header">已加入的球队</view>
     <view class="team-list">
-      <view class="team-card" wx:for="{{ joinedTeams }}" wx:key="id" bindtap="goToTeamDetail" data-team="{{ item }}">
+      <view
+        class="team-card"
+        wx:for="{{ joinedTeams }}"
+        wx:key="id"
+        bindtap="goToTeamDetail"
+        data-team="{{ item }}"
+      >
         <view class="team-avatar">
           <image src="{{ item.logo || '/images/default-avatar.png' }}" mode="aspectFill"></image>
         </view>
@@ -33,7 +44,13 @@
   <view class="section" wx:if="{{ activityTeams.length > 0 }}">
     <view class="section-header">参加过活动的球队</view>
     <view class="team-list">
-      <view class="team-card" wx:for="{{ activityTeams }}" wx:key="id" bindtap="goToTeamDetail" data-team="{{ item }}">
+      <view
+        class="team-card"
+        wx:for="{{ activityTeams }}"
+        wx:key="id"
+        bindtap="goToTeamDetail"
+        data-team="{{ item }}"
+      >
         <view class="team-avatar">
           <image src="{{ item.logo || '/images/default-avatar.png' }}" mode="aspectFill"></image>
         </view>
@@ -51,7 +68,10 @@
   </view>
 
   <!-- 空状态 -->
-  <view class="empty-state" wx:if="{{ joinedTeams.length === 0 && activityTeams.length === 0 && !loading }}">
+  <view
+    class="empty-state"
+    wx:if="{{ joinedTeams.length === 0 && activityTeams.length === 0 && !loading }}"
+  >
     <image class="empty-icon" src="/assets/icons/icons8-team-48.png" mode="aspectFit"></image>
     <text class="empty-text">暂无球队</text>
     <text class="empty-hint">创建或加入一个球队开始吧</text>
@@ -65,4 +85,3 @@
     </button>
   </view>
 </view>
-

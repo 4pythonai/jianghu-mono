@@ -105,6 +105,8 @@
 }
 ```
 
+组件中复用按钮样式与类名组合规则请参考 `jianghu-weixin/docs/button-style-guide.md`。
+
 ### 卡片样式
 
 ```css

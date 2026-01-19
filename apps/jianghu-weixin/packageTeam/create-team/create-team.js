@@ -21,6 +21,16 @@ Page({
       // 编辑模式
       this.setData({ mode: 'edit', teamId })
       this.loadTeamInfo(teamId)
+      return
+    }
+
+    const prefillName = options.prefillName ? decodeURIComponent(options.prefillName) : ''
+    if (prefillName) {
+      this.setData({
+        'formData.name': prefillName
+      }, () => {
+        this.checkCanSubmit()
+      })
     }
   },
 
@@ -159,6 +169,20 @@ Page({
           title: mode === 'edit' ? '保存成功' : '创建成功', 
           icon: 'success' 
         })
+
+        if (mode === 'create') {
+          const eventChannel = this.getOpenerEventChannel()
+          if (eventChannel) {
+            eventChannel.emit('onTeamCreated', {
+              team: {
+                id: res.team_id,
+                team_id: res.team_id,
+                team_name: formData.name.trim(),
+                team_avatar: formData.logo || ''
+              }
+            })
+          }
+        }
         
         // 延迟返回上一页
         setTimeout(() => {
