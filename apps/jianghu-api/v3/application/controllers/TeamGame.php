@@ -50,11 +50,7 @@ class TeamGame extends MY_Controller {
         $team_id = $json_paras['team_id'];
         $match_format = $json_paras['match_format'];
 
-        // 验证球队管理员权限
-        if (!$this->MTeamGame->isTeamAdmin($team_id, $user_id)) {
-            echo json_encode(['code' => 403, 'message' => '您没有权限创建此球队的赛事'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
+
 
         // 验证赛制类型
         $validFormats = [

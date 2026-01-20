@@ -180,6 +180,7 @@
 
           <!-- 分队设置 -->
           <TeamTagEditor
+            compMode="edit"
             gameType="{{ gameType }}"
             currentFormat="{{ currentFormat }}"
             gameTags="{{ gameTags }}"

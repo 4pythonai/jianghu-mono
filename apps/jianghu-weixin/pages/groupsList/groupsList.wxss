@@ -92,33 +92,40 @@
 	display: flex;
 	align-items: center;
 	margin-bottom: 20rpx;
-	padding-bottom: 20rpx;
-	border-bottom: 1rpx solid #eee;
+	padding: 18rpx 20rpx;
+	border-radius: 14rpx;
+	background: linear-gradient(90deg, #e6f7ef 0%, #ffffff 65%);
+	border: 1rpx solid #d7efe4;
+	box-shadow: 0 4rpx 12rpx rgba(18, 110, 72, 0.08);
 }
 
 .group-name {
 	flex: 1;
-	font-size: 32rpx;
+	font-size: 34rpx;
 	font-weight: bold;
-	color: #333;
+	color: #0f6b46;
+	letter-spacing: 1rpx;
 }
 
 .group-count {
 	font-size: 24rpx;
-	color: #666;
-	background-color: #f0f0f0;
-	padding: 8rpx 16rpx;
-	border-radius: 20rpx;
-	margin-right: 20rpx;
+	color: #0f6b46;
+	background-color: #dff4ea;
+	padding: 8rpx 18rpx;
+	border-radius: 999rpx;
+	margin-right: 16rpx;
+	font-weight: 600;
 }
 
 .arrow-right {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 40rpx;
-	height: 40rpx;
+	width: 44rpx;
+	height: 44rpx;
 	flex-shrink: 0;
+	background-color: #dff4ea;
+	border-radius: 50%;
 }
 
 .arrow-right image {

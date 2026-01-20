@@ -180,6 +180,7 @@
 
         <!-- 分队设置 (队内赛团队赛制显示) -->
         <TeamTagEditor
+          compMode="create"
           gameType="{{ gameType }}"
           currentFormat="{{ currentFormat }}"
           gameTags="{{ gameTags }}"

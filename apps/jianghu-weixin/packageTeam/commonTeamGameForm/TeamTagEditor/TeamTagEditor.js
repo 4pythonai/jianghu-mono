@@ -20,6 +20,13 @@ Component({
                 this.logFormatConfig(newVal)
             }
         },
+        compMode: {
+            type: String,
+            value: '',
+            observer(newVal) {
+                console.log('[🔴🟢🔵TeamTagEditor] compMode:', newVal)
+            }
+        },
         gameTags: {
             type: Array,
             value: []

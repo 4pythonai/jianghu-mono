@@ -400,7 +400,9 @@ class MGame  extends CI_Model {
     return $ret;
   }
 
+  // 取消比赛,则删除此比赛相关所有数据
   public function cancelGame($gameid) {
+
     $this->db->where('id', $gameid)
       ->update('t_game', ['game_status' => 'cancelled']);
   }
