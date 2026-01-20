@@ -1,0 +1,34 @@
+<view class="event-detail-card-wrapper">
+  <InfoCard title="基本信息">
+    <view class="event-detail-info-list">
+      <view class="event-detail-info-item">
+        <image
+          class="event-detail-info-icon"
+          src="/assets/icons/icons-location.png"
+          mode="aspectFit"
+        />
+        <text class="event-detail-info-text">{{eventDetail.location}}</text>
+      </view>
+      <view class="event-detail-info-item">
+        <image class="event-detail-info-icon" src="/assets/icons/icons-clock.png" mode="aspectFit" />
+        <text class="event-detail-info-text">{{eventDetail.dateTime}}</text>
+      </view>
+      <view class="event-detail-info-item">
+        <image class="event-detail-info-icon" src="/assets/icons/icons-money.png" mode="aspectFit" />
+        <text class="event-detail-info-text">{{eventDetail.fee}}</text>
+      </view>
+      <view class="event-detail-info-item">
+        <image
+          class="event-detail-info-icon"
+          src="/assets/icons/icons-deadline.png"
+          mode="aspectFit"
+        />
+        <text class="event-detail-info-text">{{eventDetail.deadline}}</text>
+      </view>
+      <view class="event-detail-info-item">
+        <image class="event-detail-info-icon" src="/assets/icons/icons8-list-32.png" mode="aspectFit" />
+        <text class="event-detail-info-text">赛制: {{matchFormatLabel}}</text>
+      </view>
+    </view>
+  </InfoCard>
+</view>

@@ -1,0 +1,30 @@
+/* 卡片包装器 */
+.event-detail-card-wrapper {
+    padding: 20rpx 20rpx 0;
+}
+
+/* 基本信息列表 */
+.event-detail-info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32rpx;
+}
+
+.event-detail-info-item {
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+}
+
+.event-detail-info-icon {
+    width: 36rpx;
+    height: 36rpx;
+    flex-shrink: 0;
+    filter: brightness(0) saturate(100%) invert(27%) sepia(95%) saturate(1200%) hue-rotate(100deg) brightness(0.5);
+}
+
+.event-detail-info-text {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    flex: 1;
+}

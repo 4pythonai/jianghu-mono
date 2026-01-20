@@ -31,6 +31,7 @@ Component({
             coverType: 'default',
             covers: []
         },
+        match_format: '',
         gameType: 'single_team',
         gameTags: [],
         isCreator: false,
@@ -66,6 +67,7 @@ Component({
                 store: gameStore,
                 fields: [
                     'eventDetail',
+                    'match_format',
                     'gameType',
                     'gameTags',
                     'isCreator',
