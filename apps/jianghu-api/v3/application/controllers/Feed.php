@@ -189,15 +189,10 @@ class Feed extends MY_Controller {
                 $game_detail['private'] = 'n';
             }
 
-            // 处理球队比赛情况 (队内赛或队际赛)
-            if ($game_detail['game_type'] == 'single_team' || $game_detail['game_type'] == 'cross_teams') {
-                $game_detail['extra_team_game_info'] = $this->getExtraTeamGameInfo($gameid, $game_detail['game_type'], $game['team_id'] ?? null);
-            }
-
             // 添加星标状态
             $game_detail['if_star_game'] = $this->isStarGame($gameid, $game, $starData) ? 'y' : 'n';
-            // extra_team_game_info
-            $game_detail['extra_team_game_info'] = [];
+            $teamId = $game_detail['team_id'] ?? ($game['team_id'] ?? null);
+            $game_detail = $this->normalizeExtraTeamGameInfo($game_detail, $gameid, $teamId);
             $games[] = $game_detail;
         }
 
@@ -314,10 +309,8 @@ class Feed extends MY_Controller {
                 continue;
             }
 
-            // 添加 extra_team_game_info
-            if ($row['game_type'] == 'single_team' || $row['game_type'] == 'cross_teams') {
-                $game_detail['extra_team_game_info'] = $this->getExtraTeamGameInfo($gameid, $row['game_type'], $row['team_id']);
-            }
+            $teamId = $game_detail['team_id'] ?? ($row['team_id'] ?? null);
+            $game_detail = $this->normalizeExtraTeamGameInfo($game_detail, $gameid, $teamId);
 
             // 添加封面信息
             $coverInfo = $this->getEventItemCover($gameid, $row['game_type'], $row['team_id']);
@@ -365,10 +358,8 @@ class Feed extends MY_Controller {
                 continue;
             }
 
-            // 添加 extra_team_game_info
-            if ($row['game_type'] == 'single_team' || $row['game_type'] == 'cross_teams') {
-                $game_detail['extra_team_game_info'] = $this->getExtraTeamGameInfo($gameid, $row['game_type'], $row['team_id']);
-            }
+            $teamId = $game_detail['team_id'] ?? ($row['team_id'] ?? null);
+            $game_detail = $this->normalizeExtraTeamGameInfo($game_detail, $gameid, $teamId);
 
             // 添加封面信息
             $coverInfo = $this->getEventItemCover($gameid, $row['game_type'], $row['team_id']);
@@ -402,9 +393,8 @@ class Feed extends MY_Controller {
                 continue;
             }
 
-            if ($game_detail['game_type'] == 'single_team' || $game_detail['game_type'] == 'cross_teams') {
-                $game_detail['extra_team_game_info'] = $this->getExtraTeamGameInfo($gameid, $game_detail['game_type'], $row['team_id'] ?? null);
-            }
+            $teamId = $game_detail['team_id'] ?? ($row['team_id'] ?? null);
+            $game_detail = $this->normalizeExtraTeamGameInfo($game_detail, $gameid, $teamId);
 
             // 添加星标状态
             $game_detail['if_star_game'] = $this->isStarGame($gameid, $row, $starData) ? 'y' : 'n';
@@ -413,6 +403,20 @@ class Feed extends MY_Controller {
         }
 
         return $games;
+    }
+
+    /**
+     * 统一补齐 extra_team_game_info
+     */
+    private function normalizeExtraTeamGameInfo($game_detail, $gameid, $teamId = null) {
+        $gameType = $game_detail['game_type'] ?? null;
+        if ($gameType == 'single_team' || $gameType == 'cross_teams') {
+            $game_detail['extra_team_game_info'] = $this->getExtraTeamGameInfo($gameid, $gameType, $teamId);
+        } else {
+            $game_detail['extra_team_game_info'] = [];
+        }
+
+        return $game_detail;
     }
 
     /**
