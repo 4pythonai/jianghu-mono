@@ -1248,4 +1248,37 @@ class TeamGame extends MY_Controller {
             'data' => ['qrcode' => $qrcodeUrl]
         ], JSON_UNESCAPED_UNICODE);
     }
+
+    public function updateTagMemberPayment() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $user_id = $this->getUser();
+        $game_id = $json_paras['game_id'];
+        $member_user_id = $json_paras['user_id'];
+
+        // 验证管理员权限
+        if (!$this->MTeamGame->isGameAdmin($game_id, $user_id)) {
+            echo json_encode(['code' => 403, 'message' => '您没有权限管理此赛事'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $updateData = [];
+        if (array_key_exists('payed', $json_paras)) {
+            $updateData['payed'] = $json_paras['payed'];
+        }
+        if (array_key_exists('pay_money', $json_paras)) {
+            $updateData['pay_money'] = $json_paras['pay_money'];
+        }
+
+        if (empty($updateData)) {
+            echo json_encode(['code' => 400, 'message' => '缺少更新字段'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MTeamGame->updateTagMemberPayment($game_id, $member_user_id, $updateData);
+
+        echo json_encode([
+            'code' => $result['success'] ? 200 : 400,
+            'message' => $result['message']
+        ], JSON_UNESCAPED_UNICODE);
+    }
 }

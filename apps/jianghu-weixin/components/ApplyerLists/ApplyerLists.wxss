@@ -102,3 +102,25 @@
     color: var(--text-primary);
     font-weight: 500;
 }
+
+.fee-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rpx;
+}
+
+.fee-amount {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.fee-status {
+    font-size: 22rpx;
+    color: var(--text-secondary);
+}
+
+.fee-status.paid {
+    color: var(--primary-green);
+}

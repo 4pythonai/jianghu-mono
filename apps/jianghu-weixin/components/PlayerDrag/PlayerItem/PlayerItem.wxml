@@ -11,7 +11,7 @@
     </view>
     <view class="player-avatar-wrap">
       <PlayerAvatar
-        avatar="{{itemData.avatar}}"
+        avatar="{{itemData.avatar || ''}}"
         userId="{{itemData.user_id}}"
         avatarOnly="{{true}}"
         size="small"

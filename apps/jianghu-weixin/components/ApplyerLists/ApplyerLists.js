@@ -29,6 +29,16 @@ Component({
             type: null,
             value: null
         },
+        /** 是否付款 */
+        payed: {
+            type: String,
+            value: ''
+        },
+        /** 付款金额 */
+        pay_money: {
+            type: null,
+            value: null
+        },
         /** 分队ID */
         tagId: {
             type: null,
@@ -69,6 +79,16 @@ Component({
                     gender: this.properties.gender,
                     tagId: this.properties.tagId,
                     tagName: this.properties.tagName
+                }
+            })
+        },
+        handleFeeTap() {
+            this.triggerEvent('fee', {
+                member: {
+                    userId: this.properties.userId,
+                    showName: this.properties.show_name,
+                    payed: this.properties.payed,
+                    pay_money: this.properties.pay_money
                 }
             })
         }

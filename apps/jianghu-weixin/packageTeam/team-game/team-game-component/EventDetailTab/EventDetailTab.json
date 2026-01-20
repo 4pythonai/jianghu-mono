@@ -3,6 +3,7 @@
     "usingComponents": {
         "TeamEventBanner": "/components/TeamEventBanner/TeamEventBanner",
         "InfoCard": "/components/InfoCard/InfoCard",
-        "BottomActionBar": "/components/BottomActionBar/BottomActionBar"
+        "BottomActionBar": "/components/BottomActionBar/BottomActionBar",
+        "TeamGameOperationPanel": "../TeamGameOperationPanel/TeamGameOperationPanel"
     }
 }

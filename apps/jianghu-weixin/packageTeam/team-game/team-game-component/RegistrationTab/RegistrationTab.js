@@ -5,6 +5,7 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
 import { gameStore } from '../../../../stores/game/gameStore'
 import { buildTagMemberGroups } from '../../../../utils/teamGameUtils'
+import teamgameApi from '../../../../api/modules/teamgame'
 
 const app = getApp()
 
@@ -28,7 +29,14 @@ Component({
             prevTagName: '',
             newTagName: ''
         },
-        editTagIndex: 0
+        editTagIndex: 0,
+        feeVisible: false,
+        feeForm: {
+            userId: null,
+            showName: '',
+            payed: '',
+            payMoney: ''
+        }
     },
 
     observers: {
@@ -186,6 +194,81 @@ Component({
             } catch (error) {
                 wx.hideLoading()
                 console.error('[RegistrationTab] submit edit failed:', error)
+                wx.showToast({ title: '保存失败，请稍后重试', icon: 'none' })
+            }
+        },
+        handleFeeMember(event) {
+            if (this.data.mode !== 'fee') return
+
+            const member = event.detail?.member
+            if (!member) return
+
+            this.setData({
+                feeVisible: true,
+                feeForm: {
+                    userId: member.userId,
+                    showName: member.showName || '',
+                    payed: member.payed || '',
+                    payMoney: member.pay_money ?? ''
+                }
+            })
+        },
+
+        handleFeeCancel() {
+            this.setData({ feeVisible: false })
+        },
+
+        handlePayStatusSelect(event) {
+            const value = event.currentTarget?.dataset?.value
+            if (!value) return
+            const nextPayMoney = value === 'y' ? this.data.feeForm.payMoney : null
+            this.setData({
+                'feeForm.payed': value,
+                'feeForm.payMoney': nextPayMoney
+            })
+        },
+
+        handlePayMoneyInput(event) {
+            if (this.data.feeForm.payed !== 'y') return
+            const value = event.detail?.value ?? ''
+            this.setData({ 'feeForm.payMoney': value })
+        },
+
+        handleFeeConfirm() {
+            this.submitFeeForm()
+        },
+
+        async submitFeeForm() {
+            const { gameid, feeForm } = this.data
+            if (!gameid || !feeForm.userId) {
+                wx.showToast({ title: '缺少必要参数', icon: 'none' })
+                return
+            }
+
+            wx.showLoading({ title: '保存中...' })
+
+            try {
+                const result = await teamgameApi.updateTagMemberPayment({
+                    game_id: gameid,
+                    user_id: feeForm.userId,
+                    payed: feeForm.payed,
+                    pay_money: feeForm.payMoney
+                })
+
+                wx.hideLoading()
+
+                if (result?.code === 200) {
+                    await this.loadTagMembers(gameid)
+                    this.storeBindings?.updateStoreBindings()
+                    this.setData({ feeVisible: false })
+                    wx.showToast({ title: result.message || '保存成功', icon: 'success' })
+                    return
+                }
+
+                wx.showToast({ title: result?.message || '保存失败', icon: 'none' })
+            } catch (error) {
+                wx.hideLoading()
+                console.error('[RegistrationTab] submit fee failed:', error)
                 wx.showToast({ title: '保存失败，请稍后重试', icon: 'none' })
             }
         }

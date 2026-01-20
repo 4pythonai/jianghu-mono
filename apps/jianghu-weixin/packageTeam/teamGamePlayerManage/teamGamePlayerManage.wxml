@@ -1,7 +1,7 @@
 <view class="container">
-  <CustomNavBar title="选手管理" showBack="{{true}}" />
+  <CustomNavBar title="{{pageTitle}}" showBack="{{true}}" />
 
   <view class="page-content">
-    <RegistrationTab mode="edit" />
+    <RegistrationTab mode="{{mode}}" />
   </view>
 </view>

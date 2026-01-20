@@ -6,7 +6,9 @@
   <view class="registration-header-index">序号</view>
   <view class="registration-header-avatar-placeholder"></view>
   <view class="registration-header-player">球员</view>
-  <view class="registration-header-handicap">江湖差点</view>
+  <view class="registration-header-handicap">
+    <text>{{mode === 'fee' ? '收费' : '江湖差点'}}</text>
+  </view>
 </view>
 <!-- 分组列表 -->
 <view
@@ -30,10 +32,13 @@
       userId="{{member.user_id}}"
       handicap="{{member.handicap}}"
       gender="{{member.gender}}"
+      payed="{{member.payed || ''}}"
+      pay_money="{{member.pay_money}}"
       tagId="{{member.tag_id}}"
       tagName="{{member.tagName}}"
       mode="{{mode}}"
       bindedit="handleEditMember"
+      bindfee="handleFeeMember"
     />
   </view>
   <view
@@ -97,5 +102,43 @@
   <view class="edit-actions">
     <view class="edit-action cancel" bindtap="handleEditCancel">取消</view>
     <view class="edit-action confirm" bindtap="handleEditConfirm">确定</view>
+  </view>
+</view>
+
+<view wx:if="{{feeVisible}}" class="edit-mask" bindtap="handleFeeCancel"></view>
+<view wx:if="{{feeVisible}}" class="edit-sheet">
+  <view class="edit-header">收费管理</view>
+  <view class="edit-field">
+    <text class="edit-label">昵称</text>
+    <text class="edit-value">{{feeForm.showName}}</text>
+  </view>
+  <view class="edit-field">
+    <text class="edit-label">付款状态</text>
+    <view class="edit-gender-options">
+      <view
+        class="edit-gender-option {{feeForm.payed === 'n' ? 'active' : ''}}"
+        data-value="n"
+        bindtap="handlePayStatusSelect"
+      >未付款</view>
+      <view
+        class="edit-gender-option {{feeForm.payed === 'y' ? 'active' : ''}}"
+        data-value="y"
+        bindtap="handlePayStatusSelect"
+      >已付款</view>
+    </view>
+  </view>
+  <view class="edit-field">
+    <text class="edit-label">付款金额</text>
+    <input
+      class="edit-input"
+      value="{{feeForm.payMoney == null ? '' : feeForm.payMoney}}"
+      placeholder="请输入付款金额"
+      disabled="{{feeForm.payed !== 'y'}}"
+      bindinput="handlePayMoneyInput"
+    />
+  </view>
+  <view class="edit-actions">
+    <view class="edit-action cancel" bindtap="handleFeeCancel">取消</view>
+    <view class="edit-action confirm" bindtap="handleFeeConfirm">确定</view>
   </view>
 </view>

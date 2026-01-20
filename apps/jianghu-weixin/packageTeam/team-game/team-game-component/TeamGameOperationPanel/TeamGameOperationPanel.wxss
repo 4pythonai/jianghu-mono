@@ -1,0 +1,89 @@
+/* 弹窗遮罩 */
+.event-detail-popup-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* 弹窗内容 */
+.event-detail-popup-content {
+    width: 100%;
+    background: #fff;
+    border-radius: 24rpx 24rpx 0 0;
+    padding: 20rpx 30rpx calc(40rpx + env(safe-area-inset-bottom));
+}
+
+.event-detail-popup-handle {
+    width: 80rpx;
+    height: 8rpx;
+    background: #e0e0e0;
+    border-radius: 4rpx;
+    margin: 0 auto 30rpx;
+}
+
+/* 9宫格操作区 */
+.event-detail-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30rpx;
+    padding: 20rpx 0;
+}
+
+.event-detail-action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12rpx;
+}
+
+.event-detail-action-icon {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-detail-action-text {
+    font-size: 24rpx;
+    color: var(--text-primary);
+}
+
+/* 操作图标颜色 */
+.event-detail-icon-friend { background: var(--primary-green); }
+.event-detail-icon-close-reg { background: var(--primary-green); }
+.event-detail-icon-manage { background: var(--primary-green); }
+.event-detail-icon-edit { background: var(--primary-green); }
+.event-detail-icon-group { background: var(--primary-green); }
+.event-detail-icon-fee { background: var(--primary-green); }
+.event-detail-icon-cancel { background: #e74c3c; }
+.event-detail-action-icon-start { background: #f5a623; }
+.event-detail-action-icon-score { background: var(--primary-green); }
+
+.event-detail-btn-icon-img {
+    width: 40rpx;
+    height: 40rpx;
+}
+
+/* 取消按钮 */
+.event-detail-popup-cancel {
+    margin-top: 20rpx;
+    padding: 24rpx;
+    background: #f5f5f5;
+    border-radius: 12rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-detail-popup-cancel text {
+    font-size: 30rpx;
+    color: var(--text-secondary);
+}

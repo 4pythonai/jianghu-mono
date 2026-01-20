@@ -90,6 +90,10 @@ const teamgame = {
     getTagMembersAll: (data, options) => request('/TeamGame/getTagMembersAll', data, options),
     // 获取球童记分二维码 {game_id}
     caddieInputQrcode: (data, options) => request('/TeamGame/CaddieInputQrcode', data, options),
+
+    // 报名人员的付款
+    updateTagMemberPayment: (data, options) => request('/TeamGame/updateTagMemberPayment', data, options),
+
 }
 
 export default teamgame

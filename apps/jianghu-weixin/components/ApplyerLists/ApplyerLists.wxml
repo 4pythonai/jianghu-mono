@@ -8,7 +8,7 @@
   <!-- 头像区域 -->
   <view class="avatar-section">
     <!-- 付费标记 -->
-    <view wx:if="{{paid}}" class="paid-badge">
+    <view wx:if="{{mode === 'fee' ? payed === 'y' : paid}}" class="paid-badge">
       <text class="badge-text">付</text>
     </view>
     <PlayerAvatar
@@ -23,10 +23,15 @@
   <view class="player-info">
     <text class="player-name">{{show_name}}</text>
     <view wx:if="{{mode === 'edit'}}" class="player-edit-button" bindtap="handleEditTap">编辑</view>
+    <view wx:if="{{mode === 'fee'}}" class="player-edit-button" bindtap="handleFeeTap">收费</view>
   </view>
 
   <!-- 江湖差点 -->
   <view class="handicap-section">
-    <text class="handicap-value">{{handicap != null ? handicap : '-'}}</text>
+    <text wx:if="{{mode !== 'fee'}}" class="handicap-value">{{handicap != null ? handicap : '-'}}</text>
+    <view wx:if="{{mode === 'fee'}}" class="fee-info">
+      <text class="fee-amount">{{pay_money != null && pay_money !== '' ? pay_money : '-'}}</text>
+      <text class="fee-status {{payed === 'y' ? 'paid' : 'unpaid'}}">{{payed === 'y' ? '已付' : '未付'}}</text>
+    </view>
   </view>
 </view>

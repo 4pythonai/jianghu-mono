@@ -229,3 +229,6 @@ Page({
 - [ ] `xxx.json` 引入了 `CustomNavBar` 组件
 - [ ] `xxx.wxss` 的 `.container` 添加了 `padding-top: 180rpx`
 - [ ] `xxx.wxml` 中 `CustomNavBar` 是 `container` 的第一个子元素
+
+
+# Consistency / 一致性

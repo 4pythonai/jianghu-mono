@@ -272,7 +272,8 @@ Page({
             editGroup: () => this.openGroupTabWithHint(),
             editGame: () => this.goToEditGame(),
             manageScore: () => this.goToScorePermissionManage(),
-            managePlayer: () => this.goToTeamGamePlayerManage()
+            managePlayer: () => this.goToTeamGamePlayerManage(),
+            manageFee: () => this.goToTeamGameFeeManage()
         }
 
         if (actionHandlers[action]) {
@@ -282,8 +283,7 @@ Page({
 
         const actionMessages = {
             registerForFriend: '替好友报名',
-            editGroup: '修改分组',
-            manageFee: '收费管理'
+            editGroup: '修改分组'
         }
 
         if (actionMessages[action]) {
@@ -353,6 +353,22 @@ Page({
 
         navigationHelper.navigateTo(
             `/packageTeam/teamGamePlayerManage/teamGamePlayerManage?game_id=${gameId}`
+        )
+    },
+
+    /**
+     * 前往收费管理
+     */
+    goToTeamGameFeeManage() {
+        const gameId = this.data.gameid
+
+        if (!gameId) {
+            wx.showToast({ title: '赛事信息缺失', icon: 'none' })
+            return
+        }
+
+        navigationHelper.navigateTo(
+            `/packageTeam/teamGamePlayerManage/teamGamePlayerManage?game_id=${gameId}&mode=fee`
         )
     },
 

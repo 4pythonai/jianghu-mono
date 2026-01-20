@@ -501,6 +501,8 @@ export const gameStore = observable({
                         gender: m.gender,
                         avatar: avatar,
                         handicap: m.handicap,
+                        payed: m.payed,
+                        pay_money: m.pay_money,
                         tagName: m.tag_name || '',
                         tagColor: m.color || ''
                     };

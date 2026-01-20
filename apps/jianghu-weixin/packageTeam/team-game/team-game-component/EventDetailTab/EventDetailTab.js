@@ -229,7 +229,7 @@ Component({
          * 处理更多操作
          */
         onActionTap(e) {
-            const action = e.currentTarget.dataset.action
+            const action = e.detail?.action || e.currentTarget.dataset.action
             this.setData({ showMoreActions: false })
             // 通知主页面处理操作
             this.triggerEvent('onActionTap', { action })
