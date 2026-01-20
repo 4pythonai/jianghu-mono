@@ -3,6 +3,7 @@
     "navigationBarTitleText": "编辑比赛",
     "usingComponents": {
         "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
-        "TimePicker": "/components/TimePicker/time-picker"
+        "TimePicker": "/components/TimePicker/time-picker",
+        "TeamTagEditor": "/packageTeam/commonTeamGameForm/TeamTagEditor/TeamTagEditor"
     }
 }

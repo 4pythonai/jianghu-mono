@@ -418,15 +418,14 @@ Page({
     },
 
     onTagNameInput(e) {
-        const index = e.currentTarget.dataset.index
-        const value = e.detail.value
+        const { index, value } = e.detail
         const gameTags = [...this.data.gameTags]
         gameTags[index].name = value
         this.setData({ gameTags })
     },
 
     deleteGameTag(e) {
-        const index = e.currentTarget.dataset.index
+        const { index } = e.detail
         const gameTags = [...this.data.gameTags]
 
         if (gameTags.length <= 2 && this.data.currentFormat.requireGameTag) {

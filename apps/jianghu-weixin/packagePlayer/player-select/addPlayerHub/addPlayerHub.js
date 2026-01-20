@@ -1,7 +1,19 @@
+import { storeBindingsBehavior } from 'mobx-miniprogram-bindings'
+import { gameStore } from '@/stores/game/gameStore'
+
 const app = getApp();
 const navigationHelper = require('@/utils/navigationHelper.js');
+const MAX_GROUP_PLAYERS = 4;
 
 Page({
+    behaviors: [storeBindingsBehavior],
+    storeBindings: {
+        store: gameStore,
+        fields: {
+            storePlayers: 'players'
+        }
+    },
+
     data: {
         uuid: '',
         gameid: '',
@@ -12,6 +24,18 @@ Page({
         loading: false,
         error: '',
         sharePath: ''
+    },
+
+    isPlayerLimitReached() {
+        const playerCount = this.data.storePlayers?.length || 0;
+        if (playerCount >= MAX_GROUP_PLAYERS) {
+            wx.showToast({
+                title: '4名球员已满,删除后方可添加',
+                icon: 'none'
+            });
+            return true;
+        }
+        return false;
     },
 
     onLoad(options) {
@@ -108,6 +132,9 @@ Page({
     // 手工添加按钮点击
     handleManualAdd() {
         console.log('📋 [AddPlayerHub] 点击手工添加');
+        if (this.isPlayerLimitReached()) {
+            return;
+        }
         const { groupIndex, slotIndex, uuid, gameid, title } = this.data;
 
         let url = `/packagePlayer/player-select/manualAdd/manualAdd?groupIndex=${groupIndex}&slotIndex=${slotIndex}&scene=gameDetail`;
@@ -134,6 +161,9 @@ Page({
     // 好友选择按钮点击
     handleFriendSelect() {
         console.log('📋 [AddPlayerHub] 点击好友选择');
+        if (this.isPlayerLimitReached()) {
+            return;
+        }
         const { groupIndex, slotIndex, uuid, gameid, title } = this.data;
 
         let url = `/packagePlayer/player-select/friendSelect/friendSelect?groupIndex=${groupIndex}&slotIndex=${slotIndex}`;

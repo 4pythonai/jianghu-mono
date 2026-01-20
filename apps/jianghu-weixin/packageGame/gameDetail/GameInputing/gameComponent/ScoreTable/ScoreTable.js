@@ -65,6 +65,7 @@ Component({
                 clearTimeout(this._debounceTimer);
                 this._debounceTimer = null;
             }
+            this._pendingScoreUpdate = null;
             if (this.storeBindings) {
                 this.storeBindings.destroyStoreBindings();
             }
@@ -118,7 +119,10 @@ Component({
             if (!Array.isArray(players) || players.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
-            if (this._isCalculating) return;
+            if (this._isCalculating) {
+                this._pendingScoreUpdate = { players, holeList, red_blue, gameData, groupid };
+                return;
+            }
             this._isCalculating = true;
 
             const {
@@ -159,6 +163,17 @@ Component({
                 oneballRowInTotals
             }, () => {
                 this._isCalculating = false;
+                if (this._pendingScoreUpdate) {
+                    const pending = this._pendingScoreUpdate;
+                    this._pendingScoreUpdate = null;
+                    this.runAtomicScoreUpdate(
+                        pending.players,
+                        pending.holeList,
+                        pending.red_blue,
+                        pending.gameData,
+                        pending.groupid
+                    );
+                }
             });
         },
 

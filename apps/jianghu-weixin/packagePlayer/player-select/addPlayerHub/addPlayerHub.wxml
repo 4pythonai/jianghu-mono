@@ -7,7 +7,7 @@
       <image class="top-circle-icon" src="/assets/icons/icons8-add-48.png" mode="aspectFit"></image>
     </view>
 
-    <!-- 已添加球员列表 -->
+    <!-- 此组已添加球员列表 -->
     <attened-players />
 
     <!-- 二维码区域 -->

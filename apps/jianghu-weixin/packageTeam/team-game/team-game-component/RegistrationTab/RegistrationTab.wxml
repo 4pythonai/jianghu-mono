@@ -131,6 +131,7 @@
     <text class="edit-label">付款金额</text>
     <input
       class="edit-input"
+      type="text"
       value="{{feeForm.payMoney == null ? '' : feeForm.payMoney}}"
       placeholder="请输入付款金额"
       disabled="{{feeForm.payed !== 'y'}}"

@@ -178,49 +178,15 @@
             </view>
           </view>
 
-          <!-- 分队设置 (队内赛团队赛制时显示) -->
-          <view
-            class="form-item"
-            wx:if="{{ gameType === 'single_team' && currentFormat.requireGameTag }}"
-          >
-            <view class="form-label">
-              <text>分队设置</text>
-              <text class="form-sub-label" wx:if="{{ currentFormat.isMatch }}">(比洞赛限2队)</text>
-            </view>
-            <view class="gameTags-container">
-              <view
-                wx:for="{{ gameTags }}"
-                wx:key="index"
-                class="team-as-tag-item"
-                style="border-left-color: {{ item.color }};"
-              >
-                <input
-                  class="tag-name-input"
-                  type="text"
-                  value="{{ item.name }}"
-                  bindinput="onTagNameInput"
-                  data-index="{{ index }}"
-                  placeholder="分队名称"
-                />
-                <view
-                  class="delete-tag-btn"
-                  bindtap="deleteGameTag"
-                  data-index="{{ index }}"
-                  wx:if="{{ gameTags.length > 2 || !currentFormat.requireGameTag }}"
-                >
-                  <image src="/assets/icons/close.svg" mode="aspectFit"></image>
-                </view>
-              </view>
-              <view
-                class="add-tag-btn"
-                bindtap="addGameTag"
-                wx:if="{{ !currentFormat.isMatch || gameTags.length < 2 }}"
-              >
-                <image src="/assets/icons/add.svg" class="add-icon" mode="aspectFit"></image>
-                <text>添加分队</text>
-              </view>
-            </view>
-          </view>
+          <!-- 分队设置 -->
+          <TeamTagEditor
+            gameType="{{ gameType }}"
+            currentFormat="{{ currentFormat }}"
+            gameTags="{{ gameTags }}"
+            bind:addTag="addGameTag"
+            bind:tagNameInput="onTagNameInput"
+            bind:deleteTag="deleteGameTag"
+          />
 
           <!-- 取前N名成绩 -->
           <view
