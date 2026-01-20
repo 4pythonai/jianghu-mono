@@ -71,7 +71,7 @@ Component({
         /** 头像形状: round（圆形） | square（矩形圆角） */
         shape: {
             type: String,
-            value: 'square'
+            value: 'round'
         }
     },
 
