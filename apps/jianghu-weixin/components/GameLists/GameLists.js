@@ -7,6 +7,10 @@ Component({
         showEmpty: {
             type: Boolean,
             value: false
+        },
+        router: {
+            type: String,
+            value: ""
         }
     },
 

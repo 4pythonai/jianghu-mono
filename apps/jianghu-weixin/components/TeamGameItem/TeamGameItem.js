@@ -4,6 +4,10 @@ Component({
         event: {
             type: Object,
             value: {}
+        },
+        router: {
+            type: String,
+            value: ''
         }
     },
 
@@ -80,6 +84,60 @@ Component({
     },
 
     methods: {
+        _groupPlayersByGroupId(players, gameData) {
+
+            if (!players || !Array.isArray(players)) {
+                console.warn('⚠️ 玩家数据为空或不是数组');
+                return [];
+            }
+
+            const groupMap = new Map();
+
+            for (const player of players) {
+                const groupid = player?.groupid;
+                if (!groupid) {
+                    console.warn('⚠️ 玩家缺少 groupid:', player);
+                    continue;
+                }
+
+                if (!groupMap.has(groupid)) {
+                    let groupName = '';
+
+                    // 后端 MDetailGame.getGroupsInfo 返回的分组信息使用 group_name 字段
+                    if (gameData.groups && Array.isArray(gameData.groups)) {
+                        const groupInfo = gameData.groups.find(g =>
+                            String(g.groupid) === String(groupid)
+                        );
+                        if (groupInfo) {
+                            groupName = groupInfo.group_name || '';
+                        }
+                    }
+
+                    if (!groupName && gameData.group_name && String(gameData.groupid) === String(groupid)) {
+                        groupName = gameData.group_name;
+                    }
+
+                    if (!groupName) {
+                        groupName = `第${groupMap.size + 1}组`;
+                    }
+
+                    console.log(`📝 分组 ${groupid} 名称: "${groupName}"`);
+
+                    groupMap.set(groupid, {
+                        groupid: String(groupid),
+                        groupName: groupName,
+                        players: []
+                    });
+                }
+
+                groupMap.get(groupid).players.push(player);
+            }
+
+            const groupsArray = Array.from(groupMap.values());
+            console.log('✅ 分组完成:', groupsArray);
+
+            return groupsArray;
+        },
         /**
          * 点击赛事卡片
          * 跳转到队内赛/队际赛详情页
@@ -92,19 +150,60 @@ Component({
             }
 
             const gameid = event.gameid;
+            const navigationHelper = require('@/utils/navigationHelper.js');
+
+            if (this.properties.router === 'live_menu') {
+                const processedGroups = this._groupPlayersByGroupId(event.players, event);
+
+                if (!processedGroups || processedGroups.length === 0) {
+                    console.warn('⚠️ 游戏没有分组数据, 直接进入游戏详情');
+                    navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}`)
+                        .catch(err => {
+                            console.error('[TeamGameItem] 跳转游戏详情失败:', err);
+                            wx.showToast({ title: '页面跳转失败', icon: 'none' });
+                        });
+                    return;
+                }
+
+                if (processedGroups.length === 1) {
+                    const groupid = processedGroups[0]?.groupid;
+                    navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`)
+                        .catch(err => {
+                            console.error('[TeamGameItem] 跳转游戏详情失败:', err);
+                            wx.showToast({ title: '页面跳转失败', icon: 'none' });
+                        });
+                    return;
+                }
+
+                const app = getApp();
+                app.globalData = app.globalData || {};
+                app.globalData.currentGameGroups = {
+                    gameid,
+                    gameName: event.extra_team_game_info?.team_game_title || event.game_name || '',
+                    course: event.course || '',
+                    groups: processedGroups
+                };
+
+                navigationHelper.navigateTo(`/pages/groupsList/groupsList?gameid=${gameid}`)
+                    .catch(err => {
+                        console.error('[TeamGameItem] 跳转分组列表失败:', err);
+                        wx.showToast({ title: '页面跳转失败', icon: 'none' });
+                    });
+                return;
+            }
+
             const teamGameInfo = event.extra_team_game_info;
-            
+
             if (!teamGameInfo || !teamGameInfo.game_type) {
                 console.warn('[TeamGameItem] 缺少队赛信息');
                 return;
             }
 
             const gameType = teamGameInfo.game_type; // 'single_team' 或 'cross_teams'
-            
+
             // 将 event 数据存入缓存，供 TeamGameDetail 使用
             wx.setStorageSync('teamGameEventData', event);
-            
-            const navigationHelper = require('@/utils/navigationHelper.js');
+
             navigationHelper.navigateTo(`/packageTeam/team-game/TeamGameDetail?game_id=${gameid}&game_type=${gameType}`)
                 .catch(err => {
                     console.error('[TeamGameItem] 跳转失败:', err);
@@ -113,4 +212,3 @@ Component({
         }
     }
 });
-

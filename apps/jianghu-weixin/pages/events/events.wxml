@@ -49,7 +49,7 @@
 
       <!-- 赛事列表 -->
       <view class="event-list" wx:else>
-        <GameLists games="{{eventList}}" showEmpty="{{true}}" />
+        <GameLists games="{{eventList}}" showEmpty="{{true}}" router="events_menu" />
       </view>
     </view>
   </view>

@@ -14,8 +14,9 @@ Page({
     onLoad(options) {
         const { gameid } = options;
         if (gameid) {
-            this.setData({ gameid });
-            this.loadGameGroupsFromGlobal(gameid);
+            const normalizedGameId = String(gameid);
+            this.setData({ gameid: normalizedGameId });
+            this.loadGameGroupsFromGlobal(normalizedGameId);
         } else {
             console.error('❌ 缺少 gameid 参数');
             wx.showToast({
@@ -36,8 +37,11 @@ Page({
 
             // 从全局数据获取 groups 信息
             const globalData = app.globalData?.currentGameGroups;
+            const globalGameId = globalData?.gameid !== undefined && globalData?.gameid !== null
+                ? String(globalData.gameid)
+                : null;
 
-            if (globalData?.gameid === gameid && globalData?.groups) {
+            if (globalGameId === String(gameid) && Array.isArray(globalData?.groups)) {
                 console.log('✅ 从全局数据获取分组信息:', globalData);
 
                 this.setData({

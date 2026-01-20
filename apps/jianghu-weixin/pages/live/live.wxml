@@ -35,11 +35,11 @@
     <view class="tab-content">
       <view class="tab-pane" hidden="{{currentTab !== 0}}">
         <!-- 我的比赛 -->
-        <GameLists games="{{games}}" />
+        <GameLists games="{{games}}" router="live_menu" />
       </view>
       <view class="tab-pane" hidden="{{currentTab !== 1}}">
         <!-- 广场内容 -->
-        <GameLists games="{{games}}" showEmpty="{{true}}" />
+        <GameLists games="{{games}}" showEmpty="{{true}}" router="live_menu" />
       </view>
     </view>
   </view>

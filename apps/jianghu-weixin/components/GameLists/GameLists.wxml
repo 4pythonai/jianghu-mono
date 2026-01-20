@@ -24,6 +24,7 @@
   <TeamGameItem
     wx:if="{{item.game_type === 'single_team' || item.game_type === 'cross_teams'}}"
     event="{{item}}"
+    router="{{router}}"
   />
 </block>
 <view wx:if="{{showEmpty && games.length === 0}}" class="empty-tip">暂无比赛</view>

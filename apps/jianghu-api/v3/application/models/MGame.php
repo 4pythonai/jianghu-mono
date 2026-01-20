@@ -342,7 +342,7 @@ class MGame  extends CI_Model {
     $now = date('Y-m-d H:i:s');
     $groupData = [
       'gameid' => $gameid,
-      'group_name' => '组' . $groupNumber,
+      'group_name' => '第' . $groupNumber . '组',
       'group_create_time' => $now,
       'group_start_status' => '0',
       'group_all_confirmed' => 0
