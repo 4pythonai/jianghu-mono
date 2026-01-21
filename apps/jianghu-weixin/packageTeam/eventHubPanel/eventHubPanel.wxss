@@ -5,6 +5,27 @@
   padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
 }
 
+/* 赛制信息栏 */
+.match-format-bar {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.match-format-label {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-right: 16rpx;
+}
+
+.match-format-value {
+  font-size: 28rpx;
+  color: var(--primary-green-dark);
+  font-weight: 500;
+}
+
 /* Tab 切换区域 */
 .tabs-container {
   display: flex;

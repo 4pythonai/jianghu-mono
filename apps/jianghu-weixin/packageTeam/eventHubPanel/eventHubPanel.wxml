@@ -7,6 +7,11 @@
     bind:more="onSpectatorMore"
   />
 
+  <view wx:if="{{matchFormatLabel}}" class="match-format-bar">
+    <text class="match-format-label">赛制</text>
+    <text class="match-format-value">{{matchFormatLabel}}</text>
+  </view>
+
   <view class="tabs-container">
     <view
       wx:for="{{tabs}}"

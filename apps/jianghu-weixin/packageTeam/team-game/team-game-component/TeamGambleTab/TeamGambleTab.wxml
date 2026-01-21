@@ -1,3 +1,170 @@
-<view class="gamble-placeholder-box">
-  <text class="gamble-placeholder-text">游戏模块开发中...</text>
+<view class="gamble-tab">
+  <view class="hero-card">
+    <view class="hero-top">
+      <view class="hero-text">
+        <text class="hero-title">虚拟组</text>
+        <text class="hero-subtitle">从报名球员中选择2-4人组成虚拟组，成员组合不可重复。</text>
+      </view>
+      <view class="hero-badge">
+        <text class="hero-badge-label">已选</text>
+        <text class="hero-badge-value">{{selectedPlayers.length}}/4</text>
+      </view>
+    </view>
+    <view class="hero-metrics">
+      <view class="metric-item">
+        <text class="metric-label">虚拟组</text>
+        <text class="metric-value">{{virtualGroups.length}}</text>
+      </view>
+      <view class="metric-item">
+        <text class="metric-label">报名球员</text>
+        <text class="metric-value">{{players.length}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-header">
+      <view class="section-title-wrap">
+        <text class="section-title">已选成员</text>
+        <view class="section-badges">
+          <text class="section-badge">至少2人</text>
+          <text class="section-badge">最多4人</text>
+        </view>
+      </view>
+      <view class="section-actions">
+        <button
+          class="btn btn-secondary btn-small"
+          bindtap="clearSelection"
+          disabled="{{selectedPlayers.length === 0}}"
+        >清空</button>
+        <button
+          class="btn btn-primary btn-small {{saving ? 'loading' : ''}}"
+          bindtap="createVirtualGroup"
+          disabled="{{selectedPlayers.length < 2 || selectedPlayers.length > 4 || saving}}"
+        >创建</button>
+      </view>
+    </view>
+    <view wx:if="{{selectedPlayers.length > 0}}" class="selected-chips">
+      <view
+        wx:for="{{selectedPlayers}}"
+        wx:key="user_id"
+        class="selected-chip"
+      >
+        <PlayerAvatar
+          avatar="{{item.avatar}}"
+          avatarOnly="{{true}}"
+          size="xs"
+          clickable="{{false}}"
+        />
+        <text class="selected-name">{{item.show_name || '未命名'}}</text>
+        <view class="remove-chip" data-userid="{{item.user_id}}" bindtap="removeSelected">
+          <text class="remove-chip-text">×</text>
+        </view>
+      </view>
+    </view>
+    <view wx:else class="empty-hint">
+      <text class="empty-hint-text">从下方选择球员</text>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-header">
+      <view class="section-title-wrap">
+        <text class="section-title">可选球员</text>
+        <text class="section-note">点击卡片进行选择</text>
+      </view>
+      <view class="section-meta">
+        <text class="meta-text">{{players.length}}人</text>
+      </view>
+    </view>
+    <view wx:if="{{players.length === 0}}" class="empty-state">
+      <text class="empty-state-title">暂无报名球员</text>
+      <text class="empty-state-desc">请先完成报名</text>
+    </view>
+    <view wx:else class="players-grid">
+      <view
+        wx:for="{{players}}"
+        wx:key="user_id"
+        class="player-card {{item.isSelected ? 'selected' : ''}}"
+        data-userid="{{item.user_id}}"
+        bindtap="togglePlayerSelection"
+      >
+        <PlayerAvatar
+          avatar="{{item.avatar}}"
+          avatarOnly="{{true}}"
+          size="small"
+          clickable="{{false}}"
+        />
+        <view class="player-info">
+          <text class="player-name">{{item.show_name || '未命名'}}</text>
+          <view class="player-tags">
+            <view
+              wx:if="{{item.tagName}}"
+              class="player-tag"
+              style="background: {{item.tagColor || '#e8f5e8'}};"
+            >
+              <text class="player-tag-text">{{item.tagName}}</text>
+            </view>
+            <text
+              wx:if="{{item.handicap !== null && item.handicap !== undefined}}"
+              class="player-handicap"
+            >差点 {{item.handicap}}</text>
+          </view>
+        </view>
+        <view class="player-check">
+          <text class="player-check-text">{{item.isSelected ? '✓' : ''}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-card">
+    <view class="section-header">
+      <view class="section-title-wrap">
+        <text class="section-title">虚拟组列表</text>
+        <text class="section-note">成员组合不可重复</text>
+      </view>
+      <view class="section-meta">
+        <text class="meta-text">{{virtualGroups.length}}组</text>
+      </view>
+    </view>
+    <view wx:if="{{virtualGroups.length === 0}}" class="empty-state">
+      <text class="empty-state-title">暂无虚拟组</text>
+      <text class="empty-state-desc">创建后会显示在这里</text>
+    </view>
+    <view wx:else class="virtual-group-list">
+      <view
+        wx:for="{{virtualGroups}}"
+        wx:key="id"
+        class="virtual-group-card"
+      >
+        <view class="group-header">
+          <view class="group-title">
+            <text class="group-name">{{item.name}}</text>
+            <text class="group-count">{{item.members.length}}人</text>
+          </view>
+          <button
+            class="btn btn-danger btn-small"
+            data-groupid="{{item.id}}"
+            bindtap="removeVirtualGroup"
+          >删除</button>
+        </view>
+        <view class="group-members">
+          <view
+            wx:for="{{item.members}}"
+            wx:key="user_id"
+            class="group-member"
+          >
+            <PlayerAvatar
+              avatar="{{item.avatar}}"
+              avatarOnly="{{true}}"
+              size="xs"
+              clickable="{{false}}"
+            />
+            <text class="group-member-name">{{item.show_name || '未命名'}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>

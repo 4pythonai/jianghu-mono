@@ -1,4 +1,10 @@
 {
     "component": true,
-    "usingComponents": {}
+    "usingComponents": {
+        "PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
+    },
+    "options": {
+        "addGlobalClass": true,
+        "styleIsolation": "apply-shared"
+    }
 }

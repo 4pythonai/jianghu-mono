@@ -40,6 +40,10 @@ const teamgame = {
     deleteGroup: (data, options) => request('/TeamGame/deleteGroup', data, options),
     // 更新单个分组的成员列表
     updateGroupMembers: (data, options) => request('/TeamGame/updateGroupMembers', data, options),
+    // 创建虚拟组
+    createVirtualGroup: (data, options) => request('/TeamGame/createVirtualGroup', data, options),
+    // 删除虚拟组
+    deleteVirtualGroup: (data, options) => request('/TeamGame/deleteVirtualGroup', data, options),
 
     // ==================== Phase 4: 状态与流程控制 ====================
     // 更新赛事状态

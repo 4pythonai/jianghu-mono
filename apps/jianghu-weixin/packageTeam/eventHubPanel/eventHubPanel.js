@@ -1,5 +1,6 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '@/stores/game/gameStore';
+import { getMatchFormatByValue } from '../constants/matchFormats';
 
 // eventHubPanel.js
 Page({
@@ -35,7 +36,8 @@ Page({
                 'gameTags',
                 'tagMembers',
                 'groups',
-                'spectators'
+                'spectators',
+                'match_format'
             ],
             actions: [
                 'fetchTeamGameDetail',
@@ -69,6 +71,12 @@ Page({
             if (this.storeBindings) {
                 this.storeBindings.updateStoreBindings();
             }
+
+            // 更新赛制标签
+            const formatConfig = getMatchFormatByValue(gameStore.match_format);
+            this.setData({
+                matchFormatLabel: formatConfig?.label || ''
+            });
 
             this.recordSpectator(gameId);
         } catch (err) {
