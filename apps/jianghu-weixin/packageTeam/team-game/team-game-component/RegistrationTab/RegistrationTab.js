@@ -3,9 +3,9 @@
  * 展示按分队分组的报名人员列表
  */
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
-import { gameStore } from '../../../../stores/game/gameStore'
-import { buildTagMemberGroups } from '../../../../utils/teamGameUtils'
-import teamgameApi from '../../../../api/modules/teamgame'
+import { gameStore } from '@/stores/game/gameStore'
+import { buildTagMemberGroups } from '@/utils/teamGameUtils'
+import teamgameApi from '@/api/modules/teamgame'
 
 const app = getApp()
 

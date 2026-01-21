@@ -3,7 +3,7 @@
  * 展示赛事基本信息、流程、奖项，包含报名和更多操作功能
  */
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
-import { gameStore } from '../../../../stores/game/gameStore'
+import { gameStore } from '@/stores/game/gameStore'
 
 Component({
     properties: {

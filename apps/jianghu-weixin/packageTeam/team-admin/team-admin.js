@@ -25,7 +25,7 @@ Page({
   },
 
   onLoad(options) {
-    const { getNavBarHeight } = require('../../utils/systemInfo')
+    const { getNavBarHeight } = require('@/utils/systemInfo')
     const navBarHeight = getNavBarHeight()
 
     const teamId = options.teamId || options.id
@@ -144,8 +144,8 @@ Page({
     let permissions = {}
     if (member.permissions) {
       try {
-        permissions = typeof member.permissions === 'string' 
-          ? JSON.parse(member.permissions) 
+        permissions = typeof member.permissions === 'string'
+          ? JSON.parse(member.permissions)
           : member.permissions
       } catch (e) {
         permissions = {}

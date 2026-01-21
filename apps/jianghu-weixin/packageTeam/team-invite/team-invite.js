@@ -11,7 +11,7 @@ Page({
   },
 
   onLoad(options) {
-    const { getNavBarHeight } = require('../../utils/systemInfo')
+    const { getNavBarHeight } = require('@/utils/systemInfo')
     const navBarHeight = getNavBarHeight()
 
     const teamId = options.teamId || options.id

@@ -1,6 +1,6 @@
 // showMode
 
-const { imageUrl } = require('../../utils/image');
+const { imageUrl } = require('@/utils/image');
 
 Component({
     properties: {

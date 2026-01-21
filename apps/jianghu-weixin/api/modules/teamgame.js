@@ -62,6 +62,8 @@ const teamgame = {
     getTeamGameList: (data, options) => request('/TeamGame/getTeamGameList', data, options),
     // 获取分队成绩
     getScoresByGameTag: (data, options) => request('/TeamGame/getScoresByGameTag', data, options),
+    // 获取成绩展示数据
+    getScoreBoard: (data, options) => request('/ScoreBoard/getScoreBoard', data, options),
     // 获取比洞赛结果
     getMatchResults: (data, options) => request('/TeamGame/getMatchResults', data, options),
     // 获取我的报名状态
@@ -97,4 +99,3 @@ const teamgame = {
 }
 
 export default teamgame
-

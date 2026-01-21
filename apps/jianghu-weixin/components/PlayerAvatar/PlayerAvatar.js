@@ -4,7 +4,7 @@
  * 支持可选模式（带checkbox）
  * 支持点击跳转用户主页
  */
-const { imageUrl } = require('../../utils/image')
+const { imageUrl } = require('@/utils/image')
 
 Component({
     properties: {

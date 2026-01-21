@@ -4,7 +4,7 @@
  */
 
 // 统一导入所有依赖模块
-const configManager = require('../../utils/configManager');
+const configManager = require('@/utils/configManager');
 const ConfigValidator = require('./configValidator');
 
 /**

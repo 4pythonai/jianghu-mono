@@ -1,0 +1,4 @@
+<view class="board-placeholder">
+  <text class="board-title">分队成绩表（开发中）</text>
+  <text class="board-subtitle">共 {{boardData.rows.length}} 组</text>
+</view>

@@ -22,7 +22,7 @@
 
   <scroll-view class="tab-content" scroll-y enhanced show-scrollbar="{{false}}">
     <view wx:if="{{currentTab === 0}}" class="tab-panel">
-      <RankingBoardTab />
+      <RankingBoardTab gameId="{{gameid}}" />
     </view>
 
     <view wx:if="{{currentTab === 1}}" class="tab-panel">

@@ -1,0 +1,26 @@
+<view class="board">
+  <view class="board-header">
+    <text class="col-rank">排名</text>
+    <text class="col-player">球员</text>
+    <text class="col-score">成绩</text>
+    <text class="col-thru">已完成</text>
+  </view>
+
+  <view wx:if="{{rows.length === 0}}" class="board-empty">
+    <text class="empty-text">暂无成绩</text>
+  </view>
+
+  <view
+    wx:for="{{rows}}"
+    wx:key="user_id"
+    class="board-row"
+  >
+    <text class="col-rank">{{item.rankText}}</text>
+    <view class="col-player player-cell">
+      <image class="avatar" mode="aspectFill" src="{{item.avatarUrl}}" />
+      <text class="name">{{item.show_name}}</text>
+    </view>
+    <text class="col-score">{{item.scoreText}}</text>
+    <text class="col-thru">{{item.thruText}}</text>
+  </view>
+</view>

@@ -1,5 +1,5 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
-import { gameStore } from '../../stores/game/gameStore';
+import { gameStore } from '@/stores/game/gameStore';
 
 // eventHubPanel.js
 Page({
@@ -13,6 +13,7 @@ Page({
             count: 0,
             avatars: []
         },
+        eventDetail: null,
         gameTags: [],
         tagMembers: [],
         groups: [],
@@ -30,6 +31,7 @@ Page({
                 'loading',
                 'gameType',
                 'gameid',
+                'eventDetail',
                 'gameTags',
                 'tagMembers',
                 'groups',
@@ -85,6 +87,9 @@ Page({
         });
     },
     onSpectatorMore() {
-        console.log('[eventHubPanel] 查看围观列表');
+        const gameName = encodeURIComponent(this.data.eventDetail?.title || '');
+        wx.navigateTo({
+            url: `/packageGame/spectators/spectators?game_id=${this.data.gameid}&game_name=${gameName}`
+        });
     }
 });

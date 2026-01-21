@@ -58,7 +58,7 @@ Page({
         console.log('[RuntimeConfigList] 页面加载，参数:', options);
 
         // 计算导航栏高度
-        const { getNavBarHeight } = require('../../../utils/systemInfo')
+        const { getNavBarHeight } = require('@/utils/systemInfo')
         const navBarHeight = getNavBarHeight()
         this.setData({ navBarHeight })
 

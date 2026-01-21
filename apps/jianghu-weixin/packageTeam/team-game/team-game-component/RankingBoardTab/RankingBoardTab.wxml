@@ -1,3 +1,22 @@
-<view class="ranking-placeholder-box">
-  <text class="ranking-placeholder-text">成绩表开发中...</text>
+<view class="ranking-board">
+  <view wx:if="{{loading}}" class="ranking-placeholder-box">
+    <text class="ranking-placeholder-text">成绩加载中...</text>
+  </view>
+  <view wx:elif="{{!scoreboard}}" class="ranking-placeholder-box">
+    <text class="ranking-placeholder-text">暂无成绩数据</text>
+  </view>
+  <view wx:else>
+    <VerticalPlayerBoard
+      wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'player'}}"
+      boardData="{{scoreboard}}"
+    />
+    <VerticalTagBoard
+      wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'tag'}}"
+      boardData="{{scoreboard}}"
+    />
+    <HorizontalMatchBoard
+      wx:if="{{scoreboard.layout === 'horizontal'}}"
+      boardData="{{scoreboard}}"
+    />
+  </view>
 </view>

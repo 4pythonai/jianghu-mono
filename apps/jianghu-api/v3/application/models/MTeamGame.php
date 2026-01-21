@@ -534,8 +534,8 @@ class MTeamGame extends CI_Model {
             $this->db->where('gu.groupid', $group['groupid']);
             $group['members'] = $this->db->get()->result_array();
 
-            // 计算该分组的记分完成状态
-            $group['score_completed'] = $this->isGroupScoreCompleted($game_id, $group['groupid'], count($group['members']), $total_holes);
+            // 计算该分组的记分状态
+            $group['groupScoreStatus'] = $this->getGroupScoreStatus($game_id, $group['groupid'], count($group['members']), $total_holes);
         }
 
         return $groups;
@@ -553,17 +553,31 @@ class MTeamGame extends CI_Model {
     }
 
     /**
-     * 判断分组记分是否完成
-     * 条件：该分组所有球员的所有洞都已有分数，且至少有一个非0分数
+     * 获取分组记分状态
      * @param int $game_id 比赛ID
      * @param int $group_id 分组ID
      * @param int $member_count 分组成员数
      * @param int $total_holes 总洞数
-     * @return bool 是否完成记分
+     * @return string "未开始" | "进行中" | "已经结束"
      */
-    private function isGroupScoreCompleted($game_id, $group_id, $member_count, $total_holes) {
+    private function getGroupScoreStatus($game_id, $group_id, $member_count, $total_holes) {
         if ($member_count == 0 || $total_holes == 0) {
-            return false;
+            return '未开始';
+        }
+
+        // 统计该分组是否有任何成绩记录
+        $any_score_query = "
+            SELECT COUNT(*) as score_count
+            FROM t_game_score
+            WHERE gameid = ? AND group_id = ? AND score IS NOT NULL AND score > 0
+        ";
+        $any_result = $this->db->query($any_score_query, [$game_id, $group_id]);
+        $any_row = $any_result->row_array();
+        $any_score_count = (int)($any_row['score_count'] ?? 0);
+
+        // 如果没有任何成绩，返回"未开始"
+        if ($any_score_count == 0) {
+            return '未开始';
         }
 
         // 统计该分组完成的洞数：所有成员都有分数且至少有一个非0分数的洞
@@ -582,7 +596,13 @@ class MTeamGame extends CI_Model {
         $row = $result->row_array();
         $completed_count = (int)($row['completed_count'] ?? 0);
 
-        return $completed_count >= $total_holes;
+        // 如果所有洞都完成，返回"已经结束"
+        if ($completed_count >= $total_holes) {
+            return '已经结束';
+        }
+
+        // 有成绩但未完成，返回"进行中"
+        return '进行中';
     }
 
     /**

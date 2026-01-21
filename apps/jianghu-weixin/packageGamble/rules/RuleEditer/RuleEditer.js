@@ -1,7 +1,7 @@
 
 const app = getApp()
 import { storeBindingsBehavior, createStoreBindings } from 'mobx-miniprogram-bindings'
-const { GambleEditorConfig } = require('../../utils/GambleEditorConfig.js')
+const { GambleEditorConfig } = require('@/utils/GambleEditorConfig.js')
 
 Page({
     behaviors: [storeBindingsBehavior],

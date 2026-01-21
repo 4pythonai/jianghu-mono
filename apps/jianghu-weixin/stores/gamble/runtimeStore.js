@@ -2,7 +2,7 @@
 
 const app = getApp()
 import { observable, action } from 'mobx-miniprogram'
-import { processOneGamble } from '../../utils/gambleUtils'
+import { processOneGamble } from '@/utils/gambleUtils'
 
 /**
  * 运行时配置Store
@@ -21,7 +21,7 @@ export const runtimeStore = observable({
      * 设置运行时倍数配置（批量）
      * @param {Array} configs - 配置数组
      */
-    setKickConfigs: action(function(configs) {
+    setKickConfigs: action(function (configs) {
         this.kickConfigs = configs || []
         console.log('[runtimeStore] setKickConfigs:', this.kickConfigs.length)
     }),
@@ -31,7 +31,7 @@ export const runtimeStore = observable({
      * @param {string|number} configId - 配置ID
      * @param {Object} kickConfig - 倍数配置
      */
-    updateKickConfig: action(function(configId, kickConfig) {
+    updateKickConfig: action(function (configId, kickConfig) {
         console.log('[runtimeStore] 更新运行时倍数配置:', { configId, kickConfig })
 
         const existingIndex = this.kickConfigs.findIndex(runtime =>
@@ -51,7 +51,7 @@ export const runtimeStore = observable({
     /**
      * 清空运行时倍数配置
      */
-    clearKickConfigs: action(function() {
+    clearKickConfigs: action(function () {
         this.kickConfigs = []
     }),
 

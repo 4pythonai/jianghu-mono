@@ -25,7 +25,7 @@ Page({
         const gameName = decodeURIComponent(options.game_name || '')
 
         // 计算导航栏高度
-        const { getNavBarHeight } = require('../../utils/systemInfo')
+        const { getNavBarHeight } = require('@/utils/systemInfo')
         const navBarHeight = getNavBarHeight()
 
         this.setData({ gameId, gameName, navBarHeight })

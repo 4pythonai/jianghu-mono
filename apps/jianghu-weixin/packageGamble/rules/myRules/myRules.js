@@ -22,7 +22,7 @@ Page({
         const queryParams = this._extractQueryParams(options);
 
         // 计算导航栏高度
-        const { getNavBarHeight } = require('../../../utils/systemInfo');
+        const { getNavBarHeight } = require('@/utils/systemInfo');
         const navBarHeight = getNavBarHeight();
 
         // 构建返回URL：返回到 gamble 页面

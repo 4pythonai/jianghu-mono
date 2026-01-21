@@ -1,7 +1,8 @@
 import { createStoreBindings } from 'mobx-miniprogram-bindings';
 import { gameStore } from '@/stores/game/gameStore';
-import { createJoinSocket } from '../../utils/joinSocket';
 import { config as apiConfig } from '@/api/config';
+import { createJoinSocket } from '../../utils/joinSocket';
+
 
 const TAB_ROUTE_MAP = {
     '0': 'score',

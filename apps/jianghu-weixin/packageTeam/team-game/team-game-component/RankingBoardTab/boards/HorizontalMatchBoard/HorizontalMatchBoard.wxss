@@ -1,0 +1,19 @@
+.board-placeholder {
+    margin: 20rpx;
+    padding: 60rpx 40rpx;
+    background: #fff;
+    border-radius: 16rpx;
+}
+
+.board-title {
+    display: block;
+    font-size: 28rpx;
+    color: var(--text-primary);
+    margin-bottom: 8rpx;
+}
+
+.board-subtitle {
+    display: block;
+    font-size: 24rpx;
+    color: var(--text-tertiary);
+}

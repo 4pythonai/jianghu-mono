@@ -7,13 +7,13 @@
 const ConfigValidator = require('./configValidator');
 
 // 配置管理器
-const configManager = require('../../utils/configManager');
+const configManager = require('@/utils/configManager');
 
 // 游戏元配置
 const { GambleMetaConfig } = require('@/utils/GambleMetaConfig');
 
 // 游戏相关初始化器
-const GambleRelatedInitor = require('../../utils/GambleRelatedInitor');
+const GambleRelatedInitor = require('@/utils/GambleRelatedInitor');
 
 // 游戏存储
 const { gameStore } = require('@/stores/game/gameStore');

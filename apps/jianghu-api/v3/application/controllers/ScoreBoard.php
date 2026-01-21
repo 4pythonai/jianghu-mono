@@ -1,0 +1,639 @@
+<?php
+
+
+ini_set('memory_limit', '-1');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
+
+
+class ScoreBoard extends MY_Controller {
+    public function __construct() {
+        parent::__construct();
+        header('Access-Control-Allow-Origin: * ');
+        header('Access-Control-Allow-Headers: Origin, X-Requested-With,Content-Type, Accept,authorization');
+        header('Access-Control-Allow-Credentials', true);
+        if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
+            exit();
+        }
+        $this->load->model('MTeamGame');
+    }
+
+    public function getScoreBoard() {
+        $params = $this->readJsonBody();
+        $game_id = $params['game_id'] ?? null;
+        $group_id = $params['group_id'] ?? null;
+
+        if (!$game_id) {
+            $this->respondError(400, '缺少 game_id');
+            return;
+        }
+
+        $game = $this->getGameRow($game_id);
+        if (!$game) {
+            $this->respondError(404, '赛事不存在');
+            return;
+        }
+
+        $match_format = $game['match_format'] ?? null;
+        $game_type = $game['game_type'] ?? 'common';
+        $layout = $this->isMatchFormat($match_format) ? 'horizontal' : 'vertical';
+        $total_holes = $this->getTotalHoles($game_id, $game['holeList'] ?? null);
+
+        if ($layout === 'horizontal') {
+            $result = $this->buildMatchPlayData($game_id, $group_id, $match_format, $game_type);
+            if (isset($result['error'])) {
+                $this->respondError($result['code'], $result['error']);
+                return;
+            }
+            $data = array_merge([
+                'layout' => $layout,
+                'match_format' => $match_format,
+                'game_type' => $game_type
+            ], $result);
+            $this->respondOk($data);
+            return;
+        }
+
+        $data = $this->buildStrokePlayData($game_id, $match_format, $game_type, $total_holes);
+        $data = array_merge([
+            'layout' => $layout,
+            'match_format' => $match_format,
+            'game_type' => $game_type
+        ], $data);
+        $this->respondOk($data);
+    }
+
+    private function buildStrokePlayData($game_id, $match_format, $game_type, $total_holes) {
+        $row_type = $this->isTagStrokeFormat($match_format) ? 'tag' : 'player';
+
+        if ($row_type === 'player') {
+            $player_rows = $this->buildPlayerRows($game_id, $total_holes);
+            return [
+                'row_type' => $row_type,
+                'rows' => $player_rows
+            ];
+        }
+
+        $tag_rows = $this->buildTagRows($game_id, $total_holes);
+        return [
+            'row_type' => $row_type,
+            'rows' => $tag_rows
+        ];
+    }
+
+    private function buildMatchPlayData($game_id, $group_id, $match_format, $game_type) {
+        $resolved_group_id = $this->resolveMatchGroupId($game_id, $group_id);
+        if (isset($resolved_group_id['error'])) {
+            return $resolved_group_id;
+        }
+
+        $group = $this->getGroupById($game_id, $resolved_group_id);
+        if (!$group) {
+            return ['error' => '分组不存在', 'code' => 404];
+        }
+
+        $left_right = $this->buildMatchSides($game_id, $match_format, $group['members']);
+        if (isset($left_right['error'])) {
+            return $left_right;
+        }
+
+        $match_result = $this->getMatchResultRow($game_id, $resolved_group_id);
+        $result_payload = $this->buildMatchResultPayload($match_result, $left_right['left'], $left_right['right'], $match_format);
+
+        return array_merge([
+            'group_id' => $resolved_group_id,
+            'group_name' => $group['group_name']
+        ], $left_right, $result_payload);
+    }
+
+    private function buildPlayerRows($game_id, $total_holes) {
+        $score_stats = $this->getPlayerScoreStats($game_id);
+        $players = $this->getPlayersFromGroups($game_id);
+        $player_ids = array_unique(array_merge(array_keys($score_stats), array_keys($players)));
+        $user_map = $this->getUserMap($player_ids, $players);
+
+        $rows = [];
+        foreach ($player_ids as $user_id) {
+            $stats = $score_stats[$user_id] ?? ['score' => 0, 'thru' => 0];
+            $user = $user_map[$user_id] ?? ['show_name' => '', 'avatar' => ''];
+            $thru_label = $this->formatThruLabel($stats['thru'], $total_holes);
+            $rows[] = [
+                'user_id' => $user_id,
+                'show_name' => $user['show_name'],
+                'avatar' => $user['avatar'],
+                'score' => $stats['score'],
+                'thru' => $stats['thru'],
+                'thru_label' => $thru_label
+            ];
+        }
+
+        return $this->applyRanking($rows);
+    }
+
+    private function buildTagRows($game_id, $total_holes) {
+        $groups = $this->getGroupsWithMembers($game_id);
+        $tag_map = $this->getTagMap($game_id);
+        $combos = $this->buildTagCombinations($groups, $tag_map);
+        $scores = $this->getScoreRows($game_id);
+
+        foreach ($scores as $score_row) {
+            $combo_key = $this->resolveComboKey($combos['user_combo_map'], $score_row);
+            if (!$combo_key || !isset($combos['rows'][$combo_key])) {
+                continue;
+            }
+            $this->updateComboScore($combos['rows'][$combo_key], $score_row);
+        }
+
+        $rows = [];
+        foreach ($combos['rows'] as $combo) {
+            $score_summary = $this->finalizeComboScore($combo, $total_holes);
+            $rows[] = array_merge($combo['row'], $score_summary);
+        }
+
+        return $this->applyRanking($rows);
+    }
+
+    private function buildTagCombinations($groups, $tag_map) {
+        $rows = [];
+        $user_combo_map = [];
+
+        foreach ($groups as $group) {
+            foreach ($group['members'] as $member) {
+                $tag_id = $member['tag_id'];
+                if (!$tag_id) {
+                    continue;
+                }
+                $combo_key = $group['group_id'] . ':' . $tag_id;
+                if (!isset($rows[$combo_key])) {
+                    $tag_info = $tag_map[$tag_id] ?? ['tag_name' => $member['tag_name'], 'tag_color' => $member['tag_color']];
+                    $rows[$combo_key] = [
+                        'row' => [
+                            'tag_id' => $tag_id,
+                            'tag_name' => $tag_info['tag_name'],
+                            'tag_color' => $tag_info['tag_color'],
+                            'members' => [],
+                            'group_id' => $group['group_id'],
+                            'group_name' => $group['group_name']
+                        ],
+                        'hole_scores' => []
+                    ];
+                }
+                $rows[$combo_key]['row']['members'][] = [
+                    'user_id' => $member['user_id'],
+                    'show_name' => $member['show_name'],
+                    'avatar' => $member['avatar']
+                ];
+                $user_combo_map[$group['group_id'] . ':' . $member['user_id']] = $combo_key;
+            }
+        }
+
+        return [
+            'rows' => $rows,
+            'user_combo_map' => $user_combo_map
+        ];
+    }
+
+    private function resolveComboKey($user_combo_map, $score_row) {
+        $group_id = $score_row['group_id'];
+        $user_id = $score_row['user_id'];
+        if (!$group_id || !$user_id) {
+            return null;
+        }
+        return $user_combo_map[$group_id . ':' . $user_id] ?? null;
+    }
+
+    private function updateComboScore(&$combo, $score_row) {
+        $hole_id = $score_row['hole_id'];
+        if (!$hole_id) {
+            return;
+        }
+        $score = (int) $score_row['score'];
+        $par = isset($score_row['par']) ? (int) $score_row['par'] : 0;
+
+        if (!isset($combo['hole_scores'][$hole_id])) {
+            $combo['hole_scores'][$hole_id] = ['score' => $score, 'par' => $par];
+            return;
+        }
+
+        if ($score < $combo['hole_scores'][$hole_id]['score']) {
+            $combo['hole_scores'][$hole_id] = ['score' => $score, 'par' => $par];
+        }
+    }
+
+    private function finalizeComboScore($combo, $total_holes) {
+        $sum_score = 0;
+        $sum_par = 0;
+        foreach ($combo['hole_scores'] as $hole) {
+            $sum_score += $hole['score'];
+            $sum_par += $hole['par'];
+        }
+        $thru = count($combo['hole_scores']);
+        return [
+            'score' => $sum_score - $sum_par,
+            'thru' => $thru,
+            'thru_label' => $this->formatThruLabel($thru, $total_holes)
+        ];
+    }
+
+    private function buildMatchSides($game_id, $match_format, $members) {
+        if ($match_format === 'individual_match') {
+            $players = array_values($members);
+            if (count($players) < 2) {
+                return ['error' => '分组人数不足', 'code' => 409];
+            }
+            if (count($players) > 2) {
+                return ['error' => '比洞赛仅支持两名球员', 'code' => 409];
+            }
+            $left_player = $players[0];
+            $right_player = $players[1];
+            return [
+                'left' => [
+                    'user_id' => $left_player['user_id'],
+                    'show_name' => $left_player['show_name'],
+                    'avatar' => $left_player['avatar']
+                ],
+                'right' => [
+                    'user_id' => $right_player['user_id'],
+                    'show_name' => $right_player['show_name'],
+                    'avatar' => $right_player['avatar']
+                ]
+            ];
+        }
+
+        $tag_map = $this->getTagMap($game_id);
+        $tag_groups = [];
+        foreach ($members as $member) {
+            $tag_id = $member['tag_id'];
+            if (!$tag_id) {
+                continue;
+            }
+            if (!isset($tag_groups[$tag_id])) {
+                $tag_info = $tag_map[$tag_id] ?? ['tag_name' => $member['tag_name'], 'tag_color' => $member['tag_color'], 'tag_order' => 0];
+                $tag_groups[$tag_id] = [
+                    'tag_id' => $tag_id,
+                    'tag_name' => $tag_info['tag_name'],
+                    'tag_color' => $tag_info['tag_color'],
+                    'tag_order' => $tag_info['tag_order'],
+                    'members' => []
+                ];
+            }
+            $tag_groups[$tag_id]['members'][] = [
+                'user_id' => $member['user_id'],
+                'show_name' => $member['show_name'],
+                'avatar' => $member['avatar']
+            ];
+        }
+
+        $tags = array_values($tag_groups);
+        usort($tags, function ($a, $b) {
+            return ($a['tag_order'] ?? 0) <=> ($b['tag_order'] ?? 0);
+        });
+
+        if (count($tags) < 2) {
+            return ['error' => '分组分队不足', 'code' => 409];
+        }
+        if (count($tags) > 2) {
+            return ['error' => '比洞赛仅支持两方对阵', 'code' => 409];
+        }
+
+        return [
+            'left' => $tags[0],
+            'right' => $tags[1]
+        ];
+    }
+
+    private function buildMatchResultPayload($match_result, $left, $right, $match_format) {
+        if (!$match_result) {
+            return ['result' => null];
+        }
+
+        $winner_side = $this->mapWinnerSide($match_result['winner_side'] ?? null, $left, $right);
+        $result_text = $match_result['result_code'] ?? null;
+
+        return [
+            'result' => [
+                'text' => $result_text,
+                'winner_side' => $winner_side
+            ]
+        ];
+    }
+
+    private function mapWinnerSide($winner_side, $left, $right) {
+        if (!$winner_side) {
+            return null;
+        }
+        if (in_array($winner_side, ['left', 'right', 'draw'], true)) {
+            return $winner_side;
+        }
+        if (is_numeric($winner_side)) {
+            $value = (int) $winner_side;
+            if (isset($left['tag_id']) && $value === (int) $left['tag_id']) {
+                return 'left';
+            }
+            if (isset($right['tag_id']) && $value === (int) $right['tag_id']) {
+                return 'right';
+            }
+            if (isset($left['user_id']) && $value === (int) $left['user_id']) {
+                return 'left';
+            }
+            if (isset($right['user_id']) && $value === (int) $right['user_id']) {
+                return 'right';
+            }
+        }
+        return null;
+    }
+
+    private function resolveMatchGroupId($game_id, $group_id) {
+        if ($group_id) {
+            return (int) $group_id;
+        }
+
+        $group_ids = $this->getMatchGroupIds($game_id);
+        if (count($group_ids) === 1) {
+            return (int) $group_ids[0];
+        }
+        if (count($group_ids) > 1) {
+            return ['error' => '缺少 group_id', 'code' => 400];
+        }
+
+        $group_ids = $this->getGameGroupIds($game_id);
+        if (count($group_ids) === 1) {
+            return (int) $group_ids[0];
+        }
+        if (count($group_ids) > 1) {
+            return ['error' => '缺少 group_id', 'code' => 400];
+        }
+
+        return ['error' => '未找到分组', 'code' => 404];
+    }
+
+    private function getMatchGroupIds($game_id) {
+        $rows = $this->db->select('DISTINCT(group_id) as group_id')
+            ->from('t_game_match_result')
+            ->where('game_id', $game_id)
+            ->get()
+            ->result_array();
+
+        return array_values(array_filter(array_map(function ($row) {
+            return $row['group_id'] ?? null;
+        }, $rows)));
+    }
+
+    private function getGameGroupIds($game_id) {
+        $rows = $this->db->select('groupid')
+            ->from('t_game_group')
+            ->where('gameid', $game_id)
+            ->order_by('groupid', 'ASC')
+            ->get()
+            ->result_array();
+
+        return array_map(function ($row) {
+            return $row['groupid'];
+        }, $rows);
+    }
+
+    private function getMatchResultRow($game_id, $group_id) {
+        return $this->db->where('game_id', $game_id)
+            ->where('group_id', $group_id)
+            ->get('t_game_match_result')
+            ->row_array();
+    }
+
+    private function getGroupById($game_id, $group_id) {
+        $groups = $this->getGroupsWithMembers($game_id);
+        foreach ($groups as $group) {
+            if ((int) $group['group_id'] === (int) $group_id) {
+                return $group;
+            }
+        }
+        return null;
+    }
+
+    private function getGroupsWithMembers($game_id) {
+        $rows = $this->db->select('g.groupid, g.group_name, gu.user_id, gu.tag_id, u.display_name, u.avatar, t.tag_name, t.color')
+            ->from('t_game_group g')
+            ->join('t_game_group_user gu', 'g.groupid = gu.groupid', 'left')
+            ->join('t_user u', 'gu.user_id = u.id', 'left')
+            ->join('t_team_game_tags t', 'gu.tag_id = t.id', 'left')
+            ->where('g.gameid', $game_id)
+            ->order_by('g.groupid', 'ASC')
+            ->order_by('gu.id', 'ASC')
+            ->get()
+            ->result_array();
+
+        $groups = [];
+        foreach ($rows as $row) {
+            $group_id = $row['groupid'];
+            if (!isset($groups[$group_id])) {
+                $groups[$group_id] = [
+                    'group_id' => $group_id,
+                    'group_name' => $row['group_name'] ?? '',
+                    'members' => []
+                ];
+            }
+            if (!$row['user_id']) {
+                continue;
+            }
+            $groups[$group_id]['members'][] = [
+                'user_id' => $row['user_id'],
+                'show_name' => $row['display_name'] ?? '',
+                'avatar' => $row['avatar'] ?? '',
+                'tag_id' => $row['tag_id'] ?? null,
+                'tag_name' => $row['tag_name'] ?? '',
+                'tag_color' => $row['color'] ?? null
+            ];
+        }
+
+        return array_values($groups);
+    }
+
+    private function getPlayersFromGroups($game_id) {
+        $groups = $this->getGroupsWithMembers($game_id);
+        $players = [];
+        foreach ($groups as $group) {
+            foreach ($group['members'] as $member) {
+                $players[$member['user_id']] = [
+                    'show_name' => $member['show_name'],
+                    'avatar' => $member['avatar']
+                ];
+            }
+        }
+        return $players;
+    }
+
+    private function getUserMap($user_ids, $existing) {
+        $user_map = $existing;
+        $missing_ids = array_values(array_filter($user_ids, function ($user_id) use ($user_map) {
+            return !isset($user_map[$user_id]);
+        }));
+
+        if (empty($missing_ids)) {
+            return $user_map;
+        }
+
+        $rows = $this->db->select('id, display_name, avatar')
+            ->from('t_user')
+            ->where_in('id', $missing_ids)
+            ->get()
+            ->result_array();
+
+        foreach ($rows as $row) {
+            $user_map[$row['id']] = [
+                'show_name' => $row['display_name'] ?? '',
+                'avatar' => $row['avatar'] ?? ''
+            ];
+        }
+
+        return $user_map;
+    }
+
+    private function getPlayerScoreStats($game_id) {
+        $rows = $this->db->select('user_id, SUM(IF(score > 0, score, 0)) as total_score, SUM(IF(score > 0, IFNULL(par, 0), 0)) as total_par, COUNT(DISTINCT IF(score > 0, hole_id, NULL)) as holes_played')
+            ->from('t_game_score')
+            ->where('gameid', $game_id)
+            ->group_by('user_id')
+            ->get()
+            ->result_array();
+
+        $stats = [];
+        foreach ($rows as $row) {
+            $score = (int) $row['total_score'] - (int) $row['total_par'];
+            $stats[$row['user_id']] = [
+                'score' => $score,
+                'thru' => (int) $row['holes_played']
+            ];
+        }
+
+        return $stats;
+    }
+
+    private function getScoreRows($game_id) {
+        return $this->db->select('group_id, user_id, hole_id, score, par')
+            ->from('t_game_score')
+            ->where('gameid', $game_id)
+            ->where('score >', 0)
+            ->get()
+            ->result_array();
+    }
+
+    private function getTagMap($game_id) {
+        $rows = $this->db->select('id, tag_name, color, tag_order')
+            ->from('t_team_game_tags')
+            ->where('game_id', $game_id)
+            ->order_by('tag_order', 'ASC')
+            ->get()
+            ->result_array();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[$row['id']] = [
+                'tag_name' => $row['tag_name'],
+                'tag_color' => $row['color'] ?? null,
+                'tag_order' => $row['tag_order'] ?? 0
+            ];
+        }
+
+        return $map;
+    }
+
+    private function formatThruLabel($thru, $total_holes) {
+        if ($total_holes > 0 && $thru >= $total_holes) {
+            return 'F';
+        }
+        return (string) $thru;
+    }
+
+    private function applyRanking($rows) {
+        usort($rows, function ($a, $b) {
+            if ($a['score'] === $b['score']) {
+                return ($b['thru'] ?? 0) <=> ($a['thru'] ?? 0);
+            }
+            return $a['score'] <=> $b['score'];
+        });
+
+        $score_counts = [];
+        foreach ($rows as $row) {
+            $key = (string) $row['score'];
+            $score_counts[$key] = ($score_counts[$key] ?? 0) + 1;
+        }
+
+        $last_score = null;
+        $last_rank = 0;
+        foreach ($rows as $index => &$row) {
+            if ($row['score'] === $last_score) {
+                $rank = $last_rank;
+            } else {
+                $rank = $index + 1;
+                $last_score = $row['score'];
+                $last_rank = $rank;
+            }
+            $row['rank'] = $rank;
+            $score_key = (string) $row['score'];
+            $row['rank_label'] = ($score_counts[$score_key] ?? 0) > 1 ? 'T' . $rank : (string) $rank;
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    private function getTotalHoles($game_id, $hole_list) {
+        if ($hole_list) {
+            $decoded = json_decode($hole_list, true);
+            if (is_array($decoded) && count($decoded) > 0) {
+                return count($decoded);
+            }
+        }
+
+        $court_count = $this->db->where('gameid', $game_id)->count_all_results('t_game_court');
+        if ($court_count === 1) {
+            return 9;
+        }
+        if ($court_count > 1) {
+            return 18;
+        }
+        return 0;
+    }
+
+    private function isMatchFormat($match_format) {
+        if (!$match_format) {
+            return false;
+        }
+        return strpos($match_format, '_match') !== false;
+    }
+
+    private function isTagStrokeFormat($match_format) {
+        return in_array($match_format, [
+            'fourball_best_stroke',
+            'fourball_oneball_stroke',
+            'foursome_stroke'
+        ], true);
+    }
+
+    private function getGameRow($game_id) {
+        return $this->db->select('id, game_type, match_format, holeList')
+            ->from('t_game')
+            ->where('id', $game_id)
+            ->get()
+            ->row_array();
+    }
+
+    private function readJsonBody() {
+        $payload = json_decode(file_get_contents('php://input'), true);
+        return is_array($payload) ? $payload : [];
+    }
+
+    private function respondOk($data) {
+        echo json_encode([
+            'code' => 200,
+            'data' => $data
+        ], JSON_UNESCAPED_UNICODE);
+    }
+
+    private function respondError($code, $message) {
+        echo json_encode([
+            'code' => $code,
+            'message' => $message
+        ], JSON_UNESCAPED_UNICODE);
+    }
+}

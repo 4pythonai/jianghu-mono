@@ -1,4 +1,8 @@
 {
     "component": true,
-    "usingComponents": {}
+    "usingComponents": {
+        "VerticalPlayerBoard": "./boards/VerticalPlayerBoard/VerticalPlayerBoard",
+        "VerticalTagBoard": "./boards/VerticalTagBoard/VerticalTagBoard",
+        "HorizontalMatchBoard": "./boards/HorizontalMatchBoard/HorizontalMatchBoard"
+    }
 }

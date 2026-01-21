@@ -18,7 +18,7 @@ Component({
     lifetimes: {
         attached() {
             // 获取系统信息，计算导航栏高度
-            const { getStatusBarHeight } = require('../../utils/systemInfo');
+            const { getStatusBarHeight } = require('@/utils/systemInfo');
             this.setData({
                 statusBarHeight: getStatusBarHeight()
             });

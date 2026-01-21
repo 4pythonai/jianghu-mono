@@ -1,0 +1,4 @@
+<view class="board-placeholder">
+  <text class="board-title">对阵成绩表（开发中）</text>
+  <text class="board-subtitle">左右对阵布局</text>
+</view>

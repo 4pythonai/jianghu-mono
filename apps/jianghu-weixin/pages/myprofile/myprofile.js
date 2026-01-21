@@ -1,5 +1,5 @@
-import { isAuthError } from '../../utils/auth'
-import { imageUrl } from '../../utils/image'
+import { isAuthError } from '@/utils/auth'
+import { imageUrl } from '@/utils/image'
 
 const app = getApp()
 

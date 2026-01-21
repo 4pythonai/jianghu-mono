@@ -4,8 +4,8 @@
  * 使用 gameStore 管理数据
  */
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
-import { gameStore } from '../../stores/game/gameStore'
-import navigationHelper from '../../utils/navigationHelper'
+import { gameStore } from '@/stores/game/gameStore'
+import navigationHelper from '@/utils/navigationHelper'
 
 Page({
     data: {
@@ -42,7 +42,7 @@ Page({
         const gameId = options.game_id || null
 
         // 计算导航栏高度
-        const { getNavBarHeight } = require('../../utils/systemInfo')
+        const { getNavBarHeight } = require('@/utils/systemInfo')
         const navBarHeight = getNavBarHeight()
 
         // 先设置本地 gameType，确保页面立即显示正确的 title

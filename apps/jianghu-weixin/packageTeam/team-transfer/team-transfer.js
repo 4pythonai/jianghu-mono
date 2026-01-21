@@ -10,7 +10,7 @@ Page({
     },
 
     onLoad(options) {
-        const { getNavBarHeight } = require('../../utils/systemInfo')
+        const { getNavBarHeight } = require('@/utils/systemInfo')
         const navBarHeight = getNavBarHeight()
 
         const teamId = options.teamId || options.id
@@ -53,7 +53,7 @@ Page({
 
     formatJoinTime(dateStr) {
         if (!dateStr) return ''
-        const { parseDate } = require('../../utils/tool')
+        const { parseDate } = require('@/utils/tool')
         const date = parseDate(dateStr)
         if (isNaN(date.getTime())) return ''
         const year = date.getFullYear()

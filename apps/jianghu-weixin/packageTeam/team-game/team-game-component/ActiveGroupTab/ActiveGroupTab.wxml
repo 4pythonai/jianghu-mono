@@ -1,3 +1,47 @@
-<view class="active-placeholder-box">
-  <text class="active-placeholder-text">进行中开发中...</text>
+<wxs src="/utils/image.wxs" module="img" />
+
+<view class="active-group-tab">
+  <view wx:if="{{groups.length === 0}}" class="active-group-empty">
+    <text class="active-group-empty-text">暂无分组</text>
+  </view>
+
+  <view wx:else class="active-group-list">
+    <view
+      wx:for="{{groups}}"
+      wx:for-item="group"
+      wx:key="id"
+      class="active-group-card"
+      bindtap="onGroupTap"
+      data-groupid="{{group.id}}"
+    >
+      <view class="active-group-label">
+        <text class="active-group-label-text">{{group.name}}</text>
+      </view>
+
+      <view class="active-group-body">
+        <view class="active-group-members">
+          <view
+            wx:for="{{group.players}}"
+            wx:for-item="member"
+            wx:key="user_id"
+            class="active-group-member"
+          >
+            <image
+              class="active-group-avatar"
+              src="{{img.imageUrl(member.avatar)}}"
+              mode="aspectFill"
+            />
+            <text class="active-group-name">{{member.show_name}}</text>
+            <text class="active-group-team">({{member.teamName}})</text>
+          </view>
+        </view>
+      </view>
+
+      <view
+        class="active-group-status {{group.groupScoreStatus === '已结束' ? 'active-group-status-ended' : group.groupScoreStatus === '未开始' ? 'active-group-status-pending' : 'active-group-status-active'}}"
+      >
+        <text class="active-group-status-text">{{group.groupScoreStatus}}</text>
+      </view>
+    </view>
+  </view>
 </view>

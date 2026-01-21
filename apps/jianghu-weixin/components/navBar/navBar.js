@@ -78,24 +78,24 @@ Component({
       value: '187rpx'
     }
   },
-  created: function() {
+  created: function () {
     this.getSystemInfo();
   },
-  attached: function() {
+  attached: function () {
     this.setStyle(); //设置样式
   },
   data: {},
   pageLifetimes: {
-    show: function() {
+    show: function () {
       if (getApp().globalSystemInfo.ios) {
         this.getSystemInfo();
         this.setStyle(); //设置样式1
       }
     },
-    hide: function() {}
+    hide: function () { }
   },
   methods: {
-    setStyle: function(life) {
+    setStyle: function (life) {
       const {
         statusBarHeight,
         navBarHeight,
@@ -148,17 +148,17 @@ Component({
         });
       }
     },
-    _showChange: function(value) {
+    _showChange: function (value) {
       this.setStyle();
     },
     // 返回事件
-    back: function() {
+    back: function () {
       this.triggerEvent('back', { delta: this.data.delta });
     },
-    home: function() {
+    home: function () {
       this.triggerEvent('home', {});
     },
-    search: function() {
+    search: function () {
       this.triggerEvent('search', {});
     },
     getSystemInfo() {
@@ -166,7 +166,7 @@ Component({
       if (app.globalSystemInfo && !app.globalSystemInfo.ios) {
         return app.globalSystemInfo;
       } else {
-        const { getSystemInfo } = require('../../utils/systemInfo');
+        const { getSystemInfo } = require('@/utils/systemInfo');
         let systemInfo = getSystemInfo();
         let ios = !!(systemInfo.system.toLowerCase().search('ios') + 1);
         let rect;
@@ -215,7 +215,7 @@ Component({
         let navBarHeight = '';
         if (!systemInfo.statusBarHeight) {
           systemInfo.statusBarHeight = systemInfo.screenHeight - systemInfo.windowHeight - 20;
-          navBarHeight = (function() {
+          navBarHeight = (function () {
             let gap = rect.top - systemInfo.statusBarHeight;
             return 2 * gap + rect.height;
           })();
@@ -223,7 +223,7 @@ Component({
           systemInfo.statusBarHeight = 0;
           systemInfo.navBarExtendHeight = 0; //下方扩展4像素高度 防止下方边距太小
         } else {
-          navBarHeight = (function() {
+          navBarHeight = (function () {
             let gap = rect.top - systemInfo.statusBarHeight;
             return systemInfo.statusBarHeight + 2 * gap + rect.height;
           })();

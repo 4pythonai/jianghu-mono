@@ -3,13 +3,13 @@
  * 用于配置单个分组的成员
  */
 import { createStoreBindings } from 'mobx-miniprogram-bindings'
-import { gameStore } from '../../stores/game/gameStore'
-import navigationHelper from '../../utils/navigationHelper'
+import { gameStore } from '@/stores/game/gameStore'
+import navigationHelper from '@/utils/navigationHelper'
 import {
     buildPlayerGroupMap,
     buildSelectedPlayersForGroup,
     buildCurrentTagPlayers
-} from '../../utils/teamGameUtils'
+} from '@/utils/teamGameUtils'
 
 Page({
     data: {
@@ -41,7 +41,7 @@ Page({
         const groupName = decodeURIComponent(options.group_name || '')
 
         // 计算导航栏高度
-        const { getNavBarHeight } = require('../../utils/systemInfo')
+        const { getNavBarHeight } = require('@/utils/systemInfo')
         const navBarHeight = getNavBarHeight()
 
         this.setData({

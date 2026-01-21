@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx-miniprogram';
-import { buildScoreIndex } from '../../utils/gameUtils';
+import { buildScoreIndex } from '@/utils/gameUtils';
 
 /**
  * 为红蓝分组创建便于 lookup 的结构
@@ -79,7 +79,7 @@ export const scoreStore = observable({
     /**
      * 清空分数数据
      */
-    clear: action(function() {
+    clear: action(function () {
         this.scores = []
     }),
 

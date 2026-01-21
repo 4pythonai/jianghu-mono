@@ -1,4 +1,4 @@
-import { isAuthError } from '../../utils/auth'
+import { isAuthError } from '@/utils/auth'
 import { config } from '@/api/config'
 
 const app = getApp()

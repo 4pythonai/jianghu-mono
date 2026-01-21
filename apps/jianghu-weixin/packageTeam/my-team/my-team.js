@@ -1,4 +1,4 @@
-import { config } from '../../api/config'
+import { config } from '@/api/config'
 
 const app = getApp()
 
@@ -57,7 +57,7 @@ Page({
   // 格式化日期
   formatDate(dateStr) {
     if (!dateStr) return '--'
-    const { parseDate } = require('../../utils/tool')
+    const { parseDate } = require('@/utils/tool')
     const date = parseDate(dateStr)
     if (isNaN(date.getTime())) return '--'
     const year = date.getFullYear()

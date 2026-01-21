@@ -151,7 +151,7 @@ Component({
 		 *  初始化获取 dom 信息
 		 */
 		initDom() {
-			const { getSystemInfo } = require('../../utils/systemInfo');
+			const { getSystemInfo } = require('@/utils/systemInfo');
 			const { windowWidth, windowHeight, platform, SDKVersion } = getSystemInfo();
 			const remScale = (windowWidth || 375) / 375;
 

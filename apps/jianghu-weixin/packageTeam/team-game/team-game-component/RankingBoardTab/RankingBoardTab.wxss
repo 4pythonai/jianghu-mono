@@ -12,3 +12,7 @@
     font-size: 28rpx;
     color: var(--text-tertiary);
 }
+
+.ranking-board {
+    min-height: 200rpx;
+}
