@@ -1,3 +1,5 @@
+import { config } from '@/api/config';
+
 Component({
     properties: {
         gameName: String,
@@ -60,14 +62,14 @@ Component({
     },
 
     observers: {
-        'extra_team_game_info': function(teamInfo) {
+        'extra_team_game_info': function (teamInfo) {
             if (teamInfo && teamInfo.team_avatar) {
                 // 如果是相对路径（以 / 开头），拼接完整域名
                 if (teamInfo.team_avatar.startsWith('/')) {
                     this.setData({
-                        fullTeamAvatarUrl: 'https://qiaoyincapital.com' + teamInfo.team_avatar
+                        fullTeamAvatarUrl: config.staticURL + teamInfo.team_avatar
                     });
-                    console.log('🔗 团队头像完整URL:', 'https://qiaoyincapital.com' + teamInfo.team_avatar);
+                    console.log('🔗 团队头像完整URL:', config.staticURL + teamInfo.team_avatar);
                 } else {
                     // 如果已经是完整URL，直接使用
                     this.setData({

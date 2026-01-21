@@ -1,7 +1,7 @@
 <wxs src="/utils/image.wxs" module="image" />
 <view class="container">
   <!-- 顶部用户信息区域 -->
-  <view class="user-header">
+  <view class="user-header" style="background-image: url('{{headerBgImage}}')">
     <!-- 通知图标 -->
     <view class="notification-icon" style="top: {{ notificationTop }}px;">
       <image src="/assets/icons/icons8-notification-48.png" mode="aspectFit"></image>

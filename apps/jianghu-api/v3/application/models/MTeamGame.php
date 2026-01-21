@@ -522,6 +522,9 @@ class MTeamGame extends CI_Model {
             ->get('t_game_group')
             ->result_array();
 
+        // 获取总洞数
+        $total_holes = $this->getGameTotalHoles($game_id);
+
         foreach ($groups as &$group) {
             // 通过 tag_id 直接关联获取用户的TAG信息
             $this->db->select('gu.*, u.display_name, u.wx_name, u.avatar, u.handicap, s.tag_name, s.color as tag_color');
@@ -530,9 +533,56 @@ class MTeamGame extends CI_Model {
             $this->db->join('t_team_game_tags s', 'gu.tag_id = s.id', 'left');
             $this->db->where('gu.groupid', $group['groupid']);
             $group['members'] = $this->db->get()->result_array();
+
+            // 计算该分组的记分完成状态
+            $group['score_completed'] = $this->isGroupScoreCompleted($game_id, $group['groupid'], count($group['members']), $total_holes);
         }
 
         return $groups;
+    }
+
+    /**
+     * 获取比赛总洞数
+     * @param int $game_id 比赛ID
+     * @return int 总洞数（9或18）
+     */
+    private function getGameTotalHoles($game_id) {
+        $court_count = $this->db->where('gameid', $game_id)
+            ->count_all_results('t_game_court');
+        return $court_count == 1 ? 9 : 18;
+    }
+
+    /**
+     * 判断分组记分是否完成
+     * 条件：该分组所有球员的所有洞都已有分数，且至少有一个非0分数
+     * @param int $game_id 比赛ID
+     * @param int $group_id 分组ID
+     * @param int $member_count 分组成员数
+     * @param int $total_holes 总洞数
+     * @return bool 是否完成记分
+     */
+    private function isGroupScoreCompleted($game_id, $group_id, $member_count, $total_holes) {
+        if ($member_count == 0 || $total_holes == 0) {
+            return false;
+        }
+
+        // 统计该分组完成的洞数：所有成员都有分数且至少有一个非0分数的洞
+        $completed_holes_query = "
+            SELECT COUNT(*) as completed_count
+            FROM (
+                SELECT hindex
+                FROM t_game_score
+                WHERE gameid = ? AND group_id = ? AND score IS NOT NULL
+                GROUP BY hindex
+                HAVING COUNT(*) = ? AND MAX(score) > 0
+            ) completed_holes
+        ";
+
+        $result = $this->db->query($completed_holes_query, [$game_id, $group_id, $member_count]);
+        $row = $result->row_array();
+        $completed_count = (int)($row['completed_count'] ?? 0);
+
+        return $completed_count >= $total_holes;
     }
 
     /**
@@ -663,7 +713,7 @@ class MTeamGame extends CI_Model {
     /**
      * 获取队内赛详情
      */
-    public function getTeamGameDetail($game_id) {
+    public function getSingleTeamGameDetail($game_id) {
         // 基本信息
         $this->db->select('g.*, c.name as course_name, t.team_name, t.team_avatar');
         $this->db->from('t_game g');

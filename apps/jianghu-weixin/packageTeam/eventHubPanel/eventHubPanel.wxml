@@ -1,0 +1,40 @@
+<view class="container">
+  <CustomNavBar title="赛事面板" showBack="{{true}}" />
+
+  <SpectatorBar
+    count="{{spectators.count}}"
+    spectators="{{spectators.avatars}}"
+    bind:more="onSpectatorMore"
+  />
+
+  <view class="tabs-container">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="index"
+      class="tab-item {{currentTab === index ? 'active' : ''}}"
+      data-index="{{index}}"
+      bindtap="switchTab"
+    >
+      <text>{{item}}</text>
+      <view wx:if="{{currentTab === index}}" class="tab-indicator"></view>
+    </view>
+  </view>
+
+  <scroll-view class="tab-content" scroll-y enhanced show-scrollbar="{{false}}">
+    <view wx:if="{{currentTab === 0}}" class="tab-panel">
+      <RankingBoardTab />
+    </view>
+
+    <view wx:if="{{currentTab === 1}}" class="tab-panel">
+      <ActiveGroupTab />
+    </view>
+
+    <view wx:if="{{currentTab === 2}}" class="tab-panel">
+      <DiscussionTab />
+    </view>
+
+    <view wx:if="{{currentTab === 3}}" class="tab-panel">
+      <TeamGambleTab />
+    </view>
+  </scroll-view>
+</view>

@@ -577,7 +577,7 @@ Page({
             return;
         }
         this.joinNotification.push({
-            avatar: 'https://qiaoyincapital.com/avatar/2025/10/31/avatar_837616_1761890982.jpeg',
+            avatar: apiConfig.staticURL + '/avatar/2025/10/31/avatar_837616_1761890982.jpeg',
             show_name: 'Demo1'
         });
     },

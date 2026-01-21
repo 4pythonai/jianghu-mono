@@ -121,7 +121,7 @@ Page({
         try {
             const apiMethod = gameType === 'cross_teams'
                 ? app.api.teamgame.getCrossTeamGameDetail
-                : app.api.teamgame.getTeamGameDetail
+                : app.api.teamgame.getSingleTeamGameDetail
 
             const res = await apiMethod({ game_id: gameId })
 

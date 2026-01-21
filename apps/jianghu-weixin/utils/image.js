@@ -3,7 +3,7 @@
  * 将相对路径转换为完整URL
  */
 
-const IMAGE_BASE_URL = 'https://qiaoyincapital.com';
+import { config } from '@/api/config';
 
 /**
  * 将相对路径转换为完整图片URL
@@ -15,7 +15,7 @@ function imageUrl(path) {
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path;
   }
-  return IMAGE_BASE_URL + path;
+  return config.staticURL + path;
 }
 
-module.exports = { imageUrl, IMAGE_BASE_URL };
+module.exports = { imageUrl };

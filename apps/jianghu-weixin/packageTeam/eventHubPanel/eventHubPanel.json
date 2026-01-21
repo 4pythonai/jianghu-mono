@@ -1,0 +1,11 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
+    "SpectatorBar": "/components/SpectatorBar/SpectatorBar",
+    "RankingBoardTab": "../team-game/team-game-component/RankingBoardTab/RankingBoardTab",
+    "ActiveGroupTab": "../team-game/team-game-component/ActiveGroupTab/ActiveGroupTab",
+    "DiscussionTab": "../team-game/team-game-component/DiscussionTab/DiscussionTab",
+    "TeamGambleTab": "../team-game/team-game-component/TeamGambleTab/TeamGambleTab"
+  }
+}

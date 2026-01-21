@@ -57,7 +57,7 @@ const teamgame = {
 
     // ==================== Phase 5: 查询与结果 ====================
     // 获取队内赛详情
-    getTeamGameDetail: (data, options) => request('/TeamGame/getTeamGameDetail', data, options),
+    getSingleTeamGameDetail: (data, options) => request('/TeamGame/getSingleTeamGameDetail', data, options),
     // 获取球队赛事列表
     getTeamGameList: (data, options) => request('/TeamGame/getTeamGameList', data, options),
     // 获取分队成绩

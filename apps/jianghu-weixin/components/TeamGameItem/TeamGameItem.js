@@ -1,3 +1,5 @@
+import { config } from '@/api/config';
+
 Component({
     properties: {
         /** 赛事数据对象 */
@@ -18,7 +20,7 @@ Component({
     },
 
     observers: {
-        'event.extra_team_game_info': function(teamInfo) {
+        'event.extra_team_game_info': function (teamInfo) {
             if (!teamInfo) {
                 this.setData({
                     coverType: 'default',
@@ -28,12 +30,12 @@ Component({
                 return;
             }
 
-            const baseUrl = 'https://qiaoyincapital.com';
+            const baseUrl = config.staticURL;
 
             // 优先使用 cover 属性
             if (teamInfo.cover) {
-                const cover = teamInfo.cover.startsWith('/') 
-                    ? baseUrl + teamInfo.cover 
+                const cover = teamInfo.cover.startsWith('/')
+                    ? baseUrl + teamInfo.cover
                     : teamInfo.cover;
                 this.setData({
                     coverType: 'single',
@@ -150,65 +152,43 @@ Component({
             }
 
             const gameid = event.gameid;
+            const router = this.properties.router;
             const navigationHelper = require('@/utils/navigationHelper.js');
 
-            if (this.properties.router === 'live_menu') {
-                const processedGroups = this._groupPlayersByGroupId(event.players, event);
+            if (router === 'live_menu') {
+                const gameType = event.extra_team_game_info?.game_type;
+                const gameTypeQuery = gameType ? `&game_type=${gameType}` : '';
 
-                if (!processedGroups || processedGroups.length === 0) {
-                    console.warn('⚠️ 游戏没有分组数据, 直接进入游戏详情');
-                    navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}`)
-                        .catch(err => {
-                            console.error('[TeamGameItem] 跳转游戏详情失败:', err);
-                            wx.showToast({ title: '页面跳转失败', icon: 'none' });
-                        });
-                    return;
-                }
-
-                if (processedGroups.length === 1) {
-                    const groupid = processedGroups[0]?.groupid;
-                    navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`)
-                        .catch(err => {
-                            console.error('[TeamGameItem] 跳转游戏详情失败:', err);
-                            wx.showToast({ title: '页面跳转失败', icon: 'none' });
-                        });
-                    return;
-                }
-
-                const app = getApp();
-                app.globalData = app.globalData || {};
-                app.globalData.currentGameGroups = {
-                    gameid,
-                    gameName: event.extra_team_game_info?.team_game_title || event.game_name || '',
-                    course: event.course || '',
-                    groups: processedGroups
-                };
-
-                navigationHelper.navigateTo(`/pages/groupsList/groupsList?gameid=${gameid}`)
+                navigationHelper.navigateTo(`/packageTeam/eventHubPanel/eventHubPanel?gameid=${gameid}${gameTypeQuery}`)
                     .catch(err => {
-                        console.error('[TeamGameItem] 跳转分组列表失败:', err);
+                        console.error('[TeamGameItem] 跳转赛事面板失败:', err);
                         wx.showToast({ title: '页面跳转失败', icon: 'none' });
                     });
                 return;
             }
 
-            const teamGameInfo = event.extra_team_game_info;
+            if (router === 'events_menu') {
+                const teamGameInfo = event.extra_team_game_info;
 
-            if (!teamGameInfo || !teamGameInfo.game_type) {
-                console.warn('[TeamGameItem] 缺少队赛信息');
+                if (!teamGameInfo || !teamGameInfo.game_type) {
+                    console.warn('[TeamGameItem] 缺少队赛信息');
+                    return;
+                }
+
+                const gameType = teamGameInfo.game_type; // 'single_team' 或 'cross_teams'
+
+                // 将 event 数据存入缓存，供 TeamGameDetail 使用
+                wx.setStorageSync('teamGameEventData', event);
+
+                navigationHelper.navigateTo(`/packageTeam/team-game/TeamGameDetail?game_id=${gameid}&game_type=${gameType}`)
+                    .catch(err => {
+                        console.error('[TeamGameItem] 跳转失败:', err);
+                        wx.showToast({ title: '页面跳转失败', icon: 'none' });
+                    });
                 return;
             }
 
-            const gameType = teamGameInfo.game_type; // 'single_team' 或 'cross_teams'
-
-            // 将 event 数据存入缓存，供 TeamGameDetail 使用
-            wx.setStorageSync('teamGameEventData', event);
-
-            navigationHelper.navigateTo(`/packageTeam/team-game/TeamGameDetail?game_id=${gameid}&game_type=${gameType}`)
-                .catch(err => {
-                    console.error('[TeamGameItem] 跳转失败:', err);
-                    wx.showToast({ title: '页面跳转失败', icon: 'none' });
-                });
+            console.warn('[TeamGameItem] 未识别的 router:', router);
         }
     }
 });

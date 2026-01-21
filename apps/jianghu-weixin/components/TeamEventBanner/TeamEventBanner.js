@@ -2,7 +2,7 @@
  * 球队赛事封面组件
  * 支持队内赛（单个logo）和队际赛（多个logo）两种模式
  */
-import { config } from '../../api/config'
+import { config } from '@/api/config'
 
 Component({
     properties: {

@@ -1,4 +1,5 @@
 import { isAuthError } from '../../utils/auth'
+import { config } from '@/api/config'
 
 const app = getApp()
 
@@ -14,7 +15,8 @@ Page({
     showAuthButton: true,
     tempDisplayName: '',
     hasNotification: false,
-    notificationTop: 0
+    notificationTop: 0,
+    headerBgImage: config.staticURL + '/images/u2.png'
   },
 
   onLoad() {

@@ -365,7 +365,7 @@ export const gameStore = observable({
             // 根据比赛类型调用不同的 API
             const apiMethod = gameType === 'cross_teams'
                 ? teamgameApi.getCrossTeamGameDetail
-                : teamgameApi.getTeamGameDetail;
+                : teamgameApi.getSingleTeamGameDetail;
 
             const res = await apiMethod({ game_id: gameId });
 
@@ -434,7 +434,7 @@ export const gameStore = observable({
             }
         }
 
-        // 后端 TeamGame/getTeamGameDetail 返回的字段:
+        // 后端 TeamGame/getSingleTeamGameDetail 返回的字段:
         // - name: 赛事名称 (t_game.name)
         // - course_name: 球场名称 (join t_course)
         // - team_name, team_avatar: 球队信息 (join t_team)
