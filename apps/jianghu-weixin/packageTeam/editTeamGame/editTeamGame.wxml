@@ -22,6 +22,11 @@
             <view class="team-details">
               <view class="team-name">{{ selectedTeam.team_name }}</view>
             </view>
+            <view class="team-actions">
+              <view class="delete-team-btn" bindtap="deleteSingleTeam">
+                <image src="/assets/icons/icons8-delete-48.png" mode="aspectFit"></image>
+              </view>
+            </view>
           </view>
         </view>
 
@@ -45,12 +50,22 @@
                   wx:if="{{ item.team_alias !== item.team_name }}"
                 >{{ item.team_name }}</view>
               </view>
-              <view
-                class="edit-alias-btn"
-                bindtap="editTeamAlias"
-                data-team-id="{{ item.team_id }}"
-              >
-                <image src="/assets/icons/icons8-edit-48.png" mode="aspectFit"></image>
+              <view class="team-actions">
+                <view
+                  class="edit-alias-btn"
+                  bindtap="editTeamAlias"
+                  data-team-id="{{ item.team_id }}"
+                >
+                  <image src="/assets/icons/icons8-edit-48.png" mode="aspectFit"></image>
+                </view>
+                <view
+                  class="delete-team-btn"
+                  bindtap="deleteCrossTeam"
+                  data-team-id="{{ item.team_id }}"
+                  data-tag-id="{{ item.tag_id }}"
+                >
+                  <image src="/assets/icons/icons8-delete-48.png" mode="aspectFit"></image>
+                </view>
               </view>
             </view>
           </view>

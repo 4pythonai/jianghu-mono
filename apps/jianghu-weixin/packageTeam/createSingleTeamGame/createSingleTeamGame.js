@@ -1,16 +1,19 @@
 Page({
     data: {
         isReselect: false,
-        pendingTeamId: null
+        pendingTeamId: null,
+        storageKey: ''
     },
 
     onLoad(options) {
         const teamId = options.team_id ? parseInt(options.team_id) : null
         const isReselect = options.reselect === 'true'
+        const storageKey = options.storage_key || ''
 
         this.setData({
             isReselect,
-            pendingTeamId: teamId
+            pendingTeamId: teamId,
+            storageKey
         })
     },
 
@@ -38,12 +41,14 @@ Page({
         const { selectedTeams } = e.detail
         const team = selectedTeams[0]
 
-        wx.setStorageSync('selectedTeamForCreate', team)
-
         if (this.data.isReselect) {
+            const storageKey = this.data.storageKey || 'selectedTeamForCreate'
+            wx.setStorageSync(storageKey, team)
             wx.navigateBack()
             return
         }
+
+        wx.setStorageSync('selectedTeamForCreate', team)
 
         wx.navigateTo({
             url: `/packageTeam/commonTeamGameForm/commonTeamGameForm?game_type=single_team&team_id=${team.id}&team_name=${encodeURIComponent(team.team_name)}`

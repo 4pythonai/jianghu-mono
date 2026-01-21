@@ -171,6 +171,26 @@ class TeamGame extends MY_Controller {
             }
         }
 
+        if (isset($json_paras['team_id'])) {
+            $result = $this->MTeamGame->addTeamGameTags(
+                $game_id,
+                $json_paras['team_id'],
+                $json_paras['team_alias'] ?? null
+            );
+
+            if (!$result['success']) {
+                echo json_encode(['code' => 400, 'message' => $result['message']], JSON_UNESCAPED_UNICODE);
+                return;
+            }
+
+            echo json_encode([
+                'code' => 200,
+                'message' => 'TAG添加成功',
+                'data' => ['tag_id' => $result['id']]
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
         $tag_id = $this->MTeamGame->addGameTag(
             $game_id,
             $json_paras['tag_name'],

@@ -107,7 +107,7 @@ class MTeamGame extends CI_Model {
      * 更新队内赛信息
      */
     public function updateTeamGame($game_id, $data) {
-        $allowedFields = ['name', 'courseid', 'match_format', 'open_time', 'registration_deadline', 'entry_fee', 'awards', 'schedule', 'grouping_permission', 'is_public_registration', 'top_n_ranking'];
+        $allowedFields = ['name', 'team_id', 'courseid', 'match_format', 'open_time', 'registration_deadline', 'entry_fee', 'awards', 'schedule', 'grouping_permission', 'is_public_registration', 'top_n_ranking'];
         $updateData = [];
         foreach ($allowedFields as $field) {
             if (isset($data[$field])) {

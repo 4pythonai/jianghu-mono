@@ -76,10 +76,68 @@ Page({
 
     onShow() {
         loadCachedCourtData(this, this.setCourtSelection)
+        this.syncReselectedTeams()
     },
 
     handleBack() {
         handleBackCommon()
+    },
+
+    syncReselectedTeams() {
+        if (this.data.gameType === 'single_team') {
+            const selectedTeam = wx.getStorageSync('selectedTeamForEditTeamGame')
+            if (selectedTeam && selectedTeam.id) {
+                this.applyReselectedSingleTeam(selectedTeam)
+                wx.removeStorageSync('selectedTeamForEditTeamGame')
+            }
+            return
+        }
+
+        const selectedTeams = wx.getStorageSync('selectedTeamsForEditCrossGame')
+        if (Array.isArray(selectedTeams) && selectedTeams.length > 0) {
+            this.applyReselectedCrossTeams(selectedTeams)
+            wx.removeStorageSync('selectedTeamsForEditCrossGame')
+        }
+    },
+
+    applyReselectedSingleTeam(selectedTeam) {
+        this.setData({
+            teamId: selectedTeam.id,
+            teamName: selectedTeam.team_name,
+            selectedTeam
+        })
+    },
+
+    async applyReselectedCrossTeams(selectedTeams) {
+        wx.showLoading({ title: '更新球队中...' })
+        try {
+            const addedTeams = []
+            for (const team of selectedTeams) {
+                const result = await app.api.teamgame.addGameTag({
+                    game_id: this.data.gameId,
+                    team_id: team.team_id,
+                    team_alias: team.team_alias
+                })
+
+                if (!result || result.code !== 200 || !result.data || !result.data.tag_id) {
+                    throw new Error(result?.message || '添加球队失败')
+                }
+
+                addedTeams.push({
+                    ...team,
+                    tag_id: result.data.tag_id
+                })
+            }
+
+            this.setData({ selectedTeams: addedTeams })
+            this.updateCrossTeamMatchFormats(addedTeams.length)
+            wx.showToast({ title: '球队已更新', icon: 'success' })
+        } catch (error) {
+            console.error('[editTeamGame] 更新参赛球队失败:', error)
+            wx.showToast({ title: error.message || '更新失败', icon: 'none' })
+        } finally {
+            wx.hideLoading()
+        }
     },
 
     buildMatchFormats(gameType, teamCount) {
@@ -189,6 +247,7 @@ Page({
                 nextData.removedTagIds = []
             } else {
                 nextData.selectedTeams = (data.cross_teams || []).map(team => ({
+                    tag_id: team.tag_id,
                     team_id: team.team_id,
                     team_name: team.team_name,
                     team_alias: team.team_alias,
@@ -333,6 +392,20 @@ Page({
         })
     },
 
+    // ==================== 球队选择（编辑模式） ====================
+
+    goToSingleTeamSelect() {
+        wx.navigateTo({
+            url: '/packageTeam/createSingleTeamGame/createSingleTeamGame?reselect=true&storage_key=selectedTeamForEditTeamGame'
+        })
+    },
+
+    goToCrossTeamSelect() {
+        wx.navigateTo({
+            url: '/packageTeam/createCrossTeamGame/createCrossTeamGame?reselect=true&storage_key=selectedTeamsForEditCrossGame'
+        })
+    },
+
     // ==================== 队际赛球队管理 ====================
 
     editTeamAlias(e) {
@@ -374,6 +447,84 @@ Page({
                     wx.hideLoading()
                     console.error('[editTeamGame] 更新球队简称失败:', error)
                     wx.showToast({ title: '更新失败，请稍后重试', icon: 'none' })
+                }
+            }
+        })
+    },
+
+    updateCrossTeamMatchFormats(teamCount) {
+        const matchFormats = this.buildMatchFormats('cross_teams', teamCount)
+        const current = matchFormats.find(item => item.value === this.data.formData.matchFormat)
+
+        if (!current || current.disabled) {
+            const fallback = matchFormats.find(item => !item.disabled) || matchFormats[0]
+            this.setData({
+                matchFormats,
+                currentFormat: fallback,
+                'formData.matchFormat': fallback.value
+            })
+            if (current && current.disabled) {
+                wx.showToast({ title: '超过2个球队不能选择比洞赛', icon: 'none' })
+            }
+            return
+        }
+
+        this.setData({
+            matchFormats,
+            currentFormat: current
+        })
+    },
+
+    deleteSingleTeam() {
+        wx.showModal({
+            title: '删除球队',
+            content: '确定删除该球队吗？',
+            success: (res) => {
+                if (!res.confirm) return
+                this.setData({
+                    teamId: null,
+                    teamName: '',
+                    selectedTeam: {}
+                })
+                this.goToSingleTeamSelect()
+            }
+        })
+    },
+
+    deleteCrossTeam(e) {
+        const teamId = e.currentTarget.dataset.teamId
+        const tagId = e.currentTarget.dataset.tagId
+        const team = this.data.selectedTeams.find(item => item.team_id === teamId)
+
+        if (!team) return
+
+        wx.showModal({
+            title: '删除球队',
+            content: '确定删除该球队吗？',
+            success: async (res) => {
+                if (!res.confirm) return
+                wx.showLoading({ title: '删除中...' })
+                try {
+                    const result = await app.api.teamgame.deleteGameTag({
+                        tag_id: tagId
+                    })
+                    wx.hideLoading()
+
+                    if (!result || result.code !== 200) {
+                        throw new Error(result?.message || '删除失败')
+                    }
+
+                    const selectedTeams = this.data.selectedTeams.filter(item => item.team_id !== teamId)
+                    this.setData({ selectedTeams })
+                    this.updateCrossTeamMatchFormats(selectedTeams.length)
+
+                    if (selectedTeams.length === 0) {
+                        this.goToCrossTeamSelect()
+                    }
+                } catch (error) {
+                    wx.hideLoading()
+                    console.error('[editTeamGame] 删除球队失败:', error)
+                    wx.showToast({ title: error.message || '删除失败，请稍后重试', icon: 'none' })
                 }
             }
         })
@@ -571,6 +722,14 @@ Page({
 
             if (!payload.top_n_ranking) {
                 delete payload.top_n_ranking
+            }
+
+            if (this.data.gameType === 'single_team' && this.data.teamId) {
+                payload.team_id = this.data.teamId
+            }
+
+            if (this.data.gameType === 'cross_teams') {
+                payload.team_id = this.data.selectedTeams.map(team => team.team_id).join(',')
             }
 
             const result = await app.api.teamgame.updateTeamGame(payload)
