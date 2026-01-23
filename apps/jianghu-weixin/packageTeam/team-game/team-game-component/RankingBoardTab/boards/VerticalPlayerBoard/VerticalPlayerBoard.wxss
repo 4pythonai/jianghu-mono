@@ -1,5 +1,5 @@
 .board {
-    margin: 20rpx;
+    margin: 10rpx;
     background: #fff;
     border-radius: 16rpx;
     overflow: hidden;

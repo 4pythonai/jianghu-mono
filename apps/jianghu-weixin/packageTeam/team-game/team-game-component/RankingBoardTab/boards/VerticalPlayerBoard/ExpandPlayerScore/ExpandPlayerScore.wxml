@@ -1,6 +1,6 @@
 <view class="score-detail">
   <!-- 前9洞区块 -->
-  <scroll-view scroll-x class="score-detail-scroll" enhanced>
+  <view class="score-detail-scroll">
     <view class="score-detail-content">
       <!-- 洞号行 (1-9 + OUT) -->
       <view class="detail-row hole-row">
@@ -40,14 +40,12 @@
         </view>
       </view>
     </view>
-  </scroll-view>
+  </view>
 
   <!-- 后9洞区块 (仅18洞时显示) -->
-  <scroll-view
+  <view
     wx:if="{{holeList.length === 18}}"
-    scroll-x
     class="score-detail-scroll second-half"
-    enhanced
   >
     <view class="score-detail-content">
       <!-- 洞号行 (10-18 + IN) -->
@@ -88,5 +86,5 @@
         </view>
       </view>
     </view>
-  </scroll-view>
+  </view>
 </view>
