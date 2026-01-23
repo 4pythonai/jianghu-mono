@@ -137,8 +137,10 @@ Component({
                 let outTotal = 0
                 let inTotal = 0
                 let total = 0
+                let outDiffSum = 0
+                let inDiffSum = 0
 
-                const holeScores = holeList.map((hole, holeIndex) => {
+                const holes = holeList.map((hole, holeIndex) => {
                     const key = `${userId}_${hole.hindex}`
                     const scoreData = scoreIndex.get(key) || {}
                     const score = scoreData.score || 0
@@ -148,8 +150,13 @@ Component({
 
                     if (score > 0) {
                         total += score
-                        if (holeIndex < 9) outTotal += score
-                        else if (holeIndex < 18) inTotal += score
+                        if (holeIndex < 9) {
+                            outTotal += score
+                            outDiffSum += diff
+                        } else if (holeIndex < 18) {
+                            inTotal += score
+                            inDiffSum += diff
+                        }
                     }
 
                     return {
@@ -161,28 +168,21 @@ Component({
                 })
 
                 // 计算相对杆数
-                const outPar = 36  // 前9洞标准杆
-                const inPar = 36   // 后9洞标准杆
-                const totalPar = 72 // 总标准杆
+                const totalDiff = outDiffSum + inDiffSum
 
-                const outDiff = outTotal > 0 ? outTotal - outPar : 0
-                const inDiff = inTotal > 0 ? inTotal - inPar : 0
-                const totalDiff = total > 0 ? total - totalPar : 0
-
-                // 添加汇总信息
-                holeScores.outTotal = outTotal > 0 ? outTotal : ''
-                holeScores.outDiff = outDiff
-                holeScores.outDiffText = outTotal > 0 ? (outDiff > 0 ? `+${outDiff}` : `${outDiff}`) : ''
-
-                holeScores.inTotal = inTotal > 0 ? inTotal : ''
-                holeScores.inDiff = inDiff
-                holeScores.inDiffText = inTotal > 0 ? (inDiff > 0 ? `+${inDiff}` : `${inDiff}`) : ''
-
-                holeScores.total = total > 0 ? total : ''
-                holeScores.totalDiff = totalDiff
-                holeScores.totalDiffText = total > 0 ? (totalDiff > 0 ? `+${totalDiff}` : `${totalDiff}`) : ''
-
-                return holeScores
+                // 返回对象结构（而非数组+属性，确保属性能正确传递）
+                return {
+                    holes,
+                    outTotal: outTotal > 0 ? outTotal : '',
+                    outDiff: outDiffSum,
+                    outDiffText: outTotal > 0 ? (outDiffSum > 0 ? `+${outDiffSum}` : `${outDiffSum}`) : '',
+                    inTotal: inTotal > 0 ? inTotal : '',
+                    inDiff: inDiffSum,
+                    inDiffText: inTotal > 0 ? (inDiffSum > 0 ? `+${inDiffSum}` : `${inDiffSum}`) : '',
+                    total: total > 0 ? total : '',
+                    totalDiff,
+                    totalDiffText: total > 0 ? (totalDiff > 0 ? `+${totalDiff}` : `${totalDiff}`) : ''
+                }
             })
 
             this.setData({ displayScores })

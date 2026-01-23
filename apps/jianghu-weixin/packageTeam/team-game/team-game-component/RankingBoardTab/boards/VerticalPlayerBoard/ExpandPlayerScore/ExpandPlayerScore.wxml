@@ -1,0 +1,92 @@
+<view class="score-detail">
+  <!-- 前9洞区块 -->
+  <scroll-view scroll-x class="score-detail-scroll" enhanced>
+    <view class="score-detail-content">
+      <!-- 洞号行 (1-9 + OUT) -->
+      <view class="detail-row hole-row">
+        <block wx:for="{{holeList}}" wx:key="unique_key" wx:for-item="hole" wx:for-index="holeIdx">
+          <view wx:if="{{holeIdx < 9}}" class="detail-cell hole-cell">
+            <text>{{hole.holename}}</text>
+          </view>
+        </block>
+        <view class="detail-cell summary-cell">
+          <text>OUT</text>
+        </view>
+      </view>
+      <!-- Par 行 (1-9) -->
+      <view class="detail-row par-row">
+        <block wx:for="{{holeList}}" wx:key="unique_key" wx:for-item="hole" wx:for-index="holeIdx">
+          <view wx:if="{{holeIdx < 9}}" class="detail-cell par-cell">
+            <text>{{hole.par}}</text>
+          </view>
+        </block>
+        <view class="detail-cell summary-cell">
+          <text>36</text>
+        </view>
+      </view>
+      <!-- 成绩行 (1-9) -->
+      <view class="detail-row score-row">
+        <block wx:for="{{holeList}}" wx:key="unique_key" wx:for-item="hole" wx:for-index="holeIdx">
+          <view wx:if="{{holeIdx < 9 && playerScores.holes[holeIdx]}}" class="detail-cell score-cell">
+            <view class="score-badge {{playerScores.holes[holeIdx].scoreClass}}">
+              <text>{{playerScores.holes[holeIdx].diff}}</text>
+            </view>
+          </view>
+        </block>
+        <view class="detail-cell summary-cell score-summary">
+          <text
+            class="summary-diff {{playerScores.outDiff > 0 ? 'over' : playerScores.outDiff < 0 ? 'under' : ''}}"
+          >{{playerScores.outDiffText || ''}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 后9洞区块 (仅18洞时显示) -->
+  <scroll-view
+    wx:if="{{holeList.length === 18}}"
+    scroll-x
+    class="score-detail-scroll second-half"
+    enhanced
+  >
+    <view class="score-detail-content">
+      <!-- 洞号行 (10-18 + IN) -->
+      <view class="detail-row hole-row">
+        <block wx:for="{{holeList}}" wx:key="unique_key" wx:for-item="hole" wx:for-index="holeIdx">
+          <view wx:if="{{holeIdx >= 9}}" class="detail-cell hole-cell">
+            <text>{{hole.holename}}</text>
+          </view>
+        </block>
+        <view class="detail-cell summary-cell">
+          <text>IN</text>
+        </view>
+      </view>
+      <!-- Par 行 (10-18) -->
+      <view class="detail-row par-row">
+        <block wx:for="{{holeList}}" wx:key="unique_key" wx:for-item="hole" wx:for-index="holeIdx">
+          <view wx:if="{{holeIdx >= 9}}" class="detail-cell par-cell">
+            <text>{{hole.par}}</text>
+          </view>
+        </block>
+        <view class="detail-cell summary-cell">
+          <text>36</text>
+        </view>
+      </view>
+      <!-- 成绩行 (10-18) -->
+      <view class="detail-row score-row">
+        <block wx:for="{{holeList}}" wx:key="unique_key" wx:for-item="hole" wx:for-index="holeIdx">
+          <view wx:if="{{holeIdx >= 9 && playerScores.holes[holeIdx]}}" class="detail-cell score-cell">
+            <view class="score-badge {{playerScores.holes[holeIdx].scoreClass}}">
+              <text>{{playerScores.holes[holeIdx].diff}}</text>
+            </view>
+          </view>
+        </block>
+        <view class="detail-cell summary-cell score-summary">
+          <text
+            class="summary-diff {{playerScores.inDiff > 0 ? 'over' : playerScores.inDiff < 0 ? 'under' : ''}}"
+          >{{playerScores.inDiffText || ''}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
