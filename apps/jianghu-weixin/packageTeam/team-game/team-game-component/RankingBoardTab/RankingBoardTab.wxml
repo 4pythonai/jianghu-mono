@@ -10,6 +10,9 @@
     <VerticalPlayerBoard
       wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'player'}}"
       boardData="{{scoreboard}}"
+      holeList="{{holeList}}"
+      players="{{players}}"
+      displayScores="{{displayScores}}"
     />
 
     <!-- 竖向列表 TAG-->

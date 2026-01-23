@@ -345,7 +345,12 @@ export const gameStore = observable({
      * @param {string} gameType 'single_team' | 'cross_teams'
      */
     fetchTeamGameDetail: action(async function (gameId, gameType = 'single_team') {
-        if (this.loading) return;
+        console.log('[gameStore] fetchTeamGameDetail 被调用:', { gameId, gameType, loading: this.loading, currentGameid: this.gameid });
+
+        if (this.loading) {
+            console.log('[gameStore] fetchTeamGameDetail 跳过: loading=true');
+            return;
+        }
 
         // 切换比赛时清理旧数据
         if (this.gameid && String(this.gameid) !== String(gameId)) {
@@ -469,6 +474,51 @@ export const gameStore = observable({
             value: this.eventDetail.backgroundImage,
             type: typeof this.eventDetail.backgroundImage
         })
+
+        // 处理记分相关数据（holeList, players, scores）
+        // 注意：这些字段可能是 JSON 字符串，需要先解析
+        let holeListData = data.holeList;
+        if (typeof holeListData === 'string') {
+            try {
+                holeListData = JSON.parse(holeListData);
+            } catch (e) {
+                console.error('[gameStore] holeList JSON 解析失败:', e);
+                holeListData = [];
+            }
+        }
+        if (holeListData && Array.isArray(holeListData)) {
+            const holeList = holeListData.map((h, index) => normalizeHole(h, index + 1));
+            holeRangeStore.initializeHoles(holeList);
+            console.log('[gameStore] _processTeamGameData holeList:', holeList.length);
+        }
+
+        let playersData = data.players;
+        if (typeof playersData === 'string') {
+            try {
+                playersData = JSON.parse(playersData);
+            } catch (e) {
+                console.error('[gameStore] players JSON 解析失败:', e);
+                playersData = [];
+            }
+        }
+        if (playersData && Array.isArray(playersData)) {
+            this.players = playersData.map(p => normalizePlayer(p));
+            console.log('[gameStore] _processTeamGameData players:', this.players.length);
+        }
+
+        let scoresData = data.scores;
+        if (typeof scoresData === 'string') {
+            try {
+                scoresData = JSON.parse(scoresData);
+            } catch (e) {
+                console.error('[gameStore] scores JSON 解析失败:', e);
+                scoresData = [];
+            }
+        }
+        if (scoresData && Array.isArray(scoresData)) {
+            scoreStore.scores = scoresData;
+            console.log('[gameStore] _processTeamGameData scores:', scoresData.length);
+        }
 
         console.log('[gameStore] _processTeamGameData 完成', {
             creatorid: this.creatorid,

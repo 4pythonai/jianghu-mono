@@ -18,10 +18,18 @@
     background: #f7f7f7;
 }
 
+.board-row-wrapper {
+    border-top: 1rpx solid #f0f0f0;
+}
+
+.board-row-wrapper.expanded {
+    background: #fafafa;
+}
+
 .board-row {
     font-size: 26rpx;
     color: var(--text-primary);
-    border-top: 1rpx solid #f0f0f0;
+    position: relative;
 }
 
 .col-rank {
@@ -69,4 +77,156 @@
 .empty-text {
     font-size: 24rpx;
     color: var(--text-tertiary);
+}
+
+/* 展开图标 */
+.expand-icon {
+    width: 40rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.expand-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.expand-icon .iconfont {
+    font-size: 24rpx;
+    color: #999;
+}
+
+/* 展开详情区域 */
+.score-detail {
+    padding: 16rpx 0;
+    background: linear-gradient(180deg, #f5f5f5 0%, #fff 100%);
+}
+
+.score-detail-scroll {
+    width: 100%;
+    margin-bottom: 8rpx;
+}
+
+.score-detail-scroll.second-half {
+    margin-top: 16rpx;
+    margin-bottom: 0;
+}
+
+.score-detail-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0 16rpx;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+}
+
+.detail-cell {
+    width: 70rpx;
+    height: 50rpx;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22rpx;
+}
+
+.hole-row {
+    background: #3d6b4f;
+}
+
+.hole-row .detail-cell {
+    color: #fff;
+    font-weight: 500;
+}
+
+.par-row {
+    background: #3d6b4f;
+    border-top: 1rpx solid rgba(255,255,255,0.2);
+}
+
+.par-row .detail-cell {
+    color: rgba(255,255,255,0.8);
+    font-size: 20rpx;
+}
+
+.score-row {
+    background: #3d6b4f;
+    padding: 8rpx 0;
+}
+
+.score-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.summary-cell {
+    background: rgba(255,255,255,0.1);
+    font-weight: 600;
+}
+
+.total-cell {
+    background: rgba(255,215,0,0.2);
+}
+
+.score-summary {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* 成绩徽章样式 - 复用 HoleCell 样式 */
+.score-badge {
+    width: 44rpx;
+    height: 44rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24rpx;
+    color: #fff;
+    border-radius: 50%;
+}
+
+/* 老鹰及以下: 红底白字实心圆 */
+.score-badge.score-eagle {
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+/* 小鸟: 白底红边红字空心圆 */
+.score-badge.score-birdie {
+    background-color: #ffffff;
+    color: #ff0000;
+    border: 3rpx solid #ff0000;
+}
+
+/* Par: 无边框蓝字 */
+.score-badge.score-par {
+    background: transparent;
+    color: #4a90d9;
+}
+
+/* 柏忌: 白底黑边黑字方框 */
+.score-badge.score-bogey {
+    background-color: #ffffff;
+    color: #000000;
+    border: 3rpx solid #000000;
+    border-radius: 6rpx;
+}
+
+/* 双柏忌: 浅灰底黑字方框 */
+.score-badge.score-double-bogey {
+    background-color: #e9e2e2;
+    color: #000000;
+    border-radius: 6rpx;
+}
+
+/* 三柏忌及以上: 深灰底黑字方框 */
+.score-badge.score-triple-bogey {
+    background-color: #8a8484;
+    color: #000000;
+    border-radius: 6rpx;
 }
