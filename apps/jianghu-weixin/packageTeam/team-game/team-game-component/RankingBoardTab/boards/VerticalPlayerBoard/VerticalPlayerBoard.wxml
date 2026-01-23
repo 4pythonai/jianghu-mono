@@ -71,7 +71,10 @@
               </view>
             </block>
             <view class="detail-cell summary-cell score-summary">
-              <text>{{displayScores[item.playerIndex].outTotal || ''}}</text>
+              <view class="summary-scores">
+                <text class="summary-total">{{displayScores[item.playerIndex].outTotal || ''}}</text>
+                <text class="summary-diff {{displayScores[item.playerIndex].outDiff > 0 ? 'over' : displayScores[item.playerIndex].outDiff < 0 ? 'under' : ''}}">{{displayScores[item.playerIndex].outDiffText || ''}}</text>
+              </view>
             </view>
           </view>
         </view>
@@ -118,10 +121,16 @@
               </view>
             </block>
             <view class="detail-cell summary-cell score-summary">
-              <text>{{displayScores[item.playerIndex].inTotal || ''}}</text>
+              <view class="summary-scores">
+                <text class="summary-total">{{displayScores[item.playerIndex].inTotal || ''}}</text>
+                <text class="summary-diff {{displayScores[item.playerIndex].inDiff > 0 ? 'over' : displayScores[item.playerIndex].inDiff < 0 ? 'under' : ''}}">{{displayScores[item.playerIndex].inDiffText || ''}}</text>
+              </view>
             </view>
             <view class="detail-cell summary-cell score-summary total-cell">
-              <text>{{displayScores[item.playerIndex].total || ''}}</text>
+              <view class="summary-scores">
+                <text class="summary-total">{{displayScores[item.playerIndex].total || ''}}</text>
+                <text class="summary-diff {{displayScores[item.playerIndex].totalDiff > 0 ? 'over' : displayScores[item.playerIndex].totalDiff < 0 ? 'under' : ''}}">{{displayScores[item.playerIndex].totalDiffText || ''}}</text>
+              </view>
             </view>
           </view>
         </view>

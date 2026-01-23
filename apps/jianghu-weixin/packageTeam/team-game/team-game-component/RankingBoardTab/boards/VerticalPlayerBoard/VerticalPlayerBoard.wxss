@@ -99,24 +99,24 @@
 
 /* 展开详情区域 */
 .score-detail {
-    padding: 16rpx 0;
-    background: linear-gradient(180deg, #f5f5f5 0%, #fff 100%);
+    padding: 0;
+    background: #3d6b4f;
+    margin: 0 16rpx 16rpx;
+    border-radius: 8rpx;
+    overflow: hidden;
 }
 
 .score-detail-scroll {
     width: 100%;
-    margin-bottom: 8rpx;
 }
 
 .score-detail-scroll.second-half {
-    margin-top: 16rpx;
-    margin-bottom: 0;
+    border-top: 4rpx solid #c5a536;
 }
 
 .score-detail-content {
     display: flex;
     flex-direction: column;
-    padding: 0 16rpx;
 }
 
 .detail-row {
@@ -165,17 +165,55 @@
 }
 
 .summary-cell {
-    background: rgba(255,255,255,0.1);
+    width: 80rpx;
+    background: #c5a536;
     font-weight: 600;
+    color: #fff;
 }
 
 .total-cell {
-    background: rgba(255,215,0,0.2);
+    background: #c5a536;
 }
 
 .score-summary {
     color: #fff;
     font-weight: 600;
+    font-size: 24rpx;
+}
+
+/* OUT/IN 汇总列的成绩显示相对杆数 */
+.score-row .summary-cell {
+    background: #c5a536;
+    height: auto;
+    padding: 4rpx 0;
+}
+
+/* 汇总分数容器 */
+.summary-scores {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.summary-total {
+    font-size: 22rpx;
+    color: #fff;
+    font-weight: 500;
+}
+
+.summary-diff {
+    font-size: 26rpx;
+    color: #b8e986;
+    font-weight: 700;
+}
+
+.summary-diff.over {
+    color: #b8e986;
+}
+
+.summary-diff.under {
+    color: #ff6b6b;
 }
 
 /* 成绩徽章样式 - 复用 HoleCell 样式 */

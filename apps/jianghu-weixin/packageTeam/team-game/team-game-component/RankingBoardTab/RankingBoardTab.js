@@ -160,10 +160,27 @@ Component({
                     }
                 })
 
+                // 计算相对杆数
+                const outPar = 36  // 前9洞标准杆
+                const inPar = 36   // 后9洞标准杆
+                const totalPar = 72 // 总标准杆
+
+                const outDiff = outTotal > 0 ? outTotal - outPar : 0
+                const inDiff = inTotal > 0 ? inTotal - inPar : 0
+                const totalDiff = total > 0 ? total - totalPar : 0
+
                 // 添加汇总信息
                 holeScores.outTotal = outTotal > 0 ? outTotal : ''
+                holeScores.outDiff = outDiff
+                holeScores.outDiffText = outTotal > 0 ? (outDiff > 0 ? `+${outDiff}` : `${outDiff}`) : ''
+
                 holeScores.inTotal = inTotal > 0 ? inTotal : ''
+                holeScores.inDiff = inDiff
+                holeScores.inDiffText = inTotal > 0 ? (inDiff > 0 ? `+${inDiff}` : `${inDiff}`) : ''
+
                 holeScores.total = total > 0 ? total : ''
+                holeScores.totalDiff = totalDiff
+                holeScores.totalDiffText = total > 0 ? (totalDiff > 0 ? `+${totalDiff}` : `${totalDiff}`) : ''
 
                 return holeScores
             })
