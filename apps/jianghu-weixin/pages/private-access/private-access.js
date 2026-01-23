@@ -157,30 +157,20 @@ Page({
         const detail = this.data.gameDetail || {}
         const gameid = detail.gameid || this.data.gameId
         const groups = detail.groups || []
-        const gameName = detail.game_name || ''
-        const course = detail.course || ''
+        const game_type = detail.game_type || 'common'
         const navigationHelper = require('@/utils/navigationHelper.js')
 
-        if (!groups || groups.length === 0) {
-            await navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}`)
+        // 如果有2个或更多分组，进入 eventHubPanel
+        if (groups && groups.length >= 2) {
+            await navigationHelper.navigateTo(`/packageTeam/eventHubPanel/eventHubPanel?gameid=${gameid}&game_type=${game_type}`)
             return
         }
 
-        if (groups.length === 1) {
-            const groupid = groups[0]?.groupid
-            await navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`)
-            return
-        }
-
-        const appInstance = getApp()
-        appInstance.globalData = appInstance.globalData || {}
-        appInstance.globalData.currentGameGroups = {
-            gameid,
-            gameName,
-            course,
-            groups
-        }
-
-        await navigationHelper.navigateTo(`/pages/groupsList/groupsList?gameid=${gameid}`)
+        // 单组或无分组，直接进入 score 页面
+        const groupid = groups && groups.length === 1 ? groups[0]?.groupid : ''
+        const url = groupid
+            ? `/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`
+            : `/packageGame/gameDetail/score/score?gameid=${gameid}`
+        await navigationHelper.navigateTo(url)
     }
 })

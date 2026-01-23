@@ -90,63 +90,8 @@ Component({
     },
 
     methods: {
-        _groupPlayersByGroupId(players, gameData) {
-
-            if (!players || !Array.isArray(players)) {
-                console.warn('⚠️ 玩家数据为空或不是数组');
-                return [];
-            }
-
-            const groupMap = new Map();
-
-            for (const player of players) {
-                const groupid = player?.groupid;
-                if (!groupid) {
-                    console.warn('⚠️ 玩家缺少 groupid:', player);
-                    continue;
-                }
-
-                if (!groupMap.has(groupid)) {
-                    let groupName = '';
-
-                    // 后端 MDetailGame.getGroupsInfo 返回的分组信息使用 group_name 字段
-                    if (gameData.groups && Array.isArray(gameData.groups)) {
-                        const groupInfo = gameData.groups.find(g =>
-                            String(g.groupid) === String(groupid)
-                        );
-                        if (groupInfo) {
-                            groupName = groupInfo.group_name || '';
-                        }
-                    }
-
-                    if (!groupName && gameData.group_name && String(gameData.groupid) === String(groupid)) {
-                        groupName = gameData.group_name;
-                    }
-
-                    if (!groupName) {
-                        groupName = `第${groupMap.size + 1}组`;
-                    }
-
-                    console.log(`📝 分组 ${groupid} 名称: "${groupName}"`);
-
-                    groupMap.set(groupid, {
-                        groupid: String(groupid),
-                        groupName: groupName,
-                        players: []
-                    });
-                }
-
-                groupMap.get(groupid).players.push(player);
-            }
-
-            const groupsArray = Array.from(groupMap.values());
-            console.log('✅ 分组完成:', groupsArray);
-
-            return groupsArray;
-        },
-
         onMatchItemTap() {
-            const { gameid, gameName, course, players } = this.properties;
+            const { gameid, groups, game_type } = this.properties;
             const navigationHelper = require('@/utils/navigationHelper.js');
 
             if (this.properties.private === 'y') {
@@ -154,43 +99,24 @@ Component({
                 return;
             }
 
-            const processedGroups = this._groupPlayersByGroupId(players, this.properties);
-
-            console.log('📊 处理后的分组数据:', processedGroups);
-
-            if (!processedGroups || processedGroups.length === 0) {
-                console.warn('⚠️ 游戏没有分组数据, 直接进入游戏详情');
-                navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}`)
+            // 如果有2个或更多分组，进入 eventHubPanel
+            if (groups && groups.length >= 2) {
+                console.log('📋 多组游戏, 进入 eventHubPanel', { gameid, groupsCount: groups.length });
+                navigationHelper.navigateTo(`/packageTeam/eventHubPanel/eventHubPanel?gameid=${gameid}&game_type=${game_type}`)
                     .catch(err => {
-                        console.error('跳转游戏详情失败:', err);
-                        wx.showToast({ title: '页面跳转失败', icon: 'none' });
-                    });
-                return;
-            }
-
-            if (processedGroups.length === 1) {
-                const groupid = processedGroups[0]?.groupid;
-                console.log('📍 单组游戏, 直接进入详情页面', { gameid, groupid });
-                navigationHelper.navigateTo(`/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`)
-                    .catch(err => {
-                        console.error('跳转游戏详情失败:', err);
+                        console.error('跳转 eventHubPanel 失败:', err);
                         wx.showToast({ title: '页面跳转失败', icon: 'none' });
                     });
             } else {
-                console.log('📋 多组游戏, 进入分组列表页面', { gameid, groupsCount: processedGroups.length });
-
-                const app = getApp();
-                app.globalData = app.globalData || {};
-                app.globalData.currentGameGroups = {
-                    gameid,
-                    gameName,
-                    course,
-                    groups: processedGroups
-                };
-
-                navigationHelper.navigateTo(`/pages/groupsList/groupsList?gameid=${gameid}`)
+                // 单组或无分组，直接进入 score 页面
+                const groupid = groups && groups.length === 1 ? groups[0]?.groupid : '';
+                console.log('📍 单组游戏, 直接进入详情页面', { gameid, groupid });
+                const url = groupid 
+                    ? `/packageGame/gameDetail/score/score?gameid=${gameid}&groupid=${groupid}`
+                    : `/packageGame/gameDetail/score/score?gameid=${gameid}`;
+                navigationHelper.navigateTo(url)
                     .catch(err => {
-                        console.error('跳转分组列表失败:', err);
+                        console.error('跳转游戏详情失败:', err);
                         wx.showToast({ title: '页面跳转失败', icon: 'none' });
                     });
             }

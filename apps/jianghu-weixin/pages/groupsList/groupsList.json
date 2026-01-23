@@ -1,8 +1,0 @@
-{
-    "navigationBarTitleText": "选择分组",
-    "navigationBarTextStyle": "black",
-    "navigationBarBackgroundColor": "#ffffff",
-    "usingComponents": {
-        "AvatarGroup": "/components/AvatarGroup/AvatarGroup"
-    }
-}
