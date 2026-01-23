@@ -8,18 +8,22 @@
 .board-header,
 .board-row {
     display: flex;
-    align-items: center;
-    padding: 18rpx 20rpx;
+    align-items: stretch;
 }
 
 .board-header {
     font-size: 24rpx;
     color: var(--text-secondary);
     background: #f7f7f7;
+    border-bottom: 1rpx solid #e0e0e0;
 }
 
 .board-row-wrapper {
-    border-top: 1rpx solid #f0f0f0;
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.board-row-wrapper:last-child {
+    border-bottom: none;
 }
 
 .board-row-wrapper.expanded {
@@ -29,22 +33,36 @@
 .board-row {
     font-size: 26rpx;
     color: var(--text-primary);
-    position: relative;
+}
+
+/* 通用列样式 */
+.col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18rpx 12rpx;
+    border-right: 1rpx solid #e0e0e0;
+    box-sizing: border-box;
 }
 
 .col-rank {
     width: 80rpx;
-    text-align: left;
 }
 
 .col-player {
     flex: 1;
+    justify-content: flex-start;
+    gap: 16rpx;
 }
 
-.player-cell {
-    display: flex;
-    align-items: center;
-    gap: 16rpx;
+.col-score {
+    width: 100rpx;
+}
+
+.col-thru {
+    width: 120rpx;
+    gap: 8rpx;
+    border-right: none;
 }
 
 .avatar {
@@ -57,16 +75,6 @@
 .name {
     font-size: 26rpx;
     color: var(--text-primary);
-}
-
-.col-score {
-    width: 120rpx;
-    text-align: center;
-}
-
-.col-thru {
-    width: 100rpx;
-    text-align: right;
 }
 
 .board-empty {
