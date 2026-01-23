@@ -476,48 +476,21 @@ export const gameStore = observable({
         })
 
         // 处理记分相关数据（holeList, players, scores）
-        // 注意：这些字段可能是 JSON 字符串，需要先解析
-        let holeListData = data.holeList;
-        if (typeof holeListData === 'string') {
-            try {
-                holeListData = JSON.parse(holeListData);
-            } catch (e) {
-                console.error('[gameStore] holeList JSON 解析失败:', e);
-                holeListData = [];
-            }
-        }
-        if (holeListData && Array.isArray(holeListData)) {
-            const holeList = holeListData.map((h, index) => normalizeHole(h, index + 1));
+        // 后端已统一返回数组格式
+        if (data.holeList && Array.isArray(data.holeList)) {
+            const holeList = data.holeList.map((h, index) => normalizeHole(h, index + 1));
             holeRangeStore.initializeHoles(holeList);
             console.log('[gameStore] _processTeamGameData holeList:', holeList.length);
         }
 
-        let playersData = data.players;
-        if (typeof playersData === 'string') {
-            try {
-                playersData = JSON.parse(playersData);
-            } catch (e) {
-                console.error('[gameStore] players JSON 解析失败:', e);
-                playersData = [];
-            }
-        }
-        if (playersData && Array.isArray(playersData)) {
-            this.players = playersData.map(p => normalizePlayer(p));
+        if (data.players && Array.isArray(data.players)) {
+            this.players = data.players.map(p => normalizePlayer(p));
             console.log('[gameStore] _processTeamGameData players:', this.players.length);
         }
 
-        let scoresData = data.scores;
-        if (typeof scoresData === 'string') {
-            try {
-                scoresData = JSON.parse(scoresData);
-            } catch (e) {
-                console.error('[gameStore] scores JSON 解析失败:', e);
-                scoresData = [];
-            }
-        }
-        if (scoresData && Array.isArray(scoresData)) {
-            scoreStore.scores = scoresData;
-            console.log('[gameStore] _processTeamGameData scores:', scoresData.length);
+        if (data.scores && Array.isArray(data.scores)) {
+            scoreStore.scores = data.scores;
+            console.log('[gameStore] _processTeamGameData scores:', data.scores.length);
         }
 
         console.log('[gameStore] _processTeamGameData 完成', {

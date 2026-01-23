@@ -733,7 +733,7 @@ class MTeamGame extends CI_Model {
     /**
      * 获取队内赛详情
      */
-    public function getSingleTeamGameDetail($game_id) {
+    public function getSingleTeamGameDetail($game_id, $me = null) {
         // 基本信息
         $this->db->select('g.*, c.name as course_name, t.team_name, t.team_avatar');
         $this->db->from('t_game g');
@@ -756,6 +756,11 @@ class MTeamGame extends CI_Model {
 
         // 分组信息
         $game['groups'] = $this->getGroups($game_id);
+
+        // 复用 MDetailGame 的方法获取记分相关数据（与 Game/gameDetail 保持一致）
+        $game['holeList'] = json_decode($game['holeList'], true);
+        $game['players'] = $this->MDetailGame->getPlayers($game_id, $me);
+        $game['scores'] = $this->MDetailGame->getScoreInfo($game_id, $me);
 
         return $game;
     }
@@ -1118,6 +1123,11 @@ class MTeamGame extends CI_Model {
 
         // 分组信息
         $game['groups'] = $this->getCrossTeamGroups($me, $game_id);
+
+        // 复用 MDetailGame 的方法获取记分相关数据（与 Game/gameDetail 保持一致）
+        $game['holeList'] = json_decode($game['holeList'], true);
+        $game['players'] = $this->MDetailGame->getPlayers($game_id, $me);
+        $game['scores'] = $this->MDetailGame->getScoreInfo($game_id, $me);
 
         return $game;
     }

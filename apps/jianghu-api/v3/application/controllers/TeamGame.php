@@ -759,10 +759,11 @@ class TeamGame extends MY_Controller {
      * @param int game_id 赛事ID
      */
     public function getSingleTeamGameDetail() {
+        $user_id = $this->getUser();
         $json_paras = json_decode(file_get_contents('php://input'), true);
         $game_id = $json_paras['game_id'];
 
-        $detail = $this->MTeamGame->getSingleTeamGameDetail($game_id);
+        $detail = $this->MTeamGame->getSingleTeamGameDetail($game_id, $user_id);
 
         if (!$detail) {
             echo json_encode(['code' => 404, 'message' => '赛事不存在'], JSON_UNESCAPED_UNICODE);
