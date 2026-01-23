@@ -90,13 +90,6 @@ Component({
     },
 
     methods: {
-        onTeamAvatarLoad(e) {
-            console.log('✅ 团队头像加载成功:', this.properties.extra_team_game_info?.team_avatar);
-        },
-
-        onTeamAvatarError(e) {
-            console.error('❌ 团队头像加载失败:', this.properties.extra_team_game_info?.team_avatar, e.detail);
-        },
         _groupPlayersByGroupId(players, gameData) {
 
             if (!players || !Array.isArray(players)) {

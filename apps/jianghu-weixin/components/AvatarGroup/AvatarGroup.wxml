@@ -1,14 +1,25 @@
 <view class="avatar-group-container {{showMode}}">
-  <block wx:for="{{showPlayers}}" wx:key="index">
-    <view class="avatar-wrapper avatar-{{index}}" style="z-index: {{999 - index}};">
-      <PlayerAvatar
-        avatar="{{item.avatar}}"
-        userId="{{item.id}}"
-        clickable="{{clickable}}"
-        avatarOnly="{{true}}"
-        size="mini"
-      />
-    </view>
+  <!-- 直接显示图片模式（团队 logo 等） -->
+  <block wx:if="{{useAvatarsMode}}">
+    <block wx:for="{{showAvatars}}" wx:key="index">
+      <view class="avatar-wrapper avatar-{{index}}" style="z-index: {{999 - index}};">
+        <image class="direct-avatar" src="{{item}}" mode="aspectFill" />
+      </view>
+    </block>
+  </block>
+  <!-- 玩家头像模式 -->
+  <block wx:else>
+    <block wx:for="{{showPlayers}}" wx:key="index">
+      <view class="avatar-wrapper avatar-{{index}}" style="z-index: {{999 - index}};">
+        <PlayerAvatar
+          avatar="{{item.avatar}}"
+          userId="{{item.id}}"
+          clickable="{{clickable}}"
+          avatarOnly="{{true}}"
+          size="mini"
+        />
+      </view>
+    </block>
   </block>
   <view class="more-tip" wx:if="{{moreCount > 0}}">+{{moreCount}}</view>
 </view>

@@ -2,24 +2,12 @@
   <!-- 封面区域 -->
   <view class="event-cover-wrapper">
     <!-- 单个封面 -->
-    <image
-      wx:if="{{coverType === 'single'}}"
-      class="event-cover"
-      src="{{singleCover}}"
-      mode="aspectFill"
-    />
+    <view wx:if="{{coverType === 'single'}}" class="avatar-cover">
+      <AvatarGroup avatars="{{[singleCover]}}" maxShow="4" showMode="group" clickable="{{false}}" />
+    </view>
     <!-- 多个封面（队际赛多队头像拼接） -->
-    <view wx:elif="{{coverType === 'multiple'}}" class="event-cover-group">
-      <image
-        wx:for="{{teamAvatars}}"
-        wx:for-item="avatar"
-        wx:for-index="avatarIdx"
-        wx:key="avatarIdx"
-        class="cover-item cover-item-{{avatarIdx}}"
-        src="{{avatar}}"
-        mode="aspectFill"
-        style="z-index: {{10 - avatarIdx}}"
-      />
+    <view wx:elif="{{coverType === 'multiple'}}" class="avatar-cover">
+      <AvatarGroup avatars="{{teamAvatars}}" maxShow="4" showMode="group" clickable="{{false}}" />
     </view>
     <!-- 默认封面 -->
     <view wx:else class="event-cover-default">

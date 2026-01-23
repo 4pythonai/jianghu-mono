@@ -22,6 +22,15 @@
 	gap: 0;
 }
 
+/* 直接显示图片的样式（与 PlayerAvatar mini 尺寸一致） */
+.direct-avatar {
+	width: 48rpx;
+	height: 48rpx;
+	border-radius: 50%;
+	border: 2rpx solid #fff;
+	box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
 .more-tip {
 	background-color: #07c160;
 	color: #fff;

@@ -6,10 +6,13 @@
     <text class="ranking-placeholder-text">暂无成绩数据</text>
   </view>
   <view wx:else>
+    <!-- 竖向列表 player-->
     <VerticalPlayerBoard
       wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'player'}}"
       boardData="{{scoreboard}}"
     />
+
+    <!-- 竖向列表 TAG-->
     <VerticalTagBoard
       wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'tag'}}"
       boardData="{{scoreboard}}"

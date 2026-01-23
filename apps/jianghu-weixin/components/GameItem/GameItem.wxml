@@ -4,17 +4,16 @@
     <text class="privacy-text">密</text>
   </view>
 
-  <!-- 左侧头像组 (保留占位) -->
+  <!-- 左侧头像组 -->
   <view class="avatar-column">
     <!-- 团队赛显示团队头像 -->
-    <view wx:if="{{game_type !== 'common' && fullTeamAvatarUrl}}" class="team-avatar-wrapper">
-      <image
-        class="team-avatar"
-        src="{{fullTeamAvatarUrl}}"
-        mode="aspectFill"
-        bindload="onTeamAvatarLoad"
-        binderror="onTeamAvatarError"
-      ></image>
+    <view wx:if="{{game_type !== 'common' && fullTeamAvatarUrl}}">
+      <AvatarGroup
+        avatars="{{[fullTeamAvatarUrl]}}"
+        maxShow="4"
+        showMode="group"
+        clickable="{{false}}"
+      />
     </view>
     <!-- 普通比赛显示玩家头像组 -->
     <view wx:elif="{{private !== 'y' && game_type === 'common'}}">
