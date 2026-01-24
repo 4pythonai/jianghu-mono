@@ -5,10 +5,12 @@ Page({
         gameId: null,
         gameType: 'single_team',
         navTitle: '替好友报名(队内赛)',
+        gameTags: [],
+        selectedTagId: null,
         submitting: false
     },
 
-    onLoad(options) {
+    async onLoad(options) {
         const gameId = Number(options.game_id)
         const gameType = options.game_type || 'single_team'
         const navTitle = this.getNavTitle(gameType)
@@ -18,7 +20,10 @@ Page({
             return
         }
 
-        this.setData({ gameId, gameType, navTitle })
+        this.setData({ gameId, gameType, navTitle, selectedTagId: null })
+
+        // 直接调用 API 获取分队列表
+        await this.loadGameTags(gameId)
     },
 
     getNavTitle(gameType) {
@@ -28,13 +33,50 @@ Page({
     },
 
     /**
+     * 加载分队列表
+     */
+    async loadGameTags(gameId) {
+        try {
+            const res = await app.api.teamgame.getGameTags({ game_id: gameId })
+            if (res?.code === 200 && res.data) {
+                const gameTags = res.data.map(t => ({
+                    id: t.id,
+                    tagName: t.tag_name
+                }))
+
+                this.setData({ gameTags })
+
+                // 队内赛且只有1个分队：自动选中（只在 onLoad 执行一次）
+                if (this.data.gameType === 'single_team' && gameTags.length === 1) {
+                    this.setData({ selectedTagId: gameTags[0].id })
+                }
+            }
+        } catch (err) {
+            console.error('[teamGameAddFriend] 加载分队失败:', err)
+        }
+    },
+
+    /**
+     * 分队选择变化
+     */
+    onTagChange(e) {
+        const tagId = Number(e.detail.value)
+        this.setData({ selectedTagId: tagId })
+    },
+
+    /**
      * 好友选择确认
      */
     async onFriendConfirm(e) {
         const { friends } = e.detail
-        const { gameId, gameType, submitting } = this.data
+        const { gameId, gameType, selectedTagId, submitting } = this.data
 
         if (submitting) return
+
+        if (selectedTagId == null) {
+            wx.showToast({ title: '请选择分队', icon: 'none' })
+            return
+        }
 
         if (!friends || friends.length === 0) {
             wx.showToast({ title: '请选择好友', icon: 'none' })
@@ -45,81 +87,35 @@ Page({
         wx.showLoading({ title: '报名中...' })
 
         try {
-            // 逐个为好友报名
-            const results = []
-            for (const friend of friends) {
-                const result = await this.registerForFriend(friend.user_id, gameType)
-                results.push({
-                    user_id: friend.user_id,
-                    show_name: friend.show_name,
-                    success: result.success,
-                    message: result.message
-                })
-            }
+            const userIds = friends.map(friend => friend.user_id)
+            const result = await app.api.teamgame.batchAddFriendRegistration({
+                game_id: gameId,
+                game_type: gameType,
+                tag_id: selectedTagId,
+                user_ids: userIds
+            })
 
-            wx.hideLoading()
-
-            // 统计结果
-            const successCount = results.filter(r => r.success).length
-            const failedResults = results.filter(r => !r.success)
-
-            if (failedResults.length === 0) {
+            if (result?.code === 200) {
                 wx.showToast({
-                    title: `成功为 ${successCount} 位好友报名`,
+                    title: `成功为 ${friends.length} 位好友报名`,
                     icon: 'success'
                 })
                 setTimeout(() => {
                     wx.navigateBack({ delta: 1 })
                 }, 1500)
-            } else if (successCount > 0) {
-                // 部分成功
-                const failedNames = failedResults.map(r => r.show_name).join('、')
-                wx.showModal({
-                    title: '部分报名成功',
-                    content: `成功 ${successCount} 人，失败 ${failedResults.length} 人\n失败: ${failedNames}\n原因: ${failedResults[0].message}`,
-                    showCancel: false,
-                    success: () => {
-                        wx.navigateBack({ delta: 1 })
-                    }
-                })
-            } else {
-                // 全部失败
-                wx.showToast({
-                    title: failedResults[0].message || '报名失败',
-                    icon: 'none'
-                })
+                return
             }
+
+            wx.showToast({
+                title: result?.message || '报名失败',
+                icon: 'none'
+            })
         } catch (err) {
-            wx.hideLoading()
             console.error('[teamGameAddFriend] 报名失败:', err)
             wx.showToast({ title: '报名失败，请稍后重试', icon: 'none' })
         } finally {
+            wx.hideLoading()
             this.setData({ submitting: false })
-        }
-    },
-
-    /**
-     * 为单个好友报名
-     */
-    async registerForFriend(userId, gameType) {
-        const { gameId } = this.data
-
-        try {
-            const apiMethod = gameType === 'cross_teams'
-                ? app.api.teamgame.registerCrossTeamGame
-                : app.api.teamgame.registerSingleTeamGame
-
-            const result = await apiMethod({
-                game_id: gameId,
-                user_id: userId
-            })
-
-            if (result?.code === 200) {
-                return { success: true }
-            }
-            return { success: false, message: result?.message || '报名失败' }
-        } catch (err) {
-            return { success: false, message: err.message || '网络错误' }
         }
     },
 

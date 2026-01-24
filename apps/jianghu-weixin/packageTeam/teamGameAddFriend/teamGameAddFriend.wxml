@@ -1,6 +1,26 @@
 <CustomNavBar title="{{navTitle}}" showBack="{{true}}" />
 <view class="container">
   <view class="page-content">
+    <!-- 分队选择（必须选择一个）
+    规则：队内赛且只有 1 个分队时，默认选中并隐藏选择区-->
+    <view wx:if="{{!(gameType === 'single_team' && gameTags.length === 1)}}" class="tag-section">
+      <view class="tag-section-title">
+        请选择分队
+        <text class="required">*</text>
+      </view>
+
+      <radio-group class="tag-list" bindchange="onTagChange">
+        <label wx:for="{{gameTags}}" wx:key="id" class="tag-item">
+          <radio class="tag-radio" value="{{item.id}}" checked="{{selectedTagId === item.id}}" />
+          <text class="tag-name">{{item.tagName}}</text>
+        </label>
+      </radio-group>
+
+      <view wx:if="{{gameTags.length === 0}}" class="tag-empty">
+        <text>暂无分队，请联系管理员设置</text>
+      </view>
+    </view>
+
     <FriendPicker
       max-select="{{10}}"
       title="选择好友"

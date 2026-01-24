@@ -9,3 +9,58 @@
 .page-content {
     padding: 20rpx 24rpx;
 }
+
+/* 分队选择 */
+.tag-section {
+    background: #ffffff;
+    border-radius: 16rpx;
+    padding: 24rpx 20rpx;
+    margin-bottom: 20rpx;
+}
+
+.tag-section-title {
+    font-size: 28rpx;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 16rpx;
+}
+
+.required {
+    color: #e74c3c;
+    margin-left: 6rpx;
+}
+
+.tag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16rpx;
+}
+
+.tag-item {
+    display: flex;
+    align-items: center;
+    padding: 20rpx 16rpx;
+    border: 2rpx solid #e0e0e0;
+    border-radius: 12rpx;
+    background: #fff;
+}
+
+.tag-radio {
+    transform: scale(0.9);
+    margin-right: 12rpx;
+}
+
+.tag-name {
+    font-size: 30rpx;
+    color: var(--text-primary);
+}
+
+.tag-empty {
+    padding: 24rpx 0 0;
+    text-align: center;
+}
+
+.tag-empty text {
+    font-size: 26rpx;
+    color: var(--text-tertiary);
+}

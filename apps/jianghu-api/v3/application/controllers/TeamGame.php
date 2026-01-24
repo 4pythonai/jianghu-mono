@@ -1302,4 +1302,101 @@ class TeamGame extends MY_Controller {
             echo json_encode(['code' => 400, 'message' => $result['message']], JSON_UNESCAPED_UNICODE);
         }
     }
+
+
+    /**
+     * 批量替好友报名
+     * @param int game_id 赛事ID
+     * @param string game_type 赛事类型 single_team/cross_teams
+     * @param int tag_id 分队ID
+     * @param array user_ids 用户ID数组
+     */
+    public function batchAddFriendRegistration() {
+        $me = $this->getUser();
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+
+        $game_id = intval($json_paras['game_id'] ?? 0);
+        $tag_id = intval($json_paras['tag_id'] ?? 0);
+        $user_ids = $json_paras['user_ids'] ?? [];
+
+        // 参数校验
+        if (!$game_id || !$tag_id || empty($user_ids)) {
+            echo json_encode(['code' => 400, 'message' => '参数不完整'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 检查赛事状态
+        $game = $this->MTeamGame->getTeamGame($game_id);
+        if (!$game) {
+            echo json_encode(['code' => 400, 'message' => '赛事不存在'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+        if ($game['game_status'] != 'registering') {
+            echo json_encode(['code' => 400, 'message' => '当前赛事不在报名阶段'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 查询已存在的报名记录（通过 game_id + user_id）
+        $this->db->select('user_id');
+        $this->db->from('t_game_tag_member');
+        $this->db->where('game_id', $game_id);
+        $this->db->where_in('user_id', $user_ids);
+        $existingRows = $this->db->get()->result_array();
+        $existingUserIds = array_column($existingRows, 'user_id');
+
+        // 过滤出需要新增的 user_ids
+        $newUserIds = array_diff($user_ids, $existingUserIds);
+
+        if (empty($newUserIds)) {
+            echo json_encode(['code' => 200, 'message' => '所有好友均已报名'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 批量获取用户信息并构造插入数据
+        $insertData = [];
+        $now = date('Y-m-d H:i:s');
+
+        foreach ($newUserIds as $user_id) {
+            $userProfile = $this->MUser->getUserProfile($user_id);
+            if (!$userProfile) {
+                continue; // 用户不存在则跳过
+            }
+
+            $insertData[] = [
+                'tag_id' => $tag_id,
+                'user_id' => $user_id,
+                'game_id' => $game_id,
+                'join_time' => $now,
+                'apply_name' => $userProfile['show_name'] ?? null,
+                'gender' => $userProfile['gender'] ?? null,
+                'mobile' => $userProfile['mobile'] ?? null,
+                'payed' => 'n'
+            ];
+        }
+
+        if (empty($insertData)) {
+            echo json_encode(['code' => 400, 'message' => '没有有效的用户可报名'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 批量插入
+        $this->db->insert_batch('t_game_tag_member', $insertData);
+
+        $insertedCount = count($insertData);
+        $skippedCount = count($existingUserIds);
+
+        $message = "成功为 {$insertedCount} 位好友报名";
+        if ($skippedCount > 0) {
+            $message .= "，{$skippedCount} 位已报名被跳过";
+        }
+
+        echo json_encode([
+            'code' => 200,
+            'message' => $message,
+            'data' => [
+                'inserted' => $insertedCount,
+                'skipped' => $skippedCount
+            ]
+        ], JSON_UNESCAPED_UNICODE);
+    }
 }

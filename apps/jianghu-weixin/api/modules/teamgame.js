@@ -100,6 +100,10 @@ const teamgame = {
     // 报名人员的付款
     updateTagMemberPayment: (data, options) => request('/TeamGame/updateTagMemberPayment', data, options),
 
+    // 批量替代好友报名
+    batchAddFriendRegistration: (data, options) => request('/TeamGame/batchAddFriendRegistration', data, options),
+
+
 }
 
 export default teamgame
