@@ -52,7 +52,7 @@ Component({
     },
 
     lifetimes: {
-        attached() {
+        async attached() {
             // 绑定 gameStore
             this.storeBindings = createStoreBindings(this, {
                 store: gameStore,
@@ -67,7 +67,14 @@ Component({
                     'loadTagMembers'
                 ]
             })
-            // 初始化时计算一次
+
+            // 组件挂载时刷新报名人员数据
+            const gameid = gameStore.gameid
+            if (gameid) {
+                console.log('AAAAAAAAAAA attached 刷新数据', { gameid })
+                await this.loadTagMembers(gameid)
+            }
+            // 刷新 UI
             this.refreshTagMemberGroups(gameStore.gameTags, gameStore.tagMembers)
         },
         detached() {
@@ -77,17 +84,48 @@ Component({
         }
     },
 
+    pageLifetimes: {
+        async show() {
+            console.log('AAAAAAAAAAA pageLifetimes.show 触发', {
+                gameid: this.data.gameid,
+                storeGameid: gameStore.gameid,
+                storeTagMembersCount: gameStore.tagMembers?.length
+            })
+            // 页面显示时刷新报名人员数据
+            const gameid = this.data.gameid || gameStore.gameid
+            if (gameid) {
+                console.log('AAAAAAAAAAA 开始调用 loadTagMembers', { gameid })
+                await this.loadTagMembers(gameid)
+                console.log('AAAAAAAAAAA loadTagMembers 完成', {
+                    storeTagMembersCount: gameStore.tagMembers?.length,
+                    storeGameTagsCount: gameStore.gameTags?.length
+                })
+                // 直接从 store 读取最新数据并刷新 UI
+                this.refreshTagMemberGroups(gameStore.gameTags, gameStore.tagMembers)
+                console.log('AAAAAAAAAAA refreshTagMemberGroups 完成')
+            } else {
+                console.log('AAAAAAAAAAA gameid 为空，跳过刷新')
+            }
+        }
+    },
+
     methods: {
         refreshTagMemberGroups(gameTags = [], tagMembers = []) {
+            console.log('AAAAAAAAAAA refreshTagMemberGroups 被调用', {
+                gameTagsInput: gameTags?.length,
+                tagMembersInput: tagMembers?.length
+            })
             const tags = Array.isArray(gameTags) ? gameTags : []
             const members = Array.isArray(tagMembers) ? tagMembers : []
             const result = buildTagMemberGroups(tags, members)
-            console.log('[RegistrationTab] 刷新报名分组', {
+            console.log('AAAAAAAAAAA refreshTagMemberGroups 结果', {
                 gameTagsCount: tags.length,
                 tagMembersCount: members.length,
-                groupCount: result.length
+                groupCount: result.length,
+                resultPreview: result.slice(0, 2)
             })
             this.setData({ tagMemberGroups: result })
+            console.log('AAAAAAAAAAA setData 完成')
         },
 
         handleEditMember(event) {

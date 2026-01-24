@@ -102,7 +102,7 @@ Component({
             const userInfo = app?.globalData?.userInfo
 
             if (!userInfo) {
-                wx.showToast({ title: '请先登录', icon: 'none' })
+                wx.showModal({ title: '提示', content: '请先登录', showCancel: false })
                 return
             }
 
@@ -172,7 +172,7 @@ Component({
             const gameId = this.data.gameid
 
             if (!selectedTagId) {
-                wx.showToast({ title: '请选择分队', icon: 'none' })
+                wx.showModal({ title: '提示', content: '请选择分队', showCancel: false })
                 return
             }
 
@@ -204,12 +204,12 @@ Component({
                         formData: registerForm
                     })
                 } else {
-                    wx.showToast({ title: result.message || '报名失败', icon: 'none' })
+                    wx.showModal({ title: '提示', content: result.message || '报名失败', showCancel: false })
                 }
             } catch (err) {
                 wx.hideLoading()
                 console.error('[EventDetailTab] 报名失败:', err)
-                wx.showToast({ title: '报名失败，请稍后重试', icon: 'none' })
+                wx.showModal({ title: '提示', content: '报名失败，请稍后重试', showCancel: false })
             }
         },
 

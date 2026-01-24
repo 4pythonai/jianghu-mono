@@ -96,13 +96,14 @@ Page({
             })
 
             if (result?.code === 200) {
-                wx.showToast({
-                    title: `成功为 ${friends.length} 位好友报名`,
-                    icon: 'success'
+                wx.showModal({
+                    title: '提示',
+                    content: result.message,
+                    showCancel: false,
+                    success: () => {
+                        wx.navigateBack({ delta: 1 })
+                    }
                 })
-                setTimeout(() => {
-                    wx.navigateBack({ delta: 1 })
-                }, 1500)
                 return
             }
 

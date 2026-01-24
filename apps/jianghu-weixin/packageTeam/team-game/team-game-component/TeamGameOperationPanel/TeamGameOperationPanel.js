@@ -14,6 +14,10 @@ Component({
         onActionTap(e) {
             const action = e.currentTarget.dataset.action
             this.triggerEvent('action', { action })
+        },
+
+        preventBubble() {
+            // 阻止事件冒泡，不需要执行任何操作
         }
     }
 })

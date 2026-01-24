@@ -1,5 +1,5 @@
 <view wx:if="{{show}}" class="event-detail-popup-mask" bindtap="onClose">
-  <view class="event-detail-popup-content" catchtap>
+  <view class="event-detail-popup-content" catchtap="preventBubble">
     <view class="event-detail-popup-handle"></view>
     <view class="event-detail-actions-grid">
       <view class="event-detail-action-item" data-action="registerForFriend" bindtap="onActionTap">
