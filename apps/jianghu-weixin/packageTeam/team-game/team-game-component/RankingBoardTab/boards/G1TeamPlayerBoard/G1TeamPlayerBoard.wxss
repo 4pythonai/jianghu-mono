@@ -129,17 +129,24 @@
     border-bottom: 1rpx solid #e0e0e0;
 }
 
+.player-section {
+    border-bottom: 1rpx solid #eee;
+}
+
+.player-section:last-child {
+    border-bottom: none;
+}
+
 .player-row {
     display: flex;
     flex-direction: row;
     align-items: center;
     font-size: 26rpx;
     color: var(--text-primary);
-    border-bottom: 1rpx solid #eee;
 }
 
-.player-row:last-child {
-    border-bottom: none;
+.player-row.player-expanded {
+    background: rgba(45, 140, 255, 0.05);
 }
 
 .p-col {
@@ -192,5 +199,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.player-expand-icon {
+    font-size: 18rpx;
+    color: var(--text-tertiary);
+    margin-left: 8rpx;
+    transition: transform 0.2s ease;
+}
+
+.player-expand-icon.rotated {
+    transform: rotate(180deg);
 }
 

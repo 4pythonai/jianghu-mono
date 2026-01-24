@@ -1,5 +1,7 @@
 {
   "component": true,
-  "usingComponents": {}
+  "usingComponents": {
+    "ExpandPlayerScore": "../VerticalPlayerBoard/ExpandPlayerScore/ExpandPlayerScore"
+  }
 }
 

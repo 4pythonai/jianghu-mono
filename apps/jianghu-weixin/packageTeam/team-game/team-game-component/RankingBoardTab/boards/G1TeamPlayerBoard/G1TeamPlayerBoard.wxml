@@ -48,14 +48,31 @@
           wx:for="{{expandedPlayers}}"
           wx:for-item="player"
           wx:key="user_id"
-          class="player-row"
+          class="player-section"
         >
-          <view class="p-col p-col-rank">{{player.rank_label}}</view>
-          <view class="p-col p-col-player">
-            <image class="player-avatar" src="{{player.avatarUrl}}" mode="aspectFill" />
-            <text class="player-name">{{player.show_name}}</text>
+          <!-- Player row (clickable) -->
+          <view
+            class="player-row {{expandedPlayerId === player.user_id ? 'player-expanded' : ''}}"
+            bindtap="onPlayerRowTap"
+            data-user-id="{{player.user_id}}"
+          >
+            <view class="p-col p-col-rank">{{player.rank_label}}</view>
+            <view class="p-col p-col-player">
+              <image class="player-avatar" src="{{player.avatarUrl}}" mode="aspectFill" />
+              <text class="player-name">{{player.show_name}}</text>
+            </view>
+            <view class="p-col p-col-score">
+              <text>{{player.scoreText}}</text>
+              <view class="player-expand-icon {{expandedPlayerId === player.user_id ? 'rotated' : ''}}">▼</view>
+            </view>
           </view>
-          <view class="p-col p-col-score">{{player.scoreText}}</view>
+
+          <!-- Player score detail -->
+          <ExpandPlayerScore
+            wx:if="{{expandedPlayerId === player.user_id && holeList.length > 0 && player.playerIndex >= 0}}"
+            holeList="{{holeList}}"
+            playerScores="{{displayScores[player.playerIndex]}}"
+          />
         </view>
       </view>
     </view>
