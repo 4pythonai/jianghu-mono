@@ -101,7 +101,7 @@ Component({
                 ? resultText
                 : (status === 'playing' ? '进行中' : '未开始')
 
-            const thruLabel = this.formatThruLabel(match?.holes_played, status)
+            const thruLabel = this.formatThruLabel(match?.holes_played)
 
             return {
                 group_id: match.group_id,
@@ -173,11 +173,7 @@ Component({
             return String(num)
         },
 
-        formatThruLabel(holesPlayed, status) {
-            // Match play: when finished, UI shows F (even if ended early like 6&4 at 14).
-            if (status === 'finished') {
-                return 'F'
-            }
+        formatThruLabel(holesPlayed) {
             const n = Number(holesPlayed)
             if (!Number.isFinite(n) || n <= 0) {
                 return ''

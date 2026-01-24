@@ -24,6 +24,7 @@
     >
       <view class="col col-rank">{{item.rankText}}</view>
       <view class="col col-player">
+        <view wx:if="{{item.tag_color}}" class="tag-dot" style="background-color: {{item.tag_color}}"></view>
         <image class="avatar" mode="aspectFill" src="{{item.avatarUrl}}" />
         <text class="name">{{item.show_name}}</text>
       </view>

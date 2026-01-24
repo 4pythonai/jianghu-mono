@@ -78,6 +78,24 @@ class ScoreBoard extends MY_Controller {
             return;
         }
 
+        // G1 special: when there are 2+ tags, return team + player combined structure
+        if ($match_format === 'individual_stroke') {
+            $combined = $this->tryBuildG1TeamPlayerData($game_id, $game, $total_holes);
+            if (isset($combined['error'])) {
+                $this->respondError($combined['code'], $combined['error']);
+                return;
+            }
+            if ($combined) {
+                $data = array_merge([
+                    'layout' => $layout,
+                    'match_format' => $match_format,
+                    'game_type' => $game_type
+                ], $combined);
+                $this->respondOk($data);
+                return;
+            }
+        }
+
         $data = $this->buildStrokePlayData($game_id, $match_format, $game_type, $total_holes);
         $data = array_merge([
             'layout' => $layout,
@@ -85,6 +103,209 @@ class ScoreBoard extends MY_Controller {
             'game_type' => $game_type
         ], $data);
         $this->respondOk($data);
+    }
+
+    private function tryBuildG1TeamPlayerData($game_id, $game, $total_holes) {
+        // Require at least 2 tags with members
+        $tag_members = $this->getTagMembersFromGroups($game_id);
+        if (count($tag_members) < 2) {
+            return null;
+        }
+
+        $n = isset($game['top_n_ranking']) && $game['top_n_ranking'] ? (int) $game['top_n_ranking'] : null;
+        if (!$n) {
+            $min_size = null;
+            foreach ($tag_members as $tag) {
+                $size = count($tag['user_ids']);
+                if ($min_size === null || $size < $min_size) {
+                    $min_size = $size;
+                }
+            }
+            $n = (int) ($min_size ?? 0);
+        }
+        if ($n <= 0) {
+            // No valid N to compute teams
+            return null;
+        }
+
+        $player_rows = $this->buildG1PlayerRowsWithTag($game_id, $total_holes);
+        $player_score_map = [];
+        $player_thru_map = [];
+        foreach ($player_rows as $row) {
+            $uid = (int) ($row['user_id'] ?? 0);
+            if (!$uid) {
+                continue;
+            }
+            $player_score_map[$uid] = (int) ($row['score'] ?? 0);
+            $player_thru_map[$uid] = (int) ($row['thru'] ?? 0);
+        }
+
+        $team_rows = [];
+        foreach ($tag_members as $tag_id => $tag_info) {
+            $team_size = count($tag_info['user_ids']);
+            $forfeit = $team_size < $n;
+
+            $team_score = null;
+            if (!$forfeit) {
+                $candidates = [];
+                foreach ($tag_info['user_ids'] as $uid) {
+                    $candidates[] = [
+                        'user_id' => $uid,
+                        'score' => $player_score_map[$uid] ?? 0,
+                        'thru' => $player_thru_map[$uid] ?? 0
+                    ];
+                }
+                usort($candidates, function ($a, $b) {
+                    if ((int) $a['score'] === (int) $b['score']) {
+                        return ((int) $b['thru']) <=> ((int) $a['thru']);
+                    }
+                    return ((int) $a['score']) <=> ((int) $b['score']);
+                });
+                $top = array_slice($candidates, 0, $n);
+                $sum = 0;
+                foreach ($top as $p) {
+                    $sum += (int) $p['score'];
+                }
+                $team_score = $sum;
+            }
+
+            $team_rows[] = [
+                'tag_id' => (int) $tag_id,
+                'tag_name' => $tag_info['tag_name'] ?? '',
+                'tag_color' => $tag_info['tag_color'] ?? null,
+                'score' => $forfeit ? PHP_INT_MAX : (int) $team_score,
+                'valid_n' => (int) $n,
+                'forfeit' => $forfeit
+            ];
+        }
+
+        // Sort teams: forfeit last, then score asc
+        usort($team_rows, function ($a, $b) {
+            $af = !empty($a['forfeit']);
+            $bf = !empty($b['forfeit']);
+            if ($af !== $bf) {
+                return $af ? 1 : -1;
+            }
+            return ((int) $a['score']) <=> ((int) $b['score']);
+        });
+
+        // Rank non-forfeit teams, then put forfeits at last rank
+        $non_forfeit = array_values(array_filter($team_rows, function ($r) {
+            return empty($r['forfeit']);
+        }));
+        $forfeits = array_values(array_filter($team_rows, function ($r) {
+            return !empty($r['forfeit']);
+        }));
+
+        $ranked_non_forfeit = $this->applyRanking(array_map(function ($r) {
+            return array_merge($r, ['thru' => 0]);
+        }, $non_forfeit));
+
+        $ranked_forfeits = [];
+        if (!empty($forfeits)) {
+            $last_rank = count($ranked_non_forfeit) + 1;
+            $label = count($forfeits) > 1 ? ('T' . $last_rank) : (string) $last_rank;
+            foreach ($forfeits as $r) {
+                $r['rank'] = $last_rank;
+                $r['rank_label'] = $label;
+                $ranked_forfeits[] = $r;
+            }
+        }
+
+        $ranked_team_rows = array_merge($ranked_non_forfeit, $ranked_forfeits);
+
+        return [
+            'mode' => 'team_player',
+            'team' => [
+                'row_type' => 'tag',
+                'n' => (int) $n,
+                'rows' => $ranked_team_rows
+            ],
+            'player' => [
+                'row_type' => 'player',
+                'rows' => $player_rows
+            ]
+        ];
+    }
+
+    private function getTagMembersFromGroups($game_id) {
+        $groups = $this->getGroupsWithMembers($game_id);
+        $tag_members = [];
+        foreach ($groups as $group) {
+            foreach (($group['members'] ?? []) as $m) {
+                $tag_id = isset($m['tag_id']) ? (int) $m['tag_id'] : 0;
+                $user_id = isset($m['user_id']) ? (int) $m['user_id'] : 0;
+                if (!$tag_id || !$user_id) {
+                    continue;
+                }
+                if (!isset($tag_members[$tag_id])) {
+                    $tag_members[$tag_id] = [
+                        'tag_id' => $tag_id,
+                        'tag_name' => $m['tag_name'] ?? '',
+                        'tag_color' => $m['tag_color'] ?? null,
+                        'user_ids' => []
+                    ];
+                }
+                $tag_members[$tag_id]['user_ids'][$user_id] = $user_id;
+            }
+        }
+        // normalize user_ids to indexed list and keep only tags with members
+        foreach ($tag_members as $tag_id => &$info) {
+            $info['user_ids'] = array_values($info['user_ids']);
+        }
+        unset($info);
+        return $tag_members;
+    }
+
+    private function buildG1PlayerRowsWithTag($game_id, $total_holes) {
+        $score_stats = $this->getPlayerScoreStats($game_id);
+        $groups = $this->getGroupsWithMembers($game_id);
+
+        $players = [];
+        $user_tag_map = [];
+        foreach ($groups as $group) {
+            foreach (($group['members'] ?? []) as $member) {
+                $uid = (int) ($member['user_id'] ?? 0);
+                if (!$uid) {
+                    continue;
+                }
+                $players[$uid] = [
+                    'show_name' => $member['show_name'] ?? '',
+                    'avatar' => $member['avatar'] ?? ''
+                ];
+                if (!isset($user_tag_map[$uid]) && isset($member['tag_id'])) {
+                    $user_tag_map[$uid] = [
+                        'tag_id' => $member['tag_id'] ?? null,
+                        'tag_name' => $member['tag_name'] ?? '',
+                        'tag_color' => $member['tag_color'] ?? null
+                    ];
+                }
+            }
+        }
+
+        $player_ids = array_unique(array_merge(array_keys($score_stats), array_keys($players)));
+        $user_map = $this->getUserMap($player_ids, $players);
+
+        $rows = [];
+        foreach ($player_ids as $user_id) {
+            $stats = $score_stats[$user_id] ?? ['score' => 0, 'thru' => 0];
+            $user = $user_map[$user_id] ?? ['show_name' => '', 'avatar' => ''];
+            $thru_label = $this->formatThruLabel($stats['thru'], $total_holes);
+            $tag = $user_tag_map[$user_id] ?? ['tag_id' => null, 'tag_name' => '', 'tag_color' => null];
+            $rows[] = [
+                'user_id' => $user_id,
+                'show_name' => $user['show_name'],
+                'avatar' => $user['avatar'],
+                'score' => $stats['score'],
+                'thru' => $stats['thru'],
+                'thru_label' => $thru_label,
+                'tag_id' => $tag['tag_id'],
+                'tag_name' => $tag['tag_name'],
+                'tag_color' => $tag['tag_color']
+            ];
+        }
+
+        return $this->applyRanking($rows);
     }
 
     private function tryBuildMatchPlaySummaryData($game_id, $match_format, $game_type, $total_holes) {
@@ -1075,7 +1296,7 @@ class ScoreBoard extends MY_Controller {
     }
 
     private function getGameRow($game_id) {
-        return $this->db->select('id, game_type, match_format, holeList')
+        return $this->db->select('id, game_type, match_format, holeList, top_n_ranking')
             ->from('t_game')
             ->where('id', $game_id)
             ->get()

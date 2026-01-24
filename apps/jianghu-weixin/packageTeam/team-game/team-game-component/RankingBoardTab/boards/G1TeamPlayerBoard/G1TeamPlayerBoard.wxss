@@ -1,0 +1,172 @@
+.g1-board {
+    margin: 10rpx;
+}
+
+.team-board {
+    background: #fff;
+    border-radius: 16rpx;
+    overflow: hidden;
+}
+
+.team-header {
+    display: flex;
+    align-items: stretch;
+    font-size: 24rpx;
+    color: var(--text-secondary);
+    background: #f7f7f7;
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.team-section {
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.team-section:last-child {
+    border-bottom: none;
+}
+
+.team-row {
+    display: flex;
+    align-items: stretch;
+    font-size: 26rpx;
+    color: var(--text-primary);
+}
+
+.team-row.expanded {
+    background: #f9f9f9;
+}
+
+.col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18rpx 12rpx;
+    border-right: 1rpx solid #e0e0e0;
+    box-sizing: border-box;
+}
+
+.col-rank {
+    width: 80rpx;
+}
+
+.col-team {
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.col-valid {
+    width: 140rpx;
+}
+
+.col-score {
+    width: 140rpx;
+    border-right: none;
+}
+
+.team-name-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10rpx;
+    min-width: 0;
+}
+
+.expand-icon {
+    font-size: 20rpx;
+    color: var(--text-tertiary);
+    width: 24rpx;
+    flex: 0 0 auto;
+}
+
+.team-dot {
+    width: 18rpx;
+    height: 18rpx;
+    border-radius: 50%;
+    flex: 0 0 auto;
+}
+
+.team-name {
+    max-width: 300rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.forfeit-text {
+    font-size: 22rpx;
+    color: var(--text-tertiary);
+    padding: 2rpx 8rpx;
+    border: 1rpx solid rgba(0, 0, 0, 0.08);
+    border-radius: 999rpx;
+}
+
+.forfeit {
+    opacity: 0.7;
+}
+
+.empty {
+    padding: 50rpx 40rpx;
+    text-align: center;
+}
+
+.empty-text {
+    font-size: 24rpx;
+    color: var(--text-tertiary);
+}
+
+/* Player list (expanded) */
+.player-list {
+    background: #fafafa;
+    padding: 16rpx 20rpx;
+}
+
+.player-empty {
+    text-align: center;
+    font-size: 24rpx;
+    color: var(--text-tertiary);
+    padding: 20rpx 0;
+}
+
+.player-item {
+    display: flex;
+    align-items: center;
+    padding: 12rpx 0;
+    gap: 16rpx;
+}
+
+.player-item:not(:last-child) {
+    border-bottom: 1rpx solid #eee;
+}
+
+.player-rank {
+    width: 60rpx;
+    font-size: 24rpx;
+    color: var(--text-secondary);
+    text-align: center;
+    flex: 0 0 auto;
+}
+
+.player-avatar {
+    width: 56rpx;
+    height: 56rpx;
+    border-radius: 50%;
+    background: #e0e0e0;
+    flex: 0 0 auto;
+}
+
+.player-name {
+    flex: 1;
+    font-size: 26rpx;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.player-score {
+    width: 80rpx;
+    font-size: 26rpx;
+    color: var(--text-primary);
+    text-align: right;
+    flex: 0 0 auto;
+}
+

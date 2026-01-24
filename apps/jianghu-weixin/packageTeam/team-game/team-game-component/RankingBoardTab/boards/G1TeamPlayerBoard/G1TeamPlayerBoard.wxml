@@ -1,0 +1,55 @@
+<view class="g1-board">
+  <!-- Team board with accordion -->
+  <view class="team-board">
+    <view class="team-header">
+      <view class="col col-rank">排名</view>
+      <view class="col col-team">球队</view>
+      <view class="col col-valid">有效人数</view>
+      <view class="col col-score">成绩</view>
+    </view>
+
+    <view wx:if="{{teamRows.length === 0}}" class="empty">
+      <text class="empty-text">暂无分队成绩</text>
+    </view>
+
+    <view wx:for="{{teamRows}}" wx:key="tag_id" class="team-section">
+      <!-- Team row (clickable) -->
+      <view
+        class="team-row {{item.isForfeit ? 'forfeit' : ''}} {{expandedTagId === item.tag_id ? 'expanded' : ''}}"
+        bindtap="onTeamRowTap"
+        data-tag-id="{{item.tag_id}}"
+      >
+        <view class="col col-rank">{{item.rankText}}</view>
+        <view class="col col-team">
+          <view class="team-name-wrap">
+            <view class="expand-icon">{{expandedTagId === item.tag_id ? '▼' : '▶'}}</view>
+            <view class="team-dot" style="background-color: {{item.tag_color || '#999'}}"></view>
+            <text class="team-name">{{item.tag_name}}</text>
+            <text wx:if="{{item.isForfeit}}" class="forfeit-text">弃赛</text>
+          </view>
+        </view>
+        <view class="col col-valid">{{item.validNText}}</view>
+        <view class="col col-score">{{item.scoreText}}</view>
+      </view>
+
+      <!-- Expanded player list -->
+      <view wx:if="{{expandedTagId === item.tag_id}}" class="player-list">
+        <view wx:if="{{expandedPlayers.length === 0}}" class="player-empty">
+          <text>暂无球员</text>
+        </view>
+        <view
+          wx:for="{{expandedPlayers}}"
+          wx:for-item="player"
+          wx:key="user_id"
+          class="player-item"
+        >
+          <text class="player-rank">{{player.rank_label}}</text>
+          <image class="player-avatar" src="{{player.avatar}}" mode="aspectFill" />
+          <text class="player-name">{{player.show_name}}</text>
+          <text class="player-score">{{player.scoreText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+

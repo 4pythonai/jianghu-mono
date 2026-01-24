@@ -104,6 +104,61 @@
 + `rows[].members`：组合成员（来自分组 group）
 + `rows[].group_*`：该组合所属分组
 
+### 3.1.1 G1 分队>=2（mode = team_player）
+当 `match_format=individual_stroke` 且存在 2 个及以上分队（TAG）时，返回分队榜 + 球员榜的组合结构：
+
+```json
+{
+  "code": 200,
+  "data": {
+    "layout": "vertical",
+    "match_format": "individual_stroke",
+    "game_type": "single_team",
+    "mode": "team_player",
+    "team": {
+      "row_type": "tag",
+      "n": 3,
+      "rows": [
+        {
+          "rank": 1,
+          "rank_label": "T1",
+          "tag_id": 137,
+          "tag_name": "红队",
+          "tag_color": "#D32F2F",
+          "score": 5,
+          "valid_n": 3,
+          "forfeit": false
+        }
+      ]
+    },
+    "player": {
+      "row_type": "player",
+      "rows": [
+        {
+          "rank": 1,
+          "rank_label": "T1",
+          "user_id": 1,
+          "show_name": "awen",
+          "avatar": "...",
+          "score": -2,
+          "thru": 14,
+          "thru_label": "14",
+          "tag_id": 137,
+          "tag_name": "红队",
+          "tag_color": "#D32F2F"
+        }
+      ]
+    }
+  }
+}
+```
+
+说明：
+- `team.rows[].score`：该分队按“前 N 名球员总杆差（score diff）求和”的团队成绩（越小越好）。
+- `team.rows[].valid_n`：前端“有效人数”列显示用，等于全场统一的 N。
+- `team.rows[].forfeit`：当分队人数不足 N 时为 true，视为弃赛并排到最后。
+- `player.rows[]`：在该模式下会附带 `tag_*` 方便前端展示队色/队徽点。\n+  玩家排名与团队 topN 选取都允许进行中数据实时滚动。
+
 ### 3.2 横向对阵（layout = horizontal）
 ```json
 {

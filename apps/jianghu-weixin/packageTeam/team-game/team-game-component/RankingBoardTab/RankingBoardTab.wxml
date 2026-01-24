@@ -6,9 +6,17 @@
     <text class="ranking-placeholder-text">暂无成绩数据</text>
   </view>
   <view wx:else>
+    <G1TeamPlayerBoard
+      wx:if="{{scoreboard.layout === 'vertical' && scoreboard.mode === 'team_player'}}"
+      boardData="{{scoreboard}}"
+      holeList="{{holeList}}"
+      players="{{players}}"
+      displayScores="{{displayScores}}"
+    />
+
     <!-- 竖向列表 player-->
     <VerticalPlayerBoard
-      wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'player'}}"
+      wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'player' && scoreboard.mode !== 'team_player'}}"
       boardData="{{scoreboard}}"
       holeList="{{holeList}}"
       players="{{players}}"
@@ -17,7 +25,7 @@
 
     <!-- 竖向列表 TAG-->
     <VerticalTagBoard
-      wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'tag'}}"
+      wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'tag' && scoreboard.mode !== 'team_player'}}"
       boardData="{{scoreboard}}"
     />
     <HorizontalMatchBoard

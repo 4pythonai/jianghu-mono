@@ -6,7 +6,6 @@
       <text class="team-name">{{vm.header.left.tag_name}}</text>
       <text class="team-points">{{vm.header.pointsLeftText}}</text>
     </view>
-    <text class="team-vs">:</text>
     <view class="team team-right">
       <text class="team-points">{{vm.header.pointsRightText}}</text>
       <text class="team-name">{{vm.header.right.tag_name}}</text>
