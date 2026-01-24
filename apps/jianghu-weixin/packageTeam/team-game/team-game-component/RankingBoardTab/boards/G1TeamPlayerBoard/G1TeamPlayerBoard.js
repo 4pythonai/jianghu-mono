@@ -2,6 +2,8 @@
  * G1 team + player board (team_player mode).
  * 手风琴式折叠展开：点击分队行展开该队球员列表
  */
+import { imageUrl } from '@/utils/image'
+
 Component({
     properties: {
         boardData: {
@@ -71,6 +73,7 @@ Component({
                     .filter(p => p.tag_id === tagId)
                     .map(p => ({
                         ...p,
+                        avatarUrl: imageUrl(p.avatar),
                         scoreText: this.formatPlayerScore(p)
                     }))
                 this.setData({ expandedTagId: tagId, expandedPlayers: players })

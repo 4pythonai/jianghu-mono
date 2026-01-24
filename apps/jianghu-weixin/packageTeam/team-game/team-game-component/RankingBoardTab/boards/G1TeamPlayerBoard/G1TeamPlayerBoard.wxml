@@ -34,6 +34,13 @@
 
       <!-- Expanded player list -->
       <view wx:if="{{expandedTagId === item.tag_id}}" class="player-list">
+        <!-- Player header -->
+        <view class="player-header">
+          <view class="p-col p-col-rank">排名</view>
+          <view class="p-col p-col-player">球员</view>
+          <view class="p-col p-col-score">成绩</view>
+        </view>
+
         <view wx:if="{{expandedPlayers.length === 0}}" class="player-empty">
           <text>暂无球员</text>
         </view>
@@ -41,12 +48,14 @@
           wx:for="{{expandedPlayers}}"
           wx:for-item="player"
           wx:key="user_id"
-          class="player-item"
+          class="player-row"
         >
-          <text class="player-rank">{{player.rank_label}}</text>
-          <image class="player-avatar" src="{{player.avatar}}" mode="aspectFill" />
-          <text class="player-name">{{player.show_name}}</text>
-          <text class="player-score">{{player.scoreText}}</text>
+          <view class="p-col p-col-rank">{{player.rank_label}}</view>
+          <view class="p-col p-col-player">
+            <image class="player-avatar" src="{{player.avatarUrl}}" mode="aspectFill" />
+            <text class="player-name">{{player.show_name}}</text>
+          </view>
+          <view class="p-col p-col-score">{{player.scoreText}}</view>
         </view>
       </view>
     </view>

@@ -33,7 +33,8 @@
 }
 
 .team-row.expanded {
-    background: #f9f9f9;
+    background: linear-gradient(90deg, rgba(45, 140, 255, 0.08) 0%, rgba(45, 140, 255, 0.02) 100%);
+    border-left: 6rpx solid #2d8cff;
 }
 
 .col {
@@ -116,7 +117,58 @@
 /* Player list (expanded) */
 .player-list {
     background: #fafafa;
-    padding: 16rpx 20rpx;
+}
+
+.player-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 22rpx;
+    color: var(--text-secondary);
+    background: #f0f0f0;
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.player-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 26rpx;
+    color: var(--text-primary);
+    border-bottom: 1rpx solid #eee;
+}
+
+.player-row:last-child {
+    border-bottom: none;
+}
+
+.p-col {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 14rpx 10rpx;
+    border-right: 1rpx solid #e0e0e0;
+    box-sizing: border-box;
+}
+
+.p-col-rank {
+    width: 80rpx; /* 与父表格排名列宽度一致 */
+    flex-shrink: 0;
+}
+
+.p-col-player {
+    flex: 1; /* 占据父表格球队+有效人数列的空间 */
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 12rpx;
+    padding-left: 20rpx;
+}
+
+.p-col-score {
+    width: 140rpx; /* 与父表格成绩列宽度一致 */
+    flex-shrink: 0;
+    border-right: none;
 }
 
 .player-empty {
@@ -126,47 +178,19 @@
     padding: 20rpx 0;
 }
 
-.player-item {
-    display: flex;
-    align-items: center;
-    padding: 12rpx 0;
-    gap: 16rpx;
-}
-
-.player-item:not(:last-child) {
-    border-bottom: 1rpx solid #eee;
-}
-
-.player-rank {
-    width: 60rpx;
-    font-size: 24rpx;
-    color: var(--text-secondary);
-    text-align: center;
-    flex: 0 0 auto;
-}
-
 .player-avatar {
-    width: 56rpx;
-    height: 56rpx;
+    width: 48rpx;
+    height: 48rpx;
     border-radius: 50%;
     background: #e0e0e0;
-    flex: 0 0 auto;
+    flex-shrink: 0;
 }
 
 .player-name {
     flex: 1;
-    font-size: 26rpx;
-    color: var(--text-primary);
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.player-score {
-    width: 80rpx;
-    font-size: 26rpx;
-    color: var(--text-primary);
-    text-align: right;
-    flex: 0 0 auto;
 }
 
