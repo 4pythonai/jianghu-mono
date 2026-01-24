@@ -39,12 +39,16 @@ class ScoreBoard extends MY_Controller {
         $game_type = $game['game_type'] ?? 'common';
         $layout = $this->isMatchFormat($match_format) ? 'horizontal' : 'vertical';
         $total_holes = $this->getTotalHoles($game_id, $game['holeList'] ?? null);
+        if (!$total_holes) {
+            // Match play defaults to 18 holes when holeList is missing.
+            $total_holes = 18;
+        }
 
         if ($layout === 'horizontal') {
             // Match play summary mode: when multiple groups exist and no group_id is provided,
             // return aggregated points + matches list instead of erroring.
             if (!$group_id) {
-                $summary = $this->tryBuildMatchPlaySummaryData($game_id, $match_format, $game_type);
+                $summary = $this->tryBuildMatchPlaySummaryData($game_id, $match_format, $game_type, $total_holes);
                 if (isset($summary['error'])) {
                     $this->respondError($summary['code'], $summary['error']);
                     return;
@@ -60,7 +64,7 @@ class ScoreBoard extends MY_Controller {
                 }
             }
 
-            $result = $this->buildMatchPlayData($game_id, $group_id, $match_format, $game_type);
+            $result = $this->buildMatchPlayData($game_id, $group_id, $match_format, $game_type, $total_holes);
             if (isset($result['error'])) {
                 $this->respondError($result['code'], $result['error']);
                 return;
@@ -83,7 +87,7 @@ class ScoreBoard extends MY_Controller {
         $this->respondOk($data);
     }
 
-    private function tryBuildMatchPlaySummaryData($game_id, $match_format, $game_type) {
+    private function tryBuildMatchPlaySummaryData($game_id, $match_format, $game_type, $total_holes) {
         // Prefer groups that already have match results; fallback to game groups.
         $group_ids = $this->getMatchGroupIds($game_id);
         if (count($group_ids) <= 1) {
@@ -93,10 +97,10 @@ class ScoreBoard extends MY_Controller {
             return null;
         }
 
-        return $this->buildMatchPlaySummaryData($game_id, $match_format, $game_type);
+        return $this->buildMatchPlaySummaryData($game_id, $match_format, $game_type, $total_holes);
     }
 
-    private function buildMatchPlaySummaryData($game_id, $match_format, $game_type) {
+    private function buildMatchPlaySummaryData($game_id, $match_format, $game_type, $total_holes) {
         $groups = $this->getGroupsWithMembers($game_id);
         if (count($groups) <= 1) {
             return ['error' => '未找到分组', 'code' => 404];
@@ -115,6 +119,7 @@ class ScoreBoard extends MY_Controller {
         $right_tag = $tags[1];
 
         $match_result_map = $this->getMatchResultRowsMap($game_id);
+        $score_index = $this->getScoresIndexByGameId($game_id);
 
         $points_left = 0.0;
         $points_right = 0.0;
@@ -138,10 +143,20 @@ class ScoreBoard extends MY_Controller {
             }
 
             $match_result = $match_result_map[$gid] ?? null;
-            $result_payload = $this->buildMatchResultPayload($match_result, $sides['left'], $sides['right'], $match_format);
+            $computed = $this->computeMatchResultRowFromScores(
+                $match_format,
+                $gid,
+                $members,
+                $sides['left'],
+                $sides['right'],
+                $score_index,
+                $total_holes
+            );
+            $effective_match_result = $this->fillMissingMatchResultFields($match_result, $computed);
+            $result_payload = $this->buildMatchResultPayload($effective_match_result, $sides['left'], $sides['right'], $match_format);
 
             // Only count points for finished matches.
-            $status = $match_result['status'] ?? null;
+            $status = $effective_match_result['status'] ?? null;
             $winner_side = $result_payload['result']['winner_side'] ?? null;
             if ($status === 'finished' && $winner_side) {
                 if ($winner_side === 'left') {
@@ -161,11 +176,9 @@ class ScoreBoard extends MY_Controller {
                 'right' => $sides['right'],
             ], $result_payload);
 
-            if ($match_result) {
-                $match_entry['status'] = $match_result['status'] ?? null;
-                $match_entry['holes_played'] = isset($match_result['holes_played']) ? (int) $match_result['holes_played'] : null;
-                $match_entry['holes_remaining'] = isset($match_result['holes_remaining']) ? (int) $match_result['holes_remaining'] : null;
-            }
+            $match_entry['status'] = $effective_match_result['status'] ?? null;
+            $match_entry['holes_played'] = isset($effective_match_result['holes_played']) ? (int) $effective_match_result['holes_played'] : null;
+            $match_entry['holes_remaining'] = isset($effective_match_result['holes_remaining']) ? (int) $effective_match_result['holes_remaining'] : null;
 
             $matches[] = $match_entry;
         }
@@ -187,6 +200,190 @@ class ScoreBoard extends MY_Controller {
                 'right' => $points_right
             ],
             'matches' => $matches
+        ];
+    }
+
+    private function fillMissingMatchResultFields($match_result, $fallback) {
+        if (!$match_result) {
+            return $fallback;
+        }
+        if (!$fallback) {
+            return $match_result;
+        }
+        $merged = $match_result;
+        foreach (['winner_side', 'result_code', 'status', 'holes_played', 'holes_remaining'] as $key) {
+            if (!isset($merged[$key]) || $merged[$key] === null || $merged[$key] === '') {
+                if (isset($fallback[$key])) {
+                    $merged[$key] = $fallback[$key];
+                }
+            }
+        }
+        return $merged;
+    }
+
+    private function getScoresIndexByGameId($game_id) {
+        $rows = $this->db->select('group_id, user_id, hindex, score')
+            ->from('t_game_score')
+            ->where('gameid', $game_id)
+            ->where('score >', 0)
+            ->get()
+            ->result_array();
+
+        $index = [];
+        foreach ($rows as $row) {
+            $group_id = (int) ($row['group_id'] ?? 0);
+            $user_id = (int) ($row['user_id'] ?? 0);
+            $hindex = (int) ($row['hindex'] ?? 0);
+            $score = (int) ($row['score'] ?? 0);
+            if (!$group_id || !$user_id || !$hindex || $score <= 0) {
+                continue;
+            }
+            if (!isset($index[$group_id])) {
+                $index[$group_id] = [];
+            }
+            if (!isset($index[$group_id][$user_id])) {
+                $index[$group_id][$user_id] = [];
+            }
+            // keep last (should be unique by gameid/user_id/hole_id/hindex anyway)
+            $index[$group_id][$user_id][$hindex] = $score;
+        }
+        return $index;
+    }
+
+    private function computeMatchResultRowFromScores($match_format, $group_id, $members, $left, $right, $score_index, $total_holes) {
+        if (!$group_id || !$total_holes) {
+            return null;
+        }
+
+        $left_user_ids = $this->resolveSideUserIds($match_format, $members, $left, 'left');
+        $right_user_ids = $this->resolveSideUserIds($match_format, $members, $right, 'right');
+        if (empty($left_user_ids) || empty($right_user_ids)) {
+            return null;
+        }
+
+        $holes_played = 0;
+        $left_wins = 0;
+        $right_wins = 0;
+
+        for ($h = 1; $h <= $total_holes; $h++) {
+            $left_score = $this->getSideHoleScore($score_index, $group_id, $left_user_ids, $h);
+            $right_score = $this->getSideHoleScore($score_index, $group_id, $right_user_ids, $h);
+
+            // A hole is considered played only when both sides have a score.
+            if ($left_score === null || $right_score === null) {
+                continue;
+            }
+
+            $holes_played++;
+            if ($left_score < $right_score) {
+                $left_wins++;
+            } elseif ($right_score < $left_score) {
+                $right_wins++;
+            }
+
+            $lead = abs($left_wins - $right_wins);
+            $remain = $total_holes - $holes_played;
+            if ($lead > $remain) {
+                return $this->buildComputedMatchRow($left_wins, $right_wins, $holes_played, $remain, true);
+            }
+        }
+
+        if ($holes_played === 0) {
+            return null;
+        }
+
+        $remain = $total_holes - $holes_played;
+        $finished = $holes_played >= $total_holes;
+        return $this->buildComputedMatchRow($left_wins, $right_wins, $holes_played, $remain, $finished);
+    }
+
+    private function resolveSideUserIds($match_format, $members, $side, $side_name) {
+        if ($match_format === 'individual_match') {
+            $user_id = isset($side['user_id']) ? (int) $side['user_id'] : 0;
+            return $user_id ? [$user_id] : [];
+        }
+
+        $tag_id = isset($side['tag_id']) ? (int) $side['tag_id'] : 0;
+        if (!$tag_id || !is_array($members)) {
+            return [];
+        }
+
+        $user_ids = [];
+        foreach ($members as $m) {
+            $m_tag_id = isset($m['tag_id']) ? (int) $m['tag_id'] : 0;
+            $m_user_id = isset($m['user_id']) ? (int) $m['user_id'] : 0;
+            if ($m_user_id && $m_tag_id === $tag_id) {
+                $user_ids[] = $m_user_id;
+            }
+        }
+        return array_values(array_unique($user_ids));
+    }
+
+    private function getSideHoleScore($score_index, $group_id, $user_ids, $hindex) {
+        $group_id = (int) $group_id;
+        $hindex = (int) $hindex;
+        if (!$group_id || !$hindex || empty($user_ids)) {
+            return null;
+        }
+        if (!isset($score_index[$group_id])) {
+            return null;
+        }
+
+        $best = null;
+        foreach ($user_ids as $uid) {
+            $uid = (int) $uid;
+            if (!$uid) {
+                continue;
+            }
+            $score = $score_index[$group_id][$uid][$hindex] ?? null;
+            if (!$score) {
+                continue;
+            }
+            $score = (int) $score;
+            if ($best === null || $score < $best) {
+                $best = $score;
+            }
+        }
+        return $best;
+    }
+
+    private function buildComputedMatchRow($left_wins, $right_wins, $holes_played, $holes_remaining, $finished) {
+        $delta = (int) $left_wins - (int) $right_wins;
+        $lead = abs($delta);
+
+        $winner_side = null;
+        if ($delta > 0) {
+            $winner_side = 'left';
+        } elseif ($delta < 0) {
+            $winner_side = 'right';
+        } else {
+            $winner_side = 'draw';
+        }
+
+        $status = $finished ? 'finished' : 'playing';
+
+        $result_code = null;
+        if ($lead === 0) {
+            $result_code = 'AS';
+        } else if ($finished && $holes_remaining > 0) {
+            $result_code = $lead . '&' . (int) $holes_remaining;
+        } else {
+            // Use UP/DN from left side perspective (align with DB schema)
+            if ($winner_side === 'left') {
+                $result_code = $lead . 'UP';
+            } else if ($winner_side === 'right') {
+                $result_code = $lead . 'DN';
+            } else {
+                $result_code = 'AS';
+            }
+        }
+
+        return [
+            'winner_side' => $winner_side,
+            'result_code' => $result_code,
+            'status' => $status,
+            'holes_played' => (int) $holes_played,
+            'holes_remaining' => (int) $holes_remaining
         ];
     }
 
@@ -293,7 +490,7 @@ class ScoreBoard extends MY_Controller {
         ];
     }
 
-    private function buildMatchPlayData($game_id, $group_id, $match_format, $game_type) {
+    private function buildMatchPlayData($game_id, $group_id, $match_format, $game_type, $total_holes) {
         $resolved_group_id = $this->resolveMatchGroupId($game_id, $group_id);
         if (isset($resolved_group_id['error'])) {
             return $resolved_group_id;
@@ -310,12 +507,29 @@ class ScoreBoard extends MY_Controller {
         }
 
         $match_result = $this->getMatchResultRow($game_id, $resolved_group_id);
-        $result_payload = $this->buildMatchResultPayload($match_result, $left_right['left'], $left_right['right'], $match_format);
+        $score_index = $this->getScoresIndexByGameId($game_id);
+        $computed = $this->computeMatchResultRowFromScores(
+            $match_format,
+            (int) $resolved_group_id,
+            $group['members'] ?? [],
+            $left_right['left'],
+            $left_right['right'],
+            $score_index,
+            $total_holes
+        );
+        $effective_match_result = $this->fillMissingMatchResultFields($match_result, $computed);
+        $result_payload = $this->buildMatchResultPayload($effective_match_result, $left_right['left'], $left_right['right'], $match_format);
 
-        return array_merge([
+        $data = array_merge([
             'group_id' => $resolved_group_id,
             'group_name' => $group['group_name']
         ], $left_right, $result_payload);
+
+        $data['status'] = $effective_match_result['status'] ?? null;
+        $data['holes_played'] = isset($effective_match_result['holes_played']) ? (int) $effective_match_result['holes_played'] : null;
+        $data['holes_remaining'] = isset($effective_match_result['holes_remaining']) ? (int) $effective_match_result['holes_remaining'] : null;
+
+        return $data;
     }
 
     private function buildPlayerRows($game_id, $total_holes) {

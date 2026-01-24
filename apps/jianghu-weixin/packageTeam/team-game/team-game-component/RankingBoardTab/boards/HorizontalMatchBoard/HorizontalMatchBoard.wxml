@@ -1,4 +1,103 @@
-<view class="board-placeholder">
-  <text class="board-title">对阵成绩表（开发中）</text>
-  <text class="board-subtitle">左右对阵布局</text>
+<view class="match-board" wx:if="{{vm}}">
+  <!-- Summary header -->
+  <view class="match-header">
+    <view class="team team-left">
+      <view class="team-badge" style="background-color: {{vm.header.left.tag_color || '#D32F2F'}}"></view>
+      <text class="team-name">{{vm.header.left.tag_name}}</text>
+      <text class="team-points">{{vm.header.pointsLeftText}}</text>
+    </view>
+    <text class="team-vs">:</text>
+    <view class="team team-right">
+      <text class="team-points">{{vm.header.pointsRightText}}</text>
+      <text class="team-name">{{vm.header.right.tag_name}}</text>
+      <view class="team-badge" style="background-color: {{vm.header.right.tag_color || '#1976D2'}}"></view>
+    </view>
+  </view>
+
+  <!-- Matches list -->
+  <view class="match-list">
+    <view wx:if="{{!vm.rows || vm.rows.length === 0}}" class="empty">
+      <text class="empty-text">暂无对阵</text>
+    </view>
+
+    <view wx:for="{{vm.rows}}" wx:key="group_id" class="match-item">
+      <view wx:if="{{item.group_name}}" class="group-name">
+        <text>{{item.group_name}}</text>
+      </view>
+
+      <view class="match-row">
+        <!-- left -->
+        <view
+          class="side side-left {{item.winnerSide === 'left' ? 'winner' : (item.winnerSide ? 'loser' : '')}}"
+          style="{{item.winnerSide === 'left' ? ('background-color:' + (item.left.tag_color || '#D32F2F')) : ''}}"
+        >
+          <view class="side-content">
+            <image
+              wx:if="{{item.left.type === 'player'}}"
+              class="avatar"
+              mode="aspectFill"
+              src="{{item.left.avatarUrl || '/assets/images/default-avatar.png'}}"
+            />
+            <view
+              wx:else
+              class="tag-dot"
+              style="background-color: {{item.left.tag_color || '#D32F2F'}}"
+            ></view>
+
+            <view class="name-block">
+              <view class="name-row">
+                <text class="name">{{item.left.show_name}}</text>
+                <text
+                  wx:if="{{!vm.isSummary && item.left.type === 'player' && item.left.tag_name}}"
+                  class="tag-pill"
+                  style="background-color: {{item.left.tag_color || '#D32F2F'}}"
+                >{{item.left.tag_name}}</text>
+              </view>
+              <text wx:if="{{item.left.membersText}}" class="sub">{{item.left.membersText}}</text>
+            </view>
+          </view>
+          <text wx:if="{{item.leftResultText}}" class="result">{{item.leftResultText}}</text>
+        </view>
+
+        <!-- middle -->
+        <view class="mid">
+          <text class="thru">{{item.thruLabel}}</text>
+          <text wx:if="{{item.centerResultText}}" class="mid-result">{{item.centerResultText}}</text>
+        </view>
+
+        <!-- right -->
+        <view
+          class="side side-right {{item.winnerSide === 'right' ? 'winner' : (item.winnerSide ? 'loser' : '')}}"
+          style="{{item.winnerSide === 'right' ? ('background-color:' + (item.right.tag_color || '#1976D2')) : ''}}"
+        >
+          <text wx:if="{{item.rightResultText}}" class="result">{{item.rightResultText}}</text>
+          <view class="side-content side-content-right">
+            <view class="name-block name-block-right">
+              <view class="name-row name-row-right">
+                <text
+                  wx:if="{{!vm.isSummary && item.right.type === 'player' && item.right.tag_name}}"
+                  class="tag-pill"
+                  style="background-color: {{item.right.tag_color || '#1976D2'}}"
+                >{{item.right.tag_name}}</text>
+                <text class="name">{{item.right.show_name}}</text>
+              </view>
+              <text wx:if="{{item.right.membersText}}" class="sub">{{item.right.membersText}}</text>
+            </view>
+
+            <image
+              wx:if="{{item.right.type === 'player'}}"
+              class="avatar"
+              mode="aspectFill"
+              src="{{item.right.avatarUrl || '/assets/images/default-avatar.png'}}"
+            />
+            <view
+              wx:else
+              class="tag-dot"
+              style="background-color: {{item.right.tag_color || '#1976D2'}}"
+            ></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>

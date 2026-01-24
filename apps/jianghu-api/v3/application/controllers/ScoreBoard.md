@@ -143,6 +143,11 @@
 - `left` / `right`：两方对阵信息（个人比洞时返回 player 字段）
 - `result.text`：最终结果展示（示例：`1UP` / `2&1` / `A/S`）
 - `winner_side`：`left` / `right` / `draw`
+- `status`：`playing` / `finished`（当未能计算或尚未开始时可能为空）
+- `holes_played`：已完成洞数（两方都记录了该洞成绩才计入）
+- `holes_remaining`：剩余洞数
+
+说明：当 `t_game_match_result` 缺失时，接口会基于 `t_game_score`（纯杆数）实时计算以上字段与 `result`。
 
 ### 3.3 横向对阵汇总（layout = horizontal, mode = summary）
 当比洞赛存在多个分组且请求未传 `group_id` 时，返回汇总结构：
@@ -199,6 +204,6 @@
 ```
 
 常见错误：
-- 400：缺少 `game_id` 或比洞赛多分组但未传 `group_id`
+- 400：缺少 `game_id`
 - 404：赛事不存在
 - 409：比洞赛存在多于两方对阵（当前构图不支持）
