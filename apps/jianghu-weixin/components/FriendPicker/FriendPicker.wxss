@@ -1,5 +1,5 @@
 /* 嵌入式好友选择器容器 */
-.friend-picker {
+.FriendPicker {
   display: flex;
   flex-direction: column;
   width: 100%;

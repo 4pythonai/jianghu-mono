@@ -1,5 +1,5 @@
 <wxs src="/utils/image.wxs" module="image" />
-<view class="friend-picker">
+<view class="FriendPicker">
   <!-- 搜索框 -->
   <view class="search-section">
     <view class="search-box">

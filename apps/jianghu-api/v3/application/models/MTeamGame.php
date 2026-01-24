@@ -263,7 +263,7 @@ class MTeamGame extends CI_Model {
      * @param string $gender 性别 male/female
      * @param string $mobile 手机号
      */
-    public function registerGame($game_id, $user_id, $tag_id = null, $remark = null, $display_name = null, $gender = null, $mobile = null) {
+    public function registerSingleTeamGame($game_id, $user_id, $tag_id = null, $remark = null, $display_name = null, $gender = null, $mobile = null) {
         // 必须选择TAG
         if (!$tag_id) {
             return ['success' => false, 'message' => '请选择TAG'];

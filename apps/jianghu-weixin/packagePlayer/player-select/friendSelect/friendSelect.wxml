@@ -10,7 +10,7 @@
     <attened-players />
 
     <!-- 好友选择器组件 -->
-    <friend-picker
+    <FriendPicker
       id="friendPicker"
       scene="addToGame"
       max-select="{{maxSelect}}"

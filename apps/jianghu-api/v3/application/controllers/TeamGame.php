@@ -281,57 +281,7 @@ class TeamGame extends MY_Controller {
 
     // ==================== Phase 2: 报名管理 ====================
 
-    /**
-     * 球员报名
-     * @param int game_id 赛事ID
-     * @param int tag_id TAGID（团队赛制时可选）
-     * @param string nickname 报名姓名（可选）
-     * @param string gender 性别 male/female（可选）
-     * @param string mobile 手机号（可选）
-     * @param string remark 报名备注（可选）
-     */
-    public function registerGame() {
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $user_id = $this->getUser();
-        $game_id = $json_paras['game_id'];
-        $tag_id = $json_paras['tag_id'] ?? null;
-        $nickname = $json_paras['show_name'] ?? null;
-        $gender = $json_paras['gender'] ?? null;
-        $mobile = $json_paras['mobile'] ?? null;
-        $remark = $json_paras['remark'] ?? null;
 
-        // 检查赛事状态
-        $game = $this->MTeamGame->getTeamGame($game_id);
-        if (!$game) {
-            echo json_encode(['code' => 404, 'message' => '赛事不存在'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        if ($game['game_status'] != 'registering') {
-            echo json_encode(['code' => 400, 'message' => '当前赛事不在报名阶段'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        // 检查是否选择了TAG
-        if (!$tag_id) {
-            echo json_encode(['code' => 400, 'message' => '团队赛制需要选择TAG'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        $result = $this->MTeamGame->registerGame($game_id, $user_id, $tag_id, $remark, $nickname, $gender, $mobile);
-
-        if ($result['success']) {
-            echo json_encode([
-                'code' => 200,
-                'message' => $result['message'],
-                'data' => [
-                    'status' => 'success'
-                ]
-            ], JSON_UNESCAPED_UNICODE);
-        } else {
-            echo json_encode(['code' => 400, 'message' => $result['message']], JSON_UNESCAPED_UNICODE);
-        }
-    }
 
     /**
      * 取消报名
@@ -1046,48 +996,7 @@ class TeamGame extends MY_Controller {
         ], JSON_UNESCAPED_UNICODE);
     }
 
-    /**
-     * 队际赛报名（使用统一的 tag_id）
-     * @param int game_id 赛事ID
-     * @param int tag_id 选择代表的TAGID（t_team_game_tags.id）
-     * @param int user_id 被报名用户ID（可选，默认为当前用户，替好友报名时使用）
-     * @param string remark 报名备注（可选）
-     */
-    public function registerCrossTeamGame() {
-        $json_paras = json_decode(file_get_contents('php://input'), true);
-        $user_id = $this->getUser();
-        $game_id = $json_paras['game_id'];
-        $tag_id = $json_paras['tag_id'];
-        $target_user_id = $json_paras['user_id'] ?? $user_id;
-        $remark = $json_paras['remark'] ?? null;
 
-        // 检查赛事状态
-        $game = $this->MTeamGame->getTeamGame($game_id);
-        if (!$game || $game['game_type'] != 'cross_teams') {
-            echo json_encode(['code' => 400, 'message' => '赛事不存在或不是队际赛'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        if ($game['game_status'] != 'registering') {
-            echo json_encode(['code' => 400, 'message' => '当前赛事不在报名阶段'], JSON_UNESCAPED_UNICODE);
-            return;
-        }
-
-        $result = $this->MTeamGame->registerCrossTeamGame($game_id, $target_user_id, $tag_id, $remark);
-
-        if ($result['success']) {
-            echo json_encode([
-                'code' => 200,
-                'message' => $result['message'],
-                'data' => [
-                    'registration_id' => $result['registration_id'],
-                    'status' => $result['status']
-                ]
-            ], JSON_UNESCAPED_UNICODE);
-        } else {
-            echo json_encode(['code' => 400, 'message' => $result['message']], JSON_UNESCAPED_UNICODE);
-        }
-    }
 
     /**
      * 获取球队成员列表（用于报名选择）
@@ -1297,5 +1206,100 @@ class TeamGame extends MY_Controller {
             'code' => $result['success'] ? 200 : 400,
             'message' => $result['message']
         ], JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 队际赛报名（使用统一的 tag_id）
+     * @param int game_id 赛事ID
+     * @param int tag_id 选择代表的TAGID（t_team_game_tags.id）
+     * @param int user_id 被报名用户ID（可选，默认为当前用户，替好友报名时使用）
+     * @param string remark 报名备注（可选）
+     */
+    public function registerCrossTeamGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $user_id = $this->getUser();
+        $game_id = $json_paras['game_id'];
+        $tag_id = $json_paras['tag_id'];
+        $target_user_id = $json_paras['user_id'] ?? $user_id;
+        $remark = $json_paras['remark'] ?? null;
+
+        // 检查赛事状态
+        $game = $this->MTeamGame->getTeamGame($game_id);
+        if (!$game || $game['game_type'] != 'cross_teams') {
+            echo json_encode(['code' => 400, 'message' => '赛事不存在或不是队际赛'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        if ($game['game_status'] != 'registering') {
+            echo json_encode(['code' => 400, 'message' => '当前赛事不在报名阶段'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MTeamGame->registerCrossTeamGame($game_id, $target_user_id, $tag_id, $remark);
+
+        if ($result['success']) {
+            echo json_encode([
+                'code' => 200,
+                'message' => $result['message'],
+                'data' => [
+                    'registration_id' => $result['registration_id'],
+                    'status' => $result['status']
+                ]
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(['code' => 400, 'message' => $result['message']], JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    /**
+     * 球员报名
+     * @param int game_id 赛事ID
+     * @param int tag_id TAGID（团队赛制时可选）
+     * @param string nickname 报名姓名（可选）
+     * @param string gender 性别 male/female（可选）
+     * @param string mobile 手机号（可选）
+     * @param string remark 报名备注（可选）
+     */
+    public function registerSingleTeamGame() {
+        $json_paras = json_decode(file_get_contents('php://input'), true);
+        $user_id = $this->getUser();
+        $game_id = $json_paras['game_id'];
+        $tag_id = $json_paras['tag_id'] ?? null;
+        $nickname = $json_paras['show_name'] ?? null;
+        $gender = $json_paras['gender'] ?? null;
+        $mobile = $json_paras['mobile'] ?? null;
+        $remark = $json_paras['remark'] ?? null;
+
+        // 检查赛事状态
+        $game = $this->MTeamGame->getTeamGame($game_id);
+        if (!$game) {
+            echo json_encode(['code' => 404, 'message' => '赛事不存在'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        if ($game['game_status'] != 'registering') {
+            echo json_encode(['code' => 400, 'message' => '当前赛事不在报名阶段'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        // 检查是否选择了TAG
+        if (!$tag_id) {
+            echo json_encode(['code' => 400, 'message' => '团队赛制需要选择TAG'], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
+        $result = $this->MTeamGame->registerSingleTeamGame($game_id, $user_id, $tag_id, $remark, $nickname, $gender, $mobile);
+
+        if ($result['success']) {
+            echo json_encode([
+                'code' => 200,
+                'message' => $result['message'],
+                'data' => [
+                    'status' => 'success'
+                ]
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(['code' => 400, 'message' => $result['message']], JSON_UNESCAPED_UNICODE);
+        }
     }
 }

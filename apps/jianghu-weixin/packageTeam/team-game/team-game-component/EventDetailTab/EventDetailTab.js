@@ -180,7 +180,7 @@ Component({
 
             try {
                 const app = getApp()
-                const result = await app.api.teamgame.registerGame({
+                const result = await app.api.teamgame.registerSingleTeamGame({
                     game_id: gameId,
                     tag_id: selectedTagId,
                     show_name: registerForm.show_name,

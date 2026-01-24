@@ -17,7 +17,7 @@ const teamgame = {
 
     // ==================== Phase 2: 报名管理 ====================
     // 球员报名
-    registerGame: (data, options) => request('/TeamGame/registerGame', data, options),
+    registerSingleTeamGame: (data, options) => request('/TeamGame/registerSingleTeamGame', data, options),
     // 取消报名
     cancelRegistration: (data, options) => request('/TeamGame/cancelRegistration', data, options),
     // 获取报名列表

@@ -4,19 +4,27 @@ Page({
     data: {
         gameId: null,
         gameType: 'single_team',
+        navTitle: '替好友报名(队内赛)',
         submitting: false
     },
 
     onLoad(options) {
         const gameId = Number(options.game_id)
         const gameType = options.game_type || 'single_team'
+        const navTitle = this.getNavTitle(gameType)
 
         if (!gameId) {
             wx.showToast({ title: '赛事信息缺失', icon: 'none' })
             return
         }
 
-        this.setData({ gameId, gameType })
+        this.setData({ gameId, gameType, navTitle })
+    },
+
+    getNavTitle(gameType) {
+        if (gameType === 'single_team') return '替好友报名(队内赛)'
+        if (gameType === 'cross_teams') return '替好友报名(队际赛)'
+        return '替好友报名'
     },
 
     /**
@@ -99,7 +107,7 @@ Page({
         try {
             const apiMethod = gameType === 'cross_teams'
                 ? app.api.teamgame.registerCrossTeamGame
-                : app.api.teamgame.registerGame
+                : app.api.teamgame.registerSingleTeamGame
 
             const result = await apiMethod({
                 game_id: gameId,

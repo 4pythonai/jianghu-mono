@@ -4,6 +4,6 @@
 	"enablePullDownRefresh": true,
 	"usingComponents": {
 		"attened-players": "/components/AttenedPlayers/AttenedPlayers",
-		"friend-picker": "/components/FriendPicker/FriendPicker"
+		"FriendPicker": "/components/FriendPicker/FriendPicker"
 	}
 }

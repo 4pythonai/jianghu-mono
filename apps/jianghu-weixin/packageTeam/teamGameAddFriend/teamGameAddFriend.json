@@ -1,8 +1,6 @@
 {
     "usingComponents": {
-        "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
-        "FriendPicker": "/components/FriendPicker/FriendPicker",
-        "PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
+        "FriendPicker": "/components/FriendPicker/FriendPicker"
     },
     "navigationStyle": "custom"
 }

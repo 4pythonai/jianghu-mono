@@ -1,13 +1,12 @@
+<CustomNavBar title="{{navTitle}}" showBack="{{true}}" />
 <view class="container">
-    <CustomNavBar title="替好友报名" showBack="{{true}}" />
-
-    <view class="page-content">
-        <FriendPicker
-            maxSelect="{{10}}"
-            title="选择好友"
-            confirmText="确认报名"
-            bind:confirm="onFriendConfirm"
-            bind:cancel="onCancel"
-        />
-    </view>
+  <view class="page-content">
+    <FriendPicker
+      max-select="{{10}}"
+      title="选择好友"
+      confirm-text="确认给好友报名"
+      bind:confirm="onFriendConfirm"
+      bind:cancel="onCancel"
+    />
+  </view>
 </view>

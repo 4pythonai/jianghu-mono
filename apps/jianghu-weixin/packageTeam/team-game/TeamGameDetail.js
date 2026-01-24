@@ -231,7 +231,7 @@ Page({
 
         try {
             const app = getApp()
-            const result = await app.api.teamgame.registerGame({
+            const result = await app.api.teamgame.registerSingleTeamGame({
                 game_id: this.data.gameid,
                 tag_id: tagId,
                 show_name: formData.show_name,
