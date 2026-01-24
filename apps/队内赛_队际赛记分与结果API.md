@@ -1,44 +1,42 @@
-# ScoreBoard API 说明
 
+# ScoreBoard API 说明
 面向比赛成绩页的统一数据接口，根据赛制返回两种构图之一：
 
-- 竖向列表（从上到下按队员或分队 TAG 排列）
-- 横向对阵（左 vs 右，仅两方）
++ 竖向列表（从上到下按队员或分队 TAG 排列）
++ 横向对阵（左 vs 右，仅两方）
 
 控制器：`ScoreBoard`
 
 ## 1. 构图与赛制映射
-
 | match_format | 构图 | 行类型 |
 | --- | --- | --- |
-| individual_stroke | 竖向 | player |
-| fourball_bestball_stroke | 竖向 | tag |
-| fourball_scramble_stroke | 竖向 | tag |
-| foursome_stroke | 竖向 | tag |
-| individual_match | 横向 | player vs player |
-| fourball_bestball_match | 横向 | tag vs tag |
-| fourball_scramble_match | 横向 | tag vs tag |
-| foursome_match | 横向 | tag vs tag |
+| G1:individual_stroke/个人比杆赛 | 竖向 | player |
+| G2:fourball_bestball_stroke/四人四球最好成绩比杆赛 | 竖向 | tag |
+| G3:fourball_scramble_stroke/四人四球最佳球位比杆赛(旺波) | 竖向 | tag |
+| G4:foursome_stroke/四人两球比杆赛 | 竖向 | tag |
+| G5:individual_match/个人比洞赛 | 横向 | player vs player |
+| G6:fourball_bestball_match/四人四球最好成绩比洞赛 | 横向 | tag vs tag |
+| G7:fourball_scramble_match/四人四球最佳球位比洞赛(旺波) | 横向 | tag vs tag |
+| G8:foursome_match/四人两球比洞赛 | 横向 | tag vs tag |
+
 
 说明：
-- 四人四球/四人两球/最佳球位（比杆）竖向列表：一行=组合（来自 TAG）。
-- 组合成员来源为分组（group）。
-- 比洞赛仅支持“左 vs 右”两方对阵，不支持多场同时列表。
+
++ 四人四球/四人两球/最佳球位（比杆）竖向列表：一行=组合（来自 TAG）。
++ 组合成员来源为分组（group）。
++ 比洞赛仅支持“左 vs 右”两方对阵，不支持多场同时列表。
 
 ## 2. 排名与完成字段
-
-- `rank`：排名（数值）
-- `rank_label`：展示用排名（平分时使用 `T` 前缀，如 `T1`）
-- `score`：对标准杆差值（负数更好，0 为平标准杆）
-- `thru`：已完成洞数（数字）
-- `thru_label`：展示用完成状态，正常为数字字符串，完赛为 `F`
++ `rank`：排名（数值）
++ `rank_label`：展示用排名（平分时使用 `T` 前缀，如 `T1`）
++ `score`：对标准杆差值（负数更好，0 为平标准杆）
++ `thru`：已完成洞数（数字）
++ `thru_label`：展示用完成状态，正常为数字字符串，完赛为 `F`
 
 平分/并列名次：按国际通用规则处理（同分同名次，后续名次跳位）。
 
 ## 3. 接口定义
-
 ### POST /ScoreBoard/getScoreBoard
-
 **请求参数**
 
 ```json
@@ -48,8 +46,12 @@
 }
 ```
 
-- `game_id`：必填
-- `group_id`：可选。\n+  - 传 `group_id`：返回单个分组的横向对阵数据。\n+  - 不传 `group_id`：\n+    - 若仅 1 个分组：返回该分组的横向对阵数据。\n+    - 若存在多个分组：返回 **summary 汇总结构**（总分 + matches 列表）。
++ `game_id`：必填
++ `group_id`：可选。
+  + 传 `group_id`：返回单个分组的横向对阵数据。
+  + 不传 `group_id`：
+    + 若仅 1 个分组：返回该分组的横向对阵数据。
+    + 若存在多个分组：返回 **summary 汇总结构**（总分 + matches 列表）。
 
 **通用响应结构**
 
@@ -65,7 +67,6 @@
 ```
 
 ### 3.1 竖向列表（layout = vertical）
-
 ```json
 {
   "code": 200,
@@ -97,13 +98,13 @@
 ```
 
 字段说明（竖向）：
-- `row_type`：`player` 或 `tag`
-- `rows[].tag_*`：仅 `row_type=tag` 时返回
-- `rows[].members`：组合成员（来自分组 group）
-- `rows[].group_*`：该组合所属分组
+
++ `row_type`：`player` 或 `tag`
++ `rows[].tag_*`：仅 `row_type=tag` 时返回
++ `rows[].members`：组合成员（来自分组 group）
++ `rows[].group_*`：该组合所属分组
 
 ### 3.2 横向对阵（layout = horizontal）
-
 ```json
 {
   "code": 200,
@@ -140,9 +141,10 @@
 ```
 
 字段说明（横向）：
-- `left` / `right`：两方对阵信息（个人比洞时返回 player 字段）
-- `result.text`：最终结果展示（示例：`1UP` / `2&1` / `A/S`）
-- `winner_side`：`left` / `right` / `draw`
+
++ `left` / `right`：两方对阵信息（个人比洞时返回 player 字段）
++ `result.text`：最终结果展示（示例：`1UP` / `2&1` / `A/S`）
++ `winner_side`：`left` / `right` / `draw`
 
 ### 3.3 横向对阵汇总（layout = horizontal, mode = summary）
 当比洞赛存在多个分组且请求未传 `group_id` 时，返回汇总结构：
@@ -189,16 +191,19 @@
 ```
 
 说明：
-- `points` 计分规则：胜=1，平(A/S)=0.5，负=0；仅统计 `status=finished` 的分组对阵。
-- `matches[].left/right`：\n+  - G5(`individual_match`) 返回 player，并附带其 `tag_*`。\n+  - G6/G7/G8 返回 tag vs tag（沿用横向对阵结构）。
++ `points` 计分规则：胜=1，平(A/S)=0.5，负=0；仅统计 `status=finished` 的分组对阵。
++ `matches[].left/right`：
+  + G5(`individual_match`) 返回 player，并附带其 `tag_*`（便于按红/蓝稳定渲染）。
+  + G6/G7/G8 返回 tag vs tag（沿用横向对阵结构）。
 
 ## 4. 错误返回
-
 ```json
 { "code": 400, "message": "缺少必要参数" }
 ```
 
 常见错误：
-- 400：缺少 `game_id` 或比洞赛多分组但未传 `group_id`
-- 404：赛事不存在
-- 409：比洞赛存在多于两方对阵（当前构图不支持）
+
++ 400：缺少 `game_id`
++ 404：赛事不存在
++ 409：比洞赛存在多于两方对阵（当前构图不支持）
+

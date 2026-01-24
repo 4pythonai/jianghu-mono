@@ -55,12 +55,12 @@ class TeamGame extends MY_Controller {
         // 验证赛制类型
         $validFormats = [
             'individual_stroke',
-            'fourball_best_stroke',
-            'fourball_oneball_stroke',
+            'fourball_bestball_stroke',
+            'fourball_scramble_stroke',
             'foursome_stroke',
             'individual_match',
-            'fourball_best_match',
-            'fourball_oneball_match',
+            'fourball_bestball_match',
+            'fourball_scramble_match',
             'foursome_match'
         ];
         if (!in_array($match_format, $validFormats)) {
@@ -885,12 +885,12 @@ class TeamGame extends MY_Controller {
         // 验证赛制类型
         $validFormats = [
             'individual_stroke',
-            'fourball_best_stroke',
-            'fourball_oneball_stroke',
+            'fourball_bestball_stroke',
+            'fourball_scramble_stroke',
             'foursome_stroke',
             'individual_match',
-            'fourball_best_match',
-            'fourball_oneball_match',
+            'fourball_bestball_match',
+            'fourball_scramble_match',
             'foursome_match'
         ];
         if (!in_array($match_format, $validFormats)) {

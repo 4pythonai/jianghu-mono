@@ -285,7 +285,7 @@ Component({
 
 
             console.log(" 🔴🟢🔵 中间行出现的逻辑", gameData.game_type)
-            const holeBasedMatchTypes = ['fourball_best_match', 'fourball_oneball_match', 'foursome_match', 'individual_match'];
+            const holeBasedMatchTypes = ['fourball_bestball_match', 'fourball_scramble_match', 'foursome_match', 'individual_match'];
             const showMiddleRow = (gameData?.game_type !== 'common') && (gameData.scoring_type in holeBasedMatchTypes);
             const oneballRows = [
                 { key: 'A', type: 'group', label: 'A组', playerIndex: groupAIndex, players: groupedPlayers.A },

@@ -41,6 +41,25 @@ class ScoreBoard extends MY_Controller {
         $total_holes = $this->getTotalHoles($game_id, $game['holeList'] ?? null);
 
         if ($layout === 'horizontal') {
+            // Match play summary mode: when multiple groups exist and no group_id is provided,
+            // return aggregated points + matches list instead of erroring.
+            if (!$group_id) {
+                $summary = $this->tryBuildMatchPlaySummaryData($game_id, $match_format, $game_type);
+                if (isset($summary['error'])) {
+                    $this->respondError($summary['code'], $summary['error']);
+                    return;
+                }
+                if ($summary) {
+                    $data = array_merge([
+                        'layout' => $layout,
+                        'match_format' => $match_format,
+                        'game_type' => $game_type
+                    ], $summary);
+                    $this->respondOk($data);
+                    return;
+                }
+            }
+
             $result = $this->buildMatchPlayData($game_id, $group_id, $match_format, $game_type);
             if (isset($result['error'])) {
                 $this->respondError($result['code'], $result['error']);
@@ -62,6 +81,198 @@ class ScoreBoard extends MY_Controller {
             'game_type' => $game_type
         ], $data);
         $this->respondOk($data);
+    }
+
+    private function tryBuildMatchPlaySummaryData($game_id, $match_format, $game_type) {
+        // Prefer groups that already have match results; fallback to game groups.
+        $group_ids = $this->getMatchGroupIds($game_id);
+        if (count($group_ids) <= 1) {
+            $group_ids = $this->getGameGroupIds($game_id);
+        }
+        if (count($group_ids) <= 1) {
+            return null;
+        }
+
+        return $this->buildMatchPlaySummaryData($game_id, $match_format, $game_type);
+    }
+
+    private function buildMatchPlaySummaryData($game_id, $match_format, $game_type) {
+        $groups = $this->getGroupsWithMembers($game_id);
+        if (count($groups) <= 1) {
+            return ['error' => '未找到分组', 'code' => 404];
+        }
+
+        // Summary is always team-vs-team. Resolve the two tags in a stable order.
+        $tags = $this->getOrderedTags($game_id);
+        if (count($tags) < 2) {
+            return ['error' => '分队不足', 'code' => 409];
+        }
+        if (count($tags) > 2) {
+            return ['error' => '比洞赛仅支持两方对阵', 'code' => 409];
+        }
+
+        $left_tag = $tags[0];
+        $right_tag = $tags[1];
+
+        $match_result_map = $this->getMatchResultRowsMap($game_id);
+
+        $points_left = 0.0;
+        $points_right = 0.0;
+        $matches = [];
+
+        foreach ($groups as $group) {
+            $gid = (int) ($group['group_id'] ?? 0);
+            if (!$gid) {
+                continue;
+            }
+
+            $members = $group['members'] ?? [];
+            if ($match_format === 'individual_match') {
+                $sides = $this->buildIndividualMatchSidesForSummary($members, $left_tag, $right_tag);
+            } else {
+                $sides = $this->buildMatchSides($game_id, $match_format, $members);
+            }
+
+            if (isset($sides['error'])) {
+                return $sides;
+            }
+
+            $match_result = $match_result_map[$gid] ?? null;
+            $result_payload = $this->buildMatchResultPayload($match_result, $sides['left'], $sides['right'], $match_format);
+
+            // Only count points for finished matches.
+            $status = $match_result['status'] ?? null;
+            $winner_side = $result_payload['result']['winner_side'] ?? null;
+            if ($status === 'finished' && $winner_side) {
+                if ($winner_side === 'left') {
+                    $points_left += 1.0;
+                } elseif ($winner_side === 'right') {
+                    $points_right += 1.0;
+                } elseif ($winner_side === 'draw') {
+                    $points_left += 0.5;
+                    $points_right += 0.5;
+                }
+            }
+
+            $match_entry = array_merge([
+                'group_id' => $gid,
+                'group_name' => $group['group_name'] ?? '',
+                'left' => $sides['left'],
+                'right' => $sides['right'],
+            ], $result_payload);
+
+            if ($match_result) {
+                $match_entry['status'] = $match_result['status'] ?? null;
+                $match_entry['holes_played'] = isset($match_result['holes_played']) ? (int) $match_result['holes_played'] : null;
+                $match_entry['holes_remaining'] = isset($match_result['holes_remaining']) ? (int) $match_result['holes_remaining'] : null;
+            }
+
+            $matches[] = $match_entry;
+        }
+
+        return [
+            'mode' => 'summary',
+            'left' => [
+                'tag_id' => $left_tag['tag_id'],
+                'tag_name' => $left_tag['tag_name'],
+                'tag_color' => $left_tag['tag_color']
+            ],
+            'right' => [
+                'tag_id' => $right_tag['tag_id'],
+                'tag_name' => $right_tag['tag_name'],
+                'tag_color' => $right_tag['tag_color']
+            ],
+            'points' => [
+                'left' => $points_left,
+                'right' => $points_right
+            ],
+            'matches' => $matches
+        ];
+    }
+
+    private function getOrderedTags($game_id) {
+        $tag_map = $this->getTagMap($game_id);
+        $tags = [];
+        foreach ($tag_map as $tag_id => $tag_info) {
+            $tags[] = [
+                'tag_id' => (int) $tag_id,
+                'tag_name' => $tag_info['tag_name'] ?? '',
+                'tag_color' => $tag_info['tag_color'] ?? null,
+                'tag_order' => $tag_info['tag_order'] ?? 0
+            ];
+        }
+        usort($tags, function ($a, $b) {
+            return ($a['tag_order'] ?? 0) <=> ($b['tag_order'] ?? 0);
+        });
+        return $tags;
+    }
+
+    private function getMatchResultRowsMap($game_id) {
+        $rows = $this->db->select('group_id, winner_side, result_code, status, holes_played, holes_remaining')
+            ->from('t_game_match_result')
+            ->where('game_id', $game_id)
+            ->get()
+            ->result_array();
+
+        $map = [];
+        foreach ($rows as $row) {
+            if (!isset($row['group_id'])) {
+                continue;
+            }
+            $map[(int) $row['group_id']] = $row;
+        }
+        return $map;
+    }
+
+    private function buildIndividualMatchSidesForSummary($members, $left_tag, $right_tag) {
+        $players = array_values($members);
+        if (count($players) < 2) {
+            return ['error' => '分组人数不足', 'code' => 409];
+        }
+        if (count($players) > 2) {
+            return ['error' => '比洞赛仅支持两名球员', 'code' => 409];
+        }
+
+        $left_tag_id = (int) ($left_tag['tag_id'] ?? 0);
+        $right_tag_id = (int) ($right_tag['tag_id'] ?? 0);
+
+        $left_player = null;
+        $right_player = null;
+        foreach ($players as $p) {
+            $tag_id = (int) ($p['tag_id'] ?? 0);
+            if ($tag_id === $left_tag_id) {
+                $left_player = $p;
+            } elseif ($tag_id === $right_tag_id) {
+                $right_player = $p;
+            }
+        }
+
+        // Fallback: keep stable ordering if tags are missing.
+        if (!$left_player) {
+            $left_player = $players[0];
+        }
+        if (!$right_player) {
+            $right_player = ($players[0]['user_id'] ?? null) === ($left_player['user_id'] ?? null) ? $players[1] : $players[0];
+        }
+
+        return [
+            'left' => [
+                'user_id' => $left_player['user_id'],
+                'show_name' => $left_player['show_name'],
+                'avatar' => $left_player['avatar'],
+                'tag_id' => $left_player['tag_id'] ?? null,
+                'tag_name' => $left_player['tag_name'] ?? '',
+                'tag_color' => $left_player['tag_color'] ?? null
+            ],
+            'right' => [
+                'user_id' => $right_player['user_id'],
+                'show_name' => $right_player['show_name'],
+                'avatar' => $right_player['avatar'],
+                'tag_id' => $right_player['tag_id'] ?? null,
+                'tag_name' => $right_player['tag_name'] ?? '',
+                'tag_color' => $right_player['tag_color'] ?? null
+            ]
+        ];
     }
 
     private function buildStrokePlayData($game_id, $match_format, $game_type, $total_holes) {
@@ -352,6 +563,16 @@ class ScoreBoard extends MY_Controller {
         if (!$winner_side) {
             return null;
         }
+        // DB stores up/down/draw, API expects left/right/draw
+        if (in_array($winner_side, ['up', 'down', 'draw'], true)) {
+            if ($winner_side === 'up') {
+                return 'left';
+            }
+            if ($winner_side === 'down') {
+                return 'right';
+            }
+            return 'draw';
+        }
         if (in_array($winner_side, ['left', 'right', 'draw'], true)) {
             return $winner_side;
         }
@@ -383,7 +604,7 @@ class ScoreBoard extends MY_Controller {
             return (int) $group_ids[0];
         }
         if (count($group_ids) > 1) {
-            return ['error' => '缺少 group_id', 'code' => 400];
+            return ['error' => '缺少[group_id]参数', 'code' => 400];
         }
 
         $group_ids = $this->getGameGroupIds($game_id);
@@ -391,7 +612,7 @@ class ScoreBoard extends MY_Controller {
             return (int) $group_ids[0];
         }
         if (count($group_ids) > 1) {
-            return ['error' => '缺少 group_id', 'code' => 400];
+            return ['error' => 'CountOfGroupIds>1', 'code' => 400];
         }
 
         return ['error' => '未找到分组', 'code' => 404];
@@ -633,8 +854,8 @@ class ScoreBoard extends MY_Controller {
 
     private function isTagStrokeFormat($match_format) {
         return in_array($match_format, [
-            'fourball_best_stroke',
-            'fourball_oneball_stroke',
+            'fourball_bestball_stroke',
+            'fourball_scramble_stroke',
             'foursome_stroke'
         ], true);
     }

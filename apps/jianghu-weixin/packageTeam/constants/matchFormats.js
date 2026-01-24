@@ -14,7 +14,7 @@ export const MATCH_FORMATS = [
         byScore: true,
     },
     {
-        value: 'fourball_best_stroke',
+        value: 'fourball_bestball_stroke',
         label: '四人四球最好成绩比杆赛',
         requireGameTag: false,
         isMatch: false,
@@ -23,7 +23,7 @@ export const MATCH_FORMATS = [
 
     },
     {
-        value: 'fourball_oneball_stroke',
+        value: 'fourball_scramble_stroke',
         label: '四人四球最佳球位比杆赛(旺波)',
         requireGameTag: false,
         isMatch: false,
@@ -48,7 +48,7 @@ export const MATCH_FORMATS = [
         byScore: false,
     },
     {
-        value: 'fourball_best_match',
+        value: 'fourball_bestball_match',
         label: '四人四球最好成绩比洞赛',
         requireGameTag: true,
         isMatch: true,
@@ -56,7 +56,7 @@ export const MATCH_FORMATS = [
         byScore: false,
     },
     {
-        value: 'fourball_oneball_match',
+        value: 'fourball_scramble_match',
         label: '四人四球最佳球位比洞赛(旺波)',
         requireGameTag: true,
         isMatch: true,

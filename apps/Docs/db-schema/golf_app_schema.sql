@@ -167,7 +167,7 @@ CREATE TABLE `t_game` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `scoring_type` char(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'hole' COMMENT '是否 OneBall 赛',
   `starttime` datetime DEFAULT NULL,
-  `match_format` varchar(50) DEFAULT NULL COMMENT '赛制类型: individual_stroke(个人比杆), fourball_best_stroke(四人四球最好成绩比杆), fourball_oneball_stroke(四人四球最佳球位比杆/旺波比杆), foursome_stroke(四人两球比杆), individual_match(个人比洞), fourball_best_match(四人四球最好成绩比洞), fourball_oneball_match(四人四球最佳球位比洞/旺波比洞), foursome_match(四人两球比洞)',
+  `match_format` varchar(50) DEFAULT NULL COMMENT '赛制类型: individual_stroke(个人比杆), fourball_bestball_stroke(四人四球最好成绩比杆), fourball_scramble_stroke(四人四球最佳球位比杆/旺波比杆), foursome_stroke(四人两球比杆), individual_match(个人比洞), fourball_bestball_match(四人四球最好成绩比洞), fourball_scramble_match(四人四球最佳球位比洞/旺波比洞), foursome_match(四人两球比洞)',
   `entry_fee` decimal(10,2) DEFAULT '0.00' COMMENT '参赛费用（仅展示，不涉及支付）',
   `awards` text COMMENT '奖项设置（纯文本描述）',
   `schedule` text COMMENT '赛事流程JSON',
