@@ -164,7 +164,8 @@ class ScoreBoard extends MY_Controller {
                 if (!$tag_id) {
                     continue;
                 }
-                $combo_key = $group['group_id'] . ':' . $tag_id;
+                // 使用纯 tag_id 作为 combo_key，使每个 tag 只出现一次
+                $combo_key = (string) $tag_id;
                 if (!isset($rows[$combo_key])) {
                     $tag_info = $tag_map[$tag_id] ?? ['tag_name' => $member['tag_name'], 'tag_color' => $member['tag_color']];
                     $rows[$combo_key] = [
@@ -173,11 +174,21 @@ class ScoreBoard extends MY_Controller {
                             'tag_name' => $tag_info['tag_name'],
                             'tag_color' => $tag_info['tag_color'],
                             'members' => [],
-                            'group_id' => $group['group_id'],
-                            'group_name' => $group['group_name']
+                            'groups' => []
                         ],
-                        'hole_scores' => []
+                        'hole_scores' => [],
+                        'group_hole_scores' => [],  // 按 group_id 分组的 hole_scores
+                        'group_ids' => []  // 用于追踪已添加的 group
                     ];
+                }
+                // 记录该 tag 涉及的所有分组（去重）
+                if (!in_array($group['group_id'], $rows[$combo_key]['group_ids'])) {
+                    $rows[$combo_key]['group_ids'][] = $group['group_id'];
+                    $rows[$combo_key]['row']['groups'][] = [
+                        'group_id' => $group['group_id'],
+                        'group_name' => $group['group_name']
+                    ];
+                    $rows[$combo_key]['group_hole_scores'][$group['group_id']] = [];
                 }
                 $rows[$combo_key]['row']['members'][] = [
                     'user_id' => $member['user_id'],
@@ -205,19 +216,27 @@ class ScoreBoard extends MY_Controller {
 
     private function updateComboScore(&$combo, $score_row) {
         $hole_id = $score_row['hole_id'];
+        $group_id = $score_row['group_id'];
         if (!$hole_id) {
             return;
         }
         $score = (int) $score_row['score'];
         $par = isset($score_row['par']) ? (int) $score_row['par'] : 0;
 
+        // 更新全局 hole_scores（用于计算总成绩，取最好成绩）
         if (!isset($combo['hole_scores'][$hole_id])) {
             $combo['hole_scores'][$hole_id] = ['score' => $score, 'par' => $par];
-            return;
+        } else if ($score < $combo['hole_scores'][$hole_id]['score']) {
+            $combo['hole_scores'][$hole_id] = ['score' => $score, 'par' => $par];
         }
 
-        if ($score < $combo['hole_scores'][$hole_id]['score']) {
-            $combo['hole_scores'][$hole_id] = ['score' => $score, 'par' => $par];
+        // 按 group_id 分组记录 hole_scores（用于计算已完成分组数）
+        if ($group_id && isset($combo['group_hole_scores'][$group_id])) {
+            if (!isset($combo['group_hole_scores'][$group_id][$hole_id])) {
+                $combo['group_hole_scores'][$group_id][$hole_id] = ['score' => $score, 'par' => $par];
+            } else if ($score < $combo['group_hole_scores'][$group_id][$hole_id]['score']) {
+                $combo['group_hole_scores'][$group_id][$hole_id] = ['score' => $score, 'par' => $par];
+            }
         }
     }
 
@@ -228,11 +247,21 @@ class ScoreBoard extends MY_Controller {
             $sum_score += $hole['score'];
             $sum_par += $hole['par'];
         }
-        $thru = count($combo['hole_scores']);
+
+        // 计算已完成的分组数（每组打完 total_holes 洞视为完成）
+        $completed_groups = 0;
+        $total_groups = count($combo['group_hole_scores']);
+        foreach ($combo['group_hole_scores'] as $group_holes) {
+            $holes_played = count($group_holes);
+            if ($total_holes > 0 && $holes_played >= $total_holes) {
+                $completed_groups++;
+            }
+        }
+
         return [
             'score' => $sum_score - $sum_par,
-            'thru' => $thru,
-            'thru_label' => $this->formatThruLabel($thru, $total_holes)
+            'thru' => $completed_groups,
+            'thru_label' => $completed_groups . '组'
         ];
     }
 

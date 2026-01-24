@@ -1,19 +1,82 @@
-.board-placeholder {
-    margin: 20rpx;
-    padding: 60rpx 40rpx;
+.board {
+    margin: 10rpx;
     background: #fff;
     border-radius: 16rpx;
+    overflow: hidden;
 }
 
-.board-title {
-    display: block;
-    font-size: 28rpx;
+.board-header,
+.board-row {
+    display: flex;
+    align-items: stretch;
+}
+
+.board-header {
+    font-size: 24rpx;
+    color: var(--text-secondary);
+    background: #f7f7f7;
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.board-row-wrapper {
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.board-row-wrapper:last-child {
+    border-bottom: none;
+}
+
+.board-row {
+    font-size: 26rpx;
     color: var(--text-primary);
-    margin-bottom: 8rpx;
 }
 
-.board-subtitle {
-    display: block;
+/* 通用列样式 */
+.col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18rpx 12rpx;
+    border-right: 1rpx solid #e0e0e0;
+    box-sizing: border-box;
+}
+
+.col-rank {
+    width: 80rpx;
+}
+
+.col-team {
+    flex: 1;
+    justify-content: flex-start;
+    gap: 16rpx;
+}
+
+.col-score {
+    width: 140rpx;
+}
+
+.col-thru {
+    width: 100rpx;
+    border-right: none;
+}
+
+.team-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4rpx;
+}
+
+.team-name {
+    font-size: 26rpx;
+    color: var(--text-primary);
+}
+
+.board-empty {
+    padding: 60rpx 40rpx;
+    text-align: center;
+}
+
+.empty-text {
     font-size: 24rpx;
     color: var(--text-tertiary);
 }

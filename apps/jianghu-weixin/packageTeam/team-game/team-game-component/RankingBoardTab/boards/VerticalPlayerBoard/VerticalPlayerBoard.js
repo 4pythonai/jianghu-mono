@@ -2,8 +2,8 @@
  * Vertical player board.
  * 支持点击展开球员详细记分情况
  */
-import { config } from '@/api/config'
 import { getScoreClass } from '@/utils/gameUtils'
+import { imageUrl } from '@/utils/image'
 
 Component({
     properties: {
@@ -58,7 +58,7 @@ Component({
                     rankText: row.rank_label ?? '',
                     scoreText: this.formatScore(row.score),
                     thruText: row.thru_label ?? '',
-                    avatarUrl: this.normalizeAvatar(row.avatar)
+                    avatarUrl: imageUrl(row.avatar)
                 }
             })
         },
@@ -72,26 +72,14 @@ Component({
             }
             return `${value}`
         },
-        normalizeAvatar(avatar) {
-            if (!avatar) {
-                return ''
-            }
-            if (avatar.startsWith('http')) {
-                return avatar
-            }
-            if (avatar.startsWith('/')) {
-                return `${config.staticURL}${avatar}`
-            }
-            return avatar
-        },
         /** 点击行展开/收起详情 */
         onRowTap(e) {
             const userId = e.currentTarget.dataset.userId
             const currentExpanded = this.data.expandedUserId
             const { holeList, displayScores } = this.data
-            console.log('[VerticalPlayerBoard] onRowTap:', { 
-                userId, 
-                currentExpanded, 
+            console.log('[VerticalPlayerBoard] onRowTap:', {
+                userId,
+                currentExpanded,
                 holeListLen: holeList?.length,
                 holeNames: holeList?.map(h => h.holename),
                 displayScoresLen: displayScores?.length

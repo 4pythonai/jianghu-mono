@@ -1,4 +1,31 @@
-<view class="board-placeholder">
-  <text class="board-title">分队成绩表（开发中）</text>
-  <text class="board-subtitle">共 {{boardData.rows.length}} 组</text>
+<view class="board">
+  <view class="board-header">
+    <view class="col col-rank">排名</view>
+    <view class="col col-team">球队</view>
+    <view class="col col-score">成绩（{{totalGroups}}组）</view>
+    <view class="col col-thru">已完成</view>
+  </view>
+
+  <view wx:if="{{rows.length === 0}}" class="board-empty">
+    <text class="empty-text">暂无成绩</text>
+  </view>
+
+  <view wx:for="{{rows}}" wx:key="tag_id" class="board-row-wrapper">
+    <view class="board-row">
+      <view class="col col-rank">{{item.rankText}}</view>
+      <view class="col col-team">
+        <view class="team-info">
+          <text class="team-name">{{item.tag_name}}（{{item.memberCount}}组）</text>
+        </view>
+        <AvatarGroup
+          wx:if="{{item.memberAvatars.length > 0}}"
+          avatars="{{item.memberAvatars}}"
+          showMode="line"
+          maxShow="{{3}}"
+        />
+      </view>
+      <view class="col col-score">{{item.scoreText}}</view>
+      <view class="col col-thru">{{item.thruText}}</view>
+    </view>
+  </view>
 </view>
