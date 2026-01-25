@@ -30,11 +30,7 @@
   <view wx:if="{{shouldShowComboConfig && selectedPlayers.length >= 2}}" class="combo-section">
     <view class="combo-section-title">组合配对</view>
     <OneBallConfig
-      groups="{{[{
-        groupid: groupId,
-        players: selectedPlayers,
-        groupOneballConfig: comboConfig
-      }]}}"
+      groups="{{oneBallConfigGroups}}"
       bind:configChange="onComboConfigChange"
     />
   </view>
