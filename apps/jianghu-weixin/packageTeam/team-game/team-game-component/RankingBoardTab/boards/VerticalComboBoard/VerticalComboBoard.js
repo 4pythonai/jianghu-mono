@@ -54,7 +54,9 @@ Component({
                 thruText: row.thru_label ?? '',
                 comboLabel: this.getComboLabel(row),
                 memberCount: row.members?.length ?? 0,
-                members: this.normalizeMembersWithImages(row.members ?? [])
+                members: this.normalizeMembersWithImages(row.members ?? []),
+                // 使用 group_id + combo_id 作为唯一标识，避免重复 key
+                uniqueComboId: `${row.group_id}_${row.combo_id}`
             }))
         },
         formatScore(score) {

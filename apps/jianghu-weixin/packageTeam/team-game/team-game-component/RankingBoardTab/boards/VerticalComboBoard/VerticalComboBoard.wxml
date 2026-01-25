@@ -10,9 +10,9 @@
     <text class="empty-text">暂无成绩</text>
   </view>
 
-  <view wx:for="{{rows}}" wx:key="combo_id" class="board-row-wrapper">
+  <view wx:for="{{rows}}" wx:key="uniqueComboId" class="board-row-wrapper">
     <!-- Combo 行 -->
-    <view class="board-row" data-combo-id="{{item.combo_id}}" bindtap="onComboRowTap">
+    <view class="board-row" data-combo-id="{{item.uniqueComboId}}" bindtap="onComboRowTap">
       <view class="col col-rank">
         <text class="rank-text">{{item.rankText}}</text>
       </view>
@@ -36,7 +36,7 @@
     </view>
 
     <!-- 展开的成绩详情 - 为每个成员显示一个 ExpandPlayerScore -->
-    <view wx:if="{{expandedComboId === item.combo_id && holeList.length > 0}}" class="expanded-scores">
+    <view wx:if="{{expandedComboId === item.uniqueComboId && holeList.length > 0}}" class="expanded-scores">
       <view wx:for="{{item.members}}" wx:key="user_id" wx:for-item="member" class="member-score-section">
         <view class="member-score-header">
           <text class="member-name-in-detail">{{member.show_name}}</text>
