@@ -824,24 +824,33 @@ class ScoreBoard extends MY_Controller {
                         ],
                         'hole_scores' => [],
                         'group_hole_scores' => [],  // 按 group_id 分组的 hole_scores
-                        'group_ids' => []  // 用于追踪已添加的 group
+                        'group_ids' => [],  // 用于追踪已添加的 group
+                        'group_members' => []  // 按 group_id 分组的成员列表
                     ];
                 }
                 // 记录该 tag 涉及的所有分组（去重）
-                if (!in_array($group['group_id'], $rows[$combo_key]['group_ids'])) {
-                    $rows[$combo_key]['group_ids'][] = $group['group_id'];
+                $group_id = $group['group_id'];
+                if (!in_array($group_id, $rows[$combo_key]['group_ids'])) {
+                    $rows[$combo_key]['group_ids'][] = $group_id;
                     $rows[$combo_key]['row']['groups'][] = [
-                        'group_id' => $group['group_id'],
+                        'group_id' => $group_id,
                         'group_name' => $group['group_name']
                     ];
-                    $rows[$combo_key]['group_hole_scores'][$group['group_id']] = [];
+                    $rows[$combo_key]['group_hole_scores'][$group_id] = [];
+                    $rows[$combo_key]['group_members'][$group_id] = [];
                 }
+                // 记录该分组中属于该 tag 的成员
+                $rows[$combo_key]['group_members'][$group_id][] = [
+                    'user_id' => $member['user_id'],
+                    'show_name' => $member['show_name'],
+                    'avatar' => $member['avatar']
+                ];
                 $rows[$combo_key]['row']['members'][] = [
                     'user_id' => $member['user_id'],
                     'show_name' => $member['show_name'],
                     'avatar' => $member['avatar']
                 ];
-                $user_combo_map[$group['group_id'] . ':' . $member['user_id']] = $combo_key;
+                $user_combo_map[$group_id . ':' . $member['user_id']] = $combo_key;
             }
         }
 
@@ -894,20 +903,75 @@ class ScoreBoard extends MY_Controller {
             $sum_par += $hole['par'];
         }
 
-        // 计算已完成的分组数（每组打完 total_holes 洞视为完成）
+        // 计算已完成的分组数，并构建每个分组的组合详情
         $completed_groups = 0;
-        $total_groups = count($combo['group_hole_scores']);
-        foreach ($combo['group_hole_scores'] as $group_holes) {
+        $combos = [];
+        $group_index = 0;
+        foreach ($combo['group_hole_scores'] as $group_id => $group_holes) {
             $holes_played = count($group_holes);
-            if ($total_holes > 0 && $holes_played >= $total_holes) {
+            $is_finished = $total_holes > 0 && $holes_played >= $total_holes;
+            if ($is_finished) {
                 $completed_groups++;
             }
+
+            // 计算该分组的成绩
+            $group_score = 0;
+            $group_par = 0;
+            foreach ($group_holes as $hole) {
+                $group_score += $hole['score'];
+                $group_par += $hole['par'];
+            }
+
+            // 获取该分组的成员和名称
+            $group_members = $combo['group_members'][$group_id] ?? [];
+            $group_info = null;
+            foreach ($combo['row']['groups'] as $g) {
+                if ($g['group_id'] == $group_id) {
+                    $group_info = $g;
+                    break;
+                }
+            }
+
+            $combos[] = [
+                'group_id' => (int) $group_id,
+                'group_name' => $group_info['group_name'] ?? '',
+                'members' => $group_members,
+                'score' => $group_score - $group_par,
+                'thru' => $holes_played,
+                'thru_label' => $is_finished ? 'F' : (string) $holes_played,
+                'rank' => 0,  // 稍后计算
+                'rank_label' => ''
+            ];
+            $group_index++;
         }
+
+        // 对 combos 按 score 排序并分配排名
+        usort($combos, function ($a, $b) {
+            return $a['score'] - $b['score'];
+        });
+        $rank = 0;
+        $prev_score = null;
+        $same_rank_count = 0;
+        foreach ($combos as $idx => &$c) {
+            if ($prev_score === null || $c['score'] !== $prev_score) {
+                $rank = $idx + 1;
+                $same_rank_count = 1;
+            } else {
+                $same_rank_count++;
+            }
+            $c['rank'] = $rank;
+            $c['rank_label'] = $same_rank_count > 1 || ($idx > 0 && $combos[$idx - 1]['score'] === $c['score']) 
+                ? 'T' . $rank 
+                : (string) $rank;
+            $prev_score = $c['score'];
+        }
+        unset($c);
 
         return [
             'score' => $sum_score - $sum_par,
             'thru' => $completed_groups,
-            'thru_label' => $completed_groups . '组'
+            'thru_label' => $completed_groups . '组',
+            'combos' => $combos
         ];
     }
 

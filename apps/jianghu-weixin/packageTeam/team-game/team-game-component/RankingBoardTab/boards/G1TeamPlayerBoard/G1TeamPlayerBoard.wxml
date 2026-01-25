@@ -23,7 +23,6 @@
         <view class="col col-team">
           <view class="team-name-wrap">
             <view class="expand-icon">{{expandedTagId === item.tag_id ? '▼' : '▶'}}</view>
-            <view class="team-dot" style="background-color: {{item.tag_color || '#999'}}"></view>
             <text class="team-name">{{item.tag_name}}</text>
             <text wx:if="{{item.isForfeit}}" class="forfeit-text">弃赛</text>
           </view>

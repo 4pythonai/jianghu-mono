@@ -31,6 +31,17 @@
     color: var(--text-primary);
 }
 
+.board-row.expanded {
+    background: linear-gradient(90deg, rgba(45, 140, 255, 0.08) 0%, rgba(45, 140, 255, 0.02) 100%);
+    border-left: 6rpx solid #2d8cff;
+}
+
+.expand-icon {
+    font-size: 20rpx;
+    color: #1a472a;
+    flex: 0 0 auto;
+}
+
 /* 通用列样式 */
 .col {
     display: flex;
@@ -79,4 +90,101 @@
 .empty-text {
     font-size: 24rpx;
     color: var(--text-tertiary);
+}
+
+/* Combo list (expanded) */
+.combo-list {
+    background: #fafafa;
+}
+
+.combo-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 22rpx;
+    color: var(--text-secondary);
+    background: #f0f0f0;
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.combo-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 26rpx;
+    color: var(--text-primary);
+    border-bottom: 1rpx solid #eee;
+}
+
+.combo-row:last-child {
+    border-bottom: none;
+}
+
+.c-col {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 14rpx 10rpx;
+    border-right: 1rpx solid #e0e0e0;
+    box-sizing: border-box;
+}
+
+.c-col-rank {
+    width: 80rpx;
+    flex-shrink: 0;
+}
+
+.c-col-player {
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 12rpx;
+    padding-left: 16rpx;
+}
+
+.c-col-score {
+    width: 140rpx;
+    flex-shrink: 0;
+}
+
+.c-col-thru {
+    width: 100rpx;
+    flex-shrink: 0;
+    border-right: none;
+}
+
+.combo-empty {
+    text-align: center;
+    font-size: 24rpx;
+    color: var(--text-tertiary);
+    padding: 20rpx 0;
+}
+
+.combo-avatars {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+}
+
+.combo-avatar {
+    width: 48rpx;
+    height: 48rpx;
+    border-radius: 50%;
+    background: #e0e0e0;
+    margin-left: -12rpx;
+    border: 2rpx solid #fff;
+}
+
+.combo-avatar:first-child {
+    margin-left: 0;
+}
+
+.combo-names {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 24rpx;
 }

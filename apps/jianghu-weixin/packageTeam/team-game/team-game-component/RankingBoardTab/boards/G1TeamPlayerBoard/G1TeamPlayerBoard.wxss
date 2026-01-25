@@ -73,7 +73,7 @@
 
 .expand-icon {
     font-size: 20rpx;
-    color: var(--text-tertiary);
+    color: #1a472a; /* 深绿色 */
     width: 24rpx;
     flex: 0 0 auto;
 }

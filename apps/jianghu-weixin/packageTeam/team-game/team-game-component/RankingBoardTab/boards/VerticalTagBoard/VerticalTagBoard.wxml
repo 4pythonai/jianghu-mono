@@ -11,21 +11,45 @@
   </view>
 
   <view wx:for="{{rows}}" wx:key="tag_id" class="board-row-wrapper">
-    <view class="board-row">
+    <!-- Tag row (clickable) -->
+    <view
+      class="board-row {{expandedTagId === item.tag_id ? 'expanded' : ''}}"
+      bindtap="onTagRowTap"
+      data-tag-id="{{item.tag_id}}"
+    >
       <view class="col col-rank">{{item.rankText}}</view>
       <view class="col col-team">
-        <view class="team-info">
-          <text class="team-name">{{item.tag_name}}（{{item.memberCount}}组）</text>
-        </view>
-        <AvatarGroup
-          wx:if="{{item.memberAvatars.length > 0}}"
-          avatars="{{item.memberAvatars}}"
-          showMode="line"
-          maxShow="{{3}}"
-        />
+        <view class="expand-icon">{{expandedTagId === item.tag_id ? '▼' : '▶'}}</view>
+        <text class="team-name">{{item.tag_name}}（{{item.groupCount}}组）</text>
       </view>
       <view class="col col-score">{{item.scoreText}}</view>
       <view class="col col-thru">{{item.thruText}}</view>
+    </view>
+
+    <!-- Expanded combos list -->
+    <view wx:if="{{expandedTagId === item.tag_id}}" class="combo-list">
+      <view class="combo-header">
+        <view class="c-col c-col-rank">排名</view>
+        <view class="c-col c-col-player">球员</view>
+        <view class="c-col c-col-score">成绩</view>
+        <view class="c-col c-col-thru">已完成</view>
+      </view>
+
+      <view wx:if="{{expandedCombos.length === 0}}" class="combo-empty">
+        <text>暂无组合成绩</text>
+      </view>
+
+      <view wx:for="{{expandedCombos}}" wx:for-item="combo" wx:key="group_id" class="combo-row">
+        <view class="c-col c-col-rank">{{combo.rankText}}</view>
+        <view class="c-col c-col-player">
+          <view class="combo-avatars">
+            <image wx:for="{{combo.memberAvatars}}" wx:for-item="avatar" wx:key="*this" class="combo-avatar" src="{{avatar}}" mode="aspectFill" />
+          </view>
+          <text class="combo-names">{{combo.memberNames}}</text>
+        </view>
+        <view class="c-col c-col-score">{{combo.scoreText}}</view>
+        <view class="c-col c-col-thru">{{combo.thruText}}</view>
+      </view>
     </view>
   </view>
 </view>
