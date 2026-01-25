@@ -10,32 +10,28 @@
     <text class="empty-text">暂无成绩</text>
   </view>
 
-  <view
-    wx:for="{{rows}}"
-    wx:key="combo_id"
-    class="board-row"
-  >
-    <view class="col col-rank">
-      <text class="rank-text">{{item.rankText}}</text>
-    </view>
+  <view wx:for="{{rows}}" wx:key="combo_id" class="board-row-wrapper">
+    <view class="board-row">
+      <view class="col col-rank">
+        <text class="rank-text">{{item.rankText}}</text>
+      </view>
 
-    <view class="col col-combo">
-      <view class="combo-info">
-        <view class="members-container">
-          <view wx:for="{{item.members}}" wx:key="user_id" class="member-item">
+      <view class="col col-combo">
+        <view class="combo-members">
+          <view wx:for="{{item.members}}" wx:key="user_id" class="member-card">
             <image class="member-avatar" mode="aspectFill" src="{{item.avatarUrl}}" />
             <text class="member-name">{{item.show_name}}</text>
           </view>
         </view>
       </view>
-    </view>
 
-    <view class="col col-score">
-      <text class="score-text">{{item.scoreText}}</text>
-    </view>
+      <view class="col col-score">
+        <text class="score-text">{{item.scoreText}}</text>
+      </view>
 
-    <view class="col col-thru">
-      <text>{{item.thruText}}</text>
+      <view class="col col-thru">
+        <text>{{item.thruText}}</text>
+      </view>
     </view>
   </view>
 </view>
