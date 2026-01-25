@@ -50,14 +50,8 @@ Component({
             return String(value)
         },
         getComboLabel(row) {
-            const parts = []
-            if (row.group_name) {
-                parts.push(row.group_name)
-            }
-            if (row.combo_id) {
-                parts.push(`组合${String.fromCharCode(64 + row.combo_id)}`)
-            }
-            return parts.join(' - ')
+            // 不显示组合标签
+            return ''
         },
         normalizeMembersWithImages(members = []) {
             return members.map(m => ({

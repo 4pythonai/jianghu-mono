@@ -21,7 +21,6 @@
 
     <view class="col col-combo">
       <view class="combo-info">
-        <text class="combo-label">{{item.comboLabel}}</text>
         <view class="members-container">
           <view wx:for="{{item.members}}" wx:key="user_id" class="member-item">
             <image class="member-avatar" mode="aspectFill" src="{{item.avatarUrl}}" />
