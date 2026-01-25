@@ -11,16 +11,17 @@
   </view>
 
   <view wx:for="{{rows}}" wx:key="combo_id" class="board-row-wrapper">
-    <view class="board-row">
+    <!-- Combo 行 -->
+    <view class="board-row" data-combo-id="{{item.combo_id}}" bindtap="onComboRowTap">
       <view class="col col-rank">
         <text class="rank-text">{{item.rankText}}</text>
       </view>
 
       <view class="col col-combo">
         <view class="combo-members">
-          <view wx:for="{{item.members}}" wx:key="user_id" class="member-card">
-            <image class="member-avatar" mode="aspectFill" src="{{item.avatarUrl}}" />
-            <text class="member-name">{{item.show_name}}</text>
+          <view wx:for="{{item.members}}" wx:key="user_id" wx:for-item="member" class="member-card">
+            <image class="member-avatar" mode="aspectFill" src="{{member.avatarUrl}}" />
+            <text class="member-name">{{member.show_name}}</text>
           </view>
         </view>
       </view>
@@ -31,6 +32,19 @@
 
       <view class="col col-thru">
         <text>{{item.thruText}}</text>
+      </view>
+    </view>
+
+    <!-- 展开的成绩详情 - 为每个成员显示一个 ExpandPlayerScore -->
+    <view wx:if="{{expandedComboId === item.combo_id && holeList.length > 0}}" class="expanded-scores">
+      <view wx:for="{{item.members}}" wx:key="user_id" wx:for-item="member" class="member-score-section">
+        <view class="member-score-header">
+          <text class="member-name-in-detail">{{member.show_name}}</text>
+        </view>
+        <ExpandPlayerScore
+          holeList="{{holeList}}"
+          playerScores="{{displayScores[getPlayerIndex(member.user_id)]}}"
+        />
       </view>
     </view>
   </view>

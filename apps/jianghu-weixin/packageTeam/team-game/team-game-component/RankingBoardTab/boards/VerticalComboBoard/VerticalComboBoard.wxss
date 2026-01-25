@@ -121,3 +121,31 @@
     color: var(--text-secondary);
     font-weight: normal;
 }
+
+/* 展开的成绩详情区域 */
+.expanded-scores {
+    background: #f0f0f0;
+    padding: 0;
+}
+
+.member-score-section {
+    background: #fff;
+    margin: 0;
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.member-score-section:last-child {
+    border-bottom: none;
+}
+
+.member-score-header {
+    padding: 12rpx 24rpx;
+    background: #f7f7f7;
+    border-bottom: 1rpx solid #e0e0e0;
+}
+
+.member-name-in-detail {
+    font-size: 26rpx;
+    color: var(--text-primary);
+    font-weight: 500;
+}

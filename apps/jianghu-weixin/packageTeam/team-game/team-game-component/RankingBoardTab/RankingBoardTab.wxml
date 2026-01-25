@@ -27,6 +27,9 @@
     <VerticalComboBoard
       wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'combo'}}"
       boardData="{{scoreboard}}"
+      holeList="{{holeList}}"
+      players="{{players}}"
+      displayScores="{{displayScores}}"
     />
 
     <!-- 竖向列表 TAG-->

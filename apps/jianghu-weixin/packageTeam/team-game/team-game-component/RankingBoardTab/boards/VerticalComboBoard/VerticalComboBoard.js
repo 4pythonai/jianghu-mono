@@ -9,16 +9,37 @@ Component({
         boardData: {
             type: Object,
             value: null
+        },
+        holeList: {
+            type: Array,
+            value: []
+        },
+        players: {
+            type: Array,
+            value: []
+        },
+        displayScores: {
+            type: Array,
+            value: []
         }
     },
     data: {
-        rows: []
+        rows: [],
+        expandedComboId: null
     },
     observers: {
         'boardData.rows': function (rows) {
             this.setData({
                 rows: this.normalizeRows(rows)
             })
+        },
+        'displayScores': function (displayScores) {
+            // displayScores 更新时，重新渲染
+            if (this.data.rows.length > 0) {
+                this.setData({
+                    rows: this.normalizeRows(this.data.boardData.rows)
+                })
+            }
         }
     },
     methods: {
@@ -58,6 +79,26 @@ Component({
                 ...m,
                 avatarUrl: imageUrl(m.avatar)
             }))
+        },
+        /**
+         * 点击 combo 行，展开/收起详情
+         */
+        onComboRowTap(e) {
+            const comboId = e.currentTarget.dataset.comboId
+            const currentExpanded = this.data.expandedComboId
+            this.setData({
+                expandedComboId: currentExpanded === comboId ? null : comboId
+            })
+        },
+        /**
+         * 获取 combo 中成员在 displayScores 中的索引
+         * @param {number} userId - 成员的 user_id
+         * @returns {number} displayScores 中的索引，-1 表示未找到
+         */
+        getPlayerIndex(userId) {
+            const players = this.data.players || []
+            const index = players.findIndex(p => p.user_id === userId)
+            return index
         }
     }
 })
