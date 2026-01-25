@@ -35,17 +35,15 @@
       </view>
     </view>
 
-    <!-- 展开的成绩详情 - 为每个成员显示一个 ExpandPlayerScore -->
-    <view wx:if="{{expandedComboId === item.uniqueComboId && holeList.length > 0}}" class="expanded-scores">
-      <view wx:for="{{item.members}}" wx:key="user_id" wx:for-item="member" class="member-score-section">
-        <view class="member-score-header">
-          <text class="member-name-in-detail">{{member.show_name}}</text>
-        </view>
-        <ExpandPlayerScore
-          holeList="{{holeList}}"
-          playerScores="{{displayScores[getPlayerIndex(member.user_id)]}}"
-        />
+    <!-- 展开的成绩详情 - 显示 combo 整体成绩 -->
+    <view wx:if="{{expandedComboId === item.uniqueComboId && holeList.length > 0 && item.comboScore}}" class="expanded-scores">
+      <view class="combo-score-header">
+        <text class="combo-score-title">组合成绩（Combo as One）</text>
       </view>
+      <ExpandPlayerScore
+        holeList="{{holeList}}"
+        playerScores="{{item.comboScore}}"
+      />
     </view>
   </view>
 </view>

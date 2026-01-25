@@ -56,8 +56,96 @@ Component({
                 memberCount: row.members?.length ?? 0,
                 members: this.normalizeMembersWithImages(row.members ?? []),
                 // 使用 group_id + combo_id 作为唯一标识，避免重复 key
-                uniqueComboId: `${row.group_id}_${row.combo_id}`
+                uniqueComboId: `${row.group_id}_${row.combo_id}`,
+                // 计算combo整体成绩（所有成员成绩合并）
+                comboScore: this.calculateComboScore(row.members ?? [])
             }))
+        },
+        /**
+         * 计算 combo 整体成绩（所有成员的成绩合并）
+         * @param {Array} members - combo 中的成员列表
+         * @returns {Object} combo 的综合成绩数据
+         */
+        calculateComboScore(members = []) {
+            if (members.length === 0) {
+                return null
+            }
+
+            const displayScores = this.data.displayScores || []
+            const holeList = this.data.holeList || []
+
+            // 为该combo的所有成员聚合成绩
+            let totalOutDiff = 0
+            let totalInDiff = 0
+            let totalTotalDiff = 0
+            let totalOutScore = 0
+            let totalInScore = 0
+            let totalScore = 0
+
+            const comboHoles = holeList.map((hole, holeIndex) => {
+                let holeComboScore = 0
+                let holeComboDiff = 0
+
+                // 累加该洞上所有成员的成绩
+                members.forEach(member => {
+                    const playerIndex = this.getPlayerIndex(member.user_id)
+                    if (playerIndex >= 0 && displayScores[playerIndex]) {
+                        const playerHoleData = displayScores[playerIndex].holes[holeIndex]
+                        if (playerHoleData && playerHoleData.score > 0) {
+                            holeComboScore += playerHoleData.score
+                        }
+                    }
+                })
+
+                // 计算该洞的相对杆数
+                if (holeComboScore > 0) {
+                    const holePar = hole.par || 0
+                    holeComboDiff = holeComboScore - holePar
+                    totalScore += holeComboScore
+
+                    if (holeIndex < 9) {
+                        totalOutScore += holeComboScore
+                        totalOutDiff += holeComboDiff
+                    } else if (holeIndex < 18) {
+                        totalInScore += holeComboScore
+                        totalInDiff += holeComboDiff
+                    }
+                }
+
+                return {
+                    score: holeComboScore > 0 ? holeComboScore : '',
+                    par: hole.par || 0,
+                    diff: holeComboDiff,
+                    scoreClass: this.getDiffScoreClass(holeComboDiff)
+                }
+            })
+
+            totalTotalDiff = totalOutDiff + totalInDiff
+
+            return {
+                holes: comboHoles,
+                outTotal: totalOutScore > 0 ? totalOutScore : '',
+                outDiff: totalOutDiff,
+                outDiffText: totalOutScore > 0 ? (totalOutDiff > 0 ? `+${totalOutDiff}` : `${totalOutDiff}`) : '',
+                inTotal: totalInScore > 0 ? totalInScore : '',
+                inDiff: totalInDiff,
+                inDiffText: totalInScore > 0 ? (totalInDiff > 0 ? `+${totalInDiff}` : `${totalInDiff}`) : '',
+                total: totalScore > 0 ? totalScore : '',
+                totalDiff: totalTotalDiff,
+                totalDiffText: totalScore > 0 ? (totalTotalDiff > 0 ? `+${totalTotalDiff}` : `${totalTotalDiff}`) : ''
+            }
+        },
+        /**
+         * 根据相对杆数获取成绩等级 CSS 类名
+         */
+        getDiffScoreClass(diff) {
+            if (diff <= -2) return 'score-eagle'       // 老鹰及以下
+            if (diff === -1) return 'score-birdie'     // 小鸟
+            if (diff === 0) return 'score-par'         // 平标
+            if (diff === 1) return 'score-bogey'       // 柏忌
+            if (diff === 2) return 'score-double-bogey' // 双柏忌
+            if (diff >= 3) return 'score-triple-bogey'  // 三柏忌及以上
+            return 'score-par'
         },
         formatScore(score) {
             const value = Number(score)
