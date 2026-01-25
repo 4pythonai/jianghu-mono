@@ -2,6 +2,7 @@
     "component": true,
     "usingComponents": {
         "VerticalPlayerBoard": "./boards/VerticalPlayerBoard/VerticalPlayerBoard",
+        "VerticalComboBoard": "./boards/VerticalComboBoard/VerticalComboBoard",
         "VerticalTagBoard": "./boards/VerticalTagBoard/VerticalTagBoard",
         "HorizontalMatchBoard": "./boards/HorizontalMatchBoard/HorizontalMatchBoard",
         "G1TeamPlayerBoard": "./boards/G1TeamPlayerBoard/G1TeamPlayerBoard"

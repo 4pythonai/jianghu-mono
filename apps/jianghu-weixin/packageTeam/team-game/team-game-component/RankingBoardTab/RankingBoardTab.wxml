@@ -23,6 +23,12 @@
       displayScores="{{displayScores}}"
     />
 
+    <!-- 竖向列表 combo-->
+    <VerticalComboBoard
+      wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'combo'}}"
+      boardData="{{scoreboard}}"
+    />
+
     <!-- 竖向列表 TAG-->
     <VerticalTagBoard
       wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'tag' && scoreboard.mode !== 'team_player'}}"
