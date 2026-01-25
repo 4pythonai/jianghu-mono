@@ -11,9 +11,9 @@
 | match_format | 构图 | 行类型 |
 | --- | --- | --- |
 | G1:individual_stroke/个人比杆赛 | 竖向 | player |
-| G2:fourball_bestball_stroke/四人四球最好成绩比杆赛 | 竖向 | tag |
-| G3:fourball_scramble_stroke/四人四球最佳球位比杆赛(旺波) | 竖向 | tag |
-| G4:foursome_stroke/四人两球比杆赛 | 竖向 | tag |
+| G2:fourball_bestball_stroke/四人四球最好成绩比杆赛 | 竖向 | tag / combo* |
+| G3:fourball_scramble_stroke/四人四球最佳球位比杆赛(旺波) | 竖向 | tag / combo* |
+| G4:foursome_stroke/四人两球比杆赛 | 竖向 | tag / combo* |
 | G5:individual_match/个人比洞赛 | 横向 | player vs player |
 | G6:fourball_bestball_match/四人四球最好成绩比洞赛 | 横向 | tag vs tag |
 | G7:fourball_scramble_match/四人四球最佳球位比洞赛(旺波) | 横向 | tag vs tag |
@@ -24,8 +24,10 @@
 
 + 四人四球/四人两球/最佳球位（比杆）竖向列表：一行=组合（来自 TAG）。
 + 组合成员来源为分组（group）。
-+ 比洞赛仅支持“左 vs 右”两方对阵，不支持多场同时列表。
-
++ 比洞赛仅支持“左 vs 右”两方对阵，不支持多场同时列表。 **G2/G3/G4 行类型说明**（*标记）：
+  - **分队数 ≥ 2**：按 TAG 聚合（row_type = "tag"），一行代表一个分队
+  - **分队数 = 1**：按组合聚合（row_type = "combo"），聚合维度为 `group_id + combo_id`，一行代表一个组合（2-4人）
+  
 ## 2. 排名与完成字段
 + `rank`：排名（数值）
 + `rank_label`：展示用排名（平分时使用 `T` 前缀，如 `T1`）
@@ -99,12 +101,67 @@
 
 字段说明（竖向）：
 
-+ `row_type`：`player` 或 `tag`
++ `row_type`：`player` / `tag` / `combo`
+  - `player`：按球员行展示（G1）
+  - `tag`：按分队行展示（G1分队≥2时的分队榜；G2/G3/G4分队≥2时）
+  - `combo`：按组合行展示（G2/G3/G4分队=1时）
 + `rows[].tag_*`：仅 `row_type=tag` 时返回
++ `rows[].combo_id`：仅 `row_type=combo` 时返回，组合ID
 + `rows[].members`：组合成员（来自分组 group）
 + `rows[].group_*`：该组合所属分组
 
-### 3.1.1 G1 分队>=2（mode = team_player）
+### 3.1.1 G2/G3/G4 分队=1（row_type = combo）
+当 `match_format` 为 G2/G3/G4 且分队数=1时，按组合（combo）聚合，聚合维度为 `group_id + combo_id`：
+
+```json
+{
+  "code": 200,
+  "data": {
+    "layout": "vertical",
+    "match_format": "fourball_bestball_stroke",
+    "game_type": "single_team",
+    "row_type": "combo",
+    "rows": [
+      {
+        "rank": 1,
+        "rank_label": "T1",
+        "score": -1,
+        "thru": 16,
+        "thru_label": "16",
+        "combo_id": 1001,
+        "members": [
+          { "user_id": 101, "show_name": "王启", "avatar": "..." },
+          { "user_id": 102, "show_name": "紫涛", "avatar": "..." }
+        ],
+        "group_id": 1001,
+        "group_name": "第1组"
+      },
+      {
+        "rank": 1,
+        "rank_label": "T1",
+        "score": -1,
+        "thru": 13,
+        "thru_label": "13",
+        "combo_id": 1002,
+        "members": [
+          { "user_id": 201, "show_name": "海晗", "avatar": "..." },
+          { "user_id": 202, "show_name": "Serena Wang", "avatar": "..." }
+        ],
+        "group_id": 1001,
+        "group_name": "第1组"
+      }
+    ]
+  }
+}
+```
+
+说明：
+- `row_type=combo`：每行代表一个组合（2-4人）
+- `combo_id`：组合的唯一标识（来自 `t_game_group_user.combo_id`）
+- 不含 `tag_*` 字段
+- `members` 为该组合的所有成员
+
+### 3.1.2 G1 分队>=2（mode = team_player）
 当 `match_format=individual_stroke` 且存在 2 个及以上分队（TAG）时，返回分队榜 + 球员榜的组合结构：
 
 ```json
