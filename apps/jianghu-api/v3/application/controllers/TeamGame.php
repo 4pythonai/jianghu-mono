@@ -532,6 +532,7 @@ class TeamGame extends MY_Controller {
         $game_id = $json_paras['game_id'];
         $group_id = $json_paras['group_id'];
         $user_ids = $json_paras['user_ids'] ?? [];
+        $combo_config = $json_paras['combo_config'] ?? null;
 
         // 验证管理员权限或分组权限
         $game = $this->MTeamGame->getTeamGame($game_id);
@@ -547,7 +548,7 @@ class TeamGame extends MY_Controller {
             return;
         }
 
-        $result = $this->MTeamGame->updateGroupMembers($game_id, $group_id, $user_ids);
+        $result = $this->MTeamGame->updateGroupMembers($game_id, $group_id, $user_ids, $combo_config);
 
         echo json_encode([
             'code' => $result['success'] ? 200 : 400,

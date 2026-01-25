@@ -687,16 +687,23 @@ export const gameStore = observable({
      * @param {Array} userIds 用户ID数组
      * @param {number} gameId 比赛ID（可选）
      */
-    updateGroupMembers: action(async function (groupId, userIds, gameId = null) {
+    updateGroupMembers: action(async function (groupId, userIds, gameId = null, comboConfig = null) {
         const id = gameId || this.gameid;
         if (!id || !groupId) return { success: false, message: '缺少参数' };
 
         try {
-            const res = await teamgameApi.updateGroupMembers({
+            const params = {
                 game_id: id,
                 group_id: groupId,
                 user_ids: userIds
-            });
+            };
+
+            // 如果有combo配对配置，添加到参数中
+            if (comboConfig) {
+                params.combo_config = comboConfig;
+            }
+
+            const res = await teamgameApi.updateGroupMembers(params);
             if (res?.code === 200) {
                 // 重新加载分组列表
                 await this.loadGroups(id);

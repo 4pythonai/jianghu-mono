@@ -26,6 +26,19 @@
     </view>
   </view>
 
+  <!-- Combo配对区域 -->
+  <view wx:if="{{shouldShowComboConfig && selectedPlayers.length >= 2}}" class="combo-section">
+    <view class="combo-section-title">组合配对</view>
+    <OneBallConfig
+      groups="{{[{
+        groupid: groupId,
+        players: selectedPlayers,
+        groupOneballConfig: comboConfig
+      }]}}"
+      bind:configChange="onComboConfigChange"
+    />
+  </view>
+
   <!-- TAG 标签栏 -->
   <view class="tag-bar">
     <scroll-view class="tag-scroll" scroll-x enhanced show-scrollbar="{{false}}">

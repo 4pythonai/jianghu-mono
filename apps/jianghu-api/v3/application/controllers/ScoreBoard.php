@@ -803,32 +803,70 @@ class ScoreBoard extends MY_Controller {
     private function buildTagCombinations($groups, $tag_map) {
         $rows = [];
         $user_combo_map = [];
+        $tag_count = count($tag_map);
 
         foreach ($groups as $group) {
             foreach ($group['members'] as $member) {
                 $tag_id = $member['tag_id'];
-                if (!$tag_id) {
-                    continue;
+                $combo_id = $member['combo_id'] ?? null;
+
+                // 关键判断：根据分队数量决定combo_key
+                if ($tag_count < 2) {
+                    // 只有1个分队：使用combo_id作为统计单位
+                    if ($combo_id) {
+                        $combo_key = 'combo_' . $group['group_id'] . '_' . $combo_id;
+                    } else {
+                        // 兜底：如果没有combo_id，使用group_id
+                        $combo_key = 'group_' . $group['group_id'];
+                    }
+                } else {
+                    // ≥2个分队：使用tag_id作为统计单位（现有逻辑）
+                    if (!$tag_id) {
+                        continue;
+                    }
+                    $combo_key = (string) $tag_id;
                 }
-                // 使用纯 tag_id 作为 combo_key，使每个 tag 只出现一次
-                $combo_key = (string) $tag_id;
+
                 if (!isset($rows[$combo_key])) {
-                    $tag_info = $tag_map[$tag_id] ?? ['tag_name' => $member['tag_name'], 'tag_color' => $member['tag_color']];
-                    $rows[$combo_key] = [
-                        'row' => [
-                            'tag_id' => $tag_id,
-                            'tag_name' => $tag_info['tag_name'],
-                            'tag_color' => $tag_info['tag_color'],
-                            'members' => [],
-                            'groups' => []
-                        ],
-                        'hole_scores' => [],
-                        'group_hole_scores' => [],  // 按 group_id 分组的 hole_scores
-                        'group_ids' => [],  // 用于追踪已添加的 group
-                        'group_members' => []  // 按 group_id 分组的成员列表
-                    ];
+                    // 初始化combo行数据
+                    if ($tag_count < 2 && $combo_id) {
+                        // Combo模式：使用组合标识
+                        $combo_label = $combo_id == 1 ? '组合A' : '组合B';
+                        $rows[$combo_key] = [
+                            'row' => [
+                                'combo_id' => $combo_id,
+                                'combo_label' => $combo_label,
+                                'tag_id' => $tag_id,
+                                'tag_name' => $member['tag_name'] ?? '',
+                                'tag_color' => $member['tag_color'] ?? '',
+                                'members' => [],
+                                'groups' => []
+                            ],
+                            'hole_scores' => [],
+                            'group_hole_scores' => [],
+                            'group_ids' => [],
+                            'group_members' => []
+                        ];
+                    } else {
+                        // Tag模式（原有逻辑）
+                        $tag_info = $tag_map[$tag_id] ?? ['tag_name' => $member['tag_name'], 'tag_color' => $member['tag_color']];
+                        $rows[$combo_key] = [
+                            'row' => [
+                                'tag_id' => $tag_id,
+                                'tag_name' => $tag_info['tag_name'],
+                                'tag_color' => $tag_info['tag_color'],
+                                'members' => [],
+                                'groups' => []
+                            ],
+                            'hole_scores' => [],
+                            'group_hole_scores' => [],
+                            'group_ids' => [],
+                            'group_members' => []
+                        ];
+                    }
                 }
-                // 记录该 tag 涉及的所有分组（去重）
+
+                // 记录该 tag/combo 涉及的所有分组（去重）
                 $group_id = $group['group_id'];
                 if (!in_array($group_id, $rows[$combo_key]['group_ids'])) {
                     $rows[$combo_key]['group_ids'][] = $group_id;
@@ -839,7 +877,8 @@ class ScoreBoard extends MY_Controller {
                     $rows[$combo_key]['group_hole_scores'][$group_id] = [];
                     $rows[$combo_key]['group_members'][$group_id] = [];
                 }
-                // 记录该分组中属于该 tag 的成员
+
+                // 记录该分组中属于该 tag/combo 的成员
                 $rows[$combo_key]['group_members'][$group_id][] = [
                     'user_id' => $member['user_id'],
                     'show_name' => $member['show_name'],

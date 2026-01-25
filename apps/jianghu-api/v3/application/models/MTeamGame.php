@@ -660,7 +660,7 @@ class MTeamGame extends CI_Model {
      * @param array $user_ids 用户ID数组
      * @return array 操作结果
      */
-    public function updateGroupMembers($game_id, $group_id, $user_ids) {
+    public function updateGroupMembers($game_id, $group_id, $user_ids, $combo_config = null) {
         // 检查分组是否存在
         $group = $this->db->get_where('t_game_group', [
             'groupid' => $group_id,
@@ -693,11 +693,19 @@ class MTeamGame extends CI_Model {
                 continue; // 跳过未报名的用户
             }
 
+            // 计算combo_id
+            $combo_id = null;
+            if ($combo_config && isset($combo_config[$user_id])) {
+                $side = $combo_config[$user_id];  // 'A' or 'B'
+                $combo_id = ($side === 'A') ? 1 : (($side === 'B') ? 2 : null);
+            }
+
             $insert_result = $this->db->insert('t_game_group_user', [
                 'gameid' => $game_id,
                 'groupid' => $group_id,
                 'user_id' => $user_id,
                 'tag_id' => $member['tag_id'] ?? null,
+                'combo_id' => $combo_id,
                 'addtime' => date('Y-m-d H:i:s')
             ]);
 

@@ -102,6 +102,19 @@
     color: #ccc;
 }
 
+/* ========== Combo配对区域 ========== */
+.combo-section {
+    background: #fff;
+    padding: 24rpx 32rpx;
+    margin-bottom: 16rpx;
+}
+
+.combo-section-title {
+    font-size: 28rpx;
+    color: #666;
+    margin-bottom: 20rpx;
+}
+
 /* ========== TAG 标签栏 ========== */
 .tag-bar {
     display: flex;

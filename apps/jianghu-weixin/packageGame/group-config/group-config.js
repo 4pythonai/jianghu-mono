@@ -30,10 +30,15 @@ Page({
         // 球员分组状态 { playerId: groupId }
         playerGroupMap: {},
 
+        // Combo配对相关
+        shouldShowComboConfig: false,  // 是否显示combo配对
+        comboConfig: {},                // combo配对数据 {user_id: 'A'/'B'}
+
         // 默认值（防止 store 绑定前报错）
         gameTags: [],
         tagMembers: [],
-        groups: []
+        groups: [],
+        match_format: null
     },
 
     onLoad(options) {
@@ -53,7 +58,7 @@ Page({
         // 创建 store 绑定
         this.storeBindings = createStoreBindings(this, {
             store: gameStore,
-            fields: ['gameTags', 'tagMembers', 'groups', 'gameid'],
+            fields: ['gameTags', 'tagMembers', 'groups', 'gameid', 'match_format'],
             actions: ['updateGroupMembers', 'loadGroups']
         })
 
@@ -80,6 +85,9 @@ Page({
             this.buildPlayerGroupMap()
             this.loadCurrentGroupPlayers()
             this.updateCurrentTagPlayers()
+
+            // 检查是否需要显示combo配对
+            this.checkAndInitComboConfig()
         }, 100)
     },
 
@@ -227,6 +235,79 @@ Page({
     },
 
     /**
+     * 检查并初始化combo配对配置
+     */
+    checkAndInitComboConfig() {
+        const { match_format } = this.data
+        const gameTags = gameStore.gameTags || []
+        const tagCount = gameTags.length
+
+        // 判断是否需要显示combo配对
+        const shouldShow = tagCount === 1 &&
+            ['fourball_bestball_stroke', 'fourball_scramble_stroke', 'foursome_stroke']
+                .includes(match_format)
+
+        console.log('[group-config] checkAndInitComboConfig', {
+            match_format,
+            tagCount,
+            shouldShow
+        })
+
+        if (shouldShow) {
+            // 加载现有的combo配对
+            const comboConfig = this.loadExistingComboConfig()
+            this.setData({
+                shouldShowComboConfig: true,
+                comboConfig
+            })
+        } else {
+            this.setData({ shouldShowComboConfig: false })
+        }
+    },
+
+    /**
+     * 加载现有的combo配对数据
+     * 从groups数据中读取当前分组的combo_id，转换为OneBallConfig格式
+     */
+    loadExistingComboConfig() {
+        const { groupId, selectedPlayers } = this.data
+        const groups = gameStore.groups || []
+        const currentGroup = groups.find(g => String(g.groupid) === String(groupId))
+
+        if (!currentGroup || !currentGroup.members || currentGroup.members.length === 0) {
+            return {}
+        }
+
+        const config = {}
+        currentGroup.members.forEach(member => {
+            const userId = String(member.user_id)
+            const comboId = member.combo_id
+
+            // combo_id 1 -> 'A', combo_id 2 -> 'B'
+            if (comboId === 1 || comboId === '1') {
+                config[userId] = 'A'
+            } else if (comboId === 2 || comboId === '2') {
+                config[userId] = 'B'
+            }
+        })
+
+        console.log('[group-config] loadExistingComboConfig', config)
+        return config
+    },
+
+    /**
+     * 处理combo配对变化
+     */
+    onComboConfigChange(e) {
+        const groups = e.detail.groups
+        if (groups && groups[0]) {
+            const comboConfig = groups[0].groupOneballConfig || {}
+            this.setData({ comboConfig })
+            console.log('[group-config] combo配对更新:', comboConfig)
+        }
+    },
+
+    /**
      * 取消
      */
     onCancel() {
@@ -237,13 +318,16 @@ Page({
      * 保存分组
      */
     async onSave() {
-        const { groupId, selectedPlayers } = this.data
+        const { groupId, selectedPlayers, shouldShowComboConfig, comboConfig } = this.data
         const userIds = selectedPlayers.map(p => p.id)
 
         wx.showLoading({ title: '保存中...' })
 
         try {
-            const result = await this.updateGroupMembers(groupId, userIds)
+            // 如果需要combo配对，传递combo_config
+            const result = shouldShowComboConfig
+                ? await this.updateGroupMembers(groupId, userIds, null, comboConfig)
+                : await this.updateGroupMembers(groupId, userIds)
 
             wx.hideLoading()
 
