@@ -218,8 +218,7 @@ Component({
                     tag_id: null,
                     tag_name: '',
                     tag_color: null,
-                    members: [],
-                    membersText: ''
+                    members: []
                 }
             }
 
@@ -230,12 +229,11 @@ Component({
                     type: 'player',
                     user_id: player.user_id,
                     show_name: player.show_name || '',
-                    avatar: player.avatar, // Use the member's avatar
+                    avatar: player.avatar,
                     tag_id: side.tag_id ?? null,
                     tag_name: side.tag_name || '',
                     tag_color: side.tag_color ?? null,
-                    members: [],
-                    membersText: ''
+                    members: []
                 };
             }
 
@@ -249,31 +247,24 @@ Component({
                     tag_id: side.tag_id ?? null,
                     tag_name: side.tag_name || '',
                     tag_color: side.tag_color ?? null,
-                    members: [],
-                    membersText: ''
+                    members: []
                 }
             }
 
             // A side representing a tag with 0, 2, or more members.
+            // tag has tag_name, members have show_name - don't mix them
             const members = Array.isArray(side.members) ? side.members : []
-            const membersText = members
-                .map(m => m?.show_name)
-                .filter(Boolean)
-                .join(' / ')
 
             return {
                 type: 'tag',
-                show_name: membersText || side.tag_name || '',
-                avatar: '',
                 tag_id: side.tag_id ?? null,
                 tag_name: side.tag_name || '',
                 tag_color: side.tag_color ?? null,
                 members: members.map(m => ({
                     user_id: m.user_id,
                     show_name: m.show_name,
-                    avatar: m.avatar,
-                })),
-                membersText
+                    avatar: m.avatar
+                }))
             }
         },
 

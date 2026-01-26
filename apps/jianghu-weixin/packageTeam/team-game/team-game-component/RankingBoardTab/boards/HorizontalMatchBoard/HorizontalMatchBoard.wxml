@@ -1,3 +1,4 @@
+<!-- 横向布局 -->
 <wxs src="./tools.wxs" module="tools" />
 <wxs src="/utils/image.wxs" module="image" />
 <view class="match-board" wx:if="{{vm}}">
@@ -45,15 +46,10 @@
                 mode="aspectFill"
                 src="{{image.imageUrl(item.left.avatar) }}"
               />
-              <view
-                wx:else
-                class="tag-dot"
-                style="background-color: {{item.left.tag_color || '#D32F2F'}}"
-              ></view>
 
               <view class="name-block">
                 <view class="name-row">
-                  <text class="name">{{item.left.show_name}}</text>
+                  <text class="name" wx:if="{{item.left.type === 'player'}}">{{item.left.show_name}}</text>
                 </view>
                 <!-- For tags, show clickable members -->
                 <view wx:if="{{item.left.type === 'tag' && item.left.members.length > 0}}" class="sub members-list">
@@ -95,12 +91,7 @@
             <view class="side-content side-content-right">
               <view class="name-block name-block-right">
                 <view class="name-row name-row-right">
-                  <text
-                    wx:if="{{!vm.isSummary && item.right.type === 'player' && item.right.tag_name}}"
-                    class="tag-pill"
-                    style="background-color: {{item.right.tag_color || '#1976D2'}}"
-                  >{{item.right.tag_name}}</text>
-                  <text class="name">{{item.right.show_name}}</text>
+                  <text class="name" wx:if="{{item.right.type === 'player'}}">{{item.right.show_name}}</text>
                 </view>
                 <!-- For tags, show clickable members -->
                 <view wx:if="{{item.right.type === 'tag' && item.right.members.length > 0}}" class="sub members-list-right">
@@ -123,11 +114,6 @@
                 mode="aspectFill"
                 src="{{ image.imageUrl(item.right.avatar) }}"
               />
-              <view
-                wx:else
-                class="tag-dot"
-                style="background-color: {{item.right.tag_color || '#1976D2'}}"
-              ></view>
             </view>
           </view>
         </view>
