@@ -263,7 +263,7 @@ Component({
 
             return {
                 type: 'tag',
-                show_name: side.show_name || '',
+                show_name: membersText || side.tag_name || '',
                 avatar: '',
                 tag_id: side.tag_id ?? null,
                 tag_name: side.tag_name || '',
