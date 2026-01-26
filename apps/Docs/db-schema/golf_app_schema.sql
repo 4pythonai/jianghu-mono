@@ -229,7 +229,7 @@ CREATE TABLE `t_game_group` (
   KEY `idx_gameid` (`gameid`),
   KEY `idx_groupid` (`groupid`),
   CONSTRAINT `fk_game_group_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1218 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1220 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_game_group_user` (
@@ -243,7 +243,7 @@ CREATE TABLE `t_game_group_user` (
   `confirmed_time` datetime DEFAULT NULL COMMENT '确认时间',
   `addtime` datetime DEFAULT NULL,
   `join_type` char(40) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '加入方式',
-  `combo_id` binary(16) DEFAULT NULL,
+  `combo_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `gameid` (`gameid`,`user_id`),
   KEY `idx_gameid` (`gameid`),
@@ -253,7 +253,7 @@ CREATE TABLE `t_game_group_user` (
   KEY `idx_subteam_id` (`tag_id`),
   KEY `idx_userid_gameid_addtime` (`user_id`,`gameid`,`addtime`),
   CONSTRAINT `fk_game_group_user_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1715 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
+) ENGINE=InnoDB AUTO_INCREMENT=1723 DEFAULT CHARSET=utf8mb3 COMMENT='比赛人员表';
 
 
 CREATE TABLE `t_game_group_user_virtual` (
@@ -381,11 +381,14 @@ CREATE TABLE `t_game_score` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `gameid` (`gameid`,`user_id`,`hole_id`,`hindex`),
   KEY `idx_game_user` (`gameid`,`user_id`),
-  KEY `fk_score_user` (`user_id`),
   KEY `fk_score_hole` (`hole_id`),
+  KEY `fk_game_score_user` (`user_id`),
+  KEY `fk_game_score_group` (`group_id`),
+  CONSTRAINT `fk_game_score_group` FOREIGN KEY (`group_id`) REFERENCES `t_game_group` (`groupid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_game_score_user` FOREIGN KEY (`user_id`) REFERENCES `t_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_score_game` FOREIGN KEY (`gameid`) REFERENCES `t_game` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_score_hole` FOREIGN KEY (`hole_id`) REFERENCES `t_court_hole` (`holeid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1311 DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
+) ENGINE=InnoDB AUTO_INCREMENT=1383 DEFAULT CHARSET=utf8mb3 COMMENT='比赛每洞成绩';
 
 
 CREATE TABLE `t_game_spectator` (
@@ -395,7 +398,7 @@ CREATE TABLE `t_game_spectator` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `game-spectator` (`game_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1740 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1805 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `t_game_tag_member` (

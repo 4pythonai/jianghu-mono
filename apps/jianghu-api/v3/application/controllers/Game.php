@@ -359,7 +359,7 @@ class Game extends MY_Controller {
 
         $game_info = $this->MDetailGame->getGameInfo($game_id);
         if ($game_info['game_status'] == 'finished' || $game_info['game_status'] == 'cancelled') {
-            echo json_encode(['code' => 500, 'message' => '球局已结束或取消'], JSON_UNESCAPED_UNICODE);
+            echo json_encode(['code' => 200, 'message' => '球局已结束或取消'], JSON_UNESCAPED_UNICODE);
             return;
         }
 
