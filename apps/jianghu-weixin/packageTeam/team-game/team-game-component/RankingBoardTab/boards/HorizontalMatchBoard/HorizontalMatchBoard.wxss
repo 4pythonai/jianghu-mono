@@ -246,4 +246,22 @@
     height: 50rpx;
     border-radius: 50%;
     background: #f2f3f5;
+    margin-bottom: 6rpx;
+}
+
+.member-item-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80rpx; /* Approximate height for avatar (50rpx) + name (20rpx) + gap */
+    justify-content: center;
+}
+
+.member-name-small {
+    font-size: 20rpx;
+    color: var(--text-secondary);
+    max-width: 100rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
