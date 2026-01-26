@@ -176,7 +176,7 @@ Component({
             // individual_match single mode only has player info
             return {
                 tag_id: null,
-                tag_name: side.show_name || '',
+                tag_name: side.tag_name || '',
                 tag_color: null
             }
         },
@@ -263,7 +263,7 @@ Component({
 
             return {
                 type: 'tag',
-                show_name: side.tag_name || '',
+                show_name: side.show_name || '',
                 avatar: '',
                 tag_id: side.tag_id ?? null,
                 tag_name: side.tag_name || '',
