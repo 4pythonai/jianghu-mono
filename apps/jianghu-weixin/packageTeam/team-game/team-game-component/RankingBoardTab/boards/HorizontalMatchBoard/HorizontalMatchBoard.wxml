@@ -43,7 +43,7 @@
                 wx:if="{{item.left.type === 'player'}}"
                 class="avatar"
                 mode="aspectFill"
-                src="{{image.imageUrl(item.left.avatarUrl) || '/assets/images/default-avatar.png'}}"
+                src="{{image.imageUrl(item.left.avatar) }}"
               />
               <view
                 wx:else
@@ -63,13 +63,14 @@
                 <!-- For tags, show clickable members -->
                 <view wx:if="{{item.left.type === 'tag' && item.left.members.length > 0}}" class="sub members-list">
                   <block wx:for="{{item.left.members}}" wx:for-item="member" wx:key="user_id">
-                    <text
-                      class="member-item"
+                    <image
+                      class="member-avatar-small"
+                      mode="aspectFill"
+                      src="{{image.imageUrl(member.avatar) || '/assets/images/default-avatar.png'}}"
                       bind:tap="onPlayerTap"
                       data-group-id="{{item.group_id}}"
                       data-user-id="{{member.user_id}}"
-                    >{{member.show_name}}</text>
-                    <text wx:if="{{!index.last}}"> / </text>
+                    />
                   </block>
                 </view>
               </view>
@@ -109,13 +110,14 @@
                 <!-- For tags, show clickable members -->
                 <view wx:if="{{item.right.type === 'tag' && item.right.members.length > 0}}" class="sub members-list-right">
                   <block wx:for="{{item.right.members}}" wx:for-item="member" wx:key="user_id">
-                    <text
-                      class="member-item"
+                    <image
+                      class="member-avatar-small"
+                      mode="aspectFill"
+                      src="{{image.imageUrl(member.avatar) || '/assets/images/default-avatar.png'}}"
                       bind:tap="onPlayerTap"
                       data-group-id="{{item.group_id}}"
                       data-user-id="{{member.user_id}}"
-                    >{{member.show_name}}</text>
-                    <text wx:if="{{!index.last}}"> / </text>
+                    />
                   </block>
                 </view>
               </view>
@@ -124,7 +126,7 @@
                 wx:if="{{item.right.type === 'player'}}"
                 class="avatar"
                 mode="aspectFill"
-                src="{{image.imageUrl(item.right.avatarUrl) || '/assets/images/default-avatar.png'}}"
+                src="{{ image.imageUrl(item.right.avatar) }}"
               />
               <view
                 wx:else

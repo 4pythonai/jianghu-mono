@@ -214,7 +214,7 @@ Component({
                 return {
                     type: 'unknown',
                     show_name: '',
-                    avatarUrl: '',
+                    avatar: '',
                     tag_id: null,
                     tag_name: '',
                     tag_color: null,
@@ -223,13 +223,29 @@ Component({
                 }
             }
 
-            // player side
+            // If a side represents a tag but only has one member, treat it as a player view.
+            if (side.tag_id && Array.isArray(side.members) && side.members.length === 1) {
+                const player = side.members[0];
+                return {
+                    type: 'player',
+                    user_id: player.user_id,
+                    show_name: player.show_name || '',
+                    avatar: player.avatar, // Use the member's avatar
+                    tag_id: side.tag_id ?? null,
+                    tag_name: side.tag_name || '',
+                    tag_color: side.tag_color ?? null,
+                    members: [],
+                    membersText: ''
+                };
+            }
+
+            // A side that is already a player (e.g., individual match)
             if (side.user_id) {
                 return {
                     type: 'player',
-                    user_id: side.user_id, // pass user_id for tap event
+                    user_id: side.user_id,
                     show_name: side.show_name || '',
-                    avatarUrl: side.avatar ? imageUrl(side.avatar) : '',
+                    avatar: side.avatar,
                     tag_id: side.tag_id ?? null,
                     tag_name: side.tag_name || '',
                     tag_color: side.tag_color ?? null,
@@ -238,7 +254,7 @@ Component({
                 }
             }
 
-            // tag side
+            // A side representing a tag with 0, 2, or more members.
             const members = Array.isArray(side.members) ? side.members : []
             const membersText = members
                 .map(m => m?.show_name)
@@ -248,13 +264,14 @@ Component({
             return {
                 type: 'tag',
                 show_name: side.tag_name || '',
-                avatarUrl: '',
+                avatar: '',
                 tag_id: side.tag_id ?? null,
                 tag_name: side.tag_name || '',
                 tag_color: side.tag_color ?? null,
                 members: members.map(m => ({
                     user_id: m.user_id,
                     show_name: m.show_name,
+                    avatar: m.avatar,
                 })),
                 membersText
             }
