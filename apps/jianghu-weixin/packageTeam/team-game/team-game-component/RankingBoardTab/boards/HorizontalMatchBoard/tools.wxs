@@ -1,0 +1,26 @@
+var isSideSelected = function(expandedUserId, side) {
+  if (!expandedUserId || !side) return false;
+  
+  var expandedUserIdStr = expandedUserId + '';
+
+  // Check direct player match
+  if (side.user_id && (side.user_id + '') === expandedUserIdStr) {
+    return true;
+  }
+
+  // Check team members
+  if (side.members && side.members.length > 0) {
+    for (var i = 0; i < side.members.length; i++) {
+      var member = side.members[i];
+      if (member && member.user_id && (member.user_id + '') === expandedUserIdStr) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+module.exports = {
+  isSideSelected: isSideSelected
+}

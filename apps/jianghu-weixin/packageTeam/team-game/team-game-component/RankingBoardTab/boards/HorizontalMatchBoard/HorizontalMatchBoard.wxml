@@ -1,4 +1,4 @@
-<wxs src="/utils/image.wxs" module="image" />
+<wxs src="./tools.wxs" module="tools" />
 <view class="match-board" wx:if="{{vm}}">
   <!-- Summary header -->
   <view class="match-header">
@@ -21,12 +21,14 @@
     </view>
 
     <view wx:for="{{vm.rows}}" wx:key="group_id" class="match-item">
-      <view wx:if="{{item.group_name}}" class="group-name"><text>{{item.group_name}}</text></view>
+      <view wx:if="{{item.group_name}}" class="group-name">
+        <text>{{item.group_name}}</text>
+      </view>
 
       <view class="match-row">
         <!-- left -->
         <view
-          class="side side-left {{item.winnerSide === 'left' ? 'winner' : (item.winnerSide ? 'loser' : '')}}"
+          class="side side-left {{item.winnerSide === 'left' ? 'winner' : (item.winnerSide ? 'loser' : '')}} {{expandedMatchGroupId === item.group_id && tools.isSideSelected(expandedUserId, item.left) ? 'selected-player' : ''}}"
           style="{{item.winnerSide === 'left' ? ('background-color:' + (item.left.tag_color || '#D32F2F')) : ''}}"
         >
           <view
@@ -35,15 +37,12 @@
             data-group-id="{{item.group_id}}"
             data-user-id="{{item.left.user_id}}"
           >
-
-                <!-- avatar="{{image.imageUrl(avatar)}}" -->
-
             <view class="side-content">
               <image
                 wx:if="{{item.left.type === 'player'}}"
                 class="avatar"
                 mode="aspectFill"
-                src="{{image.imageUrl(item.left.avatarUrl) }}"
+                src="{{item.left.avatarUrl || '/assets/images/default-avatar.png'}}"
               />
               <view
                 wx:else
@@ -86,7 +85,7 @@
 
         <!-- right -->
         <view
-          class="side side-right {{item.winnerSide === 'right' ? 'winner' : (item.winnerSide ? 'loser' : '')}}"
+          class="side side-right {{item.winnerSide === 'right' ? 'winner' : (item.winnerSide ? 'loser' : '')}} {{expandedMatchGroupId === item.group_id && tools.isSideSelected(expandedUserId, item.right) ? 'selected-player' : ''}}"
           style="{{item.winnerSide === 'right' ? ('background-color:' + (item.right.tag_color || '#1976D2')) : ''}}"
         >
           <text wx:if="{{item.rightResultText}}" class="result">{{item.rightResultText}}</text>
@@ -124,7 +123,7 @@
                 wx:if="{{item.right.type === 'player'}}"
                 class="avatar"
                 mode="aspectFill"
-                src="{{image.imageUrl(item.right.avatarUrl)}}"
+                src="{{item.right.avatarUrl || '/assets/images/default-avatar.png'}}"
               />
               <view
                 wx:else
@@ -137,7 +136,10 @@
       </view>
 
       <!-- Expanded Player Score Detail -->
-      <view class="expand-container" wx:if="{{expandedMatchGroupId === item.group_id && expandedUserId}}">
+      <view
+        class="expand-container"
+        wx:if="{{expandedMatchGroupId === item.group_id && expandedUserId}}"
+      >
         <expand-player-score
           holeList="{{holeList}}"
           playerScores="{{displayScores[expandedPlayerIndex]}}"

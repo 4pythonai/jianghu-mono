@@ -13,6 +13,10 @@
     border-bottom: 1rpx solid rgba(0, 0, 0, 0.06);
 }
 
+.side-left,.side-right {
+   margin:10rpx; 
+}
+
 .team {
     display: flex;
     align-items: center;
@@ -219,4 +223,10 @@
 
 .loser {
     opacity: 0.78;
+}
+
+/* Selected player highlight */
+.side.selected-player {
+    padding: 10rpx;
+    box-shadow: 0 0 0 6rpx green;
 }
