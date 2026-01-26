@@ -58,14 +58,14 @@
                 <!-- For tags, show clickable members -->
                 <view wx:if="{{item.left.type === 'tag' && item.left.members.length > 0}}" class="sub members-list">
                   <block wx:for="{{item.left.members}}" wx:for-item="member" wx:key="user_id">
-                    <image
-                      class="member-avatar-small"
-                      mode="aspectFill"
-                      src="{{image.imageUrl(member.avatar) || '/assets/images/default-avatar.png'}}"
-                      bind:tap="onPlayerTap"
-                      data-group-id="{{item.group_id}}"
-                      data-user-id="{{member.user_id}}"
-                    />
+                    <view class="member-item-container" bind:tap="onPlayerTap" data-group-id="{{item.group_id}}" data-user-id="{{member.user_id}}">
+                      <image
+                        class="member-avatar-small"
+                        mode="aspectFill"
+                        src="{{image.imageUrl(member.avatar) || '/assets/images/default-avatar.png'}}"
+                      />
+                      <text class="member-name-small">{{member.show_name}}</text>
+                    </view>
                   </block>
                 </view>
               </view>
@@ -105,14 +105,14 @@
                 <!-- For tags, show clickable members -->
                 <view wx:if="{{item.right.type === 'tag' && item.right.members.length > 0}}" class="sub members-list-right">
                   <block wx:for="{{item.right.members}}" wx:for-item="member" wx:key="user_id">
-                    <image
-                      class="member-avatar-small"
-                      mode="aspectFill"
-                      src="{{image.imageUrl(member.avatar) || '/assets/images/default-avatar.png'}}"
-                      bind:tap="onPlayerTap"
-                      data-group-id="{{item.group_id}}"
-                      data-user-id="{{member.user_id}}"
-                    />
+                    <view class="member-item-container" bind:tap="onPlayerTap" data-group-id="{{item.group_id}}" data-user-id="{{member.user_id}}">
+                      <image
+                        class="member-avatar-small"
+                        mode="aspectFill"
+                        src="{{image.imageUrl(member.avatar)}}"
+                      />
+                      <text class="member-name-small">{{member.show_name}}</text>
+                    </view>
                   </block>
                 </view>
               </view>

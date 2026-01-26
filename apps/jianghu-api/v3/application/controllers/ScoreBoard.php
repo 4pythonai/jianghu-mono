@@ -675,20 +675,28 @@ class ScoreBoard extends MY_Controller {
 
         return [
             'left' => [
-                'user_id' => $left_player['user_id'],
-                'show_name' => $left_player['show_name'],
-                'avatar' => $left_player['avatar'],
                 'tag_id' => $left_player['tag_id'] ?? null,
                 'tag_name' => $left_player['tag_name'] ?? '',
-                'tag_color' => $left_player['tag_color'] ?? null
+                'tag_color' => $left_player['tag_color'] ?? null,
+                'members' => [
+                    [
+                        'user_id' => $left_player['user_id'],
+                        'show_name' => $left_player['show_name'],
+                        'avatar' => $left_player['avatar']
+                    ]
+                ]
             ],
             'right' => [
-                'user_id' => $right_player['user_id'],
-                'show_name' => $right_player['show_name'],
-                'avatar' => $right_player['avatar'],
                 'tag_id' => $right_player['tag_id'] ?? null,
                 'tag_name' => $right_player['tag_name'] ?? '',
-                'tag_color' => $right_player['tag_color'] ?? null
+                'tag_color' => $right_player['tag_color'] ?? null,
+                'members' => [
+                    [
+                        'user_id' => $right_player['user_id'],
+                        'show_name' => $right_player['show_name'],
+                        'avatar' => $right_player['avatar']
+                    ]
+                ]
             ]
         ];
     }
