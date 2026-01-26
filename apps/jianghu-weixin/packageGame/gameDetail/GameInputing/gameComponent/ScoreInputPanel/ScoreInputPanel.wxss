@@ -191,7 +191,7 @@
 .group-card-avatar {
 	width: 56rpx;
 	height: 56rpx;
-	border-radius: 14rpx;
+	border-radius: 50%;
 	background: #e9edf0;
 }
 
@@ -213,7 +213,7 @@
 .player-avatar {
 	width: 72rpx;
 	height: 72rpx;
-	border-radius: 16rpx;
+	border-radius: 50%;
 	background: #e9edf0;
 }
 

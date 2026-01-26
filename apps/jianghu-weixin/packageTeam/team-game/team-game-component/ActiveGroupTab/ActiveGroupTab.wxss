@@ -64,7 +64,7 @@
 .active-group-avatar {
     width: 96rpx;
     height: 96rpx;
-    border-radius: 14rpx;
+    border-radius: 50%;
     background: #f2f2f2;
 }
 
