@@ -1393,7 +1393,7 @@ class ScoreBoard extends MY_Controller {
             }
         }
 
-        $court_count = $this->db->where('gameid', $game_id)->count_all_results('t_game_court');
+        $court_count = (int) $this->db->where('gameid', $game_id)->count_all_results('t_game_court');
         if ($court_count === 1) {
             return 9;
         }
