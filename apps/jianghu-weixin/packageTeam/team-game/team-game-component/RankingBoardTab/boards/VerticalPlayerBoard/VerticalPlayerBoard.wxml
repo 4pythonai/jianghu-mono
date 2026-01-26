@@ -1,3 +1,4 @@
+<!-- 竖版展示 -->
 <view class="board">
   <view class="board-header">
     <view class="col col-rank">排名</view>

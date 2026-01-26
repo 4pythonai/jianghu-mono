@@ -21,9 +21,7 @@
     </view>
 
     <view wx:for="{{vm.rows}}" wx:key="group_id" class="match-item">
-      <view wx:if="{{item.group_name}}" class="group-name">
-        <text>{{item.group_name}}</text>
-      </view>
+      <view wx:if="{{item.group_name}}" class="group-name"><text>{{item.group_name}}</text></view>
 
       <view class="match-row">
         <!-- left -->
@@ -139,10 +137,7 @@
       </view>
 
       <!-- Expanded Player Score Detail -->
-      <view
-        class="expand-container"
-        wx:if="{{expandedMatchGroupId === item.group_id && expandedUserId}}"
-      >
+      <view class="expand-container" wx:if="{{expandedMatchGroupId === item.group_id && expandedUserId}}">
         <expand-player-score
           holeList="{{holeList}}"
           playerScores="{{displayScores[expandedPlayerIndex]}}"
