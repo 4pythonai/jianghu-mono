@@ -228,5 +228,22 @@
 /* Selected player highlight */
 .side.selected-player {
     padding: 10rpx;
-    box-shadow: 0 0 0 6rpx green;
+    border: 3rpx solid green;
+}
+
+.members-list, .members-list-right {
+    display: flex;
+    gap: 8rpx;
+    align-items: center;
+}
+
+.members-list-right {
+    justify-content: flex-end;
+}
+
+.member-avatar-small {
+    width: 50rpx;
+    height: 50rpx;
+    border-radius: 50%;
+    background: #f2f3f5;
 }
