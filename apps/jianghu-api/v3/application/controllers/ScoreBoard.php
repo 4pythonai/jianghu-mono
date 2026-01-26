@@ -447,6 +447,8 @@ class ScoreBoard extends MY_Controller {
             ->from('t_game_score')
             ->where('gameid', $game_id)
             ->where('score >', 0)
+            ->where('hindex IS NOT NULL')
+            ->where('hindex >', 0)
             ->get()
             ->result_array();
 
@@ -557,7 +559,7 @@ class ScoreBoard extends MY_Controller {
                 continue;
             }
             $score = $score_index[$group_id][$uid][$hindex] ?? null;
-            if (!$score) {
+            if ($score === null) {
                 continue;
             }
             $score = (int) $score;
@@ -675,28 +677,20 @@ class ScoreBoard extends MY_Controller {
 
         return [
             'left' => [
+                'user_id' => $left_player['user_id'],
+                'show_name' => $left_player['show_name'],
+                'avatar' => $left_player['avatar'],
                 'tag_id' => $left_player['tag_id'] ?? null,
                 'tag_name' => $left_player['tag_name'] ?? '',
-                'tag_color' => $left_player['tag_color'] ?? null,
-                'members' => [
-                    [
-                        'user_id' => $left_player['user_id'],
-                        'show_name' => $left_player['show_name'],
-                        'avatar' => $left_player['avatar']
-                    ]
-                ]
+                'tag_color' => $left_player['tag_color'] ?? null
             ],
             'right' => [
+                'user_id' => $right_player['user_id'],
+                'show_name' => $right_player['show_name'],
+                'avatar' => $right_player['avatar'],
                 'tag_id' => $right_player['tag_id'] ?? null,
                 'tag_name' => $right_player['tag_name'] ?? '',
-                'tag_color' => $right_player['tag_color'] ?? null,
-                'members' => [
-                    [
-                        'user_id' => $right_player['user_id'],
-                        'show_name' => $right_player['show_name'],
-                        'avatar' => $right_player['avatar']
-                    ]
-                ]
+                'tag_color' => $right_player['tag_color'] ?? null
             ]
         ];
     }
@@ -971,7 +965,7 @@ class ScoreBoard extends MY_Controller {
             // 获取该分组的成员和名称
             $group_members = $combo['group_members'][$group_id] ?? [];
             $group_info = null;
-            
+
             // Combo模式直接从 row 获取，Tag模式从 groups 数组查找
             if (isset($combo['row']['combo_id'])) {
                 // Combo模式：row 中已有 group_id 和 group_name
@@ -1018,8 +1012,8 @@ class ScoreBoard extends MY_Controller {
                 $same_rank_count++;
             }
             $c['rank'] = $rank;
-            $c['rank_label'] = $same_rank_count > 1 || ($idx > 0 && $combos[$idx - 1]['score'] === $c['score']) 
-                ? 'T' . $rank 
+            $c['rank_label'] = $same_rank_count > 1 || ($idx > 0 && $combos[$idx - 1]['score'] === $c['score'])
+                ? 'T' . $rank
                 : (string) $rank;
             $prev_score = $c['score'];
         }
