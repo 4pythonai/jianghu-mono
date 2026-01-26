@@ -1,64 +1,83 @@
+import { imageUrl } from '@/utils/image'
+
 Component({
     properties: {
         boardData: {
             type: Object,
             value: null
+        },
+        players: {
+            type: Array,
+            value: []
+        },
+        holeList: {
+            type: Array,
+            value: []
+        },
+        displayScores: {
+            type: Array,
+            value: []
         }
     },
     data: {
         vm: null,
         expandedMatchGroupId: null, // which match group is expanded
-        expandedPlayerUserId: null, // which player in that group is expanded
-        expandedPlayerScores: null, // scores for the expanded player
-        holeList: [],
+        expandedUserId: null, // which player in that group is expanded
+        expandedPlayerIndex: null, // store index instead of scores object
+        playerIndexMap: new Map(),
     },
     observers: {
-        boardData: function (boardData) {
-            // also reset expansion when data changes
+        'boardData': function (boardData) {
             this.setData({
                 vm: this.buildViewModel(boardData),
+            })
+        },
+        'players': function (players) {
+            const playerIndexMap = new Map()
+            if (players) {
+                players.forEach((p, idx) => {
+                    playerIndexMap.set(String(p.user_id), idx)
+                })
+            }
+            this.setData({ 
+                playerIndexMap,
                 expandedMatchGroupId: null,
-                expandedPlayerUserId: null,
-                expandedPlayerScores: null,
-                holeList: boardData?.hole_list || [],
+                expandedUserId: null,
+                expandedPlayerIndex: null,
             })
         }
     },
     methods: {
         onPlayerTap(e) {
             const { groupId, userId } = e.currentTarget.dataset;
-            if (!groupId || !userId) return;
+            const userIdStr = String(userId);
+            if (!groupId || !userIdStr) return;
 
             // if tapping the same player again, close it
-            if (this.data.expandedMatchGroupId === groupId && this.data.expandedPlayerUserId === userId) {
+            if (this.data.expandedMatchGroupId === groupId && this.data.expandedUserId === userIdStr) {
                 this.onCloseExpand();
                 return;
             }
 
-            const match = this.findMatchByGroupId(groupId);
-            if (!match) return;
-            
-            const side = this.getSideFromMatch(match, userId);
-            if (!side || !side.scores) {
-                console.warn('Player scores not found for user_id:', userId);
-                this.onCloseExpand(); // close any open ones
+            const playerIndex = this.data.playerIndexMap.get(userIdStr);
+            if (playerIndex == null) {
+                console.warn('[HorizontalMatchBoard] Player index not found for user_id:', userIdStr);
+                this.onCloseExpand();
                 return;
             }
 
-            const playerScoresForComponent = this.preparePlayerScoresForComponent(side.scores, this.data.holeList);
-
             this.setData({
                 expandedMatchGroupId: groupId,
-                expandedPlayerUserId: userId,
-                expandedPlayerScores: playerScoresForComponent,
+                expandedUserId: userIdStr,
+                expandedPlayerIndex: playerIndex,
             });
         },
 
         onCloseExpand() {
             this.setData({
                 expandedMatchGroupId: null,
-                expandedPlayerUserId: null,
-                expandedPlayerScores: null
+                expandedUserId: null,
+                expandedPlayerIndex: null
             });
         },
 
@@ -76,63 +95,19 @@ Component({
 
         getSideFromMatch(match, userId) {
             if (!match || !userId) return null;
-            if (match.left?.user_id === userId) return match.left;
-            if (match.right?.user_id === userId) return match.right;
+            const userIdStr = String(userId);
+            if (String(match.left?.user_id) === userIdStr) return match.left;
+            if (String(match.right?.user_id) === userIdStr) return match.right;
             
-            // It could be a team match, where the user is a member
             if (Array.isArray(match.left?.members)) {
-                const member = match.left.members.find(m => m.user_id === userId);
+                const member = match.left.members.find(m => String(m.user_id) === userIdStr);
                 if (member) return member;
             }
             if (Array.isArray(match.right?.members)) {
-                const member = match.right.members.find(m => m.user_id === userId);
+                const member = match.right.members.find(m => String(m.user_id) === userIdStr);
                 if (member) return member;
             }
             return null;
-        },
-        
-        preparePlayerScoresForComponent(playerScores, holeList) {
-            if (!playerScores || !Array.isArray(playerScores.holes) || !Array.isArray(holeList)) {
-                return { holes: [], outDiff: 0, outDiffText: '', inDiff: 0, inDiffText: '' };
-            }
-        
-            let outDiff = 0;
-            let inDiff = 0;
-            
-            const processedHoles = holeList.map((hole, i) => {
-                const score = playerScores.holes[i];
-                if (!score) return null;
-
-                const diff = score.strokes - hole.par;
-                let scoreClass = '';
-                // You can expand this mapping based on your app's CSS
-                if (diff < 0) scoreClass = 'under-par';
-                if (diff === -1) scoreClass = 'birdie';
-                if (diff === -2) scoreClass = 'eagle';
-                if (diff > 0) scoreClass = 'over-par';
-                if (diff === 1) scoreClass = 'bogey';
-                if (diff > 1) scoreClass = 'double-bogey';
-        
-                if (i < 9) {
-                    outDiff += diff;
-                } else {
-                    inDiff += diff;
-                }
-        
-                return {
-                    ...score,
-                    diff: diff,
-                    scoreClass: scoreClass,
-                };
-            });
-        
-            return {
-                holes: processedHoles,
-                outDiff: outDiff,
-                inDiff: inDiff,
-                outDiffText: outDiff > 0 ? `+${outDiff}` : String(outDiff),
-                inDiffText: inDiff > 0 ? `+${inDiff}` : String(inDiff),
-            };
         },
 
         buildViewModel(boardData) {
@@ -253,9 +228,8 @@ Component({
                 return {
                     type: 'player',
                     user_id: side.user_id, // pass user_id for tap event
-                    scores: side.scores, // pass scores for tap event
-                    show_name: side.show_name ,
-                    avatarUrl: side.avatar,
+                    show_name: side.show_name || '',
+                    avatarUrl: side.avatar ? imageUrl(side.avatar) : '',
                     tag_id: side.tag_id ?? null,
                     tag_name: side.tag_name || '',
                     tag_color: side.tag_color ?? null,
@@ -281,7 +255,6 @@ Component({
                 members: members.map(m => ({
                     user_id: m.user_id,
                     show_name: m.show_name,
-                    scores: m.scores,
                 })),
                 membersText
             }

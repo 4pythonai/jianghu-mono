@@ -43,6 +43,9 @@
     <HorizontalMatchBoard
       wx:if="{{scoreboard.layout === 'horizontal'}}"
       boardData="{{scoreboard}}"
+      players="{{players}}"
+      holeList="{{holeList}}"
+      displayScores="{{displayScores}}"
     />
   </view>
 </view>

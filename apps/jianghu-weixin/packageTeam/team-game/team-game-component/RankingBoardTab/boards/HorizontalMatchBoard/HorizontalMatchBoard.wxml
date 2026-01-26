@@ -141,15 +141,12 @@
       <!-- Expanded Player Score Detail -->
       <view
         class="expand-container"
-        wx:if="{{expandedMatchGroupId === item.group_id && expandedPlayerUserId}}"
+        wx:if="{{expandedMatchGroupId === item.group_id && expandedUserId}}"
       >
         <expand-player-score
           holeList="{{holeList}}"
-          playerScores="{{expandedPlayerScores}}"
+          playerScores="{{displayScores[expandedPlayerIndex]}}"
         ></expand-player-score>
-        <view class="close-expand-bar" bind:tap="onCloseExpand">
-            <text>收起</text>
-        </view>
       </view>
     </view>
   </view>
