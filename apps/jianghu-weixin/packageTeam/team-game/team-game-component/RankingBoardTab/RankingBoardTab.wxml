@@ -37,6 +37,9 @@
       wx:if="{{scoreboard.layout === 'vertical' && scoreboard.row_type === 'tag' && scoreboard.mode !== 'team_player'}}"
       boardData="{{scoreboard}}"
     />
+
+    <!-- 横向列表-->
+    
     <HorizontalMatchBoard
       wx:if="{{scoreboard.layout === 'horizontal'}}"
       boardData="{{scoreboard}}"
