@@ -3,6 +3,6 @@
 	"usingComponents": {
 		"PlayerInfo": "/components/PlayerInfo/PlayerInfo",
 		"HoleCell": "/components/HoleCell/HoleCell",
-		"PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
+		"jh-avatar": "/components/jh-avatar/jh-avatar"
 	}
 }

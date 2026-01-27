@@ -163,15 +163,6 @@
   background: #fff;
 }
 
-/* 好友头像 */
-.friend-avatar {
-  width: 72rpx;
-  height: 72rpx;
-  border-radius: 50%;
-  border: 2rpx solid #eee;
-  flex-shrink: 0;
-}
-
 /* 好友信息 */
 .friend-info {
   flex: 1;

@@ -52,33 +52,6 @@
     flex-shrink: 0;
 }
 
-.player-avatar {
-    width: 100rpx;
-    height: 100rpx;
-    border-radius: 16rpx;
-    background: #f5f5f5;
-}
-
-.player-name {
-    font-size: 24rpx;
-    color: var(--text-primary);
-    max-width: 110rpx;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
-}
-
-.player-team {
-    font-size: 20rpx;
-    color: var(--text-tertiary);
-    max-width: 110rpx;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
-}
-
 /* 添加球员按钮 */
 .add-player-btn {
     width: 100rpx;

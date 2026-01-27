@@ -8,7 +8,7 @@
   <view class="avatar-column">
     <!-- 团队赛显示团队头像 -->
     <view wx:if="{{game_type !== 'common' && fullTeamAvatarUrl}}">
-      <AvatarGroup
+      <jh-avatar-group
         avatars="{{[fullTeamAvatarUrl]}}"
         maxShow="4"
         showMode="group"
@@ -17,7 +17,7 @@
     </view>
     <!-- 普通比赛显示玩家头像组 -->
     <view wx:elif="{{private !== 'y' && game_type === 'common'}}">
-      <AvatarGroup players="{{players}}" maxShow="4" showMode="group" />
+      <jh-avatar-group players="{{players}}" maxShow="4" showMode="group" />
     </view>
   </view>
 

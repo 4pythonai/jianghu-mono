@@ -65,10 +65,10 @@
               <view wx:else class="unselected-circle"></view>
             </view>
             <view class="friend-avatar-wrap">
-              <PlayerAvatar
+              <jh-avatar
                 avatar="{{image.imageUrl(item.avatar)}}"
-                userId="{{item.user_id}}"
-                avatarOnly="{{true}}"
+                user_id="{{item.user_id}}"
+                avatar_only="{{true}}"
                 size="small"
                 clickable="{{false}}"
               />

@@ -17,6 +17,11 @@
 	position: relative;
 }
 
+/* 覆盖 jh-avatar 组件的样式使其更紧凑 */
+.avatar-wrapper .jh-avatar {
+	gap: 0;
+}
+
 /* 直接显示图片的样式（与 jh-avatar mini 尺寸一致） */
 .direct-avatar {
 	width: 48rpx;

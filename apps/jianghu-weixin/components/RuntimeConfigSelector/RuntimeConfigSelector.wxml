@@ -12,7 +12,7 @@
             />
             <view class="game-item-info">
               <text class="game-title">{{item.abstract}}</text>
-              <AvatarGroup players="{{item.attenders}}" maxShow="4" showMode="line" />
+              <jh-avatar-group players="{{item.attenders}}" maxShow="4" showMode="line" />
             </view>
           </view>
         </view>

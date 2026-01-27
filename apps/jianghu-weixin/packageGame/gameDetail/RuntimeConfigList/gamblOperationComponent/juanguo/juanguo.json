@@ -1,6 +1,6 @@
 {
     "usingComponents": {
-        "AvatarGroup": "../../../../../components/AvatarGroup/AvatarGroup",
+        "jh-avatar-group": "../../../../../components/jh-avatar-group/jh-avatar-group",
         "RuntimeConfigSelector": "../../../../../components/RuntimeConfigSelector/RuntimeConfigSelector"
     }
 }

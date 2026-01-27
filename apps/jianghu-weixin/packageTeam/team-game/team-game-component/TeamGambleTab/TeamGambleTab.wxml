@@ -45,17 +45,8 @@
       </view>
     </view>
     <view wx:if="{{selectedPlayers.length > 0}}" class="selected-chips">
-      <view
-        wx:for="{{selectedPlayers}}"
-        wx:key="user_id"
-        class="selected-chip"
-      >
-        <PlayerAvatar
-          avatar="{{item.avatar}}"
-          avatarOnly="{{true}}"
-          size="xs"
-          clickable="{{false}}"
-        />
+      <view wx:for="{{selectedPlayers}}" wx:key="user_id" class="selected-chip">
+        <jh-avatar avatar="{{item.avatar}}" avatar_only="{{true}}" size="xs" clickable="{{false}}" />
         <text class="selected-name">{{item.show_name || '未命名'}}</text>
         <view class="remove-chip" data-userid="{{item.user_id}}" bindtap="removeSelected">
           <text class="remove-chip-text">×</text>
@@ -89,9 +80,9 @@
         data-userid="{{item.user_id}}"
         bindtap="togglePlayerSelection"
       >
-        <PlayerAvatar
+        <jh-avatar
           avatar="{{item.avatar}}"
-          avatarOnly="{{true}}"
+          avatar_only="{{true}}"
           size="small"
           clickable="{{false}}"
         />
@@ -133,11 +124,7 @@
       <text class="empty-state-desc">创建后会显示在这里</text>
     </view>
     <view wx:else class="virtual-group-list">
-      <view
-        wx:for="{{virtualGroups}}"
-        wx:key="id"
-        class="virtual-group-card"
-      >
+      <view wx:for="{{virtualGroups}}" wx:key="id" class="virtual-group-card">
         <view class="group-header">
           <view class="group-title">
             <text class="group-name">{{item.name}}</text>
@@ -150,14 +137,10 @@
           >删除</button>
         </view>
         <view class="group-members">
-          <view
-            wx:for="{{item.members}}"
-            wx:key="user_id"
-            class="group-member"
-          >
-            <PlayerAvatar
+          <view wx:for="{{item.members}}" wx:key="user_id" class="group-member">
+            <jh-avatar
               avatar="{{item.avatar}}"
-              avatarOnly="{{true}}"
+              avatar_only="{{true}}"
               size="xs"
               clickable="{{false}}"
             />

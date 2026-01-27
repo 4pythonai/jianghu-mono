@@ -13,10 +13,10 @@
         wx:for-index="index"
       >
         <view class="player-info">
-          <PlayerAvatar
+          <jh-avatar
             avatar="{{player.cover}}"
-            name="{{player.show_name}}"
-            userId="{{player.user_id}}"
+            show_name="{{player.show_name}}"
+            user_id="{{player.user_id}}"
             size="xs"
             shape="round"
             showTeam="{{false}}"

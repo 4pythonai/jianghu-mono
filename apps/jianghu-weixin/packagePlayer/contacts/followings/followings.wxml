@@ -21,24 +21,17 @@
       >
         <view class="user-content">
           <view class="user-avatar-wrap">
-            <PlayerAvatar
+            <jh-avatar
               avatar="{{image.imageUrl(item.avatar)}}"
               userId="{{item.user_id}}"
-              avatarOnly="{{true}}"
+              show_name="{{item.show_name || item.show_name || item.wx_name || '球友'}}"
+              gender="{{item.gender}}"
+              handicap="{{item.handicap}}"
               size="small"
               clickable="{{false}}"
             />
           </view>
           <view class="user-info">
-            <view class="user-name-row">
-              <text class="user-name">{{item.show_name || item.show_name || item.wx_name || '球友'}}</text>
-              <text class="gender-icon male" wx:if="{{item.gender === 'male'}}">♂</text>
-              <text class="gender-icon female" wx:if="{{item.gender === 'female'}}">♀</text>
-            </view>
-            <text
-              class="user-handicap"
-              wx:if="{{item.handicap !== null && item.handicap !== undefined}}"
-            >江湖差点: {{item.handicap}}</text>
             <text class="user-signature" wx:if="{{item.signature}}">{{item.signature}}</text>
           </view>
         </view>

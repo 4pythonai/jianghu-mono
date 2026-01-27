@@ -1,7 +1,8 @@
 {
 	"usingComponents": {
 		"CustomNavBar": "/components/CustomNavBar/CustomNavBar",
-		"PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar",
+		"jh-avatar": "/components/jh-avatar/jh-avatar",
+		"jh-avatar-group": "/components/jh-avatar-group/jh-avatar-group",
 		"ApplyerLists": "/components/ApplyerLists/ApplyerLists"
 	},
 	"pages": [

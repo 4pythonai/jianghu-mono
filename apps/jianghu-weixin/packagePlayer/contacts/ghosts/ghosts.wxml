@@ -26,17 +26,16 @@
       >
         <view class="user-content">
           <view class="user-avatar-wrap">
-            <PlayerAvatar
+            <jh-avatar
               avatar="{{image.imageUrl(item.avatar)}}"
               userId="{{item.user_id}}"
-              avatarOnly="{{true}}"
+              show_name="{{item.show_name || '未知用户'}}"
               size="small"
               clickable="{{false}}"
             />
           </view>
           <view class="user-info">
             <view class="user-name-row">
-              <text class="user-name">{{item.show_name || '未知用户'}}</text>
               <view class="ghost-badge">占位</view>
             </view>
             <text class="user-mobile" wx:if="{{item.mobile}}">手机: {{item.mobile}}</text>

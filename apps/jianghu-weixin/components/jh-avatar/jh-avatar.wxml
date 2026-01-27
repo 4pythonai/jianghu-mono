@@ -1,0 +1,26 @@
+<view
+  class="player-avatar size-{{size}} shape-{{shape}} {{avatar_only ? 'avatar-only' : ''}} {{selectable ? 'selectable' : ''}} {{selected ? 'selected' : ''}} {{clickable && user_id ? 'clickable' : ''}}"
+  bindtap="onTap"
+>
+  <!-- 选择框（可选模式） -->
+  <view wx:if="{{selectable}}" class="checkbox {{selected ? 'checked' : ''}}">
+    <view wx:if="{{selected}}" class="check-icon">✓</view>
+  </view>
+
+  <!-- 头像 -->
+  <view class="avatar-wrapper">
+    <image class="avatar-img" src="{{fullAvatarUrl || defaultAvatar}}" mode="aspectFill" />
+  </view>
+
+  <!-- 名字 + 额外信息（非纯头像模式） -->
+  <view wx:if="{{!avatar_only}}" class="info-wrapper">
+    <view class="name-row">
+      <text class="player-name">{{show_name}}</text>
+      <text wx:if="{{gender === 'male'}}" class="gender-icon male">♂</text>
+      <text wx:if="{{gender === 'female'}}" class="gender-icon female">♀</text>
+    </view>
+    <view class="handicap-row" wx:if="{{handicap}}">
+      <text class="handicap">H:{{handicap}}</text>
+    </view>
+  </view>
+</view>

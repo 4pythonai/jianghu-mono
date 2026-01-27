@@ -2,10 +2,10 @@
 <view class="attened-players-container" wx:if="{{displayPlayers.length > 0}}">
   <view wx:for="{{displayPlayers}}" wx:key="user_id" class="player-item">
     <view class="avatar-wrapper">
-      <PlayerAvatar
+      <jh-avatar
         avatar="{{image.imageUrl(item.avatar)}}"
-        userId="{{item.user_id}}"
-        avatarOnly="{{true}}"
+        user_id="{{item.user_id}}"
+        avatar_only="{{true}}"
         size="small"
       />
       <image

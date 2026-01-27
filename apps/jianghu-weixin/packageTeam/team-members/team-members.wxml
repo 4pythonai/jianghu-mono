@@ -24,10 +24,10 @@
       <!-- 成员卡片 -->
       <view class="member-card" wx:for="{{members}}" wx:key="user_id">
         <view class="member-avatar-wrap">
-          <PlayerAvatar
+          <jh-avatar
             avatar="{{item.avatar}}"
-            userId="{{item.user_id}}"
-            avatarOnly="{{true}}"
+            user_id="{{item.user_id}}"
+            avatar_only="{{true}}"
             size="medium"
           />
         </view>

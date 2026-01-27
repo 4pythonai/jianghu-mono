@@ -56,15 +56,6 @@
 	padding: 4rpx;
 }
 
-/* 球员头像 */
-.player-avatar {
-	width: 50rpx;
-	height: 50rpx;
-	border-radius: 50%;
-	margin-bottom: 8rpx;
-	border: 2rpx solid #dee2e6;
-}
-
 /* 球员昵称 */
 .player-name {
 	font-size: 20rpx;
@@ -171,11 +162,6 @@
 		flex: 0 0 120rpx;
 		min-width: 120rpx;
 		max-width: 120rpx;
-	}
-
-	.player-avatar {
-		width: 40rpx;
-		height: 40rpx;
 	}
 
 	.player-name {

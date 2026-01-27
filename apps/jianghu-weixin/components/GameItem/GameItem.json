@@ -1,7 +1,7 @@
 {
 	"component": true,
 	"usingComponents": {
-		"AvatarGroup": "../AvatarGroup/AvatarGroup",
+		"jh-avatar-group": "../jh-avatar-group/jh-avatar-group",
 		"ProgressBar": "../ProgressBar/ProgressBar"
 	},
 	"options": {

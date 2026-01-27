@@ -14,10 +14,10 @@
         <view class="section-title">当前管理员</view>
         <view class="member-card" wx:for="{{admins}}" wx:key="user_id">
           <view class="member-avatar-wrap">
-            <PlayerAvatar
+            <jh-avatar
               avatar="{{item.avatar}}"
-              userId="{{item.user_id}}"
-              avatarOnly="{{true}}"
+              user_id="{{item.user_id}}"
+              avatar_only="{{true}}"
               size="medium"
             />
           </view>
@@ -57,10 +57,10 @@
           data-shown-name="{{item.show_name}}"
         >
           <view class="member-avatar-wrap">
-            <PlayerAvatar
+            <jh-avatar
               avatar="{{item.avatar}}"
-              userId="{{item.user_id}}"
-              avatarOnly="{{true}}"
+              user_id="{{item.user_id}}"
+              avatar_only="{{true}}"
               size="medium"
               clickable="{{false}}"
             />

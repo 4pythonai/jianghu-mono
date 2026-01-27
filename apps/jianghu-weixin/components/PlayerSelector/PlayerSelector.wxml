@@ -8,10 +8,10 @@
       <!-- 已选择的玩家 -->
       <view wx:if="{{ item }}" class="player-card">
         <view class="player-avatar">
-          <PlayerAvatar
+          <jh-avatar
             avatar="{{item.avatar}}"
-            userId="{{item.user_id}}"
-            avatarOnly="{{true}}"
+            user_id="{{item.user_id}}"
+            avatar_only="{{true}}"
             size="medium"
           />
         </view>

@@ -1,7 +1,7 @@
 {
     "component": true,
     "usingComponents": {
-        "PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
+        "jh-avatar": "/components/jh-avatar/jh-avatar"
     },
     "options": {
         "addGlobalClass": true,

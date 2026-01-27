@@ -1,29 +1,25 @@
 <view class="spectator-bar">
-    <view class="spectator-main">
-        <!-- 标题 -->
-        <text class="spectator-title">围观人数（{{count}}）</text>
+  <view class="spectator-main">
+    <!-- 标题 -->
+    <text class="spectator-title">围观人数（{{count}}）</text>
 
-        <!-- 头像列表 -->
-        <scroll-view class="avatar-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-            <view class="avatar-list">
-                <view
-                    wx:for="{{displaySpectators}}"
-                    wx:key="index"
-                    class="spectator-avatar"
-                >
-                    <PlayerAvatar
-                        avatar="{{item.avatar}}"
-                        userId="{{item.id}}"
-                        avatarOnly="{{true}}"
-                        size="mini"
-                    />
-                </view>
-            </view>
-        </scroll-view>
-    </view>
+    <!-- 头像列表 -->
+    <scroll-view class="avatar-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+      <view class="avatar-list">
+        <view wx:for="{{displaySpectators}}" wx:key="index" class="spectator-avatar">
+          <jh-avatar
+            avatar="{{item.avatar}}"
+            user_id="{{item.id}}"
+            avatar_only="{{true}}"
+            size="mini"
+          />
+        </view>
+      </view>
+    </scroll-view>
+  </view>
 
-    <!-- 点击更多 -->
-    <view class="more-btn" bindtap="onMoreTap">
-        <text class="more-text">点击更多</text>
-    </view>
+  <!-- 点击更多 -->
+  <view class="more-btn" bindtap="onMoreTap">
+    <text class="more-text">点击更多</text>
+  </view>
 </view>

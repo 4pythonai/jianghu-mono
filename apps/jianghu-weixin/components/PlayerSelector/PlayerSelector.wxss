@@ -50,31 +50,10 @@
 	position: relative;
 }
 
-.player-avatar {
-	width: 80rpx;
-	height: 80rpx;
-	border-radius: 50%;
-	overflow: hidden;
-	margin-right: 20rpx;
-	background: #ddd;
-}
-
-.avatar-image {
-	width: 100%;
-	height: 100%;
-}
-
 .player-info {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-}
-
-.player-showname {
-	font-size: 30rpx;
-	color: #333;
-	font-weight: 500;
-	margin-bottom: 6rpx;
 }
 
 .player-nickname {
@@ -87,16 +66,6 @@
 	font-size: 24rpx;
 	color: #999;
 	margin-bottom: 6rpx;
-}
-
-.player-join_type {
-	font-size: 22rpx;
-	color: #666;
-	background: #f0f0f0;
-	padding: 4rpx 12rpx;
-	border-radius: 10rpx;
-	display: inline-block;
-	max-width: fit-content;
 }
 
 .remove-btn {

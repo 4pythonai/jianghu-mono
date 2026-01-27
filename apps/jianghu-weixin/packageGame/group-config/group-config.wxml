@@ -8,13 +8,11 @@
       <!-- 已选球员卡片 -->
       <view wx:for="{{selectedPlayers}}" wx:key="id" class="player-card selected">
         <view class="remove-btn" bindtap="onRemovePlayer" data-id="{{item.id}}">×</view>
-        <PlayerAvatar
+        <jh-avatar
           avatar="{{item.avatar}}"
-          name="{{item.name}}"
-          teamName="{{item.teamName}}"
-          userId="{{item.user_id}}"
+          show_name="{{item.name}}"
+          user_id="{{item.user_id}}"
           size="small"
-          showTeam="{{true}}"
         />
       </view>
 
@@ -29,10 +27,7 @@
   <!-- Combo配对区域 -->
   <view wx:if="{{shouldShowComboConfig && selectedPlayers.length >= 2}}" class="combo-section">
     <view class="combo-section-title">组合配对</view>
-    <OneBallConfig
-      groups="{{oneBallConfigGroups}}"
-      bind:configChange="onComboConfigChange"
-    />
+    <OneBallConfig groups="{{oneBallConfigGroups}}" bind:configChange="onComboConfigChange" />
   </view>
 
   <!-- TAG 标签栏 -->
@@ -72,10 +67,10 @@
         >
           <text wx:if="{{item.isSelected}}">✓</text>
         </view>
-        <PlayerAvatar
+        <jh-avatar
           avatar="{{item.avatar}}"
-          userId="{{item.user_id}}"
-          avatarOnly="{{true}}"
+          user_id="{{item.user_id}}"
+          avatar_only="{{true}}"
           size="small"
           clickable="{{false}}"
         />

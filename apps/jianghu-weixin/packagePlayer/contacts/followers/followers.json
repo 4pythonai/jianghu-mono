@@ -1,7 +1,7 @@
 {
   "usingComponents": {
     "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
-    "PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
+    "jh-avatar": "/components/jh-avatar/jh-avatar"
   },
   "navigationStyle": "custom"
 }

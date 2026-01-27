@@ -101,26 +101,19 @@
         >
           <view class="friend-content">
             <view class="friend-avatar-wrap">
-              <PlayerAvatar
+            <jh-avatar
                 avatar="{{image.imageUrl(friend.avatar)}}"
                 userId="{{friend.user_id}}"
-                avatarOnly="{{true}}"
+                show_name="{{friend.show_name}}"
+                gender="{{friend.gender}}"
+                handicap="{{friend.handicap}}"
                 size="small"
                 clickable="{{false}}"
               />
-            </view>
-            <view class="friend-info">
-              <view class="friend-name-row">
-                <text class="friend-name">{{friend.show_name }}</text>
-                <text class="gender-icon male" wx:if="{{friend.gender === 'male'}}">♂</text>
-                <text class="gender-icon female" wx:if="{{friend.gender === 'female'}}">♀</text>
-              </view>
-              <text
-                class="friend-handicap"
-                wx:if="{{friend.handicap !== null && friend.handicap !== undefined}}"
-              >江湖差点: {{friend.handicap}}</text>
-              <text class="friend-signature" wx:if="{{friend.signature}}">{{friend.signature}}</text>
-            </view>
+          </view>
+          <view class="friend-info">
+            <text class="friend-signature" wx:if="{{friend.signature}}">{{friend.signature}}</text>
+          </view>
           </view>
         </view>
       </view>

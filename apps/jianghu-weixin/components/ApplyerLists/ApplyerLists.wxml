@@ -11,10 +11,10 @@
     <view wx:if="{{mode === 'fee' ? payed === 'y' : paid}}" class="paid-badge">
       <text class="badge-text">付</text>
     </view>
-    <PlayerAvatar
+    <jh-avatar
       avatar="{{image.imageUrl(avatar)}}"
-      userId="{{userId}}"
-      avatarOnly="{{true}}"
+      user_id="{{userId}}"
+      avatar_only="{{true}}"
       size="small"
     />
   </view>

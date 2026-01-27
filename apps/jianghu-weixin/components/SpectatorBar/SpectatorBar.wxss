@@ -39,11 +39,6 @@
     overflow: hidden;
 }
 
-.avatar-img {
-    width: 100%;
-    height: 100%;
-}
-
 /* 更多按钮 */
 .more-btn {
     flex-shrink: 0;

@@ -3,11 +3,21 @@
   <view class="event-cover-wrapper">
     <!-- 单个封面 -->
     <view wx:if="{{coverType === 'single'}}" class="avatar-cover">
-      <AvatarGroup avatars="{{[singleCover]}}" maxShow="4" showMode="group" clickable="{{false}}" />
+      <jh-avatar-group
+        avatars="{{[singleCover]}}"
+        maxShow="4"
+        showMode="group"
+        clickable="{{false}}"
+      />
     </view>
     <!-- 多个封面（队际赛多队头像拼接） -->
     <view wx:elif="{{coverType === 'multiple'}}" class="avatar-cover">
-      <AvatarGroup avatars="{{teamAvatars}}" maxShow="4" showMode="group" clickable="{{false}}" />
+      <jh-avatar-group
+        avatars="{{teamAvatars}}"
+        maxShow="4"
+        showMode="group"
+        clickable="{{false}}"
+      />
     </view>
     <!-- 默认封面 -->
     <view wx:else class="event-cover-default">

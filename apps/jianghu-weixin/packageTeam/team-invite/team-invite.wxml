@@ -37,10 +37,10 @@
       <view class="user-list" wx:else>
         <view class="user-card" wx:for="{{users}}" wx:key="id">
           <view class="user-avatar-wrap">
-            <PlayerAvatar
+            <jh-avatar
               avatar="{{item.avatar}}"
-              userId="{{item.id}}"
-              avatarOnly="{{true}}"
+              user_id="{{item.id}}"
+              avatar_only="{{true}}"
               size="medium"
             />
           </view>

@@ -4,6 +4,6 @@
     "usingComponents": {
         "CustomNavBar": "/components/CustomNavBar/CustomNavBar",
         "OneBallConfig": "/components/OneBallConfig/OneBallConfig",
-        "PlayerAvatar": "/components/PlayerAvatar/PlayerAvatar"
+        "jh-avatar": "/components/jh-avatar/jh-avatar"
     }
 }

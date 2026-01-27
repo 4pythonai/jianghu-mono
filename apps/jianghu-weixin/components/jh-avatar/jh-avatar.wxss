@@ -98,11 +98,21 @@
     height: 100%;
 }
 
+/* 信息包装器 */
+.info-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rpx;
+    width: 100%;
+}
+
 /* 名字行 */
 .name-row {
     display: flex;
     align-items: center;
-    gap: 4rpx;
+    justify-content: center;
+    gap: 8rpx;
 }
 
 .player-name {
@@ -112,11 +122,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: center;
 }
 
 /* 性别图标 */
 .gender-icon {
-    font-size: 22rpx;
+    font-size: 24rpx;
 }
 
 .gender-icon.male {
@@ -127,15 +138,18 @@
     color: #e91e63;
 }
 
-/* 球队名称 */
-.team-name {
-    font-size: 20rpx;
-    color: var(--text-tertiary);
-    max-width: 100rpx;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+/* 差点行 */
+.handicap-row {
+    display: flex;
+    justify-content: center;
 }
+
+/* 差点文本 */
+.handicap {
+    font-size: 20rpx;
+    color: var(--text-secondary);
+}
+
 
 /* 选中状态边框 */
 .player-avatar.selected .avatar-wrapper {

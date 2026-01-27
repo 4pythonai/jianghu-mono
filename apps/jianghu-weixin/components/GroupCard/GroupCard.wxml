@@ -18,14 +18,12 @@
           wx:if="{{idx < 4}}"
           class="player-item"
         >
-          <PlayerAvatar
+          <jh-avatar
             avatar="{{item.avatar}}"
             show_name="{{item.show_name}}"
-            teamName="{{item.teamName}}"
             gender="{{item.gender || 'male'}}"
-            userId="{{item.user_id}}"
+            user_id="{{item.user_id}}"
             size="small"
-            showTeam="{{true}}"
           />
         </view>
 

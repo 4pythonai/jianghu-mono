@@ -2,14 +2,7 @@
   <view class="player-info-container">
     <!-- 左侧头像区域 -->
     <view class="avatar-column">
-      <PlayerAvatar
-        avatar="{{avatar}}"
-        show_name="{{show_name}}"
-        userId="{{userId}}"
-        size="xs"
-        shape="round"
-        showTeam="{{false}}"
-      />
+      <jh-avatar avatar="{{avatar}}" show_name="{{show_name}}" user_id="{{userId}}" size="xs" />
     </view>
     <!-- 右侧杆差区域 -->
     <view class="handicap-column">

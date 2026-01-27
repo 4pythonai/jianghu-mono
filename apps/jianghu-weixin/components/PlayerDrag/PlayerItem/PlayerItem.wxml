@@ -10,10 +10,10 @@
       <text class="player-serial">#{{abcd}}</text>
     </view>
     <view class="player-avatar-wrap">
-      <PlayerAvatar
+      <jh-avatar
         avatar="{{itemData.avatar || ''}}"
-        userId="{{itemData.user_id}}"
-        avatarOnly="{{true}}"
+        user_id="{{itemData.user_id}}"
+        avatar_only="{{true}}"
         size="small"
       />
     </view>
