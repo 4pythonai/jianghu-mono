@@ -306,8 +306,9 @@ class MGame  extends CI_Model {
   }
 
 
+  // TODO show name logic
   public function m_get_group_info($groupid) {
-    return $this->db->select("user_id, COALESCE(display_name, wx_name) as username, COALESCE(display_name, wx_name) as display_name, t_user.avatar as cover", false)
+    return $this->db->select("user_id,gender, COALESCE(display_name, wx_name) as username, COALESCE(display_name, wx_name) as show_name, t_user.avatar as cover", false)
       ->from('t_game_group_user')
       ->join('t_user', 't_user.id = t_game_group_user.user_id')
       ->where('t_game_group_user.groupid', $groupid)
