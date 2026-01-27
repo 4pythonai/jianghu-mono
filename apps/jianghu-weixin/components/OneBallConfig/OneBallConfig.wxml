@@ -14,11 +14,13 @@
         class="player-row"
       >
         <view class="player-info">
-          <image
-            class="player-avatar"
-            src="{{ image.imageUrl(player.avatar) || '/images/default-avatar.png' }}"
-            mode="aspectFill"
-          ></image>
+          <jh-avatar
+            avatar="{{player.avatar}}"
+            show_name="{{player.show_name}}"
+            user_id="{{player.user_id}}"
+            size="small"
+            avatar_only="{{true}}"
+          />
           <text class="player-name">{{player.show_name}}</text>
         </view>
         <view class="side-actions">

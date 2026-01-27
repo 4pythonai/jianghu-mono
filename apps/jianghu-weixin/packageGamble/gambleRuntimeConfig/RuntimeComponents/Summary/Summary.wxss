@@ -99,14 +99,6 @@
 	gap: 8rpx;
 }
 
-.player-avatar {
-	width: 80rpx;
-	height: 80rpx;
-	border-radius: 50%;
-	background-color: #f0f0f0;
-	border: 2rpx solid #e0e0e0;
-}
-
 .player-name {
 	font-size: 24rpx;
 	color: #333;
@@ -135,11 +127,6 @@
 
 	.player-item {
 		width: 100rpx;
-	}
-
-	.player-avatar {
-		width: 60rpx;
-		height: 60rpx;
 	}
 
 	.player-name {

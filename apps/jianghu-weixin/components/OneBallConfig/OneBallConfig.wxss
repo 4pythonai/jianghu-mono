@@ -56,14 +56,6 @@
 	min-width: 0;
 }
 
-.player-avatar {
-	width: 64rpx;
-	height: 64rpx;
-	border-radius: 50%;
-	background: #f0f0f0;
-	flex-shrink: 0;
-}
-
 .player-name {
 	font-size: 28rpx;
 	color: #333;

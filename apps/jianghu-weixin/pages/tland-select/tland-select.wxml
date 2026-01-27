@@ -20,18 +20,16 @@
     <view wx:else class="players-list">
       <view class="player-item" wx:for="{{ players }}" wx:key="user_id">
         <!-- 玩家信息 -->
-        <view class="player-info">
-          <view class="player-avatar">
-            <image
-              src="{{ image.imageUrl(item.avatar) || '/images/default-avatar.png' }}"
-              mode="aspectFill"
-              class="avatar-image"
-            ></image>
-          </view>
-          <view class="player-details">
-            <view class="player-name">{{ item.show_name }}</view>
-            <view class="player-meta">第{{ item.groupIndex + 1 }}组 · 玩家{{ item.playerIndex + 1 }}</view>
-          </view>
+        <jh-avatar
+          avatar="{{item.avatar}}"
+          show_name="{{item.show_name}}"
+          user_id="{{item.user_id}}"
+          size="medium"
+          avatar_only="{{true}}"
+        />
+        <view class="player-details">
+          <view class="player-name">{{ item.show_name }}</view>
+          <view class="player-meta">第{{ item.groupIndex + 1 }}组 · 玩家{{ item.playerIndex + 1 }}</view>
         </view>
 
         <!-- T台选择器 -->

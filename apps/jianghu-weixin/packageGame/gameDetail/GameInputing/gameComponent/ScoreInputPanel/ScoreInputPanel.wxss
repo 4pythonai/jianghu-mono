@@ -210,25 +210,6 @@
 	box-shadow: 0 8rpx 12rpx rgba(0, 0, 0, 0.08);
 }
 
-.player-avatar {
-	width: 72rpx;
-	height: 72rpx;
-	border-radius: 50%;
-	background: #e9edf0;
-}
-
-/* 非当前登录用户头像灰度处理 */
-.player-item:not(.is-current-user) .player-avatar {
-	filter: grayscale(70%);
-	opacity: 0.7;
-}
-
-/* 当前登录用户头像边框 */
-.player-item.is-current-user .player-avatar {
-	border: 4rpx solid var(--primary-green-dark);
-	box-sizing: border-box;
-}
-
 .player-score-badge {
 	min-width: 32rpx;
 	height: 32rpx;

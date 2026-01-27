@@ -65,26 +65,9 @@
     z-index: 1;
 }
 
-.player-card .player-avatar {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-    margin-bottom: 8rpx;
-}
-
 .player-card .player-name {
     font-size: 24rpx;
     color: #333;
-    max-width: 130rpx;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: center;
-}
-
-.player-card .player-team {
-    font-size: 20rpx;
-    color: #999;
     max-width: 130rpx;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -215,13 +198,6 @@
 .checkbox.disabled {
     background: #ccc;
     border-color: #ccc;
-}
-
-.player-item .player-avatar {
-    width: 100rpx;
-    height: 100rpx;
-    border-radius: 50%;
-    margin-bottom: 12rpx;
 }
 
 .player-item .player-name {

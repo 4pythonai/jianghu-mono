@@ -92,13 +92,6 @@ page {
 	gap: 8rpx;
 }
 
-.player-avatar {
-	width: 80rpx;
-	height: 80rpx;
-	border-radius: 50%;
-	border: 2rpx solid #f0f0f0;
-}
-
 .player-name {
 	font-size: 22rpx;
 	color: #666666;

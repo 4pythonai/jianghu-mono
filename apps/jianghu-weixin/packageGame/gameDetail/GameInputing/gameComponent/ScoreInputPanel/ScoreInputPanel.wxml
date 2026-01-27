@@ -84,7 +84,13 @@
               bindtap="switchPlayer"
               data-index="{{index}}"
             >
-              <image class="player-avatar" src="{{image.imageUrl(item.avatar)}}" />
+              <jh-avatar
+                avatar="{{item.avatar}}"
+                show_name="{{item.show_name}}"
+                user_id="{{item.user_id}}"
+                size="small"
+                avatar_only="{{true}}"
+              />
               <view
                 class="player-score-badge"
               >{{localScores[index] ? localScores[index].score : ''}}</view>

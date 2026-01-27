@@ -83,16 +83,7 @@
 	margin-bottom: 32rpx;
 }
 
-.player-avatar {
-	width: 80rpx;
-	height: 80rpx;
-	border-radius: 50%;
-	overflow: hidden;
-	margin-right: 24rpx;
-	background: #f0f0f0;
-}
-
-.avatar-image {
+.player-details {
 	width: 100%;
 	height: 100%;
 }

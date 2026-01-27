@@ -22,11 +22,13 @@
       <view class="players-section" wx:if="{{players && players.length > 0}}">
         <view class="players-grid">
           <view class="player-item" wx:for="{{players}}" wx:key="user_id">
-            <image
-              class="player-avatar"
-              src="{{image.imageUrl(item.avatar) || '/images/default-avatar.png'}}"
-              mode="aspectFill"
-            ></image>
+            <jh-avatar
+              avatar="{{item.avatar}}"
+              show_name="{{item.show_name}}"
+              user_id="{{item.user_id}}"
+              size="medium"
+              avatar_only="{{true}}"
+            />
             <text class="player-name">{{item.show_name}}</text>
           </view>
         </view>

@@ -67,15 +67,6 @@
 	transition: transform 0.3s ease !important;
 }
 
-.player-avatar {
-	width: 60rpx;
-	height: 60rpx;
-	border-radius: 50%;
-	background-color: #f0f0f0;
-	border: 2rpx solid #e0e0e0;
-	flex-shrink: 0;
-}
-
 .player-name {
 	font-size: 30rpx;
 	color: hsl(0, 2%, 43%);

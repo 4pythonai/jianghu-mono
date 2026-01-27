@@ -28,12 +28,6 @@
 	justify-content: center;
 }
 
-/* 球员头像 */
-.player-avatar {
-	width: 64rpx;
-	height: 64rpx;
-	border-radius: 50%;
-}
 
 /* 右侧杆差区域 */
 .handicap-column {
@@ -66,16 +60,6 @@
 	font-size: 28rpx;
 	font-weight: bold;
 	line-height: 1;
-	white-space: nowrap;
-}
-
-.player-name {
-	font-size: 20rpx;
-	width: 100%;
-	margin-top: 12rpx;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	text-align: left;
 	white-space: nowrap;
 }
 
