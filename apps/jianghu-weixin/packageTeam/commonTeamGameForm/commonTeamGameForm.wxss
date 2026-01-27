@@ -21,7 +21,7 @@
 .selected-team .team-avatar {
     width: 96rpx;
     height: 96rpx;
-    border-radius: 16rpx;
+    border-radius: 50%;
     background: #e9ecef;
     border: 2rpx solid rgba(255, 255, 255, 0.8);
     box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
@@ -98,7 +98,7 @@
 .team-card .team-avatar {
     width: 80rpx;
     height: 80rpx;
-    border-radius: 12rpx;
+    border-radius: 50%;
     background: #e9ecef;
 }
 
