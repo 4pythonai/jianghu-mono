@@ -1,4 +1,5 @@
-import { parseGambleRule } from '@/utils/gambleRuleParser.js';
+// packageGamble/utils
+import { parseGambleRule } from '../../../../utils/gambleRuleParser.js';
 import { GambleMetaConfig } from '@/utils/GambleMetaConfig.js';
 
 Component({
