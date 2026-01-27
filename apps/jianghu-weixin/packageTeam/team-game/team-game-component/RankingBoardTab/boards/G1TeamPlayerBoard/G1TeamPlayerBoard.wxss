@@ -185,14 +185,6 @@
     padding: 20rpx 0;
 }
 
-.player-avatar {
-    width: 48rpx;
-    height: 48rpx;
-    border-radius: 50%;
-    background: #e0e0e0;
-    flex-shrink: 0;
-}
-
 .player-name {
     flex: 1;
     min-width: 0;

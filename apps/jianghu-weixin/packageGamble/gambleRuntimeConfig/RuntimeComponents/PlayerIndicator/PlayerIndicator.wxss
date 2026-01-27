@@ -54,15 +54,6 @@
 	transform: scale(0.95);
 }
 
-.player-avatar {
-	width: 80rpx;
-	height: 80rpx;
-	border-radius: 50%;
-	background-color: #e9ecef;
-	margin-bottom: 8rpx;
-	flex-shrink: 0;
-}
-
 .player-showname {
 	font-size: 24rpx;
 	color: #333;

@@ -19,13 +19,12 @@
     <view class="players-title">参与人员</view>
     <view class="players-list">
       <view class="player-item" wx:for="{{playersWithAvatar}}" wx:key="index">
-        <image
-          class="player-avatar"
-          src="{{image.imageUrl(item.avatar)}}"
-          lazy-load="true"
-          mode="aspectFill"
-          binderror="onAvatarError"
-          data-index="{{index}}"
+        <jh-avatar
+          avatar="{{item.avatar}}"
+          show_name="{{item.show_name}}"
+          user_id="{{item.user_id}}"
+          size="mini"
+          avatar_only="{{true}}"
         />
         <text class="player-name">{{item.show_name }}</text>
       </view>

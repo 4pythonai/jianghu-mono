@@ -57,12 +57,20 @@
           >
             <view class="p-col p-col-rank">{{player.rank_label}}</view>
             <view class="p-col p-col-player">
-              <image class="player-avatar" src="{{player.avatarUrl}}" mode="aspectFill" />
+              <jh-avatar
+                avatar="{{player.avatarUrl}}"
+                show_name="{{player.show_name}}"
+                user_id="{{player.user_id}}"
+                size="mini"
+                avatar_only="{{true}}"
+              />
               <text class="player-name">{{player.show_name}}</text>
             </view>
             <view class="p-col p-col-score">
               <text>{{player.scoreText}}</text>
-              <view class="player-expand-icon {{expandedPlayerId === player.user_id ? 'rotated' : ''}}">▼</view>
+              <view
+                class="player-expand-icon {{expandedPlayerId === player.user_id ? 'rotated' : ''}}"
+              >▼</view>
             </view>
           </view>
 
@@ -77,4 +85,3 @@
     </view>
   </view>
 </view>
-

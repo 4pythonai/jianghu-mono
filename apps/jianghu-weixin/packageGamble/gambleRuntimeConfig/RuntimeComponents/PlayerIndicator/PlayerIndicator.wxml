@@ -14,13 +14,12 @@
       data-index="{{index}}"
     >
       <!-- 球员头像 -->
-      <image
-        class="player-avatar"
-        src="{{image.imageUrl(player.avatar)}}"
-        mode="aspectFill"
-        lazy-load="true"
-        binderror="onAvatarError"
-        data-index="{{index}}"
+      <jh-avatar
+        avatar="{{player.avatar}}"
+        show_name="{{player.show_name}}"
+        user_id="{{player.user_id}}"
+        size="small"
+        avatar_only="{{true}}"
       />
 
       <!-- 球员昵称 -->
