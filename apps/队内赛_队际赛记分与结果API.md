@@ -81,18 +81,46 @@
       {
         "rank": 1,
         "rank_label": "T1",
-        "score": -1,
-        "thru": 16,
-        "thru_label": "16",
+        "score": -8,
+        "thru": 36,
+        "thru_label": "36",
         "tag_id": 10,
         "tag_name": "湖畔队",
         "tag_color": "#00A3FF",
         "members": [
           { "user_id": 101, "show_name": "王启", "avatar": "..." },
-          { "user_id": 102, "show_name": "宫非", "avatar": "..." }
+          { "user_id": 102, "show_name": "宫非", "avatar": "..." },
+          { "user_id": 103, "show_name": "李明", "avatar": "..." },
+          { "user_id": 104, "show_name": "张华", "avatar": "..." }
         ],
-        "group_id": 1001,
-        "group_name": "第1组"
+        "combos": [
+          {
+            "group_id": 1001,
+            "group_name": "第1组",
+            "members": [
+              { "user_id": 101, "show_name": "王启", "avatar": "..." },
+              { "user_id": 102, "show_name": "宫非", "avatar": "..." }
+            ],
+            "score": -3,
+            "thru": 18,
+            "thru_label": "F",
+            "rank": 2,
+            "rank_label": "2"
+          },
+          {
+            "group_id": 1002,
+            "group_name": "第2组",
+            "members": [
+              { "user_id": 103, "show_name": "李明", "avatar": "..." },
+              { "user_id": 104, "show_name": "张华", "avatar": "..." }
+            ],
+            "score": -5,
+            "thru": 18,
+            "thru_label": "F",
+            "rank": 1,
+            "rank_label": "1"
+          }
+        ]
       }
     ]
   }
@@ -108,7 +136,18 @@
 + `rows[].tag_*`：仅 `row_type=tag` 时返回
 + `rows[].combo_id`：仅 `row_type=combo` 时返回，组合ID
 + `rows[].members`：组合成员（来自分组 group）
-+ `rows[].group_*`：该组合所属分组
++ `rows[].combos`：仅 `row_type=tag` 时返回，该分队在各个分组中的成绩明细
+  - `combos[].group_id`：分组ID
+  - `combos[].group_name`：分组名称
+  - `combos[].members`：该分组中该分队的成员
+  - `combos[].score`：该分组中该分队的成绩（对标准杆差值）
+  - `combos[].thru`：该分组已完成洞数
+  - `combos[].thru_label`：展示用完成状态
+  - `combos[].rank`：该分队在所有分组中的排名
+  - `combos[].rank_label`：展示用排名
++ `rows[].score`：**分队总成绩 = 各分组成绩之和**（不是跨组取最佳）
++ `rows[].thru`：**总已打洞数 = 各分组已打洞数之和**
++ `rows[].group_*`：该组合所属分组（仅 `row_type=combo` 时返回）
 
 ### 3.1.1 G2/G3/G4 分队=1（row_type = combo）
 当 `match_format` 为 G2/G3/G4 且分队数=1时，按组合（combo）聚合，聚合维度为 `group_id + combo_id`：

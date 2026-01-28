@@ -355,9 +355,19 @@ Page({
     // 处理运行时配置项点击事件 - 跳转到配置页面
     async onRuntimeItemClick(e) {
         const { config } = e.currentTarget.dataset;
-        console.log(config);
+        console.log('[RuntimeConfigList] 点击编辑配置:', config);
+
+        if (!config || !config.id) {
+            wx.showToast({ title: '配置数据错误', icon: 'none' });
+            return;
+        }
 
         try {
+            // 将配置数据保存到全局app对象，供editRuntime页面使用
+            const app = getApp();
+            app.globalData.tempEditRuntimeConfig = config;
+            console.log('[RuntimeConfigList] 已保存临时配置数据到globalData');
+
             await navigationHelper.navigateTo(`/packageGamble/gambleRuntimeConfig/editRuntime/editRuntime?configId=${config.id}`);
         } catch (err) {
             console.error('跳转运行时配置页面失败:', err);

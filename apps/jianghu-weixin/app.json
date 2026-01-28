@@ -32,7 +32,6 @@
 				"gameDetail/score/score",
 				"gameDetail/bbs/bbs",
 				"gameDetail/gamble/gamble",
-				"gameDetail/RuntimeConfigList/RuntimeConfigList",
 				"gambleResult/gambleResult",
 				"gameOperation/feedback/feedback",
 				"gameOperation/scorecard/scorecard",
@@ -49,6 +48,7 @@
 			"pages": [
 				"gambleRuntimeConfig/addRuntime/addRuntime",
 				"gambleRuntimeConfig/editRuntime/editRuntime",
+				"gambleRuntimeConfig/RuntimeConfigList/RuntimeConfigList",
 				"rules/rules",
 				"rules/myRules/myRules",
 				"rules/addRule/addRule",

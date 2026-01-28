@@ -66,7 +66,7 @@
         data-config="{{ item }}"
         data-index="{{ index }}"
         catchtap="onRuntimeItemClick"
-      >配置游戏AAA</button>
+      >配置游戏</button>
     </view>
   </view>
 </template>

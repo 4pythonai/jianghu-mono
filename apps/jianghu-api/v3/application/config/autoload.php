@@ -160,5 +160,6 @@ $autoload['model'] = [
     'gamble/MDonation',
     'gamble/MReward',
     'gamble/MPoints',
-    'MWeixin'
+    'MWeixin',
+    'MScoreboard'
 ];

@@ -262,6 +262,7 @@ class MUser  extends CI_Model {
             u.id as user_id,
             u.wx_name,
             u.display_name,
+            u.display_name as show_name,
             u.avatar
         FROM t_user u
         WHERE id = ? ";

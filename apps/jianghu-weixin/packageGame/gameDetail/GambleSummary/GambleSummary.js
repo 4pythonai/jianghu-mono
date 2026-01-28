@@ -134,7 +134,7 @@ Component({
                 }
 
                 // 有配置，正常跳转
-                await navigationHelper.navigateTo(`/packageGame/gameDetail/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`);
+                await navigationHelper.navigateTo(`/packageGamble/gambleRuntimeConfig/RuntimeConfigList/RuntimeConfigList?gameid=${gameid}&groupid=${groupid}`);
             } catch (error) {
                 console.error('[GambleSummary] 跳转失败:', error);
                 wx.showToast({ title: '页面跳转失败', icon: 'none' });

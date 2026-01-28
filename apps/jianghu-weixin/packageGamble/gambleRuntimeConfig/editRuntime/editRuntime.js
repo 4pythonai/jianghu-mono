@@ -28,21 +28,37 @@ Page({
 
     onLoad(options) {
 
-        // 简化：直接从 runtimeStore 获取配置数据
+        // 获取配置ID
         const configId = options.configId;
         if (!configId) {
             setRuntimeConfigData(this, { error: '缺少配置ID' });
             return;
         }
 
-        // 从 runtimeStore 中查找对应的配置
-        const existingRuntimeConfig = runtimeStore.runtimeConfigs.find(c => c.id === configId);
+        // 优先使用 globalData 中的临时配置数据（来自 RuntimeConfigList 传递）
+        const app = getApp();
+        let existingRuntimeConfig = app.globalData.tempEditRuntimeConfig;
+        
+        console.log('[EditRuntime] 尝试从globalData获取临时配置:', existingRuntimeConfig);
+
+        // 如果globalData中没有，再从 runtimeStore 中查找
+        if (!existingRuntimeConfig) {
+            console.log('[EditRuntime] globalData中无临时配置，从runtimeStore查询');
+            existingRuntimeConfig = runtimeStore.runtimeConfigs.find(c => c.id === configId);
+        }
 
         if (!existingRuntimeConfig) {
+            console.error('[EditRuntime] 未找到配置数据，configId:', configId);
             setRuntimeConfigData(this, { error: '未找到配置数据' });
             return;
         }
 
+        console.log('[EditRuntime] 已获取配置数据:', {
+            configId: existingRuntimeConfig.id,
+            gambleSysName: existingRuntimeConfig.gambleSysName,
+            gameid: existingRuntimeConfig.gameid,
+            groupid: existingRuntimeConfig.groupid
+        });
 
         const gameData = toJS(gameStore.gameData);
         const gameDataType = typeof gameData;
@@ -155,5 +171,12 @@ Page({
     // 取消配置 - 使用共享方法
     onCancelConfig() {
         sharedOnCancelConfig();
+    },
+
+    // 页面卸载时清除临时数据
+    onUnload() {
+        const app = getApp();
+        app.globalData.tempEditRuntimeConfig = null;
+        console.log('[EditRuntime] 已清除globalData中的临时配置数据');
     }
 }); 
