@@ -12,6 +12,7 @@ Component({
         scrollSync: true,
         scrollTop: 0,
         players: [],
+        renderPlayers: null,
         holeList: [],
         playerScores: [],
         displayScores: null, // 初始为 null，避免渲染空数组
@@ -82,8 +83,8 @@ Component({
     observers: {
         'playerScores,players,holeList,red_blue,gameData,groupid': function (scores, players, holeList, red_blue, gameData, groupid) {
             // 数据不完整时，不执行计算
-            if (!scores || !players || !holeList || players.length === 0 || holeList.length === 0) {
-                if (this.data.displayScores !== null) {
+            if (!scores || !players || !holeList || players.length === 0 || holeList.length === 0 || !gameData) {
+                if (this.data.displayScores !== null || this.data.renderPlayers !== null) {
                     this.setData({
                         displayScores: null,
                         displayTotals: null,
@@ -94,7 +95,8 @@ Component({
                         oneballMatchResults: [],
                         oneballRowTotals: [],
                         oneballRowOutTotals: [],
-                        oneballRowInTotals: []
+                        oneballRowInTotals: [],
+                        renderPlayers: null, // 重置渲染球员
                     });
                 }
                 return;
@@ -106,7 +108,28 @@ Component({
             }
             this._debounceTimer = setTimeout(() => {
                 this._debounceTimer = null;
-                this.runAtomicScoreUpdate(players, holeList, red_blue, gameData, groupid);
+                
+                // 根据当前分组筛选球员
+                let playersForView = players;
+                // 仅当有分组且指定了 groupid 时才进行筛选
+                if (gameData && Array.isArray(gameData.groups) && gameData.groups.length > 0 && groupid) {
+                    const currentGroup = gameData.groups.find(g => String(g.groupid) === String(groupid));
+                    if (currentGroup && Array.isArray(currentGroup.players)) {
+                        const playerIdsInGroup = new Set(currentGroup.players.map(p => p.user_id));
+                        playersForView = players.filter(p => playerIdsInGroup.has(p.user_id));
+                    } else {
+                        // 找不到分组，可能是数据竞争。暂时不渲染任何内容。
+                        playersForView = []; 
+                    }
+                }
+                
+                this.setData({
+                    renderPlayers: playersForView
+                });
+                
+                if (playersForView.length > 0) {
+                     this.runAtomicScoreUpdate(playersForView, holeList, red_blue, gameData, groupid);
+                }
             }, 16); // 约一帧的时间
         }
     },
@@ -115,13 +138,13 @@ Component({
         /**
          * 汇总分数统计的原子操作
          */
-        runAtomicScoreUpdate(players, holeList, red_blue = [], gameData = null, groupid = null) {
+        runAtomicScoreUpdate(playersForUpdate, holeList, red_blue = [], gameData = null, groupid = null) {
            
-            if (!Array.isArray(players) || players.length === 0) return;
+            if (!Array.isArray(playersForUpdate) || playersForUpdate.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
             if (this._isCalculating) {
-                this._pendingScoreUpdate = { players, holeList, red_blue, gameData, groupid };
+                this._pendingScoreUpdate = { playersForUpdate, holeList, red_blue, gameData, groupid };
                 return;
             }
             this._isCalculating = true;
@@ -132,7 +155,7 @@ Component({
                 displayOutTotals,
                 displayInTotals,
                 scoreIndex
-            } = computeScoreTableStats(players, holeList, red_blue);
+            } = computeScoreTableStats(playersForUpdate, holeList, red_blue);
 
             const {
                 isOneballMode,
@@ -142,7 +165,7 @@ Component({
                 oneballRowOutTotals,
                 oneballRowInTotals,
                 oneballDisplayScores
-            } = this.computeOneballRows(players, holeList, displayScores, displayTotals, displayOutTotals, displayInTotals, gameData, groupid);
+            } = this.computeOneballRows(playersForUpdate, holeList, displayScores, displayTotals, displayOutTotals, displayInTotals, gameData, groupid);
 
             // 在oneball模式下，displayScores 不再被修改
             const finalDisplayScores = displayScores;
@@ -160,8 +183,8 @@ Component({
                 gameStore.updatePlayersHandicaps(holeList, scoreIndex);
             });
 
-            const paddedOutTotals = normalizeTotalsLength(displayOutTotals, players.length);
-            const paddedInTotals = normalizeTotalsLength(displayInTotals, players.length);
+            const paddedOutTotals = normalizeTotalsLength(displayOutTotals, playersForUpdate.length);
+            const paddedInTotals = normalizeTotalsLength(displayInTotals, playersForUpdate.length);
 
             this.setData({
                 displayScores: finalDisplayScores,
@@ -182,7 +205,7 @@ Component({
                     const pending = this._pendingScoreUpdate;
                     this._pendingScoreUpdate = null;
                     this.runAtomicScoreUpdate(
-                        pending.players,
+                        pending.playersForUpdate,
                         pending.holeList,
                         pending.red_blue,
                         pending.gameData,
@@ -196,12 +219,12 @@ Component({
          * 手动触发一次统计计算（备用）
          */
         calculateDisplayData() {
-            const players = this.data.players || [];
+            const playersForUpdate = this.data.renderPlayers || [];
             const holeList = this.data.holeList || [];
             const redBlue = this.data.red_blue || [];
             const gameData = this.data.gameData || null;
             const groupid = this.data.groupid || null;
-            this.runAtomicScoreUpdate(players, holeList, redBlue, gameData, groupid);
+            this.runAtomicScoreUpdate(playersForUpdate, holeList, redBlue, gameData, groupid);
         },
 
         // ===================== UI 交互相关 =====================
