@@ -324,44 +324,22 @@ Component({
 
 
 
-            console.log(" 🔴🟢🔵 中间行出现的逻辑", gameData.game_type)
             const holeBasedMatchTypes = ['fourball_bestball_match', 'fourball_scramble_match', 'foursome_match', 'individual_match'];
             const showMiddleRow = (gameData?.game_type !== 'common') && (holeBasedMatchTypes.includes(gameData.game_type));
-            console.log("🔴🟢🔵 showMiddleRow:", showMiddleRow);
-
+            
             const oneballRows = [
                 { key: 'A', type: 'group', label: 'A组', playerIndex: 0, players: groupedPlayers.A },
                 ...(showMiddleRow ? [{ key: 'score', type: 'score', label: '得分' }] : []),
                 { key: 'B', type: 'group', label: 'B组', playerIndex: 1, players: groupedPlayers.B }
             ];
 
-            console.log("🔴🟢🔵 oneballRows:", oneballRows);
-            oneballRows.forEach((row, index) => {
-                console.log(`🔴🟢🔵 oneballRows[${index}]:`, {
-                    key: row.key,
-                    type: row.type,
-                    label: row.label,
-                    playerIndex: row.playerIndex,
-                    playerIndexType: typeof row.playerIndex,
-                    playersCount: row.players?.length
-                });
-            });
-
+ 
             const oneballMatchResults = holeList.map((_, holeIndex) => {
                 // 使用oneballDisplayScores中的最佳成绩
                 const aScore = oneballDisplayScores?.[0]?.[holeIndex]?.score;
                 const bScore = oneballDisplayScores?.[1]?.[holeIndex]?.score;
 
-                if (holeIndex === 0) {
-                    console.log("🔴🟢🔵 第1洞得分行计算:");
-                    console.log("🔴🟢🔵   groupAIndex:", 0);
-                    console.log("🔴🟢🔵   groupBIndex:", 1);
-                    console.log("🔴🟢🔵   oneballDisplayScores[0][0]:", oneballDisplayScores?.[0]?.[0]);
-                    console.log("🔴🟢🔵   oneballDisplayScores[1][0]:", oneballDisplayScores?.[1]?.[0]);
-                    console.log("🔴🟢🔵   aScore:", aScore);
-                    console.log("🔴🟢🔵   bScore:", bScore);
-                }
-
+  
                 // 如果任一组没有有效成绩，返回空
                 if (!aScore || !bScore || aScore <= 0 || bScore <= 0) {
                     if (holeIndex === 0) {
@@ -385,10 +363,7 @@ Component({
                 return { text: scoreText, status: 'tie' };
             });
 
-            console.log("🔴🟢🔵 oneballMatchResults计算完成:");
-            console.log("🔴🟢🔵   oneballMatchResults[0]:", oneballMatchResults[0]);
-            console.log("🔴🟢🔵   oneballMatchResults[0].text:", oneballMatchResults[0]?.text);
-
+  
             // 根据是否显示中间行来构建totals数组
             const oneballRowTotals = showMiddleRow
                 ? [
