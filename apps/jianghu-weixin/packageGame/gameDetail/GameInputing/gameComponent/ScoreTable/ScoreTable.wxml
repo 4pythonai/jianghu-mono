@@ -112,11 +112,11 @@
                 class="cell-score"
               >
                 <HoleCell
-                  playerIndex="{{ item.playerIndex }}"
+                  playerIndex="{{ rowIndex }}"
                   holeIndex="{{ holeIndex }}"
                   holeList="{{ holeList }}"
                   players="{{ players }}"
-                  displayScores="{{ displayScores }}"
+                  displayScores="{{ oneballDisplayScores }}"
                   bind:cellclick="onCellClick"
                 />
               </view>
@@ -135,11 +135,11 @@
                 class="cell-score"
               >
                 <HoleCell
-                  playerIndex="{{ item.playerIndex }}"
+                  playerIndex="{{ rowIndex }}"
                   holeIndex="{{ holeIndex }}"
                   holeList="{{ holeList }}"
                   players="{{ players }}"
-                  displayScores="{{ displayScores }}"
+                  displayScores="{{ oneballDisplayScores }}"
                   bind:cellclick="onCellClick"
                 />
               </view>

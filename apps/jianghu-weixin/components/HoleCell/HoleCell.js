@@ -20,10 +20,25 @@ Component({
 
     observers: {
         'playerIndex, holeIndex, holeList, players, displayScores': function (playerIndex, holeIndex, holeList, players, displayScores) {
+            console.log('HoleCell OBSERVER:', {
+                playerIndex,
+                playerIndexType: typeof playerIndex,
+                holeIndex,
+                holeIndexType: typeof holeIndex,
+                holeListLength: holeList?.length,
+                playersLength: players?.length,
+                displayScoresLength: displayScores?.length,
+            });
             // 数据校验
             if (!holeList || !players || !displayScores ||
                 playerIndex < 0 || holeIndex < 0 ||
-                playerIndex >= players.length || holeIndex >= holeList.length) {
+                playerIndex >= displayScores.length || holeIndex >= holeList.length) {
+                console.error('HoleCell VALIDATION FAILED:', {
+                    playerIndex,
+                    holeIndex,
+                    displayScoresLength: displayScores?.length,
+                    holeListLength: holeList?.length,
+                });
                 return;
             }
 

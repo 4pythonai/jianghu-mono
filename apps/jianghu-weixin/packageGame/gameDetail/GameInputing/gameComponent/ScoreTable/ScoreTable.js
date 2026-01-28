@@ -25,6 +25,7 @@ Component({
         oneballRowTotals: [],
         oneballRowOutTotals: [],
         oneballRowInTotals: [],
+        oneballDisplayScores: null,
     },
 
     lifetimes: {
@@ -115,12 +116,7 @@ Component({
          * 汇总分数统计的原子操作
          */
         runAtomicScoreUpdate(players, holeList, red_blue = [], gameData = null, groupid = null) {
-            console.log('🟡🟠🔴🟢🔵🟡 gameData:', gameData);
-            console.log('🔴🟢🔵 players数量:', players?.length);
-            console.log('🔴🟢🔵 holeList数量:', holeList?.length);
-            console.log('🔴🟢🔵 scoring_type:', gameData?.scoring_type);
-            console.log('🔴🟢🔵 groupid:', groupid);
-
+           
             if (!Array.isArray(players) || players.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
@@ -145,30 +141,19 @@ Component({
                 oneballRowTotals,
                 oneballRowOutTotals,
                 oneballRowInTotals,
-                modifiedDisplayScores
+                oneballDisplayScores
             } = this.computeOneballRows(players, holeList, displayScores, displayTotals, displayOutTotals, displayInTotals, gameData, groupid);
 
-            // 在oneball模式下，使用修改后的displayScores
-            const finalDisplayScores = isOneballMode && modifiedDisplayScores ? modifiedDisplayScores : displayScores;
+            // 在oneball模式下，displayScores 不再被修改
+            const finalDisplayScores = displayScores;
 
-            console.log("🔴🟢🔵 isOneballMode:", isOneballMode);
-            console.log("🔴🟢🔵 modifiedDisplayScores存在:", !!modifiedDisplayScores);
-            console.log("🔴🟢🔵 finalDisplayScores === modifiedDisplayScores:", finalDisplayScores === modifiedDisplayScores);
-
+ 
             if (isOneballMode && finalDisplayScores) {
-                console.log("🔴🟢🔵 finalDisplayScores.length:", finalDisplayScores.length);
-                console.log("🔴🟢🔵 finalDisplayScores[0]存在:", !!finalDisplayScores[0]);
-                console.log("🔴🟢🔵 finalDisplayScores[0]?.length:", finalDisplayScores[0]?.length);
-                console.log("🔴🟢🔵 finalDisplayScores[0][0] (A组第1洞):", finalDisplayScores[0]?.[0]);
-                console.log("🔴🟢🔵 finalDisplayScores[1][0] (球员1第1洞):", finalDisplayScores[1]?.[0]);
-                console.log("🔴🟢🔵 finalDisplayScores[2][0] (B组第1洞):", finalDisplayScores[2]?.[0]);
-                console.log("🔴🟢🔵 finalDisplayScores[3][0] (球员3第1洞):", finalDisplayScores[3]?.[0]);
-
+  
                 // 检查A组和B组的成绩
-                const aScore0 = finalDisplayScores[0]?.[0]?.score;
-                const bScore0 = finalDisplayScores[2]?.[0]?.score;
-                console.log("🔴🟢🔵 表格应该显示: A组=" + aScore0 + ", B组=" + bScore0);
-            }
+                const aScore0 = oneballDisplayScores[0]?.[0]?.score;
+                const bScore0 = oneballDisplayScores[1]?.[0]?.score;
+             }
 
             // 更新 handicap（使用 nextTick 避免阻塞渲染）
             wx.nextTick(() => {
@@ -188,13 +173,10 @@ Component({
                 oneballMatchResults,
                 oneballRowTotals,
                 oneballRowOutTotals,
-                oneballRowInTotals
+                oneballRowInTotals,
+                oneballDisplayScores
             }, () => {
-                console.log("🔴🟢🔵 setData完成后，检查this.data.displayScores:");
-                console.log("🔴🟢🔵 this.data.displayScores[0][0]:", this.data.displayScores[0]?.[0]);
-                console.log("🔴🟢🔵 this.data.displayScores[2][0]:", this.data.displayScores[2]?.[0]);
-                console.log("🔴🟢🔵 this.data.oneballRows:", this.data.oneballRows);
-
+ 
                 this._isCalculating = false;
                 if (this._pendingScoreUpdate) {
                     const pending = this._pendingScoreUpdate;
@@ -315,56 +297,27 @@ Component({
             const groupAIndex = groupedPlayers.A[0].index;
             const groupBIndex = groupedPlayers.B[0].index;
 
-            console.log("🔴🟢🔵 groupAIndex:", groupAIndex, "type:", typeof groupAIndex);
-            console.log("🔴🟢🔵 groupBIndex:", groupBIndex, "type:", typeof groupBIndex);
-            console.log("🔴🟢🔵 groupedPlayers.A:", groupedPlayers.A);
-            console.log("🔴🟢🔵 groupedPlayers.B:", groupedPlayers.B);
-
-            // 创建displayScores的深拷贝，确保是全新的数组
-            const modifiedDisplayScores = displayScores.map((playerScores, playerIndex) => {
-                // 如果是A组第一个球员，替换为A组最佳成绩
-                if (playerIndex === groupAIndex) {
-                    console.log("🔴🟢🔵 正在计算A组(playerIndex=" + playerIndex + ")的最佳成绩");
-                    return holeList.map((hole, holeIndex) => {
-                        const aScores = groupedPlayers.A
-                            .map(p => displayScores?.[p.index]?.[holeIndex])
-                            .filter(s => s && typeof s.score === 'number' && s.score > 0);
-
-                        if (aScores.length > 0) {
-                            const bestScore = aScores.reduce((best, current) =>
-                                current.score < best.score ? current : best
-                            );
-                            if (holeIndex === 0) {
-                                console.log("🔴🟢🔵 A组第1洞最佳成绩:", bestScore.score, "来自", aScores.length, "个球员");
-                            }
-                            return bestScore;
-                        }
-                        return displayScores[groupAIndex][holeIndex];
-                    });
+            const oneballDisplayScores = [];
+            // 计算A组最佳成绩
+            oneballDisplayScores.push(holeList.map((hole, holeIndex) => {
+                const aScores = groupedPlayers.A
+                    .map(p => displayScores?.[p.index]?.[holeIndex])
+                    .filter(s => s && typeof s.score === 'number' && s.score > 0);
+                if (aScores.length > 0) {
+                    return aScores.reduce((best, current) => current.score < best.score ? current : best);
                 }
-                // 如果是B组第一个球员，替换为B组最佳成绩
-                else if (playerIndex === groupBIndex) {
-                    console.log("🔴🟢🔵 正在计算B组(playerIndex=" + playerIndex + ")的最佳成绩");
-                    return holeList.map((hole, holeIndex) => {
-                        const bScores = groupedPlayers.B
-                            .map(p => displayScores?.[p.index]?.[holeIndex])
-                            .filter(s => s && typeof s.score === 'number' && s.score > 0);
-
-                        if (bScores.length > 0) {
-                            const bestScore = bScores.reduce((best, current) =>
-                                current.score < best.score ? current : best
-                            );
-                            if (holeIndex === 0) {
-                                console.log("🔴🟢🔵 B组第1洞最佳成绩:", bestScore.score, "来自", bScores.length, "个球员");
-                            }
-                            return bestScore;
-                        }
-                        return displayScores[groupBIndex][holeIndex];
-                    });
+                return displayScores[groupAIndex][holeIndex];
+            }));
+            // 计算B组最佳成绩
+            oneballDisplayScores.push(holeList.map((hole, holeIndex) => {
+                const bScores = groupedPlayers.B
+                    .map(p => displayScores?.[p.index]?.[holeIndex])
+                    .filter(s => s && typeof s.score === 'number' && s.score > 0);
+                if (bScores.length > 0) {
+                    return bScores.reduce((best, current) => current.score < best.score ? current : best);
                 }
-                // 其他球员也创建新数组（浅拷贝），确保整个数组是新的
-                return [...playerScores];
-            });
+                return displayScores[groupBIndex][holeIndex];
+            }));
 
             // 仅非 common 类型时添加中间结果行
             // 比杆赛没有中间，比洞赛才有
@@ -373,13 +326,13 @@ Component({
 
             console.log(" 🔴🟢🔵 中间行出现的逻辑", gameData.game_type)
             const holeBasedMatchTypes = ['fourball_bestball_match', 'fourball_scramble_match', 'foursome_match', 'individual_match'];
-            const showMiddleRow = (gameData?.game_type !== 'common') && (gameData.scoring_type in holeBasedMatchTypes);
+            const showMiddleRow = (gameData?.game_type !== 'common') && (holeBasedMatchTypes.includes(gameData.game_type));
             console.log("🔴🟢🔵 showMiddleRow:", showMiddleRow);
 
             const oneballRows = [
-                { key: 'A', type: 'group', label: 'A组', playerIndex: groupAIndex, players: groupedPlayers.A },
+                { key: 'A', type: 'group', label: 'A组', players: groupedPlayers.A },
                 ...(showMiddleRow ? [{ key: 'score', type: 'score', label: '得分' }] : []),
-                { key: 'B', type: 'group', label: 'B组', playerIndex: groupBIndex, players: groupedPlayers.B }
+                { key: 'B', type: 'group', label: 'B组', players: groupedPlayers.B }
             ];
 
             console.log("🔴🟢🔵 oneballRows:", oneballRows);
@@ -388,28 +341,37 @@ Component({
                     key: row.key,
                     type: row.type,
                     label: row.label,
-                    playerIndex: row.playerIndex,
-                    playerIndexType: typeof row.playerIndex,
                     playersCount: row.players?.length
                 });
             });
 
             const oneballMatchResults = holeList.map((_, holeIndex) => {
-                // 使用modifiedDisplayScores中的最佳成绩
-                const aScore = modifiedDisplayScores?.[groupAIndex]?.[holeIndex]?.score;
-                const bScore = modifiedDisplayScores?.[groupBIndex]?.[holeIndex]?.score;
+                // 使用oneballDisplayScores中的最佳成绩
+                const aScore = oneballDisplayScores?.[0]?.[holeIndex]?.score;
+                const bScore = oneballDisplayScores?.[1]?.[holeIndex]?.score;
 
                 if (holeIndex === 0) {
-                    console.log("🔴🟢🔵 第1洞得分行: A组=" + aScore + ", B组=" + bScore);
+                    console.log("🔴🟢🔵 第1洞得分行计算:");
+                    console.log("🔴🟢🔵   groupAIndex:", 0);
+                    console.log("🔴🟢🔵   groupBIndex:", 1);
+                    console.log("🔴🟢🔵   oneballDisplayScores[0][0]:", oneballDisplayScores?.[0]?.[0]);
+                    console.log("🔴🟢🔵   oneballDisplayScores[1][0]:", oneballDisplayScores?.[1]?.[0]);
+                    console.log("🔴🟢🔵   aScore:", aScore);
+                    console.log("🔴🟢🔵   bScore:", bScore);
                 }
 
                 // 如果任一组没有有效成绩，返回空
                 if (!aScore || !bScore || aScore <= 0 || bScore <= 0) {
+                    if (holeIndex === 0) {
+                     }
                     return { text: '', status: 'empty' };
                 }
 
                 // 显示格式：A组最佳成绩,B组最佳成绩
                 const scoreText = `${aScore},${bScore}`;
+
+                if (holeIndex === 0) {
+                 }
 
                 // 判断胜负状态
                 if (aScore < bScore) {
@@ -421,21 +383,40 @@ Component({
                 return { text: scoreText, status: 'tie' };
             });
 
-            const oneballRowTotals = [
-                displayTotals?.[groupAIndex] ?? null,
-                null,
-                displayTotals?.[groupBIndex] ?? null
-            ];
-            const oneballRowOutTotals = [
-                displayOutTotals?.[groupAIndex] ?? null,
-                null,
-                displayOutTotals?.[groupBIndex] ?? null
-            ];
-            const oneballRowInTotals = [
-                displayInTotals?.[groupAIndex] ?? null,
-                null,
-                displayInTotals?.[groupBIndex] ?? null
-            ];
+   
+            // 根据是否显示中间行来构建totals数组
+            const oneballRowTotals = showMiddleRow
+                ? [
+                    displayTotals?.[groupAIndex] ?? null,
+                    null,  // 中间得分行没有total
+                    displayTotals?.[groupBIndex] ?? null
+                ]
+                : [
+                    displayTotals?.[groupAIndex] ?? null,
+                    displayTotals?.[groupBIndex] ?? null
+                ];
+
+            const oneballRowOutTotals = showMiddleRow
+                ? [
+                    displayOutTotals?.[groupAIndex] ?? null,
+                    null,
+                    displayOutTotals?.[groupBIndex] ?? null
+                ]
+                : [
+                    displayOutTotals?.[groupAIndex] ?? null,
+                    displayOutTotals?.[groupBIndex] ?? null
+                ];
+
+            const oneballRowInTotals = showMiddleRow
+                ? [
+                    displayInTotals?.[groupAIndex] ?? null,
+                    null,
+                    displayInTotals?.[groupBIndex] ?? null
+                ]
+                : [
+                    displayInTotals?.[groupAIndex] ?? null,
+                    displayInTotals?.[groupBIndex] ?? null
+                ];
 
             return {
                 isOneballMode: true,
@@ -444,8 +425,10 @@ Component({
                 oneballRowTotals,
                 oneballRowOutTotals,
                 oneballRowInTotals,
-                modifiedDisplayScores
+                oneballDisplayScores, // 使用新的专用数据
+                modifiedDisplayScores: null // 废弃
             };
+
         }
     }
 })
