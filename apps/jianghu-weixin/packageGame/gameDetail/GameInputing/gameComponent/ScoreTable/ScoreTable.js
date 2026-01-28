@@ -330,9 +330,9 @@ Component({
             console.log("🔴🟢🔵 showMiddleRow:", showMiddleRow);
 
             const oneballRows = [
-                { key: 'A', type: 'group', label: 'A组', players: groupedPlayers.A },
+                { key: 'A', type: 'group', label: 'A组', playerIndex: 0, players: groupedPlayers.A },
                 ...(showMiddleRow ? [{ key: 'score', type: 'score', label: '得分' }] : []),
-                { key: 'B', type: 'group', label: 'B组', players: groupedPlayers.B }
+                { key: 'B', type: 'group', label: 'B组', playerIndex: 1, players: groupedPlayers.B }
             ];
 
             console.log("🔴🟢🔵 oneballRows:", oneballRows);
@@ -341,6 +341,8 @@ Component({
                     key: row.key,
                     type: row.type,
                     label: row.label,
+                    playerIndex: row.playerIndex,
+                    playerIndexType: typeof row.playerIndex,
                     playersCount: row.players?.length
                 });
             });
@@ -383,7 +385,10 @@ Component({
                 return { text: scoreText, status: 'tie' };
             });
 
-   
+            console.log("🔴🟢🔵 oneballMatchResults计算完成:");
+            console.log("🔴🟢🔵   oneballMatchResults[0]:", oneballMatchResults[0]);
+            console.log("🔴🟢🔵   oneballMatchResults[0].text:", oneballMatchResults[0]?.text);
+
             // 根据是否显示中间行来构建totals数组
             const oneballRowTotals = showMiddleRow
                 ? [
