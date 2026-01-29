@@ -11,17 +11,16 @@
 - `gameStore` 提供 `players`、`red_blue`、`gameAbstract`、`gameid` 等基础信息（`ScoreTable.js`）。
 - `holeRangeStore` 提供标准化后的 `holeList`（`ScoreTable.js`）。
 - `scoreStore` 暴露一维分数列表 `scores`（`ScoreTable.js`）。
-- 组件挂载后由 `observers` 自动触发计算，并统一委托给 `runAtomicScoreUpdate`（`ScoreTable.js`）。
+- 组件挂载后由 `observers` 自动触发计算，并统一委托给 `runAtomicScoreUpdate`（`ScoreTable.js`），内部改为调用 `scoreTableViewModel` 生成展示数据。
 
 ## 计算流程
-1. 观察者 `playerScores, players, holeList, red_blue` 任一变化后触发（`ScoreTable.js`），随后调用 `runAtomicScoreUpdate`，内部复用 `utils/scoreTableCalculator.js` 提供的计算函数。
+1. 观察者 `playerScores, players, holeList, red_blue` 任一变化后触发（`ScoreTable.js`），随后调用 `runAtomicScoreUpdate`，内部复用 `ScoreTable/scoreTableViewModel.js` 与 `ScoreTable/scoreTableCalculator.js` 提供的计算函数。
 2. 通过 `scoreStore.calculateDisplayScores` 将一维原始分数转为二维矩阵 `displayScores`，保留推杆、罚杆及红蓝标记信息。
-3. **三个统计值在同一时间同步计算（原子操作）**（`ScoreTable.js`）：
+3. **三个统计值在同一时间同步计算（原子操作）**（`ScoreTable.js` → `scoreTableViewModel.js`）：
    - `displayTotals = calculateDisplayTotals(displayScores)` - 计算所有洞的总分
    - `{ displayOutTotals, displayInTotals } = calculateOutInTotals(displayScores, holeList)` - 计算前9洞和后9洞汇总
-   - `gameStore.updatePlayersHandicaps(holeList, scoreIndex)` - 更新玩家的 handicap（杆差）
    
-   **架构说明**：统计函数下沉到 `scoreTableCalculator`，与显示矩阵计算放在一起减少重复遍历；handicap 更新仍在 `gameStore` 中完成。
+   **架构说明**：统计函数下沉到 `scoreTableCalculator`，与显示矩阵计算放在一起减少重复遍历；handicap 更新改为在 `ScoreTable` 观察者中独立触发。
    
 4. **关键差异**：`calculateDisplayTotals` 无条件计算所有洞的总分；而 `calculateOutInTotals` 在 `holeList.length !== 18` 或 `displayScores` 为空时返回空数组。
 5. 为防止绑定数组长度与球员数量不一致，`runAtomicScoreUpdate` 会对 `displayOutTotals` / `displayInTotals` 进行零填充后写回 `data`。
