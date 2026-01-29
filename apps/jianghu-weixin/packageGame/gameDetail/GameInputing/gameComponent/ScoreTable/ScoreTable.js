@@ -83,18 +83,8 @@ Component({
 
     observers: {
         'playerScores,players,holeList,red_blue,gameData,groupid': function (scores, players, holeList, red_blue, gameData, groupid) {
-            console.log('DEBUG observer triggered:', {
-                hasScores: !!scores,
-                playersCount: players?.length,
-                holesCount: holeList?.length,
-                hasGameData: !!gameData,
-                groupid: groupid,
-                scoringType: gameData?.scoring_type
-            });
-
             // 数据不完整时，不执行计算
             if (!scores || !players || !holeList || players.length === 0 || holeList.length === 0 || !gameData) {
-                console.log('DEBUG data incomplete, resetting');
                 if (this.data.displayScores !== null || this.data.renderPlayers.length > 0) {
                     this.setData({
                         displayScores: null,
@@ -107,6 +97,7 @@ Component({
                         oneballRowTotals: [],
                         oneballRowOutTotals: [],
                         oneballRowInTotals: [],
+                        oneballDisplayScores: null,
                         renderPlayers: [], // 重置为空数组
                     });
                 }
@@ -129,7 +120,6 @@ Component({
 
                 // 如果 players 数量在防抖期间又变化了，说明 store 还在更新，继续等待
                 if (this._lastPlayersCount !== players.length) {
-                    console.log('DEBUG players count changed during debounce, waiting for stability');
                     return;
                 }
 
@@ -137,7 +127,6 @@ Component({
                 if (players.length > 0) {
                     this.runAtomicScoreUpdate(players, holeList, red_blue, gameData, groupid);
                 } else {
-                    console.log('DEBUG players is empty, setting empty state');
                     // 如果没有球员数据，也需要设置 renderPlayers 为空数组，避免显示旧数据
                     this.setData({
                         renderPlayers: [],
@@ -164,12 +153,6 @@ Component({
          */
         runAtomicScoreUpdate(playersForUpdate, holeList, red_blue = [], gameData = null, groupid = null) {
 
-            console.log('DEBUG runAtomicScoreUpdate called:', {
-                playersCount: playersForUpdate.length,
-                holesCount: holeList.length,
-                scoringType: gameData?.scoring_type
-            });
-
             if (!Array.isArray(playersForUpdate) || playersForUpdate.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
@@ -195,36 +178,8 @@ Component({
                 oneballDisplayScores
             } = viewModel;
 
-            console.log('DEBUG computed stats:', {
-                hasDisplayScores: !!displayScores,
-                displayScoresLength: displayScores?.length,
-                hasDisplayTotals: !!displayTotals
-            });
-
-            console.log('DEBUG oneball computed:', {
-                isOneballMode,
-                oneballRowsCount: oneballRows.length,
-                oneballRows: oneballRows.map(r => ({ key: r.key, type: r.type, playersCount: r.players?.length }))
-            });
-
             // 在oneball模式下，displayScores 不再被修改
             const finalDisplayScores = displayScores;
-
- 
-            if (isOneballMode && finalDisplayScores) {
-  
-                // 检查A组和B组的成绩
-                const aScore0 = oneballDisplayScores[0]?.[0]?.score;
-                const bScore0 = oneballDisplayScores[1]?.[0]?.score;
-             }
-
-            console.log('DEBUG setData about to be called:', {
-                renderPlayersCount: playersForUpdate.length,
-                isOneballMode,
-                oneballRowsCount: oneballRows.length,
-                hasDisplayScores: !!finalDisplayScores,
-                hasDisplayTotals: !!displayTotals
-            });
 
             this.setData({
                 renderPlayers: playersForUpdate, // 与 isOneballMode 同步设置，避免闪烁
@@ -246,7 +201,9 @@ Component({
          * 手动触发一次统计计算（备用）
          */
         calculateDisplayData() {
-            const playersForUpdate = this.data.renderPlayers || [];
+            const playersForUpdate = (this.data.players && this.data.players.length)
+                ? this.data.players
+                : (this.data.renderPlayers || []);
             const holeList = this.data.holeList || [];
             const redBlue = this.data.red_blue || [];
             const gameData = this.data.gameData || null;

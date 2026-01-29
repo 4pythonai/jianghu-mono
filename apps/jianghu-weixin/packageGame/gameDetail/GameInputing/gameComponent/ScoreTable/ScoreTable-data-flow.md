@@ -29,7 +29,8 @@
 - 表格列宽依据 `holeList.length` 计算。18 洞场景下额外加上 `OUT`、`IN` 两列（`ScoreTable.wxml:24-62`）。
 - 行内渲染顺序为：前 9 洞单元格 → `OUT` → 后 9 洞单元格 → `IN` → `TOTAL`（`ScoreTable.wxml:73-123`）。
 - `TOTAL` 直接展示 `displayTotals[playerIndex]`。
-- `OUT` 与 `IN` 分别展示 `displayOutTotals[playerIndex]` 与 `displayInTotals[playerIndex]`，未定义时回退为 `0`。
+- `OUT` 与 `IN` 分别展示 `displayOutTotals[playerIndex]` 与 `displayInTotals[playerIndex]`，未定义时回退为空字符串。
+- **Oneball 行索引映射**：`oneballRows` 中的组行使用 `item.playerIndex` 作为 `displayScores` 的索引（A/B 两行），而 `rowIndex` 仅用于对应 `oneballRowTotals / oneballRowOutTotals / oneballRowInTotals`（包含中间“得分”行）。
 
 ## OUT 列当前为空的排查方向
 
