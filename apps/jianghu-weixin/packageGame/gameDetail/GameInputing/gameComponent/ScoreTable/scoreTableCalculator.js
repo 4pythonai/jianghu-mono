@@ -6,10 +6,11 @@ import { buildScoreIndex } from '@/utils/gameUtils';
  * @param {Array} players
  * @param {Array} holeList
  * @param {Array} redBlue
- * @returns {{displayScores: Array, displayTotals: Array, displayOutTotals: Array, displayInTotals: Array}}
+ * @param {Map} [scoreIndexOverride]
+ * @returns {{displayScores: Array, displayTotals: Array, displayOutTotals: Array, displayInTotals: Array, scoreIndex: Map}}
  */
-export function computeScoreTableStats(players, holeList, redBlue = []) {
-    const scoreIndex = buildScoreIndex(scoreStore.scores);
+export function computeScoreTableStats(players, holeList, redBlue = [], scoreIndexOverride) {
+    const scoreIndex = scoreIndexOverride ?? buildScoreIndex(scoreStore.scores);
     const displayScores = scoreStore.calculateDisplayScores(players, holeList, redBlue, scoreIndex);
     const displayTotals = calculateDisplayTotals(displayScores);
     const { displayOutTotals, displayInTotals } = calculateOutInTotals(displayScores, holeList);

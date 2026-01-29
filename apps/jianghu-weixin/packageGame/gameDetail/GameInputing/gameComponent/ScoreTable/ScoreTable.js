@@ -3,7 +3,8 @@ import { gameStore } from '@/stores/game/gameStore'
 import { holeRangeStore } from '@/stores/game/holeRangeStore'
 import { scoreStore } from '@/stores/game/scoreStore'
 import { buildScoreIndex } from '@/utils/gameUtils'
-import { buildScoreTableViewModel } from './scoreTableViewModel'
+import { buildScoreTableBase } from './scoreTableViewModel'
+import { buildOneballViewModel } from './oneballViewModel'
 
 Component({
     data: {
@@ -69,6 +70,7 @@ Component({
                 clearTimeout(this._handicapDebounceTimer);
                 this._handicapDebounceTimer = null;
             }
+            this._baseCache = null;
             if (this.storeBindings) {
                 this.storeBindings.destroyStoreBindings();
             }
@@ -101,11 +103,14 @@ Component({
                         renderPlayers: [], // 重置为空数组
                     });
                 }
+                this._baseCache = null;
                 return;
             }
 
+            const scoreIndex = buildScoreIndex(scores);
+
             // 独立更新 handicap，避免与渲染计算耦合
-            this.scheduleHandicapUpdate(scores, holeList);
+            this.scheduleHandicapUpdate(scoreIndex, holeList);
 
             // 使用防抖，避免多个 store 数据陆续到达时重复计算
             if (this._debounceTimer) {
@@ -125,7 +130,7 @@ Component({
 
                 // renderPlayers 由 runAtomicScoreUpdate 统一设置，避免闪烁
                 if (players.length > 0) {
-                    this.runAtomicScoreUpdate(players, holeList, red_blue, gameData, groupid);
+                    this.runAtomicScoreUpdate(players, holeList, red_blue, gameData, groupid, scores, scoreIndex);
                 } else {
                     // 如果没有球员数据，也需要设置 renderPlayers 为空数组，避免显示旧数据
                     this.setData({
@@ -151,24 +156,55 @@ Component({
         /**
          * 汇总分数统计的原子操作
          */
-        runAtomicScoreUpdate(playersForUpdate, holeList, red_blue = [], gameData = null, groupid = null) {
+        runAtomicScoreUpdate(playersForUpdate, holeList, red_blue = [], gameData = null, groupid = null, scores = null, scoreIndex = null) {
 
             if (!Array.isArray(playersForUpdate) || playersForUpdate.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
-            const viewModel = buildScoreTableViewModel({
-                players: playersForUpdate,
+            const canReuseBase = !!this._baseCache
+                && this._baseCache.playersRef === playersForUpdate
+                && this._baseCache.holeListRef === holeList
+                && this._baseCache.redBlueRef === red_blue
+                && this._baseCache.scoresRef === scores;
+
+            const baseData = canReuseBase
+                ? this._baseCache.baseData
+                : buildScoreTableBase({
+                    players: playersForUpdate,
+                    holeList,
+                    red_blue,
+                    scoreIndex
+                });
+
+            if (!canReuseBase) {
+                this._baseCache = {
+                    playersRef: playersForUpdate,
+                    holeListRef: holeList,
+                    redBlueRef: red_blue,
+                    scoresRef: scores,
+                    baseData
+                };
+            }
+
+            const oneballData = buildOneballViewModel(
+                playersForUpdate,
                 holeList,
-                red_blue,
+                baseData.displayScores,
+                baseData.displayTotals,
+                baseData.displayOutTotals,
+                baseData.displayInTotals,
                 gameData,
                 groupid
-            });
+            );
 
             const {
                 displayScores,
                 displayTotals,
                 displayOutTotals,
-                displayInTotals,
+                displayInTotals
+            } = baseData;
+
+            const {
                 isOneballMode,
                 oneballRows,
                 oneballMatchResults,
@@ -176,7 +212,7 @@ Component({
                 oneballRowOutTotals,
                 oneballRowInTotals,
                 oneballDisplayScores
-            } = viewModel;
+            } = oneballData;
 
             // 在oneball模式下，displayScores 不再被修改
             const finalDisplayScores = displayScores;
@@ -208,7 +244,9 @@ Component({
             const redBlue = this.data.red_blue || [];
             const gameData = this.data.gameData || null;
             const groupid = this.data.groupid || null;
-            this.runAtomicScoreUpdate(playersForUpdate, holeList, redBlue, gameData, groupid);
+            const scores = this.data.playerScores || null;
+            const scoreIndex = Array.isArray(scores) ? buildScoreIndex(scores) : null;
+            this.runAtomicScoreUpdate(playersForUpdate, holeList, redBlue, gameData, groupid, scores, scoreIndex);
         },
 
         // ===================== UI 交互相关 =====================
@@ -248,9 +286,9 @@ Component({
             this.triggerEvent('cellclick', e.detail);
         },
 
-        scheduleHandicapUpdate(scores, holeList) {
+        scheduleHandicapUpdate(scoreIndex, holeList) {
             if (!Array.isArray(holeList) || holeList.length === 0) return;
-            if (!Array.isArray(scores)) return;
+            if (!scoreIndex) return;
 
             if (this._handicapDebounceTimer) {
                 clearTimeout(this._handicapDebounceTimer);
@@ -258,7 +296,6 @@ Component({
 
             this._handicapDebounceTimer = setTimeout(() => {
                 this._handicapDebounceTimer = null;
-                const scoreIndex = buildScoreIndex(scores);
                 wx.nextTick(() => {
                     gameStore.updatePlayersHandicaps(holeList, scoreIndex);
                 });

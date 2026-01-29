@@ -228,6 +228,17 @@ export const gameStore = observable({
     fetchGameDetail: action(async function (gameid, groupid = null) {
         if (this.loading) return; // 防止重复加载
 
+        // 如果是切换分组（gameid相同但groupid不同），先清理旧数据，避免闪烁
+        if (this.gameid && String(this.gameid) === String(gameid) && String(this.groupid) !== String(groupid)) {
+            this.players = [];
+            this.gameData = null;
+            this.red_blue = [];
+            this.gameAbstract = '';
+            scoreStore.clear();
+            holeRangeStore.clear();
+            runtimeStore.clearKickConfigs();
+        }
+
         // 如果是切换比赛（gameid 不同），先清理旧数据，避免数据污染
         if (this.gameid && String(this.gameid) !== String(gameid)) {
             console.log('[gameStore] 切换比赛，清理旧数据', {

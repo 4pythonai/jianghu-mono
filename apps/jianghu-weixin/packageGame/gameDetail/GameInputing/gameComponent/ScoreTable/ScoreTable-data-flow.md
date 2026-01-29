@@ -21,6 +21,7 @@
    - `{ displayOutTotals, displayInTotals } = calculateOutInTotals(displayScores, holeList)` - 计算前9洞和后9洞汇总
    
    **架构说明**：统计函数下沉到 `scoreTableCalculator`，与显示矩阵计算放在一起减少重复遍历；handicap 更新改为在 `ScoreTable` 观察者中独立触发。
+   **优化说明**：基础矩阵计算（scores/players/holeList/red_blue）与 oneball 计算分离，并基于输入引用做缓存复用，避免无关字段变更触发全量重算。
    
 4. **关键差异**：`calculateDisplayTotals` 无条件计算所有洞的总分；而 `calculateOutInTotals` 在 `holeList.length !== 18` 或 `displayScores` 为空时返回空数组。
 5. 为防止绑定数组长度与球员数量不一致，`runAtomicScoreUpdate` 会对 `displayOutTotals` / `displayInTotals` 进行零填充后写回 `data`。

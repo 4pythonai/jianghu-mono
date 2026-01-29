@@ -19,37 +19,52 @@ export function buildScoreTableViewModel({
     holeList,
     red_blue = [],
     gameData = null,
-    groupid = null
+    groupid = null,
+    scoreIndex = null,
+    base = null
 }) {
+    const baseData = base ?? buildScoreTableBase({
+        players,
+        holeList,
+        red_blue,
+        scoreIndex
+    });
+
+    const oneballData = buildOneballViewModel(
+        players,
+        holeList,
+        baseData.displayScores,
+        baseData.displayTotals,
+        baseData.displayOutTotals,
+        baseData.displayInTotals,
+        gameData,
+        groupid
+    );
+
+    return {
+        renderPlayers: players,
+        ...baseData,
+        ...oneballData,
+    };
+}
+
+export function buildScoreTableBase({ players, holeList, red_blue = [], scoreIndex = null }) {
     const {
         displayScores,
         displayTotals,
         displayOutTotals,
         displayInTotals,
-        scoreIndex
-    } = computeScoreTableStats(players, holeList, red_blue);
-
-    const oneballData = buildOneballViewModel(
-        players,
-        holeList,
-        displayScores,
-        displayTotals,
-        displayOutTotals,
-        displayInTotals,
-        gameData,
-        groupid
-    );
+        scoreIndex: computedScoreIndex
+    } = computeScoreTableStats(players, holeList, red_blue, scoreIndex);
 
     const paddedOutTotals = normalizeTotalsLength(displayOutTotals, players.length);
     const paddedInTotals = normalizeTotalsLength(displayInTotals, players.length);
 
     return {
-        renderPlayers: players,
         displayScores,
         displayTotals,
         displayOutTotals: paddedOutTotals,
         displayInTotals: paddedInTotals,
-        ...oneballData,
-        scoreIndex
+        scoreIndex: computedScoreIndex
     };
 }
