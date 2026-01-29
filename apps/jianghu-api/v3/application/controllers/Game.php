@@ -40,7 +40,7 @@ class Game extends MY_Controller {
 
 
 
-        $user5 = ['user_id' => 837590, 'show_name' => 'Alex', 'avatar' => 'https://qiaoyincapital.com/avatar/2025/06/19/avatar_837590_1750302596.jpeg', 'handicap' => 27.8];
+        $user5 = ['user_id' => 7, 'show_name' => 'USER7', 'avatar' => 'https://qiaoyincapital.com/avatar/247.png', 'handicap' => 27.8];
         $user6 = ['user_id' => 4, 'show_name' => 'ecoeco', 'avatar' => 'https://qiaoyincapital.com//avatar/126.png', 'handicap' => 3.8];
         $user7 = ['user_id' => 5, 'show_name' => 'JoYa', 'avatar' => 'https://qiaoyincapital.com//avatar/245.jpg', 'handicap' => 15.6];
         $user8 = ['user_id' => 6, 'show_name' => '阿咪阿咪红', 'avatar' => 'https://qiaoyincapital.com//avatar/246.png', 'handicap' => 0];

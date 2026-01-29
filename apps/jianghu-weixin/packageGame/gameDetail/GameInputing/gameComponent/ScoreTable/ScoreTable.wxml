@@ -115,7 +115,7 @@
                   playerIndex="{{ rowIndex }}"
                   holeIndex="{{ holeIndex }}"
                   holeList="{{ holeList }}"
-                  players="{{ players }}"
+                  players="{{ renderPlayers }}"
                   displayScores="{{ oneballDisplayScores }}"
                   bind:cellclick="onCellClick"
                 />
@@ -138,7 +138,7 @@
                   playerIndex="{{ rowIndex }}"
                   holeIndex="{{ holeIndex }}"
                   holeList="{{ holeList }}"
-                  players="{{ players }}"
+                  players="{{ renderPlayers }}"
                   displayScores="{{ oneballDisplayScores }}"
                   bind:cellclick="onCellClick"
                 />
@@ -197,7 +197,7 @@
           </view>
         </block>
         <block wx:else>
-          <view class="table-row" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIndex">
+          <view class="table-row" wx:for="{{ renderPlayers }}" wx:key="user" wx:for-index="playerIndex" wx:for-item="player">
             <!-- 前9洞 (1-9) -->
             <view
               wx:for="{{holeList}}"
@@ -210,7 +210,7 @@
                 playerIndex="{{ playerIndex }}"
                 holeIndex="{{ holeIndex }}"
                 holeList="{{ holeList }}"
-                players="{{ players }}"
+                players="{{ renderPlayers }}"
                 displayScores="{{ displayScores }}"
                 bind:cellclick="onCellClick"
               />
@@ -233,7 +233,7 @@
                 playerIndex="{{ playerIndex }}"
                 holeIndex="{{ holeIndex }}"
                 holeList="{{ holeList }}"
-                players="{{ players }}"
+                players="{{ renderPlayers }}"
                 displayScores="{{ displayScores }}"
                 bind:cellclick="onCellClick"
               />
@@ -255,7 +255,7 @@
       </scroll-view>
       <!-- 数据加载中的占位符，避免表格突然出现 -->
       <scroll-view wx:else scroll-y class="table-body">
-        <view class="table-row" wx:for="{{ players }}" wx:key="user" wx:for-index="playerIndex">
+        <view class="table-row" wx:for="{{ renderPlayers }}" wx:key="user" wx:for-index="playerIndex">
           <!-- 前9洞 (1-9) -->
           <view
             wx:for="{{holeList}}"

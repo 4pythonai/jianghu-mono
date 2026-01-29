@@ -12,7 +12,7 @@ Component({
         scrollSync: true,
         scrollTop: 0,
         players: [],
-        renderPlayers: null,
+        renderPlayers: [], // 改为空数组而不是 null，避免初始渲染问题
         holeList: [],
         playerScores: [],
         displayScores: null, // 初始为 null，避免渲染空数组
@@ -82,9 +82,19 @@ Component({
 
     observers: {
         'playerScores,players,holeList,red_blue,gameData,groupid': function (scores, players, holeList, red_blue, gameData, groupid) {
+            console.log('DEBUG observer triggered:', {
+                hasScores: !!scores,
+                playersCount: players?.length,
+                holesCount: holeList?.length,
+                hasGameData: !!gameData,
+                groupid: groupid,
+                scoringType: gameData?.scoring_type
+            });
+
             // 数据不完整时，不执行计算
             if (!scores || !players || !holeList || players.length === 0 || holeList.length === 0 || !gameData) {
-                if (this.data.displayScores !== null || this.data.renderPlayers !== null) {
+                console.log('DEBUG data incomplete, resetting');
+                if (this.data.displayScores !== null || this.data.renderPlayers.length > 0) {
                     this.setData({
                         displayScores: null,
                         displayTotals: null,
@@ -96,7 +106,7 @@ Component({
                         oneballRowTotals: [],
                         oneballRowOutTotals: [],
                         oneballRowInTotals: [],
-                        renderPlayers: null, // 重置渲染球员
+                        renderPlayers: [], // 重置为空数组
                     });
                 }
                 return;
@@ -106,31 +116,71 @@ Component({
             if (this._debounceTimer) {
                 clearTimeout(this._debounceTimer);
             }
+
+            // 记录当前 players 数量，用于检测是否稳定
+            this._lastPlayersCount = players.length;
+
             this._debounceTimer = setTimeout(() => {
                 this._debounceTimer = null;
-                
+
+                // 如果 players 数量在防抖期间又变化了，说明 store 还在更新，继续等待
+                if (this._lastPlayersCount !== players.length) {
+                    console.log('DEBUG players count changed during debounce, waiting for stability');
+                    return;
+                }
+
                 // 根据当前分组筛选球员
                 let playersForView = players;
                 // 仅当有分组且指定了 groupid 时才进行筛选
                 if (gameData && Array.isArray(gameData.groups) && gameData.groups.length > 0 && groupid) {
                     const currentGroup = gameData.groups.find(g => String(g.groupid) === String(groupid));
-                    if (currentGroup && Array.isArray(currentGroup.players)) {
+                    console.log('DEBUG filtering players:', {
+                        groupsCount: gameData.groups.length,
+                        groupid: groupid,
+                        foundGroup: !!currentGroup,
+                        groupPlayers: currentGroup?.players?.length
+                    });
+                    if (currentGroup && Array.isArray(currentGroup.players) && currentGroup.players.length > 0) {
                         const playerIdsInGroup = new Set(currentGroup.players.map(p => p.user_id));
                         playersForView = players.filter(p => playerIdsInGroup.has(p.user_id));
+                        console.log('DEBUG filtered playersForView:', playersForView.length);
+                    } else if (currentGroup) {
+                        // 找到分组但没有 players 数组，使用所有球员
+                        console.log('DEBUG group found but no players array, using all players');
+                        playersForView = players;
                     } else {
                         // 找不到分组，可能是数据竞争。暂时不渲染任何内容。
-                        playersForView = []; 
+                        playersForView = [];
+                        console.log('DEBUG group not found, playersForView set to empty');
                     }
+                } else {
+                    console.log('DEBUG no filtering, using all players:', players.length);
                 }
-                
-                this.setData({
-                    renderPlayers: playersForView
-                });
-                
+
+                // 不再提前设置 renderPlayers，而是在 runAtomicScoreUpdate 中一起设置
+                // 这样可以避免 renderPlayers 和 isOneballMode 不同步导致的闪烁
+
                 if (playersForView.length > 0) {
                      this.runAtomicScoreUpdate(playersForView, holeList, red_blue, gameData, groupid);
+                } else {
+                    console.log('DEBUG playersForView is empty, setting empty state');
+                    // 如果没有球员数据，也需要设置 renderPlayers 为空数组，避免显示旧数据
+                    this.setData({
+                        renderPlayers: [],
+                        displayScores: null,
+                        displayTotals: null,
+                        displayOutTotals: null,
+                        displayInTotals: null,
+                        isOneballMode: false,
+                        oneballRows: [],
+                        oneballMatchResults: [],
+                        oneballRowTotals: [],
+                        oneballRowOutTotals: [],
+                        oneballRowInTotals: [],
+                        oneballDisplayScores: null
+                    });
                 }
-            }, 16); // 约一帧的时间
+            }, 100); // 增加防抖时间，等待 store 完成更新
         }
     },
 
@@ -139,7 +189,13 @@ Component({
          * 汇总分数统计的原子操作
          */
         runAtomicScoreUpdate(playersForUpdate, holeList, red_blue = [], gameData = null, groupid = null) {
-           
+
+            console.log('DEBUG runAtomicScoreUpdate called:', {
+                playersCount: playersForUpdate.length,
+                holesCount: holeList.length,
+                scoringType: gameData?.scoring_type
+            });
+
             if (!Array.isArray(playersForUpdate) || playersForUpdate.length === 0) return;
             if (!Array.isArray(holeList) || holeList.length === 0) return;
 
@@ -157,6 +213,12 @@ Component({
                 scoreIndex
             } = computeScoreTableStats(playersForUpdate, holeList, red_blue);
 
+            console.log('DEBUG computed stats:', {
+                hasDisplayScores: !!displayScores,
+                displayScoresLength: displayScores?.length,
+                hasDisplayTotals: !!displayTotals
+            });
+
             const {
                 isOneballMode,
                 oneballRows,
@@ -166,6 +228,12 @@ Component({
                 oneballRowInTotals,
                 oneballDisplayScores
             } = this.computeOneballRows(playersForUpdate, holeList, displayScores, displayTotals, displayOutTotals, displayInTotals, gameData, groupid);
+
+            console.log('DEBUG oneball computed:', {
+                isOneballMode,
+                oneballRowsCount: oneballRows.length,
+                oneballRows: oneballRows.map(r => ({ key: r.key, type: r.type, playersCount: r.players?.length }))
+            });
 
             // 在oneball模式下，displayScores 不再被修改
             const finalDisplayScores = displayScores;
@@ -186,7 +254,16 @@ Component({
             const paddedOutTotals = normalizeTotalsLength(displayOutTotals, playersForUpdate.length);
             const paddedInTotals = normalizeTotalsLength(displayInTotals, playersForUpdate.length);
 
+            console.log('DEBUG setData about to be called:', {
+                renderPlayersCount: playersForUpdate.length,
+                isOneballMode,
+                oneballRowsCount: oneballRows.length,
+                hasDisplayScores: !!finalDisplayScores,
+                hasDisplayTotals: !!displayTotals
+            });
+
             this.setData({
+                renderPlayers: playersForUpdate, // 与 isOneballMode 同步设置，避免闪烁
                 displayScores: finalDisplayScores,
                 displayTotals,
                 displayOutTotals: paddedOutTotals,
@@ -266,7 +343,14 @@ Component({
 
         computeOneballRows(players, holeList, displayScores, displayTotals, displayOutTotals, displayInTotals, gameData, groupid) {
             const scoringType = gameData?.scoring_type || '';
+            console.log('DEBUG computeOneballRows:', {
+                scoringType,
+                playersCount: players.length,
+                hasDisplayScores: !!displayScores
+            });
+
             if (scoringType !== 'oneball') {
+                console.log('DEBUG not oneball mode');
                 return {
                     isOneballMode: false,
                     oneballRows: [],
@@ -282,7 +366,14 @@ Component({
             const currentGroup = groups.find(group => String(group.groupid) === String(groupid));
             const groupOneballConfig = currentGroup?.groupOneballConfig;
 
+            console.log('DEBUG oneball config:', {
+                hasCurrentGroup: !!currentGroup,
+                hasGroupOneballConfig: !!groupOneballConfig,
+                groupOneballConfig
+            });
+
             if (!groupOneballConfig || typeof groupOneballConfig !== 'object') {
+                console.log('DEBUG no valid groupOneballConfig');
                 return {
                     isOneballMode: false,
                     oneballRows: [],
@@ -303,6 +394,14 @@ Component({
                     return;
                 }
                 groupedPlayers[side].push({ ...player, index });
+            });
+
+            console.log('DEBUG grouped players:', {
+                groupACount: groupedPlayers.A.length,
+                groupBCount: groupedPlayers.B.length,
+                hasInvalidConfig,
+                groupA: groupedPlayers.A.map(p => ({ user_id: p.user_id, show_name: p.show_name })),
+                groupB: groupedPlayers.B.map(p => ({ user_id: p.user_id, show_name: p.show_name }))
             });
 
             if (hasInvalidConfig || groupedPlayers.A.length === 0 || groupedPlayers.B.length === 0) {
